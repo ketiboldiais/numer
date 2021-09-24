@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-i5pc$$w2l5#ha+)pzsws!1435sna=glnh$ujf(sgvfl(u5qklt
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'www.numerstack.xyz',
     '0.0.0.0',
     'numerstack.herokuapp.com'
 ]
