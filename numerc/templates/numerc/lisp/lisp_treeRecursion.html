@@ -1,0 +1,106 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="tree_recursion">
+	<h4>Tree Recursion</h4>
+	<p>
+		Linear iteration and linear recursion are
+		<span class="italicsText">computational patterns</span>. Another common
+		computational pattern is <span class="term">tree recursion</span>. Recall
+		the Fibonacci sequence, where each number in the sequence is the sum of the
+		preceding two numbers:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${0, 1, 1, 2, 3, 5, 8, 13, 21, \ldots}$</p>
+		</div>
+	</figure>
+	<p>We can define the sequence generally with the following rule:</p>
+	<figure class="math-display">
+		$$ \text{$Fib$}(n) = \begin{cases} 0 &\text{if } n = 0 \\[1em] 1 &\text{if }
+		n = 1 \\[1em] \text{$Fib$}(n - 1) + \text{$Fib$}(n - 2) &\text{else }
+		\end{cases} $$
+	</figure>
+	<p>This definition is ripe for recursion:</p>
+	<pre class="language-scheme"><code>
+		(define (fib n)
+			(cond ((= n 0) 0)
+						((= n 1) 1)
+			(else (+ (fib (- n 1)) 
+							(fib (- n 2))))))
+	</code></pre>
+	<p>
+		Suppose we compute <span class="monoText">(fib 5)</span>. The entire
+		computation can be viewed as a tree:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/fib5_expression_tree.svg' %}"
+			alt="fib expressions"
+			loading="lazy"
+			class="eighty-p"
+		/>
+	</figure>
+	<p>
+		This procedure, however, is a sterling example of a
+		<span class="italicsText">Dorian Gray</span>. While the implementation is
+		beautiful on the surface, it is inherently disturbing underneath. Given
+		${\text{$Fib$}(n),}$ the procedure above computes
+		<span class="monoText">(fib 1)</span> or
+		<span class="monoText">(fib 0)</span> a total of ${\text{$Fib$}(n+1)}$
+		times. Mathematically, the value of ${\text{$Fib$}(n)}$ is the closest
+		integer to ${\dfrac{{\varphi}^n}{\sqrt{5}},}$ where ${\varphi = \dfrac{1 +
+		\sqrt{5}}{2} \approx 1.16180,}$ and ${\varphi^2 = \varphi + 1.}$ This means
+		the value of ${\text{$Fib$}(n)}$ grows exponentially with ${n.}$
+	</p>
+	<p>
+		Why is this a problem? Because the number of steps required is proportional
+		to the number of nodes in the tree. But, the amount of memory required to
+		perform the computation is proportional to the maximum depth of the tree.
+		Given that the number of steps grows exponentially with the input, the
+		larger our inputs, the more and more memory we need to perform the
+		computation. With sufficiently large inputs, the computer fans may begin
+		humming and the program will crash.
+	</p>
+	<p>
+		We will explore a possible remedy for this problem in later sections. For
+		now, let us examine an iterative implementation:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (fib n)
+			(fib-iter 1 0 n))
+		(define (fib-iter a b count)
+			(if (= count 0)
+				b
+				(fib-iter (+ a b) a (- count 1))))
+	</code></pre>
+	<p>
+		Here, we use two integers, <span class="monoText">a = 0</span> and
+		<span class="monoText">b = 0</span> to represent
+		<span class="monoText">fib(1) = 1</span> and
+		<span class="monoText">fib(0) = 0</span>. We also provide a counter,
+		<span class="monoText">count</span>, that decrements at each iteration. This
+		implementation is a typical linear iteration. Here, the procedure takes a
+		total of ${n}$ steps, where ${n}$ is the number we pass as an input to
+		${\text{$Fib$}(n).}$ Undoubtedly, this is much better than the tree
+		recursion approach.
+	</p>
+	<p>
+		<span class="exh">Exercise.</span> A function ${f}$ is defined as follows:
+	</p>
+	<figure class="math-display">
+		$$ f(n) = \begin{cases} n &\text{if } n < 3 \\[1em] f(n - 1) + 2f(n -2) +
+		3f(n -3) &\text{if } n \geq 3 \end{cases} $$
+	</figure>
+	<p>Write a procedure that computes the function above recursively.</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			(define (f n)
+			(if (< n 3) 
+					n 
+					(+  (f (- n 1))
+						(* 2 (f (- n 2)))
+						(* 3 (f (- n 3))))))
+		</code></pre>
+	</details>
+</section>
+{% endblock %}

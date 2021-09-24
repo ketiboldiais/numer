@@ -1,0 +1,513 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="induction">
+	<h4>Induction</h4>
+	<p>
+		The proofs we've seen so far are examples of one type of proof, the
+		<span class="term">direct proof</span>. We now introduce another type of
+		proof, the <span class="term">indirect proof</span>. Indirect proofs come in
+		several variants. One such variant is the
+		<span class="term">proof-by-contradiction</span>.
+	</p>
+
+	<p>
+		In a proof-by-contradiction, we start by assuming that the opposite of what
+		we are trying to prove (the negation) is true. Then, following this
+		assumption, we take logical deductions until we arrive at a contradiction (a
+		proposition that states "false equals true"). If we ever reach a
+		false-equals-true, then that means that what we assumed from the very
+		beginning was wrong. In other words, the opposite (the negation) cannot be
+		true. And since the negation cannot be true, the original proposition must
+		be true. More formally:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Proof-by-Contradiction.</span> To prove a
+				proposition ${P}$ is true, we assume that ${P}$ is false (${\neg P}$ is
+				true). From this hypothesis (${P}$ is false), we prove that a falsehood
+				is true (${P}$ is false implies ${P}$ is true). In doing so, we prove
+				that it must be the case that ${P}$ is true.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		This works because if we can prove that ${\neg P \implies F,}$ then the only
+		way for ${\neg P \implies F}$ to be true is if ${\neg P}$ is false. And if
+		${\neg P}$ is false, then ${P}$ is true.
+	</p>
+
+	<p>
+		Example: Prove that ${\sqrt{2}}$ is irrational. First, let's be clear about
+		what our terms mean. An irrational number is a number that cannot be written
+		as the ratio of two integers. In contrast, a rational number is a number
+		that can be written as the ratio of two integers.
+	</p>
+
+	<p>
+		When we write a proof by contradiction, we always start by indicating that
+		the proof is a proof by contradiction.
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Proof (by contradiction).</span> Assume for the
+				purpose of contradiction that ${\sqrt{2}}$ is a rational number. If
+				${\sqrt{2}}$ is rational, then ${\sqrt{2} = \dfrac{a}{b}}$ where ${a}$
+				and ${b}$ are integers, and ${\dfrac{a}{b}}$ is a fraction expressed in
+				lowest terms (a fraction with no common divisors).
+			</p>
+			<p>
+				Squaring both sides: ${2 = \dfrac{a^2}{b^2}.}$ Multiplying both sides by
+				${b^2,}$ we obtain ${2b^2 = a^2.}$ This implies that ${a^2}$ is even,
+				since ${2b^2}$ can be written as ${2k}$ given that ${b}$ is an integer.
+				Because ${a^2}$ is even, then it must be true that ${a}$ is even (since
+				the square of an even number is even) &mdash; ${(2 \space\vert\space
+				a)}$ ("two divides ${a}$").
+			</p>
+			<p>
+				Given that ${a}$ is even, ${a^2}$ is a multiple of 4 &mdash; ${(4
+				\space\vert\space a^2).}$ This means that ${(4 \space\vert\space
+				2b^2).}$ Dividing each side by 2, ${(2 \space\vert\space b^2).}$
+			</p>
+			<p>
+				Now, if 2 divides by ${b^2,}$ then it must be the case that ${b}$ is
+				even. We've arrived at a contradiction. If ${a}$ is even and ${b}$ is
+				even, then ${\dfrac{a}{b}}$ is not a fraction in lowest terms. This
+				means that ${\sqrt{2}}$ cannot be rational, so it must be irrational.
+				${\blacksquare}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		The proof above was first discovered by a religious society of ancient
+		Greece called the Pythagoreans. In ancient Greece, the practice of
+		mathematics was a religious exercise. The ancient Greeks believed that
+		mathematics was ruled by two gods &mdash; Apeiron and Peras. Apeiron was
+		viewed as a malevolent god: the embodiment of primal chaos, the god of the
+		infinite. In contrast, Peras was viewed as the benevolent one: the
+		embodiment of order, the god of the finite.
+	</p>
+
+	<p>
+		One of the axioms of these mathematical mystics was that there were no
+		irrational numbers &mdash; they simply did not exist. The Greeks denied
+		their existence because they were evil; they were infinite. In contrast, the
+		mystics affirmed the existence of the rational numbers because they were
+		finite.
+	</p>
+
+	<p>
+		This denial of the infinite extended to other spheres. Every line, according
+		to the Pythagoreans, was finite. From this axiom, they derived what we now
+		know as the Pythagorean Theorem. If there was a triangle with legs of length
+		1, then the length of the hypotenuse was ${\sqrt{2}.}$ Because they denied
+		the existence of the irrationals, the Pythagoreans constructed a theorem
+		that ${\sqrt{2}}$ was rational. Eventually, the Pythagoreans discovered the
+		proof above.
+	</p>
+
+	<p>
+		Needless to say, this caused mayhem. The Pythagoreans were now confronted
+		with the fact that their axioms were inconsistent. Every theorem they had
+		proven was premised on the non-existence of irrationals, and they now had
+		just found an irrational. The solution: Cover it up. According to legend,
+		the Pythagoreans not only denied the result, they went so far as to murder
+		the member who discovered the proof.
+	</p>
+
+	<p>
+		We now turn to another variety of proofs &mdash;
+		<span class="term">proof-by-induction</span>. The concept of induction is
+		actually a predicate itself:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Axiom.</span> Let ${P(n)}$ be a predicate. If
+				${P(0)}$ is true, and ${\forall n \in \N : (P(n) \implies P(n + 1))}$ is
+				true, then ${\forall n \in \N : P(n)}$ is true.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		Another way of expressing the axiom above: If ${P(0)}$ is true, and if
+		${P(0) \implies P(1),}$ and if ${P(1) \implies P(2),}$ all the way up to
+		${P(n),}$ then ${P(n)}$ is true for any natural number ${n.}$ As an axiom,
+		induction is relatively straightforward. If know that ${P(0)}$ is true, and
+		we know that ${P(0) \implies P(1),}$ and ${P(1) \implies P(2),}$ all the way
+		up to ${P(n),}$ then it makes sense for ${P(n)}$ to be true for all ${n.}$
+		We can think of this as akin to dominoes:
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/induction_dominoes.svg' %}"
+			alt="dominoes"
+			loading="lazy"
+			class="eighty-p"
+		/>
+	</figure>
+
+	<p>
+		Of note, mathematical induction is <span class="underlineText">not</span> a
+		form of <span class="italicsText">inductive reasoning</span>. In inductive
+		reasoning, we reason that because of some previously observed phenomenon, we
+		can make inferences about the future. This is entirely unrelated to
+		mathematical induction. Mathematical induction is, in fact, a form of
+		deductive reasoning, not inductive reasoning. In other words, mathematical
+		induction is to induction what Rocky Mountain oysters are to oysters.
+		Similar names but very, very different things. When mathematicians use the
+		word "induction" alone, they are referring to the mathematical, rather than
+		epistemic, context.
+	</p>
+
+	<p>Let's see an example. Prove the following:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\forall n \in \N,}$</p>
+			<figure class="math-display">
+				<div>
+					<p>${1 + 2 + 3 + \ldots + n = \dfrac{n(n + 1)}{2}}$</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+
+	<p>
+		Note that the ellipses, ${\ldots,}$ tells us that we must complete the
+		pattern. In this case, there is a pattern to ${1 + 2 + 3 + \ldots + n.}$ In
+		this case, each element in the sequence is an increment-by-one of the
+		element before it. Because this can be very vague, we have several ways to
+		express this idea more explicitly.
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				$${\sum_{i = 1}^{n} i = \sum_{}^{1 \leq i \leq n} i = \sum_{1 \leq i
+				\leq n}^{} i}$$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		In each of the notations above, we are expressing the clause, "The sum of
+		${i}$ from ${i = 1}$ to ${i = n.}$ Thus, the proposition we are asked to
+		prove can be more succinctly expressed as:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				${\forall n \in \N : \left(\sum_{i = 1}^{n} = \dfrac{n(n +
+				1)}{2}\right)}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		The notation above is called a <span class="term">summation</span>. There
+		are a number of reasons why use the summation notation. To begin with, if
+		${n = 1,}$ then the expression ${1 + 2 + \ldots + n}$ is ambiguous and
+		confusing. With the summation notation, we can simply say the when ${n =
+		1,}$ then ${\sum_{i = 1}^{n} = 1,}$ since the sum of 1 to 1 is simply 1.
+		Similarly, if ${n \leq 0,}$ then ${\sum_{i = 1}^{n} = 0.}$ Why? Because
+		there are no numbers to sum. We call these two cases, ${n = 0}$ and ${n =
+		1,}$ the <span class="term">edge cases</span>.
+	</p>
+
+	<p>
+		All this in mind, let us write the proof. The first thing we do is to state
+		that the proof will be done by induction:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p><span class="topic">Proof (by induction).</span></p>
+		</div>
+	</figure>
+
+	<p>
+		Next step: What is our predicate? In other words, what is the hypothesis?
+		Here, it is the proposition we are trying to prove: That ${\sum_{i = 1}^{n}
+		= \dfrac{n(n + 1)}{2}.}$
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Proof (by induction).</span> Let ${P(n)}$ be the
+				proposition that ${\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}.}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		Now we begin thinking about the proof. The first thing to analyze is the
+		<span class="term">base case</span>. Here, we must establish that ${P(0)}$
+		is true. We saw this earlier. The sum of ${i = 1}$ to 0 of ${i}$ is 0. The
+		proposition is also true by algebra:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${\sum_{i = 1}^{0} = \dfrac{0(0 + 1)}{2} = 0}$</p>
+		</div>
+	</figure>
+
+	<p>
+		Having proved the base case is true, we now must prove the second part, the
+		<span class="term">inductive case</span>. In this case, we must show: For
+		${n \geq 0,}$ ${P(n) \implies P(n + 1)}$ is true.
+	</p>
+
+	<p>
+		Now, recall basic logic. How do we show that an implication is true? There
+		is only one situation where the implication is false, and that is when
+		${P(n)}$ is true and ${P(n + 1)}$ is false. Thus, to prove this implication,
+		we must assume that ${P(n)}$ is true, then determine whether ${P(n + 1)}$ is
+		true. So, putting together what we have so far:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Proof (by induction).</span> Let ${P(n)}$ be the
+				proposition that ${\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}.}$ When ${n =
+				0,}$ then ${\sum_{i = 1}^{0} = 0.}$ This is the base case. We now prove
+				the inductive case: For ${n \geq 0,}$ ${P(n) \implies P(n + 1).}$
+			</p>
+
+			<p>
+				Assume ${P(n)}$ is true for purposes of induction. Following this
+				assumption, we must prove that ${\sum_{i = 1}^{n + 1} = \dfrac{(n + 1)(n
+				+ 2)}{2}.}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		The last sentence above is arguably the most confusing for non-mathematician
+		readers. It seems as if in trying to prove ${P(n),}$ we are assuming
+		${P(n).}$ Isn't this circular? Admittedly, it appears to teeter very close.
+		In actuality, it is not at all circular. We are assuming ${P(n)}$ to prove
+		the necessary condition of the proposition ${P(n) \implies P(n + 1).}$
+		Remember, in mathematics, we write a proof one step at a time, from one
+		deduction to the next.
+	</p>
+
+	<p>
+		We should also be very clear about what we mean when we say something like
+		"Assume ${x.}$" We are not saying that ${x}$ is, in fact, true. We are
+		saying, "Just pretend for a moment&mdash;for the sake of a
+		hypothetical&mdash;that ${x}$ is true." The only purpose of an "Assume
+		${x}$" statement is to obtain a non-hypothetical statement of the form ${x
+		\implies y.}$ For example, remember how we wrote a proof-by-contradiction?
+		The same idea is at work here. We want to reach some non-hypothetical
+		conclusion: "When we assume ${x,}$ this is what happens. And since this is
+		what happens, it must be true that ..."
+	</p>
+
+	<p>
+		Returning to the proof, we are now trying to prove that ${1 + 2 + \ldots +
+		(n + 1) = \dfrac{(n + 1)(n + 2)}{2}.}$ We can rewrite this as ${1 + 2 +
+		\ldots + n + (n + 1) = \dfrac{(n + 1)(n + 2)}{2}.}$ Since we assumed that
+		${P(n)}$ is true, we know that:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\overbrace{1 + 2 + \ldots + n}^{\dfrac{n(n + 1)}{2}} + (n + 1)}$</p>
+		</div>
+	</figure>
+	<p>Thus, we have:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{n(n + 1)}{2} + (n + 1) = \dfrac{n^2 + n + 2n + 2}{2}}$</p>
+			<p>
+				${\phantom{\dfrac{n(n + 1)}{2} + (n + 1)} = \dfrac{n^2 + 3n + 2}{2}}$
+			</p>
+			<p>
+				${\phantom{\dfrac{n(n + 1)}{2} + (n + 1)} = \dfrac{(n + 1)(n + 2)}{2}}$
+			</p>
+		</div>
+	</figure>
+
+	<p>Putting this all together:</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Proof (by induction).</span> Let ${P(n)}$ be the
+				proposition that ${\sum_{i = 1}^{n} = \dfrac{n(n + 1)}{2}.}$ When ${n =
+				0,}$ then ${\sum_{i = 1}^{0} = 0.}$ This is the base case. We now prove
+				the inductive case: For ${n \geq 0,}$ ${P(n) \implies P(n + 1).}$
+			</p>
+
+			<p>
+				Assume ${P(n)}$ is true for purposes of induction. Following this
+				assumption, we must prove that ${\sum_{i = 1}^{n + 1} = \dfrac{(n + 1)(n
+				+ 2)}{2}.}$ Since ${P(n)}$ is true, we can rewrite the expression ${1 +
+				2 + \ldots + n + (n + 1)}$ as ${\dfrac{n(n + 1)}{2} + (n + 1).}$
+				Rewriting this expression, we have ${\dfrac{n^2 + n + 2n + 2}{2},}$
+				which is ${\dfrac{n^2 + 3n + 2}{2}.}$ Factoring this expression, we have
+				${\dfrac{(n + 1)(n + 2)}{2}.}$
+			</p>
+
+			<p>
+				Thus, we have proved that ${P(n + 1)}$ is true. And since ${P(n + 1)}$
+				is true when ${P(n)}$ is true, the implication ${P(n) \implies P(n +
+				1)}$ cannot be false. Therefore, the implication ${P(n) \implies P(n +
+				1)}$ must be true. Ergo, ${\forall n \in \N : \left(\sum_{i = 1}^{n} =
+				\dfrac{n(n + 1)}{2}\right)}$ is true. ${\blacksquare}$
+			</p>
+		</div>
+	</figure>
+
+	<p>Let's do another example. Prove the following:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${\forall n \in \N: (3 \space\vert\space n^3 - n)}$</p>
+		</div>
+	</figure>
+
+	<p>Let's first test the predicate:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${n = 5 : n^3 - n = (5)^3 - 5 = 125 - 5 = 120}$</p>
+			<p>3 does in fact divide 120.</p>
+		</div>
+	</figure>
+
+	<p>
+		First, what is our induction hypothesis? It is: Let ${P(n) = 3
+		\space\vert\space n^3 - n}$ Next, we should establish that our base case is.
+		Our base case is when ${n = 0.}$ Checking:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${P(0) = (0)^3 - 0 = 0}$</p>
+		</div>
+	</figure>
+
+	<p>
+		Our base case is true; 3 does in fact divide 0. Now we turn to the inductive
+		step: For ${n \geq 0,}$ ${P(n) \implies P(n + 1)}$ is true. More formally:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${(\forall n \in \N \mid n \geq 0) : P(n) \implies P(n + 1)}$</p>
+		</div>
+	</figure>
+
+	<p>
+		To prove that this is true, we first assume that ${P(n)}$ is true. In other
+		words, we assume that ${3 \space\vert\space n^3 - n}$ is true. Now we
+		examine the necessary condition, ${P(n + 1).}$ The proposition ${P(n + 1)}$
+		is ${(n + 1)^3 - (n + 1).}$ Exampding this:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${(n + 1)^3 - (n + 1) = n^3 + 3n^2 + 3n + 1 - n + 1}$</p>
+			<p>${\phantom{(n + 1)^3 - (n + 1)} = n^3 + 3n^2 + 2n}$</p>
+		</div>
+	</figure>
+
+	<p>
+		Looking at this result, it doesn't really look like ${n^3 + 3n^2 + 2n}$ is a
+		multiple of 3. We need to wrtie this a bit more. We want to use the fact
+		that ${n^3 - n}$ is a multiple of three (remember, we assumed it). Remember,
+		whenever we perform a proof-by-induction, we always want to make use of the
+		sufficient condition. So, to make use of our sufficient condition, we want
+		to get a ${-n}$ inside the expression. So, we need to rewrite the expression
+		so as to incorporate a minus sign:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${(n + 1)^3 - (n + 1) = n^3 + 3n^2 + 3n + 1 - n + 1}$</p>
+			<p>${\phantom{(n + 1)^3 - (n + 1)} = n^3 + 3n^2 + 2n}$</p>
+			<p>${\phantom{(n + 1)^3 - (n + 1)} = n^3 - n + 3n^2 + 3n}$</p>
+			<p>${\phantom{(n + 1)^3 - (n + 1)} = (n^3 - n) + 3(n^2 + n)}$</p>
+		</div>
+	</figure>
+
+	<p>Now it's very clear that ${P(n + 1)}$ is true:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				${\overbrace{(n^3 - n)}^{\text{multiple of 3}} + \overbrace{3(n^2 +
+				n)}^{\text{multiple of 3}}}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		We need not always have a base case start at 0. We could have a base case
+		${P(b)}$ and then the induction step ${\forall n \geq b : P(n) \implies P(n
+		+ 1).}$
+	</p>
+
+	<p>
+		Consider the following problem. We have a ${2^n \times 2^n}$ grid, and we
+		want to tile it with an L-shaped tile, ${2 \times 2,}$ such that the
+		entirety of the grid is filled with one square open:
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/tiling_proof.svg' %}"
+			alt="tiling"
+			loading="lazy"
+			class="sixty-p"
+		/>
+	</figure>
+
+	<p>
+		It looks like we can from the diagram above. Now we want to prove it for all
+		${n.}$ Here is the proposition:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				${\forall n}$ ${\exists}$ a way to tile a ${2^n \times 2^n}$ region with
+				a center square missing.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		First, we establish our induction hypothesis: ${P(n) \coloneqq}$ ${\exists}$
+		a way to tile a ${2^n \times 2^n}$ region with a center square missing.
+		Second, we establish the base case, ${P(0.)}$ Where ${P(0),}$ we only have
+		one square, since ${2^0 \times 2^0 = 1.}$ That is the center square missing,
+		so ${P(n)}$ is true where ${n = 0;}$ ${P(0)}$ is true.
+	</p>
+
+	<p>
+		Now we consider the inductive case: For ${n \geq 0,}$ assume ${P(n)}$ is
+		true to verify ${P(n) \implies P(n + 1).}$ Now we must prove that ${P(n +
+		1)}$ is true.
+	</p>
+
+	<p>
+		Let's consider ${2^{n + 1} \times 2^{n + 1}.}$ It turns out it's very
+		difficult to prove when a center square is missing (try it). It is actually
+		much easier if we make a stronger assumption &mdash; any square is missing.
+		With this assumption, we can place the missing square anywhere. In doing so,
+		we can think of any ${2^{n+1} \times 2^{n+1}}$ region as smaller parts of
+		${2^n \times 2^n.}$ And since ${P(n)}$ is true, we can place the missing
+		square anywhere in a region ${2^{n+1} \times 2^{n+1}.}$
+	</p>
+</section>
+{% endblock %}

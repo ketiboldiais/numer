@@ -1,0 +1,335 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="testing_and_debugging">
+	<h3>Testing and Debugging</h3>
+	<p>
+		Programs rarely ever run perfectly on first attempt; bugs are a part of the
+		programming experience. Their pervasiveness, however, has led to numerous
+		techniques and tactics of dealing with them, i.e.,
+		<span class="term">debugging</span>. In fact, there are so many approaches
+		that there are entire courses dedicated to testing and debugging. In the
+		next few sections, we cover some of those approaches from a Python
+		perspective.
+	</p>
+	<p>
+		Testing and debugging can be conceptualized by analogy: Suppose we are
+		making a soup, but bugs keep descending from the ceiling, landing perfectly
+		in our pot. Now, assuming we have no palette for insectoids, how might we
+		prevent these unwanted ingredients?
+	</p>
+	<p>
+		One way is to simply carry on making the soup, checking the soup for bugs as
+		we go. Another way is to make sure the lid is closed. Or, we could simply
+		evade the entire problem by cleaning our kitchen before we begin making the
+		soup. Each of these three approaches corresponds to testing and debugging.
+	</p>
+	<p>
+		<span class="topic">Testing and Validation.</span> Checking the soup for
+		bugs is akin to <span class="term">testing</span>. Here, we put our code
+		through various tests that reveal bugs. Here, we resolve (or pick out) the
+		bugs as they appear. The first step to testing is asking: How do I break my
+		program? Assuming we defensively programmed right from the get-go (which we
+		should have done), we can come up with ways of breaking our program by
+		checking the our comments and function specifications.
+	</p>
+	<p>
+		<span class="topic">Defensive Programming.</span> Ensuring the lid is closed
+		is akin to <span class="term">defensive programming</span>. With defensive
+		programming, we write our code according to a plan that anticipates and
+		prevents, or at least detects, bugs. To defensively program, we want to make
+		sure we write specifications for functions. We also want to modularize our
+		programs. This is such an important point. We do not want to write massive
+		functions; break. it. up. This prevents possibilities of
+		cross-contamination. At every piece of code taking inputs and returning
+		outputs, we ought to check conditions on inputs and outputs.
+	</p>
+	<p>
+		<span class="topic">Debugging.</span> Cleaning the kitchen is akin to
+		<span class="term">debugging</span> &mdash; eliminate the root source. In
+		debugging, we go right to where all the bugs are coming from. While this
+		obviously solves the problem full stop, it is easier said than done. Of the
+		three approaches, debugging is generally the most difficult, particularly
+		with gargantuan programs. Our first approach to debugging should be to
+		examine the events leading up to the error. What are the causes and the
+		effects? The necessary and sufficient conditions?
+	</p>
+</section>
+
+<section id="classes_of_tests">
+	<h4>Classes of Tests</h4>
+	<p>
+		Testing and debugging is several magnitudes easier when we plan effectively
+		before coding. From the very beginning, we need to ensure that our program
+		easily supports testing and debugging. This is done in two ways: (1) by
+		decomposing our program into smaller, separate modules; and (2) clear
+		documentation.
+	</p>
+	<p>
+		Testing and debugging is a nightmare with gargantuan programs. Programs can
+		easily increase to over a thousand lines, and with every increase, the more
+		difficult it is to find problems. By breaking the program into smaller
+		pieces, it is much much easier to pinpoint where problems are.
+	</p>
+	<p>
+		However, even the most modular programs can yield little to no aid if they
+		are undocumented or unclearly documented. Indeed, an oft-repeated sentiment
+		among programmers embarking on large open source projects is lack of
+		documentation. Every program module should document two things: (a) The
+		module's constraints. What do we expect the input to be? What do we expect
+		the output to be? And (b), the module's assumptions. What are we assuming is
+		true for the module's computation? What are we assuming is false? Does the
+		module depend on another module? These are all questions that should be
+		answered in documentation.
+	</p>
+	<p>
+		With documentation, always err on the side of over-documenting rather than
+		hand-waiving. What might seem obvious at the moment is not guaranteed to be
+		obvious a month, six months, or two years later. And it is almost certainly
+		not guaranteed to be obvious for those reading our code at first glance.
+		Document everything.
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Proposition.</span> Let ${x}$ be documentation, ${n}$
+			be the person who wrote ${x,}$ and ${m}$ be the person who reads ${x}$ in
+			the future. There exists an ${m}$ such that ${m}$ has: gone mad, equipped
+			himself with an axe, and learned where ${x}$ and his or her family live.
+		</p>
+	</div>
+	<p>
+		<span class="topic">Prerequisites for Testing.</span> Before we even begin
+		testing, there are two things we must do. First, we should be certain that
+		our code actually runs. This weeds out some of the superficial problems we
+		might have &mdash; syntax errors, static semantic errors, out of bound
+		errors, undefined errors, things that the interpreter will catch quickly.
+	</p>
+	<p>
+		Second, we should come up with a set of expected results. Here, we think of
+		a typical input set, and pass them into the program. Before we actually pass
+		them, however, we should know what to expect. For each input in the set, we
+		record, whether by pen and paper or key and screen, what we expect to see.
+		Only then do we pass the inputs into program. Once we have these two
+		prerequisites done, we can begin thinking about what
+		<span class="italicsText">classes of tests</span> to run.
+	</p>
+	<p>
+		<span class="topic">Unit Testing.</span> In
+		<span class="italicsText">unit testing</span>, we validate each piece of the
+		program, testing each module and function separately, one by one.
+	</p>
+	<p>
+		<span class="topic">Regression Testing.</span> Once we've done unit testing,
+		we should do a <span class="italicsText">regression test</span>. Often,
+		while we unit test, we end up encountering bugs. We might then immediately
+		respond and squash the bug with a patch. But, in doing so, we might have
+		introduced new bugs or reintroduce errors that were previously patched. With
+		<span class="italicsText">regression testing</span>, at every patch, we go
+		back to where we started and conduct tests again.
+	</p>
+	<p>
+		<span class="topic">Integration Testing.</span> Once we've done unit and
+		regression tests, we begin
+		<span class="italicsText">itegration testing</span>. Here, we answer the
+		question: Does the overall program work? To answer that question, we test
+		the connections between each of the modules. Are inputs and outputs flowing
+		properly? Are modules receiving the inputs they need? This is the very last
+		stage, and we do not go anywhere near here unless we've done unit tests
+		followed by regression tests.
+	</p>
+</section>
+
+<section id="testing_approaches">
+	<h4>Testing Approaches</h4>
+	<p>
+		With the classes in mind, we now discuss the different ways to test. The
+		approaches below are the most common approaches, but there are numerous
+		other techniques and tactics.
+	</p>
+	<p>
+		<span class="topic">Intuition.</span> The most straight-foward testing
+		approach is using intuition. Most problems will have natural boundaries.
+		When we solve such a problem with a procedure, that procedure will have
+		natural partitions. It is those partitions that we want to test. For
+		example, consider this docstring for some function:
+	</p>
+	<pre class="language-python"><code>
+		'''
+		Assumptions:
+			x is an int
+			y is an int
+		Returns: 
+			If y is less than x, True
+			Otherwise, False
+		'''
+	</code></pre>
+	<p>
+		What are some natural partitions for this function? Well, what if
+		<span class="monoText">x</span> and <span class="monoText">y</span> are data
+		types other than <span class="monoText">int</span>? What if
+		<span class="monoText">y</span> is greater than
+		<span class="monoText">x</span>? What if <span class="monoText">y</span> is
+		equal to <span class="monoText">x</span>? What if
+		<span class="monoText">x</span> and <span class="monoText">y</span> are both
+		negative?
+	</p>
+	<p>
+		<span class="topic">Random Testing.</span> Sometimes, however, there are no
+		natural boundaries. In those instances, we might do
+		<span class="italicsText">random testing</span>, where we pass in random
+		inputs. Think of this as akin to throwing whatever we can find against a
+		wall and seeing whether the wall holds up. The probability of the wall being
+		strong increases with more tests. But, there are better approaches.
+	</p>
+	<p>
+		<span class="topic">Black Box Testing.</span> With
+		<span class="italicsText">black box testing</span>, we explore
+		<span class="underlineText">possible</span> paths through specification. An
+		example should clarify the vagueness. Consider the following procedure:
+	</p>
+	<pre class="language-python"><code>
+		def sqrt(x, epsilon):
+			'''
+			Assumptions:
+				x is a float
+				epsilon is a float
+				x >= 0
+				epsilon > 0
+
+			Returns:
+				[result] such that:
+					x-epsilon <= result * result <= x + epsilon
+			'''
+	</code></pre>
+	<p>
+		With blackbox testing, we never actually look at the code for this function.
+		All we do is look at the specification (the docstring). This is a
+		particularly useful testing approach because it allows for someone other
+		than the implementer to conduct the test, thereby avoiding implicit biases.
+	</p>
+	<p>
+		From the specification, we think of all the possible test cases for the
+		function (again, without looking at the code). For example, if we have a
+		procedure that operates on a list, we want to test boundary conditions
+		&mdash; pass empty lists, singleton lists, very large lists, lists
+		containing other data structures, into the procedure. If we have function
+		that deals with numbers, we want to pass 0, very small numbers, and very
+		large numbers. In the function above, here are some possible cases to check:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>case</th>
+				<th><span class="monoText">x</span></th>
+				<th><span class="monoText">epsilon</span></th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>boundary</td>
+					<td>0</td>
+					<td>0.0001</td>
+				</tr>
+				<tr>
+					<td>perfect square</td>
+					<td>25</td>
+					<td>0.0001</td>
+				</tr>
+				<tr>
+					<td>less than 1</td>
+					<td>0.05</td>
+					<td>0.0001</td>
+				</tr>
+				<tr>
+					<td>irrational</td>
+					<td>2</td>
+					<td>0.0001</td>
+				</tr>
+				<tr>
+					<td>extremes</td>
+					<td>2</td>
+					<td>1.0/2.0 ** 64.0</td>
+				</tr>
+				<tr>
+					<td>extremes</td>
+					<td>2.0 ** 64.0</td>
+					<td>1.0/2.0 ** 64.0</td>
+				</tr>
+				<tr>
+					<td>extremes</td>
+					<td>1.0/2.0 ** 64.0</td>
+					<td>2.0 ** 64.0</td>
+				</tr>
+				<tr>
+					<td>extremes</td>
+					<td>2.0 ** 64.0</td>
+					<td>2.0 ** 64.0</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		<span class="topic">Glass Box Testing.</span> In contrast,
+		<span class="italicsText">glass box testing</span> explores
+		<span class="underlineText">all</span> of that paths through the code
+		itself. Here, we actually look inside the function and examine its code,
+		using the code to guide our test designs. Ideally, we have
+		<span class="underlineText">at least one</span> test case for each path in
+		the code. By path, we mean the different possible branches of the code
+		(e.g., conditions and their blocks). If test every possible path in the code
+		at least once, then the particular module is said to be path complete.
+	</p>
+	<p>
+		The drawback? We cannot always guarantee path completeness. Recursive
+		functions, for example, can have an arbitrary amount of paths. Other
+		functions might have missing paths. Nevertheless, the most common candidates
+		for path testing:
+	</p>
+	<div class="compare">
+		<div>
+			<p class="subheading">Branches</p>
+			<ul>
+				<li>Test: execute every part of the conditional</li>
+				<li>
+					Test: execute each part at different times (i.e., what happens if one
+					condition is true before another condition is true; remember, none of
+					the conditions are executed the moment the interpreter encounters a
+					true condition).
+				</li>
+			</ul>
+		</div>
+		<div>
+			<p class="subheading">Loops</p>
+			<ul>
+				<li>Test: What happens if loop is not entered?</li>
+				<li>Test: What happens if we go through the loop exactly one?</li>
+				<li>Test: What happens if we go through the loop more than once?</li>
+				<li>
+					Test: Possible ways to exit the loop (e.g., terminating too early)
+				</li>
+			</ul>
+		</div>
+	</div>
+	<p>Consider the following function:</p>
+	<pre class="language-python"><code>
+		def abs(x):
+			'''
+			Assumptions:
+				x is an int
+			Returns:
+				if x >= 0, x
+				otherwise, -x 
+			'''
+			if x < -1:
+				return -x
+			else:
+				return x
+	</code></pre>
+	<p>
+		Here, we might pass <span class="monoText">-2</span> and
+		<span class="monoText">2</span>. This test will be path-complete, but it
+		misses a bug: What happens when <span class="monoText">x = -1</span>? Well,
+		the function will incorrectly return <span class="monoText">-1</span>. Why?
+		Because our <span class="monoText">if</span> condition is
+		<span class="monoText">x < -1</span>. This demonstrates the fact that, even
+		if we know a test is path complete, we must still test the boundary cases.
+	</p>
+</section>
+{% endblock %}

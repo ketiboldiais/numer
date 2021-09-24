@@ -1,0 +1,314 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="digital_logic_circuits" class="grid-item">
+	<h3>Digital Logic Circuits</h3>
+	<p>
+		Digital circuits are an ideal medium for applying concepts in logic. In
+		1937, MIT graduate student Claude Shannon constructed a method for solving
+		circuitry problems by analogizing switches to logical connectives. Shannon's
+		idea was a milestone in human achievement &mdash; it laid the foundations
+		for modern circuits, the very bedrock of modern digital devices. In the next
+		sections, we apply the principles of logic through circuit analysis.
+	</p>
+</section>
+
+<section id="digital_logic_circuits_symbols" class="grid-item">
+	<h4>Circuit Symbols</h4>
+	<p>
+		Before proceeding to actual analysis, we should be familiar with its
+		language. Below are common symbols in circuit design alongside their
+		descriptions.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/circuit_symbol_guide.svg' %}"
+			alt="circuit symbols"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		We will not be using these symbols extensively, but they are provided here
+		in the event an exercise is encountered.
+	</p>
+</section>
+
+<section id="logic_gates" class="grid-item">
+	<h4>Logic Gates</h4>
+	<p>Consider the following circuits:</p>
+	<figure>
+		<img
+			src="{% static 'images/series_v_parallel.svg' %}"
+			alt="series v parallel"
+			class="sixty-p"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		In <span class="italicsText">circuit A</span>, the diode turns on if, and
+		only if, both switches $p$ and $q$ are closed. In
+		<span class="italicsText">circuit B</span>, the diode turns on if, and only
+		if, at least one of the switches $p$ and $q$ are closed.
+		<span class="italicsText">Circuit A</span> is said to be
+		<span class="boldText">in series</span>, and
+		<span class="italicsText">Circuit B</span> is said to be
+		<span class="boldText">in parallel</span>.
+	</p>
+	<p>
+		The more relevant point here is when the diode turns on.
+		<span class="italicsText">Circuit A</span> is analogous to an
+		<span class="monoText">AND</span> proposition, and
+		<span class="italicsText">circuit B</span> to an
+		<span class="monoText">OR</span> proposition. To demonstrate, we can lay the
+		possibilities out with a truth table.
+	</p>
+	<p>First, <span class="italicsText">circuit A</span>:</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>$p$</th>
+				<th>$q$</th>
+				<th><span class="italicsText">diode</span></th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>closed</td>
+					<td>closed</td>
+					<td>on</td>
+				</tr>
+				<tr>
+					<td>closed</td>
+					<td>open</td>
+					<td>off</td>
+				</tr>
+				<tr>
+					<td>open</td>
+					<td>closed</td>
+					<td>off</td>
+				</tr>
+				<tr>
+					<td>open</td>
+					<td>open</td>
+					<td>off</td>
+				</tr>
+			</tbody>
+		</table>
+		<figcaption>Circuit A</figcaption>
+	</figure>
+	<p>And <span class="italicsText">circuit B</span>:</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>$p$</th>
+				<th>$q$</th>
+				<th><span class="italicsText">diode</span></th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>closed</td>
+					<td>closed</td>
+					<td>on</td>
+				</tr>
+				<tr>
+					<td>closed</td>
+					<td>open</td>
+					<td>on</td>
+				</tr>
+				<tr>
+					<td>open</td>
+					<td>closed</td>
+					<td>on</td>
+				</tr>
+				<tr>
+					<td>open</td>
+					<td>open</td>
+					<td>off</td>
+				</tr>
+			</tbody>
+		</table>
+		<figcaption>Circuit B</figcaption>
+	</figure>
+	<p>
+		As we can probably tell, writing out truth tables with such formalism can
+		easily become difficult to read. Indeed, as technology progressed, circuits
+		grew more complicated, developing a need for a more robust and comprehensive
+		language to design and analyze circuits.
+		<span class="boldText">Digital logic circuits</span> were invented to
+		address that need by abstracting lower-level technical details. Part of that
+		abstraction is doing away with words like &#8220;true&#8221; and
+		&#8220;false&#8221; or &#8220;on&#8221; and &#8220;off.&#8221; In lieu, the
+		symbols <span class="monoText">0</span> and
+		<span class="monoText">1</span> became, and continue to be, the governing
+		symbols for representing binary values (<span class="monoText">0</span> for
+		off/false; <span class="monoText">1</span> for on/true). The statistician
+		John Tukey called these symbols &mdash; <span class="monoText">0</span> and
+		<span class="monoText">1</span> &mdash;
+		<span class="boldText">bits</span> (<span class="underlineText">b</span
+		>inary dig<span class="underlineText">its</span>), and they have remained so
+		named since. It is these logic gates that we will use in applying the
+		principals of logic.
+	</p>
+</section>
+
+<section id="black_box" class="grid-item">
+	<h4>Black Box Abstraction &amp; Logic Gates</h4>
+	<p>
+		The foundational principle to digital logic circuits, and a core programming
+		principle in computer science, is the
+		<span class="boldText">black box</span> &mdash; encapsulating circuits into
+		a single "box" that can be used as a component for other, more complicated
+		circuits. The most basic black boxes are
+		<span class="boldText">logic gates</span>. These black boxes are analogous
+		to logical connectives. We examine them each in turn.
+	</p>
+</section>
+
+<section id="not_gate" class="grid-item">
+	<p>
+		<span class="topic">The <span class="monoText">NOT</span> Gate</span>. The
+		<span class="boldText">NOT-gate</span>, or
+		<span class="boldText">inverter</span>, is a logic gate that takes one input
+		signal and returns one output signal. If the input signal is
+		<span class="monoText">1</span>, then the output signal is
+		<span class="monoText">0</span>. Conversely, if the input signal is
+		<span class="monoText">0</span>, then the output signal is
+		<span class="monoText">1</span>. Explicitly with an input-output table:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>${\texttt{input } p}$</th>
+				<th>${\texttt{output } r}$</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>0</td>
+					<td>1</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		The <span class="monoText">NOT-gate</span> is represend by the following
+		symbol in digital logic circuits:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/not_gate.svg' %}"
+			alt="not gate"
+			loading="lazy"
+			class="twenty-p"
+		/>
+	</figure>
+</section>
+
+<section id="and_gate" class="grid-item">
+	<p>
+		<span class="topic">The <span class="monoText">AND</span> Gate</span>. The
+		<span class="boldText">AND-gate</span> is a logic gate that takes two input
+		signals and returns one output signal. If both input signals are
+		<span class="monoText">1</span>, then the output signal is
+		<span class="monoText">1</span>. Otherwise, the output signal is
+		<span class="monoText">0</span>. More explicitly:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>${\texttt{input } p}$</th>
+				<th>${\texttt{input } q}$</th>
+				<th>${\texttt{output } r}$</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>0</td>
+					<td>1</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		We represent the <span class="monoText">AND</span>-gate in logic circuits
+		with the following symbol:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/and_gate.svg' %}"
+			alt="and gate"
+			loading="lazy"
+			class="twenty-p"
+		/>
+	</figure>
+</section>
+
+<section id="or_gate" class="grid-item">
+	<p>
+		<span class="topic">The <span class="monoText">OR</span> Gate</span>. The
+		<span class="boldText">OR-gate</span> takes two input signals and returns
+		one output signal. If both input signals are
+		<span class="monoText">0</span>, then the output signal is
+		<span class="monoText">0</span>. Otherwise, the output signal is
+		<span class="monoText">1</span>:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>${\texttt{input } p}$</th>
+				<th>${\texttt{input } q}$</th>
+				<th>${\texttt{output } r}$</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>0</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>0</td>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		We represent <span class="monoText">OR</span>-gates with the following
+		symbol:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/or_gate.svg' %}"
+			alt="or gate"
+			loading="lazy"
+			class="twenty-p"
+		/>
+	</figure>
+</section>
+{% endblock %}

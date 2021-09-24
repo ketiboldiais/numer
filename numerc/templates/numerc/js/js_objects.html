@@ -1,0 +1,1081 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="objects_introduction">
+	<h2>Objects</h2>
+	<p>
+		An object is a collection of
+		<span class="term">properties</span>. An object's property consists of
+		a<span class="term">key value pair</span>—a
+		<span class="term">key</span> and the data stored in it.
+	</p>
+	<p>
+		The name of a <span class="term">key</span> is a
+		<span class="italicsText">string</span>, and that name is referred to as a
+		<span class="term">property name</span>. The value stored to a key is called
+		the <span class="term">property value</span>.
+	</p>
+
+	<p>Suppose we have data for a particular event:</p>
+	<ul>
+		<li><span class="monoText">velocity</span></li>
+		<li><span class="monoText">acceleration</span></li>
+		<li><span class="monoText">momentum</span></li>
+		<li><span class="monoText">weight</span></li>
+	</ul>
+	<p>
+		Now suppose that we have the same exact kind of data for another event. This
+		might look like the following:
+	</p>
+	<table class="dataTable">
+		<thead>
+			<td></td>
+			<th>Event 1</th>
+			<th>Event 2</th>
+		</thead>
+		<tr>
+			<td>Velocity</td>
+			<td>1.14</td>
+			<td>1.26</td>
+		</tr>
+		<tr>
+			<td>Acceleration</td>
+			<td>1.09</td>
+			<td>1.05</td>
+		</tr>
+		<tr>
+			<td>Momentum</td>
+			<td>2.33</td>
+			<td>2.43</td>
+		</tr>
+		<tr>
+			<td>Weight</td>
+			<td>13.4</td>
+			<td>13.9</td>
+		</tr>
+	</table>
+	<p>
+		How do we store this data? One option is to store each of the values
+		individually with their own variables. Problem: While that may work for a
+		handful of data values, it would quickly become cumbersome, even infeasible,
+		for thousands of data values.
+	</p>
+	<p>
+		Another option is to use an array. Problem: This would still be tedious. We
+		would need some sort of key (with comments), distinguishing between the data
+		and distinguishing between the events.
+	</p>
+	<p>
+		The solution to this problem is to use an
+		<span class="term">object</span>.
+		<span class="italicsText">Objects</span> allow us to group data together,
+		but more importantly, rather than relying on each of the data value's index,
+		we can <span class="term">label</span> the data. By labeling the data, we
+		can access the assigned values with custom keys, rather than with an index.
+	</p>
+</section>
+
+<section id="nameValuePairs_objects">
+	<h3>Name Value Pairs &amp; and Objects</h3>
+	<p>
+		Objects are so important in JavaScript that we need to be just a little more
+		clear about what they are. JavaScript objects contain a
+		<span class="term">name/value pair</span>. A
+		<span class="term">name</span> is an identifier mapped to a unique
+		<span class="term">value</span>. That name can be defined more than once,
+		but it can only have <span class="underlineText">one</span> value in any
+		given <span class="italicsText">execution context</span>. That value itself
+		can be numeric data, textual data, an array, or more name/value pairs.
+	</p>
+	<p>
+		Where do objects fit in this picture? An object is a
+		<span class="term">collection</span> of name value pairs. An object can
+		contain name/value pairs, names paired with other name/value pairs, or names
+		paired with names paired with other name/valur pairs. For example:
+	</p>
+
+	<pre class="language-javascript"><code>
+				Class = 
+				{
+					Title: "Discrete Mathematics",
+					Topics:
+					{
+						Logic: {
+							Weeks: [0, 1, 2],
+							Difficulty: Moderate
+						},
+						numberTheory: {
+							Weeks: [3, 4, 5],
+							Difficulty: High
+						}
+
+					}
+				}
+			</code></pre>
+</section>
+
+<section id="the_global_object">
+	<h3>The Global Object</h3>
+	<p>
+		In JavaScript, there is an execution context called the
+		<span class="term">global execution context</span>. This is the
+		<span class="italicsText">base</span> execution context. All execution
+		contexts "lie on top" of the global execution context. Code written in the
+		global execution context is accessible to everything everywhere else in the
+		program.
+	</p>
+	<p>
+		The global execution context creates two things: (1) a
+		<span class="term">global object</span> and (2) a variable called
+		<span class="monoText">this</span>. These are created by the JavaScript
+		engine whenever code is executed, since all code, in JavaScript, is exists
+		in an execution context.
+	</p>
+	<p>
+		If we execute JavaScript in the browser, we can see the global object by
+		simply typing the keyword
+		<span class="monoText">this</span>:
+	</p>
+
+	<pre class="language-javascript"><code>
+				this
+				/* Output:
+				Window {window: Window, self: Window, document: document, name: "", location: Location, …}
+				*/
+			</code></pre>
+
+	<p>
+		On the browser, the global object is the
+		<span class="monoText">window</span> object. However, the global object is
+		not always the <span class="monoText">window</span> object. It depends on
+		where we execute JavaScript code. If we ran JavaScript in a separate tab or
+		window, the global object would still be called the
+		<span class="monoText">window</span> object, but it is a different
+		object&mdash;it's a different execution context. In NodeJS, the global
+		object is something else entirely. Nevertheless, in every situation, there
+		is <span class="underlineText">always</span> a global object whenever we run
+		JavaScript.
+	</p>
+	<p>
+		Note that in JavaScript, when we use the word "global," we are referring to
+		an execution context
+		<span class="underlineText">not inside a function</span>. Thus, if we have
+		code that is <span class="italicsText">not</span> inside a function, that
+		code resides in the global execution context.
+	</p>
+	<p>Thus, suppose we wrote the following code:</p>
+
+	<pre class="language-javascript"><code>
+				var x = 'Hello world!';
+				function b() {
+
+				};
+			</code></pre>
+
+	<p>Then, in our console, we wrote:</p>
+
+	<pre class="language-javascript"><code>
+				window
+				/*
+				Output:
+				Window {
+					...
+					a: "Hello World!"
+					b: function b() {}
+				}
+				*/
+			</code></pre>
+
+	<p>
+		We see that the variable we wrote, <span class="monoText">x</span>, and the
+		function we wrote, <span class="monoText">b</span>, reside in the
+		<span class="monoText">Window</span> object, the global object. Because they
+		are inside the global object, we can reference them by writing:
+	</p>
+
+	<pre class="language-javascript"><code>
+				window.a
+				// Output: "Hello world!"
+				window.b
+				// Output: 
+				ƒ b() {
+					
+				}
+			</code></pre>
+</section>
+
+<section id="creation_hoisting">
+	<h3>Hoisting</h3>
+	<p>Write the following in a JavaScript file linked to an HTML document:</p>
+
+	<pre class="language-javascript"><code>
+				var greeting = "Hello world!";
+				function bye() {
+					console.log("Goodbye!");
+				}
+				
+				bye();
+				console.log(greeting);
+				/*
+				Output:
+				"Goodbye!"
+				"Hello world!"
+				*/
+			</code></pre>
+
+	<p>Now suppose we rearranged the code:</p>
+
+	<pre class="language-javascript"><code>
+				bye();
+				console.log(greeting);
+
+				var greeting = "Hello world!";
+				function bye() {
+					console.log("Goodbye!")
+				}
+				/*
+				Output:
+				"Goodbye!"
+				undefined
+				*/
+			</code></pre>
+
+	<p>
+		Notice that the function <span class="monoText">bye()</span> is actually
+		executed, and the console displays
+		<span class="monoText">undefined</span> for the variable
+		<span class="monoText">greeting</span>. This is unusual behavior. In most
+		programming languages, the function
+		<span class="monoText">bye()</span> would not have been executed, since
+		executions go from top down. Similarly, we do not get an error from
+		executing a method with a variable declared later down the code. We do,
+		however, get an error if we completely removed the variable declaration:
+	</p>
+
+	<pre class="language-javascript"><code>
+				bye();
+				console.log(greeting);
+
+				var greeting = "Hello world!";
+				function bye() {
+					console.log("Goodbye!")
+				}
+				/*
+				Output:
+				"Goodbye!"
+				Uncaught ReferenceError: greeting is not defined
+				*/
+			</code></pre>
+
+	<p>
+		In JavaScript, this phenomenon of allowing functions to execute "before" the
+		function is defined or variables declared is called
+		<span class="term">hoisting</span>. This phenomenon occurs because
+		JavaScript execution contexts are created in two phases:
+	</p>
+	<ol>
+		<li>The Creation Phase; and</li>
+		<li>The Execution Phase</li>
+	</ol>
+
+	<h4>The Creation Phase</h4>
+	<p>
+		In the <span class="term">creation phase</span>, three things are created:
+		(1) the <span class="italicsText">global object</span>, (2) the variable
+		<span class="monoText">this</span>, and (3) the
+		<span class="italicsText">outer environment</span>. During the creation
+		phase, the syntax parser runs through all of the code, setting everything up
+		for translation. During that run, the parser recognizes where we've created
+		variables, and where we've created functions. To keep track of everything
+		it's doing, it takes memory space for variables and functions. This is what
+		we see as <span class="italicsText">hoisting</span>. Contrary to what many
+		think (and teach), the parser does not actually move code to the top of the
+		page. What's actually going on is that before the code is even executed line
+		by line, the parser has already stored the variables and functions we've
+		written in memory. Because the variables and functions already exist in
+		memory, when the code actually executes line by line, the functions we've
+		written after a particular line (in the global object) are accessible.
+	</p>
+
+	<p>
+		Variables, however, are treated somewhat differently. A function and its
+		entirety are stored in a memory space when the parser runs through the code.
+		This is why they can be executed when called before they are occupied.
+		Variables, however, are only partly stored&mdash;the variable declaration
+		and its identifier (its name) are stored in memory during the parser's run,
+		but a variable's assignment is stored only during the second phase,
+		<span class="italicsText">execution</span>. This means that the JavaScript
+		engine does not actually know what a variable's assigned value until it
+		reaches it during execution.
+	</p>
+
+	<p>
+		Rather than storing the variables assigned value, the parser stores a
+		placeholder value in memory space &mdash;
+		<span class="monoText">undefined</span>. Storing the placeholder value is
+		effectively JavaScript's way of saying "I don't know what the value of this
+		variable is yet, but it does have a value." This is the same placeholder
+		value that we would have if we never assigned a value to a variable. This
+		means that <span class="underlineText">all</span> variables in JavaScript
+		are initially set to <span class="monoText">undefined</span>.
+	</p>
+</section>
+
+<section id="javascript_and_undefined">
+	<h3>JavaScript and <span class="monoText">undefined</span></h3>
+	<p>
+		We've noted that variables, when first created, are assigned the value
+		<span class="monoText">undefined</span>. What does this mean? We can see
+		that this is the case when we write the following:
+	</p>
+
+	<pre class="language-javascript"><code>
+				var a;
+				console.log(a);
+				// Output: undefined
+			</code></pre>
+
+	<p>
+		If, however, we do not declare the variable, we notice that the console
+		actually throws an error: 
+	</p>
+
+	<pre class="language-javascript"><code>
+				console.log(a);
+				/* 
+				Output: 
+				<span class="redText">Uncaught ReferenceError: a is not defined</span>
+				*/
+			</code></pre>
+
+	<p>
+		But isn't the value <span class="monoText">undefined</span> a value? Yes, it
+		is, but it's a special value in Javascript. Specifically, it's a value that
+		means that the value has not been set. We can see this with the following
+		code:
+	</p>
+
+	<pre class="language-javascript"><code>
+				var a;
+				console.log(a);
+				if (a === undefined) {
+					console.log('a is undefined!');
+				}
+				else {
+					console.log('a is defined');
+				}
+				/*
+				Output:
+				undefined
+				a is undefined
+				*/
+			</code></pre>
+
+	<p>
+		We see that <span class="monoText">a</span> is
+		<span class="monoText">undefined</span>. The above code confirms that a
+		variable, declared but unassigned, has the default value of
+		<span class="monoText">undefined</span> If we completely declined to declare
+		the variable <span class="monoText">a</span> and tried to pass it as an
+		argument, we get an <span class="monoText">uncaught reference error</span>.
+		We get an error because we attempted to use a variable that the parser did
+		not store in memory during its initial run. Why didn't the parser store it
+		in memory? Because we didn't declare at all in the first place.
+	</p>
+	<p>
+		Note what all of this means. The value
+		<span class="monoText">undefined</span> doesn't mean "does not exist." It is
+		an actual value&mdash;the value of reserved memory space. More specifically,
+		it's a value that means "a value set by Javascript." This is also indicative
+		of a warning. We should never write something like this:
+	</p>
+
+	<pre class="language-javascript"><code>
+				a = undefined; 
+			</code></pre>
+
+	<p>
+		Writing the code above is a sure fire way to get into a lot of messy
+		problems. For example, something like this can occur:
+	</p>
+
+	<pre class="language-javascript"><code>
+				var a = 'Hello world';
+				console.log(a);
+				a = undefined;
+
+				if (a === undefined) {
+					console.log('a is undefined');
+				}
+				else {
+					console.log('a is defined!');
+				}
+			</code></pre>
+
+	<p>
+		When we ourselves assign the value
+		<span class="monoText">undefined</span> to a variable, it can quickly become
+		very difficult to decipher whether a variable's value of
+		<span class="monoText">undefined</span> was set by us or JavaScript. It is
+		always best practice to leave the value
+		<span class="monoText">undefined</span> to JavaScript. By complying with
+		this practice, whenever we see the value
+		<span class="monoText">undefined</span>, we know that we did not set a value
+		for a particular variable&mdash;it was set by JavaScript.
+	</p>
+</section>
+
+<section id="execution_context_js">
+	<h2>The Execution Context</h2>
+	<p>
+		In the sections above, we discussed the
+		<span class="italicsText">creation phase</span>. Once the creation phase
+		ends, the <span class="term">execution phase</span> begins. This is where
+		the JavaScript interpret begins translating the code into assembly
+		language&mdash;code that the computer can understand. Once translated, the
+		code is then executed.
+	</p>
+	<p>Suppose we had the following code:</p>
+
+	<pre class="language-javascript"><code>
+				function b() {
+					console.log('Called b!')
+				}
+				b();
+				console.log(a);
+				var a = 'Hello world!';
+				console.log(a);
+			</code></pre>
+
+	<p>In the code above, the output looks like the following:</p>
+
+	<pre class="language-javascript"><code>
+				"Called b!"
+				undefined
+				"Hello world!"
+			</code></pre>
+
+	<p>
+		The function <span class="monoText">b()</span> is executed, then the method
+		<span class="monoText">console.log()</span> is executed (with a value of
+		<span class="monoText">undefined</span>), then the second
+		<span class="monoText">console.log()</span> is executed, with the value
+		<span class="monoText">"Hello world!"</span>.
+	</p>
+	<p>
+		Why are there two different values for the variable
+		<span class="monoText">a</span>? Because initially, the value of
+		<span class="monoText">a</span> was <span class="monoText">undefined</span>,
+		as set by the parser in the <span class="italicsText">creation phase</span>.
+		In the line just after that, however, we assigned
+		<span class="monoText">a</span> the value
+		<span class="monoText">"Hello world!"</span>, so the value is no longer
+		<span class="monoText">undefined</span>, but a string instead.
+	</p>
+</section>
+
+<section id="single_threaded">
+	<h2>Single Threaded, Synchronous Execution</h2>
+	<p>
+		In a single program, multiple commands are executed. We say that a
+		language's execution is
+		<span class="italicsText">single threaded</span> when the language executes
+		only <span class="underlineText">one</span> command at a time.
+	</p>
+	<p>
+		When it comes to browsers, there are multiple programs running. JavaScript
+		is not the only program running. If we were to look at JavaScript's
+		operations under the browser's hood, it may appear that JavaScript is
+		anything but a single-threaded language. Nevertheless, it behaves and is a
+		single-threaded language.
+	</p>
+	<p>
+		Moreover, not only is JavaScript single-threaded, it is also
+		<span class="term">synchronous</span>. This just means it's a language that
+		executes only <span class="underlineText">one</span> line of code at a time.
+	</p>
+	<p>
+		In conjunction, JavaScript is a single-threaded and synchronous programming
+		language. This means only one thing happens at a time.
+	</p>
+</section>
+
+<section id="function_exection_and_execution_stack">
+	<h3>Function Execution & Execution Stack</h3>
+	<p>
+		Invocation is just another word for "running a function." In JavaScript, we
+		invoke a function with parentheses
+		<span class="monoText">()</span>. Once we write something like
+		<span class="monoText">functionName()</span>, we have
+		<span class="italicsText">invoked</span> a function&mdash;we've told
+		JavaScript to <span class="italicsText">run</span> a function. So what
+		exactly happens when you invoke a function in JavaScript?
+	</p>
+	<p>Suppose we have the following code:</p>
+
+	<pre class="language-javascript"><code>
+				function b() {
+
+				};
+				function a() {
+					b();
+				}
+				a();
+			</code></pre>
+
+	<p>
+		In the above code, we have two functions: function
+		<span class="monoText">b</span>, which does nothing, and function
+		<span class="monoText">a</span>, which invokes function
+		<span class="monoText">b</span>. Then, we call function
+		<span class="monoText">a</span>. What is the output here?
+	</p>
+	<p>
+		First, we know that when we run this code, a
+		<span class="italicsText">global execution context</span> is created. The
+		parser creates the variable <span class="monoText">this</span>, and a global
+		object (in the browser, the <span class="monoText">window</span> object).
+		The function's we've written above are global, so they are included in the
+		<span class="monoText">window</span> object, and memory is reserved for the
+		functions. This all occurs in the
+		<span class="italicsText">creation phase</span>. Once this is all done, the
+		interpreter begins executing the program line by line. Remember, this is
+		just the creation phase. That very last line,
+		<span class="monoText">a()</span>, is a function call, but it is not
+		executed. This is just the phase where the parser readies the program.
+	</p>
+	<p>
+		Once the interpreter begins the execution phase, it goes line by line. It
+		goes down the program, then encounters, the statement
+		<span class="monoText">a();</span>. This statement tells the interpreter
+		that we're invoking a function. When the interpreter sees a function
+		invocation, it places the function in a data structure called the
+		<span class="term">execution stack</span>. A
+		<span class="italicsText">stack</span> is just what it sounds like&mdash;one
+		function on top of the other. Whichever function is at the top is the
+		function that it is currently running.
+	</p>
+
+	<p>
+		Once the function is placed in the
+		<span class="term">call stack</span>, the interpreter begins executing the
+		function, line by line. If, while executing the current function, the
+		interpreter encounters another function, the interpreter undergoes the same
+		process. It places the nested function in the
+		<span class="italicsText">call stack</span>, creates an execution context
+		for that nested function (i.e., it reenters another creation phase), and
+		begins executing that function. This is how every function in JavaScript is
+		handled&mdash;the interpreter undergoes a creation phase for every function,
+		then executes the code line by line.
+	</p>
+	<p>
+		Thus, in the code above, the interpreter executions function
+		<span class="monoText">a()</span>, then begins executing function
+		<span class="monoText">b()</span>. Once function
+		<span class="monoText">b()</span> finishes executing, it is
+		<span class="term">popped off</span> the stack.
+	</p>
+	<p>Now suppose we had the following code:</p>
+
+	<pre class="language-javascript"><code>
+				function a() {
+					b();
+					var c;
+				}
+				function b() {
+					var d;
+				}
+				a();
+				var d;
+			</code></pre>
+
+	<p>What are the steps the interpreter goes through with the code above?</p>
+	<p>
+		First, the interpreter enters creation phase. It creates a
+		<span class="italicsText">global execution context</span>, and pushes that
+		into the call stock.
+	</p>
+	<p>
+		Then it begins executing the code (inside the global execution context).
+	</p>
+	<p>
+		In the global execution context, it reenters the creation phase. It sees a
+		function called <span class="monoText">a</span>, and saves it to memory. It
+		then sees a function called <span class="monoText">b</span>, and allocates
+		that to memory. The interpreter sees a function call,
+		<span class="monoText">a()</span>, but it does not execute, since it's still
+		in the creation phase. It moves on and sees
+		<span class="monoText">var d</span>, a variable that we have declared but
+		not assigned. The interpreter saves the variable
+		<span class="monoText">a</span> to memory, and assigns it the value
+		<span class="monoText">undefined</span>.
+	</p>
+	<p>
+		Now that the interpreter has finished going through all of our lines during
+		the creation phase, it begins the execution phase. This is where the
+		interpreter acts synchronously&mdash;it goes line by line through the global
+		execution context. The first few lines do not output anything&mdash;they
+		merely define the functions
+		<span class="monoText">a</span> and <span class="monoText">b</span>. Once
+		the interpreter moves past these definitions, it encounters our function
+		call, <span class="monoText">a()</span>. The function
+		<span class="monoText">a</span> is invoked, so the interpreter creates an
+		execution context for that function&mdash;it reenters a creation phase. It
+		moves past the function call <span class="monoText">b()</span>, allocates
+		memory for <span class="monoText">var c</span>, and assigns it the value
+		<span class="monoText">undefined</span>. The interpreter then pushes this
+		new execution context to the call stack, and begins executing.
+	</p>
+	<p>
+		During the function <span class="monoText">a</span>'s execution, the
+		interpreter encounters the function call <span class="monoText">b()</span>.
+		The interpreter then reenters another creation phase, creating the execution
+		context for the function <span class="monoText">b</span>. While parsing
+		through function <span class="monoText">b</span> It sees
+		<span class="monoText">var d</span>. So, it saves it to memory (local to the
+		function <span class="monoText">b</span>), and assigns it the value
+		<span class="monoText">undefined</span>. The interpreter then pushes the
+		function <span class="monoText">b</span>'s execution context to the stack,
+		and begins executing <span class="monoText">b</span>. The function
+		<span class="monoText">b</span> does not output anything (it merely declares
+		a variable <span class="monoText">d</span>), but the function finishes
+		executing <span class="monoText">b</span> nevertheless. Once the function
+		<span class="monoText">b</span> has finished executing, its execution
+		context is <span class="italicsText">popped off</span> the call stack, and
+		the interpreter continues executing function
+		<span class="monoText">a</span>.
+	</p>
+	<p>
+		The function <span class="monoText">a</span> does not output anything, it
+		merely declares a variable called <span class="monoText">c</span>. The
+		interpreter finishes executing <span class="monoText">a</span>.
+	</p>
+	<p>
+		Now that all of the functions have finished executing, the interpreter has
+		finished executing the global execution context, and it is popped off the
+		call the stack.
+	</p>
+</section>
+
+<section id="variable_environments">
+	<h3>Variable Environments</h3>
+	<p>
+		The the term
+		<span class="term">variable environment</span> refers to
+		<span class="italicsText">where</span> a variable lives. The variable
+		environment determines how variables relate to each other in memory. Suppose
+		we had the following code:
+	</p>
+
+	<pre class="language-javascript"><code>
+				function b() {
+					var X;
+					console.log(X);
+				}
+				function a() {
+					var X = 2;
+					console.log(X);
+					b();
+				}
+				var X = 1;
+				console.log(X);
+				a();
+			</code></pre>
+
+	<p>
+		In the code above, we declared a variable
+		<span class="monoText">X</span> inside the function
+		<span class="monoText">b</span> without assigning it any value, then
+		declared another variable, with the same name,
+		<span class="monoText">X</span>, outside the function
+		<span class="monoText">b</span>, but assigned it the value
+		<span class="monoText">1</span>. Furthermore, we called the function
+		<span class="monoText">a</span>, and inside the function
+		<span class="monoText">a</span>, we call the function
+		<span class="monoText">b</span>. What's going to happen here? More
+		specifically, what is the value of the variable
+		<span class="monoText">X</span> at any point in time?
+	</p>
+	<p>It all comes down to execution contexts.</p>
+	<p>
+		First, the interpreter begins creating a global execution context. The
+		interpreter runs through the code: (1) It sees the function
+		<span class="monoText">b</span>, and assigns it to memory. (2) It sees the
+		function <span class="monoText">a</span>, and assigns it to memory. (3) It
+		sees the variable <span class="monoText">var x</span>, and assigns it to
+		memory with the value <span class="monoText">undefined</span>. (4) It sees a
+		function call, <span class="monoText">a();</span>, but it moves past this
+		(this is the creation phase). Thus, the interpreter finishes creating the
+		global execution context, and pushes it into the call stack.
+	</p>
+	<p>
+		Once the global execution context has been created, the interpreter begins
+		executing the code. The first few lines are simply function definitions, so
+		the interpreter moves past these lines. It then sees that we've assigned the
+		value <span class="monoText">1</span> to the variable
+		<span class="monoText">a</span>, so it executes the line:
+		<span class="monoText">var a</span> has the value
+		<span class="monoText">1</span>. The interpreter moves on to the next line,
+		and sees a function call <span class="monoText">a()</span>. So, it begins
+		creating an execution context for the function
+		<span class="monoText">a</span>.
+	</p>
+	<p>
+		During the function <span class="monoText">a</span>'s creation phase, the
+		interpreter encounters a variable called <span class="monoText">X</span>.
+		The interpreter saves <span class="monoText">X</span> to memory, with the
+		value <span class="monoText">undefined</span>. More specifically, the
+		<span class="term">variable environment</span> for the function
+		<span class="monoText">a</span>'s execution context. This is a crucial point
+		to remember: Every execution context has its own variable environment. The
+		interpreter continues, sees a function call,
+		<span class="monoText">b()</span>, but does not execute (we're still in the
+		creation phase). This concludes the creation phase, and the interpreter
+		places <span class="monoText">a</span> to the call stack, to be executed.
+	</p>
+	<p>
+		Once the creation phase has finished, the interpreter begins executing
+		function <span class="monoText">a</span>. It sees the statement
+		<span class="monoText">var X = 2</span>, so it assigns to
+		<span class="monoText">X</span> the value <span class="monoText">2</span>.
+		Then it sees a function call, <span class="monoText">b()</span>, and begins
+		another creation phase.
+	</p>
+	<p>
+		During <span class="monoText">b</span>'s creation phase, the interpreter
+		sees <span class="monoText">var X</span>, and saves it to memory, with the
+		value <span class="monoText">undefined</span>. And again, saved as
+		<span class="monoText">X</span> specific to
+		<span class="monoText">b</span>'s variable environment.
+	</p>
+	<p>
+		The variable environment determines
+		<span class="term">scope</span>&mdash;where exactly can JavaScript see the
+		variable. Each of the <span class="monoText">X</span>s above are unique to
+		the functions. Every time you call a function, you get your own execution
+		context. Thus, even though the <span class="monoText">X</span>s are declared
+		three separate times, they are all distinct.
+	</p>
+	<p>These concepts are made apparent with the output from the code above:</p>
+
+	<pre class="language-javascript"><code>
+				1
+				2
+				undefined
+			</code></pre>
+
+	<p>
+		We see the value <span class="monoText">1</span> first because the
+		interpreter executed the function
+		<span class="monoText">console.log(X)</span>, and the value of
+		<span class="monoText">X</span> is the value of
+		<span class="monoText">X</span> in the global execution context's variable
+		environment, which is <span class="monoText">1</span>. Then we see the value
+		<span class="monoText">2</span>, because the interpreter executed function
+		<span class="monoText">a</span> next. Function
+		<span class="monoText">a</span> outputs to the console its value of the
+		variable <span class="monoText">X</span>, which is 2. Then we see
+		<span class="monoText">undefined</span>, because within function
+		<span class="monoText">a</span>, function <span class="monoText">b</span> is
+		executed. Function <span class="monoText">b</span> outputs to the console
+		its value of <span class="monoText">X</span>, which is
+		<span class="monoText">undefined</span>.
+	</p>
+</section>
+
+<section id="scope_chain">
+	<h3>The Scope Chain</h3>
+	<p>Suppose we had the following code:</p>
+
+	<pre class="language-javascript"><code>
+				function b() {
+					console.log(x);
+				};
+				function a() {
+					var x = 2;
+					b();
+				};
+				var x = 1;
+				a();
+			</code></pre>
+
+	<p>
+		The code is similar to the previous example, accept that in function
+		<span class="monoText">b</span>, we're not declaring the variable
+		<span class="monoText">x</span>. Instead, we're only going to output it to
+		the console. What do we think is going to happen in the console?
+	</p>
+	<p>Well, the console outputs:</p>
+
+	<pre class="language-javascript"><code>
+				1
+			</code></pre>
+
+	<p>
+		Our code is outputting 1 because we didn't initialize any variable called
+		<span class="monoText">x</span> in the function
+		<span class="monoText">b</span>. When we do something like this (using a
+		variable that we haven't declared inside the function itself), JavaScript
+		doesn't just stop and say, "I don't know what to do, you didn't initialize
+		this variable." Recall that when JavaScript's interpreter creates an
+		execution context, it does a few extra things: it creates that execution
+		context as an object, a variable called <span class="monoText">this</span>,
+		and an <span class="term">outer environment</span>.
+	</p>
+	<p>
+		In JavaScript, every execution context has a
+		<span class="term">reference</span> to its outer environment. Here, the
+		function <span class="monoText">b</span>'s outer environment is its global
+		execution context. The global execution context is also function
+		<span class="monoText">a</span>'s outer environment. What kind of outer
+		environment are we referring to?
+	</p>
+	<p>
+		We're referring to the
+		<span class="term">lexical environment</span>. Function
+		<span class="monoText">b</span> sits on top of the global environment. In
+		other words, it is not inside function <span class="monoText">a</span>. It
+		is inside the the global execution context, sitting at the same level as the
+		line <span class="monoText">var x = 1</span>.
+	</p>
+	<p>
+		If we use a variable inside a funtion but do not declare it beforehand
+		(inside the function), JavaScript will look for the variable in its outer
+		environment.
+	</p>
+</section>
+
+<section id="kinds_of_objects">
+	<h4>Kinds of Objects</h4>
+	<p>
+		As mentioned in the section on
+		<a href="#values">primitive types</a>, objects are a
+		<span class="italicsText">type</span> in JavaScript. Arrays are a special
+		kind of object, where the "keys" are the indices of the values. Another kind
+		of object is the <span class="term">Set object</span>. The
+		<span class="italicsText">Set object</span> is a set of values.
+		<span class="italicsText"
+			><a href="#set_object">See supra Set Objects</a></span
+		>. Yet another kind of object is the <span class="term">Map object</span>.
+		The <span class="italicsText">Map object</span> is an object that maps keys
+		to values.
+	</p>
+</section>
+
+<section id="difference_objects_and_arrays">
+	<h4>Differences Between Objects and Arrays</h4>
+	<p>
+		Compared to <span class="italicsText">object literals</span>,
+		<span class="italicsText">arrays</span> are strict and sharp---they order
+		data strictly by index. <span class="italicsText">Objects</span>, on the
+		other hand, are more fluid-like. As a data structure, they morph into
+		whatever we put into the object.
+	</p>
+</section>
+
+<section id="creating_an_object">
+	<h4>Assigning an Object to a Variable</h4>
+	<p>
+		Just like an array, when an object is assigned to a variable, the variable
+		does not store the object itself---it stores the object's
+		<a href="#arrays_reference_type">reference</a>. There are many different
+		kinds of objects. For this section, we focus on how to create
+		<span class="term">object literals</span>. The
+		<span class="italicsText">object literal</span> takes the following form:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					const <span class="greyText italicsText">object-name</span> = {
+						<span class="greyText italicsText">key</span>: <span class="greyText italicsText">value</span>,
+						<span class="greyText italicsText">key</span>: <span class="greyText italicsText">value</span>,
+						<span class="greyText italicsText">key</span>: <span class="greyText italicsText">value</span>,
+					}
+				</code>
+			</pre>
+	<p>
+		When an object literal is created, the keys are automatically converted into
+		strings (except for symbols). Just like arrays, when a variable is assigned
+		an object, the variable does not actually store the object; it stores the
+		object's reference. Thus, if you assign
+		<span class="italicsText">object $w$</span> to a variable $x$, then also
+		assign $x$ to another variable $y$, you can make changes to
+		<span class="italicsText">object $w$</span> with both variables $x$ and $y$.
+	</p>
+	<p>This is because both variables are pointing to the same object.</p>
+</section>
+
+<section id="accessing_an_objects_data">
+	<h3>Accessing an Object Literal's Data</h3>
+	<p>
+		There are two ways to access an object literal's data:
+		<code class="language-javascript"
+			>object.key // This is the general way</code
+		>
+		<code class="language-javascript"
+			>object[key] // This is good for keys with a number as a name</code
+		>
+		So, for example:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					const vectors_event1 = {
+						velocity: 1.14,
+						acceleration: 1.09,
+						momentum: 2.33,
+						weight: 13.4
+					};
+					// Suppose we want to access the value for acceleration:
+					vectors_event1.acceleration; // This returns 1.09, the value we assigned.
+
+					// Now suppose that we have an object with numbers as their keys:
+					const numbers = {
+						100: 'one hundred',
+						16: 'sixteen'
+					};
+					// If we try to use the general way of accessing the value, JavaScript will give us an error:
+					numbers.100; // This returns an error
+
+					// Thus, we must use bracket notation for these keys:
+					numbers[100]; // This works
+				</code>
+			</pre>
+</section>
+
+<section id="modifying_objects">
+	<h3>Modifying an Object Literal's Properties</h3>
+	<p class="subheading-1">Changing Properties</p>
+
+	<p>
+		Because a variable assigned with an object only stores the object's
+		reference, we can change an object's properties by simply assigning new
+		values to the properties:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					const vectors_event2 = {
+						velocity: 1.26,
+						acceleration: 1.05,
+						momentum: 2.43,
+						weight: 13.9
+					};
+					// Suppose we want to update the object's velocity:
+					vectors_event2.velocity = 1.47;
+					// Update the acceleration:
+					vectors_event2.acceleration = 1.11;
+				</code>
+			</pre>
+
+	<p>To add a property, we write the following:</p>
+	<pre class="language-javascript">
+				<code>
+					const vectors_event2 = {
+						velocity: 1.26,
+						acceleration: 1.05,
+						momentum: 2.43,
+						weight: 13.9
+					};
+					// Suppose we want to add a new vector, whether the temperature is increasing:
+					vectors_event2.temperature_increasing = true;
+					/*
+					Now the object <span class="italicsText">vectors_event2</span> looks like the following:
+						vectors_event2 = {
+							velocity: 1.26,
+							acceleration: 1.05,
+							momentum: 2.43,
+							weight: 13.9
+							temperature_increasing: true;
+						}
+					*/
+				</code>
+			</pre>
+</section>
+
+<section id="nesting_arrays_and_objects">
+	<h3>Nesting Arrays and Objects</h3>
+	<p>
+		As with many other kinds of data structures, objects are receptive to
+		nesting: we can place arrays inside objects, objects inside objects, arrays
+		inside arrays inside objects inside objects,
+		<span class="italicsText">ad nauseam</span>.
+	</p>
+	<pre class="language-javascript">
+				<code>
+					// Returning to our previous table:
+					const experiment_results = {
+						event1 = {
+							velocity: 1.14,
+							acceleration: 1.09,
+							momentum: 13.4
+						},
+						event2 = {
+							velocity: 1.26,
+							acceleration: 1.05,
+							momentum: 2.43,
+							weight: 13.9
+						}
+					};
+				</code>
+			</pre>
+	<p>
+		A common data structure is an
+		<span class="term">array of objects</span>, and that is likely what would be
+		best for the data above (since "event" suggests a chronological order).
+	</p>
+	<pre class="language-javascript">
+				<code>
+					const experiment_results = [ // Initialize an array
+						event1 = { // This is the first element of the array
+							velocity: 1.14,
+							acceleration: 1.09,
+							momentum: 13.4
+						},
+						event2 = { // This is the second element of the array
+							velocity: 1.26,
+							acceleration: 1.05,
+							momentum: 2.43,
+							weight: 13.9
+						}
+					];
+				</code>
+			</pre>
+</section>
+
+<section id="object_array_equality">
+	<h3>Object/Array Equality</h3>
+
+	<p>
+		Recall that the
+		<span class="italicsText">strict equality operator</span>
+		<span class="monoText">===</span> tests whether two values are strictly
+		equal in both value and type.
+	</p>
+	<p>
+		Because of the way objects and arrays are stored (i.e., only their
+		references are stored), neophytes are often surprised when two arrays or
+		objects, consisting of entirely the same values, value types, and keys, are
+		not strictly equal.
+	</p>
+	<pre class="language-javascript">
+				<code>
+					let primes = [1, 3, 5, 7];
+					let morePrimes = [1, 3, 5, 7];
+					primes === morePrimes // This returns false
+					primes == morePrimes // Still false
+
+					/*
+					This is happening because the arrays <span class="italicsText">primes</span> and <span class="italicsText">morePrimes</span> have different references. The strict equality operator is not checking the actual arrays, it's only checking the references, and those references are different.
+					*/
+
+					// To check whether the arrays are strictly equal, we must ensure that both <span class="italicsText">primes</span> and <span class="italicsText">morePrimes</span> are storing the same reference:
+					let morePrimes2 = primes;
+					morePrimes2 === primes; // This returns true
+					morePrimes2 == primes; // This returns true
+
+					// From the above, if we make changes to morePrimes2, we change the array assigned to primes, since both variables are pointing to the same array:
+					morePrimes2.push(11);
+					/*
+					Now the array looks like: 
+					primes = [1, 3, 5, 7, 11]
+					*/
+				</code>
+			</pre>
+</section>
+{% endblock %}

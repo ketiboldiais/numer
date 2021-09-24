@@ -1,0 +1,84 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="substitution_model">
+	<p>
+		<span class="topic"
+			>How does the interpreter evaluate compound procedures?</span
+		>
+		The interpreter evaluates compound procedures the same way it evaluates
+		primitive procedures. Recall that with primitive procedures, the interpreter
+		evaluates the elements of the combination, then applies the procedure (the
+		value of the combination's operator) to the arguments (the values of the
+		combination's operands). The same process applies to compound procedures:
+		The interpreter evaluates the <span class="monoText">⟨body⟩</span> with each
+		<span class="monoText">⟨formal parameter⟩</span> replaced by the argument
+		passed.
+	</p>
+	<p>Consider, for example, this compound procedure:</p>
+	<pre class="language-scheme"><code>
+		(define (square x)
+			(* x x))
+		(define (sum-of-squares x y) 
+			(+ (square x) (square y)))
+		(define (func n) 
+			(sum-of-squares (+ n 1) (* n 2)))
+		
+		(func 3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		52
+	</code></pre>
+	<p>
+		Like primitive procedures, we can see how the compound procedure
+		<span class="monoText">(func 3)</span> with the
+		<span class="italicsText">substitution model</span>:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(f 3)
+			(sum-of-squares (+ n 1) (+ n 2))
+			(sum-of-squares (+ 3 1) (* 3 2))
+			(+ (square 4) (square 6))
+			(+ (* 4 4) (* 6 6))
+			(+ (16) (36))
+			52
+		</code></pre>
+	</figure>
+	<p>
+		Thus, the single statement <span class="monoText">(func 3)</span> represents
+		this entire expression tree:
+	</p>
+	<figure>
+		<img src="images/func_3.svg" alt="func 3" loading="lazy" class="eighty-p" />
+	</figure>
+	<p>
+		Putting it all together, the substitution model for evaluating functions is
+		the following:
+	</p>
+	<figure class="math-display">
+		<ol>
+			<li>
+				First reduce the operands to their respective values (the arguments
+				passed in).
+			</li>
+			<li>
+				Second, replace the function call with the body of the function where
+				every occurence of a parameter is replaced by its corresponding
+				argument.
+			</li>
+		</ol>
+	</figure>
+	<p>One more example for clarity:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(define (summate a b)
+				(+ a b))
+			
+			(summate (+ 1 3) 5)
+			(summate 4 5)
+			(+ a b)
+			(+ 4 5)
+			9
+		</code></pre>
+	</figure>
+</section>
+{% endblock %}

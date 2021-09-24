@@ -1,0 +1,440 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="functions">
+	<h4>Functions in Swift</h4>
+	<p>
+		Functions are what allow us to reuse code. To write a function in Swift, we
+		use the following syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>
+				func ${\textit{function}_{\textit{name}}}$ (${p_0: t_0 \ldots p_n:
+				t_n}$) -> ${r_\textit{type}}$ {
+			</li>
+			<ul>
+				<li>${\textit{statement}_0}$</li>
+				<li>${\vdots}$</li>
+				<li>${\textit{statement}_n}$</li>
+				<li>return ${r_\textit{value}}$</li>
+			</ul>
+			<li>}</li>
+		</ul>
+		<ul class="def">
+			<li class="where">${m_n}$ is the function's name,</li>
+			<li>${p_0 \ldots p_n}$ are the parameter names,</li>
+			<li>${t_0 \ldots t_n}$ are the parameter types,</li>
+			<li>${r_\textit{type}}$ is the return type, and</li>
+			<li>${r_\textit{value}}$ is the return value</li>
+		</ul>
+	</figure>
+
+	<p>Here is a simple function:</p>
+
+	<pre class="language-swift"><code>
+		func greet() {
+			print("Hello, world!")
+		}
+		greet()
+	</code></pre>
+	<pre class="language-bash"><code>
+		Hello, world!
+	</code></pre>
+
+	<p>
+		The line <span class="monoText">greet()</span> is a
+		<span class="term">call</span> to the function. As an aside, we might ask,
+		what is the difference between a method and a function? To begin, all
+		methods are functions, but not all functions are methods. Functions are
+		themselves a data type, but when we include them inside a
+		<span class="monoText">struct</span> or a
+		<span class="monoText">class</span>, they are called
+		<span class="term">methods</span>. In other words, a
+		<span class="italicsText">method</span> is a function that belongs to
+		another data type. Functions that do not belong to another data type are
+		called <span class="term">free functions</span> (but we generally just call
+		them functions).
+	</p>
+
+	<p>
+		The function above is called a
+		<span class="term">value function</span> &mdash; it is, in fact, just a
+		value. In this case, the value is simply
+		<span class="monoText">print("Hello world")</span>. Usually, however, we
+		want a function to do something with data. To do so, we must use a
+		<span class="term">parameterized function</span>. A parameterized function
+		is a function that takes arguments. To indicate a parameterized function, we
+		must include <span class="term">formal parameters</span> in the function's
+		head:
+	</p>
+
+	<pre class="language-swift"><code>
+		func isEven(num: Int) -> Bool {
+			if num % 2 == 0 {
+				return true
+			} else {
+				return false
+			}
+		}
+
+		// "num: 4" and "num: 15" indicates which parameter the argument is passed to 
+		// These are called "argument labels"
+		var fourIsEven = isEven(num: 4)
+		var fifteenIsEven = isEven(num: 15)
+		
+		print(fourIsEven)
+		print(fifteenIsEven)
+		print()
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+		false
+	</code></pre>
+
+	<p>
+		There are several things to note with the function above. First, when we
+		parameterize the function, we must name the formal parameter, and indicate
+		the formal parameter's type. Second, if a function outputs a value with a
+		data type, then the function has a <span class="term">return type</span>.
+		That return type must be explicit. Third, if we call a parameterized
+		function, we must indicate which parameter the
+		<span class="term">argument</span> is being passed to with an
+		<span class="term">argument label</span>, followed by the argument. Finally,
+		we can confirm that the function is a compound type by asking for its type:
+	</p>
+
+	<pre class="language-swift"><code>
+		func isEven(num: Int) -> Bool {
+			if num % 2 == 0 {
+				return true
+			} else {
+				return false
+			}
+		}
+		
+		print(type(of: isEven(num:)))
+	</code></pre>
+	<pre class="language-bash"><code>
+		(Int) -> Bool
+	</code></pre>
+
+	<p>
+		To include multiple parameters in a function, we separate them by commas:
+	</p>
+
+	<pre class="language-swift"><code>
+		func power(base: Int, exponent: Int) -> Int {
+			var result = base
+			for _ in 1..&lt;exponent {
+				result *= base
+			}
+			return result
+		}
+		
+		var num = power(base: 2, exponent: 3)
+		print(num)
+	</code></pre>
+	<pre class="language-bash"><code>
+		8
+	</code></pre>
+
+	<p>
+		A particularly important thing to note is that the arguments passed are
+		<span class="underlineText">constants</span> in the function. This means we
+		cannot mutate those arguments. For example, the following returns an error:
+	</p>
+
+	<pre class="language-swift"><code>
+		func power(base: Int, exponent: Int) -> Int {
+			for _ in 1..&lt;exponent {
+				base *= base
+			}
+			return base
+		}
+		
+		var num = power(base: 2, exponent: 3)
+		print(num)
+	</code></pre>
+	<pre class="language-bash"><code>
+		error: left side of mutating operator isn't mutable: 'base' is a 'let' constant
+                base *= base
+								~~~~ ^
+	</code></pre>
+
+	<p>
+		Again, this is because the arguments passed into the function are constants
+		(true to functional programming, Swift eschews the notion of mutating
+		function arguments). Using the correct implementation, when we write
+		<span class="monoText">power(base: 2, exponent: 3)</span>, the following
+		evaluation occurs:
+	</p>
+
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			// Expression
+			power(base: 2, exponent: 3)
+
+			// Call
+			func power(base: 2, exponent: 3)
+
+			// Evaluate 
+			{
+				let base = 2;
+				let exponent = 3;
+				var result = base
+				for _ in 1..&lt;exponent { result *= base }
+				return result
+			}
+		</code></pre>
+	</figure>
+
+	<p>
+		In some situations, we want to be able to call the function without having
+		to include the argument label. For example, in languages like Python, we
+		simply pass the arguments into the function. To tell Swift we do not need
+		the argument labels, we use an underscore. For example, here is a function
+		that greets the user a particular way depending on the time of day. With
+		this function, we don't really need an argument label, because the only
+		argument is <span class="monoText">userName</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		import Foundation
+		func greet(_ userName: String) {
+			let hour = Calendar.current.component(.hour, from: Date())
+			let NEW_DAY = 0
+			let NOON = 12
+			let SUNSET = 18
+			let MIDNIGHT = 24
+			
+			var greetingText = "Hello" // Default greeting text
+			switch hour {
+				case NEW_DAY..&lt;NOON:
+						greetingText = "Good Morning"
+				case NOON..&lt;SUNSET:
+						greetingText = "Good Afternoon"
+				case SUNSET..&lt;MIDNIGHT:
+						greetingText = "Good Evening"
+				default:
+						_ = "Hello"
+			}
+			print("\(greetingText) \(userName)")
+		}
+		greet("Fortran")
+	</code></pre>
+
+	<p>
+		It's generally best practice to include argument labels whenever possible
+		for the sake of clarity. In some situations, we might have an argument label
+		that differs from the parameter name. For example, maybe in our
+		<span class="monoText">power</span> function, we do not want to have to
+		constantly write out <span class="monoText">exponent</span> and
+		<span class="monoText">base</span>. One way around this is to append the
+		<span class="monoText">for</span> symbol:
+	</p>
+
+	<pre class="language-swift"><code>
+		func power(for a: Int, b: Int) -> Int {
+			var result = a
+			for _ in 1..&lt;b {
+				result *= a
+			}
+			return result
+		}
+		
+		var num = power(for: 2, for: 3)
+		print(num)
+	</code></pre>
+	<pre class="language-bash"><code>
+		8
+	</code></pre>
+
+	<p>
+		<span class="topic">Return Types.</span> As we saw above, if a function
+		outputs a value, then we must explicitly state the function's return type.
+		We simply do so with the <span class="monoText">-></span> operator. That
+		return type must be the type of the value outputted. The
+		<span class="monoText">return</span> statement is optional if the function's
+		body consists of just one line. We can simply omit it. Otherwise (if the
+		function's body consists of more than one line), we must include a
+		<span class="monoText">return</span> statement.
+	</p>
+
+	<p>
+		The <span class="monoText">return</span> statement is a good point to
+		revisit optionals. Some functions will take or return optionals. As we saw
+		in the sections on optionals, we can use these optionals with an
+		<span class="monoText">if-let</span> statement. Another way is to use a
+		<span class="monoText">guard-let</span> statement:
+	</p>
+
+	<pre class="language-swift"><code>
+		func isHot(temperature: Int?) {
+			guard let temp = temperature else {return}
+			if temp < 80 {
+				print("It's nice out")
+			} else {
+				print("It's a hot one")
+			}
+		}
+		isHot(temperature: 100)
+	</code></pre>
+	<pre class="language-bash"><code>
+		It's a hot one
+	</code></pre>
+
+	<p>
+		In the code above, the argument <span class="monoText">temperature</span> is
+		an optional. If <span class="monoText">temperature</span> has a some-value,
+		then we continue to the next line. If, however, the
+		<span class="monoText">optional</span> does not have a some-value (i.e.,
+		<span class="monoText">nil</span>), then we immediately exit (the
+		<span class="monoText">return</span> inside the braces).
+	</p>
+
+	<p>
+		We can have functions return numerous different kinds of types &mdash;
+		literals, arrays, tuples, sets, and even other functions. For those familiar
+		with functional languages like ML, we can use a tuple to note the return
+		type for a function outputing a compound value:
+	</p>
+
+	<pre class="language-swift"><code>
+		func examStats(scores: [Int]) -> (min: Int, max: Int, sum: Int) {
+			var min = scores[0]
+			var max = scores[0]
+			var sum = 0
+
+			for score in scores {
+				if score > max {
+					max = score
+				} else if score < min {
+					min = score
+				}
+				score += score
+			}
+			return (min, max sum)
+		}
+	</code></pre>
+
+	<p>The general syntax:</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>
+				func ${f}$(${p_0, \ldots, p_n}$) -> (${r_0}$: ${t_0}$, ${\ldots,}$
+				${r_n}$: ${t_n}$) {
+			</li>
+			<ul>
+				<li>${statements}$</li>
+				<li>${\vdots}$</li>
+				<li>return (${r_0}$: ${t_0}$, ${\ldots}$ ${r_n}$: ${t_n}$)</li>
+			</ul>
+			<li>}</li>
+		</ul>
+		<ul class="def">
+			<li class="where">${f}$ is the function's name,</li>
+			<li>${p_0 \ldots p_n}$ are the function parameters,</li>
+			<li>${r_0 \ldots r_n}$ is the name of an element in the tuple, and</li>
+			<li>${t_0 \ldots t_n}$ are the corresponding types to the name.</li>
+		</ul>
+	</figure>
+
+	<p>
+		We can, of course, nest functions in Swift. Nested functions have access to
+		variables declared in the outer function:
+	</p>
+
+	<pre class="language-swift"><code>
+		func circleArea(radius: Float) -> Float {
+			func radiusSquared() -> Float {
+					return radius * radius
+			}
+			return Float.pi * radiusSquared()
+		}
+		
+		print(circleArea(radius: 5.0))
+	</code></pre>
+	<pre class="language-bash"><code>
+		78.53981
+	</code></pre>
+
+	<p>
+		In the code above, the nested function
+		<span class="monoText">radiusSquared()</span> has access to the variable
+		<span class="monoText">radius</span>, which is inside the outer function
+		<span class="monoText">circleArea()</span>. Additionally, functions in Swift
+		are a <span class="term">first-class</span> type. This means that a function
+		can take a function as an argument, as well as returning a function as
+		output.
+	</p>
+
+	<p>
+		Functions in Swift are an example of a
+		<span class="term">closure</span> &mdash; blocks of code that can be called
+		at a later point in time. As is the case with many other languages,
+		variables and functions available in the environment the closure was created
+		in are available to the block of code inside the closure, even if the
+		closure is called on in an environment outside the environment it was
+		created in.
+	</p>
+</section>
+
+<section id="functions_as_arguments">
+	<p>
+		<span class="topic">Functions as Arguments.</span> We mentioned previously
+		that functions are just another data type. This means we can pass a function
+		as an argument into another function. A function that takes other functions
+		as arguments is called a <span class="term">higher-order function</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		func add(n:Int,m:Int) -> Int {
+			n + m
+		}
+		func minus(n:Int,m:Int) -> Int {
+			n - m
+		}
+		func printr(_ f:(Int,Int) -> Int, _ a:Int, _ b:Int) {
+			let r = f(a,b)
+			print(r)
+		}
+		printr(add,5,2)
+		printr(minus,6,3)
+	</code></pre>
+
+	<p>
+		Here, we have a higher order function named
+		<span class="monoText">printr()</span>.
+		<span class="monoText">printr()</span> has three parameters: (1) a function
+		that takes two <span class="monoText">Int</span> arguments and returns an
+		<span class="monoText">Int</span>; (2) an
+		<span class="monoText">Int</span> argument; and (3) an
+		<span class="monoText">Int</span> argument. Then, inside
+		<span class="monoText">printr()</span>, we call the function.
+	</p>
+
+	<p>
+		One improvement we can make to the code above is to create a type alias for
+		<span class="monoText">(Int,Int) -> Int</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		typealias IntOp = (Int,Int) -> Int
+		func add(n:Int,m:Int) -> Int {
+			n + m
+		}
+		func minus(n:Int,m:Int) -> Int {
+			n - m
+		}
+		func printr(_ f:IntOp, _ a:Int, _ b:Int) {
+			let r = f(a,b)
+			print(r)
+		}
+		printr(add,1,2)
+		printr(minus,9,3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		3
+		6
+	</code></pre>
+</section>
+{% endblock %}

@@ -1,0 +1,363 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="variables_and_types">
+	<p>
+		<span class="topic">Variables &amp; Types.</span> In a computer, data is
+		stored inside a memory location. To use that data, we must reference that
+		particular location. In very low-level languages, this is in fact the case.
+		Now, these memory locations are fairly cryptic and difficult to read (e.g.,
+		in hex). Instead of referencing these memory locations, we can associate a
+		<span class="italicsText">name</span> to that particular location, and
+		reference that name instead. This is called a
+		<span class="term">binding</span>.
+	</p>
+
+	<p>
+		A <span class="term">variable</span> is a programming construct that allows
+		us to associate a <span class="italicsText">value</span> with a
+		<span class="italicsText">name</span>. In other words, it is an abstraction
+		for the process described previously. Examples of variables in
+		<span class="monoText">C++</span>:
+	</p>
+
+	<pre class="language-cpp"><code>
+		int x; // value is undefined
+		char grade = 'A';
+		double pi = 3.14;
+	</code></pre>
+
+	<p>
+		The value of <span class="monoText">x</span> above is
+		<span class="monoText">undefined</span>, which is itself a value. It will
+		display to the console some value, but it could be any value. All of the
+		types above are <span class="term">primitive types</span> in
+		<span class="monoText">C++</span>. There are several others:
+	</p>
+
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Data Type</th>
+				<th>Size</th>
+				<th>Represents</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>char</td>
+					<td>${1}$ byte, ${\geq 8}$ bits</td>
+					<td rowspan="4">character</td>
+				</tr>
+				<tr>
+					<td>char16_t</td>
+					<td>${\geq 16}$ bits</td>
+				</tr>
+				<tr>
+					<td>char32_t</td>
+					<td>${\geq 32}$ bits</td>
+				</tr>
+				<tr>
+					<td>wchar_t</td>
+					<td>largest available character set</td>
+				</tr>
+				<tr>
+					<td>short</td>
+					<td>${\geq 16}$ bits</td>
+					<td rowspan="5">signed integer values</td>
+				</tr>
+				<tr>
+					<td>short</td>
+					<td>${\geq 16}$ bits</td>
+				</tr>
+				<tr>
+					<td>int</td>
+					<td>${\geq 16}$ bits</td>
+				</tr>
+				<tr>
+					<td>long</td>
+					<td>${\geq 32}$ bits</td>
+				</tr>
+				<tr>
+					<td>long long</td>
+					<td>${\geq 64}$ bits</td>
+				</tr>
+				<tr>
+					<td>unsigned short</td>
+					<td>${\geq 16}$ bits</td>
+					<td rowspan="4">unsigned integer values</td>
+				</tr>
+				<tr>
+					<td>unsigned</td>
+					<td>${\geq 16}$ bits</td>
+				</tr>
+				<tr>
+					<td>unsigned long</td>
+					<td>${\geq 32}$ bits</td>
+				</tr>
+				<tr>
+					<td>unsigned long long</td>
+					<td>${\geq 64}$ bits</td>
+				</tr>
+				<tr>
+					<td>float</td>
+					<td>${\approx}$ ${7}$ decimal places</td>
+					<td rowspan="3">non-integer reals</td>
+				</tr>
+				<tr>
+					<td>double</td>
+					<td>${\approx}$ ${15}$ decimal places</td>
+				</tr>
+				<tr>
+					<td>long double</td>
+					<td>${\approx}$ ${19}$ decimal places</td>
+				</tr>
+				<tr>
+					<td>bool</td>
+					<td>usually ${8}$ bits</td>
+					<td>true; false</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<p>
+		What data type we use depends on the program we're writing and whether we're
+		particularly concerned about memory use. If we attempt to assign too large
+		of a value into a variable type that does not accomodate for that value's
+		size, we will get an <span class="term">overflow</span>.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">sizeof.</span></span> The
+		<span class="monoText">sizeof()</span> operator returns the size, in bytes,
+		of a type or variable. The operator is often used to determine size of
+		arrays, structures, and objects. We address it here because it is
+		particularly useful for variables, and will revisit it when we discuss
+		arrays.
+	</p>
+
+	<p>
+		<span class="monoText">C++</span> provides several ways to declare and
+		initialize variables:
+	</p>
+
+	<pre class="language-cpp"><code>
+		int foo; // declaration
+		int baz = 17; // initialization
+		int quo (43); // constructor initialization 
+		int xyz {13}; // C++ list initialization
+	</code></pre>
+
+	<p>
+		Note that if we declare a variable but do not initialize it, that variable
+		will have some <span class="term">garbage value</span> stored, and we have
+		no control over what that value is. As such, it is crucial that we
+		initialize variables once declared.
+	</p>
+
+	<p>
+		<span class="topic">Global v. Local Variables.</span> Variables declared
+		inside the <span class="monoText">main()</span> function are said to be
+		<span class="term">local variables</span>:
+	</p>
+
+	<pre class="language-cpp"><code>
+		int zob {1};
+
+		int main() {
+			int fen {25};
+			int jib {12};
+		}
+	</code></pre>
+
+	<p>
+		In the code above, <span class="monoText">fen</span> and
+		<span class="monoText">jib</span> are local variables. We say they are local
+		variables because their scope (visibility) is within the
+		<span class="monoText">main()</span> function. Put differently, the
+		variables <span class="monoText">fen</span> and
+		<span class="monoText">gib</span> only exist inside the
+		<span class="monoText">main()</span> function. Outside of the
+		<span class="monoText">main()</span> function, they effectively do not
+		exist.
+	</p>
+
+	<p>
+		In contrast, the variable <span class="monoText">zob</span> is a
+		<span class="term">global variable</span>. This means they are visible to
+		everything in the program. Which in turn means they can be changed from
+		anywhere and by anything in the program.
+	</p>
+
+	<p>
+		<span class="topic">Naming Rules.</span>
+		<span class="monoText">C++</span> has a few naming rules we must follow: (1)
+		Variables can contain letters, numbers, and underscores; (2) Variables must
+		begin with a letter or underscore; (3) Cannot use reserved symbols; and (4)
+		cannot <span class="italicsText">redeclare</span> a name in the same scope.
+	</p>
+
+	<p>
+		<span class="topic">Enapsulation.</span> The idea of
+		<span class="term">eancapsulation</span> is that user defined types have two
+		layers: (1) an <span class="italicsText">interface</span> and (2) an
+		<span class="italicsText">implementation</span>. The interface is how the
+		world accesses the type, and the implementation is how the type operates or
+		works. These two layers are defined in separate files. For example, suppose
+		we have a user-defined type called <span class="monoText">cube</span>. The
+		interface is kept in a file called <span class="monoText">cube.h</span> (a
+		<span class="italicsText">header file</span>), and the implementation in a
+		file called <span class="monoText">cube.cpp</span> (a
+		<span class="italicsText">code file</span>).
+	</p>
+
+	<p>Inside <span class="monoText">cube.h</span>, we have the following:</p>
+
+	<pre class="language-cpp"><code>
+		// The Cube.h file
+
+		#pragma once
+
+		class Cube {
+			public: 
+			// These are the functions we can use with this type
+				double getVolume();
+				double getSurfaceArea();
+				double getSize();
+
+			private:
+			// This is the data stored by this type
+				double side_;
+
+		};
+	</code></pre>
+
+	<p>
+		The line <span class="monoText">#pragma once</span> tells the compiler that
+		the following code should be used once during compilation. We include this
+		line because our code might have a header file that relies on another header
+		file that relies on another header file. This raises the danger of a
+		possibly never-ending loop of searching for header files.
+		<span class="monoText">#pragma once</span> ensures that loop terminates. We
+		call statements like <span class="monoText">#pragma once</span>
+		<span class="term">include guards</span>.
+	</p>
+
+	<p>
+		Because these materials assume some knowledge of object-oriented
+		programming, we address <span class="monoText">public</span> and
+		<span class="monoText">private</span> in brief. The symbols
+		<span class="monoText">public</span> and
+		<span class="monoText">private</span> operate the same way as they would in
+		other OOP languages like Java &mdash; <span class="monoText">public</span>,
+		anyone and anything has access to the variable or method;
+		<span class="monoText">private</span>, the particular variable or method is
+		accessible only to the class. In <span class="monoText">C++</span>, if no
+		access modifier is explicitly stated, the variable or method is
+		<span class="monoText">private</span> by default.
+	</p>
+
+	<p>
+		With the functions and data above, we now need to actually define them in
+		our <span class="monoText">Cube.cpp</span> file:
+	</p>
+
+	<pre class="language-cpp"><code>
+		// The Cube.cpp file
+
+		#include "Cube.h"
+
+		double Cube::getVolume() {
+
+		}
+	</code></pre>
+
+	<p>
+		The line <span class="monoText">#include "Cube.h"</span> tells the compiler,
+		"Find the file called <span class="monoText">Cube.h</span>, and copy it to
+		this file." This is because the compiler must know how the interface works
+		to compile <span class="monoText">Cube.cpp</span>. It can only do so if we
+		insert <span class="monoText">#include "Cube.h"</span> into the file. Notice
+		how the code in the header file corresponds to the code in source code file:
+	</p>
+
+	<div class="compare">
+		<pre class="language-cpp"><code>
+			// The Cube.h file
+
+			class Cube {
+				public:
+					double getVolume();
+			}
+		</code></pre>
+		<pre class="language-cpp"><code>
+			// The Cube.cpp file
+			#include "Cube.h"
+
+			double Cube::getVolume() {
+
+			}
+		</code></pre>
+	</div>
+
+	<p>
+		Notice the <span class="monoText">::</span>. This is called the
+		<span class="term">scope resolution operator</span>. This operator says,
+		place <span class="monoText">Cube</span> in front of
+		<span class="monoText">getVolume()</span>. Because
+		<span class="monoText">getVolume()</span> is a
+		<span class="italicsText">member function</span> &mdash; i.e., a
+		<span class="term">method</span> &mdash; we must inform the compiler what
+		class <span class="monoText">getVolume()</span> belongs to. This is done
+		with the scope resolution operator, <span class="monoText">::</span>(two
+		colons).
+	</p>
+
+	<p>
+		Why do we have to tell the compiler which class this method belongs to?
+		Because in <span class="monoText">Cube.h</span>, we might have a function
+		called <span class="monoText">getVolume()</span> in other classes that are
+		not <span class="monoText">Cube</span>.
+	</p>
+
+	<div class="compare">
+		<pre class="language-cpp"><code>
+			// The Cube.h file
+
+			class Cube {
+				public:
+					double getVolume();
+			}
+			
+			class Sphere {
+				public:
+					double getVolum();
+			}
+		</code></pre>
+		<pre class="language-cpp"><code>
+			// The Cube.cpp file
+
+			#include "Cube.h"
+
+			double Cube::getVolume() {
+
+			}
+
+			double Sphere::getVolume() {
+
+			}
+		</code></pre>
+	</div>
+
+	<p>
+		Let's write some <span class="monoText">return</span> statements for
+		<span class="monoText">Cube::getVolume()</span> method.
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include "Cube.h"
+
+		double Cube::getVolume() {
+			return side_ * side_ * side_;
+		}
+	</code></pre>
+</section>
+{% endblock %}

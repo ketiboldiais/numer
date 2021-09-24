@@ -1,0 +1,170 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="state_and_swiftUI">
+	<p>
+		<span class="topic">SwiftUI and State.</span> Suppose we had a
+		<span class="monoText">button View</span> inside our
+		<span class="monoText">ContentView</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		Button(action: {})
+	</code></pre>
+
+	<p>
+		The expression <span class="monoText">action: {}</span> combines
+		<span class="term">state</span> with the
+		<span class="monoText">Button</span> object. In other words, when the user
+		taps the button, then the code inside the braces is evaluated and executed.
+		What is <span class="term">state</span>? A good way to think about state is
+		in terms of a car dashboard. If we look at a dashboard, there are several
+		pieces of data: <span class="italicsText">numeric values</span> like speed,
+		fuel level, mileage; and Boolean values like low oil, flat tire, low tire
+		pressure, emergency break off, etc. All of this data embodies the car's
+		current <span class="italicsText">state</span>.
+	</p>
+
+	<p>
+		Now, we can change the car's state by performing certain actions on that
+		data. For example, if we refill our tank, the fuel level goes up. If we
+		drive more miles, the mileage goes up. If we add more oil, the low oil
+		indicator turns off, and if we pull the emergency break, the emergency break
+		light goes on. In doing all of this, we modify the car's state. We call the
+		actions that change the car's state <span class="term">behavior</span>.
+	</p>
+
+	<p>
+		A car works properly only if state and behavior are in sync. If we continue
+		driving, the fuel level should go down, and the odometer should go up. If we
+		step on the accelerator, the speedometer should go up, and if we break, it
+		should go down. When state and behavior are not in sync, not only does the
+		car fail to work properly, it potentially becomes dangerous.
+	</p>
+
+	<p>
+		This same phenomenon applies to programs, and more broadly, applications. If
+		we fail to properly link state and behavior between properties and methods,
+		we manifest bugs. The application informs the user there are 0 new messages,
+		when there is actually 1. The application tells the user an order was
+		completed, when the order was never sent. SwiftUI is cognizant of how
+		dangerous these bugs can be and forces the programmer to be consistent when
+		writing code.
+	</p>
+
+	<p>
+		So, suppose that we want to display a popup alert when the user taps the
+		<span class="monoText">Button View</span>. In SwiftUI, there are only two
+		possible conditions for displaying a popup alert: (1) the popup alert is
+		displayed on the screen, or (2) the popup alert is not displayed on the
+		screen. This means the popup alert has a Boolean value:
+		<span class="monoText">true</span> or <span class="monoText">false</span>.
+		The Boolean value for this popup alert is an example of data that must be
+		accounted for in our <span class="monoText">ContentView</span> object. To do
+		so, we write the following:
+	</p>
+
+	<pre class="language-swift"><code>
+		import SwiftUI
+
+		struct ContentView: View {
+			@State private var alertIsVisible: Bool = false
+
+			var body: some View {
+				Button(action: {
+					self.alertIsVisible = true
+				}) {
+					Text("Tap for Alert")
+				}
+			}
+		}
+
+	</code></pre>
+
+	<p>
+		The keyword <span class="monoText">@State</span> tells Swift that we are
+		creating a <span class="italicsText">state</span> variable, meaning, this
+		variable will change depending on something inside this
+		<span class="monoText">ContentView</span>. We also include the keyword
+		<span class="monoText">private</span> to indicate that the variable belongs
+		only to <span class="monoText">ContentView</span> (more on this in another
+		section). Finally, we declare the variable
+		<span class="monoText">alertIsVisible</span>, which is of type
+		<span class="monoText">Bool</span>, and initialize it the value
+		<span class="monoText">false</span>.
+	</p>
+
+	<p>
+		In our <span class="monoText">Button view</span>, we write
+		<span class="monoText">self.alertIsVisible = true</span>, which effectively
+		tells Swift, when the button is tapped, change the value of
+		<span class="monoText">alertIsVisible</span> to
+		<span class="monoText">true</span>.
+	</p>
+
+	<p>
+		Each state variable has an initial value. That value is updated, or mutated,
+		based on the execution of some code in the body. Now, we want to actually
+		display the alert when the button is tapped:
+	</p>
+
+	<pre class="language-swift"><code>
+		import SwiftUI
+
+		struct ContentView: View {
+			@State private var alertIsVisible: Bool = false
+
+			var body: some View {
+				Button(action: {
+					self.alertIsVisible = true
+				}) {
+					Text("Tap for Alert")
+				}
+				.alert(isPresented: $alertIsVisible, 
+					content: {
+						return Alert(
+							title: Text("popup1"), 
+							message: Text("This is a pop-up"), 
+							dismissButton: 
+								.default(Text("Dismiss")))
+					})
+			}
+		}
+	</code></pre>
+
+	<p>
+		There are several things to note in this code. First, note that when the
+		<span class="monoText">Button View</span> is tapped, the state variable
+		<span class="monoText">alertIsVisible</span> updates to
+		<span class="monoText">true</span>. Because the state variable is now
+		<span class="monoText">true</span>, we can proceed to call the
+		<span class="monoText">.alert()</span> method. The
+		<span class="monoText">.alert()</span> method takes several arguments,
+		first, an argument called <span class="monoText">isPresented</span>, and
+		argument called <span class="monoText">content</span>. The
+		<span class="monoText">isPresented</span> argument is assigned
+		<span class="monoText">$alertIsVisible</span>, a variable binding. The
+		<span class="monoText">content</span> argument has several properties:
+		<span class="monoText">title</span>, <span class="monoText">message</span>,
+		and <span class="monoText">dismissButton</span>. Here, we've passed a
+		<span class="monoText">Text</span> object of type
+		<span class="monoText">View</span>. For the
+		<span class="monoText">dismissButton</span>, we've used the
+		<span class="monoText">.default()</span> method, which uses SwiftUI's
+		default button styling.
+	</p>
+
+	<p>
+		<span class="topic">Variable Binding.</span> In the example above, we wrote
+		<span class="monoText">.alert(isPresented: $alertIsVisible)</span>. This
+		expression tells Swift, "This property called
+		<span class="monoText">isPresented</span> is always bound to the variable
+		<span class="monoText">alertIsVisible</span>."" The dollar sign,
+		<span class="monoText">$</span>, is what tells Swift that we are indicating
+		a binding. In this case, the property
+		<span class="monoText">isPresented</span> is always bound to the state
+		variable <span class="monoText">alertIsVisible</span>. The property
+		<span class="monoText">isPresented</span> is what determines whether the
+		alert is visible. If its value is <span class="monoText">true</span>, then
+		the alert is displays, otherwise, the alert is not displayed.
+	</p>
+</section>
+{% endblock %}

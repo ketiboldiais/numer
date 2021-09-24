@@ -1,0 +1,148 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="sum_types">
+	<h4>Sum Types</h4>
+	<p>
+		A sum type describes the values containing a value of
+		<span class="italicsText">one of</span> the types ${t_1, t_2, \ldots,
+		\textit{ or } \space t_n.}$ An example of sum type data is
+		<span class="monoText">int option</span>. Here, the data type either
+		contains an <span class="monoText">int</span>
+		<span class="underlineText">or</span> it does not. Functional languages like
+		ML tend to handle sum types succinctly, at least as compared to
+		object-oriented languages like Java, where sub-classing is almost always
+		required.
+	</p>
+
+	<p>
+		<span class="topic">Datatype Bindings.</span> To create custom product
+		types, we create <span class="italicsText">datatype bindings</span>. For
+		example:
+	</p>
+	<pre class="language-sml"><code>
+		dataType fooType = TwoInts of int * int
+										 | Str of string
+										 | xyz
+	</code></pre>
+	<p>
+		This data type defines a new type whose values have one of three types: (1)
+		<span class="monoText">int*int</span>, (2)
+		<span class="monoText">string</span>, or (3) nothing. These three values
+		determine what <span class="term">variant</span> of the data type the value
+		is (e.g., is it an <span class="monoText">int*int</span>, a
+		<span class="monoText">string</span>, or nothing). These &#8220;tags&#8221;
+		are called <span class="term">constructors</span>.
+	</p>
+	<p>
+		When we include the constructor above, we insert four new entities to the
+		environment: (1) a new type called <span class="monoText">fooType</span> to
+		be used like any other type; (2) a constructor
+		<span class="monoText">TwoInts</span>; (3) a constructor
+		<span class="monoText">Str</span>; and (4) a constructor
+		<span class="monoText">xyz</span>.
+	</p>
+
+	<p>
+		<span class="topic">Accessing Data in a Datatype Binding.</span> To access
+		data in a datatype binding, we must determine what variant the binding is.
+		To do so, we use a <span class="term">case expression</span>:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun f x = (* f has type fooType --> int *)
+			case x of
+				xyz => 3
+			| TwoInts(i1, i2) => i1 + i2
+			| Str s => String.size s
+	</code></pre>
+
+	<p>
+		In the case expression above, <span class="monoText">x</span> is evaluated
+		first. Then, the expression of which branch
+		<span class="italicsText">first matches</span>. Here, we have three
+		branches: (1) <span class="monoText">x</span> is an
+		<span class="monoText">xyz</span>, (2) <span class="monoText">x</span> is a
+		<span class="monoText">TwoInts(i1, i2)</span>, or (3)
+		<span class="monoText">x</span> is an <span class="monoText">Str</span>. We
+		can see that each branch in the case expression takes the form:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${p}$ => ${\textit{exp}}$</li>
+		</ul>
+	</figure>
+	<p>
+		Where ${p}$ is a pattern, and ${\textit{exp}}$ is an expression. A more
+		general syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>fun ${f}$ ${x}$ =</li>
+			<ul>
+				<li>case ${x}$ of</li>
+				<ul>
+					<li>${p_0}$ => ${exp_0}$</li>
+					<li>| ${p_1}$ => ${exp_1}$</li>
+					<li>| ${p_2}$ => ${exp_2}$</li>
+					<li>| ${\vdots}$</li>
+					<li>| ${p_n}$ => ${exp_n}$</li>
+				</ul>
+			</ul>
+		</ul>
+	</figure>
+	<p>
+		Patterns are the construct used to
+		<span class="underlineText">match</span> against the result of evaluating
+		the case's first expression (in the syntax above,
+		<span class="monoText">${p_0}$ => ${exp_0}$</span>.) This form of evaluation
+		has a specific name &mdash; <span class="term">pattern-matching</span>.
+	</p>
+	<p>
+		Importantly, case expressions are <span class="term">first-match</span>,
+		meaning that the moment there is a
+		<span class="italicsText">pattern match</span>, the entire expression
+		evaluates to that pattern match's expression. ML will not continue to check
+		the remaining branches.
+	</p>
+
+	<p>
+		<span class="topic">Enumerations.</span> An enumeration, or
+		<span class="term">an enumerated type</span>, are one kind of sum type. In
+		object-oriented languages, they are often called
+		<span class="monoText">enum</span>s (&#8220;eh-nooms&#8221;), and in R, it
+		is called a <span class="monoText">factor</span>. In formal mathematics and
+		statistics, they are broadly referred to as
+		<span class="italicsText">categorical variables</span>. Some examples: U.S.
+		currency has many different enumerations: penny, nickel, quarter,
+		half-dollar, one-dollar, five-dollar, ten-dollar, twenty-dollar,
+		fifty-dollar, a hundred-dollar. Traffic lights in North America have three
+		enumerations: red, yellow, green. Here is another example in ML code:
+	</p>
+
+	<pre class="language-sml"><code>
+		datatype suit = Club | Diamond | Heart | Spade
+	</code></pre>
+
+	<p>
+		Regardless of what variant of <span class="monoText">suit</span> the value
+		is, that variant can itself contain data:
+	</p>
+
+	<pre class="language-sml"><code>
+		datatype rank = Jack | Queen | King | Ace | Num of int
+	</code></pre>
+
+	<p>
+		We can combine these two sum types into a product type:
+		<span class="monoText">suit * rank</span>. Sum types are particularly useful
+		when we want to have different data in response to the state of the world.
+		For example, maybe we are operating a library where we want to identify a
+		book by an ID number, but if the book does not have an ID, use instead the
+		book's title:
+	</p>
+
+	<pre class="language-sml"><code>
+		datatype id = BookNum of int
+								| Title of string*(string option)*string 
+	</code></pre>
+</section>
+{% endblock %}

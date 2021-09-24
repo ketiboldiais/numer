@@ -1,0 +1,269 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="initializers">
+	<p>
+		<span class="topic">Initializers.</span> In the previous section on
+		inheritance, we saw errors appear if we failed to include an initial values
+		for properties in subclasses. This is because Swift requires all stored
+		properties to have initial values.
+	</p>
+	<pre class="language-swift"><code>
+		class Person {
+			var firstName: String
+			var lastName: String
+			init (firstName: String, lastName: String) {
+				self.firstName = firstName
+				self.lastName = lastName
+			}
+		}
+		class Student: Person { // this line raises an error
+			var school: String
+		}
+		class Undergraduate: Student {
+			var major: String
+		}
+		
+	</code></pre>
+	<p>To fix the error above, we must include an initial value:</p>
+	<pre class="language-swift"><code>
+		class Person {
+			var firstName: String
+			var lastName: String
+			init (firstName: String, lastName: String) {
+				self.firstName = firstName
+				self.lastName = lastName
+			}
+		}
+		class Student: Person {
+			var school: String = ""
+		}
+		class Undergraduate: Student {
+			var major: String = ""
+		}
+	</code></pre>
+
+	<p>
+		In some situations, we might not want to include an initial value, but
+		instead set the value ourselves. If this is the case, then we must write an
+		initializer for the class. For example, maybe
+		<span class="monoText">Undergraduate</span> should have its own initializer:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			var firstName: String
+			var lastName: String
+			init (firstName: String, lastName: String) {
+				self.firstName = firstName
+				self.lastName = lastName
+			}
+		}
+		class Student: Person {
+			var school: String = ""
+		}
+		class Undergraduate: Student {
+			var major: String
+			
+			init(firstName: String, lastName: String, major: String) {
+				self.major = major
+				super.init(firstName: firstName, lastName: lastName)
+			}
+		}
+	</code></pre>
+	<p>
+		Notice the line <span class="monoText">super.init()</span>. This will call
+		the superclass's initializer, and initialize its values to the arguments
+		passed. The order matters when writing a subclass's initializer. In this
+		case, we first initialize <span class="monoText">major</span>, and only
+		after doing so do we call <span class="monoText">super.init()</span>. In
+		other words, when we create an instance of a class, we must first initialize
+		all the stored properties for that class. If the class is a subclass, we
+		must then initialize all the stored properties for its superclass with
+		<span class="monoText">super.init()</span>. Complying with this syntax, the
+		chain continues all the way up to the base class.
+	</p>
+
+	<p>
+		<span class="boldText">Caution.</span> Initializers are not inherited by
+		their subclasses. For example, consider the following class hierarchy:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Issue {
+			typealias Name = (firstName: String, lastName: String)
+			var id: Int
+			var issueTitle: String
+			
+			init(id: Int, issueTitle: String) {
+				self.id = id
+				self.issueTitle = issueTitle
+			}
+		}
+		
+		class Article: Issue {
+			var author: Name
+			var articleTitle: String
+		
+			init(id: Int, issueTitle: String, author: Name, articleTitle: String) {
+				self.author = author
+				self.articleTitle = articleTitle
+				super.init(id: id, issueTitle: issueTitle)
+			}
+		}
+	</code></pre>
+
+	<p>
+		If we initialize an instance of <span class="monoText">Article</span>, we
+		can't avoid initializaing the
+		<span class="monoText">articleTitle</span> property. But what if the author
+		hasn't settled on a title yet? Maybe we do not want to set this property
+		just yet. The simplest solution is to set a dummy value:
+	</p>
+
+	<pre class="language-swift"><code>
+		let samB_article = Article(id: 1, issueTitle: "Diversity in Clerkships", author: (firstName: "Sam", lastName: "Bogart"), articleTitle: "")
+	</code></pre>
+
+	<p>
+		Another solution is to just write another
+		<span class="monoText">init</span> method, this time including an initial
+		value for <span class="monoText">articleTitle</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Issue {
+			typealias Name = (firstName: String, lastName: String)
+			var id: Int
+			var issueTitle: String
+			
+			init(id: Int, issueTitle: String) {
+				self.id = id
+				self.issueTitle = issueTitle
+			}
+		}
+		
+		class Article: Issue {
+			var articleTitle: String
+			var author: Name
+		
+			init(id: Int, issueTitle: String, author: Name, articleTitle: String) {
+				self.articleTitle = articleTitle
+				self.author = author
+				super.init(id: id, issueTitle: issueTitle)
+			}
+			
+			init(id: Int, issueTitle: String, author: Name) {
+				self.articleTitle = ""
+				self.author = author
+				super.init(id: id, issueTitle: issueTitle)
+			}
+		}
+	</code></pre>
+
+	<p>
+		<span class="monoText"><span class="monoText">required.</span></span> On the
+		other end of the spectrum, we might want all child classes of a particular
+		class to implement a specific initializer. This is done by using the
+		<span class="monoText">required</span> keyword:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Passenger {
+			typealias Name = (firstName: String, lastName: String)
+			var name: Name
+			var ticketNum: Int
+			init(name: Name, ticketNum: Int) {
+				self.name = name
+				self.ticketNum = ticketNum
+			}
+		}
+		class FirstClass: Passenger {
+			var eliteMember: Bool
+			required override init(name: Name, ticketNum: Int) {
+				self.eliteMember = true
+				super.init(name: name, ticketNum: ticketNum)
+			}
+			init (name: Name, ticketNum: Int, eliteMember: Bool) {
+				self.eliteMember = eliteMember
+				super.init(name: name, ticketNum: ticketNum)
+			}
+		}
+		class EconomyClass: Passenger {
+			var byEmergencyExit: Bool
+			init(name: Name, ticketNum: Int, byEmergencyExit: Bool) {
+				self.byEmergencyExit = byEmergencyExit
+				super.init(name: name, ticketNum: ticketNum)
+			}
+		}
+	</code></pre>
+
+	<p>
+		In the code above, we have examples of
+		<span class="term">designated initializers</span>. In the class
+		<span class="monoText">FirstClass</span>, we have the required initializer
+		<span class="monoText">init(name: Name, ticketNum: Int)</span>. We can write
+		the required initializer more concisely as:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Passenger {
+			typealias Name = (firstName: String, lastName: String)
+			var name: Name
+			var ticketNum: Int
+			init(name: Name, ticketNum: Int) {
+				self.name = name
+				self.ticketNum = ticketNum
+			}
+		}
+		class FirstClass: Passenger {
+			var eliteMember: Bool
+			required override convenience init(name: Name, ticketNum: Int) {
+				self.init(name: name, ticketNum: ticketNum, eliteMember: false)
+			}
+			init (name: Name, ticketNum: Int, eliteMember: Bool) {
+				self.eliteMember = eliteMember
+				super.init(name: name, ticketNum: ticketNum)
+			}
+		}
+		class EconomyClass: Passenger {
+			var byEmergencyExit: Bool
+			init(name: Name, ticketNum: Int, byEmergencyExit: Bool) {
+				self.byEmergencyExit = byEmergencyExit
+				super.init(name: name, ticketNum: ticketNum)
+			}
+		}
+	</code></pre>
+
+	<p>
+		The initializer <span class="monoText">self.init()</span> is called a
+		<span class="term">convenience initializer</span> &mdash; it's an
+		initializer provided purely for convenience; maybe whether the passenger is
+		an <span class="monoText">eliteMember</span> is something we do not need to
+		set on instantiation.
+	</p>
+
+	<p>
+		An important point to bear in mind: If a subclass has no designated
+		initializers, then the superclass's designated initializers are inherited.
+		This is a critical distinction between a "regular" initializer an a
+		designated initializer. Furthermore, if the subclass implements all the
+		designated initializers from its superclass, then the subclass inherits all
+		the convenience initializers from the superclass.
+	</p>
+
+	<p>
+		Putting this all together, a designated initializer for a subclass must call
+		a designated initializer from its immediate super class. In contrast, a
+		convenience initializer ${f}$ must call another initializer from within the
+		class. And inside the convenience initializer ${f,}$ there must ultimately
+		be a call to a designated initializer.
+	</p>
+
+	<p>
+		This requirement may seem restrictive at first, but it addresses the problem
+		of <span class="italicsText">inheritance hell</span> &mdash; a class
+		hierarchy so tall that we lose track of what properties an instance stores.
+		Many object-oriented languages do not provide this safety mechanism, leading
+		to a common source of bugs.
+	</p>
+</section>
+{% endblock %}

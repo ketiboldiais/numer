@@ -1,0 +1,78 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="filter">
+	<p>
+		<span class="topic">.filter</span> In this section, we examine the methods
+		<span class="monoText">filter()</span>,
+		<span class="monoText">reduce()</span>, and
+		<span class="monoText">sort()</span>. The tasks these methods accomplish are
+		routine, but implementing them can be cumbersome. For that reason, Swift
+		provides them as built-in methods so we do not have to worry about those
+		implementation details (granted, there are situations where we might want to
+		implement our own algorithms).
+	</p>
+
+	<p>
+		Recall a previous example where we wanted to return an array of arrays of
+		<span class="monoText">String</span> values into a single array whose
+		elements come before some <span class="monoText">String</span> value:
+	</p>
+
+	<pre class="language-swift"><code>
+		let arr = [
+			["a", "f"],
+			["g"],
+			["d", "s", "j"]
+		]
+		let barr = arr.flatMap { (vals) -> [String] in
+			var carr: [String] = []
+			for val in vals where val < "l" {
+				carr.append(val)
+			}
+			return carr
+		}
+		print(barr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["a", "f", "g", "d", "j"]
+	</code></pre>
+
+	<p>
+		We can perform the same operation more concisely with the
+		<span class="monoText">.filter</span> method:
+	</p>
+
+	<pre class="language-swift"><code>
+		let arr = [
+			["a", "f"],
+			["g"],
+			["d", "s", "j"]
+		]
+		let barr = arr.flatMap { (vals) -> [String] in
+			vals.filter {(val) -> Bool in
+				val < "l"
+			}
+		}
+		print(barr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["a", "f", "g", "d", "j"]
+	</code></pre>
+
+	<p>We can write the code even more concisely:</p>
+
+	<pre class="language-swift"><code>
+		let arr = [
+			["a", "f"],
+			["g"],
+			["d", "s", "j"]
+		]
+		let barr = arr.flatMap { (vals) -> [String] in
+			vals.filter { $0 < "l" }
+		}
+		print(barr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["a", "f", "g", "d", "j"]
+	</code></pre>
+</section>
+{% endblock %}

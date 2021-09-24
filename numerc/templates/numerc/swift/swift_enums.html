@@ -1,0 +1,155 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="enumerations">
+	<h3>Enumerations</h3>
+	<p>
+		In this section, we explore <span class="term">enumerations</span>, or, as
+		Swift and other languages call them, <span class="monoText">enums</span>. An
+		<span class="monoText">enum</span> is an abstract data type. More
+		specifically, it is a datatype that can only have one of a particular set of
+		values. For example, we can might write a datatype called
+		<span class="monoText">TrafficLight</span>, and variables of type
+		<span class="monoText">TrafficLight</span> can have only one of three values
+		&mdash; <span class="monoText">green</span>,
+		<span class="monoText">yellow</span>, and <span class="monoText">red</span>.
+		The type <span class="monoText">TrafficLight</span> is an
+		<span class="monoText">enum</span>.
+	</p>
+
+	<p>
+		Enumerations are most useful when our program requires a
+		<span class="term">case analysis</span> &mdash; structuring a program
+		according to discrete cases that can be named. That's a bit of a mouthful,
+		so let's give some examples. A problem that depends the suit of a deck of
+		card would be an example of a problem conducive to enumeration. There are
+		four discrete values &mdash; <span class="monoText">"spade"</span>,
+		<span class="monoText">"heart"</span>,
+		<span class="monoText">"club"</span> and
+		<span class="monoText">"diamond"</span>. A problem involving cardinal
+		directions would be another: <span class="monoText">"north"</span>,
+		<span class="monoText">"south"</span>, <span class="monoText">"east"</span>,
+		and <span class="monoText">"west"</span>.
+	</p>
+
+	<p>
+		We could simply structure a program by testing equality for these strings
+		(or we could represent each string as a number), but doing so would leave
+		the program vulnerable to bugs. We might forget to write a string correctly,
+		or we might perform an operation on a number when we don't intend to.
+		Enumerations are the solution. Let's consider the deck of cards:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum Suit {
+			case hearts
+			case diamonds
+			case spades
+			case clubs
+		}
+	</code></pre>
+
+	<p>Or, alternatively:</p>
+
+	<pre class="language-swift"><code>
+		enum Suit {
+			case hearts, diamonds, spades, clubs
+		}
+	</code></pre>
+
+	<p>
+		By writing the code above, we've created a new abstract datatype called
+		<span class="monoText">Suit</span>. The datatype
+		<span class="monoText">Suit</span> can only have four possible values:
+		<span class="monoText">hearts</span>,
+		<span class="monoText">diamonds</span>,
+		<span class="monoText">spades</span>, and
+		<span class="monoText">clubs</span>.
+	</p>
+
+	<p>
+		With the datatype <span class="monoText">Suit</span>, we can now initialize
+		variables:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum Suit {
+			case hearts, diamonds, spades, clubs
+		}
+		let card1: Suit = Suit.hearts
+		print(card1)
+		print(type(of: card1))
+	</code></pre>
+	<pre class="language-bash"><code>
+		hearts
+		Suit
+	</code></pre>
+
+	<p>
+		Notice the output of <span class="monoText">type(of: )</span>. It's a
+		<span class="monoText">Suit</span>. This is crucial point to understand. The
+		variable <span class="monoText">card1</span> is of type
+		<span class="monoText">Suit</span>. It is not of type
+		<span class="monoText">String</span>. Now, suppose we wanted to associate
+		each of the suits an <span class="monoText">Int</span> value. We can do so
+		by specifying it in the <span class="monoText">enum</span> declaration. And
+		if we want the first case to have an <span class="monoText">Int</span> value
+		of <span class="monoText">1</span> (by default it is
+		<span class="monoText">0</span>), then we can use the assignment operator:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum Suit: Int {
+			case hearts=1, diamonds, spades, clubs
+		}
+		let card1: Suit = Suit.hearts
+	</code></pre>
+
+	<p>
+		When we write the code above, we are assigning a
+		<span class="term">raw value</span> to the case. With a raw value, we can
+		compare values:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum Suit: Int {
+			case hearts=1, diamonds, spades, clubs
+		}
+		let card1: Suit = Suit.hearts
+		let card2: Suit = Suit.diamonds
+		
+		func compareCards(_ a: Suit, _ b: Suit) -> String {
+			if a.rawValue < b.rawValue {
+				return "First card is higher"
+			} else if a.rawValue > b.rawValue {
+				return "Second card is higher"
+			} else {
+				return "First and second cards are the same suit."
+			}
+		}
+		
+		let comparison = compareCards(card1, card2)
+		print(comparison)
+	</code></pre>
+	<pre class="language-bash"><code>
+		First card is higher
+	</code></pre>
+
+	<p>
+		By default, if we do not indicate a raw value and reference a raw value,
+		Swift will automatically return a string of the case name. Another
+		particularly useful aspect of <span class="monoText">enums</span> is that
+		Swift, by default, will include the cases in an array. To use that array, we
+		must indicate in the <span class="monoText">enum</span> declaration that the
+		cases are iterable:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum Suit: String, CaseIterable {
+			case hearts
+			case diamonds
+			case spades
+			case clubs
+		}
+		let DECK = Suit.allCases
+	</code></pre>
+</section>
+{% endblock %}

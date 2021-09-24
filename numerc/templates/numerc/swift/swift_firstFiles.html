@@ -1,0 +1,267 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="first_files">
+	<p>
+		When we create a new project in XCode, we are automatically given several
+		files and directories. Supposing the appplication's name is
+		<span class="monoText">foo</span>, we have: (1)
+		<span class="monoText">fooApp.swift</span>; (2)
+		<span class="monoText">ContentView.swift</span>; (3) a directory called
+		<span class="monoText">Assets.xcassets</span>; (4)
+		<span class="monoText">Info.plist</span>; (5) a directory called
+		<span class="monoText">Preview Content</span>; and (6) a directory called
+		<span class="monoText">Products</span>. All of these files and directories
+		are nested under an application icon named
+		<span class="monoText">foo</span>.
+	</p>
+
+	<p>
+		First, if we click on the icon <span class="monoText">foo</span>, we can see
+		a variety of preferences. We can modify these preferences as needed. These
+		changes are directly then reflected in the
+		<span class="monoText">Info.plist</span> file. For most projects, these
+		high-level modifications are handled through the pane presented in the
+		<span class="monoText">foo</span> application icon, rather than through
+		<span class="monoText">Info.plist</span>. Of course, we are free to modify
+		<span class="monoText">Info.plist</span>.
+	</p>
+
+	<p>
+		Next, if we click on the <span class="monoText">fooApp.swift</span> file, we
+		see the following content:
+	</p>
+
+	<pre class="language-swift"><code>
+		import SwiftUI
+
+		@main
+		struct fooApp: App {
+				var body: some Scene {
+						WindowGroup {
+								ContentView()
+						}
+				}
+		}
+	</code></pre>
+
+	<p>
+		Generally, we make very few changes to this file. What we should look
+		familiar is the <span class="monoText">@main</span> symbol. This is similar
+		to a <span class="monoText">main()</span> function, as found in languages
+		like Java and C. Ignoring the other parts of the code, we can see that
+		inside the <span class="monoText">struct</span> is something that says
+		<span class="monoText">ContentView</span>. For those familiar with
+		object-oriented programming, this is an instance of
+		<span class="monoText">ContentView</span>. For those unfamiliar with
+		object-oriented programming, the line
+		<span class="monoText">ContentView()</span> indicates some object, or thing,
+		called <span class="monoText">ContentView</span>. What is
+		<span class="monoText">ContentView</span>? To find out, we look at the next
+		file, <span class="monoText">ContentView.swift</span>.
+	</p>
+
+	<p>
+		Inside the <span class="monoText">ContentView.swift</span> file, we can see
+		the following code:
+	</p>
+
+	<pre class="language-swift"><code>
+		import SwiftUI
+
+		struct ContentView: View {
+				var body: some View {
+						Text("Hello, world!")
+								.padding()
+				}
+		}
+
+		struct ContentView_Previews: PreviewProvider {
+				static var previews: some View {
+						ContentView()
+				}
+		}
+	</code></pre>
+	<p>
+		There's a lot going on in this code, so let's take it slowly. First, we have
+		the line <span class="monoText">import SwiftUI</span>. This tells Swift to
+		use a package (source code outside our file) called
+		<span class="monoText">SwiftUI</span>.
+	</p>
+	<p>Second, at the very bottom of the file, we see the code:</p>
+
+	<pre class="language-swift"><code>
+		struct ContentView_Previews: PreviewProvider {
+			static var previews: some View {
+					ContentView()
+			}
+		}
+	</code></pre>
+
+	<p>
+		This block of code generates the previews we see in the simulator to the
+		right.
+	</p>
+
+	<p>
+		Further down, we have the code
+		<span class="monoText">struct ContentView: View { ... }</span> (the ellipses
+		indicating content). This tells Swift to create a
+		<span class="monoText">struct</span> named
+		<span class="monoText">ContentView</span> of type
+		<span class="monoText">View</span> (more on the
+		<span class="monoText">View</span> type later). Roughly speaking, a
+		<span class="monoText">struct</span>, short for &#8220;structure&#8221;, is
+		a collection of variables.
+	</p>
+
+	<p>
+		Inside the <span class="monoText">struct</span>, we have the following code:
+	</p>
+
+	<pre class="language-swift"><code>
+		var body: some View {
+			Text("Hello, world!")
+					.padding()
+	}
+	</code></pre>
+
+	<p>
+		This block of code creates a variable called
+		<span class="monoText">body</span>, with a type called
+		<span class="monoText">some View</span>. Why do we write
+		<span class="monoText">some View</span>? Because inside these block of code,
+		there will be multiple <span class="monoText">View</span> objects, and each
+		of those <span class="monoText">View</span> objects may be certain type of
+		the type <span class="monoText">View</span>. We can also place functions
+		inside the <span class="monoText">struct</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+
+		struct ContentView: View {
+				var body: some View {
+						Text("Hello, world!")
+								.padding()
+				}
+
+				func functionName() {
+
+				}
+		}
+	</code></pre>
+
+	<p>
+		This looks an awful lot like object-oriented programming. But, do not
+		confuse a <span class="monoText">struct</span> with a
+		<span class="monoText">class</span>. They are two very different things. For
+		starters, there is no notion of inheritance with a
+		<span class="monoText">struct</span>. In fact, using a
+		<span class="monoText">struct</span> in Swift is more closely related to
+		functional programming rather than OOP. Most of the underlying code in a
+		Swift application &mdash; the user interface and the implementation &mdash;
+		is written with a functional programming approach. When we connect all the
+		various modules (e.g., connecting the user interface to its underlying
+		logic), we use an object-oriented programming approach.
+	</p>
+
+	<p>
+		If <span class="monoText">body</span> is some variable, then what are the
+		braces following <span class="monoText">some View {}</span>. These braces
+		indicate a function. As we stated earlier, a large chunk of an application's
+		code is done in functional programming. This means we will see functions
+		throughout Swift code. In fact, the code inside the braces contains an
+		implicit <span class="monoText">return</span> symbol:
+	</p>
+
+	<pre class="language-swift"><code>
+			var body: some View {
+					return Text("Hello, world!")
+			}
+	</code></pre>
+
+	<p>
+		Indeed, placing a <span class="monoText">return</span> in the example code,
+		the code will still compile. Swift merely hides the
+		<span class="monoText">return</span> statement as a matter of syntactic
+		sugar. The fact that the code above is a function reveals another insight:
+		The variable <span class="monoText">body</span> is not actually stored in
+		memory. Instead, it is bound to a value that is calculated when the function
+		(the code inside the braces) is executed. In other words,
+		<span class="monoText">body</span> has no value unless it is specifically
+		referenced. Only when it is referenced does Swift evaluate the variable,
+		which is done by executing the code inside the braces.
+	</p>
+
+	<p>
+		Inside that function, we have the line
+		<span class="monoText">Text("Hello, world!")</span>. A
+		<span class="monoText">Text()</span> is another kind of
+		<span class="monoText">View</span>, and more broadly, it is a
+		<span class="monoText">struct</span>. In fact, in the SwiftUI library,
+		there's more than likely some code that looks like:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Text: View {
+			var body: some View {
+				// various statements
+			}
+		}
+	</code></pre>
+
+	<p>
+		This harkens back to a previous point on why we must write
+		<span class="monoText">some View</span>. Inside the function, there are more
+		than likely various kinds of <span class="monoText">View</span>s, and
+		writing <span class="monoText">some View</span> effectively tells the Swift
+		compiler, "Heads up, there are some <span class="monoText">View</span>s
+		coming." By giving Swift this heads up, when the function inside the braces
+		is executed, Swift can replace the
+		<span class="monoText">some View</span> with a
+		<span class="monoText">Text</span> type.
+	</p>
+
+	<pre class="language-swift"><code>
+		var body: text {
+				return Text("Hello, world!")
+		}
+	</code></pre>
+
+	<p>
+		Notice that we can add padding to the
+		<span class="monoText">Text("Hello, world!")</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		var body: text {
+				return Text("Hello, world!")
+					.padding(.all)
+		}
+	</code></pre>
+
+	<p>The code above can be rewritten as:</p>
+
+	<pre class="language-swift"><code>
+		var body: text {
+				return Text("Hello, world!").padding(.all)
+		}
+	</code></pre>
+
+	<p>
+		Putting the two lines together, this should look familiar to those coming
+		from object-oriented programming. This is, in fact, a function call (we
+		avoid using the word method for now because
+		<span class="monoText">Text()</span> is a
+		<span class="monoText">struct</span>, not a class). The
+		<span class="monoText">.padding()</span> function is a function available to
+		any <span class="monoText">struct</span> that behaves like a
+		<span class="monoText">View</span>. In this case,
+		<span class="monoText">.padding()</span> is an argument &mdash; all sides.
+	</p>
+
+	<p>
+		By calling the function <span class="monoText">.padding()</span> on the
+		<span class="monoText">Text() struct</span>, we receive a new entity that
+		behaves like a <span class="monoText">View</span>.
+	</p>
+</section>
+{% endblock %}

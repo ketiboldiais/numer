@@ -1,0 +1,2151 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="javascript_functions">
+	<h3>JavaScript Functions</h3>
+	<p>
+		A <span class="term">function</span> is essentially a reusable block of
+		code. Once we define a function (and we only do so once), we can execute, or
+		<span class="term">call</span>, the function however many times we want. A
+		<span class="italicsText">function</span> in JavaScript is much like a
+		<span class="italicsText">procedure</span> or
+		<span class="italicsText">subroutine</span> in other programming languages.
+		A function can take several forms.
+	</p>
+	<pre class="language-javascript">
+			<code>
+				function <span class="greyText italicsText">function name</span>(<span class="greyText italicsText">parameter(s)</span>) {
+					<span class="greyText italicsText">code block</span>;
+				}
+			</code>
+		</pre>
+	<p>
+		A function's
+		<span class="term">parameter</span> is an identifier, or parameter, is a
+		variable (scoped to the function) to be used in the function's body. That is
+		to say, a placeholder name to be used by the function. By including a
+		parameter, we can pass through <span class="term">arguments</span>, or
+		inputs, such as code or data, to be used as local variables in the
+		function's body (i.e., the block of code to be executed). Parameters are
+		optional—we can have functions that do not take any arguments. Example:
+	</p>
+	<pre class="language-javascript">
+			<code>
+				/*
+				Here is a simple function that executes a rudimentary calculation of velocity.
+				*/
+				function velocity(displacement, time) {
+					console.log(displacement / time + " " + "m/s");
+				}
+
+				velocity(157, 5); // Call the function
+				/*
+				This outputs to the console:
+				31.4 m/s
+				*/
+			</code>
+		</pre>
+	<p>A function without parameters:</p>
+	<pre class="language-javascript">
+			<code>
+				/*
+				Here is another function that rolls a die with 20 faces.
+				*/
+				function rollDice() {
+					let roll = Math.floor(Math.random() * 20) + 1;
+					console.log(`You rolled: ${roll}`);
+				}
+				rollDice();
+
+				/*
+				This outputs to the console a random number between 1 and 20. We add 1 because the random number could be 0, and we are assuming that the dice does not have a side with the number 0.
+				*/
+			</code>
+		</pre>
+	<p>
+		A <span class="term">parameter</span> is an
+		<span class="italicsText">alias</span> used for the values, or code, that
+		will be passed through to the function. An
+		<span class="term">argument</span> is the actual value or code passed
+		through to the function.
+	</p>
+</section>
+
+<section id="functions_v_methods">
+	<h3>Functions vs. Methods</h3>
+	<p>
+		What is the difference between a
+		<span class="italicsText">function</span> and a
+		<span class="italicsText">method</span>? Functions look similar to
+		<span class="italicsText">methods</span>. In fact, methods are just one kind
+		of function. The difference: a method is function limited to an object (a
+		<span class="term">receiver</span>). For example, the methods accompanying
+		the
+		<a href="#math_object_introduction">math object</a>
+		only execute when called with its object.
+	</p>
+</section>
+
+<section id="javascript_return_statement">
+	<h4>The <span class="monoText">return</span> Statement</h4>
+	<p>
+		The <span class="monoText">return</span> statement is what allows us to
+		store the output from a function, and pass it on to other functions. A
+		<span class="monoText">return</span> statement is interpreted by JavaScript
+		as an end to the function's execution. Thus, once JavaScript reaches a
+		<span class="monoText">return</span> statement, code after that
+		<span class="monoText">return</span> statement (in the same code block) will
+		not execute.
+	</p>
+	<pre class="language-javascript">
+				<code>
+				/*
+				Here is a function that verifies whether a password is at least 8 characters long, contains no spaces, and is not the same as the username. 
+				*/
+
+				function isPasswordValid(password, username) {
+					if (password.length < 8) {
+						return false;
+					}
+					if (password.includes(" ")) {
+						return false;
+					}
+					if (password === username) {
+						return false;
+					}
+					return true;
+				}
+				console.log(isPasswordValid("boogabooga", "eustice"));
+				console.log(isPasswordValid("eustice", "eustice"));
+				console.log(isPasswordValid("Cowardly Dog", "muriel"));							
+
+				/*
+				This outputs to the console:
+
+				true
+				false
+				false
+				*/
+				</code>
+			</pre>
+	<p>
+		But, you can have multiple return statements in a function, as long as they
+		are in separate code blocks.
+	</p>
+	<pre class="language-javascript">
+					<code>
+						/*
+						Here is a function that checks whether a name starts with the letter "N"
+						*/
+						function isFirstLetterX(firstName) {
+							if (firstName.toUpperCase()[0] === "X") {
+								return true;
+							} 
+							
+							else {
+								return false;
+							}
+						}
+						console.log(isFirstLetterX("norman"));
+						console.log(isFirstLetterX("xeno"));
+						/*
+						This outputs the following to the console:
+						
+						false
+						true
+						*/
+					</code>
+				</pre>
+</section>
+
+<section id="javascript_function_expressions">
+	<p>
+		Another way to write a function is with a
+		<span class="term">function expression</span>. This follows the syntax:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					const <span class="greyText italicsText">variable-name</span> = function(<span class="greyText italicsText">parameter</span>) {
+						<span class="greyText italicsText">statements</span>;
+					}
+					// We can then call the function:
+					<span class="greyText italicsText">variable-name</span>(<span class="greyText italicsText">argument</span>);
+				</code>
+			</pre>
+	<p>
+		Notice the difference between a
+		<span class="italicsText">function expression</span> and a
+		<span class="italicsText">function declaration</span>: in a
+		<span class="italicsText">function expression</span>, the function itself
+		does not have a name. Instead, we store the function in a variable, and then
+		use the variable name to call the function. This works because
+		<span class="underlineText">functions are objects</span>. Example:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						/*
+						Here is a function that calculates the distance between two points on a plane (the distance formula)
+						*/
+						const distanceFormula = function (x1, y1, x2, y2) {
+							const x_distance = Math.pow(x2 - x1, 2);
+							const y_distance = Math.pow(y2 - y1, 2);
+							const sum_x_y_distance = x_distance + y_distance;
+							return Math.sqrt(sum_x_y_distance);
+						};
+						console.log(distanceFormula(0, 0, 1, 2));
+						/*
+						This outputs to the console:
+						2.23606797749979
+						*/
+					</code>
+				</pre>
+	<p>
+		Because functions are essentially objects, we can store as many functions as
+		we want in an array, or in an object.
+	</p>
+</section>
+
+<section id="when_to_use_a_function_expression">
+	<h4>
+		When Should We Use a Function Expression Instead of a Function Declaration?
+	</h4>
+	<p>
+		If the most efficient way to accomplish a task is to pass a function as an
+		argument, then function expressions are much more ideal than function
+		declarations. This is because function expressions can be passed through as
+		arguments, stored in objects and iterables, as well as shorter:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						/*
+						Suppose we have several chunks of code that we routinely use in our program. It would be very helpful to store these functions in an object, and then call the functions whenever we need to. 
+						*/
+						const distanceFormula = function (x1, y1, x2, y2) {
+							const x_distance = Math.pow(x2 - x1, 2);
+							const y_distance = Math.pow(y2 - y1, 2);
+							const sum_x_y_distance = x_distance + y_distance;
+							return Math.sqrt(sum_x_y_distance);
+						};
+						const lineSlope = function (x1, y1, x2, y2) {
+							const y_distance = y2 - y1;
+							const x_distance = x2 - x1;
+							return y_distance / x_distance;
+						};
+						const rectangleArea = function (length, width) {
+							return length * width;
+						};
+						const circleArea = function (radius) {
+							return Math.PI * Math.pow(radius, 2);
+						};
+						const circleCircumference = function (radius) {
+							return 2 * Math.PI * radius;
+						};
+
+						// Let's store the functions we've created in an object. When we do this, we create methods.
+						const mathOps = {
+							distanceLinePoints: distanceFormula,
+							slopeLine: lineSlope,
+							areaRectangle: rectangleArea,
+							areaCircle: circleArea,
+							perimeterCircle: circleCircumference,
+						};
+						// We can now call the functions with the object:
+						console.log(mathOps.distanceLinePoints(2, 1, 4, 5)); // Returns 4.47213595499958
+						console.log(mathOps.slopeLine(3, 3, 5, 8)); // Returns 2.5
+						console.log(mathOps.areaRectangle(3.3, 5.89)); // Returns 19.436999999999998
+						console.log(mathOps.areaCircle(7.93)); // Returns 197.55873986172875
+						console.log(mathOps.perimeterCircle(4.325)); // Returns 27.17477645355171
+					</code>
+				</pre>
+	<p>
+		By storing the functions in an object, we have turned the functions into
+		<span class="term">methods</span>. Similarly, we can store functions in an
+		array:
+	</p>
+	<pre class="language-javascript">
+						<code>
+							/*
+							Here is an array of functions. By placing functions inside arrays, we can create a more complex function where the order of performing the functions matters.
+							*/
+							const isInteger = function (num) {
+								if (num - Math.floor(num) !== 0) {
+									return false;
+								}
+								return true;
+							};
+							const isEven = function (num) {
+								if (num % 2 === 0) {
+									return true;
+								}
+								return false;
+							};
+							const isDivisibleBy4 = function (num) {
+								if (num % 4 === 0) {
+									return true;
+								}
+								return false;
+							};
+							const integerTest = [isInteger, isEven, isDivisibleBy4];
+
+							for (let i = 0; i < integerTest.length; i++) {
+								console.log(integerTest[i](9));
+							}
+							/*
+							This displays in the console:
+
+							true
+							false
+							false
+							*/									
+						</code>
+					</pre>
+	<p>
+		Placing functions inside arrays is a powerful tactic for creating complex
+		functions. Because order matters in an array, combining a
+		<span class="monoText">for</span> loop with an array of functions allows us
+		to perform complicated computations where order matters&ndash;essentially,
+		<span class="term">algorithms</span>.
+	</p>
+</section>
+
+<section id="arrow_functions">
+	<h4>Arrow Functions</h4>
+	<p>
+		An <span class="term">arrow function</span> is just a more compact way of
+		writing a function expression. The arrow function's general syntax (this
+		website's code formatting automatically converts "=>" into a block arrow;
+		the actual syntax is "=>"):
+	</p>
+	<pre class="language-javascript">
+				<code>
+					const <span class="greyText italicsText">variable-name</span> = (<span class="greyText italicsText">parameter</span>) => {
+						<span class="greyText italicsText">statements</span>;
+					}
+				</code>
+			</pre>
+	<p>Example:</p>
+	<pre class="language-javascript">
+				<code>
+					const square = (x) => {
+						return x * x;
+					}
+					console.log(square(4));
+					/*
+					Console output:
+					16
+					*/
+				</code>
+			</pre>
+	<p>Another example:</p>
+	<pre class="language-javascript">
+				<code>
+					const evenTest = (num) => {
+						return num % 2 === 0;
+					}
+					console.log(evenTest(8));
+					/*
+					This function tests whether a number is even. Here, we passed the number 8, and the output:
+
+					true
+					*/
+				</code>
+			</pre>
+	<p>
+		If you have <span class="underlineText">only one</span> parameter, you can
+		omit the parentheses:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						const circumference = radius => {
+							return 2 * Math.PI * radius;
+						}
+						console.log(circumference(3));
+
+						/*
+						Console output:
+
+						18.84955592153876
+						*/
+					</code>
+				</pre>
+	<p>
+		However, note that we can write arrow functions without parentheses
+		<span class="underlineText">if and only if</span> we have one parameter to
+		the function. If the arrow function is an anonymous function, you
+		<span class="underlineText">must</span> include parentheses.
+	</p>
+</section>
+
+<section id="arrow_functions_and_implicit_returns">
+	<h3>Arrow Functions and Implicit Returns</h3>
+	<p>
+		We can write arrow functions even more compactly with
+		<span class="term">implicit returns</span>.This will only work in certain
+		situations. To see how implicit returns are more compact, examine:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					const circumference = function (radius) { // A regular function expression
+						return 2 * Math.PI * radius;
+					};
+
+					const circumference = (radius) => { // An regular arrow function
+						return 2 * Math.PI * radius;
+					}
+
+					const circumference = radius => { // An arrow function without parentheses
+						return 2 * Math.PI * radius;
+					}
+
+					const circumference = radius => ( // An implicit return (no return statement)
+						2 * Math.PI * radius
+					);
+
+					const circumference = radius => 2 * Math.PI * radius; // A one-line implicit return
+					console.log(circumference(3));					
+					/*
+					For all of these expressions, the output to the console:
+
+					18.84955592153876
+					*/
+				</code>
+			</pre>
+	<p>
+		Notice how for <span class="term">implicit returns</span>, there are no
+		parentheses around the function's alias, and there is no
+		<span class="monoText">return</span> statement. They can also be written in
+		one line. Implicit returns (particularly one-line syntax) are attractive
+		because they're short, concise, and take up less lines. But, if the function
+		takes many parameters, consider writing the function in other syntax:
+		readable code is much easier to debug and work with. More importantly, use
+		arrow functions
+		<span class="underlineText"
+			>only if the function's body consists of 1 expression. JavaScript does not
+			know what to do if you wrote the following:</span
+		>
+	</p>
+	<pre class="language-javascript">
+					<code>
+						/*
+						Say I want to square a number and also determine whether the passed through number is divisible by 4
+						*/
+						const specialSquare = num => (
+							num * num
+							if (num % 4 === 0) {
+								return true;
+							}
+						);
+						console.log(specialSquare(4));
+						/*
+						On the console, we get the following error:
+
+						SyntaxError: Unexpected token 'if'
+						*/
+					</code>
+				</pre>
+	<p>
+		The above error is occurring because we put in more than one expression.
+	</p>
+</section>
+
+<section id="implicit_returns_and_arrays">
+	<h4>Using Implicit Returns and Arrays</h4>
+	<p>
+		Implicit returns allow us to concisely write functions operating on arrays.
+		Consider the following code using the map method, written in regular
+		function syntax:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					/*
+					I have an array of Fibonacci numbers, and I want to multiply each of them by euler's constant, and map the returned values into a new array.
+					*/
+					const fibonacciNumbers = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144];
+					const fibonacciEulerProducts = fibonacciNumbers.map(function (n) {
+						return n * Math.E;
+					});
+					console.log(fibonacciEulerProducts);
+					/*
+					The console output:
+
+					[
+					0,
+					2.718281828459045,
+					2.718281828459045,
+					5.43656365691809,
+					8.154845485377136,
+					13.591409142295225,
+					21.74625462767236,
+					35.337663769967584,
+					57.08391839763995,
+					92.42158216760754,
+					149.50550056524747,
+					241.927082732855,
+					391.4325832981025
+					]
+					*/
+				</code>
+			</pre>
+	<p>The code above can be written shorter with an arrow function:</p>
+	<pre class="language-javascript">
+				<code>
+					const fibonacciNumbers = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144];		
+					const fibonacciEulerProducts = fibonacciNumbers.map(n => {
+						return n * Math.E;
+					});
+					console.log(fibonacciEulerProducts);									
+				</code>
+			</pre>
+	<p>And it can be written even shorter with an implicit return:</p>
+	<pre class="language-javascript">
+				<code>
+					const fibonacciNumbers = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144];
+					const fibonacciEulerProducts = fibonacciNumbers.map(n => n * Math.E);
+					console.log(fibonacciEulerProducts);
+				</code>
+			</pre>
+	<p>
+		Bottom line: Implicit returns when used with array methods are conducive to
+		concise code. But, remember: We can only have one expression with arrow
+		functions (and by implication, implicit returns). Thus, to get around this
+		problem, we need to write code in a single expression. If that is not
+		possible, then we need to use a regular function expression, or define a
+		function elsewhere in the code, and pass that function as an argument.
+	</p>
+</section>
+
+<section id="ternary_operators_implicit_returns">
+	<h4>Implicit Returns and Ternary Operators</h4>
+	<p>
+		If the function to be used in a
+		<span class="monoText">.map()</span> or
+		<span class="monoText">.forEach()</span> method consists of a Boolean
+		expression that only returns one of two values given the array, then we can
+		use a <a href="#ternary_operator">ternary operator</a> to short the code
+		even further. Suppose:
+	</p>
+	<p></p>
+	<pre class="language-javascript">
+				<code>
+					/*
+					Here is an array of the values for the partition function for the numbers 1 to 8. (The partition function tells us the number of possible partitions for a number; e.g., the number 3 has 3 partitions: 3+0, 1+2, 1+1+1). Say I want to determine if the each of the values are odd or even.
+					*/
+					const partitionNum = [1, 2, 3, 5, 7, 11, 15, 22];
+					// We can write the map method's function with regular function notation:
+					const partitionNumParity = partitionNum.map(function (n) {
+						if (n % 2 === 0) return 'even';
+						return 'odd';
+					});
+					console.log(partitionNumParity);			
+					
+					/*
+					Console output: 
+					[
+					'odd', 'even',
+					'odd', 'odd',
+					'odd', 'odd',
+					'odd', 'even'
+					]
+					*/
+				</code>
+			</pre>
+	<p>Shortening the code above:</p>
+	<pre class="language-javascript">
+				<code>
+					const partitionNum = [1, 2, 3, 5, 7, 11, 15, 22];
+					const partitionNumParity = partitionNum.map((n) => {
+						if (n % 2 === 0) return 'even';
+						return 'odd';
+					});
+					console.log(partitionNumParity);		
+				</code>
+			</pre>
+	<p>
+		We can write it with an implicit return, but to do so, we cannot have
+		multiple return statements (those are multiple expressions!). To get around
+		this problem, we use a ternary operator:
+	</p>
+	<pre class="language-javascript">
+					<code>
+				const partitionNum = [1, 2, 3, 5, 7, 11, 15, 22];
+				const partitionNumParity = partitionNum.map((n) =>
+					n % 2 === 0 ?  'even' : 'odd'
+				);
+				console.log(partitionNumParity);		
+					</code>
+				</pre>
+	<p>Or, in a single line:</p>
+	<pre class="language-javascript">
+					<code>
+						const partitionNum = [1, 2, 3, 5, 7, 11, 15, 22];
+						const partitionNumParity = partitionNum.map((n) => n % 2 === 0 ? 'even' : 'odd');
+						console.log(partitionNumParity);	
+					</code>
+				</pre>
+</section>
+
+<section id="default_parameters">
+	<h3>Setting Default Parameters</h3>
+
+	<p>
+		In many situations, we want to add default parameter values to a function.
+	</p>
+	<pre class="language-javascript">
+				<code>
+					// Suppose we have a rudimentary function for calculating a spring's tension: 
+					function springTension(k, x) {
+						return -k * x;
+					}
+					// In the function above, we want to make sure that the values passed in are numbers. 
+					// Passing the number 3.4 and 6.9:
+					// Test
+					console.log(springTension(3.4, 6.9)); // Output: -23.46
+
+					// But, if we leave a number out:
+					console.log(springTension(1)); // Output: NaN
+					// We get NaN because we did not pass a second argument in, so x is set to undefined.
+
+					// One way to avoid this problem is to display in the console instructions:
+					function springTension2(k, x) {
+						if (typeof k === 'undefined' || typeof x === 'undefined') {
+							console.log('2 numbers must be passed');
+						} else {
+							return -k * x;
+						}
+					};
+					// Test:
+					console.log(springTension2(3.4, 6.9)); // Output: -23.46
+					console.log(springTension2(3)); // Output: 2 numbers must be passed
+
+					// Another way to avoid this problem is to set a default value:
+					function springTension3(k, x = 1) { // Notice that we set x = 1. This is the default value.
+						return -k * x;
+					};
+					// Test: 
+					console.log(springTension3(3.4, 6.9)); // Output: -23.46
+					console.log(springTension3(3.4)); // Output: -3.4								
+				</code>
+			</pre>
+</section>
+
+<section id="higher_order_functions">
+	<h3>Higher Order Functions</h3>
+	<p>
+		<span class="term">Higher order functions</span> are simply functions that
+		operate <span class="italicsText">on</span> or
+		<span class="italicsText">with other</span> functions. These are functions
+		that take other functions as arguments, or return functions as output.
+		<span class="italicsText">Higher order functions</span> are a staple
+		programming pattern; they are used routinely for a wide variety of tasks.
+		For example, a function that takes a function as an argument is a higher
+		order function:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					/*
+					Here is an example of a function that takes a function as an argument.
+					*/
+					// First, let's make a generic function to pass through to the higher order function.
+					function shake() {
+						console.log("shake shake shake shake bird! shake shake shake");
+					}
+					// Then, let's create a higher order function:
+					function tooMuchAdderall(func) { // Remember, "func" is just a placeholder name!
+						func(); //That placeholder name is attached to the parentheses
+						func();
+					}
+					// Call the higher order function:
+					tooMuchAdderall(shake);
+					/*
+					This outputs to the console:
+
+					shake shake shake shake bird! shake shake shake
+					shake shake shake shake bird! shake shake shake
+					*/
+				</code>
+			</pre>
+	<p>
+		We can have a higher order function execute a function passed as an argument
+		an $x$ amount of times by using a
+		<span class="monoText">for</span> loop in the higher function:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					// Function to be passed as an argument:
+					function shake() {
+						console.log("shake shake shake shake bird! shake shake shake");
+					}
+					// The higher order function that will take the function as an argument:
+					function tooMuchAdderall(func, numberOfExecutions) {
+						for (let i = 0; i < numberOfExecutions; i++) {
+							func();
+						}
+					}
+					// Call the higher order function:
+					tooMuchAdderall(shake, 5);
+
+					/*
+					Console output:
+
+					shake shake shake shake bird! shake shake shake
+					shake shake shake shake bird! shake shake shake
+					shake shake shake shake bird! shake shake shake
+					shake shake shake shake bird! shake shake shake
+					shake shake shake shake bird! shake shake shake
+					*/
+				</code>
+			</pre>
+	<p>
+		Another higher order function is a function that returns a function. These
+		higher order functions are essentially "function factories"&mdash;they take
+		the arguments passed to them, and output a function. Remember: Functions are
+		essentially data like numbers or strings, so they can be passed to other
+		functions as arguments, and returned by other functions.
+	</p>
+	<pre class="language-javascript">
+					<code>
+						/*
+						Suppose we have an array containing objects. The objects list the math fields the college currently has expert mathematicians in, and the number of mathematicians in those fields.
+						*/
+						const popularMathFields = [
+							{ field: "nonassociative rings and algebras", mathematicians: 1 },
+							{ field: "category theory", mathematicians: 1 },
+							{ field: "lie groups", mathematicians: 4 },
+							{ field: "ordinary differential equations", mathematicians: 12 },
+							{ field: "partial differential equations", mathematicians: 14 },
+							{ field: "operator theory", mathematicians: 12 },
+							{ field: "statistics", mathematicians: 28 },
+							{ field: "probability theory", mathematicians: 3 },
+						];
+						/* 
+						I'm now reviewing some job applicants for a new position in my math department. The applicants have applied for the fields in the array above, but there are still a lot of applicants. I want to make sure I'm only hiring an applicant if their field has a minimum of x and a maximum of y mathematicians in my department, to be determined later on. How do we do this? One way is to use a higher order function.
+						*/
+						function inBetweenFunc(min, max) { // The higher order function
+							return function (applicantField) { // The outputted function
+								for (let element of popularMathFields) { // Target objects in array
+									while (applicantField === element.field) { // Make sure field is offered
+										if ( // Check if the number of mathematicians is within range
+											element.mathematicians >= min &&
+											element.mathematicians <= max) 
+										{ // Within range? Do this.
+											return console.log(`${applicantField} meets range.`); 
+										} 
+										else { // Not within range? Do this.
+											return console.log(`${applicantField} outside range.`); 
+										}
+									}
+								}
+							};
+						}
+						/* 
+						Then let's store the inBetweenFunc in a variable, "isFieldNeeded". We've decided that, based on student and market demand and the number of mathematicians, we want the applicant's field to have a minimum of 4 mathematicians in our department, and a maximum of 17 mathematicians:
+						*/
+						const isFieldNeeded = inBetweenFunc(2, 17);
+						// Let's test the function:
+						isFieldNeeded("ordinary differential equations");
+						isFieldNeeded("lie groups");
+						isFieldNeeded("probability theory");
+						isFieldNeeded("category theory");
+						/*
+						The output on the console:
+
+						ordinary differential equations meets range.
+						lie groups meets range.
+						probability theory meets range.
+						category theory outside range.
+						*/
+					</code>
+				</pre>
+</section>
+
+<section id="callback_functions">
+	<h3>Callback Functions</h3>
+	<p>
+		A <span class="term">callback function</span> is a function that is passed
+		into another function as an argument, which is then invoked inside the outer
+		function. Example:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					/*
+					A common use for callback functions is passing a function into the setTimeout function built in to JavaScript. The setTimeout function calls a function after a certain amount of milliseconds.
+					*/
+					function poke() {
+						console.log("Ouch! Don't poke me.");
+					}
+					setTimeout(poke, 2000);
+
+					/*
+					After 2000 milliseconds (2s), the console displays:
+
+					Ouch! Don't poke me.
+					*/
+				</code>
+			</pre>
+</section>
+
+<section id="for_each_method">
+	<h4>The <span class="monoText">.forEach()</span> Method</h4>
+
+	<p>
+		The <span class="monoText">.forEach()</span> method tells JavaScript: "For
+		each element in the array, execute this function." The general syntax of the
+		<span class="monoText">.forEach()</span> method:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						<span class="greyText italicsText">array-name</span>.forEach(<span class="greyText italicsText">function-name</span>);
+					</code>
+				</pre>
+	<p>Here's an example:</p>
+
+	<pre class="language-javascript">
+				<code>
+					/*
+					I have an array of primes, and I want to square each of the primes and modulate that square by pi. We could use a for loop or pass each of the elements into a function one by one, but there's a faster way: the forEach method.
+					*/
+
+					// Suppose we have this array of primes:
+					const primes = [1, 3, 5, 7, 11, 13];
+					function primePiModulate(n) {
+						console.log((n * n) % Math.PI);
+					}
+					primes.forEach(primePiModulate);		
+					/*
+					Outputted to the console:
+
+					1
+					2.7168146928204138
+					3.008851424871448
+					1.8761101961531033
+					1.6194791635878616
+					2.495589359740965
+					*/						
+				</code>
+			</pre>
+</section>
+
+<section id="map_method">
+	<h4>The <span class="monoText">.map</span> Method</h4>
+
+	<p>
+		The <span class="monoText">.map()</span> method creates a new array with the
+		results of calling a<span class="italicsText">call back function</span>
+		on every element in the array.
+	</p>
+	<p>
+		The general syntax for the
+		<span class="monoText">.map()</span> method:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						const <span class="greyText italicsText">array-name</span> = [<span class="greyText italicsText">element-1</span>, <span class="greyText italicsText">element-2</span>, <span class="greyText italicsText">element-3</span>]; 
+						const <span class="greyText italicsText">variable-name</span> = <span class="greyText italicsText">array-name</span>.map(function() {
+							<span class="greyText italicsText">statements</span>;
+						});
+					</code>
+				</pre>
+	<p>Application:</p>
+	<pre class="language-javascript">
+					<code>
+						/*
+						I have an array of different radii, and I want to find the circumference for their corresponding circles. 
+						*/
+						const radii = [1, 3, 5, 7, 11, 13, 17];
+						const circumferences = radii.map(function (num) {
+							return num * 2 * Math.PI;
+						});
+						console.log(circumferences);		
+						
+						/*
+						Console output:
+						[
+							6.283185307179586,
+							18.84955592153876,
+							31.41592653589793,
+							43.982297150257104,
+							69.11503837897544,
+							81.68140899333463,
+							106.81415022205297
+						]
+						*/
+
+						// Remember: num is just an alias (or placeholder)---each of the elements in the array are passed through to the function and are used as "num"
+					</code>
+				</pre>
+</section>
+
+<section id="find_method">
+	<h4>The <span class="monoText">.find()</span> Method</h4>
+
+	<p>
+		The <span class="monoText">.find()</span> method returns the value of the
+		first element in an array that satisfies a test condition. General syntax:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						const <span class="greyText italicsText">arrayName</span> = [<span class="greyText italicsText">element-1</span>, <span class="greyText italicsText">element-2</span>, <span class="greyText italicsText">element-3</span>];
+						const <span class="greyText italicsText">variableName</span> = <span class="greyText italicsText">arrayName</span>.find(<span class="greyText italicsText">alias</span> => <span class="greyText italicsText">test-condition</span>);
+					</code>
+				</pre>
+	<p>
+		Of course, we can write the
+		<span class="monoText">.find()</span> method with the usual function
+		notations: Using the <span class="monoText">.find()</span> method with a
+		regular function expression:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						const <span class="greyText italicsText">arrayName</span> = [<span class="greyText italicsText">element-1</span>, <span class="greyText italicsText">element-2</span>, <span class="greyText italicsText">element-3</span>];
+						const <span class="greyText italicsText">variableName</span> = <span class="greyText italicsText">arrayName</span>.find(function(element) {
+							return <span class="greyText italicsText">test-condition</span>;
+						});
+					</code>
+				</pre>
+	<p>Example:</p>
+	<pre class="language-javascript">
+					<code>
+						// Here's an array of objects containing different hydrogen compounds. 
+						const chemicals = ['hydrogen peroxide', 'hyponitrous acid', 'hydrogen fluoride', 'hydrogen cyanide', 'hydrogen sulfide', 'lead hydrogen arsenate'];
+						// I want to find the first element that contains "sulfide".
+						let firstSulfide = chemicals.find(element => {
+							return element.includes('sulfide')
+						});
+						console.log(firstSulfide);
+						/*
+						Console output:
+
+						hydrogen sulfide
+						*/
+					</code>
+				</pre>
+	<p>
+		The <span class="monoText">.find()</span> method does not change the array,
+		since its only performing a simply find/search. Here's another example, an
+		array containing objects with data:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						// Here I have an array of objects, containing chemicals and their atomic masses.
+						const chemicals = [
+							{chemical: 'krypton', atomic_mass: 83.8},
+							{chemical: 'hydrogen', atomic_mass: 1.0079},
+							{chemical: 'zirconium', atomic_mass: 91.224},
+							{chemical: 'phosphorus', atomic_mass: 30.9738},
+							{chemical: 'boron', atomic_mass: 10.811},
+							{chemical: 'erbium', atomic_mass: 167.259},
+							{chemical: 'sodium', atomic_mass: 22.9897},
+							{chemical: 'sulfur', atomic_mass: 32.065},
+							{chemical: 'barium', atomic_mass: 137.327},
+						]
+						// I want to find the first element with an atomic mass greater than 13.982 and less than 43.764
+						const specialChemical = chemicals.find(element => 
+							element.atomic_mass > 13.982 && 
+							element.atomic_mass < 43.764
+						);
+						console.log(specialChemical);
+						/*
+						Console output:
+
+						{ chemical: 'phosphorus', atomic_mass: 30.9738 }
+						*/									
+					</code>
+				</pre>
+	<p>
+		Note that the <span class="monoText">.find()</span> method is case
+		sensitive. Further note: The <span class="monoText">.find()</span> method
+		only searches for the first element that matches the provided condition, and
+		returns that element. This implies several things:
+	</p>
+	<ol>
+		<li>
+			The <span class="monoText">.find()</span> method only works if we provide
+			it a condition&mdash;an expression that will only evaluate to true or
+			false.
+		</li>
+		<li>
+			The <span class="monoText">.find()</span> method stops its search at the
+			first match. It will not continue searching for other matches.
+		</li>
+	</ol>
+</section>
+
+<section id="filter_method">
+	<h3>The <span class="monoText">.filter()</span> Method</h3>
+
+	<p>
+		The <span class="monoText">.filter()</span> method creates a new array of
+		elements that satisfies a condition. Filter allows us to "filter out"
+		subsets of elements inside an array. The method works as such:
+	</p>
+	<ol>
+		<li>
+			We have an array, and we execute the
+			<span class="monoText">.filter()</span> method on the array.
+		</li>
+		<li>
+			In our .filter() method, we have a
+			<span class="term">test function</span>. That test function contains a
+			condition.
+		</li>
+		<li>
+			JavaScript looks at each of the array's elements, and checks whether the
+			element meets the condition.
+		</li>
+		<li>
+			If the element meets the condition, the element is put into a new array,
+			and JavaScript moves to the next element.
+		</li>
+		<li>
+			If the element does not meet the condition, the element is ignored, and
+			JavaScript moves to the next element.
+		</li>
+		<li>JavaScript continues until it has gone through the entire array.</li>
+	</ol>
+	<p>
+		The <span class="monoText">.filter()</span> method takes the following form:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						const <span class="greyText italicsText">arrayName</span> = [<span class="greyText italicsText">element-1</span>, <span class="greyText italicsText">element-2</span>, <span class="greyText italicsText">element-3</span>];
+						const <span class="greyText italicsText">variableName</span> = <span class="greyText italicsText">arrayName</span>.filter(<span class="greyText italicsText">alias</span> => <span class="greyText italicsText">test-condition</span>);									
+					</code>
+				</pre>
+	<p>Or, with a regular function expression:</p>
+	<pre class="language-javascript">
+					<code>
+						const <span class="greyText italicsText">arrayName</span> = [<span class="greyText italicsText">element-1</span>, <span class="greyText italicsText">element-2</span>, <span class="greyText italicsText">element-3</span>];
+						const <span class="greyText italicsText">variableName</span> = <span class="greyText italicsText">arrayName</span>.filter(function(element) {
+							return <span class="greyText italicsText">test-condition</span>;
+						});									
+					</code>
+				</pre>
+	<p>Simple example:</p>
+	<pre class="language-javascript">
+					<code>
+						// Here's an array of numbers.
+						// I want all of the even numbers stored in a new array. 
+						const nums = [1, 5, 9, 8, 7, 3, 5, 11, 17, 14];
+						const evenNums = nums.filter(elements => elements % 2 === 0); 
+						// Check if it worked:
+						console.log(evenNums);
+						/*
+						Console output: 
+
+						[ 8, 14 ]
+						*/
+
+						/*
+						What is the above code doing? We told JavaScript: "JS, for the array <span class="italicsText">nums</span>, I want you to do the following:
+						(1) look at each of the elements in the array one by one, 
+						(2) check if the element meets this condition: elements % 2 === 0, 
+						(3) if the element meets the condition, place it in a new array; otherwise, ignore it, 
+						(4) move to the next element, 
+						(5) continue until you've gone through the entire array, and 
+						(4) store that resulting array in this variable <span class="italicsText">evenNums</span>".
+						*/									
+					</code>
+				</pre>
+	<p>A more complex example:</p>
+
+	<pre class="language-javascript">
+				<code>
+					/* I have an array of different polymers (materials made of large molecules bonded together; e.g., plastics and resins), and some of their properties.
+					*/
+					const polymers = [
+						{
+							polymer: 'polyvinyl chloride (PVC)',
+							melting_point: 100,
+							uses: ['pipes', 'fencing', 'bottles', 'raincoats', 'toys'],
+							food_safe: false
+						},
+						{
+							polymer: 'polypropylene (PP)',
+							melting_point: 130,
+							uses: ['auto parts', 'food containers', 'dishware'],
+							food_safe: true
+						},
+						{
+							polymer: 'polyethylene terephthalate (PET)',
+							melting_point: 260,
+							uses: ['bottles', 'fleece', 'carpet'],
+							food_safe: true
+						},
+						{
+							polymer: 'high-density polyethylene (HDPE)',
+							melting_point: 130.8,
+							uses: ['bottles', 'containers', 'plastic bags'],
+							food_safe: true
+						},
+						{
+							polymer: 'low-density polyethylene (LDPE)',
+							melting_point: 110,
+							uses: ['bottles', 'toys', 'six pack rings', 'pipes'],
+							food_safe: true
+						},
+						{
+							polymer: 'polystyrene',
+							melting_point: 270,
+							uses: ['petri dishes', 'plastic cutlery'],
+							food_safe: false
+						}
+					];
+					// I want to see all of the polymers that have a melting point greater than 113, but only show me their names.
+					const hotPolymers = polymers.filter(elements => elements.melting_point > 113);
+					for (let element of hotPolymers) {
+						console.log(element.polymer);
+					};
+					/*
+					Console output:
+
+					polypropylene (PP)
+					polyethylene terephthalate (PET)
+					high-density polyethylene (HDPE)
+					polystyrene
+					*/
+
+					// Now I want to see all of the polymers that are food safe. 
+					const foodSafePolymers = polymers.filter(elements => elements.food_safe === true);
+					for (let element of foodSafePolymers) {
+						console.log(element.polymer)
+					};
+
+					/*
+					Console output: 
+
+					polypropylene (PP)
+					polyethylene terephthalate (PET)
+					high-density polyethylene (HDPE)
+					low-density polyethylene (LDPE)
+					*/
+
+					// Finally, show me all of the polymers that are good for bottles.
+					// Finally, show me all of the polymers that are good for bottles.
+					const bottlePolymers = polymers.filter(elements => (
+						elements.uses.includes("bottles")
+					));
+					for (let element of bottlePolymers) {
+						console.log(element.polymer)
+					};
+
+					/*
+					Console output: 
+
+					polyvinyl chloride (PVC)
+					polyethylene terephthalate (PET)
+					high-density polyethylene (HDPE)
+					low-density polyethylene (LDPE)
+					*/
+				</code>
+			</pre>
+</section>
+
+<section id="filter_method_and_search_inputs">
+	<h4>
+		Using the <span class="monoText">.filter()</span> Method for Search Inputs
+	</h4>
+
+	<p>
+		Suppose we have a search feature, and when the user inputs a word in the
+		text field, that input is used to search for a match.
+	</p>
+	<p>
+		How do we implement this feature in JavaScript? We can use the
+		<span class="monoText">.filter()</span> method:
+	</p>
+
+	<pre class="language-javascript">
+			<code>
+				/* 
+				Let's use the same array from the preceding example. 
+				We want a user to input the polymer use they want, and then we output the polymer.
+				*/
+				const polymers = [
+					{
+						polymer: 'polyvinyl chloride (PVC)',
+						melting_point: 100,
+						uses: ['pipes', 'fencing', 'bottles', 'raincoats', 'toys'],
+						food_safe: false
+					},
+					{
+						polymer: 'polypropylene (PP)',
+						melting_point: 130,
+						uses: ['auto parts', 'food containers', 'dishware'],
+						food_safe: true
+					},
+					{
+						polymer: 'polyethylene terephthalate (PET)',
+						melting_point: 260,
+						uses: ['bottles', 'fleece', 'carpet'],
+						food_safe: true
+					},
+					{
+						polymer: 'high-density polyethylene (HDPE)',
+						melting_point: 130.8,
+						uses: ['bottles', 'containers', 'plastic bags'],
+						food_safe: true
+					},
+					{
+						polymer: 'low-density polyethylene (LDPE)',
+						melting_point: 110,
+						uses: ['bottles', 'toys', 'six pack rings', 'pipes'],
+						food_safe: true
+					},
+					{
+						polymer: 'polystyrene',
+						melting_point: 270,
+						uses: ['petri dishes', 'plastic cutlery'],
+						food_safe: false
+					}
+				];
+				// JavaScript receives the user's input, and we store it in a variable:
+
+				let query = 'toys';
+
+				// Then we do the search (remember, .filter is case sensitive, so we want to make sure the user's input is all lower case--otherwise, if the user inputs a use in capital letters, JavaScript won't be able to find matches)
+
+				const results = polymers.filter(elements => {
+					return elements.uses.includes(query.toLowerCase())
+				});
+
+				// The search returns the array with the matching objects with all of their properties. 
+				// Let's store the name of the matching polymers in a separate array:
+
+				const resultPolymerNames = results.map(function (elements) {
+					return elements.polymer;
+				})
+
+				// Check if it works:
+
+				console.log(resultPolymerNames); 
+
+				/*
+				console output: 
+
+				[ 'polyvinyl chloride (PVC)', 'low-density polyethylene (LDPE)' ]
+				*/		
+			</code>
+		</pre>
+</section>
+
+<section id="every_method">
+	<h4>The <span class="monoText">.every()</span> Method</h4>
+
+	<p>
+		The <span class="monoText">.every()</span> method tests whether
+		<span class="underlineText">all</span> of the elements in an array satisfy a
+		condition, and returns a Boolean value (either
+		<span class="greenText">true</span> or <span class="redText">false</span>).
+		Because the <span class="monoText">.every()</span> method only returns
+		Boolean values, it is called a <span class="term">Boolean method</span>. The
+		<span class="monoText">.every()</span> method takes the following form:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						const <span class="greyText">array-name</span> = [<span class="greyText italicsText">element-1</span>, <span class="greyText italicsText">element-2</span>, <span class="greyText italicsText">element-3</span>];
+						<span class="greyText">array-name</span>.every(element => {
+							<span class="greyText italicsText">test-condition</span>;
+						});
+					</code>
+				</pre>
+	<p>A simple example:</p>
+	<pre class="language-javascript">
+					<code>
+						// Here's an array of shapes:
+						const words = ['circle', 'square', 'rhombus', 'triangle', 'pentagon', 'hexagon', 'octagon'];
+						// Say I want to check if every word is more than 4 letters long:
+						const all_words_are_three = words.every(word => word.length >= 4);
+						console.log(all_words_are_three);
+						/*
+						Output: 
+
+						true
+						*/									
+					</code>
+				</pre>
+	<p>Another example:</p>
+	<pre class="language-javascript">
+					<code>
+						/* We're conducting research on the history of science for certain metallic elements, and our researchers enter the names of the chemicals they worked on, which are then passed into an array. We want to make sure that every element entered by a researcher ends with "um" (all metallic elements discovered after 1811 have names ending in "um"). Suppose the inputs are passed into the array below:
+						*/
+						const studiedElements = ['cadmium', 'lanthanum', 'lithium', 'thallium', 'radium', 'aluminum'];
+						const testEndUm = studiedElements.every(element => {
+							return element.includes('um') === true;
+						});
+						console.log(testEndUm);
+						/*
+						Console output: 
+
+						true
+						*/
+
+						// If we put "arsenic" in the array:
+						const studiedElements = ['cadmium', 'lanthanum', 'lithium', 'thallium', 'radium', 'aluminum', 'arsenic'];
+						const testEndUm = studiedElements.every(element => {
+							return element.includes('um') === true;
+						});
+						console.log(testEndUm);
+						/*
+						Console output: 
+
+						false
+						*/
+					</code>
+				</pre>
+</section>
+
+<section id="some_method">
+	<h4>The <span class="monoText">.some()</span> Method</h4>
+	<p>
+		The <span class="monoText">.some()</span> method tests whether
+		<span class="underlineText">at least one</span> element in an array
+		satisfies a condition. The general syntax of the
+		<span class="monoText">.some()</span> method:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						const <span class="greyText">array-name</span> = [<span class="greyText italicsText">element-1</span>, <span class="greyText italicsText">element-2</span>, <span class="greyText italicsText">element-3</span>];
+						<span class="greyText">array-name</span>.some(element => {
+							<span class="greyText italicsText">test-condition</span>;
+						});									
+					</code>
+				</pre>
+	<p>Illustration:</p>
+	<pre class="language-javascript">
+					<code>
+						// We've made a piece of software, and we want to put it to a focus group. But we want to ensure that there is at least someone in the focus group that does not work in STEM. Below is the array of participants so far, with their data. 
+						const focusGroup = [
+							{ participantID: '1432', field: 'STEM' },
+							{ participantID: '8723', field: 'retail' },
+							{ participantID: '9823', field: 'STEM' },
+							{ participantID: '9242', field: 'STEM' },
+							{ participantID: '7699', field: 'STEM' },
+						];
+						// We can check this requirement with the some method.
+						// Test condition: There is <span class="underlineText">at least one</span> element with a field that is <span class="underlineText">not</span> 'STEM'.
+						const groupTest = focusGroup.some(participant => {
+							return participant.field !== 'STEM';
+						});
+						console.log(groupTest);
+						/*
+						Output: 
+						true
+						*/
+
+						// If we remove the element with the field 'retail':
+						const focusGroup = [
+							{ participantID: '1432', field: 'STEM' },
+							{ participantID: '9823', field: 'STEM' },
+							{ participantID: '9242', field: 'STEM' },
+							{ participantID: '7699', field: 'STEM' },
+						];
+						const groupTest = focusGroup.some(participant => {
+							return participant.field !== 'STEM';
+						});
+						console.log(groupTest);
+						/*
+						Output: 
+						false
+						*/							
+					</code>
+				</pre>
+</section>
+
+<section id="sort_method_with_callbacks">
+	<h4>
+		Using the <span class="monoText">.sort()</span> Method with Callback
+		Functions
+	</h4>
+
+	<p>
+		Recall that the <span class="monoText">.sort()</span> method, by default,
+		converts numbers into their UTF codes (values of type string), and orders
+		them alphabetically ascending.
+		<a href="#sort()_method"
+			><span class="italicsText">See infra</span> Sort the Values in an Array:
+			.sort()</a
+		>. To review: In order to use execute the
+		<span class="monoText">.sort()</span> method on an array of numbers, such
+		that the numbers are sorted according to their numeric values, we need to
+		use a <span class="term">compare function</span>. The
+		<span class="term">compare function</span> takes the form:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					<span class="greyText italicsText">arrayName</span>.sort(<span class="greyText italicsText">compareFunc</span>(<span class="greyText italicsText">a</span>, <span class="greyText italicsText">b</span>))
+				</code>
+			</pre>
+
+	<p>
+		If <span class="italicsText">compareFunc</span>(<span class="italicsText"
+			>a</span
+		>, <span class="italicsText">b</span>) returns a number less than 0,
+		JavaScript sorts <span class="italicsText">a</span> before
+		<span class="italicsText">b</span>. If
+		<span class="italicsText">compareFunc</span>(<span class="italicsText"
+			>a</span
+		>, <span class="italicsText">b</span>) returns 0, JavaScript leaves the
+		order of <span class="italicsText">a</span> and
+		<span class="italicsText">b</span> as is. If
+		<span class="italicsText">compareFunc</span>(<span class="italicsText"
+			>a</span
+		>, <span class="italicsText">b</span>) returns a number greater than 0,
+		JavaScript sorts <span class="italicsText">b</span> before
+		<span class="italicsText">a</span>.
+	</p>
+
+	<p>Illustration:</p>
+	<pre class="language-javascript">
+				<code>
+					const randomNums = [8.22, 9.32, 1.546, 14.321, 0.43, 2.334, 5.566, 7.89, 9.823, 14.234, 15.442];
+					const ascendingSort = randomNums.sort((a, b) => a - b);
+					console.log(ascendingSort);
+					/*
+					Output:
+					[ 0.43, 1.546, 2.334, 5.566, 7.89, 8.22, 9.32, 9.823, 14.234, 14.321, 15.442 ]
+					*/									
+				</code>
+			</pre>
+	<p>
+		Above, we sorted the numbers from least to greatest. But, we can also sort
+		the numbers from greatest to least:
+	</p>
+	<pre class="language-javascript">
+				<code>
+					const randomNums = [8.22, 9.32, 1.546, 14.321, 0.43, 2.334, 5.566, 7.89, 9.823, 14.234, 15.442];
+					const descendingSort = randomNums.sort((a, b) => b - a);
+					console.log(descendingSort);
+
+					/*
+					Output:
+					[ 15.442, 14.321, 14.234, 9.823, 9.32, 8.22, 7.89, 5.566, 2.334, 1.546, 0.43 ]
+					*/									
+				</code>
+			</pre>
+	<p>
+		What did we do differently? We switched
+		<span class="italicsText">b</span> and <span class="italicsText">a</span>.
+	</p>
+	<p>
+		If we apply the
+		<span class="monoText">.sort()</span> method to an existing array, without
+		any other code instructing JavaScript on what to do with the outputted
+		array, the original array is changed.
+	</p>
+	<p>You can see this with the array from the example above:</p>
+	<pre class="language-javascript">
+				<code>
+					const randomNums = [8.22, 9.32, 1.546, 14.321, 0.43, 2.334, 5.566, 7.89, 9.823, 14.234, 15.442];
+					const descendingSort = randomNums.sort((a, b) => b - a);
+					// If we display in the console the descending sorted array:
+					console.log(descendingSort);
+					/*
+					Output:
+					[ 15.442, 14.321, 14.234, 9.823, 9.32, 8.22, 7.89, 5.566, 2.334, 1.546, 0.43 ]
+					*/
+
+					// If we display in the console the original array, <span class="italicsText">randomNums</span>
+					console.log(randomNums);
+					/*
+					Output: 
+					[ 15.442, 14.321, 14.234, 9.823, 9.32, 8.22, 7.89, 5.566, 2.334, 1.546, 0.43 ]
+					*/										
+				</code>
+			</pre>
+	<p>
+		There are several ways to prevent this from happening. One way is to make a
+		separate variable containing the array to be sorted:
+	</p>
+	<pre class="language-javascript">
+			<code>
+				const randomNums = [8.22, 9.32, 1.546, 14.321, 0.43, 2.334, 5.566, 7.89, 9.823, 14.234, 15.442];
+				const randomNumsDescending = [8.22, 9.32, 1.546, 14.321, 0.43, 2.334, 5.566, 7.89, 9.823, 14.234, 15.442]; 
+				const descendingSort = randomNumsDescending.sort((a, b) => b - a);
+				console.log(descendingSort);
+				/*
+				Output:
+				[ 15.442, 14.321, 14.234, 9.823, 9.32, 8.22, 7.89, 5.566, 2.334, 1.546, 0.43 ]
+				*/
+				console.log(randomNums);
+				/*
+				Output: 
+				[8.22, 9.32, 1.546, 14.321, 0.43, 2.334, 5.566, 7.89, 9.823, 14.234, 15.442]
+				*/									
+			</code>
+		</pre>
+	<p>
+		Another way is to use a method to copy the data into a new array. For
+		example, using the method
+		<span class="monoText">.slice()</span>:
+	</p>
+	<pre class="language-javascript">
+			<code>
+				const randomNums = [8.22, 9.32, 1.546, 14.321, 0.43, 2.334, 5.566, 7.89, 9.823, 14.234, 15.442];
+				const descendingSort = randomNums.slice().sort((a, b) => b - a);
+				console.log(descendingSort);
+				/*
+				Output: 
+				[ 15.442, 14.321, 14.234, 9.823, 9.32, 8.22, 7.89, 5.566, 2.334, 1.546, 0.43 ]
+				*/
+				console.log(randomNums);
+				/*
+				Output:
+				[ 8.22, 9.32, 1.546, 14.321, 0.43, 2.334, 5.566, 7.89, 9.823, 14.234, 15.442 ]
+				*/										
+			</code>
+		</pre>
+</section>
+
+<section id="reduce_method">
+	<h3>The <span class="monoText">.reduce()</span> Method</h3>
+
+	<p>
+		The <span class="monoText">.reduce()</span> method takes an array of values,
+		and <span class="italicsText">reduces</span> them down to a single value.
+		The <span class="monoText">.reduce()</span> method has the following syntax:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						const <span class="greyText italicsText">arrayName</span> = [<span class="greyText italicsText">value1</span>, <span class="greyText italicsText">value2</span>, <span class="greyText italicsText">value3</span>];
+						<span class="greyText italicsText">arrayName</span>.reduce((<span class="greyText italicsText">accumulator</span>, <span class="greyText italicsText">currentValue</span>) => {
+							<span class="greyText italicsText">statements</span>;
+						});
+					</code>
+				</pre>
+	<p>
+		The <span class="monoText">.reduce()</span> method has two parameters: the
+		<span class="italicsText">accumulator</span>, which stores the returned
+		value from executing the method, and
+		<span class="italicsText">currentValue</span>, the alias for each of the
+		individual elements in the array. Here is an example of how this method
+		works:
+	</p>
+	<pre class="language-javascript">
+					<code>
+					// Suppose we have an array of numbers:
+					const nums = [3, 2, 4, 9, 11, 17];
+					const reduceResult = nums.reduce((accumulator, currentValue) => {
+						return accumulator + currentValue;
+					});
+					console.log(reduceResult);
+					/*
+					Output: 
+					46
+					*/									
+					</code>
+				</pre>
+	<p>We can visualize what happens in this method with a table:</p>
+	<table>
+		<thead>
+			<th><span class="italicsText">Iteration</span></th>
+			<th><span class="monoText">accumulator</span></th>
+			<th><span class="monoText">currentValue</span></th>
+			<th><span class="monoText">return</span></th>
+		</thead>
+		<tr>
+			<td>first</td>
+			<td><span class="monoText">3</span></td>
+			<td><span class="monoText">2</span></td>
+			<td>
+				<span class="monoText">return 3 + 2 = 5</span>
+			</td>
+		</tr>
+		<tr>
+			<td>second</td>
+			<td><span class="monoText">5</span></td>
+			<td><span class="monoText">4</span></td>
+			<td>
+				<span class="monoText">return 5 + 4 = 9</span>
+			</td>
+		</tr>
+		<tr>
+			<td>third</td>
+			<td><span class="monoText">9</span></td>
+			<td><span class="monoText">9</span></td>
+			<td>
+				<span class="monoText">return 9 + 9 = 18</span>
+			</td>
+		</tr>
+		<tr>
+			<td>fourth</td>
+			<td><span class="monoText">18</span></td>
+			<td><span class="monoText">11</span></td>
+			<td>
+				<span class="monoText">return 18 + 11 = 29</span>
+			</td>
+		</tr>
+		<tr>
+			<td>fifth</td>
+			<td><span class="monoText">29</span></td>
+			<td><span class="monoText">17</span></td>
+			<td>
+				<span class="monoText">return 29 + 17 = 46</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4">
+				<span class="monoText">return 46</span>
+			</td>
+		</tr>
+	</table>
+	<p>
+		After the fifth call, the
+		<span class="monoText">.reduce()</span> method stops&mdash;it has gone
+		through the entire array (which makes sense, since there are 5 indices in
+		the array). Of course, we are not limited to addition, we can also use the
+		<span class="monoText">.reduce()</span> method with other operators:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						// Suppose we have an array of numbers:
+						const nums = [3, 2, 4, 9, 11, 17];
+
+						const reduceResult = nums.reduce((accumulator, currentValue) => {
+							return accumulator * currentValue;
+						});
+
+						console.log(reduceResult);
+
+						/*
+						Output: 
+						40392
+						*/									
+					</code>
+				</pre>
+	<p>
+		We can also use the
+		<span class="monoText">.reduce()</span> method for more complex
+		computations:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						// Suppose we have an array of prices:
+						let prices = [1.24, 1.98, 1.46, 1.78, 2.01, 1.92, 2.03 ];
+						// I want to find the highest price in the array:
+						const peakPrice = prices.reduce((maxPrice, currentValue) => {
+							if (currentValue > max) return currentValue;
+							return max;
+						});
+						console.log(peakPrice);
+						/*
+						Output:
+						2.03
+						*/									
+					</code>
+				</pre>
+	<p>This table demonstrates what happens in the code above:</p>
+	<table>
+		<thead>
+			<th><span class="italicsText">Iteration</span></th>
+			<th><span class="monoText">maxPrice</span></th>
+			<th><span class="monoText">currentValue</span></th>
+			<th><span class="monoText">return</span></th>
+		</thead>
+		<tr>
+			<td>first</td>
+			<td><span class="monoText">1.24</span></td>
+			<td><span class="monoText">1.98</span></td>
+			<td>
+				<ul class="nobullets">
+					<li>
+						<span class="monoText">1.24 !> 1.98</span>
+					</li>
+					<li>
+						<span class="monoText">return 1.98</span>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>second</td>
+			<td><span class="monoText">1.98</span></td>
+			<td><span class="monoText">1.46</span></td>
+			<td>
+				<ul class="nobullets">
+					<li>
+						<span class="monoText">1.98 > 1.46</span>
+					</li>
+					<li>
+						<span class="monoText">return 1.98</span>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>third</td>
+			<td><span class="monoText">1.98</span></td>
+			<td><span class="monoText">1.78</span></td>
+			<td>
+				<ul class="nobullets">
+					<li>
+						<span class="monoText">1.98 > 1.78</span>
+					</li>
+					<li>
+						<span class="monoText">return 1.98</span>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>fourth</td>
+			<td><span class="monoText">1.98</span></td>
+			<td><span class="monoText">2.01</span></td>
+			<td>
+				<ul class="nobullets">
+					<li>
+						<span class="monoText">1.98 !> 2.01</span>
+					</li>
+					<li>
+						<span class="monoText">return 2.01</span>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>fifth</td>
+			<td><span class="monoText">2.01</span></td>
+			<td><span class="monoText">1.92</span></td>
+			<td>
+				<ul class="nobullets">
+					<li>
+						<span class="monoText">2.01 > 1.92</span>
+					</li>
+					<li>
+						<span class="monoText">return 2.01</span>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>sixth</td>
+			<td><span class="monoText">2.01</span></td>
+			<td><span class="monoText">2.03</span></td>
+			<td>
+				<ul class="nobullets">
+					<li>
+						<span class="monoText">2.01 !> 2.03</span>
+					</li>
+					<li>
+						<span class="monoText">return 2.03</span>
+					</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4">
+				<span class="monoText">return 2.03</span>
+			</td>
+		</tr>
+	</table>
+	<p>
+		We can write the above code more concisely with the
+		<span class="monoText">Math.max()</span> method and an implicit return:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						let prices = [1.24, 1.98, 1.46, 1.78, 2.01, 1.92, 2.03 ];
+						const peakPrice = prices.reduce((maxPrice, currentValue) => (
+							Math.max(maxPrice, currentValue)
+						));
+						console.log(peakPrice);
+						/*
+						Output:
+						2.03
+						*/							
+					</code>
+				</pre>
+	<p>
+		We can also pass an initial value (the starting value) for the
+		<span class="monoText">.reduce()</span> method to start with (i.e., maybe we
+		want to start the method with a value not in the array); to do so, we use
+		the following syntax:
+	</p>
+	<pre class="language-javascript">
+					<code>
+						<span class="greyText italicsText">arrayName</span>.reduce((accumulator, currentValue) => {
+							<span class="greyText italicsText">statements</span>;
+						}, <span class="greyText italicsText">initialValue</span>)
+					</code>
+				</pre>
+	<p>For example:</p>
+	<pre class="language-javascript">
+					<code>
+						let prices = [1.24, 1.98, 1.46, 1.78, 2.01, 1.92, 2.03];
+						// I want to check if there's a price in the array below 1.19:
+						const peakPrice = prices.reduce((minPrice, currentValue) => {
+							return Math.min(minPrice, currentValue);
+						}, 1.19);
+						console.log(peakPrice);
+						/*
+						Output:
+						1.19
+						*/
+						// This means there isn't any price in the array below 1.19
+					</code>
+				</pre>
+</section>
+
+<section id="function_calls_spread">
+	<h3>Spread</h3>
+	<p>
+		The <span class="term">spread syntax</span>
+		<span class="monoText">(...)</span> allows us to expand an iterable (e.g.,
+		an array or string) in places where zero or more arguments or elements are
+		expected, or to expand an object expression in places where zero or more
+		properties are expected. Put simply,
+		<span class="italicsText">spread</span> allows us to expand an iterable or
+		object expression into other places.
+	</p>
+	<p>
+		When <span class="italicsText">spread</span> is used for a function call, it
+		expands an iterable into a list of arguments. To be more explicit, consider
+		the code below:
+	</p>
+	<pre class="language-javascript"><code>
+			// Say we have an array of numbers:
+
+			const arrNums = [13, 5, 9, 11, 3, 2, 18, 17, 1, 6, 0];
+
+			// How do we find the maximum value in this array? One way is to use the Math.max method:
+
+			let arrNumsMax = Math.max(arrNums);
+			console.log(arrNumsMax);
+
+			// Problem? It outputs 'NaN'
+			// This is because we passed an array's reference into Math.max as an argument, and the Math.max method only takes numbers.
+			// Thus, to get around this problem, we need to pass each of the numbers into the method:
+
+			let arrNumsMax2 = Math.max(13, 5, 9, 11, 3, 2, 18, 17, 1, 6, 0);
+			console.log(arrNumsMax2); // Output: 18
+
+			// But, this is far too tedious, and it does not work well when we have hundreds or thousands of arrays. 
+			// This is a perfect use case for spread:
+			let arrNumsSpread = Math.max(...arrNums);
+			console.log(arrNumsSpread) // Output: 18								
+		</code></pre>
+	<p>
+		We can also use <span class="italicsText">spread</span> to create a new
+		array with existing arrays. When this is done, the
+		<span class="italicsText">spread syntax</span> takes the elements from the
+		existing array, and places them into a new array.
+	</p>
+	<pre class="language-javascript"><code>
+					// We have contractors bidding for a government contract, and we have arrays of their bid prices, corresponding to different days:
+					const day1_bids = [3.23, 4.32, 5.32, 5.99, 6.17, 7.88, 7.90, 7.98];
+					const day2_bids = [8.15, 8.82, 9.01, 9.05, 9.15, 10.23, 10.25, 10.26];
+					const day3_bids = [10.27, 10.29, 11.23, 11.32, 11.35, 11.52, 12.95];
+					// We want to create one large array of all of these bid prices. We can do so with the spread syntax:
+					const bids = [...day1_bids, ...day2_bids, ...day3_bids];
+					console.log(bids);
+					/*
+					Output:
+					[
+					3.23,  4.32,  5.32,  5.99,
+					6.17,  7.88,   7.9,  7.98,
+					8.15,  8.82,  9.01,  9.05,
+					9.15, 10.23, 10.25, 10.26,
+					10.27, 10.29, 11.23, 11.32,
+					11.35, 11.52, 12.95
+					]
+					*/								
+				</code></pre>
+	<p>
+		Note: The <span class="italicsText">spread syntax</span>, used in this way,
+		is not doing anything we have already been able to do. The above can be
+		similarly accomplished with the
+		<span class="monoText">.concat</span> method.
+		<span class="italicsText">Spread</span> is more useful when we want to make
+		a copy of an array:
+	</p>
+	<pre class="language-javascript"><code>
+			// an array of ages:
+			const age = [23, 34, 29, 19, 36, 15, 42];
+			// a copy of the array:
+			const ageCopy = [...age];
+			console.log(ageCopy);
+			/*
+			Output:
+			[ 23, 34, 29, 19, 36, 15, 42 ]
+			*/								
+		</code></pre>
+	<p>
+		Note that the above does not work for arrays containing arrays or objects.
+		They will not be cloned. While not a common operation,
+		<span class="italicsText">spread</span> can also be used to separate the
+		characters in a string as individual elements in an array:
+	</p>
+	<pre class="language-javascript"><code>
+			let greeting = "hello";
+			let helloCharacters = [...greeting];
+			console.log(helloCharacters);								
+		</code></pre>
+</section>
+
+<section id="spread_object_literals">
+	<h4>Using <span class="italicsText">Spread</span> with Object Literals</h4>
+	<p>
+		We can also use the
+		<span class="italicsText">spread syntax</span> to copy properties from one
+		<span class="italicsText">object literal</span> into another
+		<span class="italicsText">object literal</span>.
+	</p>
+	<pre class="language-javascript"><code>
+				// Here are objects with some properties:
+				const gas = { volume: 'indefinite', compressibility: 'easy', flow: 'easy' };
+				const liquid = { volume: 'indefinite', compressibility: 'difficult', flow: 'easy' };
+				const solid = { volume: 'definite', compressibility: 'difficult', flow: 'difficult' };
+				// We're given an element, and we want to add the properties above to the element. 
+				const hydrogen = { ...liquid };
+				const sulfur = { ...solid };
+				const xenon = { ...gas };
+				console.log(hydrogen);
+				console.log(sulfur);
+				console.log(xenon);
+				/*
+				Output:
+				{ volume: 'indefinite', compressibility: 'difficult', flow: 'easy' }
+				{ volume: 'definite', compressibility: 'difficult', flow: 'difficult' }
+				{ volume: 'indefinite', compressibility: 'easy', flow: 'easy' }
+				*/								
+			</code></pre>
+	<p>We can also add properties on top of copying a property:</p>
+	<pre class="language-javascript"><code>
+				const gas = { volume: 'indefinite', compressibility: 'easy', flow: 'easy' };
+				const liquid = { volume: 'indefinite', compressibility: 'difficult', flow: 'easy' };
+				const solid = { volume: 'definite', compressibility: 'difficult', flow: 'difficult' };
+
+				const cerium = {
+					...solid,
+					atomic_number: 58,
+					melting_point: 1068
+				};
+				console.log(cerium);
+				/*
+				Output:
+				{
+				volume: 'definite',
+				compressibility: 'difficult',
+				flow: 'difficult',
+				atomic_number: 58,
+				melting_point: 1068
+				}
+				*/								
+			</code></pre>
+	<p>
+		Remember, order matters for when we copy properties (or elements) from an
+		object (or array). So, for example:
+	</p>
+	<pre class="language-javascript"><code>
+					const gas = { volume: 'indefinite', compressibility: 'easy', flow: 'easy' };
+					const liquid = { volume: 'indefinite', compressibility: 'difficult', flow: 'easy' };
+					const solid = { volume: 'definite', compressibility: 'difficult', flow: 'difficult' };
+
+					// For the object "astatine", I want to copy all of the elements for solid, but set volume to 'indefinite'
+					const astatine = {
+						...solid,
+						volume: 'indefinite'
+					};
+					console.log(astatine);
+					/*
+					Output:
+					{
+					volume: 'indefinite',
+					compressibility: 'difficult',
+					flow: 'difficult'
+					}
+					*/								
+				</code></pre>
+	<p>
+		The above example shows that we can both copy properties and change the
+		copied properties, at the same time. When an object is copied with
+		<span class="italicsText">spread</span> into another, new object, the result
+		is two different objects. This means that the objects, while possibly
+		identical in that they contain the same data, have difference
+		<span class="italicsText">references</span>, and as such, are treated as
+		unique and different entities by JavaScript. Just like nested arrays, the
+		<span class="italicsText">spread syntax</span> will not work as a way to
+		copy an object if the object itself contains objects. Furthermore, you
+		cannot <span class="italicsText">spread</span> an object directly into an
+		array (but you can spread an object into an object in an array). The
+		<span class="italicsText">spread syntax</span> only applies to spreading
+		objects into objects. This also means that you cannot
+		<span class="italicsText">spread</span> an object into a function or method
+		that can only operate on an iterable (since objects themselves are not
+		iterables).
+	</p>
+</section>
+
+<section id="rest_method">
+	<h4>The <span class="italicsText">Rest</span> Syntax</h4>
+	<p>
+		The <span class="italicsText">Rest syntax</span> looks like the
+		<span class="italicsText">Spread syntax</span>, but rather than spreading
+		data, it <span class="italicsText">collects</span> data into
+		<span class="underlineText">a single array</span>. To see how this syntax
+		works, consider a problem we have with the functions we've written so far:
+	</p>
+	<pre class="language-javascript"><code>
+				// Suppose we want to write a function that computes the sum of numbers passed through it.
+				// The problem: the function only works for the parameters we give it:
+				function sum(a, b) {
+					return a + b;
+				}
+				console.log(sum(2, 3)); // Works fine. Output: 5
+				console.log(sum(1, 3, 5, 8)); // Does not work. Output: 5 4
+				// So, if we wanted to sum more numbers, we'd have to add more parameters:
+				function sum2(a, b, c, d,) {
+					return a + b + c + d;
+				}
+				// But even then, we can only sum a quantity of numbers equal to the quantity of parameters provided.	
+			</code></pre>
+	<p>
+		One way to get around the problem above is to use the
+		<span class="italicsText">arguments object</span>, which is an object
+		available inside every function we write.
+	</p>
+	<pre class="language-javascript"><code>
+					// Using the arguments object:
+					function sum() {
+						let total = 0;
+						for (let i = 0; i < arguments.length; i++) {
+							total += arguments[i];
+							return total;
+						}
+					};
+					console.log(sum(1, 2, 4, 2, 9)); // Output: 18
+					console.log(sum(1, 3)); // Output: 4								
+					</code></pre>
+	<p>
+		The <span class="italicsText">arguments object</span> is
+		<span class="underlineText">not</span> an array, but it is an
+		<span class="italicsText">array-like</span> object. It has a
+		<span class="monoText">.length</span> property, but methods like
+		<span class="monoText">.push()</span> and
+		<span class="monoText">.pop()</span> will not work on it. In essence, the
+		<span class="italicsText">arguments object</span>
+		contains all of the arguments passed into the function. You see the
+		arguments object by displaying in the console the name
+		<span class="monoText">arguments</span>:
+	</p>
+	<pre class="language-javascript"><code>
+							function displayArguments() {
+								console.log(arguments);
+							}
+							
+							displayArguments(3, 4, 0, 2, 1);
+							/*
+							Output:
+							[Arguments] { '0': 3, '1': 4, '2': 0, '3': 2, '4': 1 }
+							*/								
+							</code></pre>
+	<p>
+		Be very cognizant of this point: the
+		<span class="monoText">arguments</span> object
+		<span class="underlineText">is not an array</span>. Consider the following:
+	</p>
+	<pre class="language-javascript"><code>
+									// Suppose we write our sum function using an arguments object and the reduce method:
+									function sum() {
+										return arguments.reduce((total, currentValue) => {
+											return total + currentValue;
+										})
+									}
+		
+									console.log(sum(2, 3, 6));
+									/*
+									Output:
+									TypeError: arguments.reduce is not a function
+									*/
+									// We're getting this error because the .reduce method only works on arrays, and the argument object is NOT an array.		
+									</code></pre>
+	<p>
+		To get around the problem above, one way is to turn the
+		<span class="monoText">arguments</span> object into an array:
+	</p>
+	<pre class="language-javascript"><code>
+							function sum() {
+								const argsArray = [...arguments]; // Use the spread method to turn the arguments object into an array
+								return argsArray.reduce((total, currentValue) => {
+									return total + currentValue;
+								})
+							};
+							console.log(sum(2, 3, 6)); // Output: 11								
+						</code></pre>
+	<p>
+		There is no
+		<span class="italicsText">arguments object</span>
+		inside arrow functions. Instead of using the
+		<span class="monoText">arguments</span> objects, we can use the
+		<span class="italicsText">rest syntax</span>:
+	</p>
+	<pre class="language-javascript"><code>
+								function <span class="greyText italicsText">functionName</span>(...<span class="greyText italicsText">parameters</span>) {
+									return <span class="greyText italicsText">statements</span>
+								};
+							</code></pre>
+	<p>
+		The <span class="italicsText">rest syntax</span> collects all of the
+		arguments into a single array that can then be used in the function's body.
+	</p>
+	<pre class="language-javascript"><code>
+									// We can see the rest syntax's resulting array with the console:
+									function showRest(...elements) {
+										return console.log(elements)
+									};
+									showRest(2, 4, 9, 11);
+									/*
+									Output:
+									[ 2, 4, 9, 11 ]
+									*/								
+								</code></pre>
+	<p>
+		With the <span class="italicsText">rest syntax</span>, we can write our sum
+		function more concisely without using the
+		<span class="monoText">arguments</span> object:
+	</p>
+	<pre class="language-javascript"><code>
+										function sum(...nums) {
+											return nums.reduce((total, currentValue) => {
+												return total + currentValue
+											})
+										};
+										console.log(sum(4, 3, 5, 11, 17, 92)); // Output: 132
+								</code></pre>
+	<p>A more complex example:</p>
+	<pre class="language-javascript"><code>	
+									// Here is a function that returns a factorial in an array for any number we pass through to it:
+									function factorialResults(...nums) {
+										return nums.map(function (num) {
+											let result = num;
+											if (num === 0 || num === 1) {
+												return 1; // the factorials of 0 or 1 are special cases
+											}
+											while (num > 1) { // for everything else, do this
+												num--;
+												result *= num;
+											}
+											return result;
+										});
+									}
+									console.log(factorialResults(3, 2, 5, 9)); // Output: [ 6, 2, 120, 362880 ]
+									console.log(factorialResults(3)); // Output: [ 6 ]												
+								</code></pre>
+	<p>
+		We can also use the <span class="italicsText">rest syntax</span> to collect
+		all of the remaining arguments passed through to a function that have not
+		been matched to a parameter:
+	</p>
+	<pre class="language-javascript"><code>
+										// So for example, say we have a function that takes two arguments:
+										function nameGenerator(firstName, lastName, ...remains) {
+											return console.log(
+												`In Japanese, your name would be ordered: ${lastName}, ${firstName} san. "${remains}" ignored.`
+											)
+										};
+										// When we run the function:
+										nameGenerator('Sherlock', 'Holmes', 'III', 'Jr.');
+										/*
+										Output: 
+										In Japanese, your name would be ordered: Holmes, Sherlock san. "III,Jr." ignored.
+										*/								
+									</code></pre>
+</section>
+{% endblock %}

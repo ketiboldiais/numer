@@ -1,0 +1,467 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="conditional_statements_in_java">
+	<h3>Conditional Statements in Java</h3>
+	<p>
+		The values <span class="monoText">true</span> and
+		<span class="monoText">false</span> of type
+		<span class="monoText">boolean</span> are the building blocks of computer
+		decision-making. This due to the way computers make decision &mdash; they
+		take complex expressions and reduce them to true or false evaluations.
+	</p>
+	<p>
+		<span class="topic">Comparisons in Java</span> In Java, we can compare
+		variables against either literal values or other values. This forms the
+		basis for simple decision making. They return
+		<span class="monoText">true</span> or <span class="monoText">false</span>,
+		values of type <span class="monoText">boolean</span>:
+	</p>
+	<pre class="language-java"><code>
+		int num = 10;
+		System.out.println(num == 0);
+		System.out.println(num != 0);
+		System.out.println(num != 10);
+		System.out.println(num < 10);
+		System.out.println(num <= 10);
+		System.out.println(num > 10);
+		System.out.println(num >= 10);
+	</code></pre>
+	<pre class="language-bash"><code>
+		false
+		true
+		false
+		false
+		true
+		false
+		true
+	</code></pre>
+	<p>The code above demonstrates Java's comparison operators:</p>
+	<figure class="table">
+		<table>
+			<thead>
+				<th>Operator</th>
+				<th>Computation Requested</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">a == b</span></td>
+					<td>
+						Is <span class="monoText">a</span> equal to
+						<span class="monoText">b</span>?
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a != b</span></td>
+					<td>
+						Is <span class="monoText">a</span> not equal to
+						<span class="monoText">b</span>?
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a < b</span></td>
+					<td>
+						Is <span class="monoText">a</span> less than
+						<span class="monoText">b</span>?
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a <= b</span></td>
+					<td>
+						Is <span class="monoText">a</span> less than or equal to
+						<span class="monoText">b</span>?
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a > b</span></td>
+					<td>
+						Is <span class="monoText">a</span> greater than
+						<span class="monoText">b</span>?
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a >= b</span></td>
+					<td>
+						Is <span class="monoText">a</span> greater than or equal
+						<span class="monoText">b</span>?
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		<span class="topic">Comparing Variables</span> We can also compare two
+		variables:
+	</p>
+	<pre class="language-java"><code>
+		int firstNum = 1;
+		int secondNum = 2;
+		System.out.println(firstNum > secondNum);
+		System.out.println(firstNum < secondNum);
+	</code></pre>
+	<pre class="language-bash"><code>
+		false
+		true
+	</code></pre>
+	<p>
+		<span class="topic">Comparing Variables with Arithmetic</span> We can also
+		compare results from computations involving variables directly:
+	</p>
+	<pre class="language-java"><code>
+		int firstNum = 1;
+		int secondNum = 2;
+		System.out.println(firstNum + secondNum == 3);
+		System.out.println(firstNum - secondNum <= 2);
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+		true
+	</code></pre>
+	<p>
+		<span class="topic">Connecting Comparisons</span> We can connect a
+		comparison expression with another comparison express to form a compound
+		comparison. This is done with the <span class="monoText">and</span> operator
+		(<span class="monoText">&&</span>) and the
+		<span class="monoText">or</span> operator (<span class="monoText">||</span
+		>). There are two rules that always apply when using these two operators,
+		stemming directly from logic:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule</span> Given Boolean expressions $p$ and ${q,}$
+			the compound expression ${p \texttt{ \&\& } q}$ returns
+			<span class="monoText">true</span> if, and only if, both $p$ returns
+			<span class="monoText">true</span> and $q$ returns
+			<span class="monoText">true</span>.
+		</p>
+		<p>
+			<span class="topic">Rule</span> Given Boolean expressions $p$ and ${q,}$
+			the compound expression ${p \texttt{ || } q}$ returns
+			<span class="monoText">false</span> if, and only if, both $p$ returns
+			<span class="monoText">false</span> and $q$ returns
+			<span class="monoText">false</span>.
+		</p>
+	</div>
+	<p>For example:</p>
+	<pre class="language-java"><code>
+		int num = 10;
+		System.out.println(num > 5 && num < 10);
+		System.out.println(num < 10 && num > 5);
+		System.out.println(num > 10 || num > 5);
+		System.out.println(num > 10 || false);
+	</code></pre>
+	<pre class="language-bash"><code>
+		false
+		false
+		true
+		false
+	</code></pre>
+	<p>
+		<span class="topic">Evaluation Order &amp; Grouping</span> Suppose we have
+		the following Boolean expression:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${p \texttt{ \&\& } q \texttt{ \&\& } (r \texttt{ || } (s \texttt{ \&\&
+				} t))}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Java applies severaly rules for dealing with these complicated expressions.
+		First, Boolean expressions are
+		<span class="underlineText">always</span> evaluated from left to right.
+		Second, as soon as Java knows what the entire expression's result is, it
+		will stop. It will not continue evaluating the expression. If we want Java
+		to evaluate particular expressions first, we use parentheses. In practice,
+		however, these rules should not cause problems &mdash; we should not be
+		writing complex Boolean expressions like that above. An example:
+	</p>
+	<pre class="language-java"><code>
+		int num = 10;
+		System.out.println((num > 0 && num < 10) || (num == 10));
+		System.out.println((num > 0 && num < 10) && (num == 10));
+		System.out.println(num < 10 && (num == 10 || num == 10));
+		System.out.println(num < 10 && num == 10 || num == 10);
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+		false
+		false
+		true
+	</code></pre>
+	<p>
+		The last line returns <span class="monoText">true</span> because the
+		expression is evaluated from left to right.
+		<span class="monoText">num < 10</span> is
+		<span class="monoText">false</span>.
+		<span class="monoText">num == 10</span> is
+		<span class="monoText">true</span>. Thus, the
+		<span class="monoText">and</span> expression thus far is
+		<span class="monoText">false</span>. But, that expression logically
+		connected with <span class="monoText">||</span> to the expression
+		<span class="monoText">num == 10</span>, which is
+		<span class="monoText">true</span>. Thus, the entire expression is
+		<span class="monoText">true</span>.
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule</span> Given a compound Boolean expression $p$ in
+			Java, $p$ is always evaluated from left to right. If $p$ contains
+			parentheses, then the expressions contained in the parentheses are
+			evaluated first. Else or therein, the expressions are evaluated in the
+			following order:
+		</p>
+		<ol>
+			<li>
+				the unary operators are evaluated (<span class="monoText"
+					>++, --, -, !, ~, !</span
+				>)
+			</li>
+			<li>
+				the mulplicative operators are evaluated (<span class="monoText"
+					>*, /, %</span
+				>);
+			</li>
+			<li>
+				the additive operators are evaluated (<span class="monoText">+ -</span
+				>);
+			</li>
+			<li>
+				the relational operators (<span class="monoText"><, >, <=, >=</span>)
+				are evaluated;
+			</li>
+			<li>
+				the equality operators (<span class="monoText">==, !=</span>) are
+				evaluated;
+			</li>
+			<li>
+				the logical <span class="monoText">AND</span> operator (<span
+					class="monoText"
+					>&&</span
+				>) is evaluated;
+			</li>
+			<li>
+				the logical <span class="monoText">OR</span> operator (<span
+					class="monoText"
+					>||</span
+				>) is evaluated;
+			</li>
+			<li>
+				the ternary operator (<span class="monoText">? :</span>) is evaluated;
+			</li>
+			<li>
+				the assignment operators (<span class="monoText"
+					>=, +=, -=, *=, /=, %=</span
+				>) are evalauted last.
+			</li>
+		</ol>
+	</div>
+	<p>
+		<span class="topic">Querying Data</span> With the comparison operators, Java
+		can make simple decisions:
+	</p>
+	<pre class="language-java"><code>
+		int num = 10;
+		if (num > 20) {
+			System.out.println("num is greater than 20");
+		} else {
+			System.out.println("num is not greater than 20")
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		num is not greater than 20
+	</code></pre>
+	<p>
+		When we combine keywords <span class="monoText">if</span> and
+		<span class="monoText">else</span>, we produce
+		<span class="italicsText">conditional statements</span>. These statements
+		tell Java to execute a <span class="italicsText">code block</span> &mdash; a
+		set of statements &mdash; if, and only if, a specified condition is true.
+		Every single computer makes decisions using this general structure,
+		<span class="monoText">if-else</span>. As an aside, note the indentation in
+		the example above. This indentation must be used in Java.
+	</p>
+	<p>
+		With the <span class="monoText">else if</span> keyword, we can produce more
+		complex conditional statements:
+	</p>
+	<pre class="language-java"><code>
+		int num = 0;
+		if (num == 1) {
+			System.out.println("if block executed");
+		} else if (num < 1) {
+			System.out.println("first else if block executed");
+		} else if (num > 1) {
+			System.out.println("second else if block executed");
+		} else {
+			System.out.println("else block executed");
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		first else if block executed
+	</code></pre>
+	<p>
+		The code outputs as expected. Each of the conditional statements are
+		evaluated one by one, top to bottom. If a conditional statement's condition
+		returns <span class="monoText">false</span>, then Java moves to the next
+		conditional statement. The very last statement, an
+		<span class="monoText">else</span> statement, is called a
+		<span class="italicsText">false block</span>. Think of the
+		<span class="monoText">else</span> statement as the default rule, and the
+		statements before it as the exceptions &mdash; if none of the
+		<span class="monoText">if</span> or <span class="monoText">else if</span>s
+		return <span class="monoText">true</span>, then the
+		<span class="monoText">else</span> applies.
+	</p>
+	<p>
+		A critical point: As soon as one of the conditional statements returns
+		<span class="monoText">true</span>, the conditional statements thereafter
+		are <span class="underlineText">never</span> run:
+	</p>
+	<pre class="language-java"><code>
+		int num = 0;
+		if (num == 0) {
+			System.out.println("if block executed");
+		} else if (num < 1) {
+			System.out.println("first else if block executed");
+		} else if (num > 1) {
+			System.out.println("second else if block executed");
+		} else {
+			System.out.println("else block executed");
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		if block executed
+	</code></pre>
+	<p>
+		Here we changed the first conditional statement to
+		<span class="monoText">num == 0</span>. This returns
+		<span class="monoText">true</span>, so Java goes into that
+		<span class="italicsText">arm</span>, or
+		<span class="italicsText">branch</span>, of the program. Java does not enter
+		any of the other arms. Java will move to the next statements to execute,
+		whether that's inside the conditional statement's code block or outside the
+		branches. Note what this means: If there is an
+		<span class="monoText">else</span> statement, then there is
+		<span class="italicsText">exactly one</span> conditional statement executed.
+		If there is no <span class="monoText">else</span> statement, then there is
+		either (a) no conditional statements executed, or (b)
+		<span class="italicsText">at most one</span> conditional statement executed.
+	</p>
+	<p>
+		<span class="topic">Nested Conditionals</span> We can nest conditional
+		statements inside conditional statements to create more complex branching:
+	</p>
+	<pre class="language-java"><code>
+		int num = 3;
+		if (num == 0) {
+			System.out.println("I am 0!");
+		} else if (num > 0) {
+			if (num == 1) {
+				System.out.println("I am 1!");
+			} else if (num == 2) {
+				System.out.println("I am 2!");
+			} else {
+				System.out.println("I am positive, but not 0, 1, or 2!");
+			}
+		} else if (num < 0) {
+			System.out.println("I am a negative!");
+		} else {
+			System.out.println("I am a positive!");
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		I am positive, but not 0, 1, or 2!
+	</code></pre>
+
+	<p>
+		<span class="topic">Switch Statements.</span> A branching structure
+		consisting of <span class="monoText">if</span> and
+		<span class="monoText">else-if</span> statements can be reduced to
+		<span class="italicsText">switch statements</span>:
+	</p>
+	<pre class="language-java"><code>
+		// This structure:
+		if (condition_A) {
+			...
+		} else if (condition_B) {
+			...
+		} else if (condition_C) {
+			...
+		};
+
+		// is equivalent to:
+		switch (variable) {
+			case A:
+				...
+			case B:
+				...
+			case C:
+				...
+			default:
+				...
+		}
+	</code></pre>
+	<p>
+		Switch statements are common in many languages, but some languages implement
+		them much more efficiently and powerfully. Java is not one of those
+		languages. Switch statements are somewhat limited in Java, and they are not
+		nearly as commonly seen in Java programs compared to say, Haskell programs.
+		For example, switch statements in Java are inherently limited to the
+		<span class="monoText">variable</span> component above. That
+		<span class="monoText">variable</span> can only be a primitive type or a
+		<span class="monoText">string</span>. However, compared to
+		<span class="monoText">if</span> and
+		<span class="monoText">else-if</span> statements, switch statements can
+		match multiple cases in a single
+		<span class="monoText">switch</span> statement (i.e., a switch statement can
+		have multiple arms, while the formers cannot).
+	</p>
+	<p>
+		There is a nuance to the way switch statements work that can lead to
+		frustration: The execution starts at a matching case statement, then
+		continues until a <span class="monoText">break</span> statement is reached.
+		In other words, the case analysis will not stop at the first match. It will
+		continue testing. For this reason, we often must include a break at each
+		case.
+	</p>
+	<p>
+		Finally, notice the <span class="monoText">default</span> case at the last
+		line above. This means what it says: If none of the cases return
+		<span class="monoText">true</span>, Java will execute that particular line.
+	</p>
+	<pre class="language-java"><code>
+		int test = 2;
+		switch (test) {
+			case 0: System.out.println("A");
+			case 1: System.out.println("B");
+			case 2: System.out.println("C");
+			case 3: System.out.println("D");
+			default: System.out.println("E");
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		C
+		D
+		E
+	</code></pre>
+	<p>
+		Notice how Java continued execution after the match. To ensure only the test
+		<span class="monoText">case 2</span> is executed, we need a break statement:
+	</p>
+	<pre class="language-java"><code>
+		int test = 2;
+		switch (test) {
+			case 0: System.out.println("A");
+			case 1: System.out.println("B");
+			case 2: System.out.println("C");
+				break;
+			case 3: System.out.println("D");
+			default: System.out.println("E");
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		C
+	</code></pre>
+</section>
+{% endblock %}

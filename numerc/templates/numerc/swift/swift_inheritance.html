@@ -1,0 +1,242 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="inheritance">
+	<h4>Inheritance</h4>
+	<p>
+		Inheritance is a feature unique to classes. Structures and enumerations do
+		not have any notion of inheritance. It is crucial to keep this distinction
+		in mind whenever we write Swift code. Warning said, let's see some examples
+		of inheritance.
+	</p>
+
+	<p>
+		Suppose we have a class called <span class="monoText">Person</span>, and a
+		class called <span class="monoText">Student</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student {
+			typealias name = (String, String)
+			var major: String
+			var name: name
+			init(firstName: String, lastName: String, major: String) {
+				self.name = (firstName, lastName)
+				self.major = major
+			}
+		}
+	</code></pre>
+
+	<p>
+		The two types share a common property, <span class="monoText">name</span>.
+		But, in the <span class="monoText">Student</span> class, we also have a
+		property called <span class="monoText">major</span>. The problem: Every
+		<span class="monoText">Student</span> is a
+		<span class="monoText">Person</span>, but not every
+		<span class="monoText">Person</span> is a
+		<span class="monoText">Student</span>.Inheritance solves this problem by
+		allowing us to <span class="term">extend</span> the
+		<span class="monoText">Person</span> class. In Swift, this is done by simply
+		including a colon after <span class="monoText">Student</span>, followed by
+		the class we want to extend, <span class="monoText">Person</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student: Person {
+			var school: String = ""
+		}
+	</code></pre>
+
+	<p>
+		Note how we included a default value for
+		<span class="monoText">Student</span>, the empty string. This is because we
+		are relying on the initializer for <span class="monoText">Person</span>, and
+		that initializer does not include <span class="monoText">major</span>.
+	</p>
+
+	<p>
+		If we create an instance of <span class="monoText">Student</span>, that
+		instance will have access to all the properties and methods of
+		<span class="monoText">Person</span>.
+	</p>
+
+	<pre class="language-bash"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student: Person {
+			var school: String = ""
+		}
+		
+		let jill = Person(firstName: "Jill", lastName: "Anderson")
+		let graham = Student(firstName: "Graham", lastName: "Nagel")
+
+		print(jill.name)
+		print(graham.name)
+	</code></pre>
+	<pre class="language-bash"><code>
+		("Jill", "Anderson")
+		("Graham", "Nagel")
+	</code></pre>
+
+	<p>
+		In Swift, a class cannot inherit from multiple classes. But, a class can be
+		extended to as many classes as we would like. In other words, there is no
+		concept of <span class="term">multiple inheritance</span> in Swift. Thus, a
+		class is either a subclass, or not a subclass. A class that is not a
+		subclass is called a <span class="term">base class</span>. A subclass, of
+		course, can itself be extended. This means we can construct
+		<span class="term">class hierarchy</span> &mdash; a hierarchy of classes
+		extending from other classes.
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student: Person {
+			var school: String = ""
+		}
+		
+		class Undergraduate: Student {
+			var major: String = ""
+			var researchArea: String = ""
+			var thesis: String = ""
+		}
+		
+		class Graduate: Student {
+			var coursesTeaching: [String] = []
+		}
+	</code></pre>
+
+	<p>
+		From the code above, the class <span class="monoText">Student</span> is
+		extended by <span class="monoText">Undergraduate</span> and
+		<span class="monoText">Graduate</span>. All instances of
+		<span class="monoText">Undergraduate</span> and all instaces of
+		<span class="monoText">Graduate</span> can behave and be treated as either
+		its type (<span class="monoText">Undergraduate</span> or
+		<span class="monoText">Graduat</span>), or it can behave and be treated as a
+		<span class="monoText">Student</span>. This phenomenon, where an instance
+		can be treated as one thing and another, is called
+		<span class="term">polymorphism</span>.
+	</p>
+
+	<p>
+		Recall that an array must consist of the same type. This means that if we
+		create an array composed of
+		<span class="monoText">Undergraduate</span> instances and
+		<span class="monoText">Graduate</span> instances, the array type will be
+		<span class="monoText">[Student]</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student: Person {
+			var school: String = ""
+		}
+		
+		class Undergraduate: Student {
+			var major: String = ""
+			var researchArea: String = ""
+			var thesis: String = ""
+		}
+		
+		class Graduate: Student {
+			var coursesTeaching: [String] = []
+		}
+		
+		let johnS = Undergraduate(firstName: "John", lastName: "Schmidt")
+		let kenF = Graduate(firstName: "Ken", lastName: "Fuji")
+		let yunaC = Undergraduate(firstName: "Yuna", lastName: "Choi")
+		let conferenceAttendees = [johnS, kenF, yunaC]
+		print(type(of: conferenceAttendees))
+	</code></pre>
+	<pre class="language-bash"><code>
+		Array&lt;Student&gt;
+	</code></pre>
+
+	<p>
+		Thus, the type for an array consisting of different class instances will be
+		the (a) the most specific and (b) common superclass between the instances.
+		In the example above, the superclass is
+		<span class="monoText">Student</span>. If we had included an instance of
+		<span class="monoText">Person</span>, then the type would be
+		<span class="monoText">Person</span>.
+	</p>
+
+	<p>
+		<span class="topic">Casting to a Superclass.</span> Like many
+		object-oriented languages, Swift allows us to cast an instance of a class to
+		a superclass. For example:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Being {
+			var name: String
+			var immortal: Bool = false
+			var age: Int?
+			init(name: String) {
+				self.name = name
+				if immortal == true {
+					self.age = nil
+				}
+			}
+		}
+		class Witch: Being {
+			var canFly: Bool = false
+		}
+		class Sorceres: Witch {
+			var canProphesize: Bool = true
+		}
+		class Vampire: Being {
+			var drinksBlood: Bool = true
+		}
+		
+		var minerva = Witch(name: "Minerva")
+		var dracula = Vampire(name: "Dracula")
+		dracula.immortal = true
+		var haley = minerva as Being		
+	</code></pre>
+
+	<p>
+		In the code above, we declared a new variable called
+		<span class="monoText">haley</span>, which stores the instance
+		<span class="monoText">minerva</span> as an instance of
+		<span class="monoText">Being</span>. Casting an instance of a class into an
+		instance of an <span class="term">ancestor class</span> is called
+		<span class="term">upcasting</span>.
+	</p>
+</section>
+{% endblock %}

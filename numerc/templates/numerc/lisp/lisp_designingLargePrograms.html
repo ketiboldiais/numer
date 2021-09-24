@@ -1,0 +1,324 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="HtDW">
+	<h3><span class="monoText">HtDW</span></h3>
+	<p>
+		The <span class="term"><span class="monoText">HtDW</span></span> (&#8220;How
+		to Design Worlds&#8221;) design pattern outlines a systematic way to design
+		<span class="italicsText">interactive programs</span> &mdash; programs where
+		different pieces of data and various functions work interact with another.
+		The defining characteristic of interactive programs is the program's parts'
+		<span class="italicsText">states</span> and
+		<span class="italicsText">behaviors</span> change based on user input. For
+		example, when a first person shooter, getting hurt might turn the screen red
+		while also reducing your life line. Or, when you swipe left or right on
+		Tinder, the profile slides respectively while also storing your data. These
+		are all interactive programs, and
+		<span class="monoText">HtDW</span> provides a systematic approach to
+		designing them. First, we provide a high-level overview of
+		<span class="monoText">HtDW</span>.
+	</p>
+	<p>
+		<span class="topic">Domain Analysis.</span> The first step of
+		<span class="monoText">HtDW</span> is
+		<span class="italicsText">domain analysis</span> &mdash; understanding the
+		scope of the problem. The key substeps here are: (1) sketching program
+		scenarios; (2) identifying constant information; (3) identifying changing
+		information; and (4) identifying
+		<span class="italicsText">big-bang</span> options.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">big-bang.</span></span> The term
+		<span class="monoText">big-bang</span> is what
+		<span class="monoText">HtDW</span> uses to refer to the function call that
+		evaluates to the <span class="italicsText">initial world state</span>. In
+		other words, when call <span class="monoText">(big-bang 0)</span>, we create
+		the initial world state. Once <span class="monoText">(big-bang 0)</span> is
+		called, the rest of the program executes from there.
+	</p>
+	<p>
+		For example, we might have a program where the function call
+		<span class="monoText">(big-bang 0)</span> calls a function called
+		<span class="monoText">(render-life 0)</span>. Then,
+		<span class="monoText">(render-life 0)</span> calls
+		<span class="monoText">(next-life 0)</span>. Then,
+		<span class="monoText">(next-life 0)</span> updates some value, and calls
+		<span class="monoText">(render-life 1)</span>, then
+		<span class="monoText">(render-life 1)</span> calls
+		<span class="monoText">(next-life 1)</span> and so on. The function call
+		<span class="monoText">(big-bang 0)</span> is what started everything from
+		the very beginning. In <span class="monoText">HtDW</span>, we call this the
+		<span class="italicsText">big-bang mechanism</span>.
+	</p>
+	<p>
+		Outside of <span class="monoText">HtDW</span>, this is called a
+		<span class="monoText">big-bang</span> is a
+		<span class="italicsText">user-interface framework</span> &mdash; a blackbox
+		that integrates numerous different functionalities together.
+	</p>
+	<p>
+		<span class="topic">Creation.</span> Once we have completed a
+		<span class="italicsText">domain analysis</span>, the next step is
+		<span class="italicsText">creation</span>. At this stage, there are several
+		substeps: (1) Write the <span class="italicsText">constants</span>; (2)
+		Write data definitions, following <span class="monoText">HtDD</span>; (3)
+		Write functions, following <span class="monoText">HtDF</span>, complete two
+		substeps: (a) write the <span class="monoText">main</span> function first,
+		then (b) list the <span class="monoText">handler</span> functions &mdash;
+		those functions necessary for <span class="monoText">main</span> to work;
+		(4) write the <span class="monoText">handler</span> functions.
+	</p>
+	<p>All together:</p>
+	<ol>
+		<li>Domain analysis.</li>
+		<ul>
+			<li>Sketch the program scenarios.</li>
+			<li>Identify the constant information.</li>
+			<li>Identify the changing information.</li>
+			<li>Identify <span class="monoText">big-bang</span> options.</li>
+		</ul>
+		<li>Creation.</li>
+		<ul>
+			<li>Write the constants.</li>
+			<li>
+				Write the data definitions, following
+				<span class="monoText">HtDD</span>.
+			</li>
+			<li>
+				Write the functions, following <span class="monoText">HtDF</span>.
+			</li>
+			<ul>
+				<li>Write the <span class="monoText">main</span> function first.</li>
+				<li>
+					Create a list of <span class="monoText">handler</span> functions
+					(those functions necessary for <span class="monoText">main</span> to
+					work).
+				</li>
+			</ul>
+			<li>
+				Write the <span class="monoText">handler</span> functions, following
+				<span class="monoText">HtDF</span>.
+			</li>
+		</ul>
+	</ol>
+	<p>
+		<span class="topic">Sketching Program Scenarios.</span> When we say
+		sketching program scenarios, we literally mean sketching program scenarios.
+		We want to draw out how the program should look on a screen. This is purely
+		to ensure we have a good idea of how the program would look and behave.
+	</p>
+	<p>
+		The sketches we draw should reflect different stages of the program. They do
+		not have to be beautiful pictures; these are just sketches. The focus is to
+		get a good idea of what we <span class="italicsText">want</span>, not
+		accurate or beautiful drawings.
+	</p>
+	<p>
+		<span class="topic">Identifying Constant Information.</span> This is where
+		we identify and <span class="italicsText">write down</span> the information
+		that <span class="underlineText">never</span> changes as the program
+		executes. For example, if we are designing a program that can only display
+		at a certain size, there are the widths of the screen. If the program has
+		user input boxes, a constant might be the position of those input boxes.
+	</p>
+	<p>
+		At this stage, we do not need to list every single constant. In fact, we
+		will almost always find we need a constant as we continue writing the
+		program. Not only is this perfectly fine, it is
+		<span class="italicsText">expected</span>. As we write the program or
+		continue the <span class="monoText">HtDW</span> process, we might discover a
+		constant we had not considered. When that occurs, we write it down in our
+		list of constants.
+	</p>
+	<p>
+		<span class="topic">Changing Information.</span> The next step is to
+		identify the changing information. Here, we want to think of what actually
+		changes as the program executes. If we are designing a video game, one piece
+		of information that might change is the player's score or their life line.
+	</p>
+	<p>
+		Again, we do not have to be as exhaustive as we can here. The point is to
+		come up with as many as we can, and add information as we continue the
+		process. The more thorough we are at this point, the better of an idea we
+		have for the program's overall structure and behavior in the later stages.
+	</p>
+	<p>
+		<span class="topic"
+			>Identify <span class="monoText">big-bang</span> Options.</span
+		>
+		This is where we think about the possible ways to implement the behaviors we
+		sketched at the very first step. Once we have done so, we complete the
+		domain analysis stage.
+	</p>
+
+	<p>
+		<span class="topic"
+			>Write the <span class="monoText">main</span> Function.</span
+		>
+		After domain analysis, we proceed to
+		<span class="italicsText">creation</span>. Here, we begin writing the
+		program by writing the <span class="monoText">main</span> function. When
+		writing the <span class="monoText">main</span> function, we use the
+		<span class="monoText">HtDF</span> pattern: Signature, purpose, stub, tests
+		and examples, templating, coding, testing and debugging. The crucial point
+		here is <span class="italicsText">templating</span>.
+	</p>
+	<p>
+		Templating the <span class="monoText">main</span> function is what dictates
+		the structure of our overall program. When we template the
+		<span class="monoText">main</span> function, we ask ourselves: What do I
+		know about the overall structure of the program before I get to the details?
+		Because we are writing the <span class="monoText">main</span> function, the
+		first line of the program should state what the
+		<span class="monoText">main</span> function does.
+	</p>
+	<p>
+		<span class="topic">Constants.</span> The next line of the program is to
+		list all of the <span class="italicsText">constants</span> the program uses.
+		Here, we define all of the data that should never change when the program
+		executes. We write these constants here because (1) they should be clearly
+		visible, and (2) placing them as constants allows for quick changes later.
+		We should always run the program as we write the constants. This is to catch
+		any errors in what we write &mdash; better to find them now, while the
+		program is small, than later, when the program is large. When write these
+		constants, if it is every unclear what the constants mean, we should provide
+		comments indicating what they mean.
+	</p>
+
+	<p>
+		<span class="topic">Handler Functions Wish List.</span> As we write the
+		<span class="monoText">main</span> function, we must always write the
+		necessary handler functions as we continue. For example, suppose we are
+		writing a simple program that computes the hypotenuse of a triangle. Our
+		<span class="monoText">main</span> function might look like the following:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; takes two lengths and returns the hypotenuse
+
+		(check-expect (main 8 8) 4)
+		(check-expect (main 0 0) 0)
+
+		;; (define (main x y) 0)
+
+		(define (main x y)
+			(squareRoot (+ x-length-squared y-length-squared)))
+	</code></pre>
+	<p>
+		There are several things in the code above that are not native to Lisp.
+		Accordingly, we will need to define them, so we add them as entries to the
+		wish list:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; takes two lengths and returns the hypotenuse
+
+		(check-expect (main 8 8) 4)
+		(check-expect (main 0 0) 0)
+
+		;; (define (main x y) 0)
+
+		(define (main x y)
+			(squareRoot (+ x-length-squared y-length-squared)))
+		
+		;; handler functions
+		;; number -> number
+		(define (squareRoot num) 0)
+
+		;; number -> number
+		;; takes x-length and returns square of x-length
+		(define (x-length-squared num) 0)
+
+		;; number -> number
+		;; takes y-length and returns square of y-length
+		(define (y-length-squared num) 0)
+	</code></pre>
+	<p>
+		Handler functions will take up most of our coding time. We will often find
+		that handler functions will require writing other handler functions. That is
+		part of functional programming. The key point is to keep track of the work
+		by watching our wish list.
+	</p>
+</section>
+
+<section id="advice_on_designing_large_programs">
+	<h3>Best Practices: Program Design</h3>
+	<p>
+		We have seen many different approaches to program design in the preceding
+		materials. In practice, some problems require one approach, while eschewing
+		another. However, for all problems, there are certain principles, or
+		mantras, that we should always keep in mind.
+	</p>
+	<p>
+		First, aim for simplicity. In programming, simple is
+		<span class="underlineText">always</span> better. The more complex an
+		implementation is, the more difficult it is to debug and test. Simplicity,
+		however, does not always mean less code. Recursion almost always returns
+		shorter programs, but they can easily become unreadable and a mess to debug.
+		However, simplicity does not mean more lines of code. Conciseness is just as
+		important. At the end of the day, a program is measured by two things: (1)
+		ease of use and (2) features. We ship features, not code. Take the path of
+		least resistance &mdash; do easy things, never hard things.
+	</p>
+	<p>
+		Second, readability is invaluable. In the earlier sections, we might have
+		wondered why we spent so much time on comments and documentation, even for
+		the simplest programs. We did so because humans have limited processing
+		speeds and memory space. A program might appear simple today, but it is not
+		guaranteed to be understandable by either ourselves or others a month or
+		years later. Always comment and document.
+	</p>
+	<p>
+		Third, implementation should be easy to explain. This is a point towards
+		simplicity. If a program is structured as simply as possible, then it must
+		be easy to explain. Accordingly, ease of explanation serves as a litmus test
+		for whether we've accomplished simplicity. If we ever get to a point where
+		we cannot explain our program simply, then the implementation is poor. If we
+		ever get to a point where do not understand how our program works at all,
+		then we have created a time bomb. At no point should we ever not understand
+		how our code works.
+	</p>
+	<p>
+		<span class="topic">Object-Orientation.</span> OOP (Object-oriented
+		Programming) is a powerful tool. However, like the despotic regime of a
+		resource-rich country, that power is prone to abuse and can quickly get to
+		our heads. Flat is always better than nested. We understand flat things
+		better. We get lost in deeply nested structures.
+	</p>
+	<p>
+		Class abuse is real. There is a tendency to want to organize everything into
+		classes, compartmentalizing everything into neat boxes. Before we even
+		consider putting things into classes, we should ask ourselves: Do I
+		absolutely need this to be in a class? The code blocks below all do the same
+		thing, and unfortunately, the first is more common than the last:
+	</p>
+	<pre class="language-python"><code>
+		# obfuscated function call:
+
+		class Greeting(object):
+			def __init__(self, greeting='hello'):
+				self.greeting = greeting
+
+			def greet(self, name):
+				return '%s! %s' % (self.greeing, name)
+		
+		# de-obfuscated:
+		def greet(name):
+			ob = Greeting('hola')
+			print ob.greet('bob')
+			return
+		
+		# concise:
+		def greet(greeting, target):
+			return '%s! %s' % (greeting, target)
+	</code></pre>
+	<p>
+		<span class="topic">Libraries, Packages, and Modules.</span> There are
+		numerous packages and libraries today that make our lives easier. Whenever
+		we use a library or package, the first thing we
+		<span class="underlineText">must</span> do is read the code. Otherwise, we
+		are using code in our programs that we haven't vetted &mdash; we don't know
+		what that code's quality is, whether they have tests, or whether they do
+		what we want done.
+	</p>
+</section>
+{% endblock %}

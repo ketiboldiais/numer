@@ -1,0 +1,299 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="views">
+	<h3>Views</h3>
+	<p>
+		In SwiftUI, we implement user interface design with
+		<span class="term">views</span>. There are many different kinds of views
+		&mdash; <span class="monoText">text</span>,
+		<span class="monoText">slider</span>, <span class="monoText">button</span>,
+		etc. Everything we see on the screen when we open an application is a
+		<span class="monoText">view</span>.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">text view.</span></span> The
+		<span class="monoText">text</span> view is a view that displays one or more
+		lines of read-only text. We can think of this view as a text field, with the
+		added limitation that it is read-only (no writing/modifying by the user).
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">slider view.</span></span> The
+		<span class="monoText">slider</span> view displays a slider. The slider is
+		an input interface that allows a user to enter a number by moving a control,
+		called a <span class="italicsText">thumb</span>, along a straight line. The
+		endpoints of the slider represent the minimum and the maximum input value.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">button view.</span></span> The
+		<span class="monoText">button</span> view displays a button. This input
+		interface has takes only one of two inputs: (a) the button is pressed, and
+		(b) the button is not pressed. We can place a
+		<span class="monoText">text</span> view inside the button as a label.
+	</p>
+
+	<p>
+		<span class="topic"
+			><span class="monoText">vertical stack view.</span></span
+		>
+		The <span class="monoText">vertical stack</span>, or
+		<span class="monoText">v-stack</span>, is a view that acts like a container
+		for other views, called the <span class="monoText">v-stack</span>'s
+		<span class="italicsText">children</span>. A
+		<span class="monoText">v-stack</span> arranges its children in a vertical
+		stack.
+	</p>
+
+	<p>
+		<span class="topic"
+			><span class="monoText">horizontal stack view.</span></span
+		>
+		The <span class="monoText">horizontal stack</span>, or
+		<span class="monoText">h-stack</span>, also acts like a container for other
+		views. In contrast to the <span class="monoText">v-stack</span>, the
+		<span class="monoText">h-stack</span> arranges its children in a horizontal
+		stack.
+	</p>
+</section>
+
+<section id="view_modifiers">
+	<p>
+		<span class="topic">View Modifiers.</span> View modifiers are what we use to
+		style views. For example, if we want to set an opacity to text as well as a
+		border, we would write:
+	</p>
+
+	<pre class="language-swift"><code>
+		Text("Hello world")
+			.opacity(0.5)
+			.border(Color.red, width: 1.5)
+	</code></pre>
+
+	<p>
+		Note that everytime we apply a view modifier, Swift creates a new version of
+		the original view. Thus, when we write
+		<span class="monoText">Text("Hello world").opacity(0.5)</span>, we create
+		modified view of <span class="monoText">Text("Hello world")</span>. In this
+		case, the text has an opacity of 0.5. When we write,
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>Text.("Hello world").opacity(0.5).border(Color.red, width: 1.5)</li>
+		</ul>
+	</figure>
+	<p>
+		we modify <span class="monoText">Text("Hello world").opacity(0.5)</span>.
+		That border is not transparent, because the border modifier is only adding a
+		red border around the original view. If we wanted the border to be
+		transparent, we would write:
+	</p>
+	<pre class="language-swift"><code>
+		Text("Hello world")
+			.border(Color.red, width: 1.5)
+			.opacity(0.5)
+	</code></pre>
+
+	<p>This demonstrates a rule with view modifiers: Order matters.</p>
+</section>
+
+<section id="theory_behind_views">
+	<h3>Swift Theory: <span class="monoText">Views</span></h3>
+	<p>
+		The foundational axiom of OOP (Object-oriented Programming) is to associate
+		certain pieces of data with functionality. For example, a data of type
+		<span class="monoText">dog</span> might have related data like
+		<span class="monoText">name</span>, <span class="monoText">breed</span>,
+		<span class="monoText">color</span>, and <span class="monoText">sex</span>.
+		We call this related data <span class="term">properties.</span> The data
+		type might also have related functionality like
+		<span class="monoText">bark</span> and <span class="monoText">growl</span>.
+		These related functions are called <span class="term">methods</span>.
+	</p>
+
+	<p>
+		Once we've created the data type <span class="monoText">dog</span>, we can
+		create <span class="term">instances</span> of that type. These instances are
+		called <span class="term">objects</span>. For example, we might have an
+		instance of a <span class="monoText">dog</span> called
+		<span class="monoText">hachiko</span> and another instance of a
+		<span class="monoText">dog</span> called <span class="monoText">cujo</span>.
+	</p>
+
+	<p>
+		In Swift, there are two ways to design these custom data types: with a
+		<span class="term"><span class="term">class</span></span
+		>, or with a <span class="term"><span class="monoText">struct</span></span
+		>. In languages like Objective-C, <span class="monoText">class</span> and
+		<span class="monoText">struct</span> are two very different entities. In
+		Swift, however, the differences between a
+		<span class="monoText">class</span> and a
+		<span class="monoText">struct</span> are subtle;
+		<span class="monoText">struct</span>s being much more powerful.
+	</p>
+
+	<p>
+		In a Swift application, everything (e.g.,
+		<span class="monoText">view</span>s) is an instace of a particular
+		<span class="monoText">class</span> or
+		<span class="monoText">struct</span> that communicate with each other. Swift
+		provides many default data types: <span class="monoText">button</span>,
+		<span class="monoText">text</span>,
+		<span class="monoText">ContentView</span>, etc. When we create the
+		application's layout, we are creating a custom data type.
+	</p>
+
+	<p>
+		Each of the <span class="monoText">view</span>s inside our layout, as an
+		object, has data and functionality. For example, if we create a
+		<span class="monoText">button</span> object, that button might have several
+		properties: a <span class="monoText">View</span> to display; a
+		<span class="monoText">position</span>; a
+		<span class="monoText">width</span>; a <span class="monoText">height</span>;
+		and if we have a label for the button, a <span class="monoText">text</span>.
+		That <span class="monoText">button</span> object can also have methods
+		&mdash; recognizing a user tap; highlighting itself; a trigger action; etc.
+		The general syntax for calling a method:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${Obj}$</li>
+			<ul>
+				<li>${m.}$(${p_0 \ldots p_n}$)</li>
+			</ul>
+		</ul>
+		<ul class="def">
+			<li class="where">${Obj}$ is the object's name,</li>
+			<li>${m}$ is the method, and</li>
+			<li>${p_0 \ldots p_n}$ are the parameters</li>
+		</ul>
+	</figure>
+
+	<p>
+		The <span class="term">parameters</span> to a method are the necessary
+		arguments to be passed into the method. We can think of them as the inputs
+		that must be passed into the method for the method to work. Commanding an
+		instance to call a method is how we get instances to perform certain
+		actions, and more broadly, how we get an application to perform. A clear
+		example of calling a method is when we apply view modifiers:
+	</p>
+
+	<pre class="language-swift"><code>
+		Text("Hello world")
+			.bold()
+			.kerning(2.0)
+	</code></pre>
+
+	<p>
+		<span class="topic">Properties.</span> Swift provides two ways to bind
+		properties to an object: (1) a <span class="term">stored property</span>,
+		and (2) a <span class="term">computed property</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		// These are stored properties
+		var subtotal: Double
+		var discountRate: Double
+		var tax: Double
+
+		// These are computed properties
+		var discountAmount: Double {
+			return subtotal * discountRate
+		}
+		
+		var total: Double {
+			return (subtotal - discountAmount) + tax 
+		}
+	</code></pre>
+
+	<p>
+		We use a stored property when we just want a particular instance to store a
+		piece of data. If we have related data that must be computed, we use a
+		computed property. To see how all of this works in the context of SwiftUI,
+		consider the following code:
+	</p>
+
+	<pre class="language-swift"><code>
+		import SwiftUI
+
+		struct ContentView: View {
+			var body: some View {
+				VStack {
+					VStack {
+						Text("Hello world")
+							.kerning(1.0)
+							.bold()
+					}
+				}
+			}
+		}
+	</code></pre>
+
+	<p>
+		In the code above, the line
+		<span class="monoText">struct ContentView: View</span> creates an instance
+		of the <span class="monoText">struct</span>
+		<span class="monoText">ContentView</span>. More specifically, we are telling
+		Swift, "Create a <span class="monoText">View</span> object called
+		<span class="monoText">ContentView</span>." If we go to the file called
+		<span class="monoText">AppName.swift</span> (the Swift file other than
+		<span class="monoText">ContentView.swift</span>), we see the following code:
+	</p>
+
+	<pre class="language-swift"><code>
+		import SwiftUI
+
+		@main
+		struct nameApp: App {
+			var body: some Scene {
+				WindowGroup {
+					ContentView()
+				}
+			}
+		}
+	</code></pre>
+
+	<p>
+		The line <span class="monoText">ContentView()</span> creates an instance of
+		<span class="monoText">ContentView</span> based on the
+		<span class="monoText">struct</span> we created in
+		<span class="monoText">ContentView.swift</span>. Back inside
+		<span class="monoText">ContentView.swift</span>, we see the line
+		<span class="monoText">var body: some View { ... }</span>. This line creates
+		a <span class="italicsText">property</span> of
+		<span class="monoText">ContentView</span>. More specifically, it creates a
+		property called <span class="monoText">body</span> of type
+		<span class="monoText">some View</span>. That property,
+		<span class="monoText">body</span>, is where all other views placed inside.
+	</p>
+
+	<p>
+		Notice that <span class="monoText">body</span> is declared with
+		<span class="monoText">var</span> rather than
+		<span class="monoText">let</span>. This is because
+		<span class="monoText">body</span> stores data, and more specifically, it
+		stores mutable data &mdash; data that can be changed. The line
+		<span class="monoText">var body: some View { ... }</span> tells Swift, "This
+		is a definition for a variable called <span class="monoText">body</span> of
+		type <span class="monoText">some View</span>."
+	</p>
+
+	<p>
+		Question: Why is it called <span class="monoText">some View</span>? The
+		keyword <span class="monoText">some</span> is used because there are many
+		different kinds of <span class="monoText">View</span>s. We have
+		<span class="monoText">button</span>, <span class="monoText">text</span>,
+		<span class="monoText">VStack</span>, etc. This tells Swift that
+		<span class="monoText">body</span> will contain a
+		<span class="monoText">View</span> or something that behaves like a
+		<span class="monoText">View</span>.
+	</p>
+
+	<p>
+		Everything after <span class="monoText">some View</span> contains the
+		contents of <span class="monoText">body</span>. All of the lines containing
+		view modifiers are examples of calling methods.
+	</p>
+</section>
+{% endblock %}

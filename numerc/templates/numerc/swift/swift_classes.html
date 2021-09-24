@@ -1,0 +1,213 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="classes">
+	<h3>Classes</h3>
+	<p>
+		A <span class="monoText">class</span> in Swift is a reference type. This can
+		have significant impact on how we write code. For example. Suppose we had
+		the following structure:
+	</p>
+	<pre class="language-swift"><code>
+		struct fooStruct {
+			let a: Int
+			var b: [String] = []
+		}
+		var baz = fooStruct(a: 0, b: ["a"])
+	</code></pre>
+	<p>
+		In the code above, we have a structure called
+		<span class="monoText">fooStruct</span>, with two properties:
+		<span class="monoText">a</span>, which takes an
+		<span class="monoText">Int</span>, and <span class="monoText">b</span>,
+		which takes an array of strings. Then, we created an instance of
+		<span class="monoText">fooStruct</span> called
+		<span class="monoText">baz</span>.
+	</p>
+
+	<p>Now suppose we want to add another string to the array. No problem:</p>
+	<pre class="language-swift"><code>
+		struct fooStruct {
+			let a: Int
+			var b: [String] = []
+		}
+		var baz = fooStruct(a: 0, b: ["a"])
+		baz.b.append("b")
+	</code></pre>
+
+	<p>
+		Next, we assign <span class="monoText">baz</span> to another variable name,
+		<span class="monoText">zing</span>. Then, using
+		<span class="monoText">zing</span>, we append the string
+		<span class="monoText">"c"</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct fooStruct {
+			let a: Int
+			var b: [String] = []
+		}
+		var baz = fooStruct(a: 0, b: ["a"])
+		var zing = baz
+		zing.b.append("c")
+	</code></pre>
+
+	<p>
+		Let's then go back to the structure and add a method that appends a string
+		to the array stored in field <span class="monoText">b</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct fooStruct {
+			let a: Int
+			var b: [String] = []
+
+			mutating func insertStr(newString: String) {
+				b.append("Inserted: \(newString)")
+			}
+		}
+		var baz = fooStruct(a: 0, b: ["a"])
+		var zing = baz
+		zing.b.append("c")
+	</code></pre>
+
+	<p>
+		Now let's assign <span class="monoText">zing</span> to another variable,
+		<span class="monoText">bang</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct fooStruct {
+			let a: Int
+			var b: [String] = []
+
+			mutating func insertStr(newString: String) {
+				b.append("Inserted: \(newString)")
+			}
+		}
+		var baz = fooStruct(a: 0, b: ["a"])
+		var zing = baz
+		zing.b.append("c")
+		var bang = zing
+	</code></pre>
+
+	<p>
+		Finally, let's loop through each element in the field
+		<span class="monoText">b</span> in <span class="monoText">bang</span>, and
+		execute the <span class="monoText">insertStr()</span> method with the
+		argument <span class="monoText">"!"</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct fooStruct {
+			let a: Int
+			var b: [String] = []
+
+			mutating func insertStr(newString: String) {
+				b.append("Inserted: \(newString)")
+			}
+		}
+		var baz = fooStruct(a: 0, b: ["a"])
+		var zing = baz
+		zing.b.append("c")
+		var bang = zing
+		for newString in bang.b {
+			bang.insertStr(newString: "!")
+		}
+	</code></pre>
+
+	<p>
+		Finally, let's see what the values of <span class="monoText">baz.b</span>,
+		<span class="monoText">zing.b</span>, and
+		<span class="monoText">bang.b</span> are:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct fooStruct {
+			let a: Int
+			var b: [String] = []
+
+			mutating func insertStr(newString: String) {
+				b.append("Inserted: \(newString)")
+			}
+		}
+		var baz = fooStruct(a: 0, b: ["a"])
+		var zing = baz
+		zing.b.append("c")
+		var bang = zing
+		for newString in bang.b {
+			bang.insertStr(newString: "!")
+		}
+		print(bang.b)
+		print(zing.b)
+		print(baz.b)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["a", "b", "c", "Inserted: !", "Inserted: !", "Inserted: !"]
+		["a", "b", "c"]
+		["a", "b"]
+	</code></pre>
+
+	<p>
+		It seems as if only <span class="monoText">bang</span> was modified? Why?
+		Because structures are a value type. Every instance of a structure is
+		independent from other instances of the structure &mdash; modifications to
+		one instance <span class="underlineText">will not</span> modify the other
+		instances, even if that instance was the result of assigning another
+		instance. When we assigned one instance variable to another variable, all we
+		did was assign a <span class="italicsText">copy</span> of that instance. So,
+		the modifications were made to the copy.
+	</p>
+
+	<p>
+		This feature of structures comes directly from structures in languages like
+		C. While it is a particularly useful feature in that we do not have to worry
+		about mutability, it can be cumbersome when we
+		<span class="italicsText">want</span> mutability, as is the case in
+		object-oriented programming.
+	</p>
+
+	<p>
+		To achieve this, we must use a <span class="term">class</span>. So, using
+		the example above, we must first include a
+		<span class="term">constructor</span>. This is because we cannot
+		automatically generate an instance of a class. This is done with the
+		<span class="monoText">init</span> symbol:
+	</p>
+
+	<pre class="language-swift"><code>
+		class fooStruct {
+			let a: Int
+			var b: [String] = []
+			
+			init(a: Int, b: [String]) {
+				self.a = a
+				self.b = b
+			}
+			
+			func insertStr(newString: String) {
+				b.append("Inserted: \(newString)")
+			}
+		}
+		var baz = fooStruct(a: 0, b: ["a"])
+		baz.b.append("b")
+		var zing = baz
+		zing.b.append("c")
+		var bang = zing
+		for _ in bang.b {
+			bang.insertStr(newString: "!")
+		}
+		print(bang.b)
+		print(zing.b)
+		print(baz.b)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["a", "b", "c", "Inserted: !", "Inserted: !", "Inserted: !"]
+		["a", "b", "c", "Inserted: !", "Inserted: !", "Inserted: !"]
+		["a", "b", "c", "Inserted: !", "Inserted: !", "Inserted: !"]
+	</code></pre>
+	<p>
+		Notice how the original instance, <span class="monoText">baz</span>, was
+		mutated as well. This is the critical difference between structures and
+		classes.
+	</p>
+</section>
+{% endblock %}

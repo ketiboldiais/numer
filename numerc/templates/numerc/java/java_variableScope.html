@@ -1,0 +1,77 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="java_variable_scope">
+	<h4>Variable Scope in Java</h4>
+	<p>
+		As we saw with conditional statements, blocks of code in Java are a set of
+		statements. They are enclosed by braces:
+	</p>
+	<pre class="language-java"><code>
+		if (...) {
+			// a block of code
+		}
+	</code></pre>
+	<p>
+		A block of code is essentially a &#8220;mini&#8221; program inside a bigger
+		program. And because they are effectively sub-programs, there are rules
+		about what we can and cannot do inside or outside blocks of code. In
+		particular: Variables declared <span class="italicsText">inside</span> the
+		block are not visible <span class="italicsText">outside</span> the block.
+		Once we leave the block of code, Java can no longer see that variable
+		&mdash; the variable is no longer available for us to access. It is only
+		accessible inside the block.
+	</p>
+	<p>
+		Inversely, if a variable is declared
+		<span class="italicsText">outside</span> a block, then the variable is
+		visible <span class="italicsText">inside</span> the block. If we declare a
+		variable outside the block, then Java can see that variable inside the
+		block.
+	</p>
+	<pre class="language-java"><code>
+		int outsideBlock = 1
+		if (true) {
+			int insideBlock = 10;
+			System.out.println(outsideBlock);
+		}
+		System.out.println(insideBlock);
+	</code></pre>
+	<pre class="language-bash"><code>
+		Line 6: error: cannot find symbol
+		System.out.println(inside);
+								^
+		symbol:   variable inside
+		1 error
+	</code></pre>
+	<p>
+		We get an error because we are telling Java to print the value assigned to a
+		variable it cannot see. Once we left the
+		<span class="monoText">if</span> statement's block &mdash;
+		<span class="monoText">insideBlock</span>'s
+		<span class="italicsText">enclosing block</span> (also called
+		<span class="italicsText">enclosing scope</span>) &mdash;
+		<span class="monoText">insideBlock</span> no longer exists for all intents
+		and purposes. However, we can still access
+		<span class="monoText">outsideBlock</span> because it exists outside the
+		<span class="monoText">if</span> statement's block:
+	</p>
+	<pre class="language-java"><code>
+		int outsideBlock = 1
+		if (true) {
+			int insideBlock = 10;
+			System.out.println(outsideBlock);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+	</code></pre>
+	<p>
+		Scope is precisely why programming languages require, or encourage,
+		indentation. Assuming we follow proper indentation like the examples above,
+		the general rule of thumb is: We
+		<span class="underlineText">can</span> access variables &#8220;to the
+		left&#8221; or on the same level; we
+		<span class="underlineText">cannot</span> access variables &#8220;to the
+		right.&#8221; (Where the directions are relative to the start of the line).
+	</p>
+</section>
+{% endblock %}

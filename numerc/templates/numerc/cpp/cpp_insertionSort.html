@@ -1,0 +1,348 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="insertion_sort">
+	<h3>Insertion Sort</h3>
+	<p>
+		The first basic algorithm we explore is
+		<span class="term">insertion sort</span>. This algorithm works much like how
+		we would sort a hand of playing cards. Suppose the cards are: ${\{ 2, 3, 8,
+		Jack, 5 \}}$. We pull one card, and it's an 8. Then we pull another card,
+		and it's a 2, so we put it before 8. Then another, and it's a Jack, so it
+		goes after 8. Then a 3, so it goes between 2 and 8. Then a 5, so it goes
+		between 3 and 8. The final result:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\lang 2, 3, 5, 8, Jack \rang}$</p>
+		</div>
+	</figure>
+	<p>We can describe this sorting problem as the following:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>${a:}$ ${\lang a_1, a_2, \ldots, a_n \rang}$</p>
+			<p>${f(a):}$ ${\lang a_1', a_2', \ldots, a_n' \mid P(a) \rang}$</p>
+			<p>Where:</p>
+			<ul>
+				<li>
+					${P(a) \coloneqq}$ the elements ${a_n'}$ are monotonically increasing
+					in size.
+				</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		In the description above, ${a}$ is the input, some sequence of ${a_n.}$ We
+		will denote arrays and sequences with angle brackets. ${f(a)}$ represents
+		the output. In this case, some new sequence such that the predicate ${P(n)}$
+		is satisfied (we denote "such that" with the vertical bar ${\mid}$). Here,
+		the predicate ${P(n)}$ is, "the elements ${a_n'}$ are monotically
+		increassing in size." The symbol ${\coloneqq}$ reads "is defined as." The
+		output ${f(a)}$ is called a <span class="term">permutation</span>.
+	</p>
+	<p>
+		One solution to this problem is <span class="term">insertion sort</span>.
+		Let's first write the algorithm in pseudocode:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${f \coloneqq}$</li>
+			<ul>
+				<li>${A \coloneqq}$ ${\lang a_1, a_2, \ldots, a_n \rang}$</li>
+				<li>${n \coloneqq}$ ${length(A)}$</li>
+				<li>for ${(A)_{j = 2}^n}$:</li>
+				<ul>
+					<li>${k}$ = ${a_j}$</li>
+					<li>Insert ${a_j}$ into ${(A)_1^{j - 1}}$</li>
+					<li>${i}$ = ${j}$ - 1</li>
+					<li>while ${i}$ > 0 && ${a_i}$ > ${k}$:</li>
+					<ul>
+						<li>${a_{i + 1}}$ = ${a_i}$</li>
+						<li>${i}$-=1</li>
+					</ul>
+					<li>${a_{i + 1}}$ = ${k}$</li>
+				</ul>
+			</ul>
+		</ul>
+	</figure>
+	<p>
+		The idea behind insertion sort is straightforward. We look at the unsorted
+		array ${(A)_1^{n},}$ working from left to right. We then examine each
+		element in the unsorted array, comparing it to items on its left. We then
+		insert the element in the correct position. This effectively forms two
+		portions: The unsorted portion ${(A)_1^{n},}$ and the sorted portion
+		${(A)_1^{j-1}.}$
+	</p>
+	<p>
+		Let's see an example. Suppose we had the array ${\lang 1, 5, 3, 2 \rang.}$
+		Insertion sort would evaluate as such:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>First loop:</li>
+			<ul>
+				<li>${j := 2}$</li>
+				<li>${k := a_j := 5}$</li>
+				<li>${(A)_1^{j - 1} := \lang 2 \rang}$</li>
+				<li>
+					Insert ${a_j}$ ${\implies}$ ${(A)_1^{j - 1} := \lang 1, 5 \rang}$
+				</li>
+				<li>${i = j - 1 = 2 - 1 = 1}$</li>
+				<li>${1 > 0 \land 2 > 5?}$ false.</li>
+				<li>${a_{i + 1} = k = a_{2} = 5}$</li>
+			</ul>
+			<li>Second loop:</li>
+			<ul>
+				<li>${j := 3}$</li>
+				<li>${k := a_j := 3}$</li>
+				<li>${A_1^{j-1} = \lang 1, 5 \rang}$</li>
+				<li>Insert ${a_j}$ ${\implies}$ ${(A)_1^{j-1} = \lang 1,5,3 \rang}$</li>
+				<li>${i = j - 1 = 3 - 1 = 2}$</li>
+				<li>${2 > 0 \land 5 > 3?}$ true.</li>
+				<ul>
+					<li>${a_{i + 1} := a_i := a_3 := a_2 := 5}$</li>
+					<li>${i := i - 1 \implies i := 1}$</li>
+				</ul>
+				<li>${a_{i + 1} := k \implies a_2 := 3}$</li>
+			</ul>
+			<li>Third loop:</li>
+			<ul>
+				<li>${j := 4}$</li>
+				<li>${k := a_j := 2}$</li>
+				<li>${(A)_1^{j-1} = \lang 1, 3, 5 \rang}$</li>
+				<li>
+					Insert ${A_j}$ ${\implies}$ ${(A)_1^{j-1} = \lang 1, 3, 5, 2 \rang}$
+				</li>
+				<li>${i = j - 1 = 4 - 1 = 3}$</li>
+				<li>${3 > 0 \land 5 > 2?}$ True.</li>
+				<ul>
+					<li>${a_{i + 1} := a_i \implies a_4 := a_3 := 5}$</li>
+					<li>${i := i - 1 \implies i := 2}$</li>
+					<li>${A := \lang 1, 3, 2, 5 \rang}$</li>
+				</ul>
+				<li>${2 > 0 \land 3 > 2?}$ True.</li>
+				<ul>
+					<li>${a_{i+1} := a_i \implies a_3 := a_2 := 3}$</li>
+					<li>${i := i - 1 \implies i:= 1}$</li>
+					<li>${A := \lang 1, 2, 3, 5 \rang}$</li>
+				</ul>
+				<li>${1 > 0 \land 1 > 2?}$ False.</li>
+				<li>${a_{i+1} = k = a_2 = 2}$</li>
+			</ul>
+		</ul>
+	</figure>
+	<p>
+		The variable ${k}$ is called the <span class="term">key</span>. The idea
+		behind insertion sort is that we pull out the key and use it as a value to
+		compare against the remaining elements of ${A,}$ the unordered array.
+	</p>
+	<p>
+		Implementing this algorithm in <span class="monoText">C++</span> and
+		testing:
+	</p>
+	<pre class="language-cpp"><code>
+		void insertionSort(int *array, int size) {
+			int key, j;
+			for(int i = 1; i&lt;size; i++) {
+				 key = array[i];
+				 j = i;
+				 while(j > 0 && array[j-1]>key) {
+						array[j] = array[j-1];
+						j--;
+				 }
+				 array[j] = key;
+			}
+		}
+	</code></pre>
+
+	<p>
+		Let's analyze this algorithm. What is the
+		<span class="term">running time</span>? It depends on a variety of factors.
+		First, of the ${A}$ is already sorted, then insertion sort has very little
+		work to do. This is because every time we go through the loop, the
+		<span class="monoText">while</span> loop never executes &mdash; everything
+		stays in place. The worst case scenario is if ${A}$ is reverse-sorted.
+	</p>
+
+	<p>
+		Second, it depends on the input size. If ${A}$ contains numerous elements,
+		then it will take a lot longer for insertion sort to work. Accordingly, we
+		<span class="italicsText">parameterize</span> the input size. In other
+		words, the running time of insertion sort is a function of the input size.
+	</p>
+
+	<p>
+		Knowing these factors, we almost always want to know the
+		<span class="term">upper bound</span> of the running time. Upper bound is
+		the maximum time the algorithm would take. This serves as a guarantee to the
+		user that the algorithm won't take any longer than ${x}$ amount of time.
+	</p>
+
+	<p>
+		<span class="topic">Worst-Case Analysis.</span> There are 3 different kinds
+		of analyses we can do to assess the running time of an algorithm. One kind
+		of analysis is the <span class="term">worst-case analysis</span>. In the
+		worst-case analysis, we define ${T(n)}$ to be the
+		<span class="italicsText">maximum time</span> on any input of size ${n.}$
+		Generally, this means we assume the algorithm takes some gigantic input.
+		What about the other factors? With the other factors, we assume the
+		worst-possible case for those factors. For example, with insertion sort, the
+		worst-case analysis requires us to assume some gigantic array with
+		reverse-sorted elements.
+	</p>
+
+	<p>
+		The worst-case analysis is how we make a guarantee. It allows us to
+		determine that an algorithm will always do something, even in the worst
+		circumstances. We are effectively stripping the algorithm of all the
+		possibilities where it sometimes works well.
+	</p>
+
+	<p>
+		<span class="topic">Average-Case Analysis.</span> Another kind of analysis
+		we can do is the <span class="term">average-case analysis</span>. Here,
+		${T(n)}$ is the <span class="italicsText">expected time</span> on any input
+		of size ${n.}$ What do we mean by expected time? It's the time taken by
+		every input multiplied by the probability that it will be that input.
+		Question: How do we know what the probability of an input occurring is? That
+		fact is, we do not know. We must assume the statistical distribution of
+		inputs. There are several assumptions we can make. For example, assuming
+		<span class="term">uniform distribution</span> would mean all inputs are
+		equally likely.
+	</p>
+
+	<p>
+		<span class="topic">Best-Case Analysis.</span> The final kind of analysis is
+		the <span class="term">best-case analysis</span>. This analysis essentially
+		tells us the smallest possible time it would take the algorithm to halt at
+		the correct input. This analysis has its place, but it is generally left to
+		more nuanced and specific questions (e.g., the probability of the best-case
+		scenario occurring). For most algorithms, the analysis tells us very little
+		about an algorithm; conducting the best-case analysis allows us to
+		cherry-pick inputs.
+	</p>
+
+	<p>
+		In measuring the worst-case analysis runtime, we might wonder about the
+		other factors. What about the machine? Wouldn't the algorithm run faster on
+		a supercomputer compared to a netbook? The answer is unreservedly yes. And
+		as one might suspect, determining runtime would be incredibly tedious if we
+		had to account for specific machines. We simplify this analysis by
+		completely setting aside that consideration throgh
+		<span class="term">asymptotic analysis</span>.
+	</p>
+
+	<p>
+		In an asymptotic analysis, we apply two axioms: (1) Machine dependent
+		constants have no effect on the runtime; (2) The runtime is determined by
+		examining the <span class="italicsText">growth</span> of the runtime. Before
+		we see some examples, we should familiarize ourselves with the analysis's
+		notation.
+	</p>
+
+	<p>
+		The first notation system is <span class="term">${\Theta}$-notation</span>.
+		In ${\Theta}$-notation, we drop the leading terms and ignore leading
+		constants. For example, if we have the expression ${3n^3+90n^2+5n+6046,}$ we
+		have several terms &mdash; ${3n^3,}$ ${90n^2,}$ ${5n,}$ and ${6046.}$
+		Mathematically, ${n^3}$ is bigger than ${n^2.}$ More broadly, ${3n^3}$ is
+		bigger than all of the other terms (the leading terms). This means we drop
+		all of those terms, leaving us with ${3n^3.}$ The term ${3n^3}$ has a
+		leading constant, ${3.}$ So, we drop that constant as well, leaving us with
+		${n^3.}$ We express this final result as: ${\Theta(n^3).}$
+	</p>
+
+	<p>
+		Suppose one algorithm is of ${\Theta(n^2)}$ and another algorithm is of
+		${\Theta(n^3).}$ Comparing thise algorithms, ${\lim\limits_{n \to
+		\infty}\Theta(n^3)}$ will always be larger than ${\lim\limits_{n \to
+		\infty}\Theta(n^2).}$ This means that the algorithm of ${\Theta(n^2)}$ will
+		always be faster than an algorithm of ${\Theta(n^3).}$ It is irrelevant what
+		the leading terms or the leading constants are. It is also irrelevant
+		whether you run the algorithm on a supercomputer or on a very slow computer:
+		${n^3}$ will always be bigger than ${n^2.}$
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/runtime1.svg' %}"
+			alt="runtime"
+			loading="lazy"
+			class="sixty-p"
+		/>
+	</figure>
+
+	<p>
+		If we examine the graph above, ther will always be a point ${n_0,}$
+		${\Theta(n^2)}$ will be faster than ${\Theta(n^3).}$ In the real world,
+		however, that ${n_0}$ may be such a large input that a computer doesn't have
+		enough memory to run the algorithm. For this reason, there are some
+		algorithms for which ${\Theta (n^3)}$ and ${\Theta (n^2)}$ are no different.
+		This tension between pure mathematics and applied mathematics underlies much
+		of algorithm analysis. However, the pure mathematics analysis is always
+		performed first &mdash; it provides the backdrop for all further analysis.
+	</p>
+
+	<p>
+		Returning to insertion sort, the worst case scenario is when every element
+		in the array is reverse-sorted. So, to conduct the worst-case analysis, we
+		assume that there is some array with ${n}$ elements, all of which are
+		reverse-sorted. Now we examine the code and assume that each operation takes
+		a constant amount of time. It doesn't matter what that amount of time is
+		because we are conducting an asymptotic analysis. One way to think about
+		this is to count the amount of times we access memory. The first time we
+		access memory is 1, and we increment by 1 each time we access the memory.
+		Returning to the code, we have nested loops.
+	</p>
+
+	<p>
+		First, we have a <span class="monoText">for</span> loop, running from 2 to
+		${n.}$ Writing this mathematically:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>$${\sum_{j=2}^{n}}$$</p>
+		</div>
+	</figure>
+
+	<p>
+		Now, we need to look at how many operations are occurring inside each
+		iteration. We're looking at the worst case scenario, so every element is
+		reversed. This means that the body of the loop occurs ${j}$ times. Thus, we
+		conclude:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>$${\sum_{j=2}^{n} \Theta(j)}$$</p>
+		</div>
+	</figure>
+
+	<p>This is a simple arithmetic series, so we can simplify it further:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				$${\sum_{j=2}^{n} \Theta(j) = \dfrac{(\Theta(n))((\Theta(n)) + 1)}{2}} =
+				\Theta(n^2)$$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		Note that we have to be very careful about ${\Theta}$-notation because it is
+		a <span class="italicsText">weak notation</span>. This means that the
+		notation is more descriptive than it is manipulative. In other notation
+		systems like symbolic logic notation or Leibniz notation, we can manipulate
+		symbols algebraically. We cannot do the same with ${\Theta}$-notation
+		&mdash; we have to think of what exactly the notation is describing. We
+		cannot simply algebraically manipulate.
+	</p>
+
+	<p>
+		That said, we now have the worst-case runtime for insertion sort &mdash;
+		${\Theta(n^2).}$ Is it fast? For small ${n,}$ is somewhat fast. But it is
+		not fast for large ${n.}$ A much faster algorithm is
+		<span class="term">merge sort</span>.
+	</p>
+</section>
+{% endblock %}

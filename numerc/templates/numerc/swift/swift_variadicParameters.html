@@ -1,0 +1,45 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="variadic_parameters">
+	<p>
+		<span class="topic">Variadiac Parameters.</span> If we look at the
+		documentation for the <span class="monoText">print()</span> function, we see
+		the following:
+	</p>
+
+	<pre class="language-swift"><code>
+		func print(items: Any..., separator: String = " ", terminator: String = "\n")
+	</code></pre>
+
+	<p>
+		The <span class="monoText">Any...</span> tells us that the
+		<span class="monoText">print()</span> function takes zero or more arguments.
+		This is what we call a <span class="term">variadic parameter</span> &mdash;
+		the number of arguments passed into the function for that parameter
+		<span class="italicsText">varies</span>. We use the same syntax to write our
+		own variadic parameters. For example, here is a function that computes the
+		<span class="monoText">mean</span> of however many arguments we pass:
+	</p>
+
+	<pre class="language-swift"><code>
+		func mean(_ numbers: Double...) -> Double {
+			var total: Double = 0
+			for number in numbers {
+				total += number
+			}
+			return total / Double(numbers.count)
+		}
+		let classAverage = mean(85, 90, 50, 84, 76)
+		print(classAverage)
+	</code></pre>
+	<pre class="language-bash"><code>
+		77.0
+	</code></pre>
+
+	<p>
+		Notice that with a variadic parameter, the multiple arguments passed are
+		essentially an array. We can loop through them as we would an array.
+		Separately, we <span class="underlineText">cannot</span> pass an array into
+		a variadic parameter (since it's already effectively an array).
+	</p>
+</section>
+{% endblock %}

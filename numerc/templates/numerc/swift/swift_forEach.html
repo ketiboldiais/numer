@@ -1,0 +1,213 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="for_each">
+	<h4>
+		<span class="monoText">forEach</span> and <span class="monoText">map</span>
+	</h4>
+	<p>
+		<span class="monoText">.forEach</span> and
+		<span class="monoText">.map</span> operates similarly to
+		<span class="monoText">for...in</span>. They both provide ways to iterate
+		over a collection. The difference:
+		<span class="monoText">.forEach</span> does not return anything, but
+		<span class="monoText">.map</span> returns a collection. When we use
+		<span class="monoText">.map</span>, each element iterated over is returned
+		to the final collection. <span class="monoText">.map</span> is best used
+		when we want to: (a) a new collection of data from an existing collection,
+		or (b) transform a collection of one type to a collection of another type.
+	</p>
+
+	<p>
+		First, let's compare <span class="monoText">forEach</span> with a
+		<span class="monoText">for...in</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		var arr = [1.0, 2.0, 3.0, 4.0, 5.0]
+
+		// for-in
+		func forInArr(arr: [Double]) -> [Double] {
+			var barr: [Double] = []
+			for i in arr {
+				barr.append(i + 0.1)
+			}
+			return barr
+		}
+		// forEach
+		func forEachArr(arr: [Double]) -> [Double] {
+			var barr: [Double] = []
+			arr.forEach {(i) in
+				barr.append(i + 0.1)
+			}
+			return barr
+		}
+		// short forEach
+		func shortForEach(arr: [Double]) -> [Double] {
+			var barr: [Double] = []
+			arr.forEach {
+				barr.append($0 + 0.1)
+			}
+			return barr
+		}
+		print(forInArr(arr: arr))
+		print(forEachArr(arr: arr))
+		print(shortForEach(arr: arr))
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1.1, 2.1, 3.1, 4.1, 5.1]
+		[1.1, 2.1, 3.1, 4.1, 5.1]
+		[1.1, 2.1, 3.1, 4.1, 5.1]
+	</code></pre>
+
+	<p>
+		Notice the two different ways we can implement
+		<span class="monoText">forEach</span>. The functions above all perform the
+		same operation, but go at it differently. Now let's look at
+		<span class="monoText">.map</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		var arr = [1.0, 2.0, 3.0, 4.0, 5.0]
+		let carr = arr.map {(i) -> Double in
+			i + 0.1
+		}
+		print(carr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1.1, 2.1, 3.1, 4.1, 5.1]
+	</code></pre>
+
+	<p>
+		Notice how <span class="monoText">.map</span> returns an array for us. We
+		could, of course, have done the same thing with
+		<span class="monoText">forEach</span> or a regular
+		<span class="monoText">for loop</span>. Note that the
+		<span class="monoText">i</span> is just a parameter name. Because of type
+		inference, we omit the full expression,
+		<span class="monoText">(i: Double)</span>. We can write the mapping even
+		more concisely:
+	</p>
+
+	<pre class="language-swift"><code>
+		var arr = [1.0, 2.0, 3.0, 4.0, 5.0]
+		let carr = arr.map {$0 + 0.1}
+		print(carr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1.1, 2.1, 3.1, 4.1, 5.1]
+	</code></pre>
+
+	<p>
+		<span class="topic"
+			><span class="monoText">compactMap</span> &
+			<span class="monoText">flatMap</span></span
+		>. <span class="monoText">.compactMap</span> and
+		<span class="monoText">.flatMap</span> work similarly to
+		<span class="monoText">.map</span>, but they are most uniquely suited for
+		certain situations.
+	</p>
+
+	<p>
+		<span class="monoText">.compactMap</span> is useful when we have an array of
+		optionals, of we want to output optionals from an array input. Like
+		<span class="monoText">.map</span>,
+		<span class="monoText">.compactMap</span> iterates through an array input,
+		and outputs an array including processed elements, but only if the relevant
+		element has a some-value (i.e., not <span class="monoText">nil</span>).
+	</p>
+
+	<p>
+		For example, suppose a user inputs several values, and we want only the
+		<span class="monoText">Int</span> values entered. These values would be
+		entered as <span class="monoText">String</span> types, so we must cast these
+		values. And when we cast these values, the output is an
+		<span class="monoText">Optional</span>. This means we have to safely unwrap
+		them when we iterate:
+	</p>
+
+	<pre class="language-swift"><code>
+		let userInputs = ["a", "1", "2.1", "3"]
+		func toIntArr(arr: [String]) -> [Int] {
+			var rarr: [Int] = []
+			for i in arr {
+				guard let i = Int(i) else {
+					continue
+				}
+				rarr.append(i)
+			}
+			return rarr
+		}
+		let result = toIntArr(arr: userInputs)
+		print(result)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1, 3]
+	</code></pre>
+
+	<p>
+		Notice that this is a fair amount of code to write for what is a relatively
+		routine and simple task. Swift recognizes this and provides
+		<span class="monoText">.compactMap</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		let userInputs = ["a", "1", "2.1", "3"]
+		let intArr = userInputs.compactMap {(i: String) in
+			Int(i)
+		}
+		print(intArr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1, 3]
+	</code></pre>
+
+	<p>
+		Let's now look at <span class="monoText">.flatMap</span>.
+		<span class="monoText">.flatMap</span> is intended to address situations
+		where we have multidimensional arrays. For example, if we have an array of
+		arrays and we want to combine all the element arrays into a single array, we
+		should consider using <span class="monoText">.flatMap</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		let arr = [
+			["a", "b", "c"],
+			["d", "e", "f"],
+			["g", "h"]
+		]
+		let barr = arr.flatMap { (letters) -> [String] in
+			letters
+		}
+		print(barr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["a", "b", "c", "d", "e", "f", "g", "h"]
+	</code></pre>
+
+	<p>
+		<span class="monoText">.flatMap</span> is particularly useful when we want
+		to perform a computation with an array output. Suppose we have an array of
+		an array of names, and we want to find all the names that come before the
+		letter <span class="monoText">N</span>. We can do so with the following:
+	</p>
+
+	<pre class="language-swift"><code>
+		let arr = [
+			["Bill", "Ken", "Jo"],
+			["Yuri", "Yoko", "Dae-hee"],
+			["Dan", "Ahmed"]
+		]
+
+		let barr = arr.flatMap { (names) -> [String] in
+			var namesAlpha: [String] = []
+			for name in names where name < "N" {
+				namesAlpha.append(name)
+			}
+			return namesAlpha
+		}
+		print(barr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["Bill", "Ken", "Jo", "Dae-hee", "Dan", "Ahmed"]
+	</code></pre>
+</section>
+{% endblock %}

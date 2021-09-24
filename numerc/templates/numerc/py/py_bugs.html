@@ -1,0 +1,231 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="bugs">
+	<h4>Bugs</h4>
+	<p>
+		Once we test and discover that our code does something we do not want it to
+		do, we have discovered a <span class="term">bug</span>. This is our code
+		blue, prompting us to perform three things: (1) isolate the bug; (2)
+		eradicate the bug; and (3) retest until the code runs correctly. To perform
+		these three steps properly, we must be able to identify different types of
+		bus.
+	</p>
+	<p>
+		<span class="topic">Overt v. Covert Bugs.</span> Bugs are either
+		<span class="italicsText">overt</span> or
+		<span class="italicsText">covert</span>. An
+		<span class="italicsText">overt bug</span> is one that has an obvious
+		manifestaton &mdash; the code crashes or hangs. A
+		<span class="italicsText">covert bug</span> is one with no obvious
+		manifestation &mdash; the code returns a value, but it is incorrect.
+	</p>
+	<p>
+		Because overt bugs are obvious, we want practice good defensive programming
+		to ensure as many possible bugs are overt.
+	</p>
+	<p>
+		<span class="topic">Persistent v. Intermittent Bugs.</span> Bugs are also
+		either <span class="italicsText">persistent</span>, or
+		<span class="italicsText">intermittent</span>.
+		<span class="italicsText">Persistent bugs</span> are those that occur every
+		time the code is executed.
+		<span class="italicsText">Intermittent bugs</span> are those that occur on
+		and off; sometimes the code runs correctly, other times incorrectly, even on
+		the same input. As we can probably tell, covert intermittent bugs are the
+		most dangerous of all. Some bugs are annoying or frustrating. Covert
+		intermittent bugs, however, have the potential for terror &mdash; the code
+		ran incorrectly just once, but has since ran correctly without any changes.
+	</p>
+</section>
+
+<section id="debugging">
+	<h4>Debugging</h4>
+	<p>
+		Debugging has a very steep learning curve. It takes many hours of practice
+		to get to a level where we are able to write large, bug-free programs.
+	</p>
+	<p>
+		IDEs often provide debugging tools for particular languages. We should take
+		the time to learn and use these tools. Otherwise, the most basic tools
+		include using the <span class="monoText">print</span> statement and
+		debuggers. The most critical tool of all &mdash; your brain.
+	</p>
+	<p>
+		<span class="topic">Preliminary Questions.</span> To make a hypothesis, we
+		want to ask several questions: How did I get to to this unexpected result?
+		Is this related to some other problem I have solved before? Were there
+		previous versions of this code that worked? Ask specific questions at this
+		stage. Do not ask general questions like, what is wrong? We ask these
+		preliminary questions to gather data. Once we have enough data, we want to
+		come up with a debugging plan using the scientific method:
+	</p>
+	<ol>
+		<li>Make a hypothesis for where the bug might come from.</li>
+		<li>Run experiments testing that hypothesis.</li>
+		<li>Make conclusions and draw further hypotheses</li>
+	</ol>
+	<p>
+		Once we have constructed a hypothesis, we can begin running experiments with
+		the tools below.
+	</p>
+	<p>
+		<span class="topic">Trace Execution.</span> Executing tracing is where we
+		carefully lay out the sequence of executions for the code. This can be
+		particularly useful for when we want to have a big picture view of how the
+		code works. There are tools like
+		<a href="http://pythontutor.com/visualize.html#mode=edit">Python Tutor</a>
+		which lay these out for us. However, a fair warning: trace execution is
+		often abused by new programmers. We should come up with an understanding of
+		the code ourselves before we actually use an external tool, and coming up
+		with our own hypothesis for why a bug is occurring.
+	</p>
+	<p>
+		<span class="topic"
+			>The <span class="monoText">print</span> Statement.</span
+		>
+		The <span class="monoText">print</span> statement is one of the most
+		powerful ways to test our hypotheses. For example, with functions, we
+		usually want to insert <span class="monoText">print</span> statements: (a)
+		when we enter the function; (b) before computations in the function; and (c)
+		when we exit the function. We also want to print the function's parameters
+		and results.
+	</p>
+	<p>
+		Point (b) raises a debugging approach called the
+		<span class="term">bisection method</span> &mdash; placing
+		<span class="monoText">print</span> statements halfway through the code.
+		This helps us determine where a bug may be depending on the values printed.
+	</p>
+	<p>
+		<span class="topic">Understand Error Messages.</span> Error messages are
+		invaluable for debugging. The most common errors in Python are the
+		following:
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">IndexError</span></span> We are
+		trying to access beyond the limits of a list.
+	</p>
+	<pre class="language-python"><code>
+		test = [1, 2, 3]
+		element = test[4]
+	</code></pre>
+	<p>
+		<span class="topic"><span class="monoText">TypeError</span></span> Two
+		possibilities: (1) We are casting into a type we cannot cast into; (2) we
+		are mixing data types without appropriate coercion.
+	</p>
+	<pre class="language-python"><code>
+		# bad casting
+		test = [1, 2, 3] 
+		int(test)
+
+		# bad data type mixing
+		'3' / 4
+	</code></pre>
+	<p>
+		<span class="topic"><span class="monoText">NameError</span></span> We are
+		referencing a non-existent variable.
+	</p>
+	<pre class="language-python"><code>
+		b = a + 1
+		print(b)
+	</code></pre>
+	<p>
+		<span class="topic"><span class="monoText">SyntaxError</span></span> We are
+		making illegal statements (e.g., forgetting to close parenthesis, forgetting
+		colons or commas, etc.)
+	</p>
+	<pre class="language-python"><code>
+		a = len([1, 2, 3])
+		print a
+	</code></pre>
+	<p>
+		<span class="topic"><span class="monoText">KeyError</span></span> We are
+		referencing a non-existent key.
+	</p>
+	<pre class="language-python"><code>
+		myDict = {'name': 'sherlock', 'job':'detective'}
+		print(myDict['address'])
+	</code></pre>
+	<p>
+		<span class="topic"><span class="monoText">RecursionError</span></span> Our
+		recursive function is going beyond the maximum recursion depth.
+	</p>
+	<pre class="language-python"><code>
+		def fibonacci(n):
+			if n == 0 or n == 1:
+				return 1
+			else:
+				return fibonacci(n - 1) + fibonacci(n - 2)
+
+		fibonacci(1000000000)
+	</code></pre>
+	<p>
+		<span class="topic"><span class="monoText">UnboundLocalError</span></span>
+		We are referencing a local variable in a function or method before the
+		variable has been assigned.
+	</p>
+	<pre class="language-python"><code>
+		x = 10
+		def add_two():
+			x += 2
+			print(x)
+
+		add_two()
+	</code></pre>
+	<p>
+		<span class="topic"><span class="monoText">ValueError</span></span> We are
+		passing an argument into the function that is the right type, but has an
+		inappropriate value.
+	</p>
+	<pre class="language-python"><code>
+		import math
+
+		math.sqrt(-10)
+	</code></pre>
+	<p>
+		<span class="topic">Logic Errors.</span> We will not get error messages for
+		logic errors. This is where we get back outputs, but they are not what we
+		expected. These are the most difficult errors to remedy, and preventive
+		solutions are worth far more than curative ones. We should always think
+		carefully before we write code. If we do encounter logic errors, a helpful
+		tool is diagramming what we want our code to do. Flow chart the procedure's
+		steps.
+	</p>
+	<p>
+		Better yet, <span class="italicsText">explain</span> the code out loud. In
+		programming parlance, this is called
+		<span class="italicsText">rubber duck debugging</span>; the programmer
+		explains the code to a rubber duck or someone willing to listen.
+	</p>
+	<p>
+		<span class="topic">Effective Workflow.</span> We can minimize bugs by
+		ensuring our code is sanitary at all times. This is done by employing the
+		following workflow:
+	</p>
+	<ol>
+		<li>Write a function.</li>
+		<li>Test the function.</li>
+		<li>Debug the function.</li>
+		<li>Write another function.</li>
+		<li>Test the function.</li>
+		<li>Debug the function.</li>
+		<li>Integrate the functions.</li>
+		<li>Do integration testing.</li>
+	</ol>
+	<p>
+		Every group of changes we make should be followed by a
+		<span class="monoText">git commit</span>. We should always have backups and
+		previous versions of our code.
+	</p>
+	<p>If, at any point, we encounter a bug, we must do the following:</p>
+	<ol>
+		<li>
+			Make a <span class="monoText">git commit</span> of the code right now.
+		</li>
+		<li>Change the code.</li>
+		<li>Record the potential bug in a comment.</li>
+		<li>Test the code.</li>
+		<li>Compare the previous version with the current version.</li>
+	</ol>
+</section>
+{% endblock %}

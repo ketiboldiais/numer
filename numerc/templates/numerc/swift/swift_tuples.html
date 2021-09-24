@@ -1,0 +1,292 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="optionals">
+	<h4>Optionals</h4>
+	<p>
+		Suppose we created a program that stores a user's
+		<span class="monoText">firstName</span> and
+		<span class="monoText">lastName</span>. Now suppose that the program uses
+		these two variables extensively. What happens when these variables are
+		uninitialized and operations are performed on them? Performing operations on
+		uninitialized values almost always causes an error to return. So, we need to
+		somehow initialize these values. One approach would be to use some sort of
+		<span class="italicsText">dummy value</span>. Maybe an empty string, or the
+		Boolean false. But this is bad programming, because these values do not
+		directly represent the information &mdash; the information simply is not
+		there. The solution to this problem is to use an
+		<span class="term">optional data type value</span>.
+	</p>
+
+	<p>
+		An <span class="term">optional</span> is a data type that represents (1)
+		some value or (2) the absence of a value, the special value
+		<span class="monoText">nil</span>. The type aims to represent information
+		that has two states (1) existing, or (2) non-existing. For example, we might
+		have information where: If the information exists, it is represented as an
+		<span class="monoText">Int</span>; otherwise, it has no representation.
+		Optionals are intended to address the problems that arise when there is no
+		value. Older languages like C and Objective-C are not particularly
+		user-friendly at handling these situations, and Swift addresses these
+		shortcomings with optionals.
+	</p>
+
+	<p>
+		Optionals all have a type. If the optional's
+		<span class="italicsText">some-value</span> is an
+		<span class="monoText">Int</span>, then the optional has a data type
+		<span class="monoText">Optional Int</span> &mdash; there's an
+		<span class="monoText">Int</span> or there's no
+		<span class="monoText">Int</span>. If the some-value is a
+		<span class="monoText">String</span>, then the optional has a data type
+		<span class="monoText">Optional String</span> &mdash; there's a
+		<span class="monoText">String</span> or there's no
+		<span class="monoText">String</span>.
+	</p>
+
+	<p>
+		So, for example, suppose we had a variable named
+		<span class="monoText">favoriteSong</span>. Now, many people do not have a
+		single favorite movie, so we want to ensure the possibility of a user not
+		inputting a value for <span class="monoText">favoriteSong</span>. We declare
+		the value as an optional:
+	</p>
+
+	<pre class="language-swift"><code>
+		var favoriteSong: String?
+	</code></pre>
+
+	<p>
+		If we do not initialize <span class="monoText">favoriteSong</span>, the
+		default value for <span class="monoText">favoriteSong</span> is
+		<span class="monoText">nil</span>. Once a value is assigned to
+		<span class="monoText">favoriteSong</span>, however, the variable now
+		contains a some-value:
+	</p>
+
+	<pre class="language-swift"><code>
+		var favoriteSong: String?
+		favoriteSong = "Benny and the Jets"
+	</code></pre>
+
+	<p>
+		Notice the output of printing <span class="monoText">favoriteSong</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		var favoriteSong: String?
+		favoriteSong = "Benny and the Jets"
+		print(favoriteSong)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Optional("Benny and the Jets")
+	</code></pre>
+
+	<p>
+		Optionals are most apparent when we attempt to cast from one type to
+		another:
+	</p>
+
+	<pre class="language-swift"><code>
+		let inputNum = "10"
+		let stringToInt = Int(inputNum)
+		print(type(of: stringToInt))
+	</code></pre>
+	<pre class="language-bash"><code>
+		Optional&lt;Int&gt;
+	</code></pre>
+
+	<p>
+		We can check the type of a particular object with
+		<span class="monoText">type(of: ${obj.}$)</span>, where ${obj.}$ is the
+		relevant object. Here, we see that
+		<span class="monoText">stringToInt</span> is a value of type
+		<span class="monoText">Optional&lt;Int&gt;</span> (alternatively,
+		<span class="monoText">Int?</span>). This tells us that
+		<span class="monoText">stringToInt</span> is either (a) a value of type
+		<span class="monoText">Int</span>, or (b) value does not exist.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">nil</span>.</span> If we have an
+		<span class="monoText">optional</span> value, we can set the value to its
+		absent-value state by assigning it the value
+		<span class="monoText">nil</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		let inputNum = "10"
+
+		var stringToInt = Int(inputNum)
+		print(stringToInt)
+		
+		stringToInt = nil
+		print(stringToInt)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Optional(10)
+		nil
+	</code></pre>
+
+	<p>
+		Before we assigned <span class="monoText">stringToInt</span> the value
+		<span class="monoText">nil</span>,
+		<span class="monoText">stringToInt</span> contained the actual
+		<span class="monoText">Int</span> value <span class="monoText">10</span>.
+		However, after we assigned it <span class="monoText">nil</span>,
+		<span class="monoText">stringToInt</span> evaluated to its absent-value
+		state.
+	</p>
+
+	<p>
+		<span class="topic">Unwrapping Options.</span> A word of caution: If a value
+		is an <span class="monoText">Optional</span> type value and we want to
+		perform certain operations on the present-value state's value, it must be
+		explicitly <span class="term">unwrapped</span> into the relevant type. This
+		is because the compiler does not actually know if the optional has a value.
+	</p>
+
+	<pre class="language-swift"><code>
+		let inputNum = "10"
+		var stringToInt = Int(inputNum)
+
+		// This returns an error
+		print(stringToInt + 1)
+	</code></pre>
+
+	<p>To unwrap an optional, we have several options:</p>
+
+	<ol>
+		<li>Force unwrapping</li>
+		<li>Existence testing</li>
+		<li>Optional Binding</li>
+		<li>Optional Chaining</li>
+		<li>Optional Coalescing</li>
+	</ol>
+
+	<p>
+		Of these five approaches,
+		<span class="italicsText">force unwrapping</span> is the most dangerous way
+		to unwrap an optional, and should seldom be used if ever. We cover each
+		approach in turn.
+	</p>
+
+	<p>
+		<span class="topic">Force Unwrapping.</span> Here is an example of force
+		unwrapping in Swift:
+	</p>
+
+	<pre class="language-swift"><code>
+		let inputNum = "10"
+		var stringToInt = Int(inputNum)
+		print(stringToInt! + 1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		11
+	</code></pre>
+
+	<p>
+		To force unwrap, we append an exclamation mark,
+		<span class="monoText">!</span>, to the end of the optional type variable
+		and do nothing else. The force unwrap is not the fact that we append the
+		question mark. It's the fact that we aren't first checking whether
+		<span class="monoText">stringToInt</span> is
+		<span class="monoText">nil</span>. We should avoid this practice like the
+		plague. This is because if <span class="monoText">stringToInt</span> so
+		happens to be <span class="monoText">nil</span>, we get a runtime error:
+	</p>
+
+	<pre class="language-swift"><code>
+		let inputNum = "10"
+		var stringToInt = Int(inputNum)
+
+		// some code leads to this mutation
+		stringToInt = nil
+
+		// this will give us a runtime error
+		print(stringToInt! + 1)
+	</code></pre>
+
+	<p>
+		Why are runtime errors so dangerous? Because they aren't spotted by XCode as
+		we write, and they aren't spotted by the compiler. This means the error can
+		lay in ambush for a long time as we code, and only when we build does it
+		appear. A much safer way is to first
+		<span class="italicsText">test existence</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		let inputNum = "10"
+		var stringToInt = Int(inputNum)
+		if stringToInt != nil {
+			print(stringToInt! + 1)
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		11
+	</code></pre>
+
+	<p>
+		<span class="topic">Optional Binding.</span> Another way to unwrap is to
+		first determine whether the optional contains a value, and if it does, make
+		the value available as a temporary constant or variable.
+	</p>
+
+	<pre class="language-swift"><code>
+		let inputNum = "10"
+		var stringToInt = Int(inputNum)
+		if let temp = stringToInt {
+				let result = temp + 1
+				print(result)
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		11
+	</code></pre>
+
+	<p>
+		In an optional binding, we write an
+		<span class="monoText">if-let</span> expression (or, alternatively, an
+		<span class="monoText">if-var</span> expression). The last code block above
+		tells Swift, "If <span class="monoText">stringToInt</span> contains a value:
+		Unwrap it, assign it to a variable called
+		<span class="monoText">temp</span>, then execute this block of code."
+		Optional bindings are the preferred method for unwrapping optionals. Swift
+		allows <span class="term">shadowing</span>, and it's often best practice to
+		write <span class="monoText">if-let</span> statements using the same names
+		for the <span class="monoText">let</span> expression and the optional
+		variable:
+	</p>
+
+	<pre class="language-swift"><code>
+		var greet: String?
+		greet = "Hello"
+		print(greet)
+
+		if let greet = greet {
+			print(greet)
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Optional("Hello")
+		"Hello"
+	</code></pre>
+
+	<p>
+		<span class="topic">Implicitly Unwrapped Optionals.</span> When we
+		implicitly unwrap an optional, we declare an optional, initialize it to some
+		value, then tell Swift, "This is an optional, but I'm letting you know now
+		that it's free to unwrap later." For example:
+	</p>
+
+	<pre class="language-swift"><code>
+		let userInt: Int! = 1
+		print(userInt)
+
+		let implicitInt: Int = userInt
+		print(implicitInt)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Optional(1)
+		1
+	</code></pre>
+</section>
+{% endblock %}

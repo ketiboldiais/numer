@@ -1,0 +1,116 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="branching_programs">
+	<h4>Branching</h4>
+	<p>
+		To use the comparison and Boolean operators, we need
+		<span class="italicsText">branching statements</span>. Branching statements
+		are what allow to write
+		<span class="boldItalics">branching programs</span> &mdash; programs that
+		consist of three parts:
+	</p>
+	<ol>
+		<li>
+			A <span class="boldItalics">test</span> &mdash; a Boolean expression;
+		</li>
+		<li>
+			A <span class="boldItalics">block</span> &mdash; a specified section, or
+			sequence, of code to execute if the
+			<span class="italicsText">test</span> returns
+			<span class="monoText">True</span>;
+		</li>
+		<li>
+			An <span class="boldItalics">optional block</span> &mdash; an (optional)
+			<span class="italicsText">block</span> to execute if the test is
+			<span class="monoText">False</span>.
+		</li>
+	</ol>
+	<p>The general structure of a branching program looks like:</p>
+	<figure>
+		<img src="{% static 'images/branching_program.svg' %}" alt="branching" class="fifty-p" />
+	</figure>
+	<p>With branching, we can write much more interesting programs:</p>
+	<pre class="language-python"><code>
+		x = int(input('Enter an integer: '))
+		if x%2 == 0:
+			print('')
+			print('Even')
+		else:
+			print('')
+			print('Odd')
+		print('Done with conditional')
+	</code></pre>
+	<p>
+		As we can likely guess, the code above takes an
+		<span class="monoText">int</span> input from the user, and outputs to the
+		console whether the <span class="monoText">int</span> is an even or odd
+		number. The word <span class="monoText">if</span> indicates a true block
+		&mdash; "execute the following code if this test return
+		<span class="monoText">True</span>. The word
+		<span class="monoText">else</span> indicates a false block &mdash; "execute
+		the following code if the test returns <span class="monoText">False</span>.
+		Note the difference between Python and many other languages like C or Java.
+		We do not need additional characters to indicate a block. The fact that the
+		lines below the <span class="monoText">if</span> and
+		<span class="monoText">else</span> are indented tells Python that the
+		indented code is a block.
+	</p>
+	<p>
+		We can create more complex tests by
+		<span class="boldItalics">nesting</span> conditionals:
+	</p>
+	<pre class="language-python"><code>
+		if x%2 == 0:
+			if x%3 == 0:
+				print('Divisible by 2 and 3')
+			else:
+				print('Divisible by 2 but not 3')
+		elif x%3 == 0:
+			print('Divisible by 3 but not 2')
+	</code></pre>
+	<p>
+		Notice the word <span class="monoText">elif</span>. This is the Python
+		equivalent of <span class="monoText">else if</span> in many other languages.
+		It is what we use to introduce a
+		<span class="italicsText">second</span> true block. We can make our tests
+		even more complex with
+		<span class="boldItalics">compound Boolean expressions</span>:
+	</p>
+	<pre class="language-python"><code>
+		if x < y and x < z:
+			print('x is least')
+		elif x < z:
+			print('y is least')
+		else:
+			print('z is least')
+	</code></pre>
+	<p>
+		In the code above, we have two true blocks (introduced by
+		<span class="monoText">if</span> and <span class="monoText">elif</span>) and
+		one false block (introduced by <span class="monoText">else</span>).
+	</p>
+	<p>
+		Caution: When using <span class="monoText">if ... elif ... else</span>, the
+		program will exit out of all of the branches the moment it executes exactly
+		one true or false block. Thus:
+	</p>
+	<pre class="language-python"><code>
+		temp = 120
+		if temp > 85:
+			print("Hot")
+		elif temp > 100:
+			print("Scorching")
+		elif temp > 60:
+			print("Tepid")
+		else:
+			print("Cold")
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		'Hot'
+	</code></pre>
+	<p>
+		The above code outputs <span class="monoText">'Hot'</span> because the very
+		first test evaluates to true, so Python executes its code block and
+		continues outside the branches.
+	</p>
+</section>
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="properties">
+	<p>
+		<span class="topic">More on Properties.</span> With broad understanding of
+		structures, we now take a closer look at properties &mdash; the data stored
+		inside a structure. Suppose the following structure:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct client {
+			let name: (firstName: String, lastName: String)
+		}
+	</code></pre>
+	<p>
+		Each of the variables inside <span class="monoText">client</span> are called
+		<span class="term">stored instance properties</span>. This that whenever we
+		create an instance of <span class="monoText">client</span>, those values are
+		stored with that instance. We can access properties of the instance by
+		referencing them with dot notation:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Client {
+			let name: (firstName: String, lastName: String)
+		}
+		
+		let user = Client(name: (firstName: "Joseph", lastName: "Mueller"))
+		print(user.name)
+		print(user.name.firstName)
+		print(user.name.lastName)
+	</code></pre>
+	<pre class="language-bash"><code>
+		(firstName: "Joseph", lastName: "Mueller")
+		Joseph
+		Mueller
+	</code></pre>
+
+	<p>
+		If we wanted to mutate the instance properties, we would have to change the
+		constants to variables:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Client {
+			var name: (firstName: String, lastName: String)
+		}
+		
+		var user = Client(name: (firstName: "Joseph", lastName: "Mueller"))
+		user.name.firstName = "Sally"
+		print(user.name)
+		print(user.name.firstName)
+		print(user.name.lastName)
+	</code></pre>
+	<pre class="language-bash"><code>
+		(firstName: "Sally", lastName: "Mueller")
+		Sally
+		Mueller
+	</code></pre>
+
+	<p>
+		Mutating instance properties is a hallmark of object-oriented programming.
+		But, mutability is both a gift and a curse. With mutability, we have to be
+		hyper-vigilant of what exactly is mutating, and keeping track of those
+		mutations. Swift helps us do so with the
+		<span class="monoText">willSet</span> and
+		<span class="monoText">didSet</span>
+		<span class="italicsText">property observers</span>. Essentially, we can
+		pass code into the closures following these observers, to be executed
+		whenever a mutation occurs.
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Client {
+			var name: (firstName: String, lastName: String) {
+				willSet {
+					print("\(name) mutated to \(newValue)")
+				}
+				didSet {
+					if (name.firstName).contains(" ") || (name.lastName).contains(" ") {
+						print("Invalid name: whitespace. Reverting to \(oldValue).")
+						name = oldValue
+					}
+				}
+			}
+		}
+		
+		var user = Client(name: (firstName: "Joseph", lastName: "Mueller"))
+		user.name.firstName = "Sally "
+		print(user.name)
+		print(user.name.firstName)
+		print(user.name.lastName)
+	</code></pre>
+	<pre class="language-bash"><code>
+		(firstName: "Joseph", lastName: "Mueller") mutated to (firstName: "Sally ", lastName: "Mueller")
+		Invalid name: whitespace. Reverting to (firstName: "Joseph", lastName: "Mueller").
+		(firstName: "Joseph", lastName: "Mueller")
+		Joseph
+		Mueller
+	</code></pre>
+	<p>
+		Property observers are only called after initialization. This also means
+		they are not called on constants (after all, constants cannot mutate).
+	</p>
+</section>
+
+<section id="static_properties">
+	<p>
+		<span class="topic">Static Properties.</span> The propery
+		<span class="monoText">name</span> in
+		<span class="monoText">Client</span> is an instance property. This means
+		every instance of <span class="monoText">Client</span> will have a name with
+		a unique value. However, for some structures, we might have a property that
+		every instance of that structure should have. For example, we might have the
+		following structure:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Employee {
+			var name: (firstName: String, lastName: String)
+			static let workingHours = 8
+		}
+	</code></pre>
+
+	<p>
+		Above, we created a structure called <span class="monoText">Employee</span>.
+		Every instance of <span class="monoText">Employee</span> will have the an
+		instance property <span class="monoText">name</span>, and they will have
+		unique values for that property. On other hand, every instance of
+		<span class="monoText">Employee</span> will also have the property
+		<span class="monoText">workingHours</span>, and it will always have the
+		value <span class="monoText">8</span>. This is called a
+		<span class="term">type property</span>.
+	</p>
+
+	<p>
+		Because <span class="monoText">workingHours</span> is common to every
+		<span class="monoText">Employee</span>, we can access it by simply
+		referencing <span class="monoText">Employee</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Employee {
+			var name: (firstName: String, lastName: String)
+			static let workingHours = 8
+		}
+		
+		var empHours = Employee.workingHours
+		print(empHours)
+	</code></pre>
+	<pre class="language-bash"><code>
+		8
+	</code></pre>
+
+	<p>
+		Static properties can be declared with <span class="monoText">var</span>, in
+		which case they can be mutated. However, this can be a dangerous practice
+		because changing that property will change it for all instances of that
+		structure. Accordingly, it is often best not to allow static properties to
+		mutate.
+	</p>
+
+	<p>
+		Of note, stored properties are not unique to structures. The same ideas
+		above apply to structures and classes. The one exception is enumerations.
+		Enumerations can store type properties, but they
+		<span class="underlineText">cannot</span> store instance properties. They
+		can, however, store <span class="term">computed properties</span> (and so
+		too can structures and classes).
+	</p>
+</section>
+
+<section id="computed_properties">
+	<p>
+		<span class="topic">Computed Properties.</span> Consider the following
+		structure:
+	</p>
+	<pre class="language-swift"><code>
+		struct NatNum {
+			let val: Int
+		}
+	</code></pre>
+	<p>
+		We want the structure <span class="monoText">NatNum</span> to represent the
+		natural numbers. One particular property of the natural numbers is parity
+		&mdash; whether the number is zero, odd, or even:
+	</p>
+	<pre class="language-swift"><code>
+		struct NaturalNum {
+			let val: Int
+			var parity: String {
+				if val == 0 {
+					return "Zero"
+				} else if val % 2 == 0 {
+					return "Even"
+				} else {
+					return "Odd"
+				}
+			}
+		}
+		let foo = NaturalNum(val: 8)
+		print(foo.parity)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Even
+	</code></pre>
+	<p>
+		In the structure above, we've created a property called
+		<span class="monoText">parity</span>. This property is a
+		<span class="term">computed property</span>. In other words, the value
+		associated with the property depends on a computation. In this case, whether
+		the value is zero, divisible by 2, or not divisible by 2. Needless to say,
+		because computed properties are computed, we cannot assign values to them
+		directly.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">lazy.</span></span> Some computed
+		properties are particularly costly in terms of memory and CPU usage. This
+		can be the case when we have very large or complex structures. By default,
+		computed properties are computed on instantiation. As we might suspect, this
+		can cost us.
+	</p>
+	<p>
+		Fortunately, Swift provides a way around this with the
+		<span class="monoText">lazy</span> keyword. By appending this keyword before
+		a computed property, the property is not computed unless we actually ask for
+		it:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct NaturalNum {
+			let val: Int
+			lazy var parity: String {
+				if val == 0 {
+					return "Zero"
+				} else if val % 2 == 0 {
+					return "Even"
+				} else {
+					return "Odd"
+				}
+			}
+		}
+	</code></pre>
+</section>
+{% endblock %}

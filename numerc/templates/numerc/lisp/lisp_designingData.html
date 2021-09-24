@@ -1,0 +1,1052 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="HtDD">
+	<h3><span class="monoText">HtDD</span></h3>
+	<p>
+		In this section, we explore
+		<span class="term"><span class="monoText">HtDD</span></span> ("How to Design
+		Data Definitions") design. <span class="monoText">HtDD</span> provides a
+		design approach for representing data from the problem's domain. Designing
+		data is a critical point for understanding paradigms like object-oriented
+		programming. Often, the way we solve a problem is dependent on how we
+		present the data. This is because functions can only work if they are
+		provided data, and <span class="italicsText">how</span> a function works
+		depends on the data it consumes.
+	</p>
+	<p>
+		This approach is not limited to computer science. For example, a lawyer must
+		be able to successfully argue for his client in court. But to do so, they
+		must be able to present the facts in a favorable light &mdash; they must
+		<span class="italicsText">design</span> the data representation. The design
+		approach of <span class="monoText">HtDD</span> prvodies a systematic means
+		to do so.
+	</p>
+
+	<p>
+		<span class="topic">Data Definition.</span>
+		<span class="monoText">HtDD</span> is premised on the idea that real world
+		information can be represented as data in a program. This is derived from
+		the view that every problem has a
+		<span class="term">problem domain</span> &mdash; the data provided by the
+		problem. For example, we might be asked to design a traffic light system.
+		Information in this problem's domain includes green, yellow, and red lights.
+		In computers, however, there is no such thing as a &#8220;green light&#8221;
+		or any light for that matter.
+	</p>
+	<p>
+		To solve this problem, we must
+		<span class="italicsText">represent</span> information in the problem domain
+		as data in the computer. Likewise, we must provide a way to
+		<span class="italicsText">interpret</span> that data as representing
+		information in the problem domain.
+	</p>
+	<p>The data definition consists of four to five parts:</p>
+	<figure class="math-display">
+		<ol>
+			<li>A possible <span class="italicsText">structure definition</span>.</li>
+			<li>
+				A <span class="italicsText">type comment</span> describing how to form
+				the data.
+			</li>
+			<li>
+				An <span class="italicsText">interpretation comment</span> describing
+				the correspondence between the information and the data.
+			</li>
+			<li>
+				One or more <span class="italicsText">examples</span> of the data.
+			</li>
+			<li>
+				A <span class="italicsText">template</span> for a 1 argument function
+				operating on data of the data type.
+			</li>
+		</ol>
+	</figure>
+
+	<p>
+		<span class="topic">Atomic Non-Distinct.</span> Consider the following
+		problem parameter:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>The problem requires data about the names of cities.</p>
+		</div>
+	</figure>
+	<p>
+		Because of this parameter, we need a data definition to represent the name
+		of a city. To construct a data definition, we follow the steps below.
+	</p>
+
+	<p>
+		Step 1: Form. The first step to constructing a data definition is to answer
+		the following question: What is the form of the information we seek to
+		represent? One way to answer this question is to simply write out examples
+		of this information:
+	</p>
+	<pre class="language-scheme"><code>
+		;; Information:
+			; New York City
+			; Boston
+			; Los Angeles
+			; Chicago
+			; Palo Alto
+	</code></pre>
+	<p>
+		Now the question is: How do we represent this information as data? A good
+		jumping off point is to consider the most common representations:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Information</th>
+				<th>Representation</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>atomic</td>
+					<td>simple atomic data</td>
+				</tr>
+				<tr>
+					<td>numbers within a range</td>
+					<td>interval</td>
+				</tr>
+				<tr>
+					<td>consists of a fixed number of distinct entities</td>
+					<td>enumeration</td>
+				</tr>
+				<tr>
+					<td>
+						comprised of 2 or more subclasses, at least one of which is not a
+						distinct item
+					</td>
+					<td>itemization</td>
+				</tr>
+				<tr>
+					<td>consists of two or more items that naturally belong together</td>
+					<td>compound data</td>
+				</tr>
+				<tr>
+					<td>naturally composed of different parts</td>
+					<td>references to other defined type</td>
+				</tr>
+				<tr>
+					<td>is or arbitrary (unknown) size</td>
+					<td>self-referential or mutually referential</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		The above may seem vague at the moment, but we will explore them in more
+		detail as we continue. Here, the most applicable structure is
+		<span class="italicsText">atomic</span>. When say that data is
+		<span class="italicsText">atomic</span>, we mean that the data cannot be
+		broken down into any further meaningful pieces. Here, the city names are
+		just that &mdash; they are city names, and they cannot be broken down any
+		further to provide anythng meaningful. Accordingly, our data definition will
+		be atomic. We write the comment:
+	</p>
+	<pre class="language-scheme"><code>
+		;; CityName is String
+	</code></pre>
+	<p>
+		Step 1a: Interpretation. Now, we need to next include an interpretation
+		comment. This comment should answer the question, What does this data mean?
+	</p>
+	<pre class="language-scheme"><code>
+		;; CityName is String
+		;; interp. the name of a city
+	</code></pre>
+	<p>Step 2: Examples. Now we want to provide some examples:</p>
+	<pre class="language-scheme"><code>
+		;; CityName is String
+		;; interp. the name of a city
+		(define CN1 "Boston")
+		(define CN2 "Chicago")
+	</code></pre>
+	<p>Step 3: Templates. Next, we write a template for the data definition.</p>
+	<pre class="language-scheme"><code>
+		;; CityName is String
+		;; interp. the name of a city
+		(define CN1 "Boston")
+		(define CN2 "Chicago")
+
+		#;
+		(define (fn-for-city-name cn)
+			(... cn))
+		;; Template rules used
+		;; - atomic-distinct: String
+	</code></pre>
+	<p>
+		Now, let's write a function, using <span class="monoText">HtDF</span>, that
+		consumes non-primitive data (the data we defined above). We will just write
+		a simple function that returs <span class="monoText">true</span> if the city
+		name passed into it is the best city in the world. We will use
+		<span class="monoText">Chicago</span> here.
+	</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions:
+		;; CityName is String
+		;; interp. the name of a city
+		(define CN1 "Boston")
+		(define CN2 "Chicago")
+
+		#;
+		(define (fn-for-city-name cn)
+			(... cn))
+		;; Template rules used
+		;; - atomic-distinct: String
+
+
+		;; Functions:
+
+		;; CityName --> Boolean
+		;; Purpose:
+		;;	Produce true if CityName is Chicago
+
+		(check-expect (best? "Chicago") true)
+		(check-expect (best? "Boston") false)
+
+		; (define (best? cn) false) ; stub
+
+		;; took template from CityName
+		(define (best? cn)
+			(if (string=? cn "Chicago") 
+				true 
+				false))
+	</code></pre>
+
+	<p>
+		<span class="topic">Interval.</span> We use
+		<span class="italicsText">interval data</span> to represent information
+		consisting of numbers within a particular range. Consider the following
+		problem parameter:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				We are designing a program that manages ticket sales for a perfectly
+				rectangular theater. The program requires a data definition representing
+				a seat number in a row, where each row has 32 seats.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The first thing to note is the information given by the problem. Here, it is
+		the seat numbers. These seat numbers run from 1 to 32. Because these numbers
+		go from 1 to 32 &mdash; a range &mdash; they are necessarily
+		<span class="italicsText">intervals</span>. Thus, we write our type comment:
+	</p>
+
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+	</code></pre>
+
+	<p>
+		The use of the square brackets come directly from mathematics. They
+		communicate that the interval is 1 and 32
+		<span class="italicsText">inclusive</span>. If the interval was 1 and 32
+		<span class="italicsText">exclusive</span>, we would write
+		<span class="monoText">(1, 32)</span>. Next, we write the interpretation
+		comment:
+	</p>
+
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+	</code></pre>
+
+	<p>
+		Notice that we included another bit of information towards the end &mdash;
+		that 1 and 32 are aisle seats.
+		<span class="underlineText">Anything</span> that would help better
+		understand how the data corresponds to the information should always be
+		included in the interpretation comment.
+	</p>
+
+	<p>Now we write some examples:</p>
+
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+		(define SN1 1) ;aisle
+		(define SN2 12) ;middle
+		(define SN3 32) ;aisle
+	</code></pre>
+
+	<p>
+		Observe that we added comments to the examples. We want to include examples
+		that are illustrative of how the data corresponds to the information.
+		Examples done, the next step is templating:
+	</p>
+
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+		(define SN1 1) ;aisle
+		(define SN2 12) ;middle
+		(define SN3 32) ;aisle
+
+		#;
+		(define (fn-for-seat-num sn)
+			(... sn))
+
+		;; template rules used:
+		;;   - atomic non-distinct: Interval[1, 32]
+	</code></pre>
+
+	<p>Done. We are now given this problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				Using the <span class="monoText">SeatNum</span> data definition, design
+				a function that produces <span class="monoText">true</span> if the given
+				seat number is on the aisle.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Following <span class="monoText">HtDF</span>, we: (1) write the function's
+		signature, purpose, and stub; (2) write tests; (3) write templates; (4) code
+		the body; and (5) test and debug.
+	</p>
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+		(define SN1 1) ;aisle
+		(define SN2 12) ;middle
+		(define SN3 32) ;aisle
+
+		#;
+		(define (fn-for-seat-num sn)
+			(... sn))
+
+		;; template rules used:
+		;;   - atomic non-distinct: Interval[1, 32]
+
+		;; Function
+		;; SeatNum --> Boolean
+		;; produce true if SeatNum is aisle, otherwise false
+
+		(check-expect (aisle? 1) true)
+		(check-expect (aisle? 12) false)
+
+		(define (aisle? SeatNum) true)
+	</code></pre>
+	<p>Both tests ran, so we can proceed:</p>
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+		(define SN1 1) ;aisle
+		(define SN2 12) ;middle
+		(define SN3 32) ;aisle
+
+		#;
+		(define (fn-for-seat-num sn)
+			(... sn))
+
+		;; template rules used:
+		;;   - atomic non-distinct: Interval[1, 32]
+
+		;; Functions
+		;; SeatNum --> Boolean
+		;; produce true if SeatNum is aisle, otherwise false
+
+		(check-expect (aisle? 1) true)
+		(check-expect (aisle? 12) false)
+		(check-expect (aisle? 32) true)
+
+		;; (define (aisle? SeatNum) true)
+
+		;; (define (aisle? SeatNum)
+			;; (... seatNum))
+		
+		(define (aisle? seatNum) 
+			(cond [(or (= 1 seatNum) (= 32 seatNum)) true]
+					[else false]))
+	</code></pre>
+	<p>Testing, all tests passed.</p>
+
+	<p>
+		<span class="topic">Enumeration.</span> We use
+		<span class="italicsText">enumeration</span> when the information consists
+		of two or more <span class="underlineText">distinct</span> values. For
+		example, consider the following problem parameter:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				We are designing a program to keep track of student grades. The program
+				requires representing three letter grades: A, B, and C.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The defining characteristic for the information we seek to represent: They
+		are three, distinct values. An <span class="monoText">A</span> is an
+		<span class="monoText">A</span>, a <span class="monoText">B</span> is a
+		<span class="monoText">B</span>, and a <span class="monoText">C</span> is a
+		<span class="monoText">C</span>. They are clearly separate and unique, and
+		every letter grade can only be one of the three. We can think of these as
+		terniary values. Where binary values are true or false, terniary values
+		consist of three &mdash; <span class="monoText">A, B, C</span>;
+		<span class="monoText">black, grey, white</span>;
+		<span class="monoText">red light, yellow light, green light</span>. When we
+		encounter such values, the first option to consider is enumeration.
+	</p>
+	<p>First, the type comment:</p>
+	<pre class="language-scheme"><code>
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+	</code></pre>
+	<p>
+		Now, examples are redundant for this particular enumeration, because the
+		interpretation tells us all that we need. So, we write:
+	</p>
+	<pre class="language-scheme"><code>
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+		;; ⟨examples are redundant for enumerations⟩
+	</code></pre>
+	<p>Now we write the template:</p>
+	<pre class="language-scheme"><code>
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+		;; ⟨examples are redundant for enumerations⟩
+
+		(define (fn-for-letter-grade lg)
+			(cond [(string=? lg "A") ...]
+					[(string=? lg "B") ...]
+					[(string=? lg "C") ...]))
+	</code></pre>
+	<p>
+		Enumerations are a strong indicator of subclasses. In this case, the class
+		letter grade has three subclasses &mdash;
+		<span class="monoText">A, B, C</span>. This is particularly useful fact when
+		considering object-orientation.
+	</p>
+	<p>
+		Needless to say, enumerations only work for a finite amount of elements.
+		When there are infinitely many elements, then the appropriate data
+		definition is an interval, which collects elements that satisfy a property.
+	</p>
+
+	<p>Now we're given the following problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				Using the <span class="monoText">LetterGrade</span> data definition,
+				design a function called <span class="monoText">bump-up</span> that
+				consumes a letter grade and produces the next highest letter grade.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Again, we use <span class="monoText">HtDF</span>: (1) Write the signature,
+		purpose, and stub; (2) write the tests; (3) write the template; (4) write
+		the body; and (5) test and debug.
+	</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+		;; ⟨examples are redundant for enumerations⟩
+
+		;; (define (fn-for-letter-grade lg)
+			;; (cond [(string=? lg "A") ...]
+					;; [(string=? lg "B") ...]
+					;; [(string=? lg "C") ...]))
+
+		
+		;; Functions
+		;; bump-up
+		;; LetterGrade --> LetterGrade
+		;; consumes a LetterGrade, produces the next highest LetterGrade
+
+		(check-expect (bump-up "C") "B")
+		(check-expect (bump-up "B") "A")
+		(check-expect (bump-up "A") "A")
+
+		(define (bump-up LetterGrade) "A")
+	</code></pre>
+	<p>The tests work, so we continue:</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+		;; ⟨examples are redundant for enumerations⟩
+
+		;; (define (fn-for-letter-grade lg)
+			;; (cond [(string=? lg "A") ...]
+					;; [(string=? lg "B") ...]
+					;; [(string=? lg "C") ...]))
+
+		
+		;; Functions
+		;; bump-up
+		;; LetterGrade --> LetterGrade
+		;; consumes a LetterGrade, produces the next highest LetterGrade
+
+		(check-expect (bump-up "C") "B")
+		(check-expect (bump-up "B") "A")
+		(check-expect (bump-up "A") "A")
+
+		;; (define (bump-up LetterGrade) "A")
+
+		;; (define (bump-up LetterGrade)
+			;; (... LetterGrade))
+
+		(define (bump-up LetterGrade)
+			(cond [(string=? LetterGrade "B") "A"]
+					[(string=? LetterGrade "C") "B"]
+					[else "A"]))
+	</code></pre>
+	<p>All three tests passed.</p>
+
+	<p><span class="topic">Itemization.</span> Consider the following problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				We are designing a program for controlling the New Year's Eve countdown
+				display. Design a data definition representing the current state of the
+				countdown, which falls into one of three categories: (1) not yet
+				started; (2) from 10 to 1 seconds before midnight; (3) complete.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The problem parameter tells us that the information falls into one of three
+		categories: (1) before the countdown starts; (2) during the countdown; and
+		(3) when the countdown ends. This is similar to the letter grade categories,
+		but there are some differences. Categories (1) and (2) are distinct; they
+		have a clear state &mdash; countdown hasn't started and countdown has ended.
+		But in the second category, there isn't a single distinct value &mdash; the
+		values run from 10 to 1.
+	</p>
+	<p>
+		This parameter is a good example of
+		<span class="italicsText">itemization</span> &mdash; the domain information
+		consists of 2 or more subclasses, but at least one of those subclasses is
+		<span class="underlineText">not</span> a distinct value.
+	</p>
+	<p>First, the type comment.</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"	
+	</code></pre>
+	<p>Second, the interpretation comment:</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+	</code></pre>
+	<p>Now we need examples:</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+	</code></pre>
+	<p>
+		Next, templating. This is where we encounter some complexity. Here, our data
+		consists of a range and two distinct values. This is an example of
+		<span class="term">mixed data</span> &mdash; we have a Boolean, a number,
+		and a string. This means we have to be very careful with this. Part of our
+		data definition requires using comparison operators, and we cannot use such
+		operators for strings or Booleans. Because this is a mixed data itemization,
+		we must guard against anything that is not a number being passed into the
+		comparison operators.
+	</p>
+	<p>Accordingly, we need to include a test in addition to the comparisons:</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+
+		(define (fn-for-countdown c) 
+		(cond [(false? c) (...)]
+				[(and (number? c) (<= 1 c) (<= c 10)) (...)]
+				[else (...)]))
+	</code></pre>
+	<p>
+		Notice that in the last line, we have an
+		<span class="monoText">else</span> condition, rather than using the data
+		<span class="monoText">"complete"</span>. This is because if all of the
+		above conditions are <span class="monoText">false</span>, then it
+		<span class="underlineText">must</span> be the case that the countdown has
+		ended. Running a quick test, we do not get any errors so our data definition
+		is complete.
+	</p>
+	<p>
+		But, there is a small optimization we can make. Really, we do not need the
+		comparison operators. This is because the countdown is the only
+		<span class="monoText">number</span> type value among all the other
+		subclasses. This means we can get rid of all the comparison operators:
+	</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+
+		(define (fn-for-countdown c) 
+			(cond [(false? c) (...)]
+					[(number? c) (...)]
+					[else (...)]))
+	</code></pre>
+	<p>
+		Mixed data types are often a source for improved code. Consider the
+		following problem paramter:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				We are designing a traffic light sytem that can either (a) be disabled
+				or (b) be one of <span class="monoText">red</span>,
+				<span class="monoText">yellow</span>, or
+				<span class="monoText">green</span>.
+			</p>
+		</div>
+	</figure>
+
+	<p>We might write the data defintion as the following:</p>
+	<pre class="language-scheme"><code>
+		;; TrafficLight is one of:
+			;; - false
+			;; - "red"
+			;; - "yellow"
+			;; - "green"
+		;; interp.
+			;; "false" - disabled
+			;; "red" - red light
+			;; "yellow" - yellow light
+			;; "green" - green light
+		(define TrafficLight0 false)
+		(define TrafficLight1 "red")
+		(define TrafficLight2 "yellow")
+		(define TrafficLight3 "green")
+
+		(define (fn-for-light) TrafficLight
+		(cond 
+			[(false? TrafficLight) (...)]
+			[(and (string? TrafficLight) (string=? TrafficLight "red")) (...)]
+			[(and (string? TrafficLight) (string=? TrafficLight "yellow")) (...)]
+			[(and (string? TrafficLight) (string=? TrafficLight "green")) (...)]))
+	</code></pre>
+
+	<p>
+		Notice the this is a mixed data itemization, so we used guards for strings.
+		But, the code can be simplified even further: Once we get to the condition
+		for <span class="monoText">"red"</span>, there are no other data types other
+		than string. Everything after <span class="monoText">"red"</span> is a
+		<span class="monoText">string</span> value. This evidences a rule for mixed
+		data itemizations: If all the remaining cases are the same data type, then
+		we can get rid of the guards:
+	</p>
+
+	<pre class="language-scheme"><code>
+		;; TrafficLight is one of:
+			;; - false
+			;; - "red"
+			;; - "yellow"
+			;; - "green"
+		;; interp.
+			;; "false" - disabled
+			;; "red" - red light
+			;; "yellow" - yellow light
+			;; "green" - green light
+		(define TrafficLight0 false)
+		(define TrafficLight1 "red")
+		(define TrafficLight2 "yellow")
+		(define TrafficLight3 "green")
+
+		(define (fn-for-light) TrafficLight
+		(cond 
+			[(false? TrafficLight) (...)]
+			[(string=? TrafficLight "red") (...)]
+			[(string=? TrafficLight "yellow") (...)]
+			[(string=? TrafficLight "green") (...)]))
+	</code></pre>
+
+	<p>
+		The template looks much simpler. The examples above evidence two rules for
+		mixed data itemizations: (1) If a given subclass is the last subclass of its
+		type, we can reduce the test to just the guard. (2) If all remaining
+		subclasses are of the same type, then we can eliminate the guards.
+	</p>
+
+	<p>Now we're presented with the following problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				Design a function that consumes
+				<span class="monoText">Countdown</span> and returns the status of the
+				countdown: either (a)
+				<span class="monoText">"countdown uninitiated"</span>; (b)
+				<span class="monoText">"countdown initiated"</span>; or (c)
+				<span class="monoText">"countdown finished"</span>.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		We follow <span class="monoText">HtDF</span>: (1) Write the signature,
+		purpose, and stub; (2) write the tests; (3) write the templates; (4) code
+		the body; and (5) test and debug.
+	</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions
+
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+
+		; (define (fn-for-countdown c) 
+			; (cond [(false? c) (...)]
+					; [(number? c) (...)]
+					; [else (...)]))
+		
+		;; Functions
+
+		;; CountDown --> string
+		;; Consumes CountDown, produces the countdown's status
+
+		(check-expect (countdown-status false) "Countdown uninitiated")
+		(check-expect (countdown-status 10) "Countdown initiated")
+		(check-expect (countdown-status 5) "Countdown initiated")
+		(check-expect (countdown-status 1) "Countdown initiated")
+		(check-expect (countdown-status 0) "Countdown finished")
+
+		(define (countdown-status CountDown) 0)
+	</code></pre>
+	<p>All tests passed, proceed:</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions
+
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+
+		; (define (fn-for-countdown c) 
+			; (cond [(false? c) (...)]
+					; [(number? c) (...)]
+					; [else (...)]))
+		
+		;; Functions
+
+		;; CountDown --> string
+		;; Consumes CountDown, produces the countdown's status
+
+		(check-expect (countdown-status false) "Countdown uninitiated")
+		(check-expect (countdown-status 10) "Countdown initiated")
+		(check-expect (countdown-status 5) "Countdown initiated")
+		(check-expect (countdown-status 1) "Countdown initiated")
+		(check-expect (countdown-status 0) "Countdown initiated")
+		(check-expect (countdown-status true) "Countdown terminated")
+
+		;; (define (countdown-status CountDown) 0)
+
+		(define (countdown-status CountDown)
+			(cond [(false? CountDown) "Countdown uninitiated"]
+					[(number? CountDown) "Countdown initiated"]
+					[else "Countdown terminated"]))
+	</code></pre>
+	<p>All 6 tests passed.</p>
+	<p>
+		In all of the previous examples, we saw how designing data informs the
+		function's design, and tests' designs. The information's structure informs
+		the data structure, the data structure informs the function structure, and
+		the function structure informs the test structures. This is called
+		<span class="monoText">information flow</span>. Information flow
+		demonstrates a critical rule in systematic program design: Before we even
+		begin typing, we must identify and understand the relevant information's
+		structure.
+	</p>
+	<p>
+		Under systematic program design, data definitions are a leverage point for
+		designing and structuring a program. However, that leverage point only
+		exists if we understand the relevant information's structure. Now, not all
+		programs are conducive to this
+		<span class="italicsText">data-driven approach</span>. Some programs will
+		require different approaches. One such approach is the
+		<span class="italicsText">control-driven approach</span>, a tactic to be
+		explored in later sections. Nevertheless, the point remains: Understanding
+		the relevant information before we touch the keyboard is critical to
+		well-designed programs.
+	</p>
+</section>
+
+<section id="compound_data">
+	<h3>Compound Data</h3>
+	<p>
+		In the previous examples, we worked purely with
+		<span class="italicsText">atomic data</span> &mdash; a single value. But
+		information is not composed of single values. A point in space has three
+		values grouped together: ${(x, y, z).}$ A phone book entry consists of a
+		name and a phone number. These are all examples of information that must be
+		represented as <span class="italicsText">compound data</span>.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">define-struct</span>.</span> To
+		create compound data in Lisp, we use
+		<span class="monoText">define-struct</span>. Suppose we want to create a
+		data structure representing a piece of compound data &mdash; a Cartesian
+		coordinate. We write:
+	</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x_coordinate y_coordinate))
+	</code></pre>
+
+	<p>
+		The <span class="monoText">(x_coordinate y_coordinate)</span> following
+		<span class="monoText">define-struct position</span> is called a
+		<span class="italicsText">field</span>. The symbol
+		<span class="monoText">position</span> is simply the name of our data
+		structure. With the <span class="monoText">position</span> data structure
+		defined, we can now create a
+		<span class="monoText">position</span> structure with a
+		<span class="term">constructor</span>:
+	</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x_coordinate y_coordinate))
+
+		;; This is called a constructor
+		(make-position 3 6)
+	</code></pre>
+
+	<p>We can name the data structures we've created:</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x-coordinate y-coordinate))
+
+		(define origin(make-position 0 0))
+		(define point_1(make-position 3 6))
+	</code></pre>
+
+	<p>
+		If we want to access the fields
+		<span class="monoText">x-coordinate</span> or
+		<span class="monoText">y-coordinate</span>, we use
+		<span class="term">selectors</span>:
+	</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x_coordinate y_coordinate))
+
+		(define origin(make-position 0 0))
+		(define point_1(make-position 3 6))
+
+		;; these are called selectors
+		(position-x_coordinate origin)
+		(position-y_coordinate origin)
+		(position-x_coordinate point_1)
+		(position-y_coordinate point_1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+		0
+		3
+		6
+	</code></pre>
+
+	<p>
+		Finally, we can ask &#8220;Is this value produced by
+		<span class="monoText">make-position</span>?&#8221; with a
+		<span class="term">predicate</span>:
+	</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x_coordinate y_coordinate))
+
+		(define origin(make-position 0 0))
+		(define point_1(make-position 3 6))
+
+		(position? origin)
+		(position? "line")
+	</code></pre>
+	<pre class="language-bash"><code>
+		#true
+		#false
+	</code></pre>
+
+	<p>In sum, to form a structure definition, we write:</p>
+
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(define-struct ⟨<span class="italicsText">data-structure-name</span>⟩ (⟨<span class="italicsText">field-name</span>⟩ ...))
+		</code></pre>
+	</figure>
+
+	<p>
+		<span class="topic">Compound Data Definitions.</span> Now that we know how
+		to create compound data, we now apply the
+		<span class="monoText">HtDD</span> approach to construct a data definition.
+		Consider the following problem:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				Design a data definition to represent employee names at the company. An
+				employee name consists of a first and last name.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		The key indicator of a piece of compound data is two or more values that
+		<span class="italicsText">naturally belong together</span>. In this case,
+		the problem statement evidences a clear piece of compound data &mdash; a
+		name, which consists of a first and last name. Recall the
+		<span class="monoText">HtDD</span> procedure:
+	</p>
+
+	<ol>
+		<li>Write a possible structure definition.</li>
+		<li>
+			Write a type comment defining a new type name and describing how to form
+			data.
+		</li>
+		<li>
+			Write an interpretation comment describing how the data corresponds to
+			information.
+		</li>
+		<li>Write one or more examples of the data.</li>
+		<li>Write a template for a 1 argument function operating on the data.</li>
+	</ol>
+
+	<p>
+		First step: A possible structure definition. Here, the data structure is
+		fairly straightforward:
+	</p>
+	<pre class="language-scheme"><code>
+		(define-struct employeeName (firstName lastName))
+	</code></pre>
+
+	<p>Second step: Write a type comment.</p>
+	<pre class="language-scheme"><code>
+		(define-struct employee (firstName lastName))
+		;; employee is (make-employee String String)
+		;; interp. (make-employee firstName lastName) is an employee with
+		;;   firstName := first name
+		;;   lastName := last name
+	</code></pre>
+
+	<p>Third step: Write an example.</p>
+	<pre class="language-scheme"><code>
+		(define-struct employee (firstName lastName))
+		;; employee is (make-employee String String)
+		;; interp. (make-employee firstName lastName) is an employee with
+		;;   firstName := first name
+		;;   lastName := last name
+		(define leoE(make-employee "Leonard" "Euler"))
+		(define blaiseP(make-employee "Blaise" "Pascal"))
+	</code></pre>
+
+	<p>
+		Fourth step: a template for a 1 argument function operating on the data.
+	</p>
+	<pre class="language-scheme"><code>
+		(define-struct employee (firstName lastName))
+		;; employee is (make-employee String String)
+		;; interp. (make-employee firstName lastName) is an employee with
+		;;   firstName := first name
+		;;   lastName := last name
+		(define leoE(make-employee "Leonard" "Euler"))
+		(define blaiseP(make-employee "Blaise" "Pascal"))
+
+		; (define (func-for-employee employee)
+		;	 (... (employee-firstName employee)) ;; string
+		;	 (... (employee-lastName employee))) ;; string
+	</code></pre>
+	<p>
+		In our function template, we explicitly listed the
+		<span class="italicsText">selectors</span> we can use. We do not
+		<span class="underlineText">have</span> to use the selectors, but we
+		explicitly write them out because future instances of
+		<span class="monoText">employee</span> will have those fields.
+	</p>
+
+	<p>
+		As we saw with <span class="monoText">HtDW</span>, a critical part of
+		systematic program design is breaking down a problem into smaller pieces.
+		The same idea applies to function design. When we design large, complex
+		functions, we often want to break them down into smaller, more easily
+		testable functions. This approach embodies the idea of
+		<span class="term">function composition</span> &mdash; a function performing
+		two or more operations depending on the data inputs. For example, consider a
+		self-driving car. We input a final destination, and from there, the car
+		drives us to the location. This is an example of enormously complex function
+		that performs numerous operations. However, by breaking the function down
+		into smaller <span class="italicsText">sub-functions</span>, the task is
+		less daunting. While we are not designing such gargantuan programs, the idea
+		is the same &mdash; break the problem down into smaller and smaller pieces.
+	</p>
+</section>
+{% endblock %}

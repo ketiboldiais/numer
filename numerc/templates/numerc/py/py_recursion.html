@@ -1,0 +1,903 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="iteration_v_recursion">
+	<h4>Iteration vs. Recursion</h4>
+	<p>
+		With the materials thus far, we now have the ability to write three types of
+		programs: (1) <span class="italicsText">linear programs</span>, programs
+		that execute in a single direction; (2)
+		<span class="italicsText">branching programs</span>, programs with
+		&#8220;forks&#8221;, executing in different directions depending on
+		particular conditions; and (3)
+		<span class="italicsText">iterative programs</span>, programs that execute
+		in a &#8220;circular&#8221; direction depending on a specified condition. We
+		now add an additional type to our tool kit:
+		<span class="boldText">recursive programs</span>.
+	</p>
+	<p>
+		<span class="topic">Recursion</span> Recursion is a way to design problems
+		through a divide-and-conquer approach. With respect to functions, it is a
+		programming technique where a function calls itself. There is a danger to
+		recursion &mdash; infinite executions. Save for very few situations, we
+		<span class="underlineText">never</span> want infinite recursion. For this
+		reason, we must follow this rule by default:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule</span> Let ${x}$ be some recursive function. Then
+			$x$ is defined as:
+		</p>
+		<figure class="math-display">
+			<ul class="abs-code">
+				<li>define $x$:</li>
+				<ul>
+					<li>if $n$ &rarr; return ${m;}$</li>
+					<li>else return $x$</li>
+				</ul>
+			</ul>
+		</figure>
+		<ul class="def">
+			<li>${x \coloneqq}$ the function $x$</li>
+			<li>${n \coloneqq}$ a simple base case</li>
+			<li>
+				${m \coloneqq}$ the simple base case's output; which is the function's
+				output
+			</li>
+		</ul>
+	</div>
+	<p>
+		<span class="topic">Difference from Iteration</span> Recall that with
+		iterative algorithms, we use looping constructs (<span class="monoText"
+			>while</span
+		>
+		and <span class="monoText">for</span> loops). In those constructs, we needed
+		a variable to terminate the loop's execution. That variable was set
+		<span class="italicsText">outside</span> the loop, but is changed
+		<span class="italicsText">inside</span> the loop. For example,
+		multiplication is an iterative algorithm. The computation ${a \cdot b}$ is
+		equivalent to &#8220;add $a$ to itself $b$ times.&#8221; Implementing
+		multiplication as a function in Python:
+	</p>
+	<pre class="language-python"><code>
+		def times(a, b):
+			'''
+			Input: takes two integers a and b
+			Output: a * b
+			'''
+			product = 0
+			while b > 0:
+				product += a
+				b -= 1
+			return product
+	</code></pre>
+	<p>
+		In the code above, the function <span class="monoText">times()</span> has
+		two parameters: <span class="monoText">a</span> and
+		<span class="monoText">b</span>. This corresponds to ${\texttt{a} \times
+		\texttt{b}.}$ The variable <span class="monoText">b</span> serves as our
+		<span class="italicsText">counter variable</span>. It starts the value
+		passed as argument for <span class="monoText">b</span>, and keeps going down
+		(incrementing by <span class="monoText">1</span>) until it reaches
+		<span class="monoText">0</span>. Once it reaches
+		<span class="monoText">0</span>, the loop terminates. As long as
+		${\texttt{b} > 0,}$ we keep adding <span class="monoText">a</span> to
+		<span class="monoText">product</span> &mdash; the value of the computation.
+	</p>
+	<p>
+		Let's compare this to a recursive solution. To come up with a recursive
+		solution, we should think of its two key parts:
+	</p>
+	<ol>
+		<li><span class="boldText">The Recusive Step</span></li>
+		<p>
+			Here, we must answer the following question: &#8220;How do I reduce the
+			problem to a simpler, or smaller, version of the problem?&#8221;
+		</p>
+		<li><span class="boldText">The Base Case</span></li>
+		<p>
+			To construct the base case, we want to answer this question: &#8220;How do
+			I reduce the problem until it reaches a simpler case that can be solved
+			directly?&#8221;
+		</p>
+	</ol>
+	<p>
+		Returning to the multiplication problem, consider the following analysis:
+	</p>
+	<figure>
+		<img
+			src="images/multiplication_recursive.svg"
+			alt="multiply"
+			loading="lazy"
+			class="fifty-p"
+		/>
+	</figure>
+	<p>
+		As we we've said, ${a \cdot b}$ is really just ${a + a + a \ldots + a}$.
+		We're adding $a$ to itself $b$ times. The first time we add $a$ to itself
+		(${a + a}$), the remaining amounts of times we have to add $a$ is ${b - 1.}$
+		The second time, ${b - 2}$; the third, ${b - 3;}$ and so on. This
+		computation effectively reduces to ${a + a \times (b-1).}$ But hang on.
+		We're defining multiplication with multiplication? That's circular! Indeed,
+		it is. That is both the beauty and the danger or recursive functions. We
+		avoid that danger by including a base case. Here, we know that the base case
+		will be reached: The moment ${b = 1,}$ then we have ${a \cdot b = a}$
+		&mdash; the answer is just ${a.}$ This is the
+		<span class="italicsText">simplest case</span>. Knowing this, we can
+		implement in Python:
+	</p>
+	<pre class="language-python"><code>
+		def times(a, b):
+			if b == 1: # this is our base case
+				return a
+			else:
+				return a + times(a, b-1) # recursion
+	</code></pre>
+	<p>
+		Another mathematical operation conducive to recursion is ${n!,}$ where ${n
+		\in \Z^{+}}$ (the factorial operation). Recall that the factorial takes the
+		form:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${n! = n \cdot (n - 1) \cdot (n - 2) \cdot (n -3) \cdot \ldots \cdot 1}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		For this problem, we first ask, &#8220;For what values of $n$ do I know the
+		factorial of?&#8221; Or, more clearly, &#8220;What is the simplest case for
+		this computation?&#8221; Well, the simplest case is ${1! = 1.}$ This is our
+		base case.
+	</p>
+	<p>
+		Ok. We have the base case. Now we ask, &#8220;How do I reduce this
+		problem?&#8221; To answer that question, we need to think of rewriting the
+		problem in such a way that the function, as it executes, creeps closer and
+		closer to our base case, ${1! = 1.}$
+	</p>
+	<p>
+		Just like the multiplication case, ${n!}$ is essentially ${n * (n - 1)!.}$
+		Implementing this in Python:
+	</p>
+	<pre class="language-python"><code>
+		def factorial(n):
+			if n == 1: # the base case
+				return 1 
+			else: # the recursion
+				return n*factorial(n-1)
+	</code></pre>
+	<p>
+		<span class="topic">How does the computer know when to stop?</span> Suppose
+		that executed our <span class="monoText">factorial()</span> function:
+	</p>
+	<pre class="language-python"><code>
+		def factorial(n):
+			if n == 1: # the base case
+				return 1 
+			else: # the recursion
+				return n*factorial(n-1)
+		print(factorial(4))
+	</code></pre>
+	<p>The recusion can be envisioned with the following diagram:</p>
+	<figure>
+		<img
+			src="images/recursive_factorial.svg"
+			alt="factorial whiteboard"
+			loading="lazy"
+			class="ninety-p"
+		/>
+	</figure>
+	<p>
+		The diagram above shows that each recursive call to a function creates its
+		own scope, or environment. Additionally, the variables bound within each
+		frame (environment) is not changed by a recursive call. After each recursive
+		call, the flow of control passes back to the previous scope, once the
+		function call returns a value. That return of value does not occur until the
+		function reaches the base case.
+	</p>
+	<p>Alternatively, we can think of the way recursion works in pseudocode:</p>
+	<pre class="language-pseudo"><code>
+		Input:
+		define global factorial(n)
+		{
+			define local int z = 0
+				if (n == 1): 
+					then {z = 1}
+				else:
+					{z = n * factorial(n-1)}
+			return z
+		}
+		define global n = 4
+		output factorial(n)
+	</code></pre>
+	<pre class="language-pseudo"><code>
+		Output:
+		x = factorial(4)
+		x = (4 * factorial(3))
+		x = (4 * (3 * factorial(2)))
+		x = (4 * (3 * (2 * factorial(1))))
+		x = (4 * (3 * (2 * (1))))
+		x = (4 * (3 * (2)))
+		x = (4 * (6))
+		x = (24)
+		x = 24
+	</code></pre>
+	<p>
+		Bearing these details in mind, we can see how iteration and recursion
+		compare:
+	</p>
+	<div class="compare">
+		<pre class="language-python"><code>
+			def factorial(n):
+				product = 1
+				for i in range (1, n+1):
+					product *= i
+				return product
+		</code></pre>
+		<pre class="language-python"><code>
+			def factorial(n):
+				if n == 1:
+					return 1
+				else:
+					return n*factorial(n-1)
+		</code></pre>
+	</div>
+</section>
+
+<section id="exercises-recursion">
+	<p>
+		<span class="exh">Exercise</span>. Write a recursive function that takes a
+		nonnegative integer input <span class="monoText">num</span> from the user,
+		sums all nonnegative integers up to
+		<span class="monoText">num</span> (inclusive), and prints the sum.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			The first question we ask: What is the simplest possible input? In this
+			case, the simplest input is when the integer is 0:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\underbrace{\text{sum(0)} \to 0 }_{\text{ base case }}}$</p>
+			</div>
+		</figure>
+		<p>
+			We have base case then. The next question is, how do the hard cases relate
+			to the simpler cases? For example, if we are given ${\text{sum(0)}}$ can
+			we solve ${\text{sum(1)}?}$ If we have ${\text{sum(2)}}$ can we solve
+			${\text{sum(3)}?}$ Sure. Consider the pattern:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${ n = 1 \to 1}$</p>
+				<p>${ n = 2 \to 1 + 2}$</p>
+				<p>${ n = 3 \to 1 + 2 + 3}$</p>
+				<p>${ n = 4 \to 1 + 2 + 3 + 4}$</p>
+				<p>${ n = 5 \to 1 + 2 + 3 + 4 + 5}$</p>
+			</div>
+		</figure>
+		<p>
+			This patterns shows us that if have the result where ${n = 2,}$ we can
+			obtain the result of ${n = 3}$ by adding 3 to the result of ${n = 2}$. If
+			we know the result where ${n = 3,}$ we can obtain the result of ${n = 4}$
+			by adding 4 to the result of ${n = 3.}$ Great, we have a relationship.
+		</p>
+		<p>
+			Now let's generalize the pattern. Suppose we want to compute the arbitrary
+			sum where ${n = k.}$ Well, from the pattern above, we know that this is
+			simply:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\underbrace{1 + 2 + \ldots + k}_{\text{sum($k$)}}}$</p>
+			</div>
+		</figure>
+		<p>
+			Thus, to compute ${\text{sum($k$)},}$ what we have to do is compute
+			${\text{sum($k-1$)},}$ take the result, and add $k$ to it:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\underbrace{1 + 2 + \ldots + (k - 1)}_{\text{sum($k - 1$)}}}$</p>
+			</div>
+		</figure>
+		<p>
+			Combining the general pattern and the base case, we have an explicit
+			structure for our code:
+		</p>
+		<figure class="math-display">
+			<div>
+				$$ \text{sum($n$)} = \begin{cases} \text{if $n = 0$} \to 0 \\
+				\text{else} \to \text{sum($n-1$)} + n \end{cases} $$
+			</div>
+		</figure>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+				num = int(input("Add all nonnegative integers up to: "))
+				def int_sum(num):
+						if num == 0:
+							return 0
+						else:
+							return num + int_sum(num-1)
+				sum = int_sum(num)
+				print(f'The sum of all nonnegative integers up to {num} is {sum}')
+			</code></pre>
+		<pre class="language-bash"><code>
+				Add all nonnegative integers up to: 5
+				The sum of all nonnegative integers up to 5 is 15
+
+				Add all nonnegative integers up to: 9
+				The sum of all nonnegative integers up to 9 is 45
+
+				Add all nonnegative integers up to: 100
+				The sum of all nonnegative integers up to 100 is 5050
+
+				Add all nonnegative integers up to: 573
+				The sum of all nonnegative integers up to 573 is 164451
+
+				Add all nonnegative integers up to: 973
+				The sum of all nonnegative integers up to 973 is 473851
+			</code></pre>
+	</details>
+</section>
+
+<section id="inductive_reasoning">
+	<h4>Inductive Reasoning</h4>
+	<p>
+		With iterative code, we can know that such code will work if we ensure that
+		our loop invariant changes as we go through it. For example, reconsider our
+		iterative multiplication function:
+	</p>
+	<pre class="language-python"><code>
+		def multiply(a, b):
+			result = 0
+			while b > 0:
+				result += a
+				b -= 1
+			return result
+	</code></pre>
+	<p>
+		In the function, the loop will eventually terminate because the condition is
+		<span class="monoText">b > 0</span>, and <span class="monoText">b</span> is
+		decremented by <span class="monoText">1</span> at each iteration. At some
+		point, <span class="monoText">b = 0</span>, in which case the
+		<span class="monoText">while</span> loop's test condition returns false.
+	</p>
+	<p>Now consider the recursive function:</p>
+	<pre class="language-python"><code>
+		def multiply(a, b):
+			if b == 1:
+				return a
+			else: 
+				return a + mult(a, b-1)
+	</code></pre>
+	<p>
+		In this function, rather than using a test condition, we use a base case. In
+		this case, when <span class="monoText">b = 1</span>. When we call
+		<span class="monoText">multiply()</span>, the function returns a
+		<span class="italicsText">smaller</span> version of
+		<span class="monoText">b</span>. As we keep calling
+		<span class="monoText">multiply()</span>, we will eventually reach
+		<span class="monoText">b = 1</span>. This all leads to a crucial point in
+		writing recursive programs:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule</span>. Given a recursive function $f$ with a
+			parameter ${x,}$ and a base case ${b,}$ the definition of $f$ must include
+			statements that change the parameter ${x,}$ such that $f$ eventually
+			reaches the base case ${b.}$
+		</p>
+	</div>
+	<p>
+		A helpful tool to ensure we comply with the rule above is
+		<span class="boldItalics">inductive reasoning</span>. Suppose we wanted to
+		prove that a statement, indexed on integers, is true for all values of
+		${n.}$ To construct such a proof, we perform two steps:
+	</p>
+	<ol>
+		<li>
+			First, prove that it is true when $n$ is the smallest possible value
+			(e.g., ${n = 0}$ or ${n = 1}$).
+		</li>
+		<li>
+			Second, prove that if it is true for any arbitrary value of ${n,}$ then it
+			must be true for ${n + 1.}$
+		</li>
+	</ol>
+	<p>
+		For example, consider the previous exercise where we sought to sum all of
+		the nonnegative integers up to some arbtirary ${n.}$ The general pattern for
+		this computation is the following:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${0 + 1 + 2 + 3 + \ldots + n = \dfrac{n(n + 1)}{2}}$</p>
+		</div>
+	</figure>
+	<p>
+		To prove this general pattern is true, we use inductive reasoning. We know
+		the general statement for this computation is provided by the following:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${n = \dfrac{n(n+1)}{2}}$</p>
+		</div>
+	</figure>
+	<p>
+		First, we prove that it is true in the base, or simplest, case. We know that
+		${n \in \Z_{\geq 0},}$ so the base case is when ${n = 0}$:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${0 = \dfrac{0(0 + 1)}{2}}$</p>
+			<p>${\phantom{0} = \dfrac{0}{2}}$</p>
+			<p>${\phantom{0} = 0}$</p>
+		</div>
+	</figure>
+	<p>
+		This proves that statement is true in the simplest case. Now we want to
+		prove the general case. To prove the general case, we want to show that for
+		any arbitrary ${k \in \Z_{\geq 0},}$ the statement is true for ${k + 1.}$
+		What this means then, is, we want to prove the following (by substitution):
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${0 + 1 + 2 + \ldots + k + (k + 1) = \dfrac{(k + 1)(k + 2)}{2}}$</p>
+		</div>
+	</figure>
+	<p>
+		Now, assume that the statement is true for some arbtirary ${k \in \Z_{\geq
+		0}.}$ With that assumption, we can infer the following:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${ \underbrace{0 + 1 + 2 \ldots + k}_{\dfrac{k(k + 1)}{2}} + (k + 1) =
+				\dfrac{(k + 1)(k + 2)}{2}}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Because the expression ${0 + 1 + 2 + \ldots + k}$ converges to ${\dfrac{k(k
+		+ 1)}{2},}$ we know that the lefthand side reduces to:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{k(k + 1)}{2} + (k + 1)}$</p>
+		</div>
+	</figure>
+	<p>Rearranging this reduced expression:</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\dfrac{k(k + 1)}{2} + (k + 1) = \dfrac{k(k + 1)}{2} + \dfrac{2(k +
+				1)}{2}}$
+			</p>
+			<p>
+				${\phantom{\dfrac{k(k + 1)}{2} + (k + 1)} = \dfrac{(k + 1)(k + 2)}{2}}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		This proves that, assuming ${n = \frac{n(n + 1)}{2}}$ is true for some ${k
+		\in \Z_{\geq 0},}$ then it follows that ${n = \frac{n(n + 1)}{2}}$ is true
+		for ${k + 1.}$ And since we proved the base case where ${n = 0,}$ the
+		statement ${n = \frac{n(n + 1)}{2}}$ is true for any ${n \in \Z_{\geq 0}.}$
+		Why? Because if ${k = 0,}$ then ${k = \frac{k(k + 1)}{2}}$ is true. This
+		mean that ${k}$ is true for some ${k \in \Z_{\geq 0}.}$ Given that $k$ is
+		true for some ${k \in \Z_{\geq 0},}$ it follows that ${k = \frac{k(k +
+		1)}{2}}$ is true for ${k + 1.}$ Which in turn means that ${k = \frac{k(k +
+		1)}{2}}$ is true when ${k = 1.}$ And since the statement is true for ${k =
+		1,}$ it is true for ${k = 2,}$ ${k = 3,}$ ${k = 4,}$ and so on and so forth
+		&mdash; ${k \in \Z_{\geq 0}.}$
+	</p>
+	<p>This entire analysis directly translates to code:</p>
+	<pre class="language-python"><code>
+		def multiply(a ,b):
+			if b == 1:
+				return a
+			else:
+				return a + mult(a, b-1)
+	</code></pre>
+	<p>
+		We first show that the base case is true. Will
+		<span class="monoText">return a</span> yield the correct computation when
+		<span class="monoText">b = 1</span>? Yes. Because we know the base case is
+		true, we first assume that <span class="monoText">muliply()</span> returns
+		the correct computation for problems smaller than
+		<span class="monoText">b</span>. Given that assumption, the increment,
+		<span class="monoText">a + mult(a, b-1)</span>, will also return a correct
+		answer for problem of size <span class="monoText">b</span>. By inductive
+		reasoning, we know that our code will work.
+	</p>
+</section>
+
+<section id="towers_of_hanoi">
+	<p>
+		<span class="topic">The Towers of Hanoi.</span> The
+		<span class="italicsText">Towers of Hanoi</span> is a staple logic puzzle
+		for introductory computer science and discrete mathematics. The puzzle goes
+		as such: There are 3 posts and $n$ number of different sized discs.
+		Inititally, each of the discs are stacked on a single post. The goal: Move
+		the entire stack to the next post, with the following constraints:
+	</p>
+	<ol>
+		<li>Only one disc can be moved at a time; and</li>
+		<li>at no point can a larger disc cover a smaller disc.</li>
+	</ol>
+	<p>Visually representing this in the simplest case, when ${n = 3:}$</p>
+	<figure>
+		<img
+			src="images/towers_of_hanoi_simple.svg"
+			alt="towers"
+			loading="lazy"
+			class="ninety-p"
+		/>
+	</figure>
+	<p>
+		How would we implement this as an algorithm? Consider the most basic case,
+		${n = 3,}$ where the three discs are ${1, 2, 3,}$ where ${1}$ is the largest
+		disk, and ${3}$ the smallest. Suppose further that the posts are ${a, b,
+		c.}$ The moves would go as such:
+	</p>
+	<div class="compare">
+		<pre class="language-pseudo"><code>
+			# initial
+
+			a: 1, 2, 3
+			b:
+			c:
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-1
+
+			a: 1, 2
+			b: 3
+			c: 
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-2
+
+			a: 1
+			b: 3
+			c: 2
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-3
+
+			a: 1
+			b: 
+			c: 2, 3
+		</code></pre>
+	</div>
+	<div class="compare">
+		<pre class="language-pseudo"><code>
+			# move-4
+
+			a: 
+			b: 1
+			c: 2, 3
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-5
+
+			a: 3
+			b: 1
+			c: 2
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-6
+
+			a: 3
+			b: 1, 2
+			c: 
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# final
+
+			a: 
+			b: 1, 2, 3
+			c: 
+		</code></pre>
+	</div>
+	<p>
+		It looks relatively simple, but we can see that it will take much more work
+		to expose the bottom disk as ${n}$ gets bigger. Indeed, it gets more and
+		more difficult once we start thinking about very large magnitudes of ${n.}$
+		This problem, however, is conducive to recusion. Moving a disc is no
+		different from moving a stack. If we have ${n}$ discs, move the stack on top
+		of it. How do you move the stack on top of it? Move the stack on top of it.
+		And how do you move that stock on top of it? Move that stack on top of it.
+		This process goes on and on until we're just moving single discs. Indeed, we
+		can write code for this:
+	</p>
+	<pre class="language-python"><code>
+		def printMove (fromStack, toStack):
+			print(f"Move from {fromStack} to {toStack}")
+
+		def TowersHanoi(n, fromStack, toStack, spare):
+			if n == 1:
+				printMove(fromStack, toStack)
+			else:
+				TowersHanoi(n - 1, fromStack, spare, toStack)
+				TowersHanoi(1, fromStack, toStack, spare)
+				TowersHanoi(n - 1, spare, toStack, fromStack)
+
+		print(TowersHanoi(3, 'a', 'b', 'c'))
+	</code></pre>
+	<pre class="language-bash"><code>
+		Move from a to b
+		Move from a to c
+		Move from b to c
+		Move from a to b
+		Move from c to a
+		Move from c to b
+		Move from a to b
+		None
+	</code></pre>
+	<p>
+		<span class="exh">Exercise.</span> Write an iterative function that computes
+		the greatest common divisor of two positive integers. Recall: The greatest
+		common divisor is the largest integer that divides each of the two integers
+		without a remainder.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+				a = int(input('First integer: '))
+				b = int(input('Second integer: '))
+				def gcd(a, b):
+					for i in range (b, 0, -1):
+						if (a % i == 0) and (b % i == 0):
+							return i
+						elif (i == 1):
+							return i
+				result = gcd(a, b)
+				print(f'gcd({a}, {b}) = {result}')
+			</code></pre>
+		<pre class="language-bash"><code>
+				First integer: 27
+				Second integer: 3
+				gcd(27, 3) = 3
+
+				First integer: 2
+				Second integer: 12
+				gcd(2, 12) = 2
+
+				First integer: 40
+				Second integer: 24
+				gcd(40, 24) = 8
+
+				First integer: 19
+				Second integer: 12
+				gcd(19, 12) = 1
+			</code></pre>
+	</details>
+	<p><span class="exh">Exercise.</span> Write the same program recursively.</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			Here is a simple implementation, relying on Euclid's algorithm, which
+			states: Given two integers ${a}$ and ${b,}$ if ${b = 0,}$ then the
+			greatest common divisor is ${a.}$ Otherwise, the greatest common divisor
+			is ${b \bmod (a \bmod b).}$
+		</p>
+		<pre class="language-python"><code>
+				a = int(input('First integer: '))
+				b = int(input('Second integer: '))
+				def gcd(a, b):
+						if b == 0:
+							return a
+						else:
+							return gcd(b, (a % b))
+				
+				result = gcd(a, b)
+				print(f'gcd({a}, {b}) = {result}'))
+			</code></pre>
+		<pre class="language-bash"><code>
+				First integer: 99
+				Second integer: 18
+				gcd(99, 18) = 9
+
+				First integer: 6
+				Second integer: 12
+				gcd(6, 12) = 6
+
+				First integer: 97
+				Second integer: 3
+				gcd(97, 3) = 1
+			</code></pre>
+	</details>
+</section>
+
+<section id="multiple_base_cases">
+	<p>
+		<span class="topic">Multiple Base Cases.</span> With recursion, we aren't
+		limited to just one base case. In fact, many recursive algorithms rely on
+		multiple base cases. Consider, for the example, computing the following
+		problem.
+	</p>
+	<p>
+		Leonardo of Pisa (Fibonacci) proposed this problem: Suppose we have a
+		newborn pair of rabbits, one male and one female. Call the male ${a_m}$ and
+		the female ${a_f.}$ Suppose the rabbits never die, and all female rabbits
+		produce one male rabbit and one female rabbit. After one month, the rabbits,
+		${a_m}$ and ${a_f,}$ reach gestation and mate. Thus, after one month,
+		${a_f}$ produces two offspring, ${b_m}$ and ${b_f.}$ After another month,
+		${b_m}$ and ${b_f}$ produce two offspring, ${c_m}$ and ${c_f,}$ and ${a_m}$
+		and ${a_f}$ produce another two offspring, ${b_{m_{2}}}$ and ${b_{f_{2}}.}$
+		Then, after another month, ${c_m}$ and ${c_f}$ produce two offspring, and so
+		on and so forth. Is there a quick way to determine how many rabbits we might
+		have for any ${n}$ amount of years?
+	</p>
+	<p>
+		Yes. If we focused on the number of females, a pattern of gestation and
+		offspring produced demonstrates a sequence:
+	</p>
+	<figure>
+		<table class="truth_table">
+			<thead>
+				<th>month</th>
+				<th>females</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>0</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>5</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>8</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>13</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>Examining this sequence, we can see a general formula:</p>
+	<figure class="math-display">
+		<div>
+			<p>${r_f(n) = r_f(n - 1) + r_f(n - 2)}$</p>
+			<ul class="def">
+				<li class="where">${r_f \coloneqq}$ the number of females</li>
+				<li>${n \coloneqq}$ the month</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		How might we represent this sequence in code? Well, we can see that we have
+		two base cases:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${r_f(0) = 1}$</p>
+			<p>${r_f(1) = 1}$</p>
+		</div>
+	</figure>
+	<p>
+		From the sequence's formula, we can also see that we have two invokations:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${r_f(n - 1)}$</p>
+			<p>${r_f(n - 2)}$</p>
+		</div>
+	</figure>
+	<p>Accordingly, we can translate this into code:</p>
+	<pre class="language-python"><code>
+		def fibonacci(n): 
+			'''
+			input: number of months, n 
+			output: number of females at end of n months
+			assumes: n is an int >= 0
+			'''
+			if n == 0 or n == 1:
+				return 1
+			else:
+				return fibonacci(n - 1) + fibonacci(n - 2)
+		
+		initial_month = fibonacci(0)
+		first_month = fibonacci(1)
+		sixth_month = fibonacci(6)
+
+		print(initial_month)
+		print(first_month)
+		print(sixth_month)
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		1
+		13
+	</code></pre>
+	<p>
+		The code above demonstrates a recursive function with two base cases. We
+		need two base cases here because the function itself has two invocations,
+		${r_f(n-1)}$ and ${r_f(n-2).}$
+	</p>
+</section>
+
+<section id="recursion_on_strings">
+	<h4>Recursion on Strings</h4>
+	<p>
+		Recursion is not limited to numerica data objects. We can also apply
+		recursion to textual data, i.e., strings. Consider, for example, the
+		palindrome &mdash; a string that reads the same way both forwards and
+		backwards. For example, &#8220;race car&#8221; (setting aside the
+		whitespace) is &#8220;race car&#8221; both foward and back. Ignoring white
+		space and punctuation, how might we write code that determines whether a
+		particular string is a palindrome?
+	</p>
+	<p>
+		The first step would be to remove all white spaces and punctuation marks.
+		Next, we convert all the characters to lower case. Thus, the palindrome
+		&#8220;race car&#8221; would simply become &#8220;racecar.&#8221;
+	</p>
+	<p>
+		Once the string is converted entirely to characters alone, we determine the
+		base case. What is the simplest case? A string composed of characters 0 or 1
+		is a palindrome.
+	</p>
+	<p>
+		With the base case down, we can then think of the recursive case. The
+		recursive case works as such: Check the first and last characters, and if
+		they're the same, then check the second and second to last, then the third
+		and third to last, etc. If we keep following this process, we will
+		eventually reach our base case: a string of 0 characters or a string of 1
+		character. The code:
+	</p>
+	<pre class="language-python"><code>
+		stn = input("String: ")
+
+		def isPalindrome(stn):
+			def toCharacters(stn):
+				stn = stn.lower()
+				pureStn = ''
+				for letter in stn:
+					if letter in 'abcdefghijklmnopqrstuvwxyz':
+						pureStn = pureStn + letter
+				return pureStn
+			
+			def isPal(stn):
+				if len(stn) <= 1:
+					return True
+				else:
+					return stn[0] == stn[-1] and isPal(stn[1:-1])
+
+			return isPal(toCharacters(stn))
+		
+		result = isPalindrome(stn)
+		print(result)
+	</code></pre>
+	<pre class="language-bash"><code>
+		String: race car
+		True
+
+		String: Abba
+		True
+
+		String: palindrome
+		False
+	</code></pre>
+</section>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="creating_sets_in_python">
+	<p>
+		<span class="topic">Application: Creating a Set of Integers.</span> A common
+		mathematical entity is a <span class="italicsText">set</span>. Sets in
+		mathematics inherenlty have no order &mdash; they are just a collection, or
+		gathering, of elements. Let's create a new type that represents a set of
+		integers, initially empty. Furthermore, for this particular set
+		implementation, we depart from set theory's permissibility of non-uniqueness
+		of elements, and require that a particular integer can appear only once in a
+		set. In computer science, we call this property &mdash; an element appears
+		only once in a collection &mdash;
+		<span class="term">representational invariance</span>. The elements in such
+		a collection are called
+		<span class="italicsText">representational invariants</span>.
+	</p>
+	<p>
+		Step 1: What will be the class's internal representation? Here we will use a
+		<span class="monoText">list</span> to store the set's elements.
+	</p>
+	<p>
+		Step 2: What will be the class's interface? Given that the class is supposed
+		to represent a set, we want three particular methods: (1)
+		<span class="monoText">insert(e)</span>, which inserts an integer
+		<span class="monoText">e</span> if it isn't in the set already; (2)
+		<span class="monoText">member(e)</span>, which returns
+		<span class="monoText">True</span> if integer
+		<span class="monoText">e</span> is in the set, otherwise
+		<span class="monoText">False</span>; and (3)
+		<span class="monoText">remove(e)</span>, which removes integer
+		<span class="monoText">e</span> from the set and returns an error if no such
+		integer exists (we should always inform a reader she is attempting to remove
+		something that does not exist).
+	</p>
+	<pre class="language-python"><code>
+		class intSet(object):
+			def __init__(self):
+				self.vals = []
+			
+			# methods
+			def insert(self, e):
+				if not e in self.vals:
+					self.vals.append(e)
+			def member(self, e):
+				return e in self.vals
+			def remove(self, e):
+				try:
+					self.vals.remove(e)
+				except:
+					raise ValueError(f"{e} not found")
+			
+			# print output
+			def __str__(self):
+				self.vals.sort()
+				result = ''
+				for e in self.vals:
+					result = result + str(e) + ','
+				return '{' + result[:-1] + '}'
+	</code></pre>
+	<p>
+		Notice that in our code, we took advantage of the existing properties of
+		lists. This is great example of why modularization is so important. We take
+		existing methods and objects, and use them to create more methods and
+		objects. Let's test our new data type:
+	</p>
+	<pre class="language-python"><code>
+		class intSet(object):
+			def __init__(self):
+				self.vals = []
+			
+			# methods
+			def insert(self, e):
+				if not e in self.vals:
+					self.vals.append(e)
+			def member(self, e):
+				return e in self.vals
+			def remove(self, e):
+				try:
+					self.vals.remove(e)
+				except:
+					raise ValueError(f"{e} not found")
+			
+			# print output
+			def __str__(self):
+				self.vals.sort()
+				result = ''
+				for e in self.vals:
+					result = result + str(e) + ','
+				return '{' + result[:-1] + '}'
+
+		naturals = intSet()
+		print(naturals)
+		
+		naturals.insert(1)
+		print(naturals)
+		
+		naturals.insert(2)
+		print(naturals)
+		
+		naturals.insert(3)
+		print(naturals)
+		
+		naturals.insert(1)
+		print(naturals)
+		
+		is_one_in_naturals = naturals.member(1)
+		print(is_one_in_naturals)
+		
+		naturals.remove(3)
+		print(naturals)
+		
+		naturals.remove(4)
+		print(naturals)	
+	</code></pre>
+	<pre class="language-bash"><code>
+		{}
+		{1}
+		{1,2}
+		{1,2,3}
+		{1,2,3}
+		True
+		{1,2}
+		ValueError: 4 not found
+	</code></pre>
+	<p>
+		Success. Again, observe the way we used the existing methods for lists to
+		create a method for a new data type. This the whole point of object-oriented
+		programming: Grouping data and methods together into an object (a class),
+		and using existing objects (classes) to create more complex objects grouping
+		data and methods (classes).
+	</p>
+</section>
+{% endblock %}

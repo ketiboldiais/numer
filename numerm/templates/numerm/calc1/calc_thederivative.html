@@ -1,0 +1,292 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="introduction">
+	<h3>What Is a Derivative?</h3>
+	<p>
+		There are several ways to define a derivative. One way is to define the
+		derivative geometrically. Another way is to define the derivative
+		analytically. Yet another way is to define the derivative in terms of
+		physics. And yet another way is to define it in terms of measurements.
+	</p>
+
+	<p>
+		For the next few sections, we will focus on how to
+		<span class="term">differentiate</span> &mdash; computing the derivative of
+		a function. Question: How do we find the tangent line to a point ${P(x_0,
+		y_0)}$ on some line ${y = f(x)?}$ We could just draw it:
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/tangent_line.svg' %}"
+			alt="tan line"
+			loading="lazy"
+			class="ninety-p"
+		/>
+	</figure>
+
+	<p>
+		Now, we can draw the above easily by hand, but how do we get a computer to
+		do it? This is an overarching theme for the materials that follow: How do we
+		answer these questions computationally? This is an
+		<span class="term">imperative inquiry</span> &mdash; it asks a "how to"
+		question. And to even begin answering this question, we must understand the
+		underlying propositions. What do we know is true? What is false? These are
+		<span class="term">declarative inquiries</span> &mdash; they ask "what is"
+		questions.
+	</p>
+
+	<p>
+		To begin, we know that the equation of a line is ${y - y_0 = m(x - x_0),}$
+		where ${m}$ is the <span class="term">slope</span> of the line. There are
+		two propositions we need to determine what the tangent line is. First, what
+		are the coordinates of the point ${P(x_0, y_0)?}$ Well, we know that ${y_0 =
+		f(x_0).}$ Second, what is the slope ${m?}$
+	</p>
+
+	<p>
+		Here we have our first bit of terminology. We will now part ways with ${m,}$
+		and use the more formal term for the slope: ${f'(x_0)}$ (read: "The
+		derivative of ${f.}$") The answer to this question is some number
+		${f'(x_0),}$ and it is the focus of the materials that follow.
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> ${f'(x_0),}$ the
+				<span class="italicsText">derivative</span> of ${f}$ at ${x_0,}$ is the
+				slope ${m}$ of the tangent line to ${y = f(x)}$ at the point ${P(x_0,
+				y_0).}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		We still have a problem. Why did we draw the line the way we did in the
+		diagram above? Why couldn't it have been this green line:
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/secant_line.svg' %}"
+			alt="secant line"
+			loading="lazy"
+			class="ninety-p"
+		/>
+	</figure>
+
+	<p>
+		How do we know that the green line is not a tangent line, but the red line
+		is a tangent line? The green line crosses at some other point, call it
+		${Q.}$ But, this is not what prevents the green line from being a tangent
+		line, because the tangent line itself could very well cross multiple points.
+	</p>
+
+	<p>
+		The green line is what we call the <span class="term">secant line</span>. If
+		we think of the point ${Q}$ as getting closer and closer to ${P,}$ then the
+		slope of the secant line will get closer and closer to the slope of the
+		tangent line. If we draw the secant line close enough, then we get the
+		tangent line.
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> The
+				<span class="term">tangent line</span> is the limit of the secant lines
+				${\overleftrightarrow{\rm PQ}}$ as ${Q}$ tends to ${P,}$ where ${P}$ is
+				fixed.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		This is the geometric interpretation of the derivative. Now we turn to an
+		analytic interpretation of the derivative (interpreting the derivative in
+		terms of symbols and formulas). Let's first draw the points ${P}$ and ${Q}$
+		again:
+	</p>
+
+	<figure>
+		<img src="{% static 'images/PQ.svg' %}" alt="PQ" loading="lazy" class="ninety-p" />
+	</figure>
+
+	<p>
+		Above, we see just a secant line. The length ${\Delta x}$ is the change in
+		${x,}$ and the length ${\Delta f}$ is the change in ${f.}$ Given these two
+		lengths, we define the slope of the secant line as:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${m_{secant} = \dfrac{\Delta f}{\Delta x}}$</p>
+		</div>
+	</figure>
+
+	<p>
+		From the definition of the tangent line above, we can also define the slope
+		of the tangent line:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				${m_{tangent} = \lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta
+				x}}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		This is still too general. Let's make things much more explicit. First,
+		let's write the numerator of ${m_{secant},}$ ${\Delta f,}$ more explicitly.
+		Recall that the point ${P}$ has the coordinates ${(x_0, f(x_0)).}$ We also
+		need a formula for the point ${P.}$ If ${P}$ has the ${x}$-coordinate
+		${x_0,}$ then ${x}$-coordinate of ${Q}$ must be ${(x_0 + \Delta x).}$ Thus,
+		the point ${Q}$ has the coordinates ${(x_0 + \Delta x, f(x_0 + \Delta x)).}$
+		Now we can write another formula for the derivative:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> The derivative is defined by the
+				following formula:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>
+						${m = f'(x_0) = \lim\limits_{\Delta x \to 0} \dfrac{f(x_0 + \Delta
+						x) - f(x_0)}{\Delta x}}$
+					</p>
+				</div>
+			</figure>
+			<p>
+				This formula is called the
+				<span class="term">difference quotient</span>.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		This is an extremely important formula, and it forms the foundation for the
+		materials that follow. It is the formula that allows us to compute the value
+		of ${m,}$ or more appropriately, ${f'(x).}$ All that said, let's see it in
+		action.
+	</p>
+
+	<p>
+		Suppose we have the function ${f(x) = \dfrac{1}{x}.}$ What is the derivative
+		of this function? All we're going to do is plug in the function to the
+		previous formula. Visually, what we're doing is taking a point on the
+		hyperbola and determine the tangent line through that point. This is a
+		geometric objective, but we are accomplishing it algebraically.
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				${\lim\limits_{\Delta x \to 0}\dfrac{\Delta f}{\Delta x} =
+				\lim\limits_{\Delta x \to 0}\dfrac{\dfrac{1}{x_0 + \Delta x} -
+				\dfrac{1}{x_0}}{\Delta x}}$
+			</p>
+		</div>
+	</figure>
+
+	<p>Now we simplify.</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				${f'\left(\dfrac{1}{x}\right) = \lim\limits_{\Delta x \to 0}
+				\dfrac{\Delta f}{\Delta x} = \lim\limits_{\Delta x \to
+				0}\dfrac{\dfrac{1}{x_0 + \Delta x} - \dfrac{1}{x_0}}{\Delta x}}$
+			</p>
+			<p>
+				${\phantom{f'\left(\dfrac{1}{x}\right)= \lim\limits_{\Delta x \to 0}
+				\dfrac{\Delta f}{\Delta x}} = \lim\limits_{\Delta x \to
+				0}\dfrac{1}{\Delta x} \left( \dfrac{x_0 - (x_0 + \Delta x)}{x_0(x_0 +
+				\Delta x)} \right) }$
+			</p>
+			<p>
+				${\phantom{f'\left(\dfrac{1}{x}\right)=\lim\limits_{\Delta x \to
+				0}\dfrac{\Delta f}{\Delta x}} = \lim\limits_{\Delta x \to
+				0}\dfrac{1}{\Delta x} \left( \dfrac{\cancel{x_0} - (\cancel{x_0} +
+				\Delta x)}{x_0(x_0 + \Delta x)} \right) }$
+			</p>
+			<p>
+				${\phantom{f'\left(\dfrac{1}{x}\right)=\lim\limits_{\Delta x \to
+				0}\dfrac{\Delta f}{\Delta x}} = \lim\limits_{\Delta x \to
+				0}\dfrac{1}{\Delta x} \left( \dfrac{- \Delta x}{x_0(x_0 + \Delta x)}
+				\right) }$
+			</p>
+			<p>
+				${\phantom{f'\left(\dfrac{1}{x}\right)=\lim\limits_{\Delta x \to
+				0}\dfrac{\Delta f}{\Delta x}} = \lim\limits_{\Delta x \to
+				0}\dfrac{1}{\cancel{\Delta x}} \left( \dfrac{- \cancel{\Delta
+				x}}{x_0(x_0 + \Delta x)} \right) }$
+			</p>
+			<p>
+				${\phantom{f'\left(\dfrac{1}{x}\right)=\lim\limits_{\Delta x \to
+				0}\dfrac{\Delta f}{\Delta x}} = \lim\limits_{\Delta x \to
+				0}-\dfrac{1}{x_0(x_0 + \Delta x)}}$
+			</p>
+			<p>
+				${\phantom{f'\left(\dfrac{1}{x}\right)=\lim\limits_{\Delta x \to
+				0}\dfrac{\Delta f}{\Delta x}} = -\dfrac{1}{x_0^2}}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		Notice what the final output of ${f'}$ is. First, it's a negative value.
+		This conforms to the tangent line sloping down. Second, as ${x}$ tends
+		towards infinity, ${f'}$ gets less and less steep. ${f'}$ corresponds to
+		this characteristic as well. As ${x_0}$ becomes a very large number,
+		${-\dfrac{1}{x_0^2}}$ becomes a smaller and smaller in magnitude.
+	</p>
+
+	<p>Let's go back to some notation. So far, we've seen several:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${y = f(x)}$</p>
+			<p>${\Delta y = \Delta f}$</p>
+		</div>
+	</figure>
+
+	<p>We also saw this notation for the derivative:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${f'}$</p>
+		</div>
+	</figure>
+
+	<p>
+		The notation above is called <span class="term">Newton's notation</span>.
+		Another set of notations for the derivative (all of the notations below mean
+		the same thing):
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{df}{dx}}$ ${\equiv}$ ${\dfrac{dy}{dx}}$</p>
+		</div>
+	</figure>
+
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{d}{dx}f}$ ${\equiv}$ ${\dfrac{d}{dx}y}$</p>
+		</div>
+	</figure>
+
+	<p>
+		This notation is called <span class="term">Leibniz's notation</span>.
+		Newton's notation is by far the most concise, but of course, that comes at
+		the cost of omitting a great deal of information. Both notations, however,
+		are used extensively, and often together.
+	</p>
+</section>
+{% endblock %}

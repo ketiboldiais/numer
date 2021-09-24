@@ -1,0 +1,131 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="multidimensional_data" class="grid-item">
+	<h3>Multidimensional Data</h3>
+	<p>Arrays can have have multiple dimensions:</p>
+	<pre class="language-java"><code>
+		// single-dimensional array - size 4
+
+		int[] samples = new int[4];
+
+		// 2-dimensional array
+		// first dimension: size 4
+		// second dimension: size 8
+
+		char[][] board = new char[4][8]
+
+		// 3-dimensional array
+		// first dimension: size 6
+		// second dimension: size 8
+		// third dimension: size 10
+
+		double[][][] temperature = new double[6][8][10]
+	</code></pre>
+	<p>
+		As we can see, when we want multidimensional arrays, we indicate how many
+		dimensions there are with square brackets. In all of these arrays, we have
+		metadata. All multidimensional arrays are actually one giant array, with
+		arrays as elements. Thus, the following 4-dimensional array:
+	</p>
+	<pre class="language-java"><code>
+		int[][][][] deck = new int[12][12][12][12]
+	</code></pre>
+	<p>
+		is one big array called <span class="monoText">deck</span>, containing four
+		indices: index 0 contains an array of size 12, index 1 contains an array of
+		size 12, index 2 contains an array of size 12, and index 3 contains an array
+		of size 12. In each of the arrays, there too are indices. Perhaps index 0 of
+		the array at index 0 is a clubs of value 2, and 12 an ace, etc. The
+		takeaway: Every multidimensional array is just an array storing arrays.
+	</p>
+	<pre class="language-java"><code>
+		int[][] arr = new int[4][8];
+
+		int[] arrSlice = arr[0];
+
+		System.out.println(arr.length);
+		System.out.println(arrSlice.length);
+	</code></pre>
+	<pre class="language-bash"><code>
+		4
+		8
+	</code></pre>
+	<p>We can also initialize arrays in one line:</p>
+	<pre class="language-java"><code>
+		// initialize in one line:
+
+		int[][] arr = {
+			{ 1, 2 },
+			{ 3, 4 }
+		};
+
+		// the above initialization is equivalent to:
+
+		int arr = new int[2][2];
+		arr[0][0] = 1;
+		arr[0][1] = 2;
+		arr[1][1] = 3;
+		arr[1][2] = 4;
+	</code></pre>
+	<p>
+		We can easily access values in a multidimensional array with square bracket
+		notation:
+	</p>
+	<pre class="language-java"><code>
+		int[][] arr = {
+			{ 1, 2 },
+			{ 3, 4 }
+		};
+
+		t = arr[0][0]; // t = 1
+		u = arr[0][1]; // u = 2
+		v = arr[1][0]; // v = 3
+		w = arr[1][1]; // w = 4
+	</code></pre>
+	<p>
+		Do not, under any circumstances, think of multidimensional arrays as akin to
+		rows and columns. This warning is particularly pertinent to those coming
+		from finance or accounting backgrounds; likely due to years of working with
+		spreadsheets or tables. A better way to think of arrays: A horizontal line
+		of boxes numbered from left to right starting at 0, and each box contains a
+		horizontal line of boxes numbered from left to right starting at 0:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/multi_array.svg' %}"
+			alt="multi-array"
+			loading="lazy"
+			class="sixty-p"
+		/>
+		<figcaption>4-dimensional array; each dimension is of size 3.</figcaption>
+	</figure>
+	<p>
+		<span class="topic">Multi-level Loops.</span> When using multidimensional
+		arrays, we frequently must loop through multiple levels:
+	</p>
+	<pre class="language-java"><code>
+		for (int i = 0; i < array.length; i++) {
+			for (int j = 0; j < array[i].length; j++) {
+				System.out.println(array[i][j]);
+			}
+		}
+	</code></pre>
+	<p>
+		<span class="topic">Why Use Multidimensional Arrays?</span> Numerous pieces
+		of data are conceptually multidimensional arrays. Images, for example, can
+		be thought of as multidimensional arrays. There are numerous pixels, with
+		every pixel containing colors. Those pixels in turn have a position, which,
+		when placed in a particular order (i.e., an array), an image is produced.
+	</p>
+	<p>
+		Chronological weather data (e.g., climate change models) is particularly
+		dependent on the concept of multidimensional arrays. Each day contains
+		hours, and at each hour, there might be temperatures.
+	</p>
+	<p>
+		Recorded sound relies on the concept of multidimensional arrays. There are
+		units of time, and in each unit of time, there are pressure measurements.
+		Those units of time themselves are stored in an array of size two: the left
+		ear and the right ear.
+	</p>
+</section>
+{% endblock %}

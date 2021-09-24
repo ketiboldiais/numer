@@ -1,0 +1,92 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="overloading">
+	<p>
+		<span class="topic">Function Overloading.</span> In Swift, functions can be
+		<span class="term">overloaded</span> &mdash; the phenomenon of when multiple
+		functions share the same name. Because these functions all have the same
+		name, the compiler must have some way to tell them apart. To provie the
+		compiler that information, we provide the functions different parameters in
+		the parameter list.
+	</p>
+
+	<pre class="language-swift"><code>
+		func foo(a: Int) -> String {
+			if a == 0 {
+				return "Zero"
+			} else { return "Not zero" }
+		}
+		
+		func foo(b: Int) -> String {
+			if b == 1 {
+				return "One"
+			} else { return "Not one" }
+		}
+		
+		print(foo(a: 0))
+		print(foo(b: 1))
+	</code></pre>
+	<pre class="language-bash"><code>
+		Zero
+		One
+	</code></pre>
+
+	<p>
+		Notice that we were able to use <span class="monoText">foo</span> as a name
+		for multiple functions. This is because the functions had different
+		parameters, <span class="monoText">a</span> and
+		<span class="monoText">b</span>. There are several ways to achieve
+		overloading:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<ol>
+				<li>Different numbers of parameters.</li>
+				<li>Different parameter types.</li>
+				<li>Different argument labels.</li>
+				<li>Different return types.</li>
+			</ol>
+		</div>
+	</figure>
+
+	<p>
+		Among the above approaches, if we overload a function based on type, we must
+		explicitly state those types when calling the function. This is because type
+		inference will not apply to the function call.
+	</p>
+
+	<p>
+		A good example of a built-in overloaded function is the
+		<span class="monoText">stride()</span> function. This is similar to the
+		<span class="monoText">range()</span> method in Python.
+	</p>
+
+	<pre class="language-swift"><code>
+		for i in stride(from: 10, to: 0, by: -2) {
+			print(i)
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		10
+		8
+		6
+		4
+		2
+	</code></pre>
+
+	<p>
+		The <span class="monoText">from:</span> parameter represents the first
+		element of the interval, <span class="monoText">to:</span> represents the
+		last element of the interval, and
+		<span class="monoText">by:</span> represents the distance between each
+		element in the interval.
+	</p>
+
+	<p>
+		Overloads should be used with care. With multiple functions sharing the same
+		name, we decrease maintainability. In situations where overloading is
+		desired, we should always consider whether a default parameter would be a
+		better idea.
+	</p>
+</section>
+{% endblock %}

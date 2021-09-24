@@ -1,0 +1,465 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="interfaces">
+	<h3>Interfaces</h3>
+	<p>Suppose we create program that peels potatoes. We write the following:</p>
+	<pre class="language-java"><code>
+		class Peeler {
+			Potato peelPotato(Potato p) {
+				return p.removeSkin();
+			}
+		}
+	</code></pre>
+	<p>
+		The program works well, until we're thrown an apple to peel. Well, it's just
+		an apple, so maybe we can write another method:
+	</p>
+	<pre class="language-java"><code>
+		class Peeler {
+			Potato peelPotato(Potato p) {
+				return p.removeSkin();
+			}
+			Apple peelApple(Apple a) {
+				return a.removeSkin();
+			}
+		}
+	</code></pre>
+	<p>
+		We keep peeling, and suddenly we're thrown a kiwi. Now we're starting to
+		think about all the other things that might come our way: yams, oranges,
+		tomatoes, taro, rambutan &mdash; we cannot possibly write all these classes.
+		We could write a separate parent class, called
+		<span class="monoText">Peelable</span>, under which all these foods inherit
+		a method called <span class="monoText">peel()</span>. But maybe there are
+		situations where a <span class="monoText">Potato</span> should not be
+		peeled. Furthermore, there are foods that would be odd to come up with
+		<span class="monoText">peel()</span> methods &mdash; kale, broccoli, rice,
+		popcorn, etc. Ok, so maybe we create a class called
+		<span class="monoText">Peelable</span> and
+		<span class="monoText">NonPeelable</span>, and write separate food classes
+		for each of them. But that's even worse! Now we would have two
+		<span class="monoText">Potato</span> classes to write &mdash;
+		<span class="monoText">PotatoPeelable</span> and
+		<span class="monoText">PotatoNonPeelable</span>.
+	</p>
+	<p>
+		Fortunately, there is a solution &mdash; an
+		<span class="italicsText">interface</span>. With an interface, we write:
+	</p>
+	<pre class="language-java"><code>
+		public interface Peel {
+			Food peel(Food f);
+		}
+		public class Peelable implements Peel {
+			public Food peel(Food f) {
+				return removeSkin(f);
+			}
+		}
+	</code></pre>
+	<p>
+		With the interface <span class="monoText">Peel</span>, the method
+		<span class="monoText">peel()</span> can work for any
+		<span class="monoText">Food</span> object without having to know what
+		specific class the object is an instance of. Interfaces exist because some
+		part ${x}$ of the program needs some entity ${y}$ to do something specific,
+		but ${x}$ doesn't care how ${y}$ does it &mdash; as long as ${y}$ gets it
+		done. This is most often the case when we have many different classes all
+		using the same methods and variables. In such situations, we want to use
+		interfaces or abstract classes so we do not have to declare the same methods
+		over and over again.
+	</p>
+	<p>
+		An <span class="italicsText">interface</span> is a point, or place, where
+		separate components of a computer system meet and exchange information. It
+		is effectively a shared boundary betweeen two different entities. What are
+		these two entities? Anything really: library and our source code; software
+		and software; software and hardware; computer and user; etc. A screen, for
+		example, is an interface. A printer's driver is an interface. The keyboard
+		is an interface.
+	</p>
+	<p>
+		Because interfaces are what enable different parts of a system to interact
+		with one another, it is imperative that we design interfaces carefully. We
+		can only do so if we have an understanding of interfaces, which is what this
+		section concerns. A designing an interface is like drafting a contract to
+		exchange information under particular terms. To construct that contract, we
+		have to define what the two entities know about each other. What does my
+		entity need to know about your entity, and what does your entity need to
+		know about my entity? The end-game of well-designed interface is to ensure
+		that only the most absolutely necessary things are shared &mdash; everything
+		else is hidden.
+	</p>
+	<p>
+		Interfaces are not unique to Java, but Java gives interfaces special
+		treatment. The word <span class="monoText">interface</span> is a keyword in
+		Java. In other languages like Python and JavaScript, interfaces are treated
+		with special conventions.
+	</p>
+	<p>
+		Every class in Java has an interface. The interface of a Java class is the
+		set of methods it provides. Because every Java class has an interface, every
+		Java object has interface (since every Java object inherits the methods of
+		<span class="monoText">Java.lang.Object</span>).
+	</p>
+	<p>
+		<span class="topic">Java Interfaces.</span> Here is an example of a Java
+		interface:
+	</p>
+	<pre class="language-java"><code>
+		public interface Add {
+			int add(int first, int second);
+		}
+	</code></pre>
+	<p>
+		This looks very much like a method declaration, but there is no body. Java
+		interfaces look like empty objects, all we see is a method signature.
+		Interfaces can declare both methods and variables, just like a class, but
+		with a catch &mdash; interface variables
+		<span class="underlineText">must</span> be
+		<span class="monoText">public static final</span>; they are only useful for
+		declaring constants.
+	</p>
+	<p>
+		The interface above has only been declared; it has not be implemented. To
+		actually implement the interface, we write the following:
+	</p>
+	<pre class="language-java"><code>
+		public interface Add {
+			int add(int first, int second);
+		}
+		public class Adder implements Add {
+			public int add(int first, int second) {
+				return first + second;
+			}
+		}
+	</code></pre>
+	<p>
+		As we can see in the code above, the class
+		<span class="monoText">Adder</span> is what implements the interface
+		<span class="monoText">Add</span>. This is done by using the
+		<span class="monoText">implement</span> symbol. Furthermore, to implement
+		the interface, we must implement <span class="italicsText">all</span> of the
+		methods the interface declares. Finally, when we implement an interface, we
+		should have documentation explaining what the interface is supposed to do.
+		The class implementing the interface should try to follow that.
+	</p>
+	<p>
+		If we try to use an interface without implementing it, we will see an error:
+	</p>
+	<pre class="language-java"><code>
+		interface Add {
+			int add(int first, int second);
+		}
+		class Adder { }
+		public class bar {
+			public static void main(String[] unused) {
+				Add add = new Adder();
+				System.out.println(add.add(10, 12));
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		bar.java:7: error: incompatible types: Adder cannot be converted to Add
+							Add add = new Adder();
+										^
+		1 error
+	</code></pre>
+	<p>Once we implement, then it works:</p>
+	<pre class="language-java"><code>
+		interface Add {
+			int add(int first, int second);
+		}
+		class Adder implements Add {
+			/** 
+				* Return the sum of first and second
+				*
+			*/
+			public int add(int first, int second) {
+				return first + second;
+			}
+		}
+		public class bar {
+			public static void main(String[] unused) {
+				Add add = new Adder();
+				System.out.println(add.add(10, 12));
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		22
+	</code></pre>
+	<p>
+		Notice that the interface is documented. Whenever we write interfaces, we
+		<span class="underlineText">must</span> include documentation. If we have an
+		interface containing multiple methods, then
+		<span class="underlineText">all</span> of those methods must be implemented:
+	</p>
+	<pre class="language-java"><code>
+		interface Logic {
+			boolean nand(boolean p, boolean q);
+			boolean neitherNor(boolean p, boolean q);
+		}
+		class LogicOperator implements Logic {
+			public boolean nand(boolean p, boolean q) {
+				return !(p && q); 
+			}
+		}
+		public class bar {
+			public static void main(String[] unused) {
+				Logic isSweetAndSpicy = new LogicOperator(); 
+				System.out.println(isSweetAndSpicy.nand(true, true));
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		bar.java:5: error: LogicOperator is not abstract and does not override abstract method neitherNor(boolean,boolean) in Logic
+		class LogicOperator implements Logic {
+		^
+		1 error
+	</code></pre>
+	<p>
+		Above, we neglected to define the method
+		<span class="monoText">neitherNor()</span>. Once we do so, the source code
+		compiles:
+	</p>
+	<pre class="language-java"><code>
+		interface Logic {
+			boolean nand(boolean p, boolean q);
+			boolean neitherNor(boolean p, boolean q);
+		}
+		class LogicOperator implements Logic {
+			public boolean nand(boolean p, boolean q) {
+				return !(p && q); 
+			}
+			public boolean neitherNor(boolean p, boolean q) {
+				return !(p || q);
+			}
+		}
+		public class bar {
+			public static void main(String[] unused) {
+				Logic isSweetAndSpicy = new LogicOperator(); 
+				System.out.println(isSweetAndSpicy.nand(true, true));
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		false
+	</code></pre>
+	<p>
+		For every change we make to the interface, the implementing class must keep
+		up and be updated accordingly.
+	</p>
+	<p>
+		Notice that when we called an interface method, we created an instance of
+		class, then assigned the reference to that instance to a reference variable
+		of the type <span class="monoText">⟨interface name⟩</span>. We saw this with
+		classes and reference variables in general. The same exact idea applies with
+		interfaces.
+	</p>
+	<p>
+		<span class="topic">Interface v. Inheritance.</span> One question we might
+		ask is why use an interface instead of a parent class from which other
+		classes inherit the methods? The answer is partly because of the distinction
+		between the two concepts. Establishing inheritance describes an
+		<span class="italicsText">is-a</span> relationship. Implementing an
+		interface describes a <span class="italicsText">can-do</span> relationship.
+		With inheritance, all an ancestor class's implementations are inherited by
+		its descendant classes. The more methods we include in the ancestor class,
+		the more likely it is that we must override those methods by modifying them
+		in the descendant classes. With enough descendants, we start seeing the
+		method have so many exceptions and modifications that we enter inheritance
+		hell, losing track of how a method operates for a particular descendant
+		class instance.
+	</p>
+	<p>
+		Really, interfaces are very similar to
+		<span class="term">abstract methods</span> &mdash; methods defined by
+		<span class="italicsText">abstract classes</span>:
+	</p>
+	<pre class="language-java"><code>
+		abstract class Proposition {
+			public abstract boolean nxor(boolean p, boolean q);
+		}
+		class BooleanExpression extends Proposition {
+			public boolean nxor(boolean p, boolean q) {
+				return !((p && !q) || (!p && q));
+			}
+		}
+		
+		public class bar {
+			public static void main(String[] unused) {
+				Proposition isSweetAndSour = new BooleanExpression();
+				boolean is_not_sweet_and_not_sour = isSweetAndSour.nxor(false, false);
+				boolean is_sweet_but_not_sour = isSweetAndSour.nxor(true, false);
+		
+				System.out.println(is_not_sweet_and_not_sour);
+				System.out.println(is_sweet_but_not_sour);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+		false
+	</code></pre>
+	<p>
+		<span class="topic">Multiple Inheritance.</span> Classes can implement
+		multiple inferfaces:
+	</p>
+	<pre class="language-java"><code>
+		interface Add {
+			int add(int first, int second);
+		}
+		interface Subtract {
+			int subtract(int first, int second); 
+		}
+		interface MathOp implements Add, Subtract {
+			public int add(int first, int second) {
+				return first + second;
+			}
+			public int subtract(int first, int second) {
+				return first - second;
+			}
+		}
+	</code></pre>
+	<p>
+		<span class="topic">Well-designed Interfaces.</span> A well-designed
+		interface is akin to an ambassador. (We are deliberately avoiding the common
+		analogy of a contract; contracts are an abstract concept with a very
+		specific legal meaning, carrying numerous connotations among lay persons.).
+		Like a good ambassador, a well-designed interface serves as the shared
+		contact between the two entities, ensuring and allow both entities to work
+		together, while also keeping everything in check &mdash; only the most
+		relevant information is passed between the two; the two entites follow the
+		relationship's underlying assumptions; all for the end goal of ensuring that
+		both entities are kept entirely separate and independent, while working
+		together.
+	</p>
+	<p>
+		One heavily used interface is <span class="monoText">comparable</span>. If
+		we implement the <span class="monoText">comparable</span> interface, then we
+		imply that there is an ordering for our class.
+	</p>
+	<pre class="language-java"><code>
+		/**
+			* Compares this object with the specified object for order
+			*
+			* Returns a negative integer, zero, or a positive integer as
+			* this object is less than, equal to, or greater than 
+			* the specified object
+			*/
+			public interface Comparable {
+				int CompareTo(Object otherObject);
+			}
+	</code></pre>
+	<p>
+		The value of <span class="monoText">Comparable</span> tells us what order
+		<span class="monoText">Object</span> and
+		<span class="monoText">otherObject</span> are relative to each other. Why
+		would we want to use the <span class="monoText">Comparable</span> interface?
+		Because by committing to using the
+		<span class="monoText">Comparable</span> interface, we in turn commit to
+		ordering our classes. And if we commit to ordering our classes, we can do
+		certain things: sorting arrays containing instances of our class; we can
+		find the maximum or minimum value of multiple instances of the class; we can
+		organize class instances into a binary tree.
+	</p>
+
+	<p>
+		The <span class="monoText">Comparable</span> interface allows us to compare
+		instances. And if we can compare instances, then we can
+		<span class="italicsText">sort</span> instances. And if we can sort
+		instances, we can <span class="italicsText">search</span> for a particular
+		instance.
+	</p>
+
+	<p>Here is an implementation of <span class="monoText">Comparable</span>:</p>
+
+	<pre class="language-java"><code>
+		interface Comparable {
+			int compareTo(Object other);
+		}
+		class StringLength implements Comparable {
+			private String string;
+			StringLength(String setString) {
+				string = setString;
+			}
+			public int compareTo(Object other) {
+				if (other == null || !(other instanceof StringLength)) {
+					return -1;
+				}
+				StringLength otherStringLength = (StringLength) other;
+				if (string.length() < otherStringLength.string.length()) {
+					return 1;
+				} else if (string.length() > otherStringLength.string.length()) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		}
+		public class bar {
+			public static void main(String[] unused) {
+				StringLength first = new StringLength("test"); 
+				StringLength second = new StringLength("examination");
+				System.out.println(first.compareTo(second));
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		-1
+	</code></pre>
+
+	<p>
+		<span class="topic"
+			><span class="monoText">.equals()</span> v.
+			<span class="monoText">.compareTo()</span></span
+		>. The <span class="monoText">Comparable</span> interface is provided
+		because we cannot accomplish sorting with
+		<span class="monoText">.equals()</span>. The
+		<span class="monoText">.equals()</span> method is a binary method: Either
+		one is equal or not equal to the other. The
+		<span class="monoText">.compareTo()</span> method is a ternary method: One
+		object goes before the other, one object goes after the other, or both
+		object's are equal.
+	</p>
+
+	<p>
+		<span class="topic">Interface Casting.</span> We can cast interfaces just as
+		we would cast class instances:
+	</p>
+
+	<pre class="language-java"><code>
+		interface add {
+			int add(int first, int second);
+		}
+		class Adder implements Add {
+			public int add(int first, int second) {
+				return first + second;
+			}
+			public int multiply(int first, int second) {
+				return first * second;
+			}
+		}
+		public class bar {
+			public static void main(String[] unused) {
+				Add add = new Adder();
+				System.out.println(add.add(10, 20)); // works
+				System.out.println(add.multiply(10, 20)) // does not work
+			}
+		}
+	</code></pre>
+
+	<p>
+		The last line does not work because
+		<span class="monoText">multiply</span> is not a part of the
+		<span class="monoText">Add</span> interface, and we are storing the
+		reference to <span class="monoText">Adder</span> inside an
+		<span class="italicsText">interface variable</span>.
+	</p>
+
+	<p>
+		<span class="topic">Why interfaces?</span> Interfaces should be used when we
+		want to implement a method that should be accessible to objects regardless
+		of their positions in the inheritance tree.
+	</p>
+</section>
+{% endblock %}

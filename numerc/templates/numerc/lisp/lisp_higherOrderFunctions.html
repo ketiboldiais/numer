@@ -1,0 +1,79 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="higher_order_functions">
+	<h3>Higher-Order Functions</h3>
+	<p>
+		A good programming ability allows us to take an abstraction like a function,
+		name the abstraction, and use that name as if it were an operator to perform
+		other computations or build other abstractions. Functions provide that
+		ability.
+	</p>
+	<p>
+		The functions we have seen so far have used primarily existing numbers or
+		other primitve data types. Functions, however, can take a function as input
+		or return functions as output. This is a powerful tool.
+	</p>
+	<p>
+		<span class="topic">Functions as Arguments.</span> Here are three functions:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (sum-integers a b)
+			(if (> a b) 
+				0 
+				(+ a (sum-integers (+ a 1) b))))
+	</code></pre>
+	<p>The function above simply computes integers in the range ${[a, b].}$</p>
+	<p>
+		This function computes the cubes of the integers in the range ${[a, b].}$
+	</p>
+	<pre class="language-scheme"><code>
+		(define (sum-cubes a b)
+			(if (> a b) 
+				0 
+				(+ (cube a) (sum-cubes (+a 1) b))))
+	</code></pre>
+	<p>
+		Finally, this function computes the sum of a sequence of terms in the series
+		${\dfrac{1}{1 \cdot 3} + \dfrac{1}{5 \cdot 7} + \dfrac{1}{9 \cdot 11} +
+		\ldots }$ (this converges to ${\dfrac{\pi}{8}}$).
+	</p>
+	<pre class="language-scheme"><code>
+		(define (pi-sum a b)
+			(if (> a b) 
+				0
+				(+ (/ 1.0 (* a (+ a 2))) 
+					(pi-sum (+ a 4) b))))
+	</code></pre>
+	<p>Notice that all three functions above have a common structure:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(define (⟨name⟩ a b)
+				(if (> a b)
+					0
+					(+ (⟨term⟩ a)
+						(⟨name⟩ (⟨next⟩ a) b))))
+		</code></pre>
+	</figure>
+	<p>
+		Anytime we see a repetitious pattern like this, that is our cue: There's an
+		abstraction lurking. Here, it is a simple mathematical summation of a
+		series:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\displaystyle\sum_{n=a}^{b} f(n) = f(a) + \ldots + f(b)}$</p>
+		</div>
+	</figure>
+	<p>
+		Summation notation allows us to focus purely on how the terms summate,
+		rather than on the individual terms themselves. Similarly, we can write a
+		function that provides the same type of abstraction:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (sum term a next b)
+			(if (> a b)
+				0
+				(+ (term a)
+					(sum term (next a) next b))))
+	</code></pre>
+</section>
+{% endblock %}

@@ -1,0 +1,266 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="control">
+	<h4>Control</h4>
+	<p>
+		Expressions can be evaluated in the order they're written, and that is what
+		we've seen for most of the expressions we've seen thus far. However, we
+		often want a way to evaluate expressions other than through the order
+		they're written. To do so, we need <span class="term">control</span>. Such
+		control is established with a <span class="term">control expression</span>.
+	</p>
+
+	<p>
+		A control expression evaluates some or all of its operands in an order
+		determined by the kind of expression or the values of the operands. A
+		control expression should be distinguished from a
+		<span class="term">control statement</span>. A
+		<span class="italicsText">statement</span> is a construct that produces no
+		value, but is used exclusively for its side effects. Thus, a
+		<span class="italicsText">control statement</span> is a statement that
+		evaluates some or all of its operands, but has no value. Expressions and
+		statements are two distinct concepts &mdash; an expression is a construct
+		with a value, and it is <span class="italicsText">evaluated</span>. A
+		statement is a construct with no value, and it is
+		<span class="italicsText">executed</span>. Both expressions and statements
+		are <span class="italicsText">elaborated</span> (a term that harkens back to
+		<span class="monoText">ALGOL</span>).
+	</p>
+
+	<p>
+		<span class="topic">Conditional Expressions.</span> The most common kind of
+		control expression is a <span class="term">conditional expression</span>.
+		Conditional expressions provide one means of control, namely
+		<span class="italicsText">conditional evaluation</span>. The general form:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>${v_t}$ if ${c}$ else ${v_f}$</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		In the syntax above, ${v_t}$ and ${v_f}$ are values, and ${c}$ is an
+		expression that returns a Boolean value (<span class="monoText">True</span>
+		or <span class="monoText">False</span>). If ${c}$ evaluates to
+		<span class="monoText">True</span>, then the entire expression evaluates to
+		${v_t.}$ If ${c}$ evaluates to false, then the entire expression evaluates
+		to ${v_f.}$ So, for example:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			x = 2
+
+			1/x if x != 0 else 1
+			1/x if 2 != 0 else 1
+			1/x if True else 1
+			1/x
+			1/2
+			0.5
+		</code></pre>
+	</figure>
+	<p>
+		Note that ${c}$ is any expression that returns a Boolean value. In Python,
+		if an expression that returns a Boolean value, it may or may not be a
+		Boolean expression. For example, the following values are treated as
+		inherently <span class="monoText">False</span>:
+		<span class="monoText">False</span>, <span class="monoText">None</span>,
+		<span class="monoText">0</span>, and empty strings, sets, lists, tuples, and
+		dictionaries. All other values are <span class="monoText">True</span> by
+		default.
+	</p>
+
+	<p>
+		<span class="topic">and-expressions.</span> Like conditional expressions,
+		<span class="monoText">and</span> expressions provide yet another means of
+		control. The general syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${v_1}$ and ${v_2}$</li>
+		</ul>
+	</figure>
+	<p>
+		To evaluate the expression above, evaluate ${v_1}$ first. If ${v_1}$
+		evaluates to <span class="monoText">False</span>, then the value of ${v_1}$
+		becomes the value of the entire expression. Otherwise, the value of the
+		expression is ${v_2.}$ For example:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>5 and "hello" ${\implies}$ "hello"</li>
+			<li>[] and 1/0 ${\implies}$ []</li>
+		</ul>
+	</figure>
+
+	<p>
+		The and-expression is an example of a
+		<span class="term">short-circuit evaluation</span>. We do not evaluate one
+		of the operands depending on the value of the other.
+	</p>
+
+	<p>
+		<span class="topic">or-expressions.</span> Alongside
+		<span class="monoText">and</span>, we have
+		<span class="term">or-expressions</span>:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${v_1}$ or ${v_2}$</li>
+		</ul>
+	</figure>
+
+	<p>
+		The evaluation: First evalue ${v_1.}$ If ${v_1}$ evaluates to
+		<span class="monoText">True</span>, then the value of the or-expression is
+		${v_1.}$ Otherwise, the value of the expression is ${v_2.}$ Like the
+		and-expression, the or-expression is also a short-circuit evaluation.
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>5 or "hello" ${\implies}$ 5</li>
+			<li>[] or "hello" ${\implies}$ "hello"</li>
+			<li>[1,2] or 1/0 ${\implies}$ [1,2]</li>
+			<li>[] or 1/0 ${\implies}$ ERROR</li>
+		</ul>
+	</figure>
+
+	<p>
+		<span class="topic">Conditional Statement.</span> Using conditional
+		expressions, we can construct
+		<span class="term">conditional statements</span> with the following syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>if ${c_1}$:</li>
+			<ul>
+				<li>${s_1}$</li>
+				<li>${\vdots}$</li>
+				<li>${s_n}$</li>
+			</ul>
+			<li>elif ${c_2}$:</li>
+			<ul>
+				<li>${s_1}$</li>
+				<li>${\vdots}$</li>
+				<li>${s_n}$</li>
+			</ul>
+			<li>else:</li>
+			<ul>
+				<li>${s_1}$</li>
+				<li>${\vdots}$</li>
+				<li>${s_n}$</li>
+			</ul>
+		</ul>
+	</figure>
+	<p>
+		In the syntax above, ${c_n}$ are conditional expressions, and ${s_n}$ are
+		statements. The overall conditional statement is executed as such: (1)
+		First, evaluate ${c_1.}$ If ${c_1}$ evaluates to
+		<span class="monoText">True</span>, then execute the statements ${s_1 \ldots
+		s_n.}$ If ${c_1}$ evaluates to <span class="monoText">False</span>, move to
+		${c_2,}$ and continue.
+	</p>
+	<p>Some examples. Notice the different ways of writing the same function.</p>
+	<div class="compare">
+		<div>
+			<pre class="language-python"><code>
+				def signum(x):
+					if x > 0:
+						return 1
+					elif x == 0:
+						return 0
+					else:
+						return -1
+
+				def max(x,y):
+					if x > y:
+						return x	
+					else:
+						return y
+
+				def min(x,y):
+					if x < y:
+						return x
+					return y
+			</code></pre>
+		</div>
+		<div>
+			<pre class="language-python"><code>
+				def signum(x):
+					return 1 if x > 0 else 0 if x == 0 else -1
+
+				def max(x,y):
+					return x if x > y else y
+
+				def min(x,y):
+					return x if x < y else y
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="suites_and_sequences">
+	<p>
+		<span class="topic">Suites &amp; Sequences.</span> Notice how in the
+		examples above, we can group conditional statements together into a single
+		sequence by indenting:
+	</p>
+	<pre class="language-python"><code>
+		if x < 0:
+			return -x:
+		elif x = 0:
+			return 0
+		else x
+	</code></pre>
+	<p>
+		This above construct is called a <span class="term">suite</span>. Although
+		the entire construct contains several conditional statements, it is in fact
+		a single statement. When we command Python to execute the suite, Python
+		executes each of its statements
+		<span class="italicsText">in sequence</span>. Notice that every statement in
+		the suite has the same indentation, and it ends at the next statement that
+		is indented to a previous level.
+	</p>
+	<pre class="language-python"><code>
+		x = 0
+		if x > 1:
+			print(">1")
+			if x < 6:
+				print ("&lt;6")
+			print("x=", x) # prints nothing
+	</code></pre>
+</section>
+
+<section id="control_loops">
+	<p>
+		<span class="topic">Control: Loops.</span> Another way to achieve control is
+		with looping constructs. For example, suppose we want to compute the sum of
+		${1^2 + 2^2 + 3^2 \ldots + 100^2.}$ There is an elegant mathematical formula
+		for performing this computation, but for now, let's think about it in terms
+		of control statements. A straight-forward approach would be to a recursive
+		function:
+	</p>
+	<pre class="language-python"><code>
+		def add_squares(accum, k, n):
+			if k > n:
+				return accum
+			else:
+				add_squares(accum + k**2, k + 1, n)
+	</code></pre>
+	<p>
+		Recursion, however, is not the only means of tackling this problem. We can
+		also perform the computation with a loop:
+	</p>
+	<pre class="language-python"><code>
+		def add_squares(k, n):
+			accum = 0
+			while k <= n:
+				accum = accum + k**2
+				k += 1
+			return accum
+	</code></pre>
+</section>
+{% endblock %}

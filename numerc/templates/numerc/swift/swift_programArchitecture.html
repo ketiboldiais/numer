@@ -1,0 +1,98 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="program_architecture">
+	<h3>Program Architecture</h3>
+	<p>
+		Whether we're designing UI or functionality, putting all of our code into a
+		single file leads to a phenomenon called
+		<span class="term">spaghetti</span> code. This is where a source code file
+		grows so large that it becomes unnecessarily difficult to find certain code
+		and worse, debugging. The solution then is separate source code into their
+		respective files, forming a more modular
+		<span class="term">program architecture</span>.
+	</p>
+
+	<p>
+		Often, the best way to divide source code into separate files is by
+		following the
+		<span class="term">single responsbility principle</span> &mdash; separate
+		source code into their respective modules depending on their responsibility.
+		For example, we might have source code that parses a file, code that
+		authenticates a user, code that performs a calculation, a code for the main
+		page layout, code for settings layout, and so on. By separating source code
+		into separate modules (whether inside the code through separate classes or
+		structs or more broadly in separate files), it is much easier to debug and
+		analyze code. It also prevents code from
+		<span class="italicsText">cross-contamination</span>. Often, having so much
+		source code in a single class, struct, or file can lead to forgetting a
+		parentheses or brace for a particular block, thereby leading to unexpected
+		results.
+	</p>
+
+	<p>
+		<span class="topic">Magic Numbers.</span> When we write Swift code, it is
+		best practice to avoid using too many literals. For example, consider these
+		shape objects:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Shapes: View {
+			var body: some View {
+				VStack {
+					Circle()
+						.strokeBorder(lineWidth: 20.0)
+					RoundedRectangle(cornerRadius: 20.0)
+						.stroke(lineWidth: 12.0)
+				}
+			}
+		}
+	</code></pre>
+
+	<p>
+		The numbers above are literals, and they are colloquially called
+		<span class="term">magic numbers</span>. We call them magic numbers because
+		they do not give any indication of where they came from, or what exactly
+		they mean. They are just a number. They are also problematic because if we
+		wanted to change these numbers, we would have to search throughout the
+		program to look for where these numbers are relevant.
+	</p>
+	<p>
+		The best practice approach is to use
+		<span class="term">named constants</span>. Values that never change should
+		be bound to a constant (so they never change), and we write those constants
+		separately from the objects that need them. This way, if we ever need to
+		make a change, we simply change write a different literal for the value
+		bound to the constant. Here is one way to do so:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum Constants {
+			enum General {
+				public static let circleStrokeWidth = CGFloat(20.0)
+				public static let roundRectStrokeWidth = CGFloat(12.0)
+				public static let roundRectCornerRadius = CGFloat(20.0)
+			}
+		}
+	</code></pre>
+
+	<p>We can then rewrite the original code above as:</p>
+
+	<pre class="language-swift"><code>
+		struct Shapes: View {
+			var body: some View {
+				VStack {
+					Circle()
+						.strokeBorder(lineWidth: Constants.General.circleStrokeWidth)
+					RoundedRectangle(cornerRadius: Constants.General.roundRectCornerRadius)
+						.stroke(lineWidth: Constants.General.roundRectStrokeWidth)
+				}
+			}
+		}
+	</code></pre>
+
+	<p>
+		While it may seem like more verbose code, it is far more readable and easier
+		to understand that using magic numbers. This is a good example of balancing
+		between conciseness and readability.
+	</p>
+</section>
+{% endblock %}

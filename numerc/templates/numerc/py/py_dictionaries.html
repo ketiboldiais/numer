@@ -1,0 +1,856 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="python_dictionaries">
+	<h4>Dictionaries</h4>
+	<p>Comparing the data structures we've seen thus far:</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Type</th>
+				<th>Element Type</th>
+				<th>Example Literal</th>
+				<th>Mutable?</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>str</td>
+					<td>character</td>
+					<td>'hello'</td>
+					<td>no</td>
+				</tr>
+				<tr>
+					<td>tuple</td>
+					<td>any type</td>
+					<td>(1, 2, 'abc', 4)</td>
+					<td>no</td>
+				</tr>
+				<tr>
+					<td>range</td>
+					<td>int</td>
+					<td>range(2, 10, 2)</td>
+					<td>no</td>
+				</tr>
+				<tr>
+					<td>list</td>
+					<td>any type</td>
+					<td>[1, 2, 'a', 3, [0, 1]]</td>
+					<td>yes</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		With strings, tuples, lists, and ranges, we have the following operations:
+	</p>
+	<div class="compare">
+		<ul>
+			<li>
+				<span class="blueText monoText">sequence[${i}$]</span> - return the
+				element inside the data structure at index ${i.}$
+			</li>
+			<li>
+				<span class="blueText monoText">len(sequence)</span> - return the data
+				structure's length
+			</li>
+			<li>
+				<span class="blueText monoText">sequenceA + sequenceB</span> -
+				concatenate multiple data structures (does not apply to ranges)
+			</li>
+			<li>
+				<span class="blueText monoText">${n}$ * sequence</span> - repeat the
+				sequence ${n}$ times (does not apply to ranges)
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<span class="blueText monoText">sequence[start:end]</span> - return a
+				portion of the data structure
+			</li>
+			<li>
+				<span class="blueText monoText">${e}$ in sequence</span> - return
+				whether a particular element ${e}$ is inside the data structure
+			</li>
+			<li>
+				<span class="blueText monoText">${e}$ not in sequence</span> - return
+				whether a particular element ${e}$ is not inside the data structure
+			</li>
+			<li>
+				<span class="blueText monoText">for ${e}$ in sequence</span> - iterate
+				over the elements in the sequence
+			</li>
+		</ul>
+	</div>
+	<p>
+		The beauty in these operations rests on the fact they abstract away the
+		technical details underlying their implementations. We can concatenate,
+		obtain length, or perform the operations above without having to worry about
+		whether we are applying them to strings, tuples, or lists. Considering these
+		feature, we explore another data structure &mdash; dictionaries.
+	</p>
+	<p>
+		Suppose we have different students with different grades for different
+		courses. With only the data structures we have so far, we might store the
+		data as such:
+	</p>
+	<pre class="language-python"><code>
+		student_names = ['James', 'Roberto', 'Ahmed', 'Ivan']
+		grades = ['B', 'B', 'B', 'A']
+		course = ['physics', 'chemistry', 'calculus', 'biology']
+	</code></pre>
+	<p>
+		The data is stored with separate lists, all of which have the same length to
+		ensure they match each of the students. The problem with this approach: It
+		is very messy to work with. We must index to separate lists to retrieve
+		relevant data. A dictionary directly solves this problem.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/list_v_dictionary.svg' %}"
+			alt="list v dictionary"
+			loading="lazy"
+			class="fifty-p"
+		/>
+		<figcaption>
+			List versus dictionary, where: ${i}$ is the index; ${e}$ is an element,
+			${k}$ is a key; and ${v}$ is a value.
+		</figcaption>
+	</figure>
+	<p>
+		With dictionaries, we can index to an <span class="term">item</span> in the
+		dictionary directly (and the index need not be an integer). Because
+		dictionaries are just one data structure, we do not have to use separate
+		lists.
+	</p>
+	<p>
+		In a list, we have a sequence of elements, where each element has an index
+		starting at 0. Similar to a list, a dictionary is a collection of elements.
+		But, rather than using strictly integers for indices, we create a custom
+		index, called a <span class="term">key</span> for a particular element.
+	</p>
+	<p>
+		Examining the data structure, we can see why the dictionary data structure
+		is called a dictionary &mdash; like a dictionary, we can reference a word
+		(the key), and retrieve all of the information associated with key (the
+		element(s)). In the diagram above, the dictionary is purposefully drawn
+		differently from the list, to represent the fact that dictionaries are not
+		necessarily ordered the way lists are. We might order the keys a particular
+		way, but the dictionary data structure itself is not inherently ordered the
+		way lists are inherently ordered by index.
+	</p>
+	<p>
+		In Python, the items stored in a dictionary are called
+		<span class="term">key-value pairs</span> &mdash; a dictionary item consists
+		of a key and its associated value. To demonstrate, consider the multiple
+		lists we had above. Representing the collection as a dictionary:
+	</p>
+	<pre class="language-python"><code>
+		grades = {'James':'B', 'Roberto':'B', 'Ahmed':'B', 'Ivan':'A'} 
+	</code></pre>
+	<p>
+		From the example, we can see that dictionaries are initialized with curly
+		braces <span class="monoText">{}</span>:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			dictionary_name = {key_name1:data_value1, ...}
+		</code></pre>
+	</figure>
+	<p>
+		With dictionaries, we can access the value associated with a particular key
+		with square bracket notation:
+	</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		print(number_of_crates['apple'])
+		print(number_of_crates['grape'])
+		print(number_of_crates['kiwi'])
+	</code></pre>
+	<pre class="language-bash"><code>
+		4
+		9
+		7
+	</code></pre>
+	<p>
+		If we use a key not inside the dictionary, we get back a
+		<span class="monoText">KeyError</span>:
+	</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		print(number_of_crates['strawberry'])
+	</code></pre>
+	<pre class="language-bash"><code>
+		KeyError: 'strawberry'
+	</code></pre>
+	<p>We can fix this by adding an entry to the dictionary:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		number_of_crates['strawberry'] = 6
+
+		print(number_of_crates['strawberry'])
+	</code></pre>
+	<pre class="language-bash"><code>
+		6
+	</code></pre>
+	<p>
+		The fact that we can add entries to an existing dictionary tells us that
+		dictionaries are mutable &mdash; we can modify them after they are
+		initialized.
+	</p>
+	<p>We can also test if a particular key is in the dictionary:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+		number_of_crates['strawberry'] = 6
+
+		haveApples = 'apple' in number_of_crates  
+		haveMangos = 'mango' in number_of_crates
+
+		print(haveApples)
+		print(haveMangos)
+	</code></pre>
+	<pre class="language-bash"><code>
+		True
+		False
+	</code></pre>
+	<p>We can also remove entries:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		del(number_of_crates['apple'])
+
+		haveApples = 'apple' in number_of_crates  
+
+		print(haveApples)
+	</code></pre>
+	<pre class="language-bash"><code>
+		False
+	</code></pre>
+	<p>Suppose we want a set of all the keys in the dictionary:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		available_fruits = number_of_crates.keys()
+
+		print(available_fruits)
+	</code></pre>
+	<pre class="language-bash"><code>
+		dict_keys(['apple', 'grade', 'kiwi'])
+	</code></pre>
+	<p>
+		Notice that the output is an iterable. If we want to put all of the keys
+		into a separate list:
+	</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		available_fruits = []
+
+		for fruit in number_of_crates.keys():
+			available_fruits.append(fruit)
+
+		print(available_fruits)
+	</code></pre>
+	<pre class="language-bash"><code>
+		['apple', 'grape', 'kiwi']
+	</code></pre>
+	<p>We can also obtain a set of all the values inside the dictionary:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		total_crates = 0
+
+		for crates in number_of_crates.values():
+			total_crates += crates
+		
+		print(total_crates)
+	</code></pre>
+	<pre class="language-bash"><code>
+		20
+	</code></pre>
+	<p>
+		A key point with dictionaries is that they do not have a particular order.
+		This means whenever we use dictionaries, we can never rely on the entries
+		being ordered.
+	</p>
+	<p>
+		Dictionary values can be any data type &mdash; immutable or mutable. This
+		means dictionaries can store tuples, lists, or even other dictionaries as
+		values.
+	</p>
+	<p>
+		The limitations apply to keys: The keys
+		<span class="underlineText">must be unique</span>. We cannot have duplicate
+		keys (but, we can have duplicate values). Keys must also be an immutable
+		type &mdash;
+		<span class="monoText">int, float, string, tuple, bool</span> (but, we need
+		to be careful with using a <span class="monoText">float</span> as a key;
+		recall there are accuracy issues, so we may not find what we're looking
+		for). More technically, keys must be <span class="term">hashable</span>. We
+		meet this requirement by ensuring our keys are immutable types.
+	</p>
+	<p>Comparing lists and dictionaries:</p>
+	<div class="compare">
+		<div>
+			<p class="subheading">Lists</p>
+			<ul>
+				<li>
+					an <span class="italicsText">ordered</span> sequence of elements
+				</li>
+				<li>we access elements by referencing an integer index</li>
+				<li>indices have an order</li>
+				<li>index is an <span class="monoText">int</span></li>
+			</ul>
+		</div>
+		<div>
+			<p class="subheading">Dictionaries</p>
+			<ul>
+				<li>
+					matches <span class="italicsText">keys</span> to
+					<span class="italicsText">values</span> (key-value pairs)
+				</li>
+				<li>we access elements by referencing either the key or the value</li>
+				<li>inherently no order</li>
+				<li>key can be <span class="italicsText">any</span> immutable type</li>
+			</ul>
+		</div>
+	</div>
+	<p><span class="exh">Exercise.</span> Suppose the following expressions:</p>
+	<pre class="language-python"><code>
+		animals = {'a': 'aardvark', 'b': 'baboon', 'c': 'coati'}
+		animals['d'] = 'donkey'
+	</code></pre>
+	<p>
+		For the expressions below, what printed to the console? Assume that the
+		expressions occur one after another.
+	</p>
+	<ol>
+		<li>
+			<pre class="language-python"><code>
+				print(animals)
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>This will return the dictionary:</p>
+				<pre class="language-bash"><code>
+					{'a': 'aardvark', 'b': 'baboon', 'c': 'coati', 'd': 'donkey'}
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(animals['c'])
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This will return the value paired with the key
+					<span class="monoText">'c'</span>:
+				</p>
+				<pre class="language-bash"><code>
+					coati
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(animals['donkey'])
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This will return an <span class="monoText">error</span>. The data
+					object <span class="monoText">'donkey'</span> is a value, not a key.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(len(animals))
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This returns <span class="monoText">4</span> &mdash; there are
+					<span class="monoText">4</span> items (key-value pairs) in the
+					dictionary.
+				</p>
+				<pre class="language-bash"><code>
+					4
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				animals['a'] = 'anteater'
+				print(animals['a'])
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This replaces the value paired with the key
+					<span class="monoText">'a'</span> from
+					<span class="monoText">'aardvark'</span> to
+					<span class="monoText">'anteater'</span>:
+				</p>
+				<pre class="language-bash"><code>
+					'anteater'
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(len(animals['a']))
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					The value stored in <span class="monoText">'a'</span> is a string,
+					<span class="monoText">'anteater'</span>, which has a length of
+					<span class="monoText">8</span>:
+				</p>
+				<pre class="language-bash"><code>
+					8
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print('baboon' in animals)
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This returns <span class="monoText">False</span> because the operator
+					<span class="monoText">in</span> checks for whether a key, not a
+					value, is in a dictionary:
+				</p>
+				<pre class="language-bash"><code>
+					False
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print('donkey' in animals.values())
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This returns <span class="monoText">True</span> because now we're
+					checking if <span class="monoText">'donkey'</span> is among the
+					values.
+				</p>
+				<pre class="language-bash"><code>
+					True
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print('b' in animals)
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This returns <span class="monoText">True</span> because the key
+					<span class="monoText">'b'</span> is in the dictionary.
+				</p>
+				<pre class="language-bash"><code>
+					True
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(animals.keys())
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>This will return an iterable object of the dictionary's keys:</p>
+				<pre class="language-bash"><code>
+					dict_keys(['a', 'b', 'c', 'd'])
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				del animals['b']
+				print(len(animals))
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This deletes one of the keys along with its paired value, so the
+					length is now three:
+				</p>
+				<pre class="language-bash"><code>
+					3
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(animals.value())
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>This returns an iterable object of the dictionary's values:</p>
+				<pre class="language-bash"><code>
+					dict_values(['anteater', 'coati', 'donkey'])
+				</code></pre>
+			</details>
+		</li>
+	</ol>
+</section>
+
+<section id="dictionary_applications">
+	<h4>Using Dictionaries</h4>
+	<p>
+		With dictionaries, we can begin writing even more sophisticated programs. In
+		this section, we explore some applications of dictionaries, which in turn
+		will evidence just how powerful they are.
+	</p>
+	<p>
+		<span class="topic">Data Occurrence Data.</span> A common problem in
+		peruasive writing is using words too many times &mdash; the most common
+		perpetrators: that, of, very, was, has, etc. Let's write a program that
+		takes a string, and outputs the most common words in that string.
+	</p>
+	<p>
+		First, we want to create a frequency dictionary, which maps every instance
+		of a string to an integer. We're going to want to iterate through our text,
+		so we should also write a function that converts our text into a list:
+	</p>
+	<pre class="language-python"><code>
+		def text_to_array(text):
+			punctuation = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+			text = text.lower()
+			for letter in text:
+				if letter in punctuation:
+					text = text.replace(letter, '')
+			arr_text = text.split(' ') 
+			return arr_text
+			
+		def verbose (text):
+			myDict = {}
+			text_array = text_to_array(text)
+			for word in text_array:
+				if word in myDict:
+					myDict[word] += 1
+				else:
+					myDict[word] = 1
+			return myDict
+		
+		sample = input("Enter text for verbosity analysis: ")
+		print(verbose(sample))
+	</code></pre>
+	<p>
+		Let's test if this works. Here's a sentence from a criminal trial brief:
+	</p>
+	<pre class="language-bash"><code>
+		Enter text for verbosity analysis: This statement ignores the fact that the response was made on that date and before this response was recorded.
+
+		{
+			'this': 2, 
+			'statement': 1, 
+			'ignores': 1, 
+			'the': 2, 
+			'fact': 1, 
+			'that': 2, 
+			'response': 2, 
+			'was': 2, 
+			'made': 1, 
+			'on': 1, 
+			'date': 1, 
+			'and': 1, 
+			'before': 1, 
+			'recorded': 1
+		}
+	</code></pre>
+	<p>
+		Success. This dictionary, however, is somewhat hard to parse. Let's write
+		another function that gives us the most common words, along with how many
+		times they occur:
+	</p>
+	<pre class="language-python"><code>
+		def text_to_array(text):
+			punctuation = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+			text = text.lower()
+			for letter in text:
+				if letter in punctuation:
+					text = text.replace(letter, '')
+			arr_text = text.split(' ') 
+			return arr_text
+			
+		def verbose (text):
+			myDict = {}
+			text_array = text_to_array(text)
+			for word in text_array:
+				if word in myDict:
+					myDict[word] += 1
+				else:
+					myDict[word] = 1
+			return myDict
+		
+		def most_common_words(frequencies):
+			values = frequencies.values()
+			best = max(values)
+			common_words = []
+			for word in frequencies:
+				if frequencies[word] == best:
+					common_words.append(word)
+			return (common_words, best)
+		
+		sample = input("Enter text for verbosity analysis: ")
+
+		verbose_analysis = verbose(sample)
+
+		common_words = most_common_words(verbose_analysis)
+
+		print(f'The most common words are {common_words[0]} occuring {common_words[1]} times each.')
+	</code></pre>
+	<pre class="language-bash"><code>
+		Enter text for verbosity analysis: This statement ignores the fact that the response was made on that date and before this response was recorded.
+
+		The most common words are: 
+			['this', 'the', 'that', 'response', 'was'] 
+		occuring 2 times each.
+	</code></pre>
+	<p>Woe is the power of dictionaries.</p>
+	<p><span class="exh">Exercise.</span> Consider the following expressions:</p>
+	<pre class="language-python"><code>
+		animals = {'a': ['aardvark'], 'b':['baboon'], 'c':['coati']}
+		animals['d'] = ['donkey']
+		animals['d'].append('dog')
+		animals['d'].append('dingo')
+	</code></pre>
+	<p>
+		Write a function called <span class="monoText">how_many</span> that returns
+		the sum of the number of values associated with a dictionary.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+			animals = {'a': ['aardvark'], 'b':['baboon'], 'c':['coati']}
+			animals['d'] = ['donkey']
+			animals['d'].append('dog')
+			animals['d'].append('dingo')
+
+			def how_many(aDict):
+				num_values = 0
+				dict_values = aDict.values()
+				for val in dict_values:
+					num_values += len(val)
+				return num_values
+			
+			test = how_many(animals)
+			print(test)
+		</code></pre>
+		<pre class="language-bash"><code>
+			6
+		</code></pre>
+	</details>
+	<p><span class="exh">Exercise.</span> Consider the following expressions:</p>
+	<pre class="language-python"><code>
+		animals = {'a': ['aardvark'], 'b':['baboon'], 'c':['coati']}
+		animals['d'] = ['donkey']
+		animals['d'].append('dog')
+		animals['d'].append('dingo')
+	</code></pre>
+	<p>
+		Write a prograum that the returns the key corresponding to the entry with
+		the largest number of values paired. If there is more than one such entry,
+		erturn any one of the matching keys.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+			animals = {'a': ['aardvark'], 'b':['baboon'], 'c':['coati']}
+			animals['d'] = ['donkey']
+			animals['d'].append('dog')
+			animals['d'].append('dingo')
+
+			def biggest(aDict):
+				lengths = []
+				longest_entries = []
+				for kee in aDict:
+					lengths.append(len(aDict[kee]))
+				longest = max(lengths)
+				for kee in aDict:
+					if len(aDict[kee]) == longest:
+						longest_entries.append(kee)
+				return longest_entries
+			
+			test = biggest(animals)
+			print(test)
+		</code></pre>
+		<pre class="language-bash"><code>
+			['d']
+		</code></pre>
+	</details>
+	<p>
+		<span class="topic">The Fibonacci Sequence and Dictionaries.</span> Recall
+		the recursive function we wrote for the Fibonacci sequence. We had two base
+		cases, and the function calls itself twice:
+	</p>
+	<pre class="language-python"><code>
+		def fibonacci(n):
+			if n == 1:
+				return 1
+			elif n == 2:
+				return 2
+			else:
+				return fibonacci(n-1) + fibonacci(n-2)
+	</code></pre>
+	<p>
+		The problem with the code above? It's inefficient. Suppose we compute
+		<span class="monoText">fibonacci(5)</span>. The expression
+		<span class="monoText">fibonacci(5)</span> evaluates to
+		<span class="monoText">fibonacci(4)</span>, which evaluates to
+		<span class="monoText">fibonacci(3)</span>, which evaluates to
+		<span class="monoText">fibonacci(2)</span> and
+		<span class="monoText">fibonacci(1)</span> (our base cases). Having obtained
+		<span class="monoText">fibonacci(3)</span>,
+		<span class="monoText">fibonacci(4)</span> receives
+		<span class="monoText">fibonacci(2)</span>, a base case, and
+		<span class="monoText">fibonacci(5)</span> receives
+		<span class="monoText">fibonacci(3)</span>, which evaluates to
+		<span class="monoText">fibonacci(2)</span> and
+		<span class="monoText">fibonacci(1)</span>, the base cases.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/fibonacci_tree.svg' %}"
+			alt="fibonacci tree"
+			loading="lazy"
+			class="eighty-p"
+		/>
+	</figure>
+	<p>
+		Why is this computation inefficient? Because we keep computing
+		<span class="monoText">fibonacci(2)</span> and
+		<span class="monoText">fibonacci(1)</span>, our base cases, over and over
+		again. From the tree above, we can see that the computations are done 5
+		separate times. This inefficiency may not seem like much for small
+		computations like <span class="monoText">fibonacci(5)</span>, but it is
+		substantial and noticeable for very large numbers.
+	</p>
+	<p>
+		We can improve this program's efficiency with dictionaries. Instead of
+		computing the base cases repeatedly, we can use a dictionary to keep track
+		of calculated values:
+	</p>
+	<pre class="language-python"><code>
+		def fib(num, fib_dict):
+			if num in fib_dict:
+				return fib_dict[num]
+			else:
+				result = fib(num - 1, fib_dict) + fib(num - 2, fib_dict)
+				fib_dict[num] = result
+				return result
+
+		d = {1:1, 2:2}
+
+		# test:
+		print(fib(5, d))
+	</code></pre>
+	<pre class="language-bash"><code>
+		8
+	</code></pre>
+	<p>
+		In the code above, we continue to compute recursively, but instead of
+		including just one parameter, we have two: the number we want to compute the
+		Fibonacci for, and a dictionary. Inside the function, we compute as we
+		normally would, but with the additional step of storing the result in the
+		dictionary argument. If we've already done the computation, then Python will
+		simply use the result stored in the dictionary rather than performing the
+		computation again.
+	</p>
+	<p>
+		In computer science, this process is called
+		<span class="term">memoization</span> &mdash; we create a &#8220;memo&#8221;
+		in order to recall what we've already done.
+	</p>
+	<p>
+		<span class="topic">The <span class="monoText">global</span> Symbol.</span>
+		Let's compare using memoization and without using memoization. To do so, we
+		will use the <span class="monoText">global</span> symbol, a symbol that
+		warrants a brief and important warning.
+	</p>
+	<p>
+		In many of our programs so far, we've been using
+		<span class="term">global variables</span>. Global variables, by and large,
+		are frowned upon in practice. This is because they are dangerous &mdash;
+		they effectively break the scoping of variables by function call, and they
+		leave for side effects changing variable values in ways that affect other
+		computations. They are, however, a convenient way to keep track of
+		information inside a function.
+	</p>
+	<p>
+		Another way to declare global variables is with the symbol
+		<span class="monoText">global</span>. Recall: variables inside a function
+		are only visible inside that function. When append the symbol
+		<span class="monoText">global</span>, we effectively break that rule, and
+		the variables prefaced with <span class="monoText">global</span> become
+		visible outside. Again, this is very dangerous.
+	</p>
+	<p>
+		In the previous example, we used a module called
+		<span class="monoText">time</span> to compare how long it took for each
+		program to run. Let's instead use a global variable to determine how many
+		times the Fibonacci functions are called.
+	</p>
+	<p>
+		Let's compare the function call for a number argument of 35. Without using
+		memoization, the recursive function is called 29,860,703 times:
+	</p>
+	<pre class="language-python"><code>
+		def fibonacci(n):
+			global numFibCalls
+			numFibCalls += 1
+			if n == 0 or n == 1:
+				return 1
+			else:
+				return fibonacci(n - 1) + fibonacci(n - 2)
+
+		numFibCalls = 0
+
+		print(fibonacci(35))
+		print(f'Number of calls: {numFibCalls}')
+	</code></pre>
+	<pre class="language-bash"><code>
+		14930352
+		Number of calls: 29860703
+	</code></pre>
+	<p>Using memoization, the recursive function is called 67 times:</p>
+	<pre class="language-python"><code>
+		def fib(num, fib_dict):
+			global numFibCalls
+			numFibCalls += 1
+			if num in fib_dict:
+				return fib_dict[num]
+			else:
+				result = fib(num - 1, fib_dict) + fib(num - 2, fib_dict)
+				fib_dict[num] = result
+				return result
+
+		d = {1:1, 2:2}
+
+		numFibCalls = 0
+
+		print(fib(35, d))
+		print(f'Number of calls: {numFibCalls}')
+	</code></pre>
+	<pre class="language-bash"><code>
+		14930352
+		Number of calls: 67
+	</code></pre>
+	<p>
+		29,860,703 calls versus 67 calls. The difference in efficiency should be
+		apparent.
+	</p>
+</section>
+{% endblock %}

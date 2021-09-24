@@ -1,0 +1,64 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="class_variables">
+	<p>
+		<span class="topic">Class Variables v. Instance Variables.</span> In every
+		instance of a class, we have
+		<span class="term">instance variables</span> &mdash; the data attributes
+		stored in each instance. As such, these variables are specific to an
+		instance, created for each instance, and belong to that instance. We ensure
+		that these variables are created and used by referencing the generic name
+		<span class="monoText">self</span> in the class definition.
+	</p>
+	<p>
+		In contrast to instance variables are
+		<span class="term">class variables</span> &mdash; these are the variables
+		that <span class="italicsText">belong to the class</span> &mdash; they are
+		defined inside the class, but outside any class methods, including
+		<span class="monoText">__init__</span>. These variables are
+		<span class="italicsText">shared among all instances of the class</span>.
+	</p>
+	<p>To illustrate, recall our <span class="monoText">Animal</span> class:</p>
+	<pre class="language-python"><code>
+		class Animal(object):
+			def __init__(self, age):
+				self.age = age
+				self.name = None
+			def get_age(self):
+				return self.age
+			def get_name(self):
+				return self.name
+			def set_age(self, newAge):
+				self.age = newAge
+			def set_name(self, newName):
+				self.name = newName
+			def __str__(self):
+				return f"animal: {self.name} : {self.age}"
+	</code></pre>
+	<p>
+		Each of the variables above, <span class="monoText">self.age</span>,
+		<span class="monoText">self.name</span>, etc., are
+		<span class="italicsText">instance variables</span>. Now, consider the
+		follow class definition for <span class="monoText">Rabbit</span>, with a
+		<span class="monoText">tag</span> variable:
+	</p>
+	<pre class="language-python"><code>
+		class Rabbit(Animal):
+			tag = 1
+			def __init__(self, age, parent1=None, parent2=None)
+				Animal.__init__(self, age)
+				self.parent1 = parent1
+				self.parent2 = parent2
+				self.rabbit_id = Rabbit.tag
+				Rabbit.tag += 1
+	</code></pre>
+	<p>
+		The <span class="monoText">tag</span> variable above is a
+		<span class="italicsText">class variable</span>, accessible to all instances
+		of the class <span class="monoText">Rabbit</span>. In this case,
+		<span class="monoText">tag</span>, is used as a unique identifier of each
+		instance of <span class="monoText">class</span> &mdash; every new instance
+		has a <span class="monoText">tag</span> equal to the previous instance's
+		<span class="monoText">tag</span> plus 1.
+	</p>
+</section>
+{% endblock %}

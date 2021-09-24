@@ -1,0 +1,235 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="compilation_java">
+	<h3>Compiling in Java</h3>
+	<p>
+		In languages like Java, these lower level implementations are abstracted
+		away by the language, so we need not worry about them. This is in contrast
+		to languages like C and even more strikingly, Assembly, where the low level
+		details are front and forward. In these next sections, we pop the hood: What
+		actually happens when we execute Java code?
+	</p>
+	<p>
+		From a bird's eye view, when we execute Java code, there are two steps: (1)
+		<span class="italicsText">compilation</span> and (2)
+		<span class="italicsText">execution</span>.
+	</p>
+	<p>
+		<span class="topic">Compilation.</span> Once we tell the computer to run
+		Java code, the Java source code (what we've written) is
+		<span class="italicsText">compiled</span> to a simpler representation called
+		<span class="italicsText">Java bytecode</span> by a program called the
+		compiler. More specifically, the
+		<span class="italicsText">Java Compiler</span> (called
+		<span class="monoText">javac</span>). We call this transformation &mdash;
+		going from source code to Java bytecode &mdash;
+		<span class="term">compilation</span>. The code has not executed yet. It is
+		simply being transformed into bytecode.
+	</p>
+	<p>
+		If we get errors at this stage, they are called
+		<span class="term">compilation errors</span>. And if the source code does
+		not compile, it will not execute. Compilation errors are essentially
+		violations of Java's language conventions &mdash; syntax rules, naming
+		rules, rules for writing expressions, data type rules, etc. Whenever we use
+		Java, or any language for that matter, we effectively enter into a contract
+		with the compiler: I will follow the compiler's rules, and in return, the
+		compiler will compile.
+	</p>
+	<p>
+		This is a key difference between Java and languages like C. Java was one of
+		the first languages that required a transformation of source code into
+		bytecode <span class="italicsText">before</span> proceeding to the next
+		stage, <span class="term">execution</span>. No computer processor can run
+		Java bytecode. That bytecode must proceed still proceed to the next stage.
+	</p>
+	<p>
+		To compile Java code in a shell, we use the
+		<span class="monoText">javac</span> key word. Suppose, for example, we have
+		the following code in a file called <span class="monoText">foo.java</span>:
+	</p>
+	<pre class="language-java"><code>
+		System.out.println("Hello world!");
+	</code></pre>
+	<p>To compile this, we write:</p>
+	<pre class="language-bash"><code>
+		javac foo.java
+
+		foo.java:1: error: class, interface, enum, or record expected
+		System.out.println("Hello world!");
+		^
+		1 error
+	</code></pre>
+	<p>
+		We get an error. This is because our Java code violated a compiler rule
+		&mdash; we must place our code inside a
+		<span class="italicsText">class</span> and inside a
+		<span class="italicsText">method</span> inside that class (we will explore
+		this in more detail in later sections). Thus, our code must be written as:
+	</p>
+	<pre class="language-java"><code>
+		public class foo {
+			public static void main(String args[]) {
+				System.out.println("Hello world!");
+			}
+		}
+	</code></pre>
+	<p>
+		Now when we execute the code above, we don't get any error messages. But, we
+		don't see any output. This is a good sign for compiling a program &mdash;
+		everything turned out ok. But, we can see there's a new file inside working
+		directory:
+	</p>
+	<pre class="language-bash"><code>
+		ls
+
+		foo.class
+		foo.java
+	</code></pre>
+	<p>
+		We see file called <span class="monoText">foo.class</span>. That wasn't
+		there before (we didn't create that file ourselves). What is that file?
+		Well, we could <span class="monoText">cat</span> the file, but it would
+		display numerous lines of unreadable code. Fortunately, Java provides an
+		operator we can use to display a human-readable version:
+	</p>
+	<pre class="language-bash"><code>
+		javap -c foo.class
+
+		Compiled from "foo.java"
+		public class foo {
+		public foo();
+			Code:
+				0: aload_0
+				1: invokespecial #1                  // Method java/lang/Object."&lt;init&gt;":()V
+				4: return
+
+		public static void main(java.lang.String[]);
+			Code:
+				0: getstatic     #7                  // Field java/lang/System.out:Ljava/io/PrintStream;
+				3: ldc           #13                 // String Hello world!
+				5: invokevirtual #15                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+				8: return
+		}
+	</code></pre>
+	<p>
+		<span class="topic">Execution.</span> The Java bytecode is executed by
+		another program, called the
+		<span class="italicsText">Java Virtual Machine</span> (JVM, or what we have
+		personified, and refer to anthropomorphically, as &#8220;Java&#8221;).
+	</p>
+	<p>
+		The errors that occur at this stage are called
+		<span class="term">runtime errors</span>. In contrast to compilation errors,
+		runtime errors are all those errors that are not caught by the compiler:
+	</p>
+	<pre class="language-java"><code>
+		String s = null;
+		System.out.println(s.length());
+	</code></pre>
+	<pre class="language-bash"><code>
+		Exception in threat "main" java.lang.NullPointerException
+			at line 2
+	</code></pre>
+	<p>
+		These statements comply with the compiler's rules &mdash; there are no
+		blatant violations of the Java language. But, there are violations to a more
+		powerful entity &mdash; logic. Here, we initialized a string to
+		<span class="monoText">null</span> &mdash; we effectively told Java,
+		&#8220;Hey, this is a string called <span class="monoText">S</span>, and it
+		has no value.&#8221; Then, right after that, we told Java, &#8220;Remember
+		that string <span class="monoText">S</span>? Yeah, give me that string's
+		length.&#8221; The Java compiler does not have a problem with this, because
+		its only job is to transform the source code into bytecode. So, the compiler
+		translates it, and sends it off to the Java virtual machine. Once there,
+		Java throws us back the error above.
+	</p>
+	<p>
+		We can think of the compiler and JVM as an English-speaking lawyer trying to
+		draft a contract in French with the assistance of two other lawyers. The
+		English-speaking lawyer writes a first draft, and sends it over to the
+		French-speaking lawyer. That lawyer &mdash; the compiler &mdash; translates
+		the contract into French. This lawyer will flag English words that do not
+		directly translate. Once this lawyer is done, the translated draft is sent
+		to the other lawyer (JVM), an expert in French contract law. That lawyer
+		reviews substance &mdash; the contract's underlying logic.
+	</p>
+	<p>
+		We might ask, why doesn't the French-speaking lawyer just catch the mistakes
+		in the first place? This is a perfectly reasonable question, and it is a
+		point of discussion among those concerned with the lower-level
+		implementations of Java. Why doesn't the Java compiler just catch these
+		runtime errors in the first place?
+	</p>
+	<p>
+		This question has led to numerous commentary and research attempting to
+		answer the question: How do we transform runtime errors into compiler
+		errors? However, there is an argument for keeping these errors separate.
+		Compiler errors are errors that are never actually seen by the user. They
+		are also errors that should not exist at all before the code is released to
+		hundreds, if not thousands, of people for use. Runtime errors, however, are
+		those that will be seen by users &mdash; crashes, freezes, delays, etc.
+		These types of errors may not be immediately apparent at compilation because
+		it is difficult to think of every possible scenario. For this reason, it is
+		often best that runtime errors are kept separate, to be left for users to
+		report back to the developers in the form of product reviews and system
+		reports.
+	</p>
+	<p>
+		However, this is not to say that every runtime error should be classified as
+		a runtime error. Runtime errors like the above, assigning
+		<span class="monoText">null</span> to a variable and performing operations
+		with that variable, are so blatantly illogical and nonsensical statement
+		that they arguably should be caught by the compiler. In other words, there
+		are runtime errors that result from statements that never have any
+		legitimate use, and for that reason, should be caught by the compiler as
+		early as possible.
+	</p>
+	<p>That aside, to execute the code above, we write:</p>
+	<pre class="language-bash"><code>
+		java foo
+
+		Hello world!
+	</code></pre>
+	<p>
+		Everytime we execute Java code in a shell, we must recompile if there are
+		any revisions to the source code.
+	</p>
+	<p>
+		<span class="topic">Bytecode v. Machine Code.</span> The difference between
+		Java and languages like C is that the code is translated into bytecode,
+		which is the code actually executed. (As an aside, JVM, the program that
+		translates Java source code into bytecode, is written in
+		<span class="monoText">C++</span>). In C, the source code is compiled into
+		<span class="term">machine code</span> &mdash; the symbols the actual CPU or
+		processor can understand and execute.
+	</p>
+	<p>
+		At the time, Java's approach was particularly innovative. In the olden days
+		(about thirty years ago in computer science terms), computers all had
+		different processors. Apple used PowerPC processors, Dell used Intel, Acers
+		used AMD, etc. These processors all spoke different machine languages. Thus,
+		if you compiled a program into machine code on an Apple computer and it
+		executed perfectly, there was no guarantee it would do the same on a Lenovo.
+	</p>
+	<p>
+		Bytecode was the solution to this problem. The
+		<span class="monoText">foo.class</span> file from the examples above could
+		be sent to anyone, who would then be able to run the program on their
+		machine, regardless of processor, as long as they had the Java Virtual
+		Machine program (this is why we often see numerous popups on our computers
+		to update Java). This was a groundbreaking approach, embodied in the
+		language's motto, &#8220;Write One, Run Anywhere.&#8221; In providing a
+		feature many languages lacked, Java's implementers effectively cemented the
+		language's place among the most widely-used. Today, Java keeps its place as
+		the de facto language for the most widely used mobile operating system
+		&mdash; Android
+	</p>
+	<p>
+		Where the interpreter was the battle ground of years past, the future is
+		compilers. At the end of the day, these are simply programs. And as
+		computers have gotten faster, so too have compilers. The competition today
+		is to make compilers as fast as possible, to the point where we can do away
+		with interpreters.
+	</p>
+</section>
+{% endblock %}

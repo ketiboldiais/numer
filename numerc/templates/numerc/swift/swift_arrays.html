@@ -1,0 +1,233 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="arrays">
+	<h4>Arrays</h4>
+	<p>
+		An <span class="term">array</span> is an ordered collection of the
+		<span class="underlineText">same type</span> values. Every element in the
+		array has an <span class="term">index</span> starting from
+		<span class="monoText">0</span>. Moreover, every array has a type,
+		<span class="monoText">[${t}$]</span>, where ${t}$ is the type for all the
+		array's elements. Arrays in Swift are similar to most languages in that they
+		are created with square brackets:
+	</p>
+
+	<pre class="language-swift"><code>
+		let shoppingList = ["mangoes", "milk", "orange juice", "eggs"]
+		print(shoppingList)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["mangoes", "milk", "orange juice", "eggs"]
+	</code></pre>
+
+	<p>We can access individual elements in the array using angle brackets.</p>
+
+	<pre class="language-swift"><code>
+		let shoppingList = ["mangoes", "milk", "orange juice", "eggs"]
+		print(shoppingList[0])
+	</code></pre>
+	<pre class="language-bash"><code>
+		mangoes
+	</code></pre>
+
+	<p>
+		Like most other languages, Swift indices start at 0. If we initialize a list
+		with the keyword <span class="monoText">var</span>, we can mutate the list:
+	</p>
+
+	<pre class="language-swift"><code>
+		var shoppingList = ["mangoes", "milk", "orange juice", "eggs"]
+		shoppingList[0] = "papayas"
+		print(shoppingList)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["papayas", "milk", "orange juice", "eggs"]
+	</code></pre>
+
+	<p>
+		<span class="topic">Empty Array.</span> To create an empty array, we use the
+		following initializer syntax:
+	</p>
+	<pre class="language-swift"><code>
+		var studentList: [String] = []
+	</code></pre>
+	<p>Notice the general form:</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>var ${n}$: [${t}$] = []</li>
+		</ul>
+		<ul class="def">
+			<li class="where">${n}$ is the array's name; and</li>
+			<li>${t}$ is the type for each value in the array</li>
+		</ul>
+	</figure>
+
+	<p>
+		If type can be inferred, we can create the empty array with just square
+		brackets:
+	</p>
+	<pre class="language-swift"><code>
+		var myArray = []
+	</code></pre>
+
+	<p>
+		<span class="topic">Array Methods.</span> Swift provides numerous build-in
+		methods for operating on arrays. Here are a few:
+	</p>
+
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>methods/operations</th>
+				<th>operation</th>
+				<th>comment</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText redText">${arr}$.append(${v}$)</span></td>
+					<td>Inserts at the array ${arr}$'s end the value ${v}$</td>
+					<td>Return is a mutated array; ${arr}$ must be a var.</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText redText"
+							>${arr}$.insert(${v}$, at: ${n}$)</span
+						>
+					</td>
+					<td>Insert the value ${v}$ at the index ${n}$</td>
+					<td>Return is a mutated array; ${arr}$ must be a var.</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText redText">${arr}$.remove(at: ${n}$)</span>
+					</td>
+					<td>Removes the element at index ${n}$</td>
+					<td>Return is the removed element; ${arr}$ must be a var.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr}$.removeLast()</span></td>
+					<td>Removes the last element of ${arr}$</td>
+					<td>Return is the removed element; ${arr}$ must be a var.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr}$.removeAll()</span></td>
+					<td>Removes all elements inside the array</td>
+					<td>${arr}$ must be a var.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr}$.isEmpty</span></td>
+					<td>Is this array empty?</td>
+					<td>Returns Boolean type value: true or false.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr}$.count</span></td>
+					<td>How many elements are in this array?</td>
+					<td>
+						Returns an Int type value: The length/size of the array; how many
+						elements are in the array.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr}$.first</span></td>
+					<td>What is the first element in this array?</td>
+					<td>
+						Returns the element at the head of the array (equivalent to hd in
+						Scheme and ML). The return type is an Optional, so it must be safely
+						unwrapped before use.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr}$.contains(${v}$)</span></td>
+					<td>Is the value ${v}$ inside this array?</td>
+					<td>
+						Returns a Boolean type value: true if ${v}$ is inside the array,
+						else false.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr_0}$ += ${arr_1}$</span></td>
+					<td>merges ${arr_0}$ and ${arr_1}$ into a single array</td>
+					<td>
+						Mutates ${arr_0}$ into a new array where the elements of ${arr_1}$
+						are inserted to the tail of ${arr_0.}$ ${arr_1}$ is not mutated.
+						Cannot merge arrays of different types.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr}$[${n}$]</span></td>
+					<td>Returns the element of ${arr}$ at index ${n.}$</td>
+					<td>
+						Referencing an index greater than the length of the array will
+						return an index-out-of-range error. (In Swift, the range of an array
+						refers to the range of the indices).
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr}$[${i_0...i_n}$]</span></td>
+					<td>
+						Returns an <span class="term">array slice</span> consisting of the
+						elements of ${arr}$ with indices from ${i_0}$ to ${i_n}$
+					</td>
+					<td>
+						Return is an array slice, which is a stored reference to a part of
+						${arr.}$ This means the indices of the elements in the array slice
+						are their indices in ${arr.}$
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText redText">Array(${arr}$[${i_0...i_n}$])</span>
+					</td>
+					<td>
+						Returns a new array consisting of the elements of ${arr}$ with
+						indices from ${i_0}$ to ${i_n}$
+					</td>
+					<td>
+						Unlike the array slice, this returns a new array, with elements
+						having indices starting from 0.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr.}$max()</span></td>
+					<td>Returns the largest/maximum element in the array</td>
+					<td>Return type is an Optional, must safely unwrap before use.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr.}$min()</span></td>
+					<td>Returns the smallest/minimum element in the array</td>
+					<td>Return type is an Optional, must safely unwrap before use.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr.}$sort()</span></td>
+					<td>Returns elements of array sorted in place</td>
+					<td>Mutates the array</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr.}$sorted()</span></td>
+					<td>Returns elements of array sorted</td>
+					<td>Does not mutate the array</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr.}$reverse()</span></td>
+					<td>Reverses the elements of the array in place</td>
+					<td>Mutates the array.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText redText">${arr.}$reversed()</span></td>
+					<td>Returns elements of array reversed</td>
+					<td>Does not mutate the array</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText redText"
+							>${arr.}$swapAt(${n_0}$, ${n_1}$)</span
+						>
+					</td>
+					<td>Swaps the elements at ${n_0}$ and ${n_1}$</td>
+					<td>Mutates the array</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</section>
+{% endblock %}

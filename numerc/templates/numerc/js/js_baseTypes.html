@@ -1,0 +1,393 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="javascript_values">
+	<h3>JavaScript Types & Values</h3>
+	<p>
+		Values in JavaScript (and many other programming languages), are classified
+		by type. A value's type will determine what JavaScript can and cannot do
+		with the value. There are two categories of types:
+		<span class="term">primitive types</span> and
+		<span class="term">object types</span>. These primitive types are:
+	</p>
+	<ul>
+		<li><span class="monoText">Number</span></li>
+		<li><span class="monoText">BigInt</span></li>
+		<li><span class="monoText">String</span></li>
+		<li><span class="monoText">Boolean</span></li>
+		<li><span class="monoText">Null</span></li>
+		<li><span class="monoText">Undefined</span></li>
+		<li><span class="monoText">Symbol</span></li>
+	</ul>
+	<p>
+		Any value that is not a <span class="italicsText">number</span>,
+		<span class="italicsText">string</span>,
+		<span class="italicsText">boolean</span>,
+		<span class="italicsText">symbol</span>,
+		<span class="italicsText">null</span>, or
+		<span class="italicsText">undefined</span> is an
+		<span class="term">object type</span> value. Generally, an
+		<span class="term">object</span> (a value of
+		<span class="italicsText">object type</span>), is a collection of
+		<span class="term">properties</span>, where each property consists of a
+		<span class="term">name</span> and its corresponding
+		<span class="term">value</span> (and that value may be a primitive type
+		value or an object).
+	</p>
+	<p>
+		The key difference between an object type value and a primitive type value:
+		Object type values are <span class="term">mutable</span> (the value can be
+		changed), while primitive type values are
+		<span class="term">immutable</span> (the value cannot be changed).
+	</p>
+	<p>
+		For example, if we have an object with a property
+		<span class="monoText">{emotion: "happy"}</span>, the emotion's assigned
+		value, "happy" can be changed. But, the value
+		<span class="monoText">1</span>, a value of primitive type
+		<span class="italicsText">number</span>, cannot be changed (rightly
+		so&mdash;there is no other value of "1" other than "1"). Below we cover the
+		key features of the primitive types.
+	</p>
+	<p>
+		If we are ever unsure what type a particular value is, we can use the
+		<span class="monoText">typeof</span> operator.
+	</p>
+	<pre class="language-javascript"><code>
+		typeof 3476; // output: <span class="output">"number"</span>
+		typeof true; // output: <span class="output">"boolean"</span>
+	</code></pre>
+</section>
+
+<section id="converting_values">
+	<p>
+		<span class="topic">Converting Values to a Different Type.</span> JavaScript
+		has no problem converting values from one type to another. This is a
+		double-edged sword. For example, if we give JavaScript a value of type
+		<span class="monoText">number</span> when it expects a value of type
+		<span class="monoText">string</span>, JavaScript will convert the number
+		into a string. This can lead to unexpected results. In other programming
+		languages, these sort of operations will return an error.
+	</p>
+
+	<p>
+		<span class="topic">Casting.</span> To cast a value in JavaScript, there are
+		three useful methods:
+	</p>
+	<pre class="language-javascript"><code>
+		Number(n) // casts n as a number 
+		parseFloat() // parses a string, returns float
+		parseInt() // parses a string, returns int
+		String() // convert number into string
+	</code></pre>
+</section>
+
+<section id="primitive_type_number">
+	<p>
+		<span class="topic"
+			>Primitive Type: <span class="monoText">number</span>.</span
+		>
+		Unlike some programming languages (e.g., Java), JavaScript only has 1 number
+		type. The primitive type <span class="monoText">number</span> stores
+		integers, floats (decimal numbers), and approximations of real numbers. In
+		other words, <span class="term">immutable numeric data</span>. And when a
+		number appears directly in a JavaScript program is called a
+		<span class="term">numeric literal</span>. Negative integers can be stored
+		by appending a minus sign directly to the number (e.g.,
+		<span class="monoText">-17</span>).
+	</p>
+	<p>
+		JavaScript's number type is not limited to the base-10 system or to decimal
+		decimal notation:
+	</p>
+	<pre class="language-javascript"><code>
+		// 12648430 in hex is C0FFEE
+		0xC0FFEE
+
+		// 17 in binary is 0011
+		0b0011
+
+		// 3.8 * 10^8 in exponential:
+		3.8E8
+	</code></pre>
+	<p>
+		We can also ensure large numbers are more readable with underscores as
+		separators:
+	</p>
+	<pre class="language-javascript"><code>
+		// The number 10,000,000
+		10_000_000
+	</code></pre>
+</section>
+
+<section id="special_number_NaN">
+	<p>
+		<span class="topic"><span class="monoText">NaN.</span></span> The value
+		<span class="monoText">NaN</span> ("Not a Number") represents a numeric
+		value that is not a number, but is a value of type
+		<span class="monoText">number</span>. <span class="monoText">NaN</span> is
+		the value returned from undefined operations:
+	</p>
+	<pre class="language-javascript"><code>
+		// This evaluates to NaN
+		0/0
+
+		// This also evaluates to NaN
+		NaN+1
+	</code></pre>
+	<pre class="language-bash"><code>
+		NaN
+		NaN
+	</code></pre>
+	<p>
+		<span class="monoText">NaN</span> has an unusual feature in JavaScript: it
+		does not equal itself or any other value. This leads to some unusual
+		results:
+	</p>
+	<pre class="language-javascript"><code>
+		const x = NaN;
+		console.log(x === NaN);
+	</code></pre>
+	<pre class="language-bash"><code>
+		false
+	</code></pre>
+	<p>
+		Thus, to check whether a variable is equal to
+		<span class="monoText">NaN</span>, we need to test for nonequality. The
+		expression will return true if, and only if, the variable has the same value
+		as <span class="monoText">NaN</span>. If it does not, then the variable does
+		not have the value <span class="monoText">NaN</span>.
+	</p>
+	<pre class="language-javascript"><code>
+		const x = NaN;
+		console.log(x != NaN);
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+	</code></pre>
+</section>
+
+<section id="special_number_infinity">
+	<p>
+		<span class="topic"><span class="monoText">infinity.</span></span> The value
+		<span class="monoText">infinity</span> is the value returned from perform
+		indeterminate operations. More specifically, JavaScript stores infinity in
+		two different ways, $\infty^+$ (positive infinity) and $\infty^-$ (negative
+		infinity).
+	</p>
+	<pre class="language-javascript"><code>
+		// this evaluates to positive infinity
+		1/0
+		// this evaluates to negative infinity
+		-1/0
+	</code></pre>
+</section>
+
+<section id="special_number_0">
+	<p>
+		<span class="topic"
+			>The Value <span class="monoText">0</span> in JavaScript.</span
+		>
+		Perhaps to the mathematician's disgust, JavaScript has two values for 0:
+	</p>
+	<pre class="language-javascript"><code>
+		0 	// positive 0
+		-0 // negative 0
+	</code></pre>
+</section>
+
+<section id="special_number_BigInt">
+	<p>
+		<span class="topic"><span class="monoText">BigInt.</span></span> The data
+		type <span class="monoText">BigInt</span> is a separate primitive type for
+		numeric data. <span class="monoText">BigInt</span> is the primitive type for
+		extraordinarily large numbers (e.g., numbers with thousands or millions of
+		digits):
+	</p>
+	<pre class="language-javascript"><code>
+		// the number 11,395,430,243,259,821:
+		11395430243259821n
+	</code></pre>
+	<p>
+		The distinguishing syntax for <span class="monoText">BigInt</span> is the
+		symbol <span class="monoText">n</span> appended to the end of the literal.
+	</p>
+</section>
+
+<section id="primitive_type_null">
+	<p>
+		<span class="topic"
+			>Primitive Type: <span class="monoText">null</span>.</span
+		>
+		The primitive type <b>null</b> is a primitive type consisting of only one
+		value: <em>null</em>. The value <em>null</em> allows the programmer to
+		declare a variable without assigning it a value, so that it may be used
+		later on.
+	</p>
+	<pre class="language-javascript"><code>
+		let x = null;
+		console.log(x);
+	</code></pre>
+	<pre class="language-bash"><code>
+		null
+	</code></pre>
+</section>
+
+<section id="primitive_type_undefined">
+	<h5></h5>
+	<p>
+		<span class="topic"
+			>Primitive Type: <span class="monoText">undefined</span>.</span
+		>
+		The type <b>undefined</b> consists of only one value, <em>undefined</em>.
+		Normally, the programmer does not declare a variable and assign the value
+		<em>undefined</em>. Instead, <em>undefined</em> is a value JavaScript
+		returns. For example:
+	</p>
+	<pre class="language-javascript"><code>
+		let x;
+		console.log(x);
+	</code></pre>
+	<pre class="language-bash"><code>
+		undefined
+	</code></pre>
+</section>
+
+<section id="primitive_type_string">
+	<p>
+		<span class="topic"
+			>Primitive Type: <span class="monoText">string</span>.</span
+		>
+		A <b>string</b> is a sequence of characters. More specifically, it is an
+		<span class="italicsText">immutable</span> ordered sequence of 16-bit
+		values, where each value represents a Unicode character. Strings are
+		inherently <span class="italicsText">arrays</span> (since they are an
+		<span class="italicsText">ordered</span> sequence). Thus, each character in
+		a string has an <span class="italicsText">index</span>, starting at 0. While
+		the type number represents <em>numeric data</em>, and the type boolean
+		represents <em>logical data</em>, the type <em>string</em> represents
+		<em>textual data</em>.
+	</p>
+	<p>
+		Strings can be represented in JS with double quotes (""), single quotes
+		(''), or backticks (``), as long as they are used consistently.
+	</p>
+	<pre class="language-javascript"><code>
+		firstName = "David";
+		lastName = 'Hilbert';
+		occupation = `Mathematician`;
+		nickName = 'Hilby" // Error here
+	</code></pre>
+	<p>
+		JavaScript provides many built in methods for manipulating strings. A few of
+		the most often used methods are provided below.
+	</p>
+</section>
+
+<section id="finding_a_strings_length">
+	<p>
+		<span class="topic">String Length.</span> The number of characters in a
+		string is called its <em>length</em>, and JS can return that number with the
+		following:
+	</p>
+	<pre class="language-javascript"><code>
+		"hello".length; // returns 5
+		let greeting = "howdy";
+		greeting.length; // returns 5
+	</code></pre>
+</section>
+
+<section id="concatenating_strings">
+	<p>
+		<span class="topic">Concatenating Strings.</span> To <em>concatenate</em> a
+		string is simply to append, or combing different strings. Strings can be
+		concatenated with a <span class="monoText">+</span> character.
+	</p>
+	<pre class="language-javascript"><code>
+		let firstName = "Sherlock";
+		let lastName = "Holmes";
+		let fullName = firstName + " " + lastName;
+		console.log(fullName);
+		// JS returns "Sherlock Holmes"
+	</code></pre>
+</section>
+
+<section id="string_indices">
+	<p>
+		<span class="topic">String Indices.</span> Strings are an array of
+		characters (i.e., they are an ordered list of characters). Thus, every
+		character in a string has an <em>index</em>—the number of its position.
+	</p>
+	<p>
+		Recall that in computer science, we always count from 0. Thus, the first
+		character in a string has index 0, the second character index 1, the third
+		index 4, etc. Furthermore, because strings are <em>indexed</em>, JavaScript
+		can search for parts of a string. A string's indices also allow JavaScript
+		to copy parts of the string, and store those copies into a new variable. For
+		example:
+	</p>
+	<pre class="language-javascript"><code>
+		let word = "quadratic";
+		// Return first character in word, q:
+		word[0];
+	</code></pre>
+</section>
+
+<section id="other_useful_string_methods">
+	<p>
+		<span class="topic">Common String Methods.</span> JavaScript provides
+		numerous methods for use with strings. Below are examples of some of the
+		most common methods:
+	</p>
+	<pre class="language-javascript"><code>
+		let word = "hello";
+		// capitalize all characters in string
+		word.toUpperCase
+		// lowercase all characters in string
+		word.toLowerCase
+
+		let phrase = " excuse me ";
+		// remove white spaces before the string
+		phrase.trimStart()
+		// remove white spaces after the string 
+		phrase.trimEnd()
+		
+		let greet = "Hello world!"
+		// determine if string contains a substring
+		greet.includes("World!") // returns false
+		greet.includes("world!") // returns true
+
+		let sport = "basketball";
+		let law = "contracts law";
+		// take a slice of the string
+		sport.slice(6) // returns 'ball'
+		law.slice(0, 9) // returns 'contracts'
+
+		let quote = 'Call me Bond';
+		// replace a substring
+		quote.replace('Bond', 'Ishmael') // return 'Call me Ishmael'
+
+		let food = 'hotdog'
+		// find starting index of a substring or character
+		food.indexOf('hot') // returns 0
+		food.indexOf('dog') // returns 3
+	</code></pre>
+</section>
+
+<section id="primitive_type_boolean">
+	<h2>JavaScript Booleans and Logic</h2>
+	<h3>Primitive Type: Boolean</h3>
+	<p>
+		The primitive type <b>boolean</b> covers only 2 values:
+		<span class="monoText">true</span> or <span class="monoText">false</span>.
+	</p>
+	<p>
+		Because the boolean type has only two values, they are an effective way of
+		representing strictly binary values:
+	</p>
+	<ul>
+		<li>true or false</li>
+		<li>yes or no</li>
+		<li>1 or 0</li>
+	</ul>
+</section>
+
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="expressions">
+	<p>
+		<span class="topic">Expressions.</span> Below is an
+		<span class="term">expression</span> in lisp:
+	</p>
+	<pre class="language-lisp"><code>
+		117
+	</code></pre>
+	<pre class="language-bash"><code>
+		117
+	</code></pre>
+	<p>
+		Numbers are expressions, and so too are arithmetic operations with numbers:
+	</p>
+	<pre class="language-scheme"><code>
+		(+ 200 75)
+		(+ 3.5 4.0)
+		(- 100 50)
+		(- 50 100)
+		(- 9.5 5.5)
+		(* 111 7)
+		(* 4 1.1)
+		(* 4 -1.1)
+		(/ 10 5)
+		(sqr 3)
+		(sqrt 16)
+	</code></pre>
+	<pre class="language-bash"><code>
+		275
+		7.5
+		50
+		-50
+		4
+		777
+		4.4
+		-4.4
+		2
+		9
+		4
+	</code></pre>
+	<p>
+		All of the expressions above are called
+		<span class="italicsText">combinations</span> &mdash; an expression enclosed
+		by parentheses to indicate procedure application. The leftmost element is
+		called the <span class="italicsText">operator</span>, and the elements
+		operated on are called the <span class="italicsText">operands</span>. The
+		operators used abvoe are called
+		<span class="term">primitive operators</span>; they are operatres predefined
+		by the language. Every expression evaluates to a
+		<span class="term">value</span>. The general form of an expression in Lisp:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			<span class="blueText">(</span> <span class="redText">⟨primitive⟩</span> <span class="redText">⟨expression⟩</span> ... <span class="blueText">)</span>
+		</code></pre>
+		<figcaption>Note that numbers themselves are expressions.</figcaption>
+	</figure>
+	<p>
+		Note the difference between Lisp and numerous other languages:
+		<span class="italicsText">prefix notation</span>. In most of languages and
+		the mathematics we're familiar with, arithmetic operations are written in
+		<span class="italicsText">inflix notation</span> (e.g., ${1 + 1.}$ Prefix
+		notation, also known as Polish notation, places the operator farthest left
+		(e.g., ${+ 1 1.}$ The benefit to prefix notation is that it allows us to
+		write a single operator for numerous operands, thereby preventing any
+		possible ambiguity:
+	</p>
+	<pre class="language-scheme"><code>
+		(+ 1 2 3 4 5)
+		(* 1 2 3 4 5)
+	</code></pre>
+	<pre class="language-bash"><code>
+		15
+		120
+	</code></pre>
+	<p>
+		A further benefit, we can easily nest operations while maintaining
+		readability with <span class="italicsText">pretty printing</span> (indenting
+		the code such that the operands are aligned vertically). This is called
+		<span class="term">nested arithmetic</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(+ (* 10 3) (- 10 5))
+
+		;; hard to read expression
+		(+ (* 3 (+ (* 5 10) (+ 5 10))) (+ (- 15 5) 10))
+
+		;; same expression, pretty printed
+		(+ (* 3 
+				(+ (* 5 10) 
+					(+ 5 10))) 
+			(+ (- 15 5) 
+				10))
+	</code></pre>
+	<pre class="language-bash"><code>
+		35
+		215
+		215
+	</code></pre>
+	<p>
+		Above, we see our first example of a Lisp
+		<span class="italicsText">comment</span> &mdash; code ignored by the Lisp
+		interpreter. Notice that in Lisp, we do not need to use some function or
+		method like <span class="monoText">console.log()</span> to display results
+		to the console. This is because Lisp follows the principle that every
+		expression has <span class="italicsText">value</span>. Obedience to this
+		principle is so inherent in Lisp that the computer scientist Alan Perlis
+		&mdash; the first recipient of the Turing award, for his work on programming
+		techniques and compiler construction &mdash; commented: &#8220;Lisp
+		programmers know the value of everything but the cost of nothing.&#8221;
+	</p>
+	<p>
+		<span class="exh">Exercise.</span> Suppose a right triangle ${\triangle
+		ABC}$ has two legs of lengths 3 and 4. Write a Lisp expression that returns
+		the value of the hypotenuse of ${\triangle ABC.}$
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			Recall that the the length of a right triangle's hypotenuse is given by
+			the formula: ${a = \sqrt{b^2 + c^2},}$ where ${a}$ is the length of the
+			hypotenuse, and ${b}$ and ${c}$ are the lengths of the triangle's legs.
+			Thus, in Lisp:
+		</p>
+		<pre class="language-scheme"><code>
+			(sqrt (+ (sqr 3) (sqrt 4)))
+		</code></pre>
+		<pre class="language-bash"><code>
+			5
+		</code></pre>
+	</details>
+	<p>
+		<span class="topic">Non-terminating Real Numbers.</span> Computers have a
+		finite amount of memory and processing power. Because of this limitation,
+		computing irrational numbers like ${\sqrt{2}}$ results in what might appear
+		odd:
+	</p>
+	<pre class="language-scheme"><code>
+		(sqrt 2)
+	</code></pre>
+	<pre class="language-bash"><code>
+		#i1.4142135623730951
+	</code></pre>
+	<p>
+		The prefix <span class="monoText">#i</span> indicates that the value is an
+		<span class="italicsText">inexact number</span>; the value of the expression
+		is close to this number, but it not exactly.
+	</p>
+</section>
+{% endblock %}

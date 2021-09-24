@@ -1,0 +1,63 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="pairs">
+	<h4>Pairs</h4>
+	<p>
+		As we already know, a good programming language provides ways of building
+		compound data from simpler data. The simplest way of forming compound data
+		in <span class="monoText">ML</span> is through
+		<span class="term">pairs</span>. To build a pair, we use the following
+		syntax:
+	</p>
+
+	<figure class="math-display">$$ (e_1, e_2) $$</figure>
+
+	<p>
+		When a pair is built, ${e_1}$ is evaluated to ${v_1}$ and ${e_2}$ is
+		evaluated to ${v_2}$. In doing so, the pair, as a whole, is evaluated to
+		${(v_1, v_2)}$, a value. Because a pair is evaluated to a value, a pair can
+		consist of pairs:
+	</p>
+
+	<figure class="math-display">
+		$$ (P_1, P_2) \\ [1em] \darr \\[0.3em] (v_1, v_2) \\ [1em] \darr \\[0.3em]
+		((e_1, e_2) (e_1, e_2)) $$
+	</figure>
+
+	<p>
+		The type of a pair is <span class="monoText">${t_1}$ * ${t_2}$</span> where
+		${t_1}$ is the type of the first part, ${v_1,}$ and ${t_2}$ is type of the
+		second part, ${v_2.}$
+	</p>
+
+	<p>
+		To access the values ${v_1}$ and ${v_2}$ in a pair, we must write a
+		function. The following is a function that accesses and sums the parts of a
+		pair:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun sum_two_pairs (pr1 : int*int, pr2 : int*int) =
+			(#1 pr1) + (#2 pr1) + (#1 pr2) + (#2 pr2)
+	</code></pre>
+
+	<p>
+		Notice how we access the parts with <span class="monoText">#1</span> and
+		<span class="monoText">#2</span>. Here is another function that takes a pair
+		to return an answer with two parts, a quotient, and a remainder:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun div_mod (x : int, y : int) = 
+			(x div y, x mod y)
+	</code></pre>
+
+	<p>Here is another function that sorts a pair:</p>
+
+	<pre class="language-sml"><code>
+		fun sort_pair(pr : int*int) =
+			if (#1 pr) < (#2 pr) 
+				then pr
+			else ((#2 pr), (#1 pr))
+	</code></pre>
+</section>
+{% endblock %}

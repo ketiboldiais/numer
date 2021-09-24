@@ -1,0 +1,671 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="getters_and_setters">
+	<h3>Getters and Setters</h3>
+	<p>
+		Let's continue our study of objects by further refining what we've learned
+		so far. Here, we will address the notion of
+		<span class="italicsText">access modifiers</span>,
+		<span class="italicsText">getters</span>, and
+		<span class="italicsText">setters</span>.
+	</p>
+	<p>
+		<span class="topic">Access Modifiers.</span> Consider the following code:
+	</p>
+	<pre class="language-java"><code>
+		class Person {
+			public String name;
+			private int age;
+
+			private void printName() {
+				System.out.println(name);
+			}
+			
+			public int getAge() {
+				return age;
+			}
+		}
+	</code></pre>
+	<p>
+		There are a few symbols in the code above that we have been actively
+		avoiding &mdash; <span class="monoText">public</span> and
+		<span class="monoText">private</span>. What are these symbols and what do
+		they mean?
+	</p>
+	<p>
+		These symbols are called <span class="term">access modifiers</span>. They
+		are provided by Java as a way to control
+		<span class="italicsText">access</span> to a class's instance variables and
+		methods.
+	</p>
+	<p>
+		Access modifiers are provided because is often the case that (a) we do want
+		certain information hidden, or (b) we do not want the information accessed
+		unless the seeker undergoes a particular process. Accordingly, the two main
+		kinds of access modifiers are (i)
+		<span class="italicsText">variable access modifiers</span> and (ii)
+		<span class="italicsText">method access modifiers</span>. In Java, access
+		modifiers <span class="underlineText">always</span> go to the left of the
+		type as a matter of convention.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">public.</span></span> The symbol
+		<span class="monoText">public</span>, when used as a variable access
+		modifier, tells Java that the relevant variable can be modified by anyone.
+		In the context of our <span class="monoText">Person</span> class, we wrote:
+		<span class="monoText">public String name</span>. This essentially tells
+		Java, &#8220;Anything anyone can modify the instance variable
+		<span class="monoText">name</span> using dot notation.&#8221;
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">private.</span></span> In
+		contrast, when the symbol <span class="monoText">private</span> is used as a
+		variable access modifier, then the relevant variable can be accessed and
+		modified <span class="underlineText">only if</span> the access or
+		modification is done with a method defined on that class. Thus, when we
+		wrote <span class="monoText">private int age</span>, we told Java:
+		&#8220;The instance variable <span class="monoText">age</span> is
+		<span class="monoText">private</span> &mdash; stop anyone that tries to
+		access or modify <span class="monoText">age</span> with anything other than
+		a <span class="monoText">Person</span> method.&#8221;
+	</p>
+	<p>
+		Thus, if we or another user want to modify the instance variable
+		<span class="monoText">age</span>, we must include a method in
+		<span class="monoText">person</span> that allows accessing and modifying
+		<span class="monoText">age.</span> Accordingly, the code below will not
+		work:
+	</p>
+	<pre class="language-java"><code>
+		class Person {
+			// anyone and anything can modify name
+			public String name;
+
+			// age can only be read and written with this class's methods
+			private int age;
+		}
+
+		public class foo {
+			public static void main(String[] unused) {
+				Person lukas = new Person();
+				lukas.name = "Lukas";
+
+				// this returns a compilation error
+				System.out.println(lukas.age);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		foo.java:9: error: age has private access in Person
+				System.out.println(lukas.age);
+												^
+		1 error
+	</code></pre>
+	<p>
+		Believe it or not, it is rare for Java programs to have public variables. We
+		will see why in later sections. Thus, in summary:
+	</p>
+	<div class="compare">
+		<div>
+			<p class="subheading"><span class="monoText">public</span></p>
+			<p>Every person can read and write the variable.</p>
+		</div>
+		<div>
+			<p class="subheading"><span class="monoText">private</span></p>
+			<p>
+				A person can read and write the variable
+				<span class="underlineText">only if</span> the person uses a method
+				defined for the variable's class.
+			</p>
+		</div>
+	</div>
+	<p>
+		<span class="topic">Method Access Modifiers.</span> Access modifiers work
+		the same way with methods. The difference: Rather than reading and writing,
+		the privilege is whether we can call the method.
+	</p>
+	<p>
+		A <span class="italicsText">public method</span> is one that we can call at
+		any time. However, a <span class="italicsText">private method</span> cannot
+		be called unless another method in the class is used to call it. In other
+		words, we can call a private method
+		<span class="underlineText">only if</span> we use another method in the
+		class. Thus, if we are in another method in the class marked as
+		<span class="topic">public</span> that allows calling the
+		<span class="monoText">private</span> method, then we can call the
+		<span class="monoText">private</span> method.
+	</p>
+	<p>
+		<span class="topic"
+			>Getting Around <span class="monoText">private</span> Access
+			Modifiers.</span
+		>
+		Suppose we have the following code:
+	</p>
+	<pre class="language-java"><code>
+		class Patient {
+			private String name;
+			private int age;
+		}
+
+		public class foo {
+			public static void main(String[] unused) {
+				Patient jekyll_hyde = new Patient();
+			}
+		}
+	</code></pre>
+	<p>
+		We want to keep the two variables, <span class="monoText">name</span> and
+		<span class="monoText">age</span>, private. However, we also want to be able
+		to quickly set the <span class="monoText">name</span> and
+		<span class="monoText">age</span> when we create the new instance of
+		<span class="monoText">Patient</span>,
+		<span class="monoText">jekyll_hyde</span>. One way to do so is to use a
+		constructor:
+	</p>
+	<pre class="language-java"><code>
+		class Patient {
+			private String name;
+			private int age;
+
+			Patient(String setName, int setAge) {
+				name = setName;
+				age = setAge;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] unused) {
+				Patient jekyll_hyde = new Patient("Jekyll Hyde", 50);
+			}
+		}
+	</code></pre>
+	<p>
+		The code above compiles successfully. However, the
+		<span class="monoText">name</span> and <span class="monoText">age</span> are
+		still hidden because they are private. Suppose we want to be able to verify
+		<span class="monoText">jekyll_hyde</span>'s name. One way to do so is to use
+		a public method:
+	</p>
+	<pre class="language-java"><code>
+		class Patient {
+			private String name;
+			private int age;
+
+			Patient(String setName, int setAge) {
+				name = setName;
+				age = setAge;
+			}
+
+			public void printPatientInfo() {
+				System.out.println("Patient name: " + name);
+				System.out.println("Patient age: " + age);
+			}
+		}
+
+		public class foo {
+			public static void main(String[] unused) {
+				Patient jekyll_hyde = new Patient("Jekyll Hyde", 50);
+				jekyll_hyde.printPatientInfo();
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Patient name: Jekyll Hyde
+		Patient age: 50
+	</code></pre>
+	<p>
+		Because we can work around private access variables with methods, we can
+		obtain the values bound to variable access variables with public methods:
+	</p>
+	<pre class="language-java"><code>
+		class Patient {
+			private String name;
+			private int age;
+
+			Patient(String setName, int setAge) {
+				name = setName;
+				age = setAge;
+			}
+
+			public String getName() {
+				return name;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] unused) {
+				Patient jekyll_hyde = new Patient("Jekyll Hyde", 50);
+				String jekyll_hyde_name = jekyll_hyde.getName();
+				System.out.println(jekyll_hyde_name);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Jekyll Hyde
+	</code></pre>
+	<p>
+		We might note this seems like a lot of work just to obtain the name. Why go
+		through the trouble of writing a method just for obtaining the name when we
+		can just use dot notation? We go through this trouble to ensure we keep two
+		actions separate as possible: <span class="italicsText">setting</span> an
+		instance variable, and <span class="italicsText">getting</span> an instance
+		variable. By marking an instance variable
+		<span class="monoText">private</span>, we place a hurdle on attempts to
+		modify the value bound to that instance variable.
+	</p>
+	<p>
+		Why place a hurdle? Because we generally do not want instance variables to
+		change as the program runs. The issue is not so much with a user modifying
+		the variable directly as it is writing code that will affect, or indirectly
+		modify, the value bound to the instance variable. Indirect and unintended
+		modifications can easily lead to bugs that are difficult to pinpoint.
+	</p>
+	<p>
+		If, for whatever reason, we want to have the ability to modify the name
+		<span class="italicsText">after</span> its been set, we can write another
+		public method:
+	</p>
+	<pre class="language-java"><code>
+		class Patient {
+			private String name;
+			private int age;
+
+			Patient(String setName, int setAge) {
+				name = setName;
+				age = setAge;
+			}
+
+			public String getName() {
+				return name;
+			}
+
+			public void setName(String setName) {
+				name = setName;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] unused) {
+				Patient jekyll_hyde = new Patient("Jekyll Hyde", 50);
+				System.out.println(jekyll_hyde.getName());
+
+				jekyll_hyde.setName("Harvey Dent");
+				System.out.println(jekyll_hyde.getName());
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Jekyll Hyde
+		Harvey Dent
+	</code></pre>
+	<p>
+		The distinction between setting an instance variable and getting a value
+		bound to an instance variable introduces the distinction between
+		<span class="term">getters</span> and <span class="term">setters</span>.
+	</p>
+	<p>
+		<span class="topic">Qualfying Setters.</span> If we provide methods that
+		allow modifying initialized variable instances, we might want to further
+		restrict the modification. We can do so inside the setter. For example,
+		unless the patient is Benjamin Button, we might want to ensure negative
+		numbers are not passed into an <span class="monoText">age</span> setting
+		method:
+	</p>
+	<pre class="language-java"><code>
+		class Patient {
+			private String name;
+			private int age;
+
+			Patient(String setName, int setAge) {
+				name = setName;
+				age = setAge;
+			}
+
+			public String getName() {
+				return name;
+			}
+			public int getAge() {
+				return age;
+			}
+
+			public void setName(String setName) {
+				name = setName;
+			}
+
+			public void setAge(int setAge) {
+				if (setAge > 0) {
+					age = setAge;
+				}
+			}
+		}
+
+		public class foo {
+			public static void main(String[] unused) {
+				Patient jekyll_hyde = new Patient("Jekyll Hyde", 50);
+				jekyll_hyde.setAge(-85);
+				System.out.println(jekyll_hyde.getAge());
+				jekyll_hyde.setAge(55);
+				System.out.println(jekyll_hyde.getAge());
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		50
+		55
+	</code></pre>
+	<p>
+		Notice <span class="monoText">setAge(-85)</span> did not actually set the
+		age to <span class="monoText">-85</span>. We qualified the setter with a
+		conditional: Java, set the age only if the provided argument is greater than
+		<span class="monoText">0</span>.
+	</p>
+	<p>
+		Getters and setters are the way we get around hurdles
+		<span class="monoText">public</span> and
+		<span class="monoText">private</span>. Good style in Java: always use
+		<span class="monoText">private</span> for instance variables, and use
+		<span class="monoText">public</span> methods to access the instance
+		variables. <span class="italicsText">Getters</span> are the methods we use
+		to read, or retrieve, values bound to instance variables, and
+		<span class="italicsText">setters</span> are the methods we use to bind new
+		values to instance variables.
+	</p>
+	<p>
+		Getters and setters allow us to create
+		<span class="italicsText">reactive objects</span> &mdash; objects that react
+		to changes made to its instance variables. They also allow us to create
+		read- and write-only variables:
+	</p>
+	<pre class="language-java"><code>
+		class Patient {
+			private String name;
+			private String firstName;
+			private String lastName;
+		
+			public void setName(String setName) {
+				String[] nameParts = setName.split(" ");
+				name = setName;
+				firstName = nameParts[0];
+				lastName = nameParts[1];
+			}
+		
+			public String getName() {
+				return name;
+			}
+			public String getFirstName() {
+				return firstName;
+			}
+			public String getLastName() {
+				return lastName;
+			}
+		
+		}
+		
+		public class foo {
+			public static void main(String[] unused) {
+				Patient jekyll_hyde = new Patient();
+				jekyll_hyde.setName("Jekyll Hyde");
+				System.out.println(jekyll_hyde.getFirstName());
+				System.out.println(jekyll_hyde.getLastName());
+				System.out.println(jekyll_hyde.getName());
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Jekyll
+		Hyde
+		Jekyll Hyde
+	</code></pre>
+	<p>
+		The code above, of course, is flawed (names do not just consist of first and
+		last; there are middle names, suffixes, ordinals, and eponyms).
+	</p>
+	<p>
+		<span class="topic">The <span class="monoText">static</span> Keyword.</span>
+		When we prepend the <span class="monoText">static</span> symbol to an
+		instance variable or method, we tell Java: &#8220;This variable or method
+		belongs to the <span class="italicsText">class</span>, not to a specific
+		instance of this class.&#8221; For example, we might see the following:
+	</p>
+	<pre class="language-java"><code>
+		class Philosopher {
+			private String name;
+			private String field_of_study;
+			private static int count = 0;
+			Philosopher(String setName, String set_field_of_study) {
+				name = setName;
+				field_of_study = set_field_of_study;
+			}
+			public void printNameAndField() {
+				System.out.println("Name: " + name);
+				System.out.println("Field: " + field_of_study);
+			}
+		}
+		
+		public class foo {
+			public static void main(String[] unused) {
+				Philosopher kant = new Philosopher("Immanuel Kant", "metaphysics");
+				kant.printNameAndField();
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Name: Immanuel Kant
+		Field: metaphysics
+	</code></pre>
+	<p>
+		We've seen the symbol <span class="monoText">static</span> numerous times.
+		This symbol is similar to <span class="monoText">public</span> and
+		<span class="monoText">private</span> in that it acts as an access modifier.
+		The difference: When attach the
+		<span class="monoText">static</span> modifier to a variable or method, there
+		is one, and only one, &#8220;copy&#8221; of that variable or method. That
+		copy exists only inside the class itself, not with any instance of the
+		class.
+	</p>
+	<p>
+		There is a specific order for where to include the symbol
+		<span class="monoText">static</span>. Access modifiers like
+		<span class="monoText">private</span> and
+		<span class="monoText">public</span> are placed leftmost, then the modifier
+		<span class="monoText">static</span>, then the
+		<span class="monoText">type</span>.
+	</p>
+	<p>
+		<span class="topic">Static Methods.</span> One of the most common uses for
+		<span class="monoText">static</span> is with
+		<span class="italicsText">static methods</span>. For those familiar with
+		JavaScript, we might have noticed tutorials referring to JavaScript's
+		primitive math object as containing
+		<span class="italicsText">static properties</span> and
+		<span class="italicsText">static methods</span>. These correspond to Java's
+		static variables and static methods.
+	</p>
+	<p>
+		A <span class="term">static method</span> is a method that can be called
+		<span class="underlineText">without</span> an instance of that class. For
+		example, in the code below, we have a static variable called
+		<span class="monoText">count</span>, and at every new instance of the class
+		<span class="monoText">Philosopher</span>, we increment
+		<span class="monoText">count</span>. Then, we have a static method called
+		<span class="monoText">printPhilosopherCount()</span> that prints the
+		current value bound to <span class="monoText">count</span>.
+	</p>
+	<pre class="language-java"><code>
+		class Philosopher {
+			private String name;
+			private String field_of_study;
+			private static int count = 0;
+			Philosopher(String setName, String set_field_of_study) {
+				name = setName;
+				field_of_study = set_field_of_study;
+				count++;
+			}
+			public void printNameAndField() {
+				System.out.println("Name: " + name);
+				System.out.println("Field: " + field_of_study);
+			}
+		}
+		
+		public class foo {
+			public static void main(String[] unused) {
+				Philosopher kant = new Philosopher("Immanuel Kant", "metaphysics");
+				kant.printNameAndField();
+				Philosopher.printPhilosopherCount();
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Name: Immanuel Kant
+		Field: metaphysics
+		1
+	</code></pre>
+	<p>
+		Notice that the static method
+		<span class="monoText">printPhilosopherCount()</span> executed without
+		referencing a particular instance of the class
+		<span class="monoText">Philosopher</span>. This is because it is a method
+		that belongs only to the class <span class="monoText">Philosopher</span>,
+		and as such, does not depend on an instance to execute. If we create
+		multiple instances:
+	</p>
+	<pre class="language-java"><code>
+		class Philosopher {
+			private String name;
+			private String field_of_study;
+			private static int count = 0;
+			Philosopher(String setName, String set_field_of_study) {
+				name = setName;
+				field_of_study = set_field_of_study;
+				count++;
+			}
+			public static void printPhilosopherCount() {
+				System.out.println(count);
+			}
+			public void printNameAndField() {
+				System.out.println("Name: " + name);
+				System.out.println("Field: " + field_of_study);
+			}
+		}
+		
+		public class foo {
+			public static void main(String[] unused) {
+				Philosopher kant = new Philosopher("Immanuel Kant", "metaphysics");
+				Philosopher godel = new Philosopher("Kurt Godel", "logic");
+				Philosopher locke = new Philosopher("John Locke", "political theory");
+				Philosopher kierkegaard = new Philosopher("Soren Kierkegaard", "existentialism");
+				Philosopher hart = new Philosopher("Herbert Hart", "jurisprudence");
+				Philosopher.printPhilosopherCount();
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		5
+	</code></pre>
+	<p>And if we create no instances:</p>
+	<pre class="language-java"><code>
+		class Philosopher {
+			private String name;
+			private String field_of_study;
+			private static int count = 0;
+			Philosopher(String setName, String set_field_of_study) {
+				name = setName;
+				field_of_study = set_field_of_study;
+				count++;
+			}
+			public static void printPhilosopherCount() {
+				System.out.println(count);
+			}
+			public void printNameAndField() {
+				System.out.println("Name: " + name);
+				System.out.println("Field: " + field_of_study);
+			}
+		}
+		
+		public class foo {
+			public static void main(String[] unused) {
+				Philosopher.printPhilosopherCount();
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+	</code></pre>
+	<p>
+		The static method is a method that can be called without any instance of its
+		class. This ability implies a limitation: Because static methods work
+		outside of instances, they
+		<span class="underlineText">cannot access</span> non-static instance
+		variables. This in turn means we cannot use the keyword
+		<span class="monoText">this</span>.
+	</p>
+	<p>
+		Static methods are found throughout not just Java, but object-oriented
+		languages as a whole. In Java, there are numerous
+		<span class="term">packages</span> (Java's equivalent for
+		<span class="italicsText">libraries</span> in C and
+		<span class="italicsText">modules</span> in Python) containing static
+		methods. One such package is the <span class="monoText">Math</span> package,
+		which contains static methds like
+		<span class="monoText">Math.sqrt(${n}$)</span>, where ${n}$ is the radicand.
+	</p>
+	<p>
+		<span class="topic">Static Variables.</span> Like, but somewhat different,
+		to static methods, <span class="term">static variables</span> are variables
+		shared by <span class="italicsText">all</span> instances of a given class.
+		Thus, in our example <span class="monoText">Philosopher</span> class, the
+		variable <span class="monoText">count</span> is shared by every instance of
+		<span class="monoText">Philosopher</span>.
+	</p>
+	<p>
+		As aforementioned, languages like JavaScript refer to these as
+		<span class="italicsText">static properties</span>. For example, the value
+		${\sqrt{2}}$ is so commonly used in computation that we might want to
+		provide it as a static variable. Indeed, Java has packages that provide such
+		quick access. However, static variables are by and large extremely uncommon
+		in Java programming. Generally, a task that requires a static variable can
+		more than likely be accomplished through another means. One use for a static
+		variable is something like a <span class="monoText">count</span>, intended
+		to track how many instances of a given class there are.
+	</p>
+	<p>
+		<span class="topic"
+			>Not Marking a Method or Variable
+			<span class="monoText">static.</span></span
+		>
+		If we do not indicate that a variable of method is
+		<span class="monoText">static</span>, then by default, every instance of the
+		class (a) has a copy of that variable, and (b) the method will only work on
+		a particular instance of that class.
+	</p>
+	<p>
+		<span class="topic">Use Cases for Static Variables.</span> The most common
+		use case for static variables is creating constants. In Java programs, this
+		use case is often identifiable when the
+		<span class="monoText">static</span> symbol is used alongside the
+		<span class="monoText">final</span> symbol:
+	</p>
+	<pre class="language-java"><code>
+		class Physics {
+			public static final float ACCELERATION_GRAVITY = 9.807;
+		}
+	</code></pre>
+	<p>
+		The symbol <span class="monoText">final</span> tells Java: Under absolutely
+		no circumstances can the variable
+		<span class="monoText">ACCELERATION_GRAVITY</span> be modified. Any attempt,
+		direct or indirect, to modify a final variable will return an error.
+	</p>
+	<p>
+		Thus, the variable declaration above essentially communicates: (1) This is a
+		public variable, so you can access, but because it is a final variable, you
+		cannot modify. (2) This is a static variable, so there is only one copy, and
+		it stays here in <span class="monoText">Physics</span>. If you want to use
+		it, you will have to call <span class="monoText">Physics</span> first.
+	</p>
+	<p>
+		Notice further that in Java, final variables (i.e., constants) are written
+		in snake casing (underscores indicating spaces).
+	</p>
+</section>
+{% endblock %}

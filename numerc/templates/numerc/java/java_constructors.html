@@ -1,0 +1,438 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="constructors_and_visibility">
+	<h3>Constructors</h3>
+	<p>
+		Up until this point, we've been purposefully hiding certain parts of the
+		Java program:
+	</p>
+	<pre class="language-java"><code>
+		public class foo {
+			public static void main(String[] unused) {
+				System.println("Hello, world!")
+			}
+		}
+	</code></pre>
+	<p>
+		We avoided discussing things like <span class="monoText">class</span>,
+		<span class="monoText">public</span>, and
+		<span class="monoText">static</span> to prevent overcomplicating
+		introductory matters. Now that we've seen classes, however, we can address
+		these mysterious symbols.
+	</p>
+	<p>
+		In Java, everything we write <span class="underlineText">must</span> be
+		inside a class. In the code above, we have class called
+		<span class="monoText">foo</span>. The name
+		<span class="monoText">foo</span> is the name of the
+		<span class="monoText">.java</span> file containing the code. Inside the
+		class <span class="monoText">foo</span>, we have a method called
+		<span class="monoText">main</span>. The method is called
+		<span class="monoText">main</span> because that is where all of our actual,
+		executed code is placed. It effectively tells Java, &#8220;Start
+		here.&#8221;
+	</p>
+	<p>
+		When we actually define classes, we place them outside the
+		<span class="monoText">foo</span> class:
+	</p>
+	<pre class="language-java"><code>
+		class Dimensions {
+			public int width;
+			public int height;
+
+			public int area() {
+				return width * height;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Dimensions firstRoom = new Dimensions();
+				firstRoom.width = 10;
+				firstRoom.height = 20;
+
+				Dimensions secondRoom = new Dimensions();
+				secondRoom.width = 8;
+				secondRoom.height = 4;
+
+				System.out.println(firstRoom.area());
+				System.out.println(secondRoom.area());
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		200
+		32
+	</code></pre>
+	<p>
+		What exactly is <span class="monoText">String[]</span> and
+		<span class="monoText">args[]</span>? These parameters must be placed inside
+		the <span class="monoText">main()</span> method because we they serve as
+		placeholder variables for when arguments are passed into the overall program
+		itself. Those arguments are placed in an array. We will further develop this
+		point in later sections. We will also speak at greater lengths in later
+		sections what the symbol <span class="monoText">public</span> means, but for
+		now: The <span class="monoText">public</span> keyword tells Java that a
+		particular object is visible to all other classes (i.e., all other classes
+		can access that particular object, whether its a variable or a method).
+		Again, we will elaborate on these points as we continue.
+	</p>
+	<p>
+		<span class="topic">Default Values for Instance Variables.</span> Note that
+		we can set default values for instance variables. This is particularly
+		useful when we know an instance variable should have a value, but for
+		whatever reason, either we or a user fail to provide that value:
+	</p>
+	<pre class="language-java"><code>
+		class Dimensions {
+			public int width = 1;
+			public int height = 1;
+
+			public int area() {
+				return width * height;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Dimensions firstRoom = new Dimensions();
+				firstRoom.width = 10;
+				firstRoom.height = 20;
+
+				Dimensions secondRoom = new Dimensions();
+
+				System.out.println(firstRoom.area());
+				System.out.println(secondRoom.area());
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		200
+		1
+	</code></pre>
+	<p>
+		Notice that we did not define instance variables for the object
+		<span class="monoText">secondRoom</span>, but an area was returned because
+		the instance variables are assigned the value
+		<span class="monoText">1</span> by default.
+	</p>
+	<p>
+		<span class="topic"
+			>Constructors: What Happens when an Object is Created?</span
+		>
+		Whenever we create a new instance of a class, we use the keyword
+		<span class="monoText">new</span>. Notice, however, that when we create the
+		instance, it almost looks like a method call:
+	</p>
+	<pre class="language-java"><code>
+		Dimensions example = new Dimensions();
+	</code></pre>
+	<p>
+		The parentheses are included because calling a method is precisely what
+		happens when we create an object. Every new object is created through a
+		special method in Java called a <span class="term">constructor</span>. When
+		a new class is created, the constructor in the code below is executed:
+	</p>
+	<pre class="language-java"><code>
+		class Course {
+			String name;
+
+			// This is a constructor
+			Course(String setName) {
+				name = setName;
+			}
+		}
+	</code></pre>
+	<p>
+		A constructor is called
+		<span class="underlineText">exactly once</span> &mdash; when the class is
+		first created. There is no way to call it again later. It also does not
+		explicitly return anything other than the instance of the class.
+	</p>
+	<p>
+		There is something odd about the constructor method: There is no return
+		type. The method does not have a return type because it will always return
+		just one thing &mdash; an instance of the class. As such, there is no reason
+		or need for the constructor to have a return type. Furthermore, the method
+		shares the same name as the class. This is a syntax requirement for
+		constructors.
+	</p>
+	<p>
+		We use constructors because they allow us to be much more specific when we
+		initialize a class. For those familiar with Python, constructors are the
+		Java equivalent of <span class="italicsText">default arguments</span>.
+		Java's approach to this feature is undoubtedly much worse than Python's, but
+		we must make do.
+	</p>
+	<p>
+		If we do not define a constructor, Java will define a constructor for us:
+	</p>
+	<pre class="language-java"><code>
+		class Course {
+			String name;
+		}
+
+		// The above is the same as:
+
+		class Course {
+			String name;
+			Course() {
+
+			}
+		}
+	</code></pre>
+	<p>
+		The most important point with respect to constructors: The constructor
+		<span class="underlineText">must</span> return a new instance of the class.
+	</p>
+	<pre class="language-java"><code>
+		class Course {
+			String name;
+			Course(String setName) {
+				name = setName;
+				// But what if name is invalid?
+			}
+		}
+	</code></pre>
+	<p>
+		Because of this requirement, under no circumstances can a constructor fail.
+		This is a point of more than mild annoyance for Java programmers, because it
+		effectively means there is no way to perform argument validation within a
+		constructor itself other than with errors and exceptions.
+	</p>
+	<p>
+		Constructors, however, provide a useful way to ensure arguments are
+		provided:
+	</p>
+	<pre class="language-java"><code>
+		class Person {
+			String name;
+			double age;
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Person bill = new Person();
+				System.out.println(bill.name);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		null
+	</code></pre>
+	<p>
+		We get back <span class="monoText">null</span> because we did not initialize
+		the instance variable <span class="monoText">name</span>. To ensure this
+		does not occur, we can use a constructor:
+	</p>
+	<pre class="language-java"><code>
+		class Person {
+			String name;
+			double age;
+
+			Person() {
+				name = "name_uninitialized";
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Person bill = new Person();
+				System.out.println(bill.name);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		name_uninitialized
+	</code></pre>
+	<p>
+		Notice that in the examples above, we've had to reference the static
+		variable each time for initialization:
+	</p>
+	<pre class="language-java"><code>
+		class Person {
+			String name;
+			double age;
+
+			Person() {
+				name = "name_uninitialized";
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Person bill = new Person();
+				bill.name = "Bill";
+				System.out.println(bill.name);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Bill
+	</code></pre>
+	<p>
+		It would be much easier if we could just pass that name as an argument when
+		we first create the instance. Something that looks like this:
+	</p>
+	<pre class="language-java"><code>
+		Person bill = new Person("Billy");
+	</code></pre>
+	<p>To do so, we must use a constructor that takes a name as an argument:</p>
+	<pre class="language-java"><code>
+		class Person {
+			String name;
+			double age;
+
+			Person(String setName) {
+				name = setName;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Person bill = new Person("Bill");
+				System.out.println(bill.name);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Bill
+	</code></pre>
+	<p>
+		Great, it worked. As we can see, if we want to create new instances with
+		their instance variables initialized by passing arguments into the method,
+		we can do so with a constructor.
+	</p>
+	<p>
+		Note that if we do not pass an argument into
+		<span class="monoText">Person()</span> when we create a new instance, we
+		will see an error message:
+	</p>
+	<pre class="language-java"><code>
+		class Person {
+			String name;
+			double age;
+
+			Person(String setName) {
+				name = setName;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Person bill = new Person("Bill");
+				System.out.println(bill.name);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		foo.java:10: error: constructor Person in class Person cannot be applied to given types;
+				Person bill = new Person();
+								^
+		required: String
+		found:    no arguments
+		reason: actual and formal argument lists differ in length
+		1 error
+	</code></pre>
+	<p>
+		This is a very helpful error message, because it tells us where we went
+		wrong &mdash; we forget to pass a necessary argument into
+		<span class="monoText">Person()</span>. This feature also shows another
+		aspect of constructors: As we soon as we define a constructor, we
+		automatically lose the default constructor.
+	</p>
+	<p>
+		Since our <span class="monoText">Person</span> class also has an instance
+		variable <span class="monoText">age</span>, we should probably also require
+		an <span class="monoText">age</span> argument:
+	</p>
+	<pre class="language-java"><code>
+		class Person {
+			String name;
+			double age;
+
+			Person(String setName, double setAge) {
+				name = setName;
+				age = setAge;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Person bill = new Person("Bill", 32.5);
+
+				System.out.println(bill.name);
+				System.out.println(bill.age);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Bill
+		32.5
+	</code></pre>
+	<p>
+		<span class="topic">Default Values for Instance Variables.</span> Suppose we
+		want to allow creating a new instance of
+		<span class="monoText">Person</span> even if an
+		<span class="monoText">age</span> argument is not provided. To do so, we can
+		simply write another constructor without the
+		<span class="monoText">age</span> parameter:
+	</p>
+	<pre class="language-java"><code>
+		class Person {
+			String name;
+			double age;
+
+			Person(String setName, double setAge) {
+				name = setName;
+				age = setAge;
+			}
+			Person(String setName) {
+				name = setName;
+				age = 0.0;
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Person bill = new Person("Bill");
+
+				System.out.println(bill.name);
+				System.out.println(bill.age);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Bill
+		0.0
+	</code></pre>
+	<p>We can shorten the code above by simply writing:</p>
+	<pre class="language-java"><code>
+		class Person {
+			String name;
+			double age;
+
+			Person(String setName, double setAge) {
+				name = setName;
+				age = setAge;
+			}
+			Person(String setName) {
+				this(setName, 0.0);
+			}
+		}
+
+		public class foo {
+			public static void main(String[] args[]) {
+				Person bill = new Person("Bill");
+
+				System.out.println(bill.name);
+				System.out.println(bill.age);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Bill
+		32.0
+	</code></pre>
+</section>
+{% endblock %}

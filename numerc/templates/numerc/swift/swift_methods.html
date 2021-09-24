@@ -1,0 +1,179 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="methods">
+	<p>
+		<span class="topic">More on Methods.</span> Methods define the behavior of a
+		named type. In other words, what the values of the named type can do. For
+		example, suppose we are defining the actions of a video game character:
+	</p>
+	<pre class="language-swift"><code>
+		enum Actions {
+			case sedentary
+			case moving
+			func jump() -> Bool {
+				return true
+			}
+			func duck() -> Bool {
+				return true
+			}
+			func forward() -> Bool {
+				return true
+			}
+			func backward() -> Bool {
+				return true
+			}
+		}
+	</code></pre>
+	<p>
+		All of the functions above are methods, so every instance of
+		<span class="monoText">Actions</span> will have these methods.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">self.</span></span> Recall that
+		we can append <span class="monoText">CaseIterable</span> to an enumeration
+		so as to return an array consisting of all the enumeration's cases. Suppose
+		we had the following enumeration:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum TrafficLight: CaseIterable {
+			case green, yellow, red
+		}
+	</code></pre>
+
+	<p>
+		Let's include a method that changes the traffic light by whatever amount we
+		would like:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum TrafficLight: CaseIterable {
+			case green, yellow, red
+			
+			mutating func advance(by x: UInt) {
+				let indexOfCurrentLight = TrafficLight.allCases.firstIndex(of: self)!
+				let indexOfNextLight = indexOfCurrentLight + Int(x)
+				self = TrafficLight.allCases[indexOfNextLight % TrafficLight.allCases.count]
+			}
+		}
+		TrafficLight.allCases
+		var juncture1: TrafficLight = .red
+		print(juncture1)
+		juncture1.advance(by: 1)
+		print(juncture1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		red
+		green
+	</code></pre>
+
+	<p>
+		The line
+		<span class="monoText"
+			>TrafficLight.allCases[indexOfNextLight %
+			TrafficLight.allCases.count</span
+		>
+		is a clever of way of ensuring an index outside the bounds will wrap around.
+		Here, <span class="monoText">count</span> is 3. Say our
+		<span class="monoText">indexOfCurrentLight</span> is 1. If we put in 6, then
+		<span class="monoText">indexOfNextLight</span> is 7. This is out of bounds.
+		So, we take <span class="monoText">indexOfNextLight</span>, which is 7, and
+		divide it by the number of elements, which is 3. This return a remainder of
+		1, and it is what we use as the index.
+	</p>
+
+	<p>
+		The <span class="monoText">self</span> keyword is what we use to refer to
+		the instance itself. In the function above, we also included the keyword
+		<span class="monoText">mutating</span>. We include this keyword because the
+		method mutates instance variables.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">init.</span></span> The
+		<span class="monoText">init</span> keyword is what we use when we want every
+		new instance of a <span class="monoText">struct</span> or
+		<span class="monoText">class</span> to have default properties. For example,
+		maybe have a <span class="monoText">Customer</span>
+		<span class="monoText">struct</span> and we want every new instance of
+		<span class="monoText">Customer</span> to have a default property:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Customer {
+			var name: String
+			var age: UInt
+			var accountStatus: String
+			init(name: String, age: UInt, accountStatus = "Active") {
+				self.name = name
+				self.age = age
+				self.accountStatus = accountStatus
+			}
+		}
+
+		var johnAsh = Customer(name: "John Ash", age: 29)
+		print(johnAsh.accountStatus)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Active
+	</code></pre>
+
+	<p>We can use structures to store functions we often use. For example:</p>
+
+	<pre class="language-swift"><code>
+		struct Maths {
+			// computes the hypotenuse
+			static func hypotenuse(x: Double, y: Double) -> Double {
+				(x * x + y * y).squareRoot()
+			}
+			// computes volume of a cuboid
+			static func cuboidVolume(length: Double, width: Double, height: Double) -> Double {
+				length * width * height
+			}
+			// computes area of a circle
+			static func circleArea(radius: Double) -> Double {
+				2 * radius * Double.pi
+			}
+		}
+		let A_B_hypotenuse = Maths.hypotenuse(x: 2.0, y: 7.0)
+		let bangVolume = Maths.cuboidVolume(length: 2.0, width: 3.0, height: 3.5)
+		let fooArea = Maths.circleArea(radius: 3.0)
+		
+		print("Hypotenuse is: \(A_B_hypotenuse)")
+		print("Volume is: \(bangVolume)")
+		print("Circle's area is: \(fooArea)")
+	</code></pre>
+	<pre class="language-bash"><code>
+		Hypotenuse is: 7.280109889280518
+		Volume is: 21.0
+		Circle's area is: 18.84955592153876
+	</code></pre>
+</section>
+
+<section id="computed_properties_v_methods">
+	<p>
+		<span class="topic">Computed Properties v. Methods</span> From the
+		discussion thus far, properties hold values, and methods perform
+		computations. Some of those properties can be
+		<span class="italicsText">computed properties</span> &mdash; properties
+		whose values are determined based on existing properties. Question: When
+		should we use computed properties and when should we use methods?
+	</p>
+
+	<p>
+		This is a fair question because might have a method that returns a single
+		value, computed from existing properties. If this is the case, then that
+		value could also be stored as a computed property. For most programs, which
+		route to take comes down to style.
+	</p>
+
+	<p>
+		However, there are some considerations with respect to efficiency. Computed
+		properties are computed the moment we instantiate the particular named type.
+		If the computed property is a particularly resource-intensive computation,
+		then it might be best to use a method. Of course, if we find ourselves
+		repeatedly using the particular value, then it may be best to use a computed
+		property.
+	</p>
+</section>
+{% endblock %}

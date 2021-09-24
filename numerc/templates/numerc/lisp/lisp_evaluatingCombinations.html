@@ -1,0 +1,332 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="evaluating_combinations">
+	<h4>The Evaluation Rule</h4>
+	<p>Consider the following expression:</p>
+	<pre class="language-scheme"><code>
+		(+ 2 (* 3 4) (- (+ 1 2) 3))
+	</code></pre>
+	<p>
+		This expression begins with a primitive operator,
+		<span class="monoText">+</span>. Because it starts with a primitive
+		operators, we call this expression a
+		<span class="term">primitive call</span>. Inside the expression above, we
+		have several operands:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p><span class="monoText">2</span></p>
+			<p><span class="monoText">(* 3 4)</span></p>
+			<p><span class="monoText">(- (+ 1 2) 3)</span></p>
+		</div>
+	</figure>
+	<p>
+		These are all subexpressions. The second and third subexpressions themselves
+		contain further subexpressions. How does Lisp interpret the overall
+		expression?
+	</p>
+	<p>
+		The first key point is that the interpreter reads the expression from left
+		to right. From left to right, the interpreter itself follows a procedure:
+		(1) First evaluate the
+		<span class="italicsText">subexpressions</span> (reduce the operands to
+		values); (2) Second, apply the procedure that is the value of the most
+		leftmost subexpression (the operator) to the arguments that are the values
+		of other subexpressions (the operands). In other words:
+	</p>
+	<figure class="math-display">
+		<ol>
+			<li>Reduce the operands to values;</li>
+			<li>then apply the left-most operator to the values.</li>
+		</ol>
+	</figure>
+	<p>
+		Thus, in the expression above, Lisp first looks at
+		<span class="monoText">2</span>. It evaluates
+		<span class="monoText">2</span> to <span class="monoText">2</span> and moves
+		to next subexpression. It sees <span class="monoText">(* 3 2)</span>. Lisp
+		evalues this subexpression to a value. It evaluates
+		<span class="monoText">3</span> to <span class="monoText">3</span>, and
+		<span class="monoText">2</span> to <span class="monoText">2</span>, and
+		applies the the value of the left-most operator,
+		<span class="monoText">*</span>, evaluating the subexpression to
+		<span class="monoText">6</span>. Then goes to the next subexpression:
+		<span class="monoText">(- (+ 1 3) 3)</span>. It sees the first operand,
+		<span class="monoText">(+ 1 2)</span>, and begins evaluating. It evaluates
+		<span class="monoText">1</span> to <span class="monoText">1</span> and
+		<span class="monoText">2</span> to <span class="monoText">2</span>, and
+		applies the value of the left-most operator,
+		<span class="monoText">+</span>. The subexpression reduces to
+		<span class="monoText">3</span>. Then it goes to the next subexpression,
+		<span class="monoText">3</span>, and evaluates it to
+		<span class="monoText">3</span>. Then it applies the left-most operator,
+		<span class="monoText">-</span>. Thus, the overall subexpression evaluates
+		to <span class="monoText">0</span>. Lisp now has the all the operands
+		evaluated: <span class="monoText">2</span>,
+		<span class="monoText">12</span>, and <span class="monoText">0</span>. It
+		applies the value of the left most operator,
+		<span class="monoText">+</span>. Therefore, the entire expression returns
+		<span class="monoText">14</span>. Putting it all together:
+	</p>
+	<pre class="language-scheme"><code>
+		(+ 2 (* 3 4) (- (+ 1 2) 3))
+		(+ 2 12 (- (+ 1 2) 3))
+		(+ 2 12 (- 3 3))
+		(+ 2 12 0)
+		14
+	</code></pre>
+	<p>The general intuition: Left to right, inside to outside.</p>
+	<p>
+		What does this imply? To evaluate a combination, the interpreter must first
+		evaluate each <span class="italicsText">element</span> in the combination.
+		This shows us that evaluation is a
+		<span class="italicsText">recursive</span> process &mdash; one of its steps
+		requires invoking itself. To illustrate, the following code:
+	</p>
+	<pre class="language-scheme"><code>
+		(* (+ 9 (* 4 6))
+			(+ 1 3 6))
+	</code></pre>
+	<pre class="language-bash"><code>
+		330
+	</code></pre>
+	<p>can be written as an <span class="italicsText">expression tree</span>:</p>
+	<figure>
+		<img
+			src="images/expression_tree.svg"
+			alt="expression tree"
+			loading="lazy"
+			class="eighty-p"
+		/>
+	</figure>
+	<p>
+		From the diagram, we can see that in each node, there is an operator or
+		operand. Each node is one of two kinds: either (a) a
+		<span class="italicsText">branch node</span> &mdash; a node with branches
+		stemming; or (b) a <span class="italicsText">leaf node</span> &mdash; a node
+		with no branches stemming. The leaf nodes are either operators or numbers.
+		The values of each combination of operators and operands flow upwards,
+		<span class="italicsText">combining</span> at higher and higher levels. This
+		phenomenon is called <span class="italicsText">tree accumulation</span>.
+	</p>
+	<p>
+		But what about the leaf nodes? Even if their primitive types, aren't they
+		also evaluated? Yes, they are. To be precise, the tree above is incomplete.
+		Further down the leaf nodes, there are additional evaluations. But, we, as
+		the programmers, do not worry about those evaluations. They are only handled
+		by the interpreter. The values of the numerals we typed are the numbers they
+		name; the values of the primitive operators are the machine instruction
+		sequences carrying out the operation; and the values of other names are the
+		objects associated with those names in the environment.
+	</p>
+</section>
+
+<section id="exception_to_the_evaluation_rule">
+	<p>
+		<span class="topic">Exception to the Evaluation Rule.</span> The evaluation
+		rule does not apply to <span class="monoText">define</span>. When we write
+		<span class="monoText">(define pi 3.14)</span>,
+		<span class="monoText">define</span> does not apply to two separate objects,
+		<span class="monoText">pi</span> and <span class="monoText">3.14</span>. The
+		very purpose of <span class="monoText">define</span> is to bind
+		<span class="monoText">3.14</span> to <span class="monoText">pi</span>.
+		Thus, <span class="monoText">define</span> is an exception to the evaluation
+		rule.
+	</p>
+	<p>
+		Such exceptions are called <span class="italicsText">special forms</span>.
+		Each special form has an evaluation rule unique to that special form. The
+		set of all the different kinds of expressions a language provides is called
+		the language's <span class="italicsText">syntax</span>.
+	</p>
+</section>
+
+<section id="exercises_evaluations">
+	<p>
+		<span class="exh">Exercise.</span> For each expression in the sequence
+		below, what is the result printed by the interpreter in response to each
+		expression? Assume the sequence is evaluated in the order presented:
+	</p>
+	<pre class="language-scheme"><code>
+		10
+		(+ 5 3 4)
+		(- 9 1)
+		(/ 6 2)
+		(+ (* 2 4) (- 4 6))
+		(define a 3)
+		(define b (+ a 1))
+		(+ a b (* a b))
+		(= a b)
+		(if (and (> b a) (< b (* a b)))
+			b
+			a)
+		(cond ((= a 4) 6)
+				((= b 4) (+ 6 7 a))
+				(else 25))
+		(+ 2 (if (> b a) b a))
+		(* (cond ((> ab) a)
+					((< a b) b)
+					(else -1))
+			(+ a 1))
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			10 ;; print 10
+
+			(+ 5 3 4) ;; print 12
+
+			(- 9 1) ;; print 8
+
+			(/ 6 2) ;; print 3
+
+			(+ (* 2 4) (- 4 6)) ;; print 6
+			
+			(define a 3)
+
+			(define b (+ a 1))
+
+			;; a = 3, b = 3 + 1 = 4
+			;; (3) + (4) + (12) = 19
+			;; print 19
+			(+ a b (* a b))
+
+			;; a = 3, b = 4
+			;; 3 is not equal to 4
+			;; print #false
+			(= a b)
+
+			;; a = 3, b = 4
+			;; 4 > 3 and 4 < 12? true
+			;; print b (the consequent):
+				;; print 4
+			(if (and (> b a) (< b (* a b)))
+				b
+				a)
+
+			;; a = 3, b = 4
+			;; a = 4? false
+			;; b = 4? true
+			;; print 6 + 7 + 3:
+				;; print 16
+			(cond ((= a 4) 6)
+					((= b 4) (+ 6 7 a))
+					(else 25))
+			
+			;; a = 3, b = 4
+			;; 4 > 3? true
+			;; return 4
+			;; print 2 + 4:
+				;; print 6
+			(+ 2 (if (> b a) b a))
+
+			;; a = 3, b = 4
+			;; 3 > 4? false
+			;; 3 < 4? true
+			;; return 4
+			;; print 4 * (3 + 1) = 4 * 4:
+				;; print 16
+			(* (cond ((> a b) a)
+						((< a b) b)
+						(else -1))
+				(+ a 1))
+		</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Translate the following into prefix form:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{5 + 4 + (2 - (3 - (6 + \frac{4}{5})))}{3(6 - 2)(2 - 7)}}$</p>
+		</div>
+	</figure>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			(/ (+ 5 
+					4 
+					(- 2 
+						(- 3 
+							(+ 6 
+								(/ 4 5)))))
+				(* 3 
+					(- 6 2) 
+					(- 2 7)))
+		</code></pre>
+		<pre class="language-bash"><code>
+			-0.246
+		</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Define a procedure that takes three
+		numbers as arguments and returns the sum of the squares of the two larger
+		numbers.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			(define (square num) 
+				(* num num))
+			(define (sum-of-squares x y z)
+				(+ (square x) (square y) (square z)))
+		</code></pre>
+	</details>
+	<li>
+		The model of evaluation allows us to write combinations whose operators are
+		compound expressions. How does this procedure behave:
+	</li>
+	<pre class="language-scheme"><code>
+		(define (a-plus-abs-b a b)
+			((if (> b 0) + -) a b))
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			If ${b}$ is positive, then the expression
+			<span class="monoText">(if (> b 0) + -)</span> evaluates to
+			<span class="monoText">+</span>. I.e., ${a + b.}$ Otherwise, the
+			expression evaluates to ${a - b.}$ This effectively computes ${a + \lvert
+			b \rvert.}$
+		</p>
+	</details>
+	<p>
+		Ben attempts to determine whether his interpreter uses applicative order or
+		normal order evaluation. To do so, he writes the following procedures:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (p) (p))
+		(define (test x y)
+			(if (= x 0) 0 y))
+	</code></pre>
+	<p>What behavior will Ben observe when he evaluates the following:</p>
+	<pre class="language-scheme"><code>
+		(test 0 (p))
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			In applicative-order evaluation, we evaluate all of the arguments entirely
+			then apply:
+		</p>
+		<pre class="language-pseudo"><code>
+			(test 0 (p))
+			(if (= 0 0) 0 (p))
+			(if (= 0 0) 0 (p))
+		</code></pre>
+		<p>
+			Here, the evaluation will never terminate because
+			<span class="monoText">(p)</span> will always keep expanding to itself.
+		</p>
+		<p>In normal-order evaluation, we evaluate as we go.</p>
+		<pre class="language-pseudo"><code>
+			(test 0 (p))
+			(if (= x 0) 0 (p))
+			(if (#true) 0 (p))
+			0
+		</code></pre>
+		<p>
+			With normal-order evaluation, Ben will see an output of
+			<span class="monoText">0</span>.
+		</p>
+	</details>
+</section>
+{% endblock %}

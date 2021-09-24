@@ -1,0 +1,159 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="structures">
+	<h3><span class="monoText">structs</span></h3>
+	<p>
+		A <span class="term">structure</span>, denoted in many languages with the
+		symbol <span class="monoText">struct</span>, is a group of related data and
+		functions. The related data inside a
+		<span class="monoText">struct</span> are called the structure's
+		<span class="term">properties</span>. These properties represent what the
+		structure <span class="italicsText">holds</span>. The functions inside a
+		<span class="monoText">struct</span> are called the structure's
+		<span class="term">methods</span>. They represent what the structure
+		<span class="italicsText">does</span>.
+	</p>
+
+	<p>
+		Many of the built-in Swift types are actually
+		<span class="monoText">structs</span>. For example,
+		<span class="monoText">Int</span>, <span class="monoText">Bool</span>,
+		<span class="monoText">Double</span>, <span class="monoText">String</span>,
+		<span class="monoText">Array</span>, and
+		<span class="monoText">Dictionary</span> are all
+		<span class="monoText">structs</span>. Structures are immensely useful for
+		grouping related <span class="italicsText">states</span> and
+		<span class="italicsText">behaviors</span>. For example, we might have a
+		structure representing a professor:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Professor {
+			let name: String
+			var courses: [String]
+			var highestAward: String?
+		}
+	</code></pre>
+
+	<p>
+		In the above, we have several properties: the field
+		<span class="monoText">name</span>, which will store a
+		<span class="monoText">String</span> type value,
+		<span class="monoText">course</span>, which will store an array of
+		<span class="monoText">Strings</span>, and
+		<span class="monoText">highestAward</span>, which will store either a
+		<span class="monoText">String</span> or
+		<span class="monoText">nil</span> (maybe the professor does not have a
+		highest award).
+	</p>
+
+	<p>
+		In the code above, we have merely
+		<span class="italicsText">declared</span> a
+		<span class="monoText">struct</span>. To actually use the
+		<span class="monoText">struct</span>, we must
+		<span class="italicsText">initialize</span> it:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Professor {
+			let name: String
+			var courses: [String]
+			var highestAward: String?
+		}
+		Professor(name: "James Moriarty", courses: ["logic"], highestAward: "best lecturer")
+	</code></pre>
+
+	<p>
+		What we've just created is an <span class="term">instance</span> of
+		<span class="monoText">Professor</span>. We can store this instance in a
+		variable or a constant:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Professor {
+			let name: String
+			var courses: [String]
+			var highestAward: String?
+		}
+		var jamesMoriarty = Professor(name: "James Moriarty", courses: ["logic"], highestAward: "best lecturer")
+	</code></pre>
+
+	<p>
+		A <span class="monoText">struct</span> is essentially a blueprint for
+		collecting related data. Once declared, we can create as many instances of
+		that <span class="monoText">struct</span> as we would like:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Professor {
+			let name: String
+			var courses: [String]
+			var highestAward: String?
+		}
+		var jamesMoriarty = Professor(name: "James Moriarty", courses: ["logic"], highestAward: "best lecturer")
+		var sherlockHolmes = Professor(name: "Sherlock Holmes", courses: ["logic"], highestAward: "worst lecturer")
+		var johnWatson = Professor(name: "John Watson", courses: ["anatomy"], highestAward: "kindest lecturer")
+	</code></pre>
+
+	<p>
+		Here is another <span class="monoText">struct</span>, this time containing
+		methods:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Animal {
+			let name: String
+			let noise: String
+			func speak() {
+				print("\(noise)")
+			}
+		}
+		var cat = Animal(name: "cat", noise: "meow")
+		cat.speak()
+	</code></pre>
+	<pre class="language-bash"><code>
+		meow
+	</code></pre>
+
+	<p>
+		If we want to change any of the properties above, we use dot-notation.
+		However, to change the property of an instance, the instance must be a
+		variable (i.e., declared with <span class="monoText">var</span>), and the
+		property must be a variable (also declared with
+		<span class="monoText">var</span>).
+	</p>
+
+	<p>
+		Note that <span class="monoText">structs</span> are really intended to
+		collect related data. In Swift, a <span class="monoText">struct</span> is a
+		value type. This means that with every instance of a
+		<span class="monoText">struct</span>, that instance's variables are
+		independent. For example:
+	</p>
+
+	<pre class="language-swift"><code>
+		struct Foo {
+			var propA : Bool
+			var propB : Int
+		}
+		var x = Foo(propA: true, propB: 0)
+		var y = x
+		y.propA = false
+		y.propB = 1
+		print(x)
+		print(y)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Foo(propA: true, propB: 0)
+		Foo(propA: false, propB: 1)
+	</code></pre>
+
+	<p>
+		Notice that when we mutated the <span class="monoText">Foo</span> instance
+		<span class="monoText">y</span>, we did not mutate the
+		<span class="monoText">Foo</span> instance <span class="monoText">x</span>.
+		This is because the instances <span class="monoText">x</span> and
+		<span class="monoText">y</span> are entirely independent of one another.
+	</p>
+</section>
+{% endblock %}

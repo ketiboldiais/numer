@@ -1,0 +1,266 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="functions_in_java">
+	<h3>Functions: Structuring Good Programs</h3>
+	<p>
+		With the tools we have thus far, we can create a wide variety of programs.
+		But, programs have <span class="italicsText">structure</span>, and there is
+		a distinction between
+		<span class="italicsText">well-structured programs</span> and
+		<span class="italicsText">poorly-structured programs</span>. The most
+		obvious characteristics of a well-structured program:
+	</p>
+	<ol>
+		<li>
+			Code is broken down into reusable, testable, and understandable pieces
+			(i.e., modular code);
+		</li>
+		<li>Code combines state and behavior;</li>
+		<li>Code is documented concisely and clearly; and</li>
+		<li>Code reuses preexisting solutions as much as possible.</li>
+	</ol>
+	<p>
+		<span class="topic">Functions.</span> A
+		<span class="italicsText">function</span> is a collection of statements
+		aimed at completing a specific task, and whenever such a task must be
+		completed, the collection can be reused to complete the task. For example,
+		suppose we wanted to compute the average of several values. We can write
+		several statements that computes the average, using the values as inputs.
+		Instead of writing these statements every time we must compute an average,
+		we would write these statements in such a way that they can take any
+		quantity of values as inputs. We would then package these statements into a
+		&#8220;unit&#8221;, or collection, which can reference anytime we must
+		compute an average.
+	</p>
+	<p>
+		In Java, a function, also called a
+		<span class="italicsText">subroutine</span> or
+		<span class="italicsText">method</span>, takes zero or more inputs (called
+		<span class="italicsText">arguments</span>), and produces zero or
+		<span class="italicsText">exactly one</span> output. Inside a function are
+		the statements that produce output. Thus, a function is effectively a block
+		of code, much like the blocks of code we saw with conditional statements.
+		That block of code is an instance of
+		<span class="italicsText">imperative programming</span> &mdash; structuring
+		our program with direct statements to be executed one after another, top to
+		bottom &mdash; explicitly commanding the computer how to accomplish a
+		particular task. The function, in contrast, is an instance of
+		<span class="italicsText">functional programming</span> &mdash; structuring
+		our programs by way of functions.
+	</p>
+	<p>
+		A good function has several characteristics. First, good functions have
+		<span class="italicsText">specificity</span>: it should perform one, and
+		only one, task, and it should perform it well. Second, they are
+		<span class="italicsText">testable</span> &mdash; we can easily determine
+		whether it outputs correctly. To ensure this prong is met, a good function
+		should perform tasks we already know the outcome of. Third, they are
+		<span class="italicsText">reusable</span>: We can use them anywhere in our
+		program where we need to accomplish that function's task. Finally, good
+		functions are <span class="italicsText">well-documented</span>. The function
+		should include a description of what the function does, what inputs it
+		takes, and what output it returns. Here is an example of a Java function:
+	</p>
+	<pre class="language-java"><code>
+		/**
+			* Add two numbers
+			*
+			* @param firstNum: the first number to add
+			* @param secondNum: the second number to add
+			* @return the sum of firstNum and secondNum
+			*/
+			int add(int firstNum, int secondNum) {
+				return firstNum + secondNum;
+			}
+	</code></pre>
+	<p>
+		<span class="topic">javadoc.</span> In the code above, we see a block
+		comment. This is a special comment in Java, called a
+		<span class="boldText">javadoc</span>. As its name suggests, a javadoc
+		documents a function. It is structured exactly as it appears in the example.
+		It describes what the function does, the function's
+		<span class="italicsText">parameters</span> (the inputs the function takes,
+		demarcated by the word <span class="monoText">@param</span>), and the
+		function's return (the function's output, demarcated by the word
+		<span class="monoText">@return</span>). Like all comments, javadocs are
+		ignored by the compiler.
+	</p>
+	<p>
+		In mathematics, we must always be clear about what assumptions we make. The
+		same goes for programming &mdash; it is good practice to include in a
+		javadoc the assumptions underlying our functions. This will make our
+		functions much easier to understand and debug later. For example:
+	</p>
+	<pre class="language-java"><code>
+		/**
+			* Add two numbers
+			*
+			* @param firstNum: the first number to add
+			* @param secondNum: the second number to add
+			* @return the sum of firstNum and secondNum
+			*
+			* Assumptions:
+			*   both addends are integers
+			*/
+			int add(int firstNum, int secondNum) {
+				return firstNum + secondNum;
+			}
+	</code></pre>
+	<p>
+		<span class="topic">Function Type.</span> What is not ignored is the
+		function declaration thereafter. There are several parts to this function.
+		First, we give the function a <span class="italicsText">type</span>. That
+		type is the type for the function's output. In this case, this function will
+		return an <span class="monoText">int</span>, so we provide the function's
+		type as <span class="monoText">int</span>.
+	</p>
+	<p>
+		<span class="topic">Function Name.</span> Next, we give the function a
+		<span class="italicsText">name</span>. In this case,
+		<span class="monoText">add</span>. This is what we will use to
+		<span class="italicsText">call</span>, or
+		<span class="italicsText">invoke</span>, the function. The guidelines for
+		variable names are applicable here: descriptive, concise, and erring on the
+		side of descriptive. They should also be in camelCase. The one distinction:
+		Because functions perform a task, their names should be
+		<span class="italicsText">verbs</span>.
+	</p>
+	<p>
+		<span class="topic">Parameters.</span> Just after the name, we have a set of
+		parentheses, <span class="monoText">(int firstNum, int secondNum)</span>,
+		containing what appear to be variable declarations. These are the function's
+		<span class="italicsText">parameters</span>. They define what arguments the
+		function will take as input. These appear like variable declarations because
+		they effectively are. The variables indicated inside the parentheses are
+		what will be used inside the function's body.
+	</p>
+	<p>
+		Note, however, that functions need not have parameters. They can simply take
+		no arguments. In the example above, the function has two parameters, so it
+		takes two arguments. Both those arguments must be of type
+		<span class="monoText">int</span>.
+	</p>
+	<p>
+		<span class="topic monoText">return.</span> Now we enter the function's
+		body. There, we have the keyword <span class="monoText">return</span>. This
+		keyword tells Java to output a particular thing. In this case, the result of
+		<span class="monoText">firstNum + secondNum</span>.
+	</p>
+	<p>
+		There is a crucial point with
+		<span class="monoText">return</span> statements: Once Java reaches a
+		<span class="monoText">return</span> statement, the entire function halts.
+		If there are any other statements after the
+		<span class="monoText">return</span> statement, they are
+		<span class="underlineText">not</span> executed. Every function must have a
+		<span class="monoText">return</span> statement, even if there is no output.
+	</p>
+	<p>
+		<span class="topic">Calling the Function.</span> Once we have defined a
+		function, we can <span class="italicsText">call</span> the function in our
+		program. When we call the function, if the function has parameters, we
+		provide necessary arguments. The code that calls the function is called the
+		<span class="italicsText">caller</span>. Once Java reaches the caller, the
+		caller will halt momentarily, and Java goes to the
+		<span class="italicsText">callee</span> &mdash; the code defining the
+		function. The caller waits as Java executes the function. Once the function
+		returns with an output (if any), Java goes back to the caller with that
+		output, and the caller continues.
+	</p>
+	<p>
+		What the caller does with that output is up to the programmer. We can save
+		the output by assigning it to a variable, use it like a literal, or simply
+		ignore it. For example:
+	</p>
+	<pre class="language-java"><code>
+		static int add(int firstNum, int secondNum) {
+			return firstNum + secondNum;
+		}
+
+		System.out.println("Just before the first call");
+		int result = add(9, 1);
+		System.out.println(result);
+		System.out.println(add(2, 3));
+		int bigResult = add(10, 20) + add(30, 40) + 50;
+		System.out.println(bigResult);
+		add(4, 6);
+		System.out.println("No more calls");
+	</code></pre>
+	<pre class="language-bash"><code>
+		Just before the first call
+		10
+		5
+		150
+		No more calls
+	</code></pre>
+	<p>
+		For now, ignore the word <span class="monoText">static</span>. We will
+		return to this word later. The crucial point is that the function works as
+		expected. Observe the various ways we can use the function. The last call
+		&mdash; <span class="monoText">add(4, 6)</span> &mdash; will compile, but
+		its output will simply become a garbage value. If you are curious, about the
+		code above, it was compiled in Java with the following program:
+	</p>
+	<pre class="language-java"><code>
+		public class MyClass {
+			public static void main(String args[]) {
+				System.out.println("Just before the first call");
+				int result = add(9, 1);
+				System.out.println(result);
+				System.out.println(add(2, 3));
+				int bigResult = add(10, 20) + add(30, 40) + 50;
+				System.out.println(bigResult);
+				add(4, 6);
+				System.out.println("No more calls");
+			}
+			
+			static int add(int firstNum, int secondNum) {
+				return firstNum + secondNum;
+			}
+		}
+	</code></pre>
+	<p>
+		Again, ignore these details. We will address them in due time. If a function
+		has $n$ parameters, we <span class="underlineText">must</span> provide
+		exactly $n$ arguments. Failing to do so will lead to errors:
+	</p>
+	<pre class="language-java"><code>
+		static int add(int firstNum, int secondNum) {
+			return firstNum + secondNum;
+		}
+
+		int result = add(9);
+		System.out.println(result);
+	</code></pre>
+	<pre class="language-bash"><code>
+		required: int,int
+		found: int
+		reason: actual and formal argument lists differ in length
+		1 error
+	</code></pre>
+	<p>
+		This error directly tells us that we failed to give all the required
+		arguments. Similarly, if we give too many arguments:
+	</p>
+	<pre class="language-java"><code>
+		static int add(int firstNum, int secondNum) {
+			return firstNum + secondNum;
+		}
+
+		int result = add(9, 10, 11);
+		System.out.println(result);
+	</code></pre>
+	<pre class="language-bash"><code>
+		required: int,int
+		found: int,int,int
+		reason: actual and formal argument lists differ in length
+		1 error
+	</code></pre>
+	<p>
+		Functions are what allow us to
+		<span class="boldText">decompose</span> programs &mdash; we take a problem,
+		and break it down into smaller pieces that can be solved with commands. Some
+		of those commands are built into Java, but most are not. When we write
+		functions, we are essentially creating a new command we can use in Java.
+	</p>
+</section>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="variable_declarations">
+	<p>
+		<span class="topic">Variable Declarations.</span> The following is a
+		variable declaration in Haskell:
+	</p>
+	<pre class="language-haskell"><code>
+		x :: int
+	</code></pre>
+	<p>
+		The above is just a declaration &mdash; let there be an
+		<span class="monoText">x</span> of type <span class="monoText">int</span>.
+		We can then define <span class="monoText">x</span> in the next line:
+	</p>
+	<pre class="language-haskell"><code>
+		x :: int
+		x = 5
+	</code></pre>
+	<p>
+		The variable <span class="monoText">x</span> now has the value
+		<span class="monoText">5</span> <span class="italicsText">forever</span>. It
+		will never be changed. This is a critical point to understand. In Haskell,
+		once a variable has been defined, it
+		<span class="underlineText">never</span> changes. Anywhere in the program
+		<span class="monoText">x</span> appears, it
+		<span class="underlineText">will</span> be <span class="monoText">5</span>.
+		This is very different from languages like Java and C:
+	</p>
+	<pre class="language-java"><code>
+		int x = 5;
+		x = x + 1;
+	</code></pre>
+	<p>
+		The code above will compile just fine in Java or C. Haskell, however,
+		prohibits precisely this behavior.
+	</p>
+
+	<p>
+		<span class="topic">Haskell Functions.</span> Here is a function in Haskell:
+	</p>
+	<pre class="language-haskell"><code>
+		f :: Int -> Int -> Int
+		f x y = 2*x + y
+
+		f 42 16 // returns 100, always
+	</code></pre>
+	<p>
+		The code above says, <span class="monoText">f</span> is a function that
+		takes an <span class="monoText">Int</span> (the first
+		<span class="monoText">Int</span>), then it returns a function that takes
+		<span class="monoText">Int</span>, and then it returns an
+		<span class="monoText">Int</span>.
+	</p>
+	<p>
+		The next line, <span class="monoText">f x y = 2*x + y</span>, is the
+		<span class="italicsText">definition</span> of
+		<span class="monoText">f</span>.
+	</p>
+	<p>
+		Thus, <span class="monoText">f 42 16</span> will always be
+		<span class="monoText">100</span>. Whenever we see
+		<span class="monoText"
+			>f <span class="monoText">int</span>
+			<span class="monoText">int</span></span
+		>, we can <span class="italicsText">always</span> replace it with the
+		function definition above.
+	</p>
+	<p>
+		As we can see, in Haskell, the return value of a function
+		<span class="underlineText">only</span> depends on its inputs, nothing else.
+	</p>
+
+	<p>
+		<span class="topic">Lazy Computation.</span> Haskell is a lazy programming
+		language &mdash; it does not evaluate an expression until it is absolutely
+		necessary. If <span class="monoText">x</span> is some function that performs
+		a resource-intensive computation, Haskell will execute
+		<span class="monoText">x</span> if, and only if, we ourselves use
+		<span class="monoText">x</span>.
+	</p>
+	<p>
+		This is in contrast to languages like Java. If we write something like
+		<span class="monoText">x = intenseComputation</span>, Java will evaluate
+		<span class="monoText">intenseComputation</span> and store it in memory. In
+		contrast, all that Haskell does is &#8220;remember&#8221; that
+		<span class="monoText">x</span> is some
+		<span class="monoText">intenseComputation</span>. In other words, Haskell
+		takes a look at it, notes it, and moves on. If, and only if, we explicitly
+		require <span class="monoText">x</span>, does Haskell recall
+		<span class="monoText">x</span> and actually perform the computation.
+	</p>
+</section>
+{% endblock %}

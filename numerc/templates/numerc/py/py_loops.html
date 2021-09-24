@@ -1,0 +1,1674 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="python_loops">
+	<h3>
+		<span class="monoText">while</span> &amp;
+		<span class="monoText">for</span> Loops in Python
+	</h3>
+	<p>
+		With the code we've written so far, our programs run in only one direction
+		&mdash; they can only go down, we cannot go back up and repeat code. To do
+		so, we need <span class="boldItalics">loops</span>.
+	</p>
+
+	<p class="subheading">The <span class="monoText">while</span> Loop</p>
+	<p>
+		Suppose that we want to <span class="underlineText">always</span> perform
+		some action $x$ if, and only if, the condition $n$ is true. To do so, we
+		would use a <span class="boldText monoText">while</span> loop. In Python,
+		the <span class="monoText">while</span> loop takes the form:
+	</p>
+	<pre class="language-pseudo"><code>
+		<span class="purpleText">while</span> <span class="greenText">condition-x</span>:
+			<span class="blueText">expression-n</span>
+			<span class="redText">expression-y</span>
+	</code></pre>
+	<p>In the code above,</p>
+	<ul>
+		<li>
+			<span class="monoText greenText">condition-x</span> ${\coloneqq}$ the
+			condition that must always be <span class="monoText">True</span> for the
+			<span class="monoText">while</span> loop to continue.
+		</li>
+		<li>
+			<span class="monoText blueText">expression-n</span> ${\coloneqq}$ the
+			expression(s) executed when <span class="monoText">x</span> is
+			<span class="monoText">True</span>.
+		</li>
+		<li>
+			<span class="monoText redText">expression-y</span> ${\coloneqq}$ code that
+			either returns <span class="monoText">x</span>
+			<span class="monoText">True</span> or <span class="monoText">False</span>.
+		</li>
+	</ul>
+	<p>
+		We want to make sure that <span class="monoText">m</span> will at some point
+		cause <span class="monoText">x</span> to be
+		<span class="monoText">False</span>; otherwise, the loop will never end.
+		Here is an actual example:
+	</p>
+	<pre class="language-python"><code>
+		n = 0
+		while n < 5:
+			print(n)
+			n = n + 1
+	</code></pre>
+	<p>
+		Notice the way the code above is structured. We initialize a variable to be
+		used by the test <span class="italicsText">outside</span> the
+		<span class="monoText">while</span> loop. Then, we include in the loop's
+		<span class="boldItalics">body</span> the code we want to execute if the
+		test returns <span class="monoText">True</span>. At the very last line, we
+		include an expression that changes the variable we declared &mdash; this
+		ensures that the <span class="monoText">while</span> loop's test condition
+		eventually returns <span class="monoText">False</span>. Running the code in
+		a shell:
+	</p>
+	<pre class="language-bash" data-output=""><code>
+		in [1]: while(n < 5):
+		...: print(n)
+		...: n = n+1
+		...:
+		0
+		1
+		2
+		3
+		4
+	</code></pre>
+	<p>
+		Suppose we wanted to sum numbers starting from
+		<span class="monoText">1</span> to some number
+		<span class="monoText">end</span>. A
+		<span class="monoText">while</span> loop is ideal:
+	</p>
+	<pre class="language-python"><code>
+		summation = 0
+		current = 1
+		end = 8
+		while current <= end:
+			summation += current
+			current += 1
+		print(summation)
+	</code></pre>
+	<p>
+		There are two problems with the <span class="monoText">while</span> loop:
+		(1) We can forget to initialize <span class="monoText">n</span> before the
+		<span class="monoText">while</span> loop, in which case we get an error; or
+		(2) we can forget to include the expressions that change the value bound to
+		<span class="monoText">n</span>, in which case our loop will run until our
+		program crashes.
+	</p>
+	<p>
+		Whenever we use a <span class="monoText">while</span> loop, or any loop for
+		that matter, we must pay careful attention to the number of iterations:
+	</p>
+	<pre class="language-python"><code>
+		n = 0
+		while n <= 5:
+			print(n)
+			n += 1
+		print("Outside of loop")
+		print(num)
+	</code></pre>
+	<p>The code above outputs the following:</p>
+	<pre class="command-line language-bash" data-output=""><code>
+		0
+		1
+		2
+		3
+		4
+		5
+		'Outside of loop'
+		6
+	</code></pre>
+	<p>
+		The final value assigned to <span class="monoText">n</span> is
+		<span class="monoText">6</span>, because the loop ran one more time. The
+		same goes for this code:
+	</p>
+	<pre class="language-python"><code>
+		n = 10
+		while n > 3:
+			n -= 1
+			print(n)
+	</code></pre>
+	<p>Output:</p>
+	<pre class="command-line language-bash" data-output=""><code>
+		9
+		8
+		7
+		6
+		5
+		4
+		3
+	</code></pre>
+
+	<p class="subheading">The <span class="monoText">for</span> Loop</p>
+	<p>
+		A much more convenient loop is the <span class="monoText">for</span> loop.
+		The <span class="monoText">for</span> loop has the following syntax:
+	</p>
+	<pre class="language-pseudo"><code>
+		<span class="purpleText">for</span> <span class="blueText">n</span> <span class="purpleText">in</span> <span class="greenText">range(i)</span>:
+			<span class="redText">expression-y</span>
+	</code></pre>
+	<p>The syntax above has several parts:</p>
+	<ol>
+		<li>
+			<span class="monoText purpleText">for</span> ${\coloneqq}$ a keyword
+			telling Python this is a <span class="monoText">for</span> loop
+		</li>
+		<li>
+			<span class="monoText blueText">n</span> ${\coloneqq}$ the variable we use
+			for the <span class="monoText">for</span> loop's test condition
+		</li>
+		<li>
+			<span class="monoText greenText">range(i)</span> ${\coloneqq}$ a range
+			starting at <span class="monoText">0</span> and ending
+			<span class="italicsText">before</span> <span class="monoText">i</span>,
+			where <span class="monoText">i</span> is some
+			<span class="monoText">int</span>. The number
+			<span class="monoText">i</span> is also called the
+			<span class="boldItalics">accumulator</span>.
+		</li>
+		<li>
+			<span class="monoText purpleText">in</span> ${\coloneqq}$ a keyword that
+			tells Python to test whether <span class="monoText">n</span> is inside
+			<span class="monoText">range(i)</span>
+		</li>
+		<li>
+			<span class="monoText redText">expression-y</span> ${\coloneqq}$ the
+			expression(s) to execute if <span class="monoText">n</span> is inside
+			<span class="monoText">range(i)</span>.
+		</li>
+	</ol>
+	<p>
+		Thus, the <span class="monoText">while</span> loop example above can be
+		simply written as:
+	</p>
+	<pre class="language-python"><code>
+		for n in range(5):
+			print(n)
+	</code></pre>
+	<p>As a shell session:</p>
+	<pre class="command-line language-bash" data-output=""><code>
+		in [1]: for n in range(5):
+		...: print(n)
+		...:
+		0
+		1
+		2
+		3
+		4
+	</code></pre>
+	<p>
+		Alternatively, <span class="monoText">for</span> loops in Python can be
+		written by providing a list of numbers:
+	</p>
+	<pre class="language-python"><code>
+		for i in [0, 1, 2]:
+			print('Hi')
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		Hi
+		Hi
+		Hi
+	</code></pre>
+	<p>
+		The problem, of course, is that this method is inefficient and infeasible
+		when it comes to large numbers of iterations. The example, however, reveals
+		how <span class="monoText">range()</span> works. The output of
+		<span class="monoText">range(3)</span> is
+		<span class="monoText">[0, 1, 2]</span>. Thus, the code above is exactly the
+		same as:
+	</p>
+	<pre class="language-python"><code>
+		for i in range(3)
+			print('Hi')
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		Hi
+		Hi
+		Hi
+	</code></pre>
+	<p>
+		The use of <span class="monoText">range()</span> to determine iteration is
+		perhaps the starkest example of
+		<span class="italicsText">pythonic</span> syntax. The word
+		<span class="italicsText">pythonic</span> is used to describe Python
+		conventions so deeply rooted in the Python community that it would be odd
+		not to follow.
+	</p>
+
+	<p class="subheading">
+		Manipulating the <span class="monoText">range()</span>
+	</p>
+	<p>We can manipulate how our range looks like with the following syntax:</p>
+	<pre class="language-pseudo"><code>
+		range(<span class="greenText">start</span>,<span class="redText">stop</span>,<span class="blueText">step</span>)
+	</code></pre>
+	<p>In the syntax above:</p>
+	<ol>
+		<li>
+			<span class="monoText greenText">start</span> ${\coloneqq}$ the start of
+			the range; by default this is set to <span class="monoText">0</span>
+		</li>
+		<li>
+			<span class="monoText redText">stop</span> ${\coloneqq}$ the end of the
+			range; the loop will continue until <span class="monoText">stop-1</span>
+		</li>
+		<li>
+			<span class="monoText blueText">step</span> ${\coloneqq}$ the difference
+			between each element of the range; by default this is set to
+			<span class="monoText">1</span>.
+		</li>
+	</ol>
+	<p>
+		For example, suppose we wanted to print the even numbers up to 10, then
+		print out <span class="monoText">'Loop exited'</span>:
+	</p>
+	<pre class="language-python"><code>
+		i = 0
+		for i in range(0, 10, 2):
+			i += 2
+			print(i)
+		print('Loop exited')
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		2
+		4
+		6
+		8
+		10
+		'Loop exited'
+	</code></pre>
+	<p>
+		We can also pass negative numbers as a
+		<span class="monoText">step</span> argument to count down:
+	</p>
+	<pre class="language-python"><code>
+		i = 12
+		for i in range(12, 2, -2):
+			i -= 2
+			if i == 10:
+				print('Countdown beginning')
+			print(i)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		'Countdown beginning'
+		10
+		8
+		6
+		4
+		2
+	</code></pre>
+	<p>Alternatively:</p>
+	<pre class="language-python"><code>
+		print('Countdown beginning')
+		for i in range(10, 0, -2):
+			print(i)
+	</code></pre>
+	<p>
+		Using a <span class="monoText">for</span> loop for the summation program we
+		wrote above with a <span class="monoText">while</span> loop:
+	</p>
+	<pre class="language-python"><code>
+		summation = 0
+		current = 1
+		end = 8
+		for current in range(1, end+1):
+			total += current
+			current += 1
+		print(total)
+	</code></pre>
+	<p>
+		Note that the variable we use in a <span class="monoText">for</span> loop as
+		an incrementer will have its value changed. That changed value will remain
+		the value bound to the incrementer after the
+		<span class="monoText">for</span> loop has finished executing unless change
+		it somewhere down the program:
+	</p>
+	<pre class="language-python"><code>
+		i = 10
+		for i in range(5) 
+			print(i)
+		print(i)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		0
+		1
+		2
+		3
+		4
+		4
+	</code></pre>
+
+	<p class="subheading">The <span class="monoText">break</span> Statement</p>
+	<p>
+		Often, we want to immediately terminate a loop somewhere before the last
+		expression in the loop's body. To do so, we use a
+		<span class="monoText">break</span> statement:
+	</p>
+	<pre class="language-pseudo"><code>
+		while <span class="greenText">condition-x</span>:
+			while <span class="greenText">condition-y</span>:
+				<span class="blueText">expression-n</span>
+				<span class="redText">break</span>
+				<span class="blueText">expression-m</span>
+			<span class="blueText">expression-z</span>
+	</code></pre>
+	<p>
+		When we include <span class="monoText">break</span> inside a
+		<span class="monoText">while</span> loop's body, the loop will terminate at
+		that point, exit out of the loop, continue going down the code. In the
+		syntax above, once Python finishes execution
+		<span class="monoText">expression-n</span>, it hits
+		<span class="monoText">break</span> and gets out of the loop, never
+		executing <span class="monoText">expression-m</span>. Here's an example:
+	</p>
+	<pre class="language-python"><code>
+		sum = 0
+		for i in range(5,11,2):
+			sum += i
+			if sum == 5:
+				break
+		print(sum)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		5
+	</code></pre>
+	<p>
+		The output is <span class="monoText">5</span> in the code above because the
+		loop terminated the moment <span class="monoText">i = 5</span>. Another
+		example:
+	</p>
+	<pre class="language-python"><code>
+		n = 10
+		while True:
+			if num < 7:
+				print('Breaking now')
+				break
+			print(num)
+			num -= 1
+		print('Outside of loop')
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		10
+		9
+		8
+		7
+		'Breaking now'
+		'Outside of loop'
+	</code></pre>
+	<p>
+		If we do not use <span class="monoText">break</span> statements carefully,
+		we can easily fall into an infinite loop:
+	</p>
+	<pre class="language-python"><code>
+		n = 100
+		while not False:
+			if n < 0:
+				break
+		print('n = ' + str(n))
+	</code></pre>
+	<p>
+		We never get to print our concatenated string because it
+		<span class="monoText">100 < 0</span> is always
+		<span class="monoText">False</span>. Since the
+		<span class="monoText">if</span> condition is always
+		<span class="monoText">False</span>, we never reach the
+		<span class="monoText">break</span> statement, so the loop runs forever.
+	</p>
+	<p>
+		The table below encapsulates when we might want to use a
+		<span class="monoText">for</span> or
+		<span class="monoText">while</span> loop:
+	</p>
+	<figure>
+		<table class="heading_center">
+			<thead>
+				<th><span class="monoText">for</span> loop</th>
+				<th><span class="monoText">while</span> loop</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<ul>
+							<li>We can iterate an exact amount of times.</li>
+							<li>
+								We can terminate early with <span class="monoText">break</span>.
+							</li>
+							<li>
+								We can use a counter without having to initialize the counter
+								before the loop.
+							</li>
+							<li>
+								We can rewrite a <span class="monoText">while</span> loop as a
+								<span class="monoText">for</span> loop.
+							</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>
+								Ability to <span class="italicsText">always</span> iterate as
+								long as a particular condition is true.
+							</li>
+							<ul>
+								<li>
+									Particularly useful if we want to run the loop
+									<span class="italicsText">at least once</span>.
+								</li>
+							</ul>
+							<li>
+								We can terminate early with <span class="monoText">break</span>.
+							</li>
+							<li>
+								We can use a counter, but it must be initialized before the
+								loop, and it must be incremented inside the loop.
+							</li>
+							<li>
+								We cannot always rewrite a
+								<span class="monoText">while</span> loop as a
+								<span class="monoText">for</span> loop.
+							</li>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</section>
+
+<section id="iterating_a_string">
+	<h4>Iterating through a String in Python</h4>
+	<p>
+		Unlike many languages, Python allows us to easily iterate through a string:
+	</p>
+	<pre class="language-python"><code>
+		for letter in 'hello':
+			print(letter)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		'h'
+		'e'
+		'l'
+		'l'
+		'o'
+	</code></pre>
+	<p>The loop above works as such:</p>
+	<ol>
+		<li>
+			Repeat this code until the last character is the current character (<span
+				class="monoText"
+				>for</span
+			>).
+		</li>
+		<li>
+			First, declare a variable named <span class="monoText">letter</span> and
+			assign it the current character in
+			<span class="monoText">'hello'</span> (in this case 'h').
+		</li>
+		<li>Then, print <span class="monoText">letter</span>.</li>
+		<li>
+			Go back to step 1, and assign <span class="monoText">letter</span> to be
+			next character in <span class="monoText">'hello'</span>.
+		</li>
+	</ol>
+</section>
+
+<section id="python_iteration">
+	<h4>The Value of Iteration</h4>
+	<p>
+		With <span class="monoText">for</span> and
+		<span class="monoText">while</span> loops, significantly extends our ability
+		to write programs. In particular,
+		<span class="italicsText">iterative programs</span> are much more complex
+		than <span class="italicsText">branching programs</span>, particularly when
+		we nest loops or branches within loops.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/loop_flow.svg' %}"
+			alt="loop flow"
+			class="thirty-p"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		Like branching programs, iterative programs start with a test. If the test
+		returns <span class="monoText">True</span>, then Python proceeds to the loop
+		body, executing the code therein. If the test returns
+		<span class="monoText">False</span>, then Python skips or exits the loop's
+		body, and continues outside the loop.
+	</p>
+	<p>To see how powerful iteration is, consider the following program:</p>
+	<pre class="language-python"><code>
+		x = 3
+		square = 0
+		iterations_left = x
+		while (iterations_left != 0):
+			square = square + x
+			iterations_left = iterations_left - 1
+		print(str(x) + '*' + str(x) + ' = ' + str(square))
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		3*3 = 9
+	</code></pre>
+	<p>
+		The program computes ${x^2}$ by repeatedly adding ${x.}$ The program is
+		structured based on a simple mathematical fact:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${x^2 = (x + x) + (x + x)}$</p>
+			<p>
+				The pattern for this fact: Given ${x^2,}$ the result is the sum of
+				adding $x$ for a total of ${x\text{-times.}}$
+			</p>
+		</div>
+	</figure>
+	<p>Thus, the code above is structured in the following order:</p>
+	<ol>
+		<li>
+			Provide the value bound to $x$ (<span class="monoText">x = 3</span>).
+		</li>
+		<li>
+			Initialize a variable to store our result in:
+			<span class="monoText">square = 0</span>.
+		</li>
+		<li>
+			Initialize a counter (to meet the requirement of adding ${n
+			\text{-times;}}$ <span class="monoText">iterations_left = 0</span>).
+		</li>
+		<li>Then define the <span class="monoText">while</span> loop:</li>
+		<ol>
+			<li>
+				Define the test: "Run this loop if, and only if,
+				<span class="monoText">iterations_left != 0</span>.
+			</li>
+			<li>Define the truth block:</li>
+			<ul>
+				<li>Operation: <span class="monoText">square = square + x</span>.</li>
+				<li>
+					Counter increment:
+					<span class="monoText">iterations_left = iterations_left - 1</span>
+				</li>
+			</ul>
+		</ol>
+	</ol>
+	<p>When the loop above executes, the iterations appear as such:</p>
+	<figure>
+		<table class="loop_table">
+			<thead>
+				<th>Iteration</th>
+				<th>Computation</th>
+				<th>Return</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>
+						<p><span class="monoText">square = 0 + 3</span></p>
+						<p><span class="monoText">iterations_left = 3 - 1</span></p>
+					</td>
+					<td>
+						<p><span class="monoText">square = 3</span></p>
+						<p><span class="monoText">iterations_left = 2</span></p>
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>
+						<p><span class="monoText">square = 3 + 3</span></p>
+						<p><span class="monoText">iterations_left = 2 - 1</span></p>
+					</td>
+					<td>
+						<p><span class="monoText">square = 6</span></p>
+						<p><span class="monoText">iterations_left = 1</span></p>
+					</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>
+						<p><span class="monoText">square = 6 + 3</span></p>
+						<p><span class="monoText">iterations_left = 1 - 1</span></p>
+					</td>
+					<td>
+						<p><span class="monoText">square = 9</span></p>
+						<p><span class="monoText">iterations_left = 0</span></p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		The example above demonstrates a difference between
+		<span class="italicsText">branching structures</span> and
+		<span class="italicsText">looping structures</span>: Branching structures
+		allow us to move to different blocks of code based on a test, but only
+		<span class="italicsText">once</span>. Thus, branching programs are in
+		<span class="italicsText">constant time</span>. In contrast, looping
+		structures allow us to <span class="italicsText">repeat</span> blocks of
+		code over and over again until as long as a particular condition returns
+		<span class="monoText">True</span>. This means that the amount of time a
+		iterative, or looping, program takes depends on the values of the relevant
+		variables, as well as the program's length.
+	</p>
+</section>
+
+<section id="iteration_guess_and_check">
+	<h4>
+		Iteration &amp; <span class="italicsText">Guess-and-check</span> Methods
+	</h4>
+	<p>
+		Many computations involve repeating steps over and over again. Other
+		computations are conducive to algorithms of the class
+		<span class="boldItalics">guess-and-check</span>.
+	</p>
+	<p>
+		The clearest example of a computation conducive to
+		<span class="boldItalics">guess-and-check</span> is computing the square
+		root of a number. The algorithm for computing square roots traces its
+		origins all the way back to Heron of Alexandria. The algorithm works as
+		such:
+	</p>
+	<ol>
+		<li>Let $x$ be the number we want to square root.</li>
+		<li>Make a guess; call it $g$.</li>
+		<li>Improve the guess by averaging $g$ and ${x/g.}$</li>
+		<li>
+			Repeat step 3 until the difference between $g$ and the desired value is
+			small enough.
+		</li>
+	</ol>
+	<p>
+		This algorithm only works if we have a means of generating guesses.
+		<span class="italicsText">Guess-and-check</span> algorithms embody this
+		concept &mdash; (1) generate a guess, (2) check the guess against some
+		value, and (3) repeat the process over and over. Step (3) is precisely what
+		we use loops for. Guess-and-check algorithms are also called
+		<span class="boldItalics">exhausive enumerations</span> &mdash; they exhaust
+		all of the possibilities to arrive at an output.
+	</p>
+	<p>
+		Let's change the computation somewhat; instead of computing a square root,
+		we will compute a cube root. Suppose we wanted to compute ${x^3}.$ First
+		question: How do we generate a guess? Well, one way is to first try ${0^3.}$
+		Then we try ${1^3},$ then ${2^3,}$ then ${3^3,}$ and so on. We continue this
+		process until we reach some number ${k,}$ where ${k^3 > x.}$ Obviously, this
+		method only works for integers. The upside, however, is that there is a
+		finite number of cases to test. Let's implement:
+	</p>
+	<pre class="language-python"><code>
+		x = int(input('Enter an integer: '))
+		cube = 0
+		while cube**3 < x:
+			cube = cube + 1
+		if cube**3 != x:
+			print(str(x) + ' is not a perfect cube')
+		else:
+			print('Cube root of ' + str(x) + ' is ' + str(cube))
+	</code></pre>
+	<p>
+		In the code above, we first ask for input from the user. On entering, the
+		input value is cast as an <span class="monoText">int</span>, and bound to
+		the name <span class="monoText">x</span>. Then we initialized a variable
+		named <span class="monoText">cube</span> with the value
+		<span class="monoText">0</span>. Next, we proceed to the
+		<span class="monoText">while</span> loop. The test condition here is
+		<span class="monoText">cube**3 < x</span>. Thus, Python will test if
+		<span class="monoText">cube**3 < x</span>: If the condition is true,
+		<span class="monoText">cube</span> is incremented by
+		<span class="monoText">1</span>, this continues until
+		<span class="monoText">cube**3 >= x</span>.
+	</p>
+	<p>
+		Then we test whether <span class="monoText">cube**3</span> is not equal to
+		the value inputted by the user. If <span class="monoText">cube**3</span> is
+		not equal to <span class="monoText">x</span>, we print the string therein.
+		Otherwise, we return the cube root. Compiling the code above:
+	</p>
+	<pre class="command-line language-bash" data-output=""><code>
+		Enter an integer: 27
+		Cube root of 27 is 3
+	</code></pre>
+	<p>So, what happened above:</p>
+	<figure>
+		<table class="truth_table">
+			<thead>
+				<th>Iteration</th>
+				<th>Test</th>
+				<th>Computation</th>
+				<th>Return</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>0**3 < 27 == True</td>
+					<td>cube = 0 + 1</td>
+					<td>cube = 1</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>1**3 < 27 == True</td>
+					<td>cube = 1 + 1</td>
+					<td>cube = 2</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>2**3 < 27 == True</td>
+					<td>cube = 2 + 1</td>
+					<td>cube = 3</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>3**3 < 27 == False ; exit loop</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<p>Test: 3**3 != 3</p>
+					</td>
+					<td>False</td>
+				</tr>
+				<tr>
+					<td colspan="4">
+						<p>(print('Cube root of ' + str(x) + ' is ' + str(cube)))</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		In sum, the code above used a loop to generate guesses, checking those
+		guesses over and over again. An obvious shortcoming with our program is that
+		it does not cover all cases. What if the user enters a negative integer? The
+		fix:
+	</p>
+	<pre class="language-python"><code>
+		x = int(input('Enter an integer: '))
+		cube = 0
+		while cube**3 < abs(x):
+			cube = cube + 1
+		if cube**3 != abs(x):
+			print(str(x) + ' is not a perfect cube')
+		else:
+			if x < 0:
+				cube = - cube
+			print('Cube root of ' + str(x) + ' is ' + str(ans))
+	</code></pre>
+	<p>
+		The fix above uses Python's built-in function
+		<span class="monoText">abs()</span> to return the absolute value of
+		<span class="monoText">x</span> (a positive number). When we output the
+		result, we simply check whether <span class="monoText">x</span> is a
+		negative number. If it is, we set <span class="monoText">cube</span> equal
+		to the negative of the number.
+	</p>
+	<p>
+		Whenever we work with <span class="monoText">while</span> loops, we need a
+		loop variable. That <span class="italicsText">loop variable</span> must
+		satisfy three criteria:
+	</p>
+	<ol>
+		<li>
+			The loop variable is initialized
+			<span class="italicsText">outside</span> the loop;
+		</li>
+		<li>
+			The loop variable changes <span class="italicsText">inside</span> the
+			loop; and
+		</li>
+		<li>The loop's test condition depends on the variable's value.</li>
+	</ol>
+	<p>
+		A helpful thought process when constructing loops is to come up with a
+		<span class="boldItalics">decrementing function</span>. In the example
+		above, the decrementing function is
+		<span class="monoText">abs(x) - cube**3</span>. When Python first enters the
+		loop, the value of <span class="monoText">abs(x) - cube**3</span> is a
+		nonnegative number. Everytime Python goes through the loop, the value
+		decreases over and over. Once the value of
+		<span class="monoText">abs(x) - cube**3</span> is less than or equal to
+		<span class="monoText">0</span>, the loop terminates. Thinking about loops
+		through decrementing functions often yields a clearer understanding of when
+		a loop ends.
+	</p>
+	<p>
+		Failing the three criteria above can lead to disaster. If we fail to change
+		the variable inside the loop, we enter an infinite loop. If we fail to
+		initialize a variable we will most likely get back a
+		<span class="monoText">NameError</span>. This error is returned because
+		we're attempting to use a variable inside a loop that has not been defined
+		before the loop. A far worse outcome results when we've used the variable
+		somewhere outside the loop for some other purpose, and reuse it in our loop
+		without assigning it a new value. This can cause the loop to initiate the
+		computation and return unexpected results; far worse than a
+		<span class="monoText">NameError</span> because we won't get any error
+		messages from Python.
+	</p>
+	<p>
+		Although guess-and-check algorithms are slow and prone to error, they are
+		often easy to implement. Moreover, with advancements in computer processing
+		speeds, many guess-and-check algorithms previously considered inefficient
+		are becoming more common place.
+	</p>
+	<p>
+		In the example above, we used a <span class="monoText">while</span> loop. We
+		can be more efficient with a <span class="monoText">for</span> loop:
+	</p>
+	<pre class="language-python"><code>
+		cube = int(input('Enter an integer: '))
+		for guess in range(cube+1):
+			if guess**3 == cube:
+				print("Cube root of ", cube, " is ", guess)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		Enter an integer: 8
+		Cube root of 8 is 2
+	</code></pre>
+	<p>
+		In the code above, we used a <span class="monoText">for</span> loop,
+		premised on the fact that the cube root of a number must be less than the
+		cube. Thus, we set <span class="monoText">range(cube+1)</span>, this
+		generates all of the possibilities we want to check. In the shell, we
+		entered <span class="monoText">8</span>, so
+		<span class="monoText">cube = 8</span>, and the possiblities are
+		<span class="monoText">0, 1, 2, 3, 4, 5, 6, 7,</span> and
+		<span class="monoText">8</span>. The loop starts at
+		<span class="monoText">guess = 0</span>, and continues up until
+		<span class="monoText">guess = 8</span> (remember, the
+		<span class="monoText">range()</span> does not include the
+		<span class="monoText">stop</span> value). Inside the loop, we keep testing
+		whether <span class="monoText">guess**3 == cube</span>. Once that test
+		returns <span class="monoText">True</span>, we print out the relevant
+		string.
+	</p>
+	<p>
+		The problem with the code above: It will not print anything out if there is
+		no cube root in the range of possibilities:
+	</p>
+	<pre class="command-line language-bash" data-output=""><code>
+		Enter an integer: 17
+	</code></pre>
+	<p>
+		There is no output. This is a case we did not think of with the code above.
+		We revise:
+	</p>
+	<pre class="language-python"><code>
+		cube = int(input('Enter an integer: '))
+		for guess in range(abs(cube)+1):
+			if guess**3 == abs(cube):
+				break
+		if guess**3 != abs(cube):
+			print(cube, 'is not a perfect cube')
+		else:
+			if cube < 0:
+				guess = -guess
+			print('Cube root of' + str(cube) ' is ' + str(guess))
+	</code></pre>
+	<p>
+		The code above accomplishes two things: (1) We allow for negative integers,
+		and (2) we print out something if there is no cube root.
+	</p>
+	<pre class="command-line language-bash" data-output="2,3,5,6,8"><code>
+		Enter an integer: -27 
+		Cube root of -27 is -3
+
+		Enter an integer: 27
+		Cube root of 27 is 3
+
+		Enter an integer: 28
+		28 is not a perfect cube
+	</code></pre>
+	<p>
+		The examples demonstrate a core principle in computer science and
+		mathematics: You must consider all possible cases.
+	</p>
+</section>
+
+<section id="loop_exercises">
+	<p><span class="exh">Exercise.</span> Consider:</p>
+	<pre class="language-python"><code>
+			str = '6.00x'
+
+			for char in str:
+				print(char)
+			print('done')
+		</code></pre>
+	<ol>
+		<li>How many times does <span class="monoText">6</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">6</span> will print exactly 1 time.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">.</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">.</span> will print exactly 1 time.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">0</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">0</span> will print exactly 2
+				times.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">x</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">x</span> will print exactly 1 time.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">done</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">1</span> will print exactly 1 time.
+			</p>
+		</details>
+	</ol>
+	<p><span class="exh">Exercise.</span> Consider:</p>
+	<pre class="language-python"><code>
+			greeting = 'Hello!'
+			count = 0
+
+			for letter in greeting:
+				count += 1
+				if count % 2 == 0:
+					print(letter)
+				print(letter)
+			
+			print ('done')
+		</code></pre>
+	<ol>
+		<li>How many times does <span class="monoText">H</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				<span class="monoText">count</span> has an initial value of
+				<span class="monoText">0</span>. Then, in the loop,
+				<span class="monoText">count</span> is incremented by
+				<span class="monoText">1</span>. We are also looping through each of the
+				characters in the string bound to
+				<span class="monoText">greeting</span>, which is
+				<span class="monoText">'Hello!'</span>, a total of 6 characters. Thus,
+				<span class="monoText">count</span> is incremented a total of 6 times:
+			</p>
+			<figure>
+				<table class="loop_table">
+					<thead>
+						<th>Iteration</th>
+						<th>Computation</th>
+						<th>Return</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1; <span class="monoText">letter = 'H'</span></td>
+							<td><span class="monoText">count = 0 + 1</span></td>
+							<td>
+								<p><span class="monoText">count = 1</span></p>
+								<p><span class="monoText">print('H')</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>2; <span class="monoText">letter = 'e'</span></td>
+							<td><span class="monoText">count = 1 + 1</span></td>
+							<td>
+								<p><span class="monoText">count = 2</span></p>
+								<p>
+									<span class="monoText">print('e')</span> (since 2 is divisible
+									by 2)
+								</p>
+								<p><span class="monoText">print('e')</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>3; <span class="monoText">letter = 'l'</span></td>
+							<td><span class="monoText">count = 2 + 1</span></td>
+							<td>
+								<p><span class="monoText">count = 3</span></p>
+								<p><span class="monoText">print('l')</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>4; <span class="monoText">letter = 'l'</span></td>
+							<td><span class="monoText">count = 3 + 1</span></td>
+							<td>
+								<p><span class="monoText">count = 4</span></p>
+								<p>
+									<span class="monoText">print('l')</span> (since 4 is divisible
+									by 2)
+								</p>
+								<p><span class="monoText">print('l')</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>5; <span class="monoText">letter = 'o'</span></td>
+							<td><span class="monoText">count = 4 + 1</span></td>
+							<td>
+								<p><span class="monoText">count = 5</span></p>
+								<p><span class="monoText">print('o')</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>6; <span class="monoText">letter = '!'</span></td>
+							<td><span class="monoText">count = 5 + 1</span></td>
+							<td>
+								<p><span class="monoText">count = 6</span></p>
+								<p>
+									<span class="monoText">print('!')</span> (since 6 is divisible
+									by 2)
+								</p>
+								<p><span class="monoText">print('!')</span></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				From the table above, the character
+				<span class="monoText">'H'</span> prints exactly 1 time.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">'e'</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">e</span> prints exactly 2 times.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">l</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">l</span> prints exactly 3 times.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">o</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">'o'</span> prints exactly 1 time.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">'!'</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">'!'</span> prints exactly 2 times.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">'done'</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The string <span class="monoText">'done'</span> prints exactly 1 time;
+				it is outside of the loop.
+			</p>
+		</details>
+	</ol>
+	<p><span class="exh">Exercise.</span> Consider:</p>
+	<pre class="language-python"><code>
+			school = 'Massachusetts Institute of Technology'
+			numVowels = 0
+			numCons = 0
+
+			for char in school:
+				if char == 'a' or char == 'e' or char == 'i' \
+					or char == 'o' or char == 'u':
+						numVowels += 1
+				elif char == 'o' or char == 'M':
+					print(char)
+				else:
+					numCons -= 1
+			print('numVowels is: ' + str(numVowels))
+			print('numCons is: ' + str(numCons))
+		</code></pre>
+	<ol>
+		<li>How many times does <span class="monoText">'o'</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The character <span class="monoText">'o'</span> prints exactly 0 times
+				(it never prints). The line
+				<span class="monoText">print(char)</span> never occurs when
+				<span class="monoText">char == 'o'</span> because the condition is
+				satisfied in the previous true block. Remember, Python will not execute
+				any further code if a condition is satisfied.
+			</p>
+		</details>
+		<li>How many times does <span class="monoText">'M'</span> print?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>Here, <span class="monoText">'M'</span> prints exactly 1 time.</p>
+		</details>
+		<li>
+			What will the value of the variable
+			<span class="monoText">numVowels</span> be?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				<span class="monoText">numVowels == 11</span>. The character
+				<span class="monoText">'I'</span> is never counted because the test is
+				only for the characters <span class="monoText">a, e, i, o, u</span>.
+				Upper and lower case characters are different characters!
+			</p>
+		</details>
+		<li>
+			What will the value of the variable
+			<span class="monoText">numCons</span> be?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				<span class="monoText">numCons == -25</span>. Counting all of the
+				consonants, there are a total of 22 consonants. But, we must subtract
+				the character <span class="monoText">'M'</span>, because when the loop
+				ran and <span class="monoText">char == 'M'</span>, the previous truth
+				block was executed, so <span class="monoText">numCons -= 1</span> was
+				never executed. This brings us down to 21. But, we must include the
+				character <span class="monoText">'I'</span>, since
+				<span class="monoText">char == 'I'</span> was never tested. This brings
+				us back to 22. The remaining 3 "consonants" result from the spaces.
+				Remember, spaces are characters. This brings us up to 25, as there are 3
+				spaces in the string
+				<span class="monoText">'Massachussetts Institute of Technology'</span>.
+				Note that the incrementer for <span class="monoText">numCons</span> is
+				negative, so the final value is negative.
+			</p>
+		</details>
+	</ol>
+	<p><span class="exh">Exercise.</span> Consider:</p>
+	<pre class="language-python"><code>
+			iteration = 0
+			count = 0
+			while iteration < 5:
+				for letter in "hello, world":
+					count += 1
+				print("Iteration " + str(iteration) + "; count is: " + str(count))
+				iteration += 1
+		</code></pre>
+	<ol>
+		<li>Does the following code output the same result?</li>
+		<pre class="language-python"><code>
+				for iteration in range(5):
+					count = 0
+					while True:
+						for letter in "hello, world":
+							count += 1
+						print("Iteration " + str(iteration) + "; count is: " + str(count))
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				First, let's think about what the first sample code does. There, we have
+				<span class="monoText">iteration = 0</span> and
+				<span class="monoText">count = 0</span>. Next, we have a
+				<span class="monoText">while</span> loop. The
+				<span class="monoText">while</span> loop's test condition is
+				<span class="monoText">iteration < 5</span>. So, as long as that
+				condition is true, the code block in the
+				<span class="monoText">while</span> loop's body will execute. Inside the
+				<span class="monoText">while</span> loop, we have a
+				<span class="monoText">for</span> loop. That
+				<span class="monoText">loop</span> iterates through each character in
+				the string <span class="monoText">"hello, world"</span>. There are 12
+				characters in that string, so the <span class="monoText">for</span> loop
+				iterates at most 12 times. For each of those iterations, we increment
+				<span class="monoText">count</span> by <span class="monoText">1</span>.
+				This brings <span class="monoText">count</span> all the way up to 12 (we
+				stay in the <span class="monoText">for</span> loop until we've iterated
+				through the entire string <span class="monoText">"hello, world"</span>).
+				Once we've looped through the entire string, we print out the relevant
+				string inside <span class="monoText">print()</span>. Finally, we
+				increment <span class="monoText">iteration</span> by
+				<span class="monoText">1</span>, and continue over and over.
+			</p>
+			<p>Putting this process together:</p>
+			<figure>
+				<table class="loop_table">
+					<thead>
+						<th>Iteration</th>
+						<th>Return</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>
+								<p><span class="monoText">count = 12</span></p>
+								<p><span class="monoText">"Iteration 0; count is 12</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>
+								<p><span class="monoText">count = 24</span></p>
+								<p><span class="monoText">"Iteration 1; count is 24</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>
+								<p><span class="monoText">count = 36</span></p>
+								<p><span class="monoText">"Iteration 2; count is 36</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>
+								<p><span class="monoText">count = 48</span></p>
+								<p><span class="monoText">"Iteration 3; count is 48</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>
+								<p><span class="monoText">count = 60</span></p>
+								<p><span class="monoText">"Iteration 4; count is 60</span></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				The count ends at <span class="monoText">60</span>, because the moment
+				<span class="monoText">iteration = 5</span>, the
+				<span class="monoText">while</span> loop's test condition returns
+				<span class="monoText">False</span>, and the loop's body is never
+				executed. Bearing all of this in mind, we can now compare the remaining
+				sample code.
+			</p>
+			<p>
+				In this first sample, the output is not the same. Here, we use a
+				<span class="monoText">for</span> loop, with iterations
+				<span class="monoText">0, 1, 2, 3, 4</span>. On each iteration,
+				<span class="monoText">count = 0</span>, and a
+				<span class="monoText">while</span> loop is executed. That
+				<span class="monoText">while</span> loop is never exited, because there
+				is no code that causes the <span class="monoText">while</span> loop's
+				test condition to return <span class="monoText">False</span>.
+			</p>
+		</details>
+		<li>Does the following code output the same result?</li>
+		<pre class="language-python"><code>
+				for iteration in range(5):
+					count = 0
+					while True:
+						for letter in "hello, world":
+							count += 1
+						print("Iteration " + str(iteration) + "; count is:" + str(count))
+						break
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				Here, another <span class="monoText">for</span> loop is used, with
+				iterations of <span class="monoText">0 1 2 3 4</span>. For each
+				iteration, <span class="monoText">count = 0</span>, and a
+				<span class="monoText">while</span> loop is executed. Inside that
+				<span class="monoText">while</span> loop, we iterate through each letter
+				in the string <span class="monoText">"hello, world"</span>, a total of
+				12 iterations. Once that loop is exited, the string contained in
+				<span class="monoText">print()</span> is printed. Then a
+				<span class="monoText">break</span> statement is executed. The problem,
+				however, is that we have not updated
+				<span class="monoText">iteration</span> anywhere inside the
+				<span class="monoText">while</span> loop. This does not return the same
+				output as the original code.
+			</p>
+		</details>
+		<li>Does the following code output the same result?</li>
+		<pre class="language-python"><code>
+				count = 0
+				phrase = "hello, world"
+				for iteration in range(5): 
+					index = 0
+					while index < len(phrase):
+						count += 1
+						index += 1
+					print("Iteration " + str(iteration) + "; count is: " + str(count))
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				Here, we set <span class="monoText">count = 0</span> first, then we
+				assigned the string <span class="monoText">"hello, world"</span> to a
+				unique variable. Next, we use a <span class="monoText">for</span> loop,
+				iterating through <span class="monoText">range(5)</span>. This yields a
+				total of <span class="monoText">0, 1, 2, 3, 4</span> iterations. At each
+				iteration, we set <span class="monoText">index = 0</span>. Then we
+				execute a <span class="monoText">while</span> loop. As long as
+				<span class="monoText">index</span> is less than the length of
+				<span class="monoText">"hello, world"</span> (24), we stay inside the
+				loop, executing its body. In this case,
+				<span class="monoText">count</span> is incremented by
+				<span class="monoText">1</span>, and
+				<span class="monoText">index</span> is incremented by
+				<span class="monoText">1</span>. The problem, however, is that the
+				<span class="monoText">print()</span> statement is contained inside the
+				<span class="monoText">for</span> loop. Instead of just one output
+				statement, we obtain multiple. The output is not the same.
+			</p>
+		</details>
+		<li>Does the following code output the same result?</li>
+		<pre class="language-python"><code>
+				count = 0
+				phrase = "hello, world"
+				for iteration in range(5): 
+					while True:
+							count += len(phrase)
+							break
+					print("Iteration " + str(iteration) + "; count is: " + str(count))
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				Here we set <span class="monoText">count = 0</span> and
+				<span class="monoText">phrase = "hello, world"</span>. Then, we used a
+				<span class="monoText">for</span> loop, iterating through
+				<span class="monoText">range(5)</span>; a total of
+				<span class="monoText">0, 1, 2, 3, 4</span> iterations. Inside the
+				<span class="monoText">for</span> loop, we increment
+				<span class="monoText">count</span> by the length of
+				<span class="monoText">"hello, world"</span> (24). Then we break and
+				output the result. This is not the same output.
+			</p>
+		</details>
+		<li>Does the following code output the same result?</li>
+		<pre class="language-python"><code>
+				count = 0
+				phrase = "hello, world"
+				for iteration in range(5): 
+					count += len(phrase)
+					print("Iteration " + str(iteration) + "; count is: " + str(count))
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				Here, we set <span class="monoText">count = 0</span>. Then we assigned
+				<span class="monoText">"hello, world"</span> to the variable
+				<span class="monoText">phrase</span>. Next, we enter a
+				<span class="monoText">for</span> loop, iterating through
+				<span class="monoText">range(5)</span>; a total of
+				<span class="monoText">0, 1, 2, 3, 4</span> iterations. In each
+				iteration, we add to <span class="monoText">count</span> the length of
+				<span class="monoText">phrase</span> (24). This is not the same output.
+			</p>
+		</details>
+	</ol>
+	<p>
+		<span class="exh">Exercise.</span> Write a program that counts up the number
+		of vowels contained in a string inputted by the user. Prompt the user to
+		enter a string of lower case letters.
+	</p>
+	<details class="answer">
+		<summary>Answer</summary>
+		<pre class="language-python"><code>
+				s = str(input('Enter a string of lower case letters: '))
+				vowels = 0
+				for letters in s:
+					if letter == 'a' or 
+						letter == 'e' or 
+						letter == 'i' or 
+						letter == 'o' or 
+						letter == 'u':
+							vowels += 1
+				print('Number of vowels: ' + str(vowels))
+			</code></pre>
+		<pre class="command-line language-bash" data-output=""><code>
+				Enter a string of lower case letters: hi
+				Number of vowels: 1
+
+				Enter a string of lower case letters: tamago
+				Number of vowels: 3
+
+				Enter a string of lower case letters: iorana
+				Number of vowels: 4
+
+				Enter a string of lower case letter: liliuokalani
+				Number of vowels: 7
+			</code></pre>
+	</details>
+	<p><span class="exh">Exercise.</span> Consider the following:</p>
+	<pre class="language-python"><code>
+			iteration = 0
+			count = 0
+			while iteration < 5:
+				for letter in 'hello, world':
+					count += 1
+				print("Iteration " + str(iteration) + "; count is: " + str(count))
+				iteration += 1
+		</code></pre>
+	<ol>
+		<li>
+			What is the value of <span class="monoText">count</span> that is printed
+			out at the <span class="monoText">print()</span> when
+			<span class="monoText">iteration = 0</span>?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>Examine the follwing whiteboard:</p>
+			<figure>
+				<img src="{% static 'images/whiteboard1.svg' %}" alt="solution" loading="lazy" />
+			</figure>
+			<p>
+				At <span class="monoText">iteration = 0</span>, the value of
+				<span class="monoText">count</span> printed is
+				<span class="monoText">12</span>.
+			</p>
+		</details>
+		<li>
+			What is the value of <span class="monoText">count</span> that is printed
+			out at the <span class="monoText">print()</span> when
+			<span class="monoText">iteration = 1</span>?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				At <span class="monoText">iteration = 1</span>, the value of
+				<span class="monoText">count</span> printed is
+				<span class="monoText">24</span>.
+			</p>
+		</details>
+		<li>
+			What is the value of <span class="monoText">count</span> that is printed
+			out at the <span class="monoText">print()</span> when
+			<span class="monoText">iteration = 2</span>?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				At <span class="monoText">iteration = 2</span>, the value of
+				<span class="monoText">count</span> printed is
+				<span class="monoText">36</span>.
+			</p>
+		</details>
+		<li>
+			What is the value of <span class="monoText">count</span> that is printed
+			out at the <span class="monoText">print()</span> when
+			<span class="monoText">iteration = 3</span>?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				At <span class="monoText">iteration = 3</span>, the value of
+				<span class="monoText">count</span> printed is
+				<span class="monoText">48</span>.
+			</p>
+		</details>
+		<li>
+			What is the value of <span class="monoText">count</span> that is printed
+			out at the <span class="monoText">print()</span> when
+			<span class="monoText">iteration = 4</span>?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				At <span class="monoText">iteration = 4</span>, the value of
+				<span class="monoText">count</span> printed is
+				<span class="monoText">60</span>.
+			</p>
+		</details>
+	</ol>
+	<p><span class="exh">Exercise.</span> Consider the following:</p>
+	<pre class="language-python"><code>
+			iteration = 0
+			while iteration < 5:
+				count = 0
+				for letter in "hello, world":
+					count += 1
+				print("Iteration " + str(iteration) + "; count is: " + str(count))
+				iteration += 1
+		</code></pre>
+	<ol>
+		<li>
+			At <span class="monoText">iteration = 0</span>, what is the value of
+			<span class="monoText">count</span> printed out?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>Whiteboard:</p>
+			<figure>
+				<img src="{% static 'images/whiteBoard2.svg' %}" alt="whiteboard" loading="lazy" />
+			</figure>
+			<p>
+				<span class="monoText">count</span>'s value is
+				<span class="monoText">12</span> when printed.
+			</p>
+		</details>
+		<li>
+			At <span class="monoText">iteration = 1</span>, what is the value of
+			<span class="monoText">count</span> printed out?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				<span class="monoText">count</span>'s value is
+				<span class="monoText">12</span> when printed.
+			</p>
+		</details>
+		<li>
+			At <span class="monoText">iteration = 2</span>, what is the value of
+			<span class="monoText">count</span> printed out?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				<span class="monoText">count</span>'s value is
+				<span class="monoText">12</span> when printed.
+			</p>
+		</details>
+		<li>
+			At <span class="monoText">iteration = 3</span>, what is the value of
+			<span class="monoText">count</span> printed out?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				<span class="monoText">count</span>'s value is
+				<span class="monoText">12</span> when printed.
+			</p>
+		</details>
+		<li>
+			At <span class="monoText">iteration = 4</span>, what is the value of
+			<span class="monoText">count</span> printed out?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				<span class="monoText">count</span>'s value is
+				<span class="monoText">12</span> when printed.
+			</p>
+		</details>
+	</ol>
+	<p><span class="exh">Exercise.</span> Consider the following:</p>
+	<pre class="language-python"><code>
+			iteration = 0
+			while iteration < 5:
+				count = 0
+				for letter in "hello, world":
+					count += 1
+					if iteration % 2 == 0:
+						break
+				print("Iteration " + str(iteration) + "; count is: " + str(count))
+				iteration += 1
+		</code></pre>
+	<ol>
+		<li>How many times is <span class="monoText">print()</span> executed?</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>Whiteboard:</p>
+			<figure><img src="{% static 'images/whiteBoard3.svg' %}" alt="whiteboard" /></figure>			<p><span class="monoText">print()</span> executes a total of 5 times.</p>
+		</details>		<li>
+			What is the largest value of <span class="monoText">iteration</span> to be
+			printed by <span class="monoText">print()</span>?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The largest value of <span class="monoText">iteration</span> to be
+				printed is <span class="monoText">4</span>.
+			</p>
+		</details>
+
+		<li>
+			What is the largest value of <span class="monoText">count</span> to be
+			printed by <span class="monoText">print()</span>
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The largest value of <span class="monoText">count</span> to be printed
+				is <span class="monoText">12</span>.
+			</p>
+		</details>
+
+		<li>
+			What is the smallest value of <span class="monoText">count</span> to be
+			printed by <span class="monoText">print()</span>?
+		</li>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The smallest value of <span class="monoText">count</span> to be printed
+				is 1.
+			</p>
+		</details>
+	</ol>
+	<p>
+		<span class="exh">Exercise.</span> Write this program. The user enters an
+		integer. Then, using a loop, print to the console the following snail
+		mountain whose height equals the user's input integer:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/snail_tower.svg' %}"
+			alt="snail tower"
+			class="forty-p"
+			loading="lazy"
+		/>
+	</figure>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+				height = int(input("Height: "))
+				for i in range(1, height+1, 1):
+						if i == 1:
+							print(' ' * (height-1) + '@')
+						else:
+							print(' ' * (height-i) + '@' * i + '@' * (i-1))
+			</code></pre>
+	</details>
+</section>
+
+{% endblock %}

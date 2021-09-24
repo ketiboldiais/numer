@@ -1,0 +1,324 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="atoms" class="grid-item">
+	<h3>Basic Constructs</h3>
+	<p>
+		Prolog is a logic programming language. More broadly, it is a member of the
+		declarative programming language family. In Prolog, programs are a set of
+		axioms defining relations between objects. The computation resulting from
+		runnning a Prolog program is a <span class="term">deduction</span>. More
+		specifically, the result is a response to query, formulated from rules (the
+		axioms) applied to facts.
+	</p>
+	<p>
+		There are three basic constructs in Prolog: <span class="term">facts</span>,
+		<span class="term">rules</span>, and <span class="term">queries</span>.
+		Let's look at each construct in turn.
+	</p>
+</section>
+
+<section id="facts" class="grid-item">
+	<p>
+		<span class="topic">Facts.</span> A fact states a
+		<span class="italicsText">relation</span> between objects. Below are some
+		facts in Prolog:
+	</p>
+
+	<pre class="language-prolog"><code>
+		late(john).
+		likes(harry, sally).
+		factor(4, 12).
+	</code></pre>
+
+	<p>
+		The use of lower-case is no accident. Both predicates and names must be in
+		lower-case. Translating the expressions above into natural language:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>late(john) ${\implies}$ &#8220;John is late&#8221;</li>
+			<li>likes(harry, sally) ${\implies}$ &#8220;Harry likes Sally.&#8221;</li>
+			<li>factor(4,12) ${\implies}$ &#8220;4 is a factor of 12.&#8221;</li>
+		</ul>
+	</figure>
+
+	<p>
+		Notice in each of the facts above, there are relations between objects.
+		These relations are also called <span class="term">predicates</span>. The
+		<span class="italicsText">names</span> of the objects are called
+		<span class="term">atoms</span>.
+	</p>
+
+	<p>
+		In <span class="monoText">Prolog</span>, a fact represents what is
+		<span class="underlineText">known</span>. We can think of them as
+		<span class="italicsText">axioms</span>. We can think of a set of facts as a
+		description of a situation.
+	</p>
+
+	<p>
+		Consider the fact &#8220;The dog is black.&#8221; In Prolog, we express this
+		fact as:
+	</p>
+
+	<pre class="language-prolog"><code>
+		black(dog).
+	</code></pre>
+
+	<p>
+		In the expression, the atoms contained in the parentheses are the fact's
+		<span class="term">arguments</span>. In this case, the atom
+		<span class="monoText">dog</span> is the argument to the expression. We can
+		of course, have multiple parameters (i.e., multiple arguments):
+	</p>
+
+	<pre class="language-prolog"><code>
+		drank(romeo, poison)
+	</code></pre>
+
+	<p>
+		In this expression, there are two arguments &mdash;
+		<span class="monoText">romeo</span> and
+		<span class="monoText">poison</span>. The number of parameters is called the
+		expression's <span class="term">arity</span>.
+	</p>
+</section>
+
+<section id="rules" class="grid-item">
+	<p>
+		<span class="topic">Rules.</span> In Prolog, a
+		<span class="term">rule</span> is a construct that allows us to infer facts
+		from existing facts. Suppose the following facts: Paris likes Helen, Helen
+		likes Paris, and Menelausk likes Helen. Expressing these facts in Prolog:
+	</p>
+
+	<pre class="language-prolog"><code>
+		likes(paris, helen).
+		likes(helen, paris).
+		likes(menelaus, helen).
+	</code></pre>
+
+	<p>
+		Now let's say that a person ${a}$ is in love with a person ${b}$ if, and
+		only if, ${a}$ likes ${b}$ and ${b}$ likes ${a.}$ To express this rule in
+		Prolog:
+	</p>
+
+	<pre class="language-prolog"><code>
+		loves(A,B):-
+			likes(A,B),
+			likes(B,A).
+	</code></pre>
+
+	<p>
+		The rule above reads, "${A}$ loves ${B}$ if, and only if, ${A}$ likes ${B}$
+		<span class="italicsText">and</span> ${B}$ likes ${A.}$" Observe the use of
+		uppercase letters. In Prolog, <span class="term">variables</span> are
+		<span class="underlineText">always</span> indicated by uppercase letters.
+		Next, observe the comma. The comma acts like an
+		<span class="italicsText">and</span>. Prolog, as a logic programming
+		language, obviously supports Boolean connectives. Unlike other languages,
+		however, connectives use symbols that are more exclusively reserved for
+		other syntax:
+	</p>
+
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Connective</th>
+				<th>Syntax</th>
+				<th>Comment</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>IFF</td>
+					<td>:-</td>
+					<td>colon then hyphen</td>
+				</tr>
+				<tr>
+					<td>AND</td>
+					<td>,</td>
+					<td>a comma</td>
+				</tr>
+				<tr>
+					<td>OR</td>
+					<td>;</td>
+					<td>semicolon</td>
+				</tr>
+				<tr>
+					<td>NOT</td>
+					<td>not</td>
+					<td>all lowercase</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<p>
+		For those coming from more formal logic backgrounds, wwe can define rules
+		for logical connectives:
+	</p>
+
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Connective</th>
+				<th>Rule</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>AND</td>
+					<td>and(A,B) :- A,B.</td>
+				</tr>
+				<tr>
+					<td>OR</td>
+					<td>or(A,B) :- A;B.</td>
+				</tr>
+				<tr>
+					<td>NAND</td>
+					<td>nand(A,B) :- not(and(A,B)).</td>
+				</tr>
+				<tr>
+					<td>NOR</td>
+					<td>nor(A,B) :- not(or(A,B)).</td>
+				</tr>
+				<tr>
+					<td>XOR</td>
+					<td>xor(A,B) :- or(A,B), nand(A,B).</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<p>
+		We will use and revisit these definitions in later sections. The beauty of
+		Prolog is how elegantly it implements these constructs.
+	</p>
+
+	<p>
+		Returning to our loves rule, evaluates as such: If
+		<span class="monoText">likes(x,y)</span> evaluates to
+		<span class="monoText">true</span>, <span class="underlineText">and</span>
+		<span class="monoText">likes(y,x)</span> evaluates to
+		<span class="monoText">true</span>, then the expression evaluates to
+		<span class="monoText">true</span>. Otherwise, it evaluates to
+		<span class="monoText">false</span>. The general syntax of a rule:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>
+				${r}$(${obj_0, \ldots, obj_n}$) :- ${r}$(${obj_0, \ldots, obj_i}$)
+			</li>
+		</ul>
+		<ul class="def">
+			<li class="where">${r}$ is some relationship,</li>
+			<li>
+				${obj_0, \ldots, obj_n}$ and ${obj_0, \ldots, obj_i}$ are objects, and
+			</li>
+			<li>
+				<span class="monoText">:-</span> denotes
+				<span class="term">iff</span> (if and only if)
+			</li>
+		</ul>
+	</figure>
+
+	<p>
+		The head of a rule is fact that results from the body of the rule being
+		true. In actuality, facts are actually rules whose body is true:
+		<span class="monoText">head :- true.</span>
+	</p>
+
+	<p>Consider the following rules and facts employing variables:</p>
+
+	<pre class="language-prolog"><code>
+		weather(phoenix, summer, hot).
+		weather(la, summer, warm).
+
+		warmer_than(C1, C2) :-
+			weather(C1, summer, hot),
+			weather(C2, summer, warm),
+			write(C1), write(' is warmer '), write(C2), nl.
+	</code></pre>
+
+	<p>Let's ask this question:</p>
+	<pre class="language-bash"><code>
+		?- warmer_than(phoenix, la).
+		phoenix is warmer than la
+		true.
+	</code></pre>
+</section>
+
+<section id="queries" class="grid-item">
+	<p>
+		<span class="topic">Queries.</span> With the rules and facts stated, we can
+		pass <span class="term">queries</span> &mdash; true or false questions we
+		would like answered given the existing facts and rules. In the preceding
+		section's example <span class="term">loves</span> rule, we wrote our code in
+		a filed called <span class="monoText">foo.pl</span>. From our terminal:
+	</p>
+	<pre class="language-bash"><code>
+		swipl foo.pl
+		
+		?- loves(helen, paris).
+		true
+
+		?- loves(paris, helen).
+		true
+
+		?- loves(helen, menelaus).
+		false
+	</code></pre>
+</section>
+
+<section id="variables" class="grid-item">
+	<p><span class="topic">Variables.</span> Consider the following facts:</p>
+
+	<pre class="language-prolog"><code>
+		weather(phoenix, summer, hot).
+		weather(la, summer, warm).
+		weather(phoenix, winter, warm).
+	</code></pre>
+
+	<p>We can ask a question give these facts:</p>
+
+	<pre class="language-bash"><code>
+		swipl foo.pl
+
+		?- weather(City, summer, hot).
+		City = phoenix
+	</code></pre>
+
+	<p>Now let's say we want to find all the cities that are warm:</p>
+
+	<pre class="language-bash"><code>
+		?- weather(City,_,warm).
+		City = la;
+		City = phoenix
+	</code></pre>
+
+	<p>
+		Notice that when we asked this question, Prolog paused for a moment before
+		displaying the next result. Prolog does this as a matter of efficiency
+		&mdash; "Before I start checking for other possible matches, let me first
+		see if the user is satisfied with this answer." To see the next possible
+		answer, we enter a semicolon (<span class="monoText">;</span>).
+	</p>
+
+	<p>We can ask present more complex queries:</p>
+
+	<pre class="language-bash"><code>
+		?- weather(City, summer, hot), weather(City, winter, warm).
+
+		City = phoenix;
+		False
+	</code></pre>
+
+	<p>
+		If we entered a semicolon following the answer, Prolog returns
+		<span class="monoText">False</span>, because there are no other possible
+		answers. These examples show how we ask
+		<span class="term">compound queries</span> in Prolog.
+	</p>
+</section>
+{% endblock %}

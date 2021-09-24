@@ -1,0 +1,181 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="switch_statements">
+	<p>
+		<span class="topic">Switch Statements.</span> Closely connected to
+		case-analysis is the <span class="monoText">switch</span> statement. The
+		<span class="monoText">switch</span> statement has the following syntax:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>switch (${v}$: ${v_t}$) -> ${r_t}$ {</li>
+			<ul>
+				<li>case ${v_0}$</li>
+				<ul>
+					<li>return ${a_0}$</li>
+				</ul>
+				<li>${\vdots}$</li>
+				<li>case ${v_n}$</li>
+				<ul>
+					<li>return ${a_n}$</li>
+				</ul>
+			</ul>
+			<li>}</li>
+		</ul>
+	</figure>
+
+	<p>
+		In the syntax above, ${v}$ is some variable. This variable should be of a
+		type that can have only one of a discrete set of values. ${r_t}$ represents
+		the return type of the <span class="monoText">switch</span> statement.
+		Following that, we have the cases. If ${v}$ is ${v_0}$, then we output
+		${a_0.}$ We list all of the possible values that ${v}$ might store (<span
+			class="monoText"
+			>switch</span
+		>
+		statements must be exhaustive), including the
+		<span class="monoText">return</span> value for each of those possible
+		values. For example:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum Month: Int {
+			case january = 1, february, march, april, may, june, july, august, september, october, november, december
+		}
+		enum Season: String {
+			case winter
+			case spring
+			case summer
+			case autumn
+		}
+		func getSeason(for month: Month) -> Season {
+			switch month {
+				case .december, .january, .february:
+					return .winter
+				case .march, .april, .may:
+					return .spring
+				case .june, .july, .august:
+					return .summer
+				case .september, .october, .november:
+					return .autumn
+			}
+		}
+	</code></pre>
+	<p>
+		In the code above, we return a particular
+		<span class="monoText">Season</span> value, depending on what the
+		<span class="monoText">month</span> value is. If
+		<span class="monoText">month</span> evaluates to
+		<span class="monoText">.december</span>, we return the value
+		<span class="monoText">.winter</span>. If
+		<span class="monoText">month</span> evaluates to
+		<span class="monoText">.june</span>, we return the value
+		<span class="monoText">.summer</span>, and so on.
+	</p>
+
+	<p>
+		<span class="monoText">switch</span> statements are not limited to
+		<span class="monoText">enums</span>. We should always consider using a
+		<span class="monoText">switch</span> statement if we are writing code with
+		numerous <span class="monoText">if</span> and
+		<span class="monoText">else if</span> statements.
+	</p>
+
+	<pre class="language-swift"><code>
+		let fruit = "mango"
+
+		switch fruit {
+			case "apple":
+				print("Good for pies.")
+			case "papaya", "tomato":
+				print("Good for salads.")
+			default:
+				print("Good for you.")
+		}
+	</code></pre>
+
+	<p>
+		In the code above, we wrote <span class="monoText">default:</span>. This
+		statement tells Swift, "If none of the cases match, then execute this code
+		below." <span class="monoText">switch</span> statements are conducive to far
+		more concise code.
+	</p>
+
+	<pre class="language-swift"><code>
+		func isMultiple3(_ n: Int) -> Bool {
+			switch n % 3 {
+				case 0:
+					return true
+				default:
+					return false
+			}
+		}
+		let test1 = isMultiple3(927)
+		let test2 = isMultiple3(28594037)
+		let test3 = isMultiple3(129992721)
+		print(test1)
+		print(test2)
+		print(test3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+		false
+		true
+	</code></pre>
+
+	<p>Switch statements can also be used with tuples:</p>
+
+	<pre class="language-swift"><code>
+		enum Quadrant {
+			case originpoint
+			case quadrant1
+			case quadrant2
+			case quadrant3
+			case quadrant4
+		}
+		typealias Coordinate = (x: Int, y: Int)
+		func whichQuadrant(_ point: Coordinate) -> Quadrant {
+			switch point {
+			case let (x, y) where x > 0 && y > 0:
+				return .quadrant1
+			case let (x, y) where x < 0 && y > 0:
+				return .quadrant2
+			case let (x, y) where x < 0 && y < 0:
+				return .quadrant3
+			case let (x, y) where x > 0 && y < 0:
+				return .quadrant4
+			default:
+				return .originpoint
+			}
+		}
+		let pA: Coordinate = (1, 3)
+		
+		print(whichQuadrant(pA))
+	</code></pre>
+	<pre class="language-bash"><code>
+		quadrant1
+	</code></pre>
+
+	<p>
+		<span class="topic">Associated Values.</span> In some situations, we might
+		want an enumerated value to have more nuanced data. For example, we might
+		have the following <span class="monoText">enum</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum AcademicLevel {
+			case highschool(year: Int)
+			case undergraduate(major: String, year: Int)
+			case graduate(researchArea: String)
+			case postgraduation(researchArea: String)
+		}
+	</code></pre>
+
+	<p>
+		Now whenever we create a value of type
+		<span class="monoText">AcademicLevel</span>, we can include the
+		<span class="term">associated values</span>. This allows us to represent
+		real-world information more accurately and with more nuance.
+	</p>
+</section>
+{% endblock %}

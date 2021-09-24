@@ -1,0 +1,164 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="power_function">
+	<h4>The Derivative of ${x^n}$</h4>
+	<p>
+		Let's now consider the derivative of ${f(x) = x^n,}$ where ${n \in \Z^{+}.}$
+		In other words, we want to compute:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{d}{dx} x^n}$</p>
+		</div>
+	</figure>
+	<p>So, we return to our expression, ${\dfrac{\Delta f}{\Delta x}:}$</p>
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{(x + \Delta x)^n - x^n}{\Delta x}}$</p>
+		</div>
+	</figure>
+	<p>
+		Notice that we wrote ${x}$ instead of ${x_0.}$ We did so because ${x_0}$
+		isn't meaninful in this particular computation. ${x}$ can be any fixed value
+		of ${x,}$ and we aren't so much concerned about what the value is. However,
+		we state explicitly that ${x}$ is a fixed value, and ${\Delta x}$ is a
+		moving value.
+	</p>
+
+	<p>
+		To manipulate our expression, we must understand what the
+		${n^{\text{\scriptsize{th}}}}$ power of a sum is. To do so, we use a theorem
+		from discrete mathematics, called the
+		<span class="term">binomial theorem</span>. The expression ${(x + \Delta
+		x)^n}$ is just ${(x+\Delta x)_1 \cdot (x+\Delta x)_2 \cdot \ldots \cdot
+		(x+\Delta x)_n.}$ If we expand this multiplication, the first term in the
+		product is ${x^n.}$ Next, we have a second term of the form ${x^{n-1}\Delta
+		x.}$ How many times does this term occur? ${n}$ times, since we are
+		multiplying ${(x + \Delta x)}$ by itself ${n}$ times. Thus, we have ${x^n +
+		nx^{n - 1}\Delta x.}$ With just these terms, we have enough to continue
+		computing the derivative, per the binomial theorem.
+	</p>
+
+	<p>According to the binomial theorem:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				${(x + \Delta x)^n = \sum\limits_{k = 0}^{n} \dbinom{n}{k}x^{n -
+				k}(\Delta x)^k}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		From this proposition, when ${k \geq 2,}$ we will always obtain terms
+		containing ${\Delta x}$ in powers of 2, 3, 4, 5, and so on. Because of this
+		implication, we can write the sum as:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${(x + \Delta x)^n = x^n + nx^{n - 1}\Delta x + O((\Delta x)^2)}$</p>
+		</div>
+	</figure>
+
+	<p>
+		That ${O(\Delta x)^2}$ encapsulates what we call "junk terms," at least in
+		the context of continuous mathematics, and more specifically, in the context
+		of ${\Delta x \mapsto 0}$. The ${O(\Delta x)^2}$ actually represents:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				$(\Delta x)^2 \sum\limits_{k = 2}^{n} \binom{n}{k}x^{n - k} = (\Delta
+				x)^2 \left( \binom{n}{2}x^{n-2} + \binom{n}{3}x^{n-3} \Delta x + \ldots
+				+ (\Delta x)^{n-2} \right)$
+			</p>
+		</div>
+	</figure>
+
+	<p>Importantly, as ${\Delta x \to 0,}$ we have the equation:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${\lim\limits_{\Delta x \to 0} \dfrac{o(\Delta x)}{\Delta x} = 0}$</p>
+		</div>
+	</figure>
+
+	<p>
+		Let's get back to our manipulation. With our application of the binomial
+		theorem, we can rewrite our difference quotient as:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				${\dfrac{\Delta f}{\Delta x} = \dfrac{1}{\Delta x}((x + \Delta x)^n -
+				x^n)}$
+			</p>
+			<p>
+				${\phantom{\dfrac{\Delta f}{\Delta x}} = \dfrac{1}{\Delta x}(x^n +
+				nx^{n-1}\Delta x + O((\Delta x)^2) - x^n)}$
+			</p>
+			<p>
+				${\phantom{\dfrac{\Delta f}{\Delta x}} = nx^{n-1} + \dfrac{O((\Delta
+				x)^2)}{\Delta x}}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		Now all we do is apply the limit (recall what we concluded from the binomial
+		theorem earlier):
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>
+				${\lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta x} =
+				\lim\limits_{\Delta x \to 0} \left(nx^{n-1} + \dfrac{O((\Delta
+				x)^2)}{\Delta x}\right)}$
+			</p>
+			<p>
+				${\phantom{\lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta x}} =
+				nx^{n-1} + 0}$
+			</p>
+			<p>
+				${\phantom{\lim\limits_{\Delta x \to 0} \dfrac{\Delta f}{\Delta x}} =
+				nx^{n-1}}$
+			</p>
+			<p></p>
+		</div>
+	</figure>
+
+	<p>Accordingly, we have the following theorem:</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Theorem.</span> The derivative of ${x^n}$ where
+				${n}$ is some positive integer (i.e., ${n \in \Z^{+},}$) is defined as:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\dfrac{d}{dx}x^n = nx^{n - 1}}$</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+
+	<p>
+		The theorem above extends to polynomials. This means that we can now compute
+		the derivatives of the power functions:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${\frac{d}{dx} x^2 = 2x}$</p>
+			<p>${\frac{d}{dx} x^3 = 3x^2}$</p>
+			<p>${\frac{d}{dx} x^4 = 4x^3}$</p>
+			<p>${\frac{d}{dx} 2x^5 = (2)(5x^4) = 10x^4}$</p>
+		</div>
+	</figure>
+</section>
+{% endblock %}

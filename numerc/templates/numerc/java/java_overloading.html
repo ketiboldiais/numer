@@ -1,0 +1,262 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="function_overloading">
+	<h3>Functions Continued</h3>
+	<p>
+		In these sections, we address some more topics on functions. In particular,
+		we discuss the concept of <span class="italicsText">overloading</span> and
+		<span class="italicsText">type casting</span>.
+	</p>
+	<p>
+		<span class="topic">Method Overloading in Java.</span> In previous sections,
+		we said that <span class="italicsText">generally</span>, functions cannot
+		have the same name. We said
+		<span class="italicsText">generally</span> because there is an exception
+		&mdash; overloading:
+	</p>
+	<pre class="language-java"><code>
+		static int sum(int first, int second) {
+			return first + second;
+		}
+		static double sum(double first, double second) {
+			return first + second;
+		}
+		System.out.println(sum(10, 20));
+		System.out.println(sum(10.0, 20.0));
+	</code></pre>
+	<pre class="language-bash"><code>
+		30
+		30.0
+	</code></pre>
+	<p>
+		Notice we have two functions with the same name &mdash;
+		<span class="monoText">sum</span>. The difference? The first function takes
+		two <span class="monoText">int</span> arguments, the second function takes
+		two <span class="monoText">double</span> arguments. Why might this work?
+	</p>
+	<p>
+		One hypothesis is that the two functions have different return types. But,
+		it turns out that isn't the case:
+	</p>
+	<pre class="language-java"><code>
+		static int sum(int first, int second) {
+			return first + second;
+		}
+		static int sum(double first, double second) {
+			return (int) first + (int) second;
+		}
+		System.out.println(sum(10, 20));
+		System.out.println(sum(10.0, 20.0));
+	</code></pre>
+	<pre class="language-bash"><code>
+		30
+		30
+	</code></pre>
+	<p>
+		We will discuss the use of <span class="monoText">(int)</span> in a moment.
+		But, we can see that it isn't the return type. Another hypothesis: it's the
+		argument types. And indeed, that is supported by the evidence:
+	</p>
+	<pre class="language-java"><code>
+		static int sum(int first, int second) {
+			return first + second;
+		}
+		static int sum(int first, int second) {
+			return first + second;
+		}
+		System.out.println(sum(10, 20));
+		System.out.println(sum(10, 20));
+	</code></pre>
+	<pre class="language-bash"><code>
+		Line 4: error: method sum(int,int) is already defined in class Main
+		static int sum(int first, int second) {
+					^
+		1 error
+	</code></pre>
+	<p>
+		Java's error message tells us that we have already defined a method called
+		<span class="monoText">sum</span> that takes two
+		<span class="monoText">int</span> arguments.
+	</p>
+	<p>
+		Java uses <span class="term">function signatures</span> to identify
+		functions. The method signature consists of four different components: (1)
+		the return type; (2) the name; and (3) the number of arguments; and (4) the
+		argument types. As long as at least one of these components is different, we
+		can have multiple functions with the same name. The functions above
+		demonstrate a phenomenon called
+		<span class="term">method overloading</span>. This is a type of
+		<span class="italicsText">polymorphism</span>, a topic to be discussed in
+		later sections. We introduce it now as notice of when we encounter it while
+		proceeding.
+	</p>
+	<p>
+		<span class="topic">Type Casting.</span> In the code above, we had the
+		following line:
+	</p>
+	<pre class="language-java"><code>
+		return (int) first + (int) second;
+	</code></pre>
+	<p>
+		This is an example of <span class="term">type casting</span>. Another
+		example of type casting:
+	</p>
+	<pre class="language-java"><code>
+		static double sum(double first, double second) {
+			return first + second;
+		}
+		System.out.println(sum(10, 20));
+	</code></pre>
+	<pre class="language-bash"><code>
+		30.0
+	</code></pre>
+	<p>
+		Notice that <span class="monoText">sum</span> takes two arguments of type
+		<span class="monoText">double</span>. We passed it two
+		<span class="monoText">int</span> arguments, and it outputted a
+		<span class="monoText">double</span>. This occurs because we converted the
+		result into <span class="monoText">double</span>. This is called
+		<span class="italicsText">type casting</span>, a feature common to many
+		languages, one of which is Java. Casting can be done by Java, or ourselves:
+	</p>
+	<pre class="language-java"><code>
+		int i = 1;
+		double d = i; // will cast, no data is lost
+		i = d // will not cast because we are chopping off a fraction (data is lost)
+		i = (int) d; // compel Java to cast anyway
+	</code></pre>
+	<p>
+		As we can see from above, the general rule is: We can cast data of one type
+		into another type, if and only if no data is lost. However, we can compel
+		Java to perform the cast with the syntax seen in the last line. A key point
+		to understand: There is no rounding when you cast from a float to an
+		integer. That data is simply deleted.
+	</p>
+	<p>
+		<span class="topic">Argument Validation.</span> Because of type casting, a
+		common function design pattern is to always check the function's arguments
+		at the very top. To do so, we think about all the potentially bad arguments
+		the function can receive from the caller and check accordingly. This is one
+		type of <span class="term">sanity check</span> &mdash; a check on the most
+		basic, foundational assumptions.
+	</p>
+	<pre class="language-java"><code>
+		int sum(int[] numbers) {
+			// sanity check
+		}
+	</code></pre>
+	<p>
+		For example, suppose we wanted to summate all of the numbers in an array:
+	</p>
+	<pre class="language-java"><code>
+		int sum(int[] numbers) {
+			int sum = 0;
+			for (int number : numbers) {
+				sum += number;
+			}
+			return sum;
+		}
+		int[] arr = {1, 2, 3, 4};
+		int arrTotal = sum(arr);
+		System.out.println(arrTotal)
+	</code></pre>
+	<pre class="language-bash"><code>
+		9
+	</code></pre>
+	<p>
+		The function works. But there is an array we can pass that will cause a
+		problem. In Java, the value of an uninitialized array is the value
+		<span class="monoText">null</span> &mdash; the value representing the
+		absence of value. The most dangerous aspect of
+		<span class="monoText">null</span> &mdash; it has no properties of methods
+		we can use. <span class="underlineText">Any</span> attempt to use
+		<span class="monoText">null</span> &mdash; arithmetic, passing it as an
+		argument &mdash; pretty much anything &mdash; will return an error (we say
+		pretty much because there are a few exceptions). We cannot use
+		<span class="monoText">null</span> whatsoever.
+	</p>
+	<pre class="language-java"><code>
+		int sum(int[] numbers) {
+			int sum = 0;
+			for (int number : numbers) {
+				sum += number;
+			}
+			return sum;
+		}
+		System.out.println(sum(null));
+	</code></pre>
+	<p>
+		The code above does not work at all. <span class="monoText">null</span> is
+		the value that breaks the function. The reason why
+		<span class="monoText">null</span> is so dangerous (it is often called
+		Oracle's billion dollar mistake) is because every object in Java has a
+		default value of <span class="monoText">null</span>. If we merely declare a
+		variable without initializing, that variable's default value is
+		<span class="monoText">null</span>.
+	</p>
+	<p>
+		One of the few exceptions to the prohibition on using
+		<span class="monoText">null</span> is with conditionals:
+	</p>
+	<pre class="language-java"><code>
+		int sum(int[] numbers) {
+			// sanity check:
+			if (numbers == null) {
+				return 0;
+			}
+			int sum = 0;
+			for (int number : numbers) {
+				sum += number;
+			}
+			return sum;
+		}
+		int[] arr = {1, 2, 3, 4};
+		int arrTotal = sum(arr);
+		System.out.println(arrTotal)
+	</code></pre>
+	<p>
+		The sanity check above ensures that a valid array is passed in as an
+		argument. That check is done with a conditional: If an array bound to
+		<span class="monoText">null</span> is passed (e.g., an uninitialized array),
+		we return <span class="monoText">0</span>, a common convention for returning
+		errors. Otherwise, continue.
+	</p>
+	<p>
+		We should not confuse an array bound to
+		<span class="monoText">null</span> with an empty array. Those are two
+		different entities. An empty array will work just fine, granted it does not
+		actually run through a loop:
+	</p>
+	<pre class="language-java"><code>
+		int sum(int[] numbers) {
+			int sum = 0;
+			for (int number : numbers) {
+				sum += number;
+			}
+			return sum;
+		}
+		int[] arr = {};
+		int arrTotal = sum(arr);
+		System.out.println(arrTotal)
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+	</code></pre>
+	<p>Of course, we can always check for an empty array:</p>
+	<pre class="language-java"><code>
+		int sum(int[] numbers) {
+			// sanity check:
+			if (numbers == null || numers.length == 0) {
+				return 0;
+			}
+			int sum = 0;
+			for (int number : numbers) {
+				sum += number;
+			}
+			return sum;
+		}
+		int[] arr = {1, 2, 3, 4};
+		int arrTotal = sum(arr);
+		System.out.println(arrTotal)
+	</code></pre>
+</section>
+{% endblock %}

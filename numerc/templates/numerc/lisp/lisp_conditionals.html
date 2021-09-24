@@ -1,0 +1,221 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="conditional_expressions">
+	<h3>Case Analysis</h3>
+	<p>
+		Our ability to use procedures is significantly limited without the ability
+		to only execute them under certain conditions. For example, consider the
+		mathematical definition of absolute value:
+	</p>
+	<figure class="math-display">
+		<div>
+			$$ \lvert x \rvert = \begin{cases} x &\text{if } x > 0 \\ 0 &\text{if } x
+			= 0 \\ -x &\text{if } x < 0 \end{cases} $$
+		</div>
+	</figure>
+	<p>
+		This is an example of <span class="italicsText">case analysis</span> &mdash;
+		If ${x,}$ then ${y;}$ else if ...; otherwise ...; else ...; etc. Lisp
+		notates case analysis with the keyword <span class="monoText">cond</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (abs x)
+			(cond ((> x 0) x)
+					((= x 0) 0)
+					((< x 0) (- x))))
+	</code></pre>
+	<p>Lisp's general form for a conditional expression is the following:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(cond (⟨predicate 1⟩ ⟨consequent 1⟩)
+					(⟨predicate 2⟩ ⟨consequent 2⟩)
+					(⟨predicate 3⟩ ⟨consequent 3⟩)
+					⋮
+					(⟨predicate n⟩ ⟨consequent n⟩))
+					(⟨predicate n+1⟩ ⟨consequent n+1⟩))
+		</code></pre>
+	</figure>
+	<p>
+		The symbol <span class="monoText">cond</span> is followed by parentheses
+		containing a <span class="italicsText">clause</span> &mdash; the pair of
+		expressions <span class="monoText">⟨predicate n⟩</span> and
+		<span class="monoText">⟨consequent n⟩</span>. The
+		<span class="monoText">⟨predicate⟩</span> is an expression that evaluates to
+		one of two values: true (in Lisp, <span class="monoText">#t</span>) or false
+		(<span class="monoText">#f</span>). If
+		<span class="monoText">⟨predicate n⟩</span> evaluates to
+		<span class="monoText">#f</span>, then the interpreter next evaluates
+		<span class="monoText">⟨predicate n+1⟩</span>. The moment the interpreter
+		reaches a <span class="monoText">⟨predicate⟩</span> that evaluates to
+		<span class="monoText">#t</span>, the interpreter returns the value of the
+		corresponding <span class="monoText">⟨consequent⟩</span>. If none of the
+		predicates are true, then the value of <span class="monoText">cond</span> is
+		<span class="monoText">undefined</span>.
+	</p>
+	<p>
+		A predicate can be a procedure or an expression. The only requirement is
+		that the the predicate evaluates to true or false. In the conditional
+		expression above, the symbols <span class="monoText"><, >, = </span> were
+		used to denote less than, greater than, and equal to. These symbols are
+		<span class="italicsText">primitive predicates</span>.
+	</p>
+	<p>
+		A common convention in Lisp is to use square brackets,
+		<span class="monoText">[]</span> for
+		<span class="monoText">cond</span> structures. For example, the two function
+		definitions below are equivalent:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (checker x)
+			(if (> x 10) "yes"
+					(if (< x 10) "no" "maybe")))
+
+		;; This^ is equivalent to:
+
+		(define (checker x)
+			(cond [(> x 10) "yes"] 
+					[(< x 10) "no"]
+					[else "maybe"]))
+	</code></pre>
+
+	<p>
+		<span class="topic"
+			>Evaluation Rules: <span class="monoText">cond.</span></span
+		>
+		To evaluate <span class="monoText">cond</span>, Lisp follows the following
+		procedure:
+	</p>
+	<ol>
+		<li>
+			If there are no question-answer pairs (the expressions inside the square
+			brackets <span class="monoText">[]</span>), then return an error.
+		</li>
+		<li>
+			Else, evaluate the first <span class="monoText">[Q A]</span>. Replace the
+			entire <span class="monoText">cond</span> with a new
+			<span class="monoText">cond</span> where the first question has been
+			replaced by its value.
+		</li>
+		<li>
+			If the value of the first <span class="monoText">[Q A]</span> is
+			<span class="monoText">true</span>, replace the entire
+			<span class="monoText">cond</span> expression with the
+			<span class="monoText">A</span> in the
+			<span class="monoText">[Q A]</span>.
+		</li>
+		<li>
+			If the value of the first <span class="monoText">[Q A]</span> is
+			<span class="monoText">false</span>, then replace the first
+			<span class="monoText">[Q A]</span> with a new
+			<span class="monoText">cond</span> that does not have the first
+			<span class="monoText">[Q A]</span>.
+		</li>
+		<li>Repeat the process.</li>
+		<li>
+			Else, if the first <span class="monoText">[Q A]</span> evaluates to
+			neither <span class="monoText">true</span> nor
+			<span class="monoText">false</span>, return an error.
+		</li>
+	</ol>
+
+	<p>Visually:</p>
+
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(cond
+				[(> 1 2) "bigger"]
+				[(= 1 2) "equal"]
+				[(< 1 2) "smaller"])
+				
+			(cond
+				[#false "bigger"]
+				[(= 1 2) "equal"]
+				[(< 1 2) "smaller"])
+
+			(cond
+				[(= 1 2) "equal"]
+				[(< 1 2) "smaller"])
+
+			(cond
+				[#false "equal"]
+				[(< 1 2) "smaller"])
+
+			(cond
+				[(< 1 2) "smaller"])
+
+			(cond
+				[#true "smaller"])
+			
+			"smaller"
+		</code></pre>
+	</figure>
+
+	<p>
+		<span class="topic"><span class="monoText">else</span>.</span> The absolute
+		value procedure above can be rewritten as:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (abs x)
+			(cond ((< x 0) (- x))
+					(else x)))
+	</code></pre>
+	<p>
+		The code commands the interpreter: If $x$ is less than zero, return ${-x;}$
+		otherwise, return ${x.}$ The <span class="monoText">else</span> symbol is
+		akin to a <span class="italicsText">default consequence</span>. If none of
+		the preceding predicates returns true, the
+		<span class="monoText">else</span> consequence will execute.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">if</span>.</span> The same
+		procedure can be written in another way:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (abs x)
+			(if (< x 0)
+					(- x)
+					x))
+	</code></pre>
+	<p>
+		Here, we see the symbol <span class="monoText">if</span>. This symbol tells
+		the interpreter to evaluate the predicate following the symbol,
+		<span class="monoText">(< x 0)</span>.
+	</p>
+	<p>
+		Like <span class="monoText">def</span>, <span class="monoText">if</span> is
+		a special form. We use <span class="monoText">if</span> when we have exactly
+		two cases in a case analysis. Its general form:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(if <span class="redText">⟨predicate⟩</span> <span class="redText">⟨consequent⟩</span> <span class="redText">⟨alternative⟩</span>)
+		</code></pre>
+	</figure>
+	<p>
+		With an <span class="monoText">if</span> conditional, the interpreter first
+		evaluates the <span class="monoText">⟨predicate⟩</span>. If the predicate
+		evaluates to true, then the interpreter evaluates the
+		<span class="monoText">⟨consequent⟩</span> and returns its value. We call
+		this the <span class="term">truth block</span> &mdash; the expressions
+		therein execute if the predicate is true. If the
+		<span class="monoText">⟨predicate⟩</span> evaluates to false, then the
+		interpreter evaluates the <span class="monoText">⟨alternative⟩</span> and
+		returns its value. We call this the
+		<span class="term">false block</span> &mdash; the expressions therein
+		execute if the predicate is false.
+	</p>
+	<p>
+		<span class="topic"
+			>Evaluation Rule: <span class="monoText">if</span> Expressions.</span
+		>
+		For <span class="monoText">if</span> expressions, the interpreter first
+		evaluates the predicate, and returns its value &mdash; either
+		<span class="monoText">#true</span> or <span class="monoText">#false</span>.
+		If the value is <span class="monoText">#true</span>, then the interpreter
+		replaces the entire expression with the consequent, and evaluates. If the
+		value is <span class="monoText">#false</span>, then the interpreter replaces
+		the entire expression with the alternative and evaluates. If the value is
+		neither <span class="monoText">#true</span> nor
+		<span class="monoText">#false</span>, then the interpreter returns an error.
+	</p>
+</section>
+{% endblock %}

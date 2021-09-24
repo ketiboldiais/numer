@@ -1,0 +1,94 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="product_types">
+	<h4>Product Types</h4>
+	<p>
+		The each-of type is more formally the product type. A product type describes
+		the values containing <span class="italicsText">each of</span> the values of
+		type ${t_1, t_2, \ldots, \textit{ and } \space t_n.}$ Tuples are the most
+		obvious example of product type data. A tuple such as
+		<span class="monoText">(1, true)</span> is a value of type
+		<span class="monoText">int*bool</span>. The tuple describes the values
+		containing an <span class="monoText">int</span>
+		<span class="underlineText">and</span> a <span class="monoText">bool</span>.
+	</p>
+
+	<p>
+		<span class="topic">Record Types.</span> One way to create a product type is
+		through a <span class="term">record type</span>. In a record type, each
+		component has a <span class="term">named field</span>. For example:
+	</p>
+
+	<pre class="language-sml"><code>
+		val student = {name="Jo Ann", age=19, enrolled=true}
+	</code></pre>
+	<pre class="language-bash"><code>
+		val student = {age=19,enrolled=true,name="Jo Ann"} :
+			{age:int, enrolled:bool, name:string}
+	</code></pre>
+
+	<p>
+		Above, we created a <span class="italicsText">record</span> called
+		<span class="monoText">student</span>, which contains the fields
+		<span class="monoText">name</span>, <span class="monoText">age</span>, and
+		<span class="monoText">enrolled</span>. We can also see data type output,
+		namely, <span class="monoText">{age:int, enrolled:bool, name:string}</span>.
+		Depending on the language implementation, we may or may not see a different
+		ordering of the fields. This is because the records
+		<span class="underlineText">do not have order</span>, and it is up to the
+		language how to represent the field ordering. In this case, the language
+		went with alphabetical order.
+	</p>
+
+	<p>
+		If we want to access the values in the fields, we use the same hash-syntax
+		we saw with tuples:
+	</p>
+
+	<pre class="language-sml"><code>
+		val student = {name="Jo Ann", age=19, enrolled=true}
+		val JoAnnName = #name student
+	</code></pre>
+	<pre class="language-bash"><code>
+		val student = {age=19,enrolled=true,name="Jo Ann"} :
+			{age:int, enrolled:bool, name:string}
+		val JoAnnName = "Jo Ann" : string
+	</code></pre>
+
+	<p>
+		Here, we have three fields: <span class="monoText">index</span>,
+		<span class="monoText">name</span>, and
+		<span class="monoText">attended</span>. We call the expression above a
+		<span class="term">record expression</span>, and it evaluates to a
+		<span class="term">record value</span>. The general syntax for a record
+		expression:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>{ ${f_1}$ = ${e_1}$, ${\ldots}$, ${f_n}$ = ${e_n}$ }</li>
+		</ul>
+		<ul class="def">
+			<li class="where">
+				${f_1 \ldots f_n}$ are <span class="italicsText">unique</span> field
+				names, and
+			</li>
+			<li>${e_1 \ldots e_n}$ are expressions</li>
+		</ul>
+	</figure>
+
+	<p>
+		Astute observation reveals how closely a record resembles a tuple. In fact,
+		tuples <span class="italicsText">are</span> records. Specifically, they are
+		records with numeric field names to indicate
+		<span class="italicsText">position</span>. For example, to access a record
+		with a field name <span class="monoText">age</span>, we would reference the
+		field name <span class="monoText">age</span> to access the value stored in
+		that field name. In contrast, we access a particular value in a tuple by
+		referencing that value's position &mdash; e.g.,
+		<span class="monoText">(#1 myTuple)</span> to access the value in position
+		1. Why not just use records? Because tuples are such a common data structure
+		that we provide it a syntax of its own; a form of
+		<span class="term">syntactic sugar</span>.
+	</p>
+</section>
+{% endblock %}

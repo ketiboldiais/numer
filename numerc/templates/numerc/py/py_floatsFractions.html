@@ -1,0 +1,189 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="floats_and_fractions">
+	<h4>Floats and Fractions</h4>
+	<p>
+		When we write programs that output certain numbers, we might notice that
+		we're given some number like <span class="monoText">3.00001</span> when we
+		expected the whole number <span class="monoText">3</span> or the floating
+		point number (&#8220;float&#8221;) <span class="monoText">3.0</span>. To
+		understand why this occurs, we must study how floating point numbers are
+		represented by computers.
+	</p>
+	<p>
+		Computers can only <span class="underlineText">approximate</span> real
+		numbers. Real numbers, by definition, have an infinite number of fractional
+		components, or decimal points. But, because computers have a finite amount
+		of memory, it follows that they cannot store every decimal point. Thus, they
+		must approximate. As such, the float we're getting back is an approximation.
+		But how does the computer approximate?
+	</p>
+	<p>Recall how real numbers are represented in the decimal system:</p>
+	<figure class="math-display">
+		<div>
+			<p>${302 = (3 \cdot 10^2) + (0 \cdot 10^1) + (2 \cdot 10^0)}$</p>
+		</div>
+	</figure>
+	<p>
+		As seen above, we &mdash; humans &mdash; represent numbers in base-10.
+		Computers, however, represent numbers in
+		<span class="italicsText">binary</span> &mdash; base-2:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${19 = (1 \cdot 2^4) + (0 \cdot 2^3) + (0 \cdot 2^2) + (1 \cdot 2^1) +
+				(1 \cdot 2^0)}$
+			</p>
+			<p>${\phantom{19} = 16 + 2 + 1}$</p>
+			<p>${\phantom{19} = 10011}$</p>
+		</div>
+	</figure>
+	<p>
+		Because computers represent, and can only represent, numbers in binary,
+		every decimal number must be converted into binary. How do we convert from
+		decimal to binary? First, note that if we computed ${19 \bmod 2,}$ we get
+		the last binary bit:
+	</p>
+	<figure class="math-display">
+		<div>
+			$$ \begin{array}{r} 9 \\ 2{\overline{\smash{\big)}\,19}} \\ -18 \\ \hline
+			1 \end{array} $$
+		</div>
+		<div>${19 = (2 \cdot 9) + \texttt{1}}$</div>
+	</figure>
+	<p>If we then divide 19 by 2, then all the bits get shifted right:</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\dfrac{19}{2} = (1 \cdot 2^3) + (0 \cdot 2^2) + (0 \cdot 2^1) + (1
+				\cdot 2^0)}$
+			</p>
+			<p>${\phantom{\dfrac{\frac{19}{2}}{2}} = 1001}$</p>
+		</div>
+	</figure>
+	<p>
+		If we keep doing successive divisions, the remainder becomes the next bit,
+		then the next bit, then the next bit, and so on. This effectively allow us
+		to quickly convert from decimal to binary. We can perform this conversion
+		with Python code:
+	</p>
+	<pre class="language-python"><code>
+		num = int(input('Enter an integer: ')) # get num
+		if num < 0:
+			isNeg = True # if num is negative, indicate with isNeg flag
+			num = abs(num) # if num is negative, use absolute value
+		else:
+			isNeg = False # otherwise make isNeg flag false
+		result = '' # accumulate results and store it in result
+		if num == 0:
+			result = '0'
+		while num > 0: # keep doing this as long as num is bigger than 0
+			result = str(num%2) + result # add remainder to the result
+			num = num//2 # do the division to shift right
+		if isNeg:
+			result = '-' + result
+		print(result)
+	</code></pre>
+	<pre class="command-line language-bash" data-output="2,3,5"><code>
+		Enter an integer: 3
+		11
+
+		Enter an integer: 19
+		10011
+	</code></pre>
+	<p>
+		Ok, so we can convert integers into binary. How do we handle fractions? We
+		can do <span class="italicsText">almost</span> the same procedure. Consider
+		the fraction ${3/8:}$
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\dfrac{3}{8} = 0.375 = (3 \cdot 10^{-1}) + (7 \cdot 10^{-2}) + (5
+				\cdot 10^{-3})}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Observing the bases, we can see that if we multiply by a power of 2 large
+		enough to convert into a whole number, we can then convert to binary, and
+		divide by the same power of 2:
+	</p>
+	<figure class="table">
+		<table class="proof_table">
+			<tbody>
+				<tr>
+					<td>${0.375 \cdot (2^{3}) = 3}$</td>
+					<td><p>The decimal representation</p></td>
+				</tr>
+				<tr>
+					<td>${3 = (1 \cdot 2^{1}) + (1 \cdot 2^{0})}$</td>
+					<td><p>Convert 3 to binary</p></td>
+				</tr>
+				<tr>
+					<td>${\dfrac{3}{2^{3}} = 0.011}$</td>
+					<td><p>Shift right</p></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>We can implement this with Python code:</p>
+	<pre class="language-python"><code>
+		x = float(input('Enter a decimal number between 0 and 1: '))
+		p = 0
+		while ((2**p)*x)%1 != 0:
+			print(f'Remainder {(2**p)*x - int((2**p)*x)}')
+			p += 1
+		num = int(x*(2**p))
+		result = ''
+		if num == 0:
+			result = '0'
+		while num > 0:
+			result = f'{num%2}{result}'
+			num = num//2
+		for i in range(p - len(result)):
+			result = f'0{result}'
+		result = result[0:-p] + '.' + result[-p:]
+		print(f'The binary representation of the decimal {x} is {result}')
+	</code></pre>
+	<pre class="command-line language-bash" data-output="2-5"><code>
+		Enter a decimal number between 0 and 1: 0.375
+		Remainder 0.375
+		Remainder 0.75
+		Remainder 0.5
+		The binary representation of the decimal 0.375 is .011
+	</code></pre>
+	<p>
+		This all shows why we get unexpected numbers at the end of floating point
+		numbers. The computer can get close to a particular decimal point, but it
+		will never get there. This leads to a core rule in computation:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Theorem</span>. Given ${x \in \R,}$ if there is no
+			integer $p$ such that ${x \cdot 2^p \in \Z,}$ then the internal
+			representation of ${x}$ is <span class="underlineText">always</span> an
+			approximation.
+		</p>
+	</div>
+	<p>
+		This theorem has a huge implication in practice. If we want to test the
+		equality of floating point numbers, say ${\texttt{x}}$ and ${\texttt{y,}}$
+		then we must test for their difference, rather than strict equality:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>Never test floats with: ${\texttt{x == y}}$.</p>
+			<p>
+				Always test with: ${\texttt{abs(x - y) < n} }$, where ${\texttt{n}}$ is
+				some small number
+			</p>
+		</div>
+	</figure>
+	<p>
+		Testing floats with ${\texttt{x == y}}$ can occassionally lead to correct
+		comparisons, but it is never assured. This is why we never compare floats in
+		this way.
+	</p>
+</section>
+{% endblock %}

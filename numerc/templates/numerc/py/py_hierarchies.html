@@ -1,0 +1,187 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="hierarchies">
+	<h4>Inheritance</h4>
+	<p>
+		As aforementioned, classes are premised on classification. A key component
+		of classification is the concept of
+		<span class="italicsText">hierarchy</span>. Let's explore that concept in
+		terms of Python programming.
+	</p>
+	<p>
+		Classes can have hierarchies. Consider, for example, the following
+		hierarchy:
+	</p>
+	<figure>
+		<img src="{% static 'images/number_hierarchy.svg' %}" alt="num hierarchy" loading="lazy" />
+	</figure>
+	<p>
+		As we can see, hierarchies can be complicated, and many problems can be
+		simplified if we break them down along the hierarchy.
+	</p>
+	<p>
+		At the very top of the hierarchy is the
+		<span class="term">parent class</span>. Every class beneath the parent class
+		is called a <span class="term">child class</span>. The parent class is said
+		to be the <span class="term">superclass</span> of the child class, and the
+		child class is said to be the <span class="term">subclass</span> of the
+		parent class.
+	</p>
+	<p>
+		Every subclass inherits all data attributes (state) and procedural
+		attributes (behavior) of the parent class. However, we are free to add more
+		data attributes, more procedural attributes, and override existing
+		attributes with a subclass.
+	</p>
+	<p>
+		Let's suppose we have a parent class called
+		<span class="monoText">Animal</span>, and three child classes:
+		<span class="monoText">Person</span>, <span class="monoText">Cat</span>, and
+		<span class="monoText">Rabbit</span>. Then suppose the
+		<span class="monoText">Person</span> class has the subclass
+		<span class="monoText">Student</span>. We begin with the parent class,
+		<span class="monoText">Animal</span>:
+	</p>
+	<pre class="language-python"><code>
+		class Animal(object):
+			def __init__(self, age):
+				self.age = age
+				self.name = None
+			def get_age(self):
+				return self.age
+			def get_name(self):
+				return self.name
+			def set_age(self, newAge):
+				self.age = newAge
+			def set_name(self, newName):
+				self.name = newName
+			def __str__(self):
+				return f"animal: {self.name} : {self.age}"
+	</code></pre>
+	<p>
+		In the <span class="monoText">Animal</span> class above, we pass
+		<span class="monoText">object</span> as a parameter, which tells Python that
+		this class inherits all of Python's built-in objects and methods. This in
+		turn means that every subclass of <span class="monoText">Animal</span> will
+		inherit the same.
+	</p>
+	<p>
+		Now we can define a subclass of <span class="monoText">Animal</span>,
+		<span class="monoText">Cat</span>:
+	</p>
+	<pre class="language-python"><code>
+		class Cat(Animal):
+			def speak(self):
+				print("meow")
+			def __str__(self):
+				return f"cat: {self.name} : {self.age}"
+	</code></pre>
+	<p>
+		Notice that rather than passing <span class="monoText">object</span> as a
+		parameter, we passed in <span class="monoText">Animal</span>. This is
+		because <span class="monoText">Cat</span> is a subclass of
+		<span class="monoText">Animal</span>, so it inherits all the properties of
+		<span class="monoText">Animal</span>. Notice further that we did not
+		explicitly write <span class="monoText">__init__</span>. Again, this is
+		because <span class="monoText">Cat</span> inherits everything from
+		<span class="monoText">Animal</span>. This is also why we can use
+		<span class="monoText">self.name</span> and
+		<span class="monoText">self.age</span>.
+	</p>
+	<p>All of the above defined, let us test:</p>
+	<pre class="language-python"><code>
+		wooster = Cat(1)
+		wooster.set_name('Wooster')
+		print(wooster.get_name())
+	</code></pre>
+	<pre class="language-bash"><code>
+		Wooster
+	</code></pre>
+	<p>
+		Our hierarchy works so far. Let's define another subclass,
+		<span class="monoText">Rabbit</span>:
+	</p>
+	<pre class="language-python"><code>
+		class Rabbit(Animal):
+			def speak(self):
+				print("meep")
+			def __str__(self):
+				return "rabbit: {self.name} : {self.age}"
+	</code></pre>
+	<p>Testing:</p>
+	<pre class="language-python"><code>
+		bugs = Rabbit(2)
+		bugs.speak()
+	</code></pre>
+	<pre class="language-bash"><code>
+		meep
+	</code></pre>
+	<p>
+		Now, suppose we made an instance of
+		<span class="monoText">Animal</span> called
+		<span class="monoText">foobar</span>:
+	</p>
+	<pre class="language-python"><code>
+		foobar = Animal(1)
+		foobar.speak()
+	</code></pre>
+	<pre class="language-bash"><code>
+		AttributeError: 'Animal' object has no attribute 'speak'
+	</code></pre>
+	<p>
+		We get an <span class="monoText">AttributeError</span>. This is because the
+		<span class="monoText">speak</span> method is found only in
+		<span class="monoText">Cat</span> and <span class="monoText">Rabbit</span>.
+		This is an instance of <span class="monoText">Animal</span>, which contains
+		no such method. Remember: Only the subclasses inherit the superclass's
+		properties. The superclass does not, in any way, inherit a subclass's
+		properties (that would, after all, defeat the purpose of a hierarchy).
+	</p>
+	<p>Let's add one more class, <span class="monoText">Person</span>:</p>
+	<pre class="language-python"><code>
+		def __init__(self, name, age):
+			Animal.__init__(self, age)
+			Animal.set_name(self, name)
+			self.friends = []
+		def get_friends(self):
+			return self.friends
+		def add_friend(self, fname):
+			if fname not in self.friends:
+				self.friends.append(fname)
+		def speak(self):
+			print("hello")
+		def age_diff(self, other):
+			diff = self.get_age() - other.get_age()
+			if self.age > other.age:
+				print(f"{self.name} is {diff} years older than {other.name}.")
+			else:
+				print(f"{self.name} is {-diff} years younger than {other.name}.")
+		def __str__(self):
+			return f"Person: {self.name} : {self.age}"
+	</code></pre>
+	<p>
+		Notice here that we used a different form of the
+		<span class="monoText">__init__</span> method. Here, we called
+		<span class="monoText">Animal</span> itself. In this form, we are telling
+		Python to call the <span class="monoText">__init__</span> method for
+		<span class="monoText">Animal</span>. We also called the
+		<span class="monoText">set_name()</span> method associated with
+		<span class="monoText">Animal</span>. The rest of the code, we create new
+		data and procedural attributes for <span class="monoText">Person</span>.
+	</p>
+	<p>
+		Finally, let's create the last class, a subclass of
+		<span class="monoText">Person</span> called
+		<span class="monoText">Student</span>:
+	</p>
+	<pre class="language-python"><code>
+		class Student(Person):
+			def __init__(self, name, age, major=None):
+				Person.__init__(self, name, age)
+				self.major = major
+			def change_major(self, major):
+				self = major
+			def __str__(self):
+				return f"student : {self.name} : self.age : self.major"
+	</code></pre>
+</section>
+{% endblock %}

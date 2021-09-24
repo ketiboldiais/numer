@@ -1,0 +1,758 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="loops_in_java">
+	<h4>Loops in Java</h4>
+	<p>
+		The process of repeatedly doing the same thing over and over again is called
+		a <span class="boldText">loop</span>. In the previous section, we the most
+		basic data structure, an array. Loops are a common way to work with data
+		stored in array. There are two types of loops &mdash;
+		<span class="monoText">while</span> loops and
+		<span class="monoText">for</span> loops.
+	</p>
+
+	<p>
+		<span class="topic">The <span class="monoText">while</span> Loop.</span> The
+		simplest loop is the <span class="monoText">while</span> loop. It takes the
+		following form in Java:
+	</p>
+
+	<pre class="language-java"><code>
+		while (x) {
+			...
+			...
+			...
+		}
+
+		// 'x'  &rarr; some code that outputs true or false
+		// ...  &rarr; a statement to execute
+	</code></pre>
+
+	<p>
+		In the <span class="monoText">while</span> loop, we pass into the
+		parentheses some code that outputs true or false. Most often, these are
+		Boolean expressions. <span class="italicsText">As long as</span> the
+		condition, in the example above <span class="monoText">x</span>, returns
+		<span class="monoText">true</span>, the code block enclosed by the
+		<span class="monoText">while</span> loop executes.
+	</p>
+	<p>In sum, the <span class="monoText">while</span> loop has two parts:</p>
+
+	<ol>
+		<li>
+			A condition that must be true each time the loop is entered, called the
+			<span class="italicsText">test statement</span> (represented by
+			<span class="monoText">x</span> in the syntax above); and
+		</li>
+		<li>
+			a block of code to repeat (represented by the set of ellipses above)
+		</li>
+	</ol>
+
+	<p>
+		As soon as the condition is false, the block of code
+		<span class="underlineText">is not executed</span>, and execution continues
+		after the loop. Otherwise, the block of code continues executing. In loops,
+		each execution of a loop's block of code is called an
+		<span class="boldText">iteration</span>. For example:
+	</p>
+
+	<pre class="language-java"><code>
+		int iteration = 0;
+		while (iteration < 4) {
+			System.out.println(iteration);
+			iteration++;
+		}
+		System.out.println("Done");
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+		1
+		2
+		3
+		Done
+	</code></pre>
+
+	<p>
+		The operator <span class="monoText">++</span> is the increment-by-1
+		operator; it adds the integer 1 to a particular value. This will cause
+		different inputs for the <span class="monoText">while</span> loop, allowing
+		it evaluate to either <span class="monoText">true</span> or
+		<span class="monoText">false</span>. We call this the
+		<span class="italicsText">updating statement</span>. In the code above, the
+		condition is <span class="monoText">iteration < 4</span>. Since
+		<span class="monoText">iteration = 0</span>, the condition in plain English
+		is, &#8220;As long as <span class="monoText">iteration</span> is less than
+		<span class="monoText">4</span>, execute the following.&#8221; The first
+		time we encounter the <span class="monoText">while</span> loop,
+		<span class="monoText">iteration = 0</span>; the condition returns
+		<span class="monoText">true</span>. So, we print the current value assigned
+		to <span class="monoText">increment</span>, <span class="monoText">0</span>,
+		and then we increment: <span class="monoText">iteration = 1</span>. We go
+		back to the condition: Is <span class="monoText">1 < 4</span>? Yes. Print
+		<span class="monoText">1</span> and increment:
+		<span class="monoText">iteration = 2</span>. Is
+		<span class="monoText">2 < 4</span>? Yes. Print
+		<span class="monoText">2</span> and increment:
+		<span class="monoText">iteration = 3</span>. Is
+		<span class="monoText">3 < 4</span>? Yes. Print
+		<span class="monoText">3</span> and increment:
+		<span class="monoText">increment = 4</span>. Is
+		<span class="monoText">4 < 4</span>? No. Java ignores the
+		<span class="monoText">while</span> loop's code block and moves to the next
+		statement &mdash; print <span class="monoText">"Done"</span>.
+	</p>
+
+	<p>
+		<span class="topic">The <span class="monoText">do-while</span> Loop.</span>
+		The <span class="monoText">do-while</span> loop takes the following form:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			do {
+				⟨<span class="italicsText">expressions</span>⟩
+			} while ( ⟨<span class="italicsText">condition</span>⟩ )
+		</code></pre>
+	</figure>
+	<p>
+		Compared to the <span class="monoText">while</span> loop, the
+		<span class="monoText">do-while</span> loop checks the condition
+		<span class="italicsText">after</span> the expressions are executed. In
+		effect, the <span class="monoText">do while</span> loop operates similarly
+		to the <span class="monoText">while</span> loop (it is still a loop), with
+		the difference being the loop's body always executes
+		<span class="underlineText">at least once</span> (in contrast to
+		<span class="monoText">while</span> loops, where no such requirement exists;
+		the loop body may never execute if the first condition check returns
+		<span class="monoText">false</span>).
+	</p>
+
+	<pre class="language-java"><code>
+		// the loops below have the same condition
+		// only one will have its body executed 
+
+		int i = 0;
+		while (i < 0) {
+			System.out.println("while " + i);
+			i++
+		};
+
+		i = 0;
+		do {
+			System.out.println("do-while" + i);
+			i++;
+		} while (i < 0)
+	</code></pre>
+	<pre class="language-bash"><code>
+		do-while 0
+	</code></pre>
+
+	<p>
+		<span class="topic">Infinite Loops.</span> If we're going to use a
+		<span class="monoText">while</span> loop, we must have code that eventually
+		causes its condition to return <span class="monoText">false</span>. In other
+		words, we need to ensure that the <span class="monoText">while</span> loop
+		will eventually <span class="italicsText">halt</span>. Otherwise, the loop
+		becomes an <span class="italicsText">unterminated loop</span>, which will
+		cause our code to <span class="italicsText">hang</span>, or hit a
+		<span class="italicsText">timeout</span>.
+	</p>
+
+	<p>
+		Most often, such code is included in the
+		<span class="monoText">while</span> loop's body. If we fail to write this
+		code, the <span class="monoText">while</span> loop's code block will
+		continue executing endlessly &mdash; an infinite loop. Here is an example of
+		an unterminated <span class="monoText">while</span> loop:
+	</p>
+
+	<pre class="language-java"><code>
+		int index = 0;
+		while (index < 4) {
+			System.out.println(index);
+			index--;
+		}
+		System.out.println("Done");
+	</code></pre>
+
+	<p>
+		The <span class="monoText">while</span> loop never terminates because its
+		condition will always return <span class="monoText">true</span>. The
+		<span class="monoText">while</span> loop here will run for as long as it can
+		until the console eventually returns a
+		<span class="monoText">(Program Timed Out)</span>. Here is a more explicit
+		example of an unterminated loop:
+	</p>
+
+	<pre class="language-java"><code>
+		while (true) {
+			System.out.println("Looping");
+		}
+	</code></pre>
+
+	<p>
+		This is such a clear example of an unterminated loop that we have a special
+		name for it &mdash; the <span class="monoText">while true</span> loop. If we
+		ever feel the need to use a <span class="monoText">while true</span> loop,
+		we must always ask ourselves what we're using it for &mdash; we're playing
+		with fire.
+	</p>
+
+	<p>
+		<span class="topic"
+			><span class="monoText">while</span> Loops and Arrays.</span
+		>
+		With the <span class="monoText">while</span> loop, we can loop through the
+		values in an array:
+	</p>
+
+	<pre class="language-java"><code>
+		char[] word = {'j', 'a', 'v', 'a'};
+		int index = 0;
+		while (index < 4) {
+			System.out.println(word[index]);
+			index++;
+		}
+		System.out.println("Done");
+	</code></pre>
+	<pre class="language-bash"><code>
+		j
+		a
+		v
+		a
+		Done
+	</code></pre>
+
+	<p>
+		<span class="topic">The <span class="monoText">for</span> Loop.</span>
+		Looping through data structures like arrays is so common in programming that
+		we have an alternative and cleaner way of looping, the
+		<span class="monoText">for</span> loop. The syntax is the following:
+	</p>
+
+	<pre class="language-java"><code>
+		for (int i = 0; i < n; i++) {
+			...
+			...
+			...
+		}
+
+		/* 
+		where: 
+			i is an index (an integer)
+			n is the number of times we want to loop
+			... is a statement to execute
+		*/ 
+	</code></pre>
+
+	<p>
+		The <span class="monoText">for</span> loop accomplishes the same task as the
+		<span class="monoText">while</span> loop &mdash; it's just cleaner. Compare
+		the two:
+	</p>
+
+	<div class="compare">
+		<pre class="language-java"><code>
+			int i = 0;
+			while (i < n) {
+				...
+				...
+				...
+			}
+		</code></pre>
+		<pre class="language-java"><code>
+			for (int i = 0; i < n; i++) {
+				...
+				...
+				...
+			}
+		</code></pre>
+	</div>
+
+	<p>
+		Notice that in the <span class="monoText">for</span> loop, there are four
+		parts:
+	</p>
+
+	<ol>
+		<li>
+			<span class="boldText monoText">int i = 0;</span> The
+			<span class="boldText">counter</span>, a variable to be used by the test
+			condition. This variable is only available inside the loop. We cannot
+			access it outside the loop.
+		</li>
+		<li>
+			<span class="boldText monoText">i < 4;</span> The condition to test,
+			called the <span class="italicsText">test statement</span>. This is
+			checked every time we enter the loop,
+			<span class="italicsText">including</span> the first time. As long as this
+			condition is true, the block of code is executed, and the loop continues.
+			As soon as the condition is false, the loop terminates, and Java ignores
+			all statements thereafter.
+		</li>
+		<li>
+			<span class="boldText monoText">i++</span> The code that changes the
+			index, causing different inputs to the test's condition, called the
+			<span class="italicsText">updating statement</span>. This code is executed
+			<span class="italicsText">only</span> when we return to the top of the
+			loop. It is <span class="underlineText">not</span> executed the first
+			time.
+		</li>
+		<li>
+			<span class="boldText monoText">{ ... }</span> The statements to execute.
+		</li>
+	</ol>
+
+	<p>
+		The first three parts (the statements contained inside the parentheses), is
+		called the <span class="monoText">for</span> loop's
+		<span class="boldText">header</span>, and the block of code to execute is
+		called the <span class="monoText">for</span> loop's body. Bearing these
+		parts in mind, an example:
+	</p>
+
+	<pre class="language-java"><code>
+		char[] word = {'j', 'a', 'v', 'a'};
+		for (int index = 0; index < 4; index++) {
+			System.out.println(word[index]);
+		}
+		System.out.println("Done");
+	</code></pre>
+	<pre class="language-bash"><code>
+		j
+		a
+		v
+		a
+		Done
+	</code></pre>
+
+	<p>
+		Again, a <span class="monoText">for</span> loop operates exactly the same as
+		a <span class="monoText">while</span> loop, just shorter and more concise.
+		Here is a <span class="monoText">while</span> loop implementation:
+	</p>
+
+	<pre class="language-java"><code>
+		int[] primes = {2, 3, 5, 7, 11};
+		int i = 0;
+
+		while (i < 5) {
+			System.out.println(primes[i]);
+			i++;
+		}
+
+		System.out.println("Done");
+	</code></pre>
+	<pre class="language-bash"><code>
+		2
+		3
+		5
+		7
+		11
+		Done
+	</code></pre>
+	<p>And here is a <span class="monoText">for</span> loop implementation:</p>
+	<pre class="language-java"><code>
+		int[] primes = {2, 3, 5, 7, 11};
+
+		for (int i = 0; i < primes.length; i++) {
+			System.out.println(primes[i]);
+		}
+
+		System.out.println("Done");
+	</code></pre>
+	<pre class="language-bash"><code>
+		2
+		3
+		5
+		7
+		11
+		Done
+	</code></pre>
+	<p>
+		A helpful way to loop through the array is to use the array's
+		<span class="monoText">.length</span> property. This spares us from manually
+		counting each of the individual elements in the array; a task that may be
+		impossible or cumbersome with large arrays.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">for</span> Loop Nuances.</span>
+		In a <span class="monoText">for</span> loop, the
+		<span class="italicsText">counter</span> variable is initialized
+		<span class="underlineText">only once</span>. It does not get
+		&#8220;reinitialized&#8221; at each iteration. The value assigned to it
+		changes, but there is no new initialization. The loop's
+		<span class="italicsText">test expression</span> is evaluated
+		<span class="underlineText">every time</span> the loop block is executed,
+		including the first time. The loop's
+		<span class="italicsText">updating statement</span> is executed
+		<span class="underlineText">after</span> each time the block is executed and
+		<span class="underlineText">before</span> the condition is checked. Putting
+		altogether, the algorithm consists of the following steps in order:
+	</p>
+	<ol>
+		<li>Evaluate the condition.</li>
+		<li>
+			If the condition is false, ignore the
+			<span class="monoText">for</span> loop's block of code and go to the
+			statement after the <span class="monoText">for</span> loop.
+		</li>
+		<li>If the condition is true, execute the loop's block of code.</li>
+		<li>After the block finishes executing, update the loop variable.</li>
+		<li>Repeat.</li>
+	</ol>
+	<p>
+		<span class="topic">Changes to a Loop Variable.</span> We can change a
+		variable initialized outside a <span class="monoText">while</span> loop with
+		code inside the <span class="monoText">while</span> loop:
+	</p>
+	<pre class="language-java"><code>
+		int i = 0;
+		while (i < 10) {
+			i++;
+		}
+		System.out.println(i);
+	</code></pre>
+	<pre class="language-bash"><code>
+		10
+	</code></pre>
+	<p>The same goes for a <span class="monoText">for</span> loop:</p>
+	<pre class="language-java"><code>
+		int num = 0;
+		for (int i = 0; i < 10; i++) {
+			num++;
+		}
+		System.out.println(num);
+	</code></pre>
+	<pre class="language-bash"><code>
+		10
+	</code></pre>
+	<p>
+		<span class="topic"
+			>Incomplete <span class="monoText">for</span> Loops.</span
+		>
+		We are not <span class="italicsText">required</span> to provide the counter,
+		test statement, or the update statement inside the
+		<span class="monoText">for</span> loop's header. They can be stated outside
+		the <span class="monoText">for</span> loop, and used inside the header, or
+		omitted entirely:
+	</p>
+	<pre class="language-java"><code>
+		int i = 0;
+		for (; i < 10; i++) {
+			// this will execute 10 times
+		}
+		for (; i < 10; ) {
+			// this will execute exactly once
+		}
+		for (;;) {
+			// this will hang
+		}
+	</code></pre>
+	<p>
+		Note, we should not write loops this way unless we have a good reason for
+		doing so &mdash; such code is difficult to read and a breeding ground for
+		bugs.
+	</p>
+	<p>
+		<span class="topic">Loop Control.</span> We can control loops by using the
+		keywords <span class="monoText">break</span> and
+		<span class="monoText">continue</span>. The keyword
+		<span class="monoText">break</span> tells Java &#8220;Get out of this loop
+		now&#8221; We might use this if our loop eventually returns the data we
+		sought, or if a particular condition occurs. For example, we might search a
+		particular array, and once a match is found, we
+		<span class="monoText">break</span>, rather than continuing to check the
+		remaining values. For example:
+	</p>
+	<p>
+		Oppositely, the word <span class="monoText">continue</span> tells Java,
+		&#8220;Get back to the top of the loop now, perform the update, and continue
+		to the code block.&#8221; This keyword is often used when our loop runs, and
+		returns data that isn't interesting. For example, we might have an array of
+		user emails, and we only want to send a newsletter to those who agreed to
+		receiving newsletters. We loop through all of the user emails &mdash; if the
+		user opted to receive newsletters, we send the newsletter, otherwise, we
+		<span class="monoText">continue</span>.
+	</p>
+	<p>Here is an example utilizing the two key words:</p>
+	<pre class="language-java"><code>
+		int query = 5;
+		int[] primes = {2, 3, 5, 7};
+		for (int i = 0; i < primes.length; i++) {
+			if (primes[i] == query) {
+				System.out.println("Match found: " + query);
+				break;
+			} else if ((primes[i] != query) && (i < primes.length-1)) {
+				continue;
+			} else {
+				System.out.println("No match: " + query);
+				break;
+			}
+		}
+		System.out.println("Loop exited");
+	</code></pre>
+	<pre class="language-bash"><code>
+		Match found: 5
+		Loop exited
+	</code></pre>
+	<p>
+		<span class="topic">Enhanced <span class="monoText">for</span> Loop.</span>
+		Going through the values in an array one at a time is so common in
+		programming that Java provides syntactic sugar for it. On the left is a
+		regular <span class="monoText">for</span> loop, and on the right is the
+		enhanced <span class="monoText">for</span> loop:
+	</p>
+	<div class="compare">
+		<pre class="language-java"><code>
+			// Regular for loop
+
+			int[] arr = {0, 1, 2, 3};
+			for (int i = 0; i < arr.length; i++) {
+				System.out.println(arr[i]);
+			}
+		</code></pre>
+		<pre class="language-java"><code>
+			// Enhanced for loop
+
+			int[] arr = {0, 1, 2, 3};
+			for (int element : arr) {
+				System.out.println(element);
+			}
+		</code></pre>
+	</div>
+	<p>
+		If we just want to iterate through the values inside an array, we can use
+		the enhanced <span class="monoText">for</span> loop. It's cleaner, more
+		concise, and we don't need to worry about indexes. The tradeoff: We don't
+		have access to a indices. Thus, if our computation needs access to index, we
+		should use the regular <span class="monoText">for</span> loop.
+	</p>
+	<p>
+		<span class="topic"
+			><span class="monoText">while</span> v.
+			<span class="monoText">for</span> Loops.</span
+		>
+		If we want to execute a statement or set of statements as long as some
+		condition is true, but we do not know how many times the statement should
+		execute, a <span class="monoText">while</span> loop would be best to use.
+		<span class="monoText">while</span> Loops are an example of an
+		<span class="boldText">indefinite loop</span>. If, however, we know exactly
+		how many times we want to iterate or we have data that provides such number,
+		a <span class="monoText">for</span> loop is ideal &mdash; it is a
+		<span class="boldText">definite loop</span>.
+	</p>
+	<p>
+		<span class="topic">Fencepost Problem.</span> A very common error when
+		handling <span class="monoText">for</span> loops is the
+		<span class="italicsText">fencepost problem</span> (also called
+		<span class="italicsText">of-by-one error</span>). Suppose we wanted to
+		build a fence with 5 posts and 4 wires between the posts. The fencepost
+		problem is represented with the following diagram:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/fence_post_problem.svg' %}"
+			alt="fencepost"
+			loading="lazy"
+			class="eighty-p"
+		/>
+	</figure>
+	<p>
+		In its simplest form, the problem occurs because a procedure involves two
+		steps, say $a$ and ${b,}$ and $a$ must be repeated $n$ times, while $b$ must
+		be repeated ${n - 1}$ times. Whenever we see this procedural pattern, we
+		must first execute $b$ before we begin iterating $a$ and $b$ together, as
+		seen in the diagram above.
+	</p>
+</section>
+
+<section id="loop_exercises">
+	<p>
+		<span class="exh">Exercise</span>. How many times do the following loops
+		execute?
+	</p>
+	<ol>
+		<li>
+			<pre class="language-java"><code>
+				int counter = 0;
+				for (int loop = 4; loop <= 8; loop += 2) {
+					counter++;
+				}
+				System.out.println(counter);
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					The counter starts at 0. The loop variable starts at 4. As long as it
+					is less than or equal to 8, we execute, and update the counter. After
+					each execution, the counter updates by 2. Thus, at
+					<span class="monoText">loop = 4</span>, the test statement returns
+					<span class="monoText">true</span>. So,
+					<span class="monoText">counter = 1</span>, and
+					<span class="monoText">loop = 6</span>. Is
+					<span class="monoText">6 <= 8</span>? Yes.
+					<span class="monoText">counter = 2</span>;
+					<span class="monoText">loop = 8</span>. Is
+					<span class="monoText">8 <= 8</span>? Yes.
+					<span class="monoText">counter = 3</span>;
+					<span class="monoText">loop = 10</span>. Is
+					<span class="monoText">10 <= 8</span>? No. We leave the loop and go to
+					the next statement, print <span class="monoText">counter</span>.
+					Counter was updated to <span class="monoText">3</span>, so this is the
+					value printed out:
+				</p>
+				<pre class="language-bash"><code>
+						3
+					</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-java"><code>
+				int count = 0;
+				for (int i = 10; i >= 10; i -= 3) {
+					count++;
+				}
+				System.out.println(count);
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					The variable <span class="monoText">count</span> starts at 0, and it
+					is updated by 1 inside the loop. The loop's counter starts at
+					<span class="monoText">i = 10</span>. If
+					<span class="monoText">i >= 10</span>, we execute then decrement
+					<span class="monoText">i</span> by 3. Thus, the first time:
+					<span class="monoText">i = 10</span>. Condition is true, so
+					<span class="monoText">count = 1</span>, and
+					<span class="monoText">i = 7</span>. Test, and the condition is false
+					&mdash; ${7 \nleq 10.}$ Thus, the loop executes exactly once:
+					<span class="monoText">count = 1</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-java"><code>
+				int i = 0;
+				for (int j = 2; j >= 4; j++) {
+					i++;
+				}
+				System.out.println(i);
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This loop never executes. Remember, the test statement is evaluated
+					the first time. In this case, the test statement returns
+					<span class="monoText">false</span> &mdash; ${2 \nleq 4.}$
+				</p>
+				<pre class="language-bash"><code>
+					0
+				</code></pre>
+			</details>
+		</li>
+	</ol>
+	<p>
+		<span class="exh">Exercise.</span> Given the array below, print each element
+		with a loop:
+	</p>
+	<pre class="language-java"><code>
+			char[] letters = {'a', 'b', 'c', 'd'};
+		</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Using a <span class="monoText">for</span> loop:</p>
+		<pre class="language-java"><code>
+				char[] letters = {'a', 'b', 'c', 'd'};
+
+				for (int i = 0; i < letters.length; i++) {
+					System.out.println(letters[i]);
+				}
+			</code></pre>
+		<pre class="language-bash"><code>
+				a
+				b
+				c
+				d
+			</code></pre>
+		<p>Or, with an enhanced <span class="monoText">for</span> loop:</p>
+		<pre class="language-java"><code>
+				char[] letters = {'a', 'b', 'c', 'd'};
+
+				for (char elements : letters) {
+					System.out.println(elements);
+				}
+			</code></pre>
+		<pre class="language-bash"><code>
+				a
+				b
+				c
+				d
+			</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Given the array below, print every other
+		element on the same line:
+	</p>
+	<pre class="language-java"><code>
+			char[] letters = {'b', 'h', 'y', 'e', 'e', 'y'};
+		</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one implementation:</p>
+		<pre class="language-java"><code>
+				char[] letters = {'b', 'h', 'y', 'e', 'e', 'y'};
+
+				for (int i = 1; i <= letters.length; i+=2) {
+					System.out.print(letters[i]);
+				}
+			</code></pre>
+		<pre class="language-bash"><code>
+				hey
+			</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Given the array below, print only the
+		elements with even indices:
+	</p>
+	<pre class="language-java"><code>
+		int[] nums = {1, 2, 3, 4, 5, 6, 7, 8};
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-java"><code>
+				int[] nums = {1, 2, 3, 4, 5, 6, 7, 8};
+
+				for (int i = 2; i < nums.length; i+=2) {
+					System.out.println(nums[i]);
+				}
+			</code></pre>
+		<pre class="language-bash"><code>
+				3
+				5
+				7
+			</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Given the array below, print the sum of
+		all its elements:
+	</p>
+	<pre class="language-java"><code>
+			int[] primesArr = {2, 3, 5, 7, 11, 13, 17, 19, 23};
+		</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-java"><code>
+					int[] primesArr = {2, 3, 5, 7, 11, 13, 17, 19, 23};
+					int primesArrSum = 0;
+					for (int i = 0; i < primesArr.length; i++) {
+						primesArrSum += primesArr[i];
+					}
+					System.out.println(primesArrSum);
+				</code></pre>
+		<pre class="language-bash"><code>
+					100
+				</code></pre>
+	</details>
+</section>
+{% endblock %}

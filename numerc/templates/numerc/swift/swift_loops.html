@@ -1,0 +1,376 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="control_loops">
+	<h4>Loops</h4>
+	<p>
+		Swift provides several implementations of loops as a means of establishing
+		<span class="term">control flow</span>. We cover each of these loops below.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">while loop</span>.</span> The
+		<span class="monoText">while</span> loop takes the following form:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>while (${exp_{bool}}$) {</li>
+			<ul>
+				<li>${statement_0}$</li>
+				<li>${\vdots}$</li>
+				<li>${statement_n}$</li>
+				<li>${updater}$</li>
+			</ul>
+			<li>}</li>
+		</ul>
+	</figure>
+	<p>
+		The <span class="monoText">while loop</span> executes all of the code inside
+		the braces (called the <span class="term">loop's body</span>) as long as
+		<span class="monoText">(${exp_{bool}}$)</span> is true. The expression
+		${exp_{bool}}$ is an expression that evaluates to a Boolean type value, and
+		it is called the <span class="term">loop's head</span>. Accordingly, we can
+		write any expression in the head, so long as it evaluates to true or false.
+		At the very end of the loop's body, there is the terminating expression,
+		<span class="term">updater</span>. This is the expression that updates the
+		value of ${exp_{bool}}$. To avoid an infinite loop, ${exp_{bool}}$ must
+		eventually evaluate to <span class="monoText">false</span>, in which case we
+		exit the loop and move to the next statement.
+	</p>
+	<p>
+		The most common use of a <span class="monoText">while loop</span> is for
+		repeating a certain computation an ${x}$ amount of times. For example:
+	</p>
+	<pre class="language-swift"><code>
+		var myArray: [Int] = []
+		var i = 0
+		while i < 10 {
+			myArray.append(i)
+			i+=1;
+		}
+		print(myArray)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+	</code></pre>
+	<p>
+		<span class="topic"><span class="monoText">repeat-while loop</span>.</span>
+		With the <span class="monoText">while loop</span>, we do not have the
+		guarantee that our code is executed at least once. The
+		<span class="monoText">while loop</span>'s head might evaluate to
+		<span class="monoText">false</span> to begin with. If we want to ensure that
+		our code executes at least once (if not multiple times), then we use the
+		<span class="monoText">repeat-while loop</span>. The general form:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>repeat {</li>
+			<ul>
+				<li>${statement_0}$</li>
+				<li>${\vdots}$</li>
+				<li>${statement_n}$</li>
+				<li>${updater}$</li>
+			</ul>
+			<li>} (while ${exp_{bool}}$)</li>
+		</ul>
+	</figure>
+
+	<p>
+		Notice how the head comes after the body. The code above will be executed at
+		least once, and will continue executing so long as the head evaluates to
+		<span class="monoText">true</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		var myArray: [Int] = []
+		var i = 10
+		repeat {
+			myArray.append(i)
+			i-=1
+		} while i >= 0
+		print(myArray)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+	</code></pre>
+
+	<p>
+		<span class="topic"><span class="monoText">for loop.</span></span> The
+		<span class="monoText">for loop</span> is a much more common loop. With a
+		<span class="monoText">for loop</span>, we execute a loop an ${n}$ amount of
+		times, where ${n}$ is the number of elements in a sequence. For now, we
+		focus on a sequence called a <span class="monoText">countable range</span>.
+		The general form:
+	</p>
+
+	<p>
+		A countable range is a data type in Swift that represents a sequence of
+		numbers. Suppose we wanted to represent the range ${0 \geq x \geq 5.}$ In
+		Swift, we represent this range as such:
+	</p>
+
+	<pre class="language-swift"><code>
+		let closedRange = 0...5
+	</code></pre>
+
+	<p>
+		In this case, the <span class="monoText">0</span> is the
+		<span class="term">lower-bound</span> of the range, and
+		<span class="monoText">5</span> is the
+		<span class="term">upper-bound</span> of the range. The three dots tell us
+		that this is a closed range &mdash; ${[0, 5].}$
+	</p>
+
+	<p>
+		Suppose we wanted to represent the range ${0 \geq x < 5.}$ This is a
+		half-open range, and we represent it in Swift as:
+	</p>
+
+	<pre class="language-swift"><code>
+		let halfOpenRange = 0..&lt;5
+	</code></pre>
+
+	<p>
+		Notice that the third dot is replaced with a less than sign. Note further
+		that in Swift, we can only make a range that counts up. We cannot make a
+		range that counts down. This means that the lower-bound is
+		<span class="underlineText">always</span> less than or equal to the next
+		number.
+	</p>
+
+	<p>
+		A particularly useful aspect of ranges is that we can pass variables as the
+		upper and lower bounds:
+	</p>
+
+	<pre class="language-swift"><code>
+		let endpoint = 5
+		let closedRange = 0...endpoint
+	</code></pre>
+
+	<p>
+		The range data type is what controls how many times a
+		<span class="monoText">for loop</span> in Swift is executed. Suppose we
+		wanted to compute the sum of all the integers up to
+		<span class="monoText">n</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		let n = 5
+		var sum = 0
+		for i in 1...n {
+			sum += i
+		}
+		print(sum)
+	</code></pre>
+	<pre class="language-bash"><code>
+		15
+	</code></pre>
+
+	<p>
+		Note that the <span class="monoText">i</span> is a temporary variable. But
+		more specifically, it is a temporary
+		<span class="italicsText">constant</span>. This means we cannot modify
+		<span class="monoText">i</span> inside the loop's body.
+	</p>
+	<p>
+		If we do not realy care what the value of
+		<span class="monoText">i</span> is, we can simply replace it with an
+		underscore. For example, perhaps we want to print
+		<span class="monoText">"Hello"</span> three times. Doing so would have no
+		bearing on what <span class="monoText">i</span> is, so we can omit it:
+	</p>
+
+	<pre class="language-swift"><code>
+		for _ in 0..&lt;3 {
+			print("Hello")
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Hello
+		Hello
+		Hello
+	</code></pre>
+
+	<p>
+		<span class="topic"><span class="monoText">where clauses.</span></span>
+		Suppose we want to continue executing a loop as long as some condition
+		evaluates <span class="monoText">true</span>. Swift provides an easy way to
+		express this computation with <span class="monoText">where clauses</span>.
+		The general syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>for i in ${n}$...${m}$ where (${exp_{bool}}$) {</li>
+			<ul>
+				<li>${statement_0}$</li>
+				<li>${\vdots}$</li>
+				<li>${statement_n}$</li>
+			</ul>
+			<li>}</li>
+		</ul>
+	</figure>
+	<p>
+		In the code above, the loop will continue executing so long as the condition
+		${exp_{bool}}$ evaluates to <span class="monoText">true</span>. For example,
+		suppose we want an array of all the odd integers in ${[0, 10].}$ We would
+		write:
+	</p>
+
+	<pre class="language-swift"><code>
+		var arr: [Int] = []
+		for i in 0..&lt;10 where i % 2 == 1 {
+			arr.append(i)
+		}
+		print(arr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1, 3, 5, 7, 9]
+	</code></pre>
+
+	<p>
+		<span class="topic"><span class="monoText">for-in loop.</span></span>
+		Another useful looping construct is the
+		<span class="monoText">for-in</span> loop. This is a particularly useful
+		loop for when we want to loop through all of the elements sequence but do
+		not know the size of that sequence. The general syntax:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>for ${n}$ in ${seq}$ {</li>
+			<ul>
+				<li>${statement_0}$</li>
+				<li>${\vdots}$</li>
+				<li>${statement_n}$</li>
+			</ul>
+			<li>}</li>
+		</ul>
+	</figure>
+
+	<p>
+		Here, ${n}$ is the placeholder variable we want to use to refer to each
+		element in the sequence, and ${seq}$ is the sequence. So, let's say we want
+		to sum all of the elements in the array:
+		<span class="monoText">[10, 27, 33, 17, 59]</span>. We would write:
+	</p>
+
+	<pre class="language-swift"><code>
+		let arr = [10, 27, 33, 17, 59]
+		var sum = 0
+		for n in arr {
+			sum += n
+		}
+		print(sum)
+	</code></pre>
+	<pre class="language-bash"><code>
+		146
+	</code></pre>
+
+	<p>
+		<span class="topic">Early Exits.</span> In some situations, we might want to
+		exit a loop early if certain conditions occur. To do so, we use a
+		<span class="monoText">break</span>. A
+		<span class="monoText">break</span> is what we use to terminate a loop if a
+		certain condition evaluates to <span class="monoText">true</span>. The
+		general form:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>for ${i}$ in ${n}$...${m}$ {</li>
+			<ul>
+				<li>if ${exp_{}}$ {</li>
+				<ul>
+					<li>${statements}$</li>
+					<li>${\vdots}$</li>
+					<li>break</li>
+				</ul>
+				<li>}</li>
+			</ul>
+			<li>}</li>
+		</ul>
+	</figure>
+
+	<p>
+		In other situations, there may an element in the array we would rather not
+		handle, or requires a separate computation. In that situation, we use a
+		<span class="monoText">continue</span>.
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>for ${i}$ in ${n}$...${m}$ {</li>
+			<ul>
+				<li>if ${exp_{}}$ {</li>
+				<ul>
+					<li>${statements}$</li>
+					<li>${\vdots}$</li>
+					<li>continue</li>
+				</ul>
+				<li>}</li>
+			</ul>
+			<li>}</li>
+		</ul>
+	</figure>
+
+	<p>
+		This tells Swift to execute a particular line of code depending on a
+		condition, then continue looping over the array.
+	</p>
+
+	<p>
+		<span class="topic">Nested Loops.</span> Some computations require use of a
+		<span class="term">nested loop</span> &mdash; a loop inside a loop. In the
+		most basic case, a loop inside a loop has the following result: At each
+		iteration of the outer loop, there is an iteration of the inner loop. Thus,
+		if the outer loop iterates 3 times, and the inner loop iterates 2 times,
+		then there are ${2 + 2 + 2 = 6}$ iterations.
+	</p>
+
+	<pre class="language-swift"><code>
+		var numLoops = 0
+		for i in 0..&lt;3 {
+			for n in 0..&lt;2 {
+				print("Outer Loop: \(i), Inner Loop: \(n)")
+				numLoops += 1
+			}
+		}
+		print("Number of loops: \(numLoops)")
+	</code></pre>
+	<pre class="language-bash"><code>
+		Outer Loop: 0, Inner Loop: 0
+		Outer Loop: 0, Inner Loop: 1
+		Outer Loop: 1, Inner Loop: 0
+		Outer Loop: 1, Inner Loop: 1
+		Outer Loop: 2, Inner Loop: 0
+		Outer Loop: 2, Inner Loop: 1
+		Number of loops: 6
+	</code></pre>
+
+	<p>
+		Suppose we have an apartment with three floors, the first floor being 1 and
+		the last floor being 3. Each floor has 15 rooms. Because of how unlucky the
+		prime number 13 is, we do not want any units with the number 13. We need to
+		generate the labels for each unit, and store the labels in an array. We can
+		do so with nested foor loops:
+	</p>
+
+	<pre class="language-swift"><code>
+		var apartmentRooms: [String] = []
+		for i in 1...3 {
+			for n in 0...15 {
+				if n == 13 {
+					continue
+				} else if n < 10 {
+					apartmentRooms.append("\(i)0\(n)")
+				} else {
+					apartmentRooms.append("\(i)\(n)")
+				}
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		["100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "114", "115", "200", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "214", "215", "300", "301", "302", "303", "304", "305", "306", "307", "308", "309", "310", "311", "312", "314", "315"]
+	</code></pre>
+</section>
+{% endblock %}
