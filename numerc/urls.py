@@ -75,7 +75,6 @@ urlpatterns = [
 	path("swift_methods", views.swift_methods, name="swift_methods"),
 	path("swift_switch", views.swift_switch, name="swift_switch"),
 	path("swift_protocolsAndInheritance", views.swift_protocolsAndInheritance, name="swift_protocolsAndInheritance"),
-	path("swift_inheritance", views.swift_inheritance, name="swift_inheritance"),
 	path("swift_override", views.swift_override, name="swift_override"),
 	path("swift_init", views.swift_init, name="swift_init"),
 	path("swift_standardLibrary", views.swift_standardLibrary, name="swift_standardLibrary"),
@@ -88,6 +87,7 @@ urlpatterns = [
 	path("swift_stateAndSwiftUI", views.swift_stateAndSwiftUI, name="swift_stateAndSwiftUI"),
 	path("swift_programArchitecture", views.swift_programArchitecture, name="swift_programArchitecture"),
 	path("swift_xcodeShortcuts", views.swift_xcodeShortcuts, name="swift_xcodeShortcuts"),
+	path("swift_mvvm", views.swift_mvvm, name="swift_mvvm"),
 
 	# java paths
 	path("java_preface", views.java_preface, name="java_preface"),
@@ -171,16 +171,14 @@ urlpatterns = [
 	path("ml_tuples", views.ml_tuples, name="ml_tuples"),
 	path("ml_errors", views.ml_errors, name="ml_errors"),
 	path("ml_customDataTypes", views.ml_customDataTypes, name="ml_customDataTypes"),
-	path("ml_productTypes", views.ml_productTypes, name="ml_productTypes"),
-	path("ml_sumTypes", views.ml_sumTypes, name="ml_sumTypes"),
-	path("ml_recursiveTypes", views.ml_recursiveTypes, name="ml_recursiveTypes"),
-	path("ml_typeSynonyms", views.ml_typeSynonyms, name="ml_typeSynonyms"),
 
 	# C++ paths
 	path("cpp_preface", views.cpp_preface, name="cpp_preface"),
 	path("cpp_errors", views.cpp_errors, name="cpp_errors"),
 	path("cpp_variablesAndTypes", views.cpp_variablesAndTypes, name="cpp_variablesAndTypes"),
+	path("cpp_basicOperators", views.cpp_basicOperators, name="cpp_basicOperators"),
 	path("cpp_functions", views.cpp_functions, name="cpp_functions"),
+	path("cpp_controlFlow", views.cpp_controlFlow, name="cpp_controlFlow"),
 	path("cpp_preprocessor", views.cpp_preprocessor, name="cpp_preprocessor"),
 	path("cpp_namespaces", views.cpp_namespaces, name="cpp_namespaces"),
 	path("cpp_algorithmIntro", views.cpp_algorithmIntro, name="cpp_algorithmIntro"),

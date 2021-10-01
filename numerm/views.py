@@ -143,6 +143,12 @@ def cont_rightAngleTrig(request):
 	return render(request, "numerm/cont/cont_rightAngleTrig.html")
 def cont_trigFunctions(request):
 	return render(request, "numerm/cont/cont_trigFunctions.html")
+def cont_transcendentalFunctions(request):
+	return render(request, "numerm/cont/cont_transcendentalFunctions.html")
+
+# linear algebra functions
+def lin_intro(request):
+	return render(request, "numerm/lin/lin_intro.html")
 
 # calculus functions
 def calc_preface(request):
@@ -157,6 +163,7 @@ def calc_rateOfChange(request):
 	return render(request, "numerm/calc1/calc_rateOfChange.html")
 def calc_limits(request):
 	return render(request, "numerm/calc1/calc_limits.html")
-
+def calc_derivativeFormulas(request):
+	return render(request, "numerm/calc1/calc_derivativeFormulas.html")
 
 

@@ -1,0 +1,259 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+<section id="mvvm">
+	<h3>MVVM</h3>
+	<p>
+		As we've seen, Swift is a multiparadigm language. When it comes to program
+		architecture, however, Swift follows a very specific model called
+		<span class="term">MVVM</span> &mdash; Model-View-ViewModel. Before SwiftUI,
+		programs followed the MVC (Model View Controller) model.
+	</p>
+	<p>
+		Under MVVM (and MVC), the application's backend code, or logic, is called
+		the <span class="term">model</span>. The frontend code, or the user
+		interface, is called the <span class="term">view</span>. These two bodies of
+		code are separate and distinct.
+	</p>
+	<p>
+		In Swift development, the model is completely independent of the view. We
+		can see this to be case when we open a model file in Swift &mdash; there is
+		no SwiftUI import. The model is where we place all source code dictating
+		what the application does &mdash; the data the application uses, and what
+		application does with data. In contrast, the view is how we present the
+		application to the user. The model is the single source of truth for the
+		application. We never place any decision-making in the view. All decisions
+		are made by the model; the view is simply there to ask questions. We can
+		think of it as, the view is just a nice, pretty shell; the actual brains
+		behind everything is in the model.
+	</p>
+	<p>
+		The last sentence highlights a key point about the view. The view is always
+		a reflection of the current state of the model. In other words, the view is
+		a <span class="underlineText">read-only</span> entity. Everything the view
+		needs or uses comes from the model. The benefit to adhering to the doctrine
+		of separating model and view is that it ensures we do not have to worry
+		about two different states staying in sync. Indeed, a common pitfall in
+		application development is failing to keep the user interface in sync with
+		the implementation. Swift tackles this problem by forcing us to separate the
+		two at all times.
+	</p>
+	<p>
+		Because views are always a reflection of the model, the view is effectively
+		stateless. But, this doesn't mean that views never have states. Often, state
+		variables are used to allow the view to manage itself. For example, we might
+		have an game application that changes its theme in response to certain
+		holidays &mdash; a theme for Fourth of July, Chuseok, Hannukah, Easter, etc.
+		These types of changes concern only user interface, so we would want to keep
+		those in the view, and they will need state variables.
+	</p>
+	<p>
+		Writing Swift views, we might notice that the source code looks an awful lot
+		like declarative programming. And in fact, it is a form of declarative
+		programming. In a view, we have the <span class="monoText">body var</span>.
+		That <span class="monoText">body var</span> contains all the source code
+		that determines what that particular view looks like, and it is rebuilt
+		every time we call the <span class="monoText">body var</span>. This is
+		exactly declarative programming. We aren't telling Swift
+		<span class="italicsText">how</span> to build the view, we are merely
+		stating <span class="italicsText">what</span> the view must look like. This
+		is very different from imperative programming, where we are explicitly
+		telling the language's interpreter or compiler how to perform a given
+		computation.
+	</p>
+	<p>
+		The problem with keeping all of the source code inside a
+		<span class="monoText">body var</span> is that every change made in the
+		model would require rebuilding the entire view over and over again. This is
+		painfully inefficient. The solution: MVVM. We rebuild a view
+		<span class="underlineText">only if</span> there is something in the view
+		affected by the change in the model. This principle embodies reactive
+		programming &mdash; some part of the programming is always reacting to
+		another part of the program. At its core, this is what MVVM is all about:
+		Separating the model from the view, while ensuring that a change in the view
+		is triggered only by a specific change in the model.
+	</p>
+	<p>
+		What is that &#8220;ensures&#8221; that last part? It's the
+		<span class="term">ViewModel</span>. The ViewModel is what
+		<span class="term">binds</span> the view to the model. As long as a view is
+		bound to a particular model, the view will react to changes in that model,
+		rebuilding when necessary. Otherwise, no such rebuilding occurs. The
+		ViewModel works because of a foundational rule in MVVM: The view obtains
+		data from the model <span class="underlineText">only if</span> it requests
+		that data. By ensuring that the view must ask for it first, Swift ensures
+		that not every change in the model results in completely rebuilding the
+		view.
+	</p>
+	<p>
+		To make this process even more efficient, the ViewModel constantly listens
+		to changes in the model. As soon as a change occurs, the ViewModel records
+		the fact &mdash; something has changed. That record is available for all the
+		views to see. The ViewModel never actually sends this record to a view. It
+		merely announces it to all the views. This is because the ViewModel is
+		supposed to be in between the model and the view &mdash; it does not want to
+		have any specific connections to the view. This is crucial point to
+		understand. The ViewModel does not know anything about a view. The views,
+		however, are <span class="term">subscribed</span> to what the ViewModel
+		publishes, or records. If it sees a record that affects it, the View
+		automatically rebuilds. The fact that the view is always subscribed to the
+		ViewModel's publications or announcements, constantly reading, is how the
+		view stays in sync with the model.
+	</p>
+	<p>
+		Question: What about the other direction? How does the model receive data
+		like user inputs or touch gestures? Again, the ViewModel plays a role. The
+		ViewModel has another job called
+		<span class="term">intent processing</span>. When the user makes some sort
+		of change, e.g., a tap or a text input, the View calls an
+		<span class="term">intent function</span>. That intent function then returns
+		modification code, which the ViewModel sends to the model.
+	</p>
+</section>
+<section id="swift_type_system">
+	<h4>The Swift Type System</h4>
+	<p>
+		There are 6 major types in Swift: classes, structures, enumerations,
+		protocols, functions, and generics.
+	</p>
+	<p>
+		Structures and classes are very similar, and they are essentially written
+		with the same syntax. Both structures and classes can have stored variables
+		(also called stored properties). These are variables directly stored in
+		memory. Both can also contain computed variables (i.e., computed
+		properties). These are variables whose value is computed from specific
+		source code. Structures and classes can also contain constants &mdash;
+		immutable variables. Finally, we can include functions in either classes or
+		variables.
+	</p>
+	<p>
+		Additionally, both structures and classes have
+		<span class="term">initializers</span>. These are special functions that
+		create <span class="term">instances</span> of the structure or class.
+		Although they are functions, we indicate initializers with just the word
+		<span class="monoText">init</span>; Swift knows that initializers are
+		functions. Initializers are everywhere in Swift development. For example, we
+		might have a game, and to create a new session of the game, we call an
+		<span class="monoText">init</span>.
+	</p>
+	<p>
+		More likely than not, the Views we create and use in Swift are the result of
+		an <span class="monoText">init</span> function:
+	</p>
+	<pre class="language-swift"><code>
+		struct RoundedRectangle {
+			init(cornerRadius: CGFloat) {
+				// some code
+			}
+			init(cornerSize: CGSize) {
+				// some code
+			}
+		}
+	</code></pre>
+	<p>
+		There are, however, some fairly large differences between
+		<span class="monoText">structs</span> and
+		<span class="monoText">classes</span>. The biggest difference: A
+		<span class="monoText">struct</span> is a
+		<span class="term">value type</span> and a
+		<span class="monoText">class</span> is a
+		<span class="term">reference type</span>. A value type is a type whose
+		values are passed with <span class="italicsText">copies</span> of that
+		value. So, let's say we create an instance called
+		<span class="monoText">x</span> of some
+		<span class="monoText">struct</span> called
+		<span class="monoText">Foo</span>. When pass
+		<span class="monoText">x</span> around our program, e.g., by passing it into
+		a function, we are passing a copy of <span class="monoText">x</span>. These
+		copies &mdash; and all instances of a value type &mdash; live in the
+		<span class="term">stack</span>.
+	</p>
+	<p>
+		In contrast: A reference type is a type where values are passed with
+		<span class="italicsText">pointers</span>. A value of reference type resides
+		in the <span class="term">heap</span>, and when we instantiate a reference
+		type, we create a pointer to that value in the heap. This might make us
+		think that we should always use a
+		<span class="monoText">class</span> instead of a
+		<span class="monoText">struct</span>, since there is only one value of a
+		<span class="monoText">class</span> in memory. This is wrong. Swift's
+		designers implemented with <span class="monoText">struct</span> a feature
+		called <span class="term">copy-on-write</span>: We never actually make or
+		get a copy unless we modify the original.
+	</p>
+	<p>
+		But what about a <span class="monoText">class</span>? What if we have too
+		many pointers? Is there garbage collection? Swift does something better
+		&mdash; <span class="term">automatic reference counting</span>. Swift keeps
+		track of how many things are pointing to the reference type value in the
+		heap, and as soon as that number goes to zero &mdash; i.e., there is nothing
+		pointing to the value &mdash; Swift removes the reference type value from
+		memory.
+	</p>
+	<p>
+		Another big difference: <span class="monoText">structs</span> have no notion
+		of inheritance. The <span class="monoText">struct</span> is a type closely
+		tied to functional programming, and in functional programming, inheritance
+		isn't something we're usually concerned with. That is very much an
+		object-oriented programming notion, and for that reason, is closely tied to
+		<span class="monoText">classes</span>. Something similar, however, exists
+		for both <span class="monoText">structs</span> and
+		<span class="monoText">classes</span>, namely
+		<span class="monoText">protocols</span>.
+	</p>
+	<p>
+		Another difference between <span class="monoText">classes</span> and
+		<span class="monoText">structs</span> are their default initializers. In
+		<span class="monoText">struct</span>, the default
+		<span class="monoText">init</span> requires initializing all the
+		<span class="monoText">struct</span>'s properties. In a
+		<span class="monoText">class</span>, the default
+		<span class="monoText">init</span> does not initialize any of the
+		<span class="monoText">class</span>'s properties. In both cases, when we
+		write our own <span class="monoText">init</span>, we replace the default
+		<span class="monoText">init</span>.
+	</p>
+	<p>
+		Next: Mutability. In a <span class="monoText">struct</span>, any attempt to
+		mutate the <span class="monoText">struct</span>'s properties must be
+		explicit. For example, if a <span class="monoText">struct</span> has some
+		property called <span class="monoText">isEven</span>, that property must be
+		declared with a <span class="monoText">var</span> to ensure subsequent
+		mutation. With <span class="monoText">classes</span>, however, everything is
+		always mutable. More often than not,
+		<span class="monoText">struct</span> properties are declared with
+		<span class="monoText">let</span>. This is because we usually do not want
+		mutable structures &mdash; if we want mutability, that's a job best left to
+		a <span class="monoText">class</span>. In Swift,
+		<span class="monoText">struct</span> is the preferred named type. This is
+		because Swift has a strong emphasis on functional programming, with
+		object-oriented programming designated for certain situations, such as the
+		ViewModel.
+	</p>
+</section>
+
+<section id="generics">
+	<h3>Generics</h3>
+	<p>In some situations, we might have a data structure that we want to manipulate in a &#8220;type-agnostic&#8221; way. In other words, we don't want the data structured to be tied to a specific type &mdash; we don't really care what type it is, as long as we can use it. In formal terms, these types are called <span class="term">generics</span>.</p>
+	<p>The simplest example of a generic is an <span class="monoText">Array</span> type. An <span class="monoText">array</span> can contain any other datatype; it truly does not care. The array can contain <span class="monoText">Ints</span>, <span class="monoText">Doubles</span>, <span class="monoText">Strings</span>, even other arrays. It does not matter.</p>
+	<p>Questions: But doesn't an array have various methods like adding and removing elements from it? How is the array implemented to be type agnostic when it has rules like requiring all its elements to be of only one type? To answer these questions, we look at how the <span class="monoText">Array</span> type is implemented in Swift. Roughly, it might look something like this:</p>
+	<pre class="language-swift"><code>
+		struct Array&lt;Element&gt; {
+			...
+			func append(_ element: Element) { ... }
+		}
+	</code></pre>
+	<p>The type of the argument to append is <span class="monoText">Element</span>. More specifically, it is a generic type element. Now, whenever we call the function <span class="monoText">append()</span>, we can add some generic <span class="monoText">Element</span>. This is a very simple way of implementing generics &mdash; simply use the angle brackets.</p>
+	<p>The element we referenced above is called a <span class="term">type parameter</span>. When we actually create an <span class="monoText">Array</span> instance, the values we insert into that array will have a type. Now, the <span class="monoText">Array</span> generic has no idea what that type is &mdash; it's a generic, after all. The Swift compiler, however, will replace the type parameter <span class="monoText">Element</span> with the appropriate type. This is why when we ask for the type of an array, we see something like: <span class="monoText">Array&lt;Int&gt;</span>.</p>
+</section>
+
+<section>
+	<h3>Type: Function</h3>
+	<p>Functions are also types in Swift. Rather than just using a single type, the function type uses a <span class="term">function signature</span> to denote itself. For example:</p>
+	<pre class="language-swift"><code>
+		(Int, Int) -> Bool // Takes two Ints, returns a Bool
+		(Double) -> Void // Takes a double, returns nothing
+		() -> Array&lt;String&gt; // Takes no arguments, returns a String array
+		() -> Void // Takes no arguments, returns nothing
+	</code></pre>
+	<p>Functions can also be written as <span class="term">closures</span>. We can think of these as &#8220;inline functions.&#8221;</p>
+</section>
+{% endblock %}

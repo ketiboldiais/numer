@@ -1,6 +1,23 @@
 {% extends '../layout.html' %} {% load static %} {% block content %}
+
 <section id="custom_data_types">
 	<h3>Composite Data Types</h3>
+
+	<div class="toc">
+		<h3>Contents</h3>
+		<ol>
+			<li>Product Types</li>
+			<ol>
+				<li>Record Types</li>
+			</ol>
+			<li>Sum Types</li>
+			<ol>
+				<li>Datatype Bindings</li>
+			</ol>
+			<li>Recursive Types</li>
+			<li>Type Synonyms</li>
+		</ol>
+	</div>
 
 	<p>
 		Data types in programming languages fall into two categories: (1)
@@ -55,7 +72,7 @@
 	</p>
 
 	<p>
-		Finall, a value with a
+		Finally, a value with a
 		<span class="italicsText">self-reference type</span> ${r}$ is a value that
 		contains other values of type ${r.}$ I.e., there is some notion of
 		self-reference. Types like lists or trees are self-reference types. Why?
@@ -71,6 +88,457 @@
 		types can nest, so we can have many different combinations of the data types
 		above. We might have a recursive-sum type, or a sum-product type, or a
 		recursive-sum-product type, etc.
+	</p>
+</section>
+
+<section id="product_types">
+	<h4>Product Types</h4>
+	<p>
+		The each-of type is more formally the product type. A product type describes
+		the values containing <span class="italicsText">each of</span> the values of
+		type ${t_1, t_2, \ldots, \textit{ and } \space t_n.}$ Tuples are the most
+		obvious example of product type data. A tuple such as
+		<span class="monoText">(1, true)</span> is a value of type
+		<span class="monoText">int*bool</span>. The tuple describes the values
+		containing an <span class="monoText">int</span>
+		<span class="underlineText">and</span> a <span class="monoText">bool</span>.
+	</p>
+
+	<p>
+		<span class="topic">Record Types.</span> One way to create a product type is
+		through a <span class="term">record type</span>. In a record type, each
+		component has a <span class="term">named field</span>. And to each named
+		field, there is a value. Creating and instantiating a record type has two
+		results: (1) a <span class="term">record value</span>, which holds values,
+		and (2) a <span class="term">record type</span>, which holds types. For
+		example:
+	</p>
+
+	<pre class="language-sml"><code>
+		val student = {name="Jo Ann", age=19, enrolled=true}
+	</code></pre>
+	<pre class="language-bash"><code>
+		val student = {age=19,enrolled=true,name="Jo Ann"} :
+			{age:int, enrolled:bool, name:string}
+	</code></pre>
+
+	<p>
+		<span class="marginnote"
+			>In other languages, the canonical example of a record type is the
+			<span class="monoText">struct</span>.</span
+		>
+		Above, we created a <span class="italicsText">record</span> called
+		<span class="monoText">student</span>, which contains the fields
+		<span class="monoText">name</span>, <span class="monoText">age</span>, and
+		<span class="monoText">enrolled</span>. We can also see the record's type:
+		<span class="monoText">{age:int, enrolled:bool, name:string}</span>.
+		Depending on the language implementation, we may or may not see a different
+		ordering of the fields. This is because records do not have inherent order.
+		It is up to the language implementation on how to order the fields. Here,
+		this particular implementation of ML went with alphabetical order.
+	</p>
+
+	<p>
+		Instantiating the record <span class="monoText">student</span>, we create a
+		record value containing <span class="monoText">19</span>,
+		<span class="monoText">true</span>, and
+		<span class="monoText">"Jo Ann"</span>. We also have a record type
+		<span class="monoText">{age:int, enrolled:bool, name:string}</span>. If we
+		want to access the values in the fields, we use the same hash-syntax we saw
+		with tuples:
+	</p>
+
+	<pre class="language-sml"><code>
+		val student = {name="Jo Ann", age=19, enrolled=true}
+		val JoAnnName = #name student
+	</code></pre>
+	<pre class="language-bash"><code>
+		val student = {age=19,enrolled=true,name="Jo Ann"} :
+			{age:int, enrolled:bool, name:string}
+		val JoAnnName = "Jo Ann" : string
+	</code></pre>
+
+	<p>
+		Above, we have the <span class="term">record expression</span>
+		<span class="monoText">#name student</span>, and it evaluates to a record
+		value. In sum, the general syntax for a record expression:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>{ ${f_1}$ = ${e_1}$, ${\ldots}$, ${f_n}$ = ${e_n}$ }</li>
+		</ul>
+		<ul class="def">
+			<li class="where">
+				${f_1 \ldots f_n}$ are <span class="italicsText">unique</span> field
+				names, and
+			</li>
+			<li>${e_1 \ldots e_n}$ are expressions</li>
+		</ul>
+	</figure>
+
+	<p>
+		Astute observation reveals how closely a record resembles a tuple. In fact,
+		tuples <span class="italicsText">are</span> records. Specifically, they are
+		records with numeric field names to indicate
+		<span class="italicsText">position</span>:
+	</p>
+	<pre class="language-sml"><code>
+		val foo = (1, 2, 3)
+		val bar = {1=1, 2=2, 3=3}
+	</code></pre>
+	<p>
+		Above, there are few differences between
+		<span class="monoText">foo</span> and <span class="monoText">bar</span> (if
+		we print bar, we get back a tuple, <span class="monoText">(1, 2, 3)</span>).
+		The most obvious of which is the way we would access the component values,
+		and that tuples are shorter. To access a record with a field name
+		<span class="monoText">age</span>, we would reference the field name
+		<span class="monoText">age</span> to access the value stored in that field
+		name. In contrast, we access a particular value in a tuple by referencing
+		that value's position &mdash; e.g.,
+		<span class="monoText">(#1 myTuple)</span> to access the value in position
+		1. Why not just use records? Because tuples are such a common data structure
+		that we provide it a syntax of its own; a form of
+		<span class="term">syntactic sugar</span>.
+	</p>
+	<p>
+		Which should we use? It depends on what we are trying to accomplish. Records
+		are easier to access in terms of remembering which values are associated
+		with which field (at least in comparison to indices). Usually, where a
+		particular piece of information is best represented by numerous fields,
+		records are the preferred choice, since they allow us to write descriptive
+		field names. At the end of the day, it comes down to whether we want to
+		refer to values in a collection by position, or by name.
+	</p>
+</section>
+
+<section id="sum_types">
+	<h4>Sum Types</h4>
+	<p>
+		A sum type describes the values containing a value of
+		<span class="italicsText">one of</span> the types ${t_1, t_2, \ldots,
+		\textit{ or } \space t_n.}$ An example of sum type data is
+		<span class="monoText">int option</span>. Here, the data type either
+		contains an <span class="monoText">int</span>
+		<span class="underlineText">or</span> it does not. Functional languages like
+		ML tend to handle sum types succinctly, at least as compared to
+		object-oriented languages like Java, where sub-classing is almost always
+		required.
+	</p>
+
+	<p>
+		<span class="topic">Datatype Bindings.</span> Sum type data provide a good
+		segway to <span class="term">datatype bindings</span>. So far, we've seen
+		variable bindings, indicated by the use of
+		<span class="monoText">val</span>, and function bindings, indicated by the
+		use of <span class="monoText">fun</span>. With datetype bindings, we use the
+		symbol <span class="monoText">datatype</span>. To create custom sum types,
+		we create <span class="italicsText">datatype bindings</span>. The datatype
+		binding takes the following form:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>
+				datatype ${n}$ = ${a}$ of ${t_0}$ | ${b}$ of ${t_1}$ | ${c}$ of ${t_n}$
+			</li>
+		</ul>
+		<ul class="def">
+			<li class="where">${n}$ is the name of the datatype;</li>
+			<li>${a, b, c}$ are constructors; and</li>
+			<li>${t_n}$ are existing types</li>
+		</ul>
+	</figure>
+	<p>
+		Each of ${a, b, c}$ are called constructors. A constructor does what its
+		name suggests &mdash; it constructs instances of the datatype ${n.}$ Those
+		instances can be one of three things: ${t_0}$ of type ${n,}$ ${t_1}$ or type
+		${n,}$ or ${t_n}$ of type ${n.}$ When we create a datatype bindings, we add
+		all of these possibilities &mdash; ${t_0}$ of type ${n,}$ etc. &mdash; to
+		both the static and dynamic environment. For example:
+	</p>
+	<p>
+		A <span class="term">constructor</span> is just another function. In the
+		case of datatype ${n,}$ it is a function that returns instances of datatype
+		${n.}$
+	</p>
+	<pre class="language-sml"><code>
+		datatype fooType = TwoInts of int * int
+										 | Str of string
+									   | xyz
+		val a = Str "Hi"
+		val b = Str
+		val c = xyz
+		val d = TwoInts(1 + 1, 2 + 2)
+		val e = a
+	</code></pre>
+	<pre class="language-bash"><code>
+		datatype fooType = Str of string | TwoInts of int * int | xyz
+		val a = Str "Hi" : fooType
+		val b = fn : string -> fooType
+		val c = xyz : fooType
+		val d = TwoInts (2,4) : fooType
+		val e = Str "Hi" : fooType
+	</code></pre>
+	<span class="marginnote"
+		>We can think of the constructs like <span class="monoText">Str</span> and
+		<span class="monoText">xyz</span> as &#8220;tags&#8221; indicating what
+		kind, or <span class="term">variant</span>, of
+		<span class="monoText">fooType</span> we have.</span
+	>
+	<p>
+		This data type defines a new type for a value that can be one of three
+		types: (1)
+		<span class="monoText">int*int</span> (constructed by
+		<span class="monoText">TwoInts</span>), (2)
+		<span class="monoText">string</span> (constructed by
+		<span class="monoText">Str</span>), or (3) nothing (constructed by
+		<span class="monoText">xyz</span>). These three types determine what
+		<span class="term">variant</span> of the data type the value is (e.g., is it
+		an <span class="monoText">int*int</span>, a
+		<span class="monoText">string</span>, or nothing). Again, these three
+		entities are called constructors.
+		<span class="marginnote"
+			>More generally, the three entities are called
+			<span class="term">tagged unions</span>.</span
+		>
+	</p>
+	<p>
+		When we include the constructor above, we insert four new entities to the
+		environment: (1) a new type called <span class="monoText">fooType</span> to
+		be used like any other type; (2) a constructor
+		<span class="monoText">TwoInts</span>; (3) a constructor
+		<span class="monoText">Str</span>; and (4) a constructor
+		<span class="monoText">xyz</span>.
+	</p>
+	<p>
+		Having created the datatype <span class="monoText">fooType</span>, we can
+		instantiate the datatype:
+	</p>
+	<pre class="language-sml"><code>
+		val a = Str "Hello" (* evaluates to Str("Hello") *)
+		val b = TwoInts(1, 3-2)
+		val c = Str (* evaluates to fn : string -> fooType *)
+	</code></pre>
+	<p>
+		Anytime we create a datatype ${n}$, subsequent values of type ${n}$ are made
+		with one of ${n}$'s constructors. Hence the name &#8220;one-of type.&#8221;
+		The constructor's return consists of two parts &mdash; (1) a tag indicating
+		which constructor was used to create the value, and (2) the actual data
+		stored.
+	</p>
+
+	<p>
+		Once we've created a datatype, we need a way to access its variants. We do
+		so with what we might call
+		<span class="term">variant-accessing functions</span>. These functions
+		generally take two forms: (1) checking
+		<span class="italicsText">what</span> the variant is, or (2) extracting, if
+		any, the data associated with that variant. We've seen some of these
+		functions already. The functions <span class="monoText">null</span> and
+		<span class="monoText">isSome</span> check what variant a
+		<span class="monoText">list</span> is (is it a
+		<span class="monoText">list</span> or is it
+		<span class="monoText">null</span>) and whether an
+		<span class="monoText">option</span> has a some-value respectively. In
+		contrast, the <span class="monoText">hd</span>,
+		<span class="monoText">tl</span>, and
+		<span class="monoText">valOf</span> functions all
+		<span class="italicsText">extract</span> data from a given datatype.
+	</p>
+
+	<p>
+		<span class="topic">Enumerations.</span> An enumeration, or
+		<span class="term">an enumerated type</span>, are one kind of sum type. In
+		object-oriented languages, they are often called
+		<span class="monoText">enum</span>s (&#8220;eh-nooms&#8221;), and in R, it
+		is called a <span class="monoText">factor</span>. In formal mathematics and
+		statistics, they are broadly referred to as
+		<span class="italicsText">categorical variables</span>. Some examples: U.S.
+		currency has many different enumerations: penny, nickel, quarter,
+		half-dollar, one-dollar, five-dollar, ten-dollar, twenty-dollar,
+		fifty-dollar, a hundred-dollar. Traffic lights in North America have three
+		enumerations: red, yellow, green. Here is another example in ML code:
+	</p>
+
+	<pre class="language-sml"><code>
+		datatype suit = Club | Diamond | Heart | Spade
+	</code></pre>
+
+	<p>
+		Regardless of what variant of <span class="monoText">suit</span> the value
+		is, that variant can itself contain data:
+	</p>
+
+	<pre class="language-sml"><code>
+		datatype rank = Jack | Queen | King | Ace | Num of int
+	</code></pre>
+
+	<p>
+		We can combine these two sum types into a product type:
+		<span class="monoText">suit * rank</span>. Sum types are particularly useful
+		when we want to have different data in response to the state of the world.
+		For example, maybe we are operating a library where we want to identify a
+		book by an ID number, but if the book does not have an ID, use instead the
+		book's title:
+	</p>
+
+	<pre class="language-sml"><code>
+		datatype id = BookNum of int
+								| Title of string*(string option)*string 
+	</code></pre>
+</section>
+
+<section id="caseExpressions">
+	<h4>Case Expressions</h4>
+	<p>
+		Now that we know about variant-accessing functions, we might notice that
+		some data types do not have the variant-accessing functions we saw for
+		things like lists and optionals. For example, the
+		<span class="monoText">string</span> type doesn't have variant-accessing
+		functions like <span class="monoText">isString</span> or
+		<span class="monoText">getString</span>. What happened there?
+	</p>
+
+	<p>
+		Recall what we want with datatype bindings: (1) We need a way to determine
+		what <span class="italicsText">variant</span> the value is, and (2) a way to
+		extract the data, if any, associated with that variant. Languages like ML
+		combine these two needs as a single construct through
+		<span class="term">case expressions</span> and
+		<span class="term">pattern matching</span>.
+	</p>
+
+	<pre class="language-sml"><code>
+		datatype fooType = TwoInts of int * int
+								 | Str of string
+								 | xyz
+		fun f (x : fooType) =
+			case x of
+				xyz => 3
+				| Str s => 8
+				| TwoInts(i1, i2) => i1 + i2
+	</code></pre>
+
+	<p>
+		In the code above, we have the same datatype we saw before &mdash;
+		<span class="monoText">fooType</span>. The more interesting part is that we
+		now have a function that takes a value of type
+		<span class="monoText">fooType</span> (note that the parameter list is
+		optional, but we include it for clarity). This function takes a
+		<span class="monoText">myType</span> and returns an
+		<span class="monoText">int</span>. The keywords
+		<span class="monoText">case ... of</span> denote a
+		<span class="italicsText">case expression</span>, and they are what we use
+		to access the values of the given datatype. Each of the lines following
+		<span class="monoText">case ... of</span> are
+		<span class="italicsText">cases</span>, separated by a pipe (<span
+			class="monoText"
+			>|</span
+		>). The case expression works as such: (1) If
+		<span class="monoText">x</span> is an <span class="monoText">xyz</span>,
+		evaluate to <span class="monoText">3.</span> (2) If
+		<span class="monoText">x</span> is a <span class="monoText">Str</span>,
+		evaluate to <span class="monoText">8</span>. (3) If
+		<span class="monoText">x</span> is a <span class="monoText">TwoInts</span>,
+		evaluate to <span class="monoText">i1 + i2</span>.
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${p}$ => ${\textit{exp}}$</li>
+		</ul>
+	</figure>
+
+	<p>
+		Where ${p}$ is a pattern, and ${\textit{exp}}$ is an expression. A more
+		general syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>fun ${f}$ ${x}$ =</li>
+			<ul>
+				<li>case ${x}$ of</li>
+				<ul>
+					<li>${p_0}$ => ${exp_0}$</li>
+					<li>| ${p_1}$ => ${exp_1}$</li>
+					<li>| ${p_2}$ => ${exp_2}$</li>
+					<li>| ${\vdots}$</li>
+					<li>| ${p_n}$ => ${exp_n}$</li>
+				</ul>
+			</ul>
+		</ul>
+	</figure>
+	<p>
+		Patterns are the construct used to
+		<span class="underlineText">match</span> against the result of evaluating
+		the case's first expression (in the syntax above,
+		<span class="monoText">${p_0}$ => ${exp_0}$</span>.) This form of evaluation
+		has a specific name &mdash; <span class="term">pattern-matching</span>.
+	</p>
+	<p>
+		Importantly, case expressions are <span class="term">first-match</span>,
+		meaning that the moment there is a
+		<span class="italicsText">pattern match</span>, the entire expression
+		evaluates to that pattern match's expression. ML will not continue to check
+		the remaining branches.
+	</p>
+</section>
+
+<section id="recursive_types">
+	<h4>Recursive Types</h4>
+	<p>
+		A recursive compound data type is a type that can refer to itself in its
+		definition to describe a recusive structure. We've seen one such recursive
+		type, lists. An <span class="monoText">int</span> list describes values that
+		contain either nothing, <span class="underlineText">or</span> contains an
+		<span class="monoText">int</span>
+		<span class="underlineText">and</span> another
+		<span class="monoText">int</span> list. We can see this to be the case when
+		we build a list recursively:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>1 :: [ 2 :: [3 :: [4 :: [5 :: [6 :: []]]]]]</li>
+			<li>${\darr}$</li>
+			<li>[1, 2, 3, 4, 5, 6]</li>
+		</ul>
+	</figure>
+</section>
+
+<section id="type_synonyms">
+	<h4>Type Synonyms</h4>
+	<p>
+		Another extremely useful binding is the
+		<span class="term">type synonym</span>. Many languages, for example Swift,
+		provide this feature in other terms like
+		<span class="italicsText">type alias</span>. A type synonym creates another
+		name for existing type. We can then use that name interchangeable with the
+		existing type.
+	</p>
+
+	<p>For example, if we write:</p>
+
+	<pre class="language-sml"><code>
+		type age = int
+	</code></pre>
+
+	<p>
+		We now have a type called <span class="monoText">age</span>, which we can
+		use wherever we must write <span class="monoText">int</span>. Needless to
+		say, type synonyms are extremely lead to much more readable and meaningful
+		programs.
+	</p>
+
+	<p>
+		Note that type synonyms are a kind of
+		<span class="term">name binding</span>, rather than a
+		<span class="term">datatype binding</span>. In a datatype binding, we are
+		introducing a new type &mdash; it is not the same as any existing type. The
+		datatype binding will create constructors that produce a value of the new
+		type. A type synonym, however, is a name binding &mdash; it is simply a name
+		that points to an existing data type.
 	</p>
 </section>
 {% endblock %}

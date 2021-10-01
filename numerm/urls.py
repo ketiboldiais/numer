@@ -78,6 +78,11 @@ urlpatterns = [
 	path("cont_arcSector", views.cont_arcSector, name="cont_arcSector"),
 	path("cont_rightAngleTrig", views.cont_rightAngleTrig, name="cont_rightAngleTrig"),
 	path("cont_trigFunctions", views.cont_trigFunctions, name="cont_trigFunctions"),
+	path("cont_transcendentalFunctions", views.cont_transcendentalFunctions, name="cont_transcendentalFunctions"),
+
+	# linear algebra paths
+	path("lin_intro", views.lin_intro, name="lin_intro"),
+	
 
 	# calculus paths
 	path("calc_preface", views.calc_preface, name="calc_preface"),
@@ -86,4 +91,5 @@ urlpatterns = [
 	path("calc_derivativePowerFunction", views.calc_derivativePowerFunction, name="calc_derivativePowerFunction"),
 	path("calc_rateOfChange", views.calc_rateOfChange, name="calc_rateOfChange"),
 	path("calc_limits", views.calc_limits, name="calc_limits"),
+	path("calc_derivativeFormulas", views.calc_derivativeFormulas, name="calc_derivativeFormulas"),
 ]

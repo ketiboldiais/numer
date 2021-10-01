@@ -1,27 +1,532 @@
-{% extends '../layout.html' %}
-{% load static %}
-{% block content %}
+{% extends '../layout.html' %} {% load static %} {% block content %}
 <section id="protocols_v_inheritance">
 	<h3>Protocols &amp; Inheritance</h3>
+	<p>
+		In the following sections, we explore the concepts of inheritance,
+		polymorphism, protocols, and extensions. These concepts are synonymous with
+		object-oriented programming.
+	</p>
 	<p>Suppose we have the following structure:</p>
 	<pre class="language-swift"><code>
 		struct Mammal {
-			typealias ageRange = ClosedRange<Double>
+			typealias ageRange = ClosedRange&lt;Double&gt;
 			static var blood: String = "Warm-blooded"
-			let name: String
-			let lifespan: ageRange
+			var name: String
+			var lifespan: ageRange
 			init(name: String, maxAge: Double) {
 				self.name = name
 				self.lifespan = 0.0...maxAge
 			}
 		}
 	</code></pre>
-	<p>With the structure above, we created a type called <span class="monoText">Mammal</span>. But what if we instead created a type called <span class="monoText">Cat</span>? Or a type called <span class="monoText">Elephant</span>? These types would have all of the properties above, but they aren't necessarily the same. One solution would be write multiple structures, but then we would have duplicated code.</p>
+	<p>
+		With the structure above, we created a type called
+		<span class="monoText">Mammal</span>. But what if we instead created a type
+		called <span class="monoText">Cat</span>? Or a type called
+		<span class="monoText">Elephant</span>? These types would have all of the
+		properties above, but they aren't necessarily the same. One solution would
+		be write multiple structures, but then we would have duplicated code.
+	</p>
 
-	<p>There are two solutions to this problem. One is to use a <span class="monoText">class</span> instead of a <span class="monoText">struct</span>, and employ <span class="term">inheritance</span>. With inheritance, a class, called the <span class="term">subclass</span>, inherits properties and methods from an existing class, called the <span class="term">superclass</span>. We can think of this like the relationship between a set ${A}$ and its proper subset ${B.}$ All members of ${B}$ are members of ${A,}$ but not all members of ${A}$ are members of ${B.}$ For example, all cats are and behave like mammals, but not all mammals are and behave like cats.</p>
+	<p>
+		There are two solutions to this problem. One is to use a
+		<span class="monoText">class</span> instead of a
+		<span class="monoText">struct</span>, and employ
+		<span class="term">inheritance</span>. With inheritance, a class, called the
+		<span class="term">subclass</span>, inherits properties and methods from an
+		existing class, called the <span class="term">superclass</span>. We can
+		think of this like the relationship between a set ${A}$ and its proper
+		subset ${B.}$ All members of ${B}$ are members of ${A,}$ but not all members
+		of ${A}$ are members of ${B.}$ For example, all cats are and behave like
+		mammals, but not all mammals are and behave like cats.
+	</p>
 
-	<p>The second option is to use <span class="term">protocols</span>. A protocol establishes a set of requirements that a type <span class="underlineText">must meet</span>. Protocols are akin to a certification that states, this particular type is a certified <span class="monoText">Cat</span>. If the type does not satisfy the requirements, then it does not comply with the protocol and will not be certified.</p>
+	<p>
+		The second option is to use <span class="term">protocols</span>. A protocol
+		establishes a set of requirements that a type
+		<span class="underlineText">must meet</span>. Protocols are akin to a
+		certification that states, this particular type is a certified
+		<span class="monoText">Cat</span>. If the type does not satisfy the
+		requirements, then it does not comply with the protocol and will not be
+		certified.
+	</p>
 
-	<p>In the next sections, we explore and compare inheritance and protocols, and why we might use one over the other.</p>
+	<p>
+		In the next sections, we explore and compare inheritance and protocols, and
+		why we might use one over the other.
+	</p>
+	<div class="toc">
+		<h3>Contents</h3>
+		<ol>
+			<li><a href="#inheritance">Inheritance</a></li>
+			<ol>
+				<li><a href="#casting_to_superclass">Casting to a Superclass</a></li>
+			</ol>
+			<li><a href="#protocols">Protocols</a></li>
+			<ol>
+				<li><a href="#protocol_inheritance">Protocol Inheritance</a></li>
+				<li><a href="#extensions">Extensions</a></li>
+			</ol>
+		</ol>
+	</div>
 </section>
+
+<section id="inheritance">
+	<h4>Inheritance</h4>
+	<p>
+		Inheritance is a feature unique to classes. Structures and enumerations do
+		not have any notion of inheritance. It is crucial to keep this distinction
+		in mind whenever we write Swift code. Warning said, let's see some examples
+		of inheritance.
+	</p>
+
+	<p>
+		Suppose we have a class called <span class="monoText">Person</span>, and a
+		class called <span class="monoText">Student</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student {
+			typealias name = (String, String)
+			var major: String
+			var name: name
+			init(firstName: String, lastName: String, major: String) {
+				self.name = (firstName, lastName)
+				self.major = major
+			}
+		}
+	</code></pre>
+
+	<p>
+		The two types share a common property, <span class="monoText">name</span>.
+		But, in the <span class="monoText">Student</span> class, we also have a
+		property called <span class="monoText">major</span>. The problem: Every
+		<span class="monoText">Student</span> is a
+		<span class="monoText">Person</span>, but not every
+		<span class="monoText">Person</span> is a
+		<span class="monoText">Student</span>.Inheritance solves this problem by
+		allowing us to <span class="term">extend</span> the
+		<span class="monoText">Person</span> class. In Swift, this is done by simply
+		including a colon after <span class="monoText">Student</span>, followed by
+		the class we want to extend, <span class="monoText">Person</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student: Person {
+			var school: String = ""
+		}
+	</code></pre>
+
+	<p>
+		Note how we included a default value for
+		<span class="monoText">Student</span>, the empty string. This is because we
+		are relying on the initializer for <span class="monoText">Person</span>, and
+		that initializer does not include <span class="monoText">major</span>.
+	</p>
+
+	<p>
+		If we create an instance of <span class="monoText">Student</span>, that
+		instance will have access to all the properties and methods of
+		<span class="monoText">Person</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student: Person {
+			var school: String = ""
+		}
+		
+		let jill = Person(firstName: "Jill", lastName: "Anderson")
+		let graham = Student(firstName: "Graham", lastName: "Nagel")
+
+		print(jill.name)
+		print(graham.name)
+	</code></pre>
+	<pre class="language-bash"><code>
+		("Jill", "Anderson")
+		("Graham", "Nagel")
+	</code></pre>
+
+	<p>
+		In Swift, a class cannot inherit from multiple classes. But, a class can be
+		extended to as many classes as we would like. In other words, there is no
+		concept of <span class="term">multiple inheritance</span> in Swift. Thus, a
+		class is either a subclass, or not a subclass. A class that is not a
+		subclass is called a <span class="term">base class</span>. A subclass, of
+		course, can itself be extended. This means we can construct
+		<span class="term">class hierarchy</span> &mdash; a hierarchy of classes
+		extending from other classes.
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student: Person {
+			var school: String = ""
+		}
+		
+		class Undergraduate: Student {
+			var major: String = ""
+			var researchArea: String = ""
+			var thesis: String = ""
+		}
+		
+		class Graduate: Student {
+			var coursesTeaching: [String] = []
+		}
+	</code></pre>
+
+	<p>
+		From the code above, the class <span class="monoText">Student</span> is
+		extended by <span class="monoText">Undergraduate</span> and
+		<span class="monoText">Graduate</span>. All instances of
+		<span class="monoText">Undergraduate</span> and all instaces of
+		<span class="monoText">Graduate</span> can behave and be treated as either
+		its type (<span class="monoText">Undergraduate</span> or
+		<span class="monoText">Graduat</span>), or it can behave and be treated as a
+		<span class="monoText">Student</span>. This phenomenon, where an instance
+		can be treated as one thing and another, is called
+		<span class="term">polymorphism</span>.
+	</p>
+
+	<p>
+		Recall that an array must consist of the same type. This means that if we
+		create an array composed of
+		<span class="monoText">Undergraduate</span> instances and
+		<span class="monoText">Graduate</span> instances, the array type will be
+		<span class="monoText">[Student]</span>.
+	</p>
+
+	<pre class="language-swift"><code>
+		class Person {
+			typealias name = (String, String)
+			var name: name
+			init(firstName: String, lastName: String) {
+				self.name = (firstName, lastName)
+			}
+		}
+		
+		class Student: Person {
+			var school: String = ""
+		}
+		
+		class Undergraduate: Student {
+			var major: String = ""
+			var researchArea: String = ""
+			var thesis: String = ""
+		}
+		
+		class Graduate: Student {
+			var coursesTeaching: [String] = []
+		}
+		
+		let johnS = Undergraduate(firstName: "John", lastName: "Schmidt")
+		let kenF = Graduate(firstName: "Ken", lastName: "Fuji")
+		let yunaC = Undergraduate(firstName: "Yuna", lastName: "Choi")
+		let conferenceAttendees = [johnS, kenF, yunaC]
+		print(type(of: conferenceAttendees))
+	</code></pre>
+	<pre class="language-bash"><code>
+		Array&lt;Student&gt;
+	</code></pre>
+
+	<p>
+		Thus, the type for an array consisting of different class instances will be
+		the (a) the most specific and (b) common superclass between the instances.
+		In the example above, the superclass is
+		<span class="monoText">Student</span>. If we had included an instance of
+		<span class="monoText">Person</span>, then the type would be
+		<span class="monoText">Person</span>.
+	</p>
+
+	<p>
+		<span class="topic" id="casting_to_superclass"
+			>Casting to a Superclass.</span
+		>
+		Like many object-oriented languages, Swift allows us to cast an instance of
+		a class to a superclass. For example:
+	</p>
+
+	<pre class="language-swift"><code>
+		class Being {
+			var name: String
+			var immortal: Bool = false
+			var age: Int?
+			init(name: String) {
+				self.name = name
+				if immortal == true {
+					self.age = nil
+				}
+			}
+		}
+		class Witch: Being {
+			var canFly: Bool = false
+		}
+		class Sorceres: Witch {
+			var canProphesize: Bool = true
+		}
+		class Vampire: Being {
+			var drinksBlood: Bool = true
+		}
+		
+		var minerva = Witch(name: "Minerva")
+		var dracula = Vampire(name: "Dracula")
+		dracula.immortal = true
+		var haley = minerva as Being		
+	</code></pre>
+
+	<p>
+		In the code above, we declared a new variable called
+		<span class="monoText">haley</span>, which stores the instance
+		<span class="monoText">minerva</span> as an instance of
+		<span class="monoText">Being</span>. Casting an instance of a class into an
+		instance of an <span class="term">ancestor class</span> is called
+		<span class="term">upcasting</span>.
+	</p>
+</section>
+
+<section id="protocols">
+	<h4>Protocols</h4>
+	<p>
+		Thus far, we've seen three named types: (1)
+		<span class="monoText">struct</span>, (2)
+		<span class="monoText">class</span>, and (3)
+		<span class="monoText">enum</span>. We now cover the fourth named type, the
+		<span class="monoText">protocol</span>. Consider the following:
+	</p>
+	<pre class="language-swift"><code>
+		class Animal {
+			let name: String
+			required init(name: String) {
+				self.name = name;
+			}
+			func speak() { }
+		}
+		class Dog: Animal {
+			var learnedTricks: Int
+			init(name: String, learnedTricks: Int) {
+				self.learnedTricks = learnedTricks
+				super.init(name: name)
+			}
+			override func speak() {
+				print("woof")
+			}
+		}
+	</code></pre>
+	<p>
+		The class <span class="monoText">Animal</span> is called an
+		<span class="term">abstract class</span>. It is a class that is not meant to
+		be instantiated directly. Usually, we can tell that a class is an abstract
+		class when there are methods that do not have any blocks of code in their
+		bodies. For example, in the <span class="monoText">Animal</span> class,
+		there is a method called <span class="monoText">speak()</span>, to be
+		inherited by all child classes. These methods contain no statements or
+		expressions in their bodies because they are supposed to be overriden by the
+		child classes.
+	</p>
+	<p>
+		Protocols have features in common with abstract classes. The difference:
+		With a protocol, we are only listing requirements, rather than
+		implementations. For example, let's rewrite the code above as a protocol:
+	</p>
+	<pre class="language-swift"><code>
+		protocol Animal {
+			var name: String { get }
+			init(name: String)
+			required init(name: String) {
+				self.name = name
+			}
+			func speak()
+		}
+		class Dog: Animal {
+			let name: String
+			var learnedTricks: Int
+			init(name: String, learnedTricks: Int) {
+				self.learnedTricks = learnedTricks
+				self.name = name
+			}
+			func speak() {
+				print("woof")
+			}
+		}
+	</code></pre>
+	<p>
+		Observe the first line of code inside the
+		<span class="monoText">protocol</span>'s body. That line says, &#8220;For
+		every animal, we can get its name.&#8221; Notice, however, that we do not
+		indicate anything about how we get that name. We are leaving it entirely to
+		the <span class="monoText">Animal</span> types to determine. Accordingly, we
+		have to define how <span class="monoText">Dog</span> gets a name. That is
+		done by removing the <span class="monoText">super.init</span> and writing a
+		regular <span class="monoText">init</span> method. We remove the
+		<span class="monoText">super.init</span> method because
+		<span class="monoText">Dog</span> is now a base class.
+	</p>
+	<p>
+		Next, notice that the <span class="monoText">speak()</span> method inside
+		the <span class="monoText">Animal</span> protocol does not contain a body.
+		This is because protocol methods cannot have bodies. And since the protocol
+		method doesn't have a body, we remove the
+		<span class="monoText">override</span> keyword when we define the
+		<span class="monoText">speak()</span> method inside
+		<span class="monoText">Dog</span>.
+	</p>
+	<p>
+		Because a protocol imposes a requirement, every class that claims to
+		<span class="term">conform</span> to a protocol must comply with that
+		protocol's requirements. A class claims to conform to a protocol is
+		indicated when we write <span class="monoText">${c}$: ${p,}$</span> where
+		${c}$ is some class and ${p}$ is some protocol. E.g., when we wrote
+		<span class="monoText">Dog: Animal</span>, we told Swift that
+		<span class="monoText">Dog</span> conforms to the
+		<span class="monoText">Animal</span> protocol. In doing so, we must ensure
+		that the class conforms to the protocol's requirements. For example, if we
+		wrote a second class called <span class="monoText">Cat</span> of type
+		<span class="monoText">Animal</span>, failure to include the
+		<span class="monoText">speak()</span> method will return an error. We must
+		either define the method or remove our statement that
+		<span class="monoText">Cat</span> conforms to the protocol
+		<span class="monoText">Animal</span>. The same goes for all the other
+		requirements. The protocol-conforming class must include the
+		<span class="monoText">name</span> property, the
+		<span class="monoText">init(name: String)</span> method, and the
+		<span class="monoText">speak()</span> method.
+	</p>
+	<p>
+		With protocols, we cannot instantiate the protocols directly. Instead, we
+		must instantiate a class that confroms to that protocol. This is the key
+		difference between classes and protocols. We can instantiate a class, even
+		if the class is an abstract class &mdash; a class never intended to be
+		directly instantiated. With a protocol, we can rest assured that the intent
+		is always satisfied, because protocols can never be instantiated directly.
+	</p>
+
+	<p>
+		<span class="topic" id="protocol_inheritance">Protocol Inheritance.</span>
+		Protocols can inherit from another protocol. And, even more strikingly,
+		protocols can inherit from more than one protocol. In other words, protocols
+		are Swift's way of providing
+		<span class="term">multiple inheritance</span> &mdash; a feature explicitly
+		denied for all other named types.
+	</p>
+	<p>
+		Closely related to this feature are <span class="term">extensions</span>. An
+		extension allows us to write properties and methods beyond what was
+		initially provided in the parent named type. We say parent named type
+		because we can write extensions for structures, classes, enumerations, and
+		protocols. With protocols, however, extensions have an additional feature:
+		<span class="term">default implementations</span>.
+	</p>
+	<pre class="language-swift"><code>
+		protocol Animal {
+			var name: String { get }
+			init(name: String)
+			func birth()
+		}
+		protocol Mammal: Animal { }
+		extension Mammal {
+			func birth() {
+				birth("live birth")
+			}
+		}
+		protocol Reptile: Animal { }
+		extension Reptile {
+			func birth() {
+				print("eggs layed")
+			}
+		}
+	</code></pre>
+	<p>
+		In the code above, we created two protocols,
+		<span class="monoText">Mammal</span> and
+		<span class="monoText">Reptile</span>, that inherit from
+		<span class="monoText">Animal</span>. Then, we created two extensions for
+		<span class="monoText">Mammal</span> and
+		<span class="monoText">Reptile</span>. We can then use the protocols
+		<span class="monoText">Mammal</span> and
+		<span class="monoText">Reptile</span> on classes, say
+		<span class="monoText">Crocodile</span> and
+		<span class="monoText">Kangaroo</span>, so long as those classes conform to
+		the respective protocols. Assuming the classes conform to the protocols, all
+		extensions of such protocols are available for the classes to use.
+	</p>
+	<p>
+		Protocol inheritance is what allows us to write more flexible data types.
+		Class inheritance is fairly restrictive, in that we do not have multiple
+		inheritance. There are situations, however, where multiple inheritance is
+		the best approach. In those situations, protocols and extensions are what we
+		should use.
+	</p>
+	<p>
+		<span class="topic" id="extensions">Extensions.</span> Separately, we should
+		be clear about what we can and cannot put in an extension. Extensions cannot
+		have stored instance properties, and they cannot have required or designated
+		initializers. They can, however, contain methods, computed properties,
+		stored type properties, and convenience initializers.
+	</p>
+	<p>
+		Extensions are a powerful feature for handling data types. For example,
+		suppose we want to include with the base type
+		<span class="monoText">Int</span> some functions for determining parity:
+	</p>
+	<pre class="language-swift"><code>
+		extension Int {
+			func isEven(_ value: Int) -> Bool {
+				value % 2 == 0
+			}
+			func isOdd(_ value: Int) -> Bool {
+				(value + 1) % 2 == 0
+			}
+		}
+	</code></pre>
+	<p>
+		As written above, these are methods, but we can turn them into computed
+		properties:
+	</p>
+	<pre class="language-swift"><code>
+		extension Int {
+			var isEven: Bool {
+				self.value % 2 == 0
+			}
+			var isOdd: Bool {
+				(self.value + 1) % 2 == 0
+			}
+		}
+	</code></pre>
+	<p>
+		Both the properties <span class="monoText">isEven</span> and
+		<span class="monoText">isOdd</span> can be accessed on any instance of
+		<span class="monoText">Int</span>.
+	</p>
+</section>
+
 {% endblock %}

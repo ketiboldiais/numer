@@ -62,7 +62,7 @@ def py_lists(request):
 def py_mutability(request):
 	return render(request, "numerc/py/py_mutability.html")
 def py_functionObjects(request):
-	return render(request, "numerc/py/py_functionObjects.html")
+	return render(request, "numerc/py/py_functionsObjects.html")
 def py_dictionaries(request):
 	return render(request, "numerc/py/py_dictionaries.html")
 def py_tests(request):
@@ -142,11 +142,9 @@ def swift_methods(request):
 def swift_switch(request):
 	return render(request, "numerc/swift/swift_switch.html")
 def swift_protocolsAndInheritance(request):
-	return render(request, "numerc/swift/swift_protocolsAndInheritance.html")
-def swift_inheritance(request):
-		return render(request, "numerc/swift/swift_inheritance.html")
+		return render(request, "numerc/swift/swift_protocolsAndInheritance.html")
 def swift_override(request):
-		return render(request, "numerc/swift/swift_inheritance.html")
+		return render(request, "numerc/swift/swift_override.html")
 def swift_init(request):
 		return render(request, "numerc/swift/swift_init.html")
 def swift_standardLibrary(request):
@@ -169,6 +167,8 @@ def swift_programArchitecture(request):
 		return render(request, "numerc/swift/swift_programArchitecture.html")
 def swift_xcodeShortcuts(request):
 		return render(request, "numerc/swift/swift_xcodeShortcuts.html")
+def swift_mvvm(request):
+		return render(request, "numerc/swift/swift_mvvm.html")
 
 # java functions
 def java_preface(request):
@@ -327,14 +327,6 @@ def ml_errors(request):
 		return render(request, "numerc/ml/ml_errors.html")
 def ml_customDataTypes(request):
 		return render(request, "numerc/ml/ml_customDataTypes.html")
-def ml_productTypes(request):
-		return render(request, "numerc/ml/ml_productTypes.html")
-def ml_sumTypes(request):
-		return render(request, "numerc/ml/ml_sumTypes.html")
-def ml_recursiveTypes(request):
-		return render(request, "numerc/ml/ml_recursiveTypes.html")
-def ml_typeSynonyms(request):
-		return render(request, "numerc/ml/ml_typeSynonyms.html")
 
 #  C++ functions
 def cpp_preface(request):
@@ -343,6 +335,10 @@ def cpp_errors(request):
 	return render(request, "numerc/cpp/cpp_errors.html")
 def cpp_variablesAndTypes(request):
 	return render(request, "numerc/cpp/cpp_variablesAndTypes.html")
+def cpp_basicOperators(request):
+	return render(request, "numerc/cpp/cpp_basicOperators.html")
+def cpp_controlFlow(request):
+	return render(request, "numerc/cpp/cpp_controlFlow.html")
 def cpp_functions(request):
 	return render(request, "numerc/cpp/cpp_functions.html")
 def cpp_preprocessor(request):

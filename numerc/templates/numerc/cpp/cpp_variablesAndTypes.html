@@ -1,11 +1,12 @@
 {% extends '../layout.html' %} {% load static %} {% block content %}
 <section id="variables_and_types">
+	<h4>Variables &amp; Types</h4>
 	<p>
-		<span class="topic">Variables &amp; Types.</span> In a computer, data is
-		stored inside a memory location. To use that data, we must reference that
-		particular location. In very low-level languages, this is in fact the case.
-		Now, these memory locations are fairly cryptic and difficult to read (e.g.,
-		in hex). Instead of referencing these memory locations, we can associate a
+		In a computer, data is stored inside a memory location. To use that data, we
+		must reference that particular location. In very low-level languages, this
+		is in fact the case. Now, these memory locations are fairly cryptic and
+		difficult to read (e.g., in hex). Instead of referencing these memory
+		locations, we can associate a
 		<span class="italicsText">name</span> to that particular location, and
 		reference that name instead. This is called a
 		<span class="term">binding</span>.
@@ -151,6 +152,11 @@
 		will have some <span class="term">garbage value</span> stored, and we have
 		no control over what that value is. As such, it is crucial that we
 		initialize variables once declared.
+		<span class="marginnote"
+			>This is a stark contrast to other languages like Java, where there are
+			default values for uninitialized variables. If you're coming from one of
+			those languages, beware!</span
+		>
 	</p>
 
 	<p>
@@ -359,5 +365,184 @@
 			return side_ * side_ * side_;
 		}
 	</code></pre>
+</section>
+
+<section id="value_reference_semantics">
+	<h5>Value v. Reference Semantics</h5>
+	<p>
+		In languages like <span class="monoText">C++</span> and Java, when variables
+		are passed as parameters, the values bound to those values are copied. For
+		example:
+	</p>
+	<pre class="language-cpp"><code>
+		void swap(int a, int b) {
+			int temp = a;
+			a = b;
+			b = temp;
+		}
+		int main() {
+			int x = 17;
+			int y = 35; 
+			cout << "x = " << x << ", y = " << y << endl;
+			swap(x, y);
+			cout << "x = " << x << ", y = " << y << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 17, y = 35
+		x = 17, y = 35
+	</code></pre>
+	<p>
+		No swap occurs because we are passing
+		<span class="italicsText">copies</span> of values into the variables. In
+		other words, <span class="monoText">x</span> and
+		<span class="monoText">y</span> always remain
+		<span class="monoText">17</span> and
+		<span class="monoText">35</span> respectively because only copies of those
+		values were passed into the function. Any computation done in
+		<span class="monoText">swap()</span> was done on copies of those values, so
+		there no effect on <span class="monoText">x</span> and
+		<span class="monoText">y</span>, the originals.
+	</p>
+	<p>
+		This phenomenon, called <span class="italicsText">pass-by-value</span>, is
+		not the only behavior in <span class="monoText">C++</span>. There is also
+		<span class="italicsText">pass-by-reference</span>, which relies on
+		<span class="term">reference semantics</span>. Here is an example using
+		reference semantics:
+	</p>
+	<pre class="language-cpp"><code>
+		void swap(int& a, int& b) {
+			int temp = a;
+			a = b;
+			b = temp;
+		}
+		int main() {
+			int x = 17;
+			int y = 35
+			cout << "x = " << x << ", y = " << y << endl;
+			swap(x, y);
+			cout << "x = " << x << ", y = " << y << endl;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 17, y = 35
+		x = 35, y = 17
+	</code></pre>
+	<p>
+		Notice the use of the ampersand, <span class="monoText">&</span>. This tells
+		<span class="monoText">C++</span> that we want a
+		<span class="italicsText">reference</span> to the value. Because we are
+		using a reference rather than a copy, changes to the parameter
+		<span class="underlineText">will</span> affect the variable passed in.
+		<span class="marginnote"
+			>Passing by reference is usually best to avoid. With more reference
+			values, it becomes more difficult to reason about code, and when that
+			difficulty increases, the more difficult it is to debug. In some languages
+			like Ruby, there are naming conventions in place to ensure reference or
+			mutable values are physically visible. Although
+			<span class="monoText">C++</span> has no such conventions, it is
+			recommended to follow some sort of convention denoting which variables
+			employ reference semantics. Or better yet, avoid using reference semantics
+			as much as possible. There are situations of course where referance
+			semantics are necessary. I.e., very large objects (e.g., massive data
+			structures), should likely be passed as references. There is a balance,
+			but for run-of-the-mill code, we generally want to avoid passing by
+			reference.</span
+		>
+	</p>
+	<p>
+		Another point for concern with reference values is when we use reference
+		variables as parameters to functions. In <span class="monoText">C++</span>,
+		reference parameters can only take variables as arguments. In other words,
+		we can never pass a literal to a reference parameter (after all, the whole
+		point of reference semantics is to <span class="italicsText">refer</span> to
+		something). Having said all these negatives, we should acknowledge the
+		benefits of reference parameters: (1) We have a way of
+		&#8220;returning&#8221; more than one value with functions, and (2) we have
+		a way of avoiding making bulky copies of large objects when passing them as
+		arguments.
+	</p>
+</section>
+
+<section id="strings">
+	<h4>Strings in <span class="monoText">C++</span></h4>
+	<p>
+		In <span class="monoText">C++</span>, strings are not a primitive type. We
+		must include a system library:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;string&gt;
+		...
+		string foo = "hello";
+	</code></pre>
+	<p>
+		Like Java and other languages, strings in
+		<span class="monoText">C++</span> are a (potentially empty) sequence of
+		characters. And as a sequence of characters, they are indexed from
+		<span class="monoText">0</span> to ${n,}$ where ${n}$ is some positive
+		integer. We can access the individual characters of a string using
+		<span class="monoText">[${i}$]</span> where ${i}$ is some nonnegative
+		integer, or with <span class="monoText">at</span>. For example:
+	</p>
+	<pre class="language-cpp"><code>
+		string foo = "hello";
+		char c1 = s[0]; // "h"
+		char c2 = s.at(1); // "e"
+	</code></pre>
+	<p>
+		Characters in <span class="monoText">C++</span> have
+		<span class="term">ASCII encodings</span>. These encodings effectively map
+		each character to an integer. Thus, when we cast a character into an
+		<span class="monoText">int</span>, we will get back character's
+		corresponding ASCII encoding.
+	</p>
+	<p>
+		<span class="topic">Basic Operators.</span> We can
+		<span class="term">concatenate</span> strings in
+		<span class="monoText">C++</span> as we would most other languages:
+	</p>
+	<pre class="language-cpp"><code>
+		string s1 = "Hello ";
+		s1 += "World!" // "Hello world!"
+	</code></pre>
+	<p>
+		One thing we can do with strings in <span class="monoText">C++</span> that
+		we cannot do in other languages is use the comparison operators. The comparison operators will compare the ASCII encodings of the strings. Thus, the character <span class="monoText">a</span> is "less than" <span class="monoText">b</span> becomes it has a smaller ASCII enscoding.
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Member Function</th>
+				<th>Description</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">${v}$.append(${s}$)</span></td>
+					<td>add ${s}$ to end of ${v.}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.erase(${i, \ell}$)</span></td>
+					<td>delete ${\ell}$ characters in ${v}$ starting from index ${i.}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.insert(${i, m}$)</span></td>
+					<td>add text ${m}$ into string ${v}$ at index ${i.}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.length()</span></td>
+					<td>return the number of characters in the string</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		However, there are differences. Strings in
+		<span class="monoText">C++</span> are
+		<span class="underlineText">mutable</span>. Additionally, there are
+		<span class="underlineText">two</span> types of strings in
+		<span class="monoText">C++</span>.
+	</p>
 </section>
 {% endblock %}
