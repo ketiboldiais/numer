@@ -4,6 +4,13 @@ from django.http import HttpResponse
 # Create your views here.
 def index(request):
 	return render(request, "numerc/index.html")
+
+# Computer Architecture
+def arch_preface(request):
+	return render(request, "numerc/arch/arch_preface.html")
+def arch_logic(request):
+	return render(request, "numerc/arch/arch_logic.html")
+	
 # Python Views
 def py_arithmeticOperators(request):
 	return render(request, "numerc/py/py_arithmeticOperators.html")
@@ -149,10 +156,6 @@ def swift_init(request):
 		return render(request, "numerc/swift/swift_init.html")
 def swift_standardLibrary(request):
 		return render(request, "numerc/swift/swift_standardLibrary.html")
-def swift_casting(request):
-		return render(request, "numerc/swift/swift_casting.html")
-def swift_dictionaries(request):
-		return render(request, "numerc/swift/swift_dictionaries.html")
 def swift_sets(request):
 		return render(request, "numerc/swift/swift_sets.html")
 def swift_conditionals(request):

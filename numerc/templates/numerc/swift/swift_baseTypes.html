@@ -1,7 +1,8 @@
 {% extends '../layout.html' %} {% load static %} {% block content %}
 <section id="base_types">
+	<h3>Base Types & Values</h3>
 	<p>
-		<span class="topic">Base Types.</span> Swift is a
+		Swift is a
 		<span class="term">type-safe language</span> &mdash; we must be clear about
 		the types of our values for the code to compile (granted, Swift also has
 		type-inference, but more on this later). Swift has the following base types:
@@ -90,7 +91,202 @@
 	</code></pre>
 </section>
 
-<section id="interpolation">
+<section id="numerics">
+	<h4>Mathematical Operations</h4>
+	<p>Swift provides several mathematical operations. As an aside, Swift errs on avoiding operator overloading. For example, a value of type <span class="monoText">Double</span> cannot be multiplied with a value of type <span class="monoText">Int</span>, unless we explicitly state what type we want the result to be. The rule of thumb: If the values are of different type, then without knowing, we're better off assuming that they cannot be used together as operands to an operator (we should of course verify this to be the case).</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Operation</th>
+				<th>Computation</th>
+				<th>Comment</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="3">The order of operations in Swift follows the familiar PEMDAS.</td>
+				</tr>
+				<tr>
+					<td colspan="3" class="beige center">Arithmetic Operators</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a + b</span></td>
+					<td>${a + b}$</td>
+					<td>Spacing between the operators and operands is all or nothing; you cannot mix styles. E.g., <span class="monoText">a+ b</span> returns an error.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a - b</span></td>
+					<td>${a - b}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a * b</span></td>
+					<td>${a \times b}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a / b</span></td>
+					<td>${\dfrac{a}{b}}$</td>
+					<td>Dividing an <span class="monoText">Int</span> by an <span class="monoText">Int</span> will return an <span class="monoText">Int</span>. If we want the fractional component, we must use <span class="monoText">Double</span> or some other floating point value type.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">a % b</span></td>
+					<td>${a \bmod b}$</td>
+					<td>Returns the remainder of ${a / b.}$</td>
+				</tr>
+				<tr>
+					<td colspan="3" class="beige">These operators (functions) require an <span class="monoText">import Foundation</span> statement at the top of the Swift file.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">pow(a, b)</span></td>
+					<td>${a^b}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">sqrt(a)</span></td>
+					<td>${\sqrt{a}}$</td>
+					<td>Use <span class="monoText">sqrtf()</span> for float types.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">exp(x)</span></td>
+					<td>${e^x}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">log(x)</span></td>
+					<td>${\ln x}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">log10(x)</span></td>
+					<td>${\log x}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">min(a, b)</span></td>
+					<td>returns the lesser of ${a}$ and ${b}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">max(a, b)</span></td>
+					<td>returns the greater of ${a}$ and ${b}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">round(a)</span></td>
+					<td>schoolbook rounding</td>
+					<td>If ${b}$ is halfway between ${a}$ and ${c,}$ rounds to the greater. Otherwise, ${a}$ is rounded to closest integer. <span class="monoText">round()</span> will mutate the value. For a non-mutating function, use <span class="monoText">rounded()</span>.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">ceil(a)</span></td>
+					<td>${\lceil a \rceil }$</td>
+					<td>Returns the smallest integer greater than or equal to ${a}$. E.g., ${\lceil 2.4 \rceil = 3.}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">floor(a)</span></td>
+					<td>${\lfloor a \rfloor }$</td>
+					<td>Returns the greatest integer less than or equal to ${a}$. E.g., ${\lfloor 2.4 \rfloor = 2}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">trunc(a)</span></td>
+					<td>Cuts off the fractional part of ${a;}$ i.e., returns the integral part of ${a.}$</td>
+					<td>E.g., <span class="monoText">trunc(2.4)</span> returns <span class="monoText">2</span></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">abs(a)</span></td>
+					<td>${\lvert a \rvert }$</td>
+					<td>Think of it as making any number positive.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">sign(a)</span></td>
+					<td>Answers: What is the sign of ${a}$?</td>
+					<td>Returns -1 if the if ${a}$ is negative, 0 if ${a}$ is 0, and 1 if ${a}$ is positive. Operates on <span class="monoText">Int</span>.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">signum(a)</span></td>
+					<td>Answers: What is the sign of ${a}$?</td>
+					<td>Same computation as <span class="monoText">sign(a)</span>, but operates on float types.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">sin(a)</span></td>
+					<td>${\sin a}$</td>
+					<td rowspan="3">Output is radians. If we want degree output, divide the result by <span class="monoText">(180 / PI)</span>.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">cos(a)</span></td>
+					<td>${\cos a}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">tan(a)</span></td>
+					<td>${\tan a}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">random(in: ${r}$)</span></td>
+					<td>returns a random number in the range ${r}$ of type ${t.}$</td>
+					<td>For example, <span class="monoText">random(in: 1..&lt;100)</span> returns some random integer in the interval ${[0, 100).}$</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</section>
+
+<section id="casting">
+	<p>
+		<span class="topic">Casting.</span> Unlike languages like JavaScript, Swift
+		never implicitly converts a a value to another type. If we want to convert a
+		value, we must explicitly do so.
+	</p>
+
+	<pre class="language-swift"><code>
+		let saleText = "Buy now for "  
+		let price = 4.99
+		let advert = saleText + String(price)
+		print(advert)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Buy now for 4.99
+	</code></pre>
+
+	<p>
+		Notice that if we removed the explicit conversion, Swift informs us that we
+		cannot apply an operand to values of different types (in this case, a string
+		and double).
+	</p>
+</section>
+
+<section id="strings">
+	<h4>Textual Data</h4>
+	<p>Swift uses Unicode encoding for textual data. Accordingly, we can use English characters, numerals, mathematical symbols, and emojis directly in source code. True to its ancestor C, Swift provides two base types for textual data: <span class="monoText">Character</span> and <span class="monoText">String</span>. We use <span class="monoText">Character</span> for single-character data, and <span class="monoText">String</span> for multiple characters. <span class="marginnote">Unlike C, however, there's no such thing as a character literal in Swift. All textual data are just strings. The type <span class="monoText">Character</span> simply represents a <span class="monoText">String</span> value of length 1.</span></p>
+
+	<pre class="language-swift"><code>
+		let π = 3.14159 // unicode is supported
+		let 𝑒 = 2.71828
+		let charA: Character = "a"
+		let charCat = "🐱" // type inference
+		let strCat: String = "Cat"
+		let strDog = "Dog" // type inference
+	</code></pre>
+
+	<p>A feature many languages lack is the ability to separate strings into multiple lines. As a more modern language, Swift recognizes how value this feature can be and provides syntax for indicating multi-line strings:</p>
+
+	<pre class="language-swift"><code>
+		var str = <span class="redText">"""
+				Some very long 
+				...
+				multiline 
+				...
+				string.
+				"""
+			</span>
+	</code></pre>
+
+	<p><span class="term">Concatenation</span> is one example of where Swift is willing to overload. As with most languages, the <span class="monoText">+</span> symbol is used for concatenation:</p>
+
+	<pre class="language-swift"><code>
+		var a = "foo"
+		a += "bar" // a is now "foobar"
+		a + "bang" // a is now "foobarbang"
+	</code></pre>
+
 	<p><span class="topic">Interpolating Strings.</span> In the previous example, we attempted to include a value of numeric type in a string. We do not need to convert the numeric value to a string to do so. We can instead <span class="term">interpolate</span>:</p>
 
 	<pre class="language-swift"><code>

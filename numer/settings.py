@@ -24,10 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-i5pc$$w2l5#ha+)pzsws!1435sna=glnh$ujf(sgvfl(u5qklt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+if os.getcwd() == '/app':
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    DEBUG = False
 
 ALLOWED_HOSTS = [
     'www.numerstack.xyz',
+    'numerstack.xyz',
     '0.0.0.0',
     'numerstack.herokuapp.com'
 ]

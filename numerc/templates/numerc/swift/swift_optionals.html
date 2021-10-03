@@ -10,9 +10,19 @@
 		uninitialized values almost always causes an error to return. So, we need to
 		somehow initialize these values. One approach would be to use some sort of
 		<span class="italicsText">dummy value</span>. Maybe an empty string, or the
-		Boolean false. But this is bad programming, because these values do not
-		directly represent the information &mdash; the information simply is not
-		there. The solution to this problem is to use an
+		Boolean false.
+		<span class="marginnote"
+			>A value that represents a special condition (e.g., the absence of a
+			value) is more generally called a
+			<span class="term">sentinel value</span>. For example, in the C language
+			family, <span class="monoText">0</span> is often used to indicate that a
+			program ran successfully (one special condition), and subsequent numbers
+			indicate a particular error (other special conditions). These numbers are
+			sentinel values.</span
+		>
+		But this is not always best practice, because these values do not directly
+		represent the information &mdash; the information simply is not there. The
+		solution to this problem is to use an
 		<span class="term">optional data type value</span>.
 	</p>
 
@@ -26,7 +36,10 @@
 		Optionals are intended to address the problems that arise when there is no
 		value. Older languages like C and Objective-C are not particularly
 		user-friendly at handling these situations, and Swift addresses these
-		shortcomings with optionals.
+		shortcomings with optionals. Optionals are a way of ensuring we always have
+		some &#8220;box&#8221; where a value can be stored. The box can contain a
+		value (called a <span class="term">some-value</span>), or it contains
+		<span class="monoText">nil</span>. Regardless, the box is always there.
 	</p>
 
 	<p>
@@ -157,21 +170,20 @@
 	<ol>
 		<li>Force unwrapping</li>
 		<li>Existence testing</li>
-		<li>Optional Binding</li>
-		<li>Optional Chaining</li>
-		<li>Optional Coalescing</li>
+		<li>Optional binding</li>
+		<li>Guarding</li>
+		<li>Nil coalescing</li>
+		<li>Implicit unwrapping</li>
 	</ol>
 
-	<p>
-		Of these five approaches,
-		<span class="italicsText">force unwrapping</span> is the most dangerous way
-		to unwrap an optional, and should seldom be used if ever. We cover each
-		approach in turn.
-	</p>
+	<p>We cover each in turn.</p>
 
 	<p>
-		<span class="topic">Force Unwrapping.</span> Here is an example of force
-		unwrapping in Swift:
+		<span class="topic">Force Unwrapping.</span> Force unwrapping is the most
+		dangerous way to unwrap an optional. If the optional is actually
+		<span class="monoText">nil</span>, then we get an error. What's worse is
+		that this error occurs at runtime, so the compiler won't catch it. Here is
+		an example of force unwrapping in Swift:
 	</p>
 
 	<pre class="language-swift"><code>
@@ -206,11 +218,11 @@
 	</code></pre>
 
 	<p>
+		<span class="topic">Existence Testing.</span>
 		Why are runtime errors so dangerous? Because they aren't spotted by XCode as
 		we write, and they aren't spotted by the compiler. This means the error can
-		lay in ambush for a long time as we code, and only when we build does it
-		appear. A much safer way is to first
-		<span class="italicsText">test existence</span>:
+		lay in ambush for a long time as we code, and only when we execute does it
+		appear. A much safer way is to first test for existence:
 	</p>
 
 	<pre class="language-swift"><code>
@@ -218,11 +230,20 @@
 		var stringToInt = Int(inputNum)
 		if stringToInt != nil {
 			print(stringToInt! + 1)
+		} else {
+			print("No value")
 		}
 	</code></pre>
 	<pre class="language-bash"><code>
 		11
 	</code></pre>
+
+	<p>
+		Obviously, the problem with existence-testing is that we have to remember to
+		check for <span class="monoText">nil</span> everytime we want to unwrap an
+		optional. This is tedious. A better approach is
+		<span class="italicsText">optional binding</span>.
+	</p>
 
 	<p>
 		<span class="topic">Optional Binding.</span> Another way to unwrap is to
@@ -269,6 +290,104 @@
 		Optional("Hello")
 		"Hello"
 	</code></pre>
+
+	<p>We can also unwrap multiple values at the same time:</p>
+
+	<pre class="language-swift"><code>
+		var greet: String?
+		var bid: String?
+		greet = "Hi"
+		bid = "Bye"
+		print(greet)
+		print(bid)
+
+		if let greet = greet,
+			 let bid = bid {
+			print(greet)
+			print(bid)
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Optional("Hi")
+		Optional("Bye")
+		Hi
+		Bye
+	</code></pre>
+
+	<p>
+		<span class="topic">Guards.</span> Suppose we have a function that checks
+		whether a coupon a user enters is valid. We could just write a function that
+		blindly checks if entered coupon is valid, but that function would assume
+		that the user actually entered a coupon. If the user didn't enter a coupon,
+		then the value of some variable <span class="monoText">coupon</span> would
+		be best represented as <span class="monoText">nil</span>. This is a
+		situation where want to use an optional.
+	</p>
+
+	<pre class="language-swift"><code>
+		userEnteredCoupon: String?
+	</code></pre>
+
+	<p>
+		Now, if we wanted to verify whether the user entered the coupon, we should
+		use a function that takes the variable
+		<span class="monoText">userEnteredCoupon</span> as an argument. But this is
+		an optional String. Either the user entered a coupon, or they did not.
+		Accordingly, we must unwrap the optional. With functions, we can do so with
+		a <span class="monoText">guard</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+	func isValidCoupon(_ coupon: String?) -> Bool {
+		guard let couponEntered = coupon else {
+			return false
+		}
+		if couponEntered == "FallSale" {
+			return true
+		} else { return false }
+	}
+	</code></pre>
+
+	<p>
+		The <span class="monoText">guard</span> works as such: If the user didn't
+		enter a coupon, simply return <span class="monoText">false</span>. After
+		all, if the user didn't enter a coupon value, then there is no valid coupon.
+		If, however, the user did enter a coupon value, then we can check whether
+		the coupon is valid. We can think of <span class="monoText">guard</span> as
+		a way of guarding against <span class="monoText">nil</span>. We can place
+		whatever code we want in the <span class="monoText">guard</span>'s
+		<span class="monoText">else</span> block. That is the code the function will
+		execute when an argument passed to it is <span class="monoText">nil</span>.
+	</p>
+
+	<p>
+		In the code above, the expression following
+		<span class="monoText">guard</span> is called a
+		<span class="term">guard expression</span>. Guard expressions can be
+		optional bindings (as indicated in the example), or they can be Boolean
+		expressions. The code inside the guard expression's
+		<span class="monoText">else</span> block is the code executed when the
+		condition is false. This code
+		<span class="underlineText">must</span> return. If, however, the condition
+		is true, then we move along the <span class="term">happy path</span> &mdash;
+		the rest of the code (or more visually, the left hand side).
+	</p>
+
+	<p><span class="topic">Nil Coalescing.</span> In some situations, we might want an optional value's some-value under any circumstance, and if there is no some-value (<span class="monoText">nil</span>), we'll use a default value. This is where <span class="term">nil coalescing</span> is useful. For example, suppose we ask the user to enter their gender. We want the relevant variable to be of type <span class="monoText">optional</span>, since the user may or may not want to enter that value.</p>
+
+	<pre class="language-swift"><code>
+		var userInputGender: String?
+	</code></pre>
+
+	<p>Now, if the user enters some value, we want to use that immediately. Otherwise (in the case of <span class="monoText">nil</span>) we want to use a default value:</p>
+
+	<pre class="language-swift"><code>
+		var userInputGender: String?
+		var userGender = userInputGender ?? "N/A"
+	</code></pre>
+
+	<p>Nil coalescing occurs on the second line, where we use the <span class="italicsText">nil coalescing operator</span> (<span class="monoText">??</span>). The second line says, &#8220;<span class="monoText">userGender</span> will have either the value inside <span class="monoText">userInputGender</span>; otherwise, it has the value <span class="monoText">"N/A"</span>&#8221;.</p>
+
 
 	<p>
 		<span class="topic">Implicitly Unwrapped Optionals.</span> When we

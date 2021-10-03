@@ -4,6 +4,11 @@ from . import views
 app_name = 'numerc'
 urlpatterns = [
 	path("", views.index, name="index"),
+
+# Computer Architecture paths
+	path("arch_preface", views.arch_preface, name="arch_preface"),
+	path("arch_logic", views.arch_logic, name="arch_logic"),
+	
 # Python paths
 	path("py_arithmeticOperators", views.py_arithmeticOperators, name="py_arithmeticOperators"),
 	path("py_preface", views.py_preface, name="py_preface"),
@@ -78,8 +83,6 @@ urlpatterns = [
 	path("swift_override", views.swift_override, name="swift_override"),
 	path("swift_init", views.swift_init, name="swift_init"),
 	path("swift_standardLibrary", views.swift_standardLibrary, name="swift_standardLibrary"),
-	path("swift_casting", views.swift_casting, name="swift_casting"),
-	path("swift_dictionaries", views.swift_dictionaries, name="swift_dictionaries"),
 	path("swift_sets", views.swift_sets, name="swift_sets"),
 	path("swift_conditionals", views.swift_conditionals, name="swift_conditionals"),
 	path("swift_views", views.swift_views, name="swift_views"),

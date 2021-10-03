@@ -1,12 +1,24 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} 
+
+{% block description %}
+
+<meta name="description" content="An overview of variables and primitive types in C++: ">
+
+{% endblock %}
+
+{% block title %}
+<title>C++: Variables and Data Types</title>
+{% endblock %}
+
+{% block content %}
 <section id="variables_and_types">
 	<h4>Variables &amp; Types</h4>
 	<p>
 		In a computer, data is stored inside a memory location. To use that data, we
-		must reference that particular location. In very low-level languages, this
-		is in fact the case. Now, these memory locations are fairly cryptic and
-		difficult to read (e.g., in hex). Instead of referencing these memory
-		locations, we can associate a
+		must reference that particular location. In languages like Assembly, this is
+		in fact how we access that data. Now, these memory locations are fairly
+		cryptic and difficult to read (they're in hexadecimal). Instead of
+		referencing these memory locations, we can associate a
 		<span class="italicsText">name</span> to that particular location, and
 		reference that name instead. This is called a
 		<span class="term">binding</span>.
@@ -15,9 +27,10 @@
 	<p>
 		A <span class="term">variable</span> is a programming construct that allows
 		us to associate a <span class="italicsText">value</span> with a
-		<span class="italicsText">name</span>. In other words, it is an abstraction
-		for the process described previously. Examples of variables in
-		<span class="monoText">C++</span>:
+		<span class="italicsText">name</span>. More formally, a variable is a named
+		piece of memory that a programmer uses to store specific types of data. In
+		other words, it is an abstraction for the process described previously.
+		Examples of variables in <span class="monoText">C++</span>:
 	</p>
 
 	<pre class="language-cpp"><code>
@@ -115,6 +128,16 @@
 					<td>usually ${8}$ bits</td>
 					<td>true; false</td>
 				</tr>
+				<tr>
+					<td>void</td>
+					<td>represents "typelessness"</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>auto</td>
+					<td>used to deduce types</td>
+					<td></td>
+				</tr>
 			</tbody>
 		</table>
 	</figure>
@@ -141,10 +164,18 @@
 	</p>
 
 	<pre class="language-cpp"><code>
-		int foo; // declaration
-		int baz = 17; // initialization
-		int quo (43); // constructor initialization 
-		int xyz {13}; // C++ list initialization
+		int foo; // declaration; likely contains garbage value
+		int baz = 17; // assignment initialization
+		int quo (43); // constructor initialization; initializes to 43
+		int xyz {13}; // C++ list initialization; initializes to 13
+		int bar {}; // initializes to 0
+		
+		// we can also uses expressions as initializers
+		int bop {14 + 2}; // initializes to 16
+		int x {2};
+		int y {5};
+		int z {x + y}; // initializes to 7
+		int g {x + y + i}; // won't compile, i is undeclared
 	</code></pre>
 
 	<p>
@@ -158,6 +189,161 @@
 			those languages, beware!</span
 		>
 	</p>
+
+	<p>
+		<span class="topic">More on Numeric Types.</span> Numeric types are so
+		important in programming that it's worth exploring them more deeply. To
+		begin, <span class="monoText">C++</span> has no problem handling positive
+		and negative numbers:
+	</p>
+
+	<pre class="language-cpp"><code>
+		int val1 {1} // a positive integer
+		int val2 {-1} // a negative integer
+	</code></pre>
+
+	<p>The code above is a form of syntactic sugar for the following:</p>
+
+	<pre class="language-cpp"><code>
+		signed int val1 {1}
+		signed int val2 {-1}
+	</code></pre>
+
+	<p>
+		The keyword <span class="monoText">signed</span> is called a
+		<span class="term">modifier</span>. A modifier does what it says &mdash; it
+		modifies what a variable can and cannot do. In this case,
+		<span class="monoText">signed</span> indicates that the subsequent variable
+		can store positive or negative numbers. If we want to ensure that a variable
+		can only store positive numbers, we use the
+		<span class="monoText">unsigned</span> modifier. Whether or not an
+		<span class="monoText">int</span> is signed or unsigned, the
+		<span class="monoText">int</span> will still occupy 4 bytes in memory.
+	</p>
+
+	<p>
+		Signage, however, impacts how many values a given numeric type can
+		represent. Roughly, where ${n}$ is the number of bits for a type in memory,
+		unsigned numeric types can represent numbers in the interval ${[0, 2^n-1].}$
+		Signed integers can store numbers in the interval ${[-2^{n-1}, 2^{n-1} -
+		1].}$ For example, with integers, the
+		<span class="monoText">unsigned</span> modifier allows us to represent
+		numbers from 0 to about 4.2 billion. With
+		<span class="monoText">signed</span>, we can represent numbers from about
+		-2.1 billion to 2.1 billion.
+	</p>
+
+	<p>
+		There are additional modifiers we can use for numeric types,
+		<span class="monoText">short</span> and <span class="monoText">long</span>.
+		The <span class="monoText">short</span> and
+		<span class="monoText">long</span> modifiers will modify the number of bytes
+		a type requires. With <span class="monoText">short</span>, we reduce the
+		range of values we can represent, but save memory. With
+		<span class="monoText">long</span>, we increase the range of values can
+		represent, but use up more memory. We can use
+		<span class="monoText">short</span> and
+		<span class="monoText">long</span> with
+		<span class="monoText">signed</span> and
+		<span class="monoText">unsigned</span> to balance the tradeoffs:
+	</p>
+
+	<pre class="language-cpp"><code>
+		// these variables take up 2 bytes
+		short foo {};
+		short int bar {};
+		signed short bang {};
+		signed short int zing {};
+		unsigned short int blob {};
+
+		// these variables take up 4 bytes
+		int vroom {};
+		signed hoho {};
+		signed int gaga {};
+		unsigned int didi {};
+
+		// these variables take up 4 or 8 bytes
+		long wawa {};
+		long int pepe {};
+		signed long toto {};
+		signed long int shibi {};
+		unsigned long int grob {};
+
+		// these variables take up 8 bytes
+		long long jam {};
+		long long int jip {};
+		signed long long doop {};
+		signed long long int coco {};
+		unsigned long long lulu {};
+		unsigned long long int momo {};
+	</code></pre>
+
+	<p>
+		Note that the modifiers <span class="monoText">signed</span>,
+		<span class="monoText">unsigned</span>, <span class="monoText">long</span>,
+		and <span class="monoText">short</span> only work for
+		<span class="term">integral types</span> &mdash; types representing
+		integers. They will not work for
+		<span class="term">floating types</span> &mdash; types representing
+		fractional numbers.
+	</p>
+
+	<p>
+		<span class="topic">Floating Types.</span> C++ has three base floating
+		types: <span class="monoText">float</span>,
+		<span class="monoText">double</span>, and
+		<span class="monoText">long double</span>. The base type
+		<span class="monoText">float</span> takes up 4 bytes of memory,
+		<span class="monoText">double</span> takes up 8 bytes, and
+		<span class="monoText">long double</span> takes up 12 bytes. With floating
+		types, the primary concern for memory usage is more focused on precision.
+		With 4 bytes of memory, precision is ensured for up to 7 decimal places
+		(including the integral part). For <span class="monoText">double</span>,
+		it's 15. With <span class="monoText">long double</span>, it depends on the
+		compiler implementation; it can range anywhere from 15, 18, to 33. For the
+		most part, <span class="monoText">double</span> is the recommended type to
+		use, and it suffices for most programming tasks.
+	</p>
+
+	<p><span class="topic">Scientific Notation.</span> C++ supports scientific notation natively:</p>
+
+	<pre class="language-cpp"><code>
+		// x and y are equivalent
+		double x { 732400023 };  
+		double y { 7.32400023e8 };
+
+		// v and w are equivalent
+		double v { 0.00000000002313 };
+		double w { 2.313e-11 };
+	</code></pre>
+
+	<p><span class="topic">Infinity and NaN.</span> For those familiar with JavaScript, C++ has representations for Infinity and <span class="monoText">NaN</span>:</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		int main() {
+			float a { 1.0 };
+			float b {};
+			float c { a / b }; // evaluates to Infinity
+		
+			float u { 0.0 };
+			float v { 0.0 };
+			float w { u / v };; // evaluates to NaN
+		
+			std::cout << "valueOf c: " << c << std::endl;
+			std::cout << "valueOf w: " << w << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		valueOf c: inf
+		valueOf w: nan
+	</code></pre>
+
+	<p><span class="topic">Booleans.</span> Boolean data types represent just two states &mdash; true or false. Accordingly the data type <span class="monoText">bool</span> in C++ consists of only two values: <span class="monoText">true</span> and <span class="monoText">false</span>. A Boolean value takes up 8 bits of memory (an entire byte). This may seem extremely wasteful, particularly from the perspective of embedded systems, where memory is very scarce. With advances in memory capacity, however, most programs aren't impacted by the consumption. We will see in later sections various ways of bundling more data into a byte.</p>
+
+	<p><span class="topic">Characters.</span> In C++, textual data is represented with <span class="monoText">char</span> type.</p>
 
 	<p>
 		<span class="topic">Global v. Local Variables.</span> Variables declared
@@ -509,7 +695,10 @@
 	</code></pre>
 	<p>
 		One thing we can do with strings in <span class="monoText">C++</span> that
-		we cannot do in other languages is use the comparison operators. The comparison operators will compare the ASCII encodings of the strings. Thus, the character <span class="monoText">a</span> is "less than" <span class="monoText">b</span> becomes it has a smaller ASCII enscoding.
+		we cannot do in other languages is use the comparison operators. The
+		comparison operators will compare the ASCII encodings of the strings. Thus,
+		the character <span class="monoText">a</span> is "less than"
+		<span class="monoText">b</span> becomes it has a smaller ASCII enscoding.
 	</p>
 	<figure class="table">
 		<table class="truth_table">
@@ -524,7 +713,9 @@
 				</tr>
 				<tr>
 					<td><span class="monoText">${v}$.erase(${i, \ell}$)</span></td>
-					<td>delete ${\ell}$ characters in ${v}$ starting from index ${i.}$</td>
+					<td>
+						delete ${\ell}$ characters in ${v}$ starting from index ${i.}$
+					</td>
 				</tr>
 				<tr>
 					<td><span class="monoText">${v}$.insert(${i, m}$)</span></td>
