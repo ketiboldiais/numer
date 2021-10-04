@@ -1,18 +1,13 @@
-{% extends '../layout.html' %} {% load static %} 
-
-{% block description %}
-
-<meta name="description" content="An overview of variables and primitive types in C++: ">
-
-{% endblock %}
-
-{% block title %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="An overview of variables and primitive types in C++: int, float, boolean, char, string, variable declarations, variable initialization, pass by value, pass by reference."
+/>
+{% endblock %} {% block title %}
 <title>C++: Variables and Data Types</title>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <section id="variables_and_types">
-	<h4>Variables &amp; Types</h4>
+	<h1>Variables &amp; Types</h1>
 	<p>
 		In a computer, data is stored inside a memory location. To use that data, we
 		must reference that particular location. In languages like Assembly, this is
@@ -166,7 +161,7 @@
 	<pre class="language-cpp"><code>
 		int foo; // declaration; likely contains garbage value
 		int baz = 17; // assignment initialization
-		int quo (43); // constructor initialization; initializes to 43
+		int kwa (43); // constructor initialization; initializes to 43
 		int xyz {13}; // C++ list initialization; initializes to 13
 		int bar {}; // initializes to 0
 		
@@ -288,6 +283,8 @@
 		fractional numbers.
 	</p>
 
+	<p>Furthermore, we should be careful when using the <span class="monoText">short</span> and <span class="monoText">unsigned</span> modifiers with integral types like <span class="monoText">short int</span>. Arithmetic may not work as expected for an integral type that can take no more than 4 bytes of memory (e.g., <span class="monoText">short int</span>, which only takes 2 bytes). If the result requires more than 4 bytes of memory, C++ will return a result in type other than the operands'. For example, in the case of <span class="monoText">short int</span>, if the result requires more than 2 bytes of memory, C++ will return a result of type <span class="monoText">int</span>.</p>
+
 	<p>
 		<span class="topic">Floating Types.</span> C++ has three base floating
 		types: <span class="monoText">float</span>,
@@ -305,7 +302,10 @@
 		use, and it suffices for most programming tasks.
 	</p>
 
-	<p><span class="topic">Scientific Notation.</span> C++ supports scientific notation natively:</p>
+	<p>
+		<span class="topic">Scientific Notation.</span> C++ supports scientific
+		notation natively:
+	</p>
 
 	<pre class="language-cpp"><code>
 		// x and y are equivalent
@@ -317,7 +317,11 @@
 		double w { 2.313e-11 };
 	</code></pre>
 
-	<p><span class="topic">Infinity and NaN.</span> For those familiar with JavaScript, C++ has representations for Infinity and <span class="monoText">NaN</span>:</p>
+	<p>
+		<span class="topic">Infinity and NaN.</span> For those familiar with
+		JavaScript, C++ has representations for Infinity and
+		<span class="monoText">NaN</span>:
+	</p>
 
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
@@ -341,9 +345,104 @@
 		valueOf w: nan
 	</code></pre>
 
-	<p><span class="topic">Booleans.</span> Boolean data types represent just two states &mdash; true or false. Accordingly the data type <span class="monoText">bool</span> in C++ consists of only two values: <span class="monoText">true</span> and <span class="monoText">false</span>. A Boolean value takes up 8 bits of memory (an entire byte). This may seem extremely wasteful, particularly from the perspective of embedded systems, where memory is very scarce. With advances in memory capacity, however, most programs aren't impacted by the consumption. We will see in later sections various ways of bundling more data into a byte.</p>
+	<p>
+		<span class="topic">Division.</span> The arithmetic operations covered are
+		fairly straightforward. Special attention, however, should be given to
+		division.
+		<span class="marginnote"
+			>As an aside, the <span class="monoText">*</span> (asterisk) operator's
+			use for multiplication dates back to John Backus and his team's
+			development of Fortran. At the time (1954), the available character set
+			for computers was limited, and <span class="monoText">*</span> was the
+			closest symbol to ${\times.}$</span
+		>
+	</p>
 
-	<p><span class="topic">Characters.</span> In C++, textual data is represented with <span class="monoText">char</span> type.</p>
+	<p>Dividing integers can yield unusual results:</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		int main() {
+			int c = 21 / 10; // expected: 2.1
+			std::cout << c << std::endl;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		2
+	</code></pre>
+
+	<p>Notice that the output is 2. Why is this? What's actually happening is that C++ is trying to figure out how many times it can fit 10 inside 21. In this case, 2. This is what happens when we divide an <span class="monoText">int</span> value by a non-multiple of that value. We won't get back a fractional number. For that, we need to use float types:</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		int main() {
+			double c = 21.0 / 10.0; // expected: 2.1
+			std::cout << c << std::endl;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		2.1
+	</code></pre>
+
+
+
+	<!-- Booleans -->
+
+	<p>
+		<span class="topic">Booleans.</span> Boolean data types represent just two
+		states &mdash; true or false. Accordingly the data type
+		<span class="monoText">bool</span> in C++ consists of only two values:
+		<span class="monoText">true</span> and <span class="monoText">false</span>.
+		A Boolean value takes up 8 bits of memory (an entire byte). This may seem
+		extremely wasteful, particularly from the perspective of embedded systems,
+		where memory is very scarce. With advances in memory capacity, however, most
+		programs aren't impacted by the consumption. We will see in later sections
+		various ways of bundling more data into a byte.
+	</p>
+
+	<!-- characters -->
+
+	<span class="topic">Characters.</span> In C++, single-character data is
+	represented with <span class="monoText">char</span> type. A
+	<span class="monoText">char</span> value is represented with single quotes in
+	C++:
+	<pre class="language-cpp"><code>
+			char foo = 'a';
+		</code></pre>
+	<p>
+		Note that we must use single quotes. Any other symbol will return an error.
+	</p>
+	<p>
+		The <span class="monoText">char</span> type takes up 1 byte, or 8 bits, of
+		memory. Characters in C++ map to the ASCII table. Thus, each ASCII character
+		has an integer ASCII encoding.
+	</p>
+
+	<!-- auto -->
+
+	<p>
+		<span class="topic"><span class="monoText">auto</span>.</span> The keyword
+		<span class="monoText">auto</span> is C++'s take on type inference. By
+		appending the keyword to a variable name, we instruct C++ to infer the bound
+		value's type. This is particulary useful for when we have particularly long
+		type names. We can't really appreciate how useful type inference is at the
+		moment, but we mention it here for completeness.
+	</p>
+
+	<pre class="language-cpp"><code>
+		auto val1 {19}; // type inferred: int
+		auto val2 {38.3}; // type inferred: double
+		auto val3 {'e'}; // type inferred: char
+		auto val4 {2.0f}; // type inferred: float
+		auto val5 {290.3l}; // type inferred: long
+		auto val6 {923u}; // type inferred: unsigned
+		auto val7 {197ul}; // type inferred: unsigned long
+		auto val9 {9291ll}; // type inferred: long long
+	</code></pre>
+
+	<!-- global v. local variables -->
 
 	<p>
 		<span class="topic">Global v. Local Variables.</span> Variables declared
@@ -554,7 +653,7 @@
 </section>
 
 <section id="value_reference_semantics">
-	<h5>Value v. Reference Semantics</h5>
+	<h2>Value v. Reference Semantics</h2>
 	<p>
 		In languages like <span class="monoText">C++</span> and Java, when variables
 		are passed as parameters, the values bound to those values are copied. For
@@ -653,7 +752,7 @@
 </section>
 
 <section id="strings">
-	<h4>Strings in <span class="monoText">C++</span></h4>
+	<h2>Strings in <span class="monoText">C++</span></h2>
 	<p>
 		In <span class="monoText">C++</span>, strings are not a primitive type. We
 		must include a system library:
