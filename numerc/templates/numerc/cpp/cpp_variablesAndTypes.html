@@ -1,13 +1,21 @@
-{% extends '../layout.html' %} {% load static %} {% block description %}
+{% extends '../layout.html' %} {% load static %} 
+
+
+{% block description %}
 <meta
 	name="description"
 	content="An overview of variables and primitive types in C++: int, float, boolean, char, string, variable declarations, variable initialization, pass by value, pass by reference."
 />
-{% endblock %} {% block title %}
+{% endblock %} 
+
+{% block title %}
 <title>C++: Variables and Data Types</title>
-{% endblock %} {% block content %}
+{% endblock %} 
+
+
+{% block content %}
+<h1>Variables &amp; Types</h1>
 <section id="variables_and_types">
-	<h1>Variables &amp; Types</h1>
 	<p>
 		In a computer, data is stored inside a memory location. To use that data, we
 		must reference that particular location. In languages like Assembly, this is
@@ -33,6 +41,111 @@
 		char grade = 'A';
 		double pi = 3.14;
 	</code></pre>
+
+	<p>
+		The value <span class="monoText">'A'</span> and
+		<span class="monoText">3.14</span> are called
+		<span class="term">literals</span>. A literal is a value directly
+		represented inside the program executable (as opposed to a value that must
+		be accessed through a variable stored somewhere in memory). For example, the
+		variable <span class="monoText">pi</span> will be stored somewhere in
+		memory. The literal <span class="monoText">3.14</span>, however, will be
+		directly represented as binary in the executable. For example, suppose we
+		wrote the following:
+	</p>
+
+	<pre class="language-cpp"><code>
+		int a = 1
+		int b = 2
+	</code></pre>
+
+	<p>
+		When we actually compile the program, the code above looks something like:
+	</p>
+
+	<figure class="table">
+		<table class="monotable">
+			<tbody>
+				<tr>
+					<td>001</td>
+					<td>a = 1 (int)</td>
+				</tr>
+				<tr>
+					<td>002</td>
+					<td>b = 2 (int)</td>
+				</tr>
+				<tr>
+					<td>${\vdots}$</td>
+					<td>${\vdots}$</td>
+				</tr>
+				<tr>
+					<td>0040</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>0041</td>
+					<td>2</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<p>
+		The values are called literals because they are
+		<span class="italicsText">literally</span> inside the source code. They do
+		not need to be represented in memory. Because the values bound to
+		<span class="monoText">a</span> and <span class="monoText">b</span> are
+		literals, we can use <span class="monoText">a</span> and
+		<span class="monoText">b</span> throughout our program (this is true because
+		the variables above are presumed to be declared in the global scope; more on
+		this later).
+	</p>
+
+	<p>
+		Note that literals with modifiers, like
+		<span class="monoText">long</span> and
+		<span class="monoText">unsigned</span>, should have a suffix appended at the
+		end, indicating that the value is a literal:
+	</p>
+
+	<pre class="language-cpp"><code>
+		unsigned int ceoBonus {2'000'000u};
+		unsigned int errorCode = 0xBAD; // evaluates to 2989 
+		int myOctal {0777u} // evaluates to 511
+		float myFloat {1.2f}
+	</code></pre>
+
+	<p>
+		Notice the use of single quotes as separators. This is particularly helpful
+		when we have large value literals. Notice also that we can represent hex
+		numbers in C++.
+		<span class="marginnote"
+			>Hex numbers are used amusingly (and usefully) in many programs as
+			<span class="italicsText">hex speak.</span> For example, the hex number
+			<span class="monoText">0xBAAAAAAD</span> is used as an iOS exception
+			report (it evaluates to the integer
+			<span class="monoText">3131746989</span>.) Similarly,
+			<span class="monoText">0xDEADBEEF</span> is almost ubiquitously used in
+			embedded systems to indicate a software crash or a deadlock. These are all
+			examples of <span class="term">magic numbers</span>; numbers used to
+			indicate a particular value.</span
+		>
+		Hex numbers are also used to indicate colors. Above, we also see an example
+		of using octal numbers as literals. Notice that octal numbers are prefaced
+		with a <span class="monoText">0</span>. Because of this use of
+		<span class="monoText">0</span>, be very careful not to preface
+		<span class="monoText">int</span> values with a
+		<span class="monoText">0</span> if an <span class="monoText">int</span> is
+		intended.
+	</p>
+	<p>
+		In the last line, we see a <span class="monoText">float</span> literal.
+		Notice the suffix <span class="monoText">f</span>. This suffix must be
+		included if we want to ensure the value is treated as a
+		<span class="monoText">float</span> literal. If we fail to include the
+		suffix, we risk C++ treating the value as a
+		<span class="monoText">double</span>.
+	</p>
 
 	<p>
 		The value of <span class="monoText">x</span> above is
@@ -142,6 +255,158 @@
 		particularly concerned about memory use. If we attempt to assign too large
 		of a value into a variable type that does not accomodate for that value's
 		size, we will get an <span class="term">overflow</span>.
+	</p>
+
+	<p>
+		<span class="topic">Constants.</span> Constants are variables whose bound
+		values are immutable &mdash; the value cannot be changed. We can initialize
+		constants in C++ as such:
+	</p>
+
+	<pre class="language-cpp"><code>
+		const double accelerationGravity { 9.807 }; // meters per second^2
+	</code></pre>
+
+	<p>
+		The <span class="monoText">const</span> qualifier does not actually apply to
+		the data in memory. In other words, it's not like the data in memory
+		permanently stays in some location, never moving, never changing. Instead,
+		the qualifier applies to the variable name. What this means is, in the
+		variable above, <span class="monoText">accelerationGravity</span>, we cannot
+		change the value bound to it, <span class="monoText">9.807</span>, using
+		<span class="monoText">accelerationGravity</span>. This is a crucial
+		distinction to understand, because there is more than one way to modify a
+		value bound to a variable. As we will see on the section with pointers,
+		there are situations where we can accidentally cause a
+		<span class="monoText">const</span> to change.
+	</p>
+	<p>
+		Question: What if the <span class="monoText">const</span> value depends on
+		the computation of a non-constant value? Will subsequent changes to the
+		non-constant value cause changes to the
+		<span class="monoText">const</span> value? Fortunately in C++, no. Once a
+		variable is initialized as a constant, that value will remain bound to the
+		identifier:
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		int main() {
+			int a = 3;
+			const int b = 4 + a;
+			std::cout << b << std::endl;
+			a += 1;
+			std::cout << b << std::endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		7
+		7
+	</code></pre>
+
+	<p>
+		Constants are what allow us to ensure that a value bound to a particular
+		identifier is never changed throughout its existence. If we, or any part of
+		our code, attempt to modify that constant, we will get a compiler error. In
+		general, we should err on the side of constants. While mutability is a
+		useful tool, erring on mutability only increases the amount of values we
+		must keep track of. Some of those values will be things that should never
+		change, and should not be included in our personal list of tracked values.
+		Some C++ programmers follow the habit of declaring every variable as a
+		<span class="monoText">const</span>, then deciding after seeing compiler
+		errors whether to remove the
+		<span class="monoText">const</span> declaration. This is great habit, as it
+		forces us to more carefully consider whether we want mutability.
+	</p>
+
+	<p>
+		<span class="term">Constant Expressions.</span> Constant expressions are
+		expressions that are evaluated at compile time rather than runtime. The
+		default behavior is to perform these computations at runtime. The problem,
+		however, is that some computations can be enormous. This means that whenever
+		a user loads an executable (i.e., runs the program,) the computation may
+		need to be performed again. This redundancy can amount to large costs in
+		runtime. To declare constant expressions, we use the
+		<span class="monoText">constexpr</span> keyword:
+	</p>
+	<pre class="language-cpp"><code>
+		constexpr double pi {3.14};
+	</code></pre>
+	<p>
+		We cannot use non-constant expressions (i.e.,
+		<span class="term">runtime values</span>) inside constant expressions (<span
+			class="term"
+			>compile-time values</span
+		>). This is because the compiler cannot perform computations on or with
+		runtime values. Those computations must be done at runtime.
+	</p>
+	<pre class="language-cpp"><code>
+		const double e {2.718};
+		constexpr double myNum { e * 2.2 };  // returns an error
+	</code></pre>
+	<p>
+		The code above returns an error because <span class="monoText">e</span> is a
+		non-constant expression. To actually perform the computation,
+		<span class="monoText">e</span> must also be a constant expression:
+	</p>
+	<pre class="language-cpp"><code>
+		constexpr double e {2.718};
+		constexpr double myNum { e * 2.2 };  // returns 5.9796
+	</code></pre>
+	<p>
+		Constant expressions are enormously useful in ensuring that we do not waste
+		valuable runtime. In particular, we almost always want to perform large,
+		heavy computations at compile time. By doing so, we do not have to waste
+		valuable runtime performing the large computation. Instead, the computer's
+		loader will simply retrieve the result from the compiler's computation.
+	</p>
+	<p>
+		We can think of constant expressions as a cost-shifting mechanism. Rather
+		than the user paying the price for the large computation, we, as the
+		programmers, pay the price at computation. Erring on constant expressions,
+		executables can load much, much faster.
+		<span class="marginnote"
+			>As evidence of how valuable constant expressions are, one of the most
+			competitive games in the programming languages market is moving as many
+			computations as possible to compile time. With each new standard of C++
+			(and other languages like Java), there have been increases in the number
+			of movable computations. Given how fast compilers are getting, the game is
+			only growing more heated.</span
+		>
+	</p>
+	<p>
+		Constant expressions are very useful for checks For example, suppose our
+		program should not proceed any further &mdash; in compilation &mdash; unless
+		some condition is met. We can do so with
+		<span class="monoText">static_assert(${b}$)</span>, where ${b}$ is the
+		condition we want met.
+	</p>
+
+	<pre class="language-cpp"><code>
+		int main() {
+			constexpr int a = 2;
+			static_assert(a == 3);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		main.cpp:5:2: error: static_assert failed due to requirement 'a == 3'
+        static_assert(a == 3);
+        ^             ~~~~~~
+		1 error generated.
+	</code></pre>
+
+	<p>
+		Above, our program never actually compiles &mdash; and never gets to runtime
+		&mdash; because the condition <span class="monoText">a == 3</span> is not
+		met. Separately, constant expressions are effectively constants, so the
+		expressions cannot be mutated.
+		<span class="monoText">static_assert()</span> can be a very valuable tool
+		when we are moving large amounts of computations to compile time, as it
+		reduces the costs we've shifted to ourselves as programmers.
 	</p>
 
 	<p>
@@ -283,7 +548,19 @@
 		fractional numbers.
 	</p>
 
-	<p>Furthermore, we should be careful when using the <span class="monoText">short</span> and <span class="monoText">unsigned</span> modifiers with integral types like <span class="monoText">short int</span>. Arithmetic may not work as expected for an integral type that can take no more than 4 bytes of memory (e.g., <span class="monoText">short int</span>, which only takes 2 bytes). If the result requires more than 4 bytes of memory, C++ will return a result in type other than the operands'. For example, in the case of <span class="monoText">short int</span>, if the result requires more than 2 bytes of memory, C++ will return a result of type <span class="monoText">int</span>.</p>
+	<p>
+		Furthermore, we should be careful when using the
+		<span class="monoText">short</span> and
+		<span class="monoText">unsigned</span> modifiers with integral types like
+		<span class="monoText">short int</span>. Arithmetic may not work as expected
+		for an integral type that can take no more than 4 bytes of memory (e.g.,
+		<span class="monoText">short int</span>, which only takes 2 bytes). If the
+		result requires more than 4 bytes of memory, C++ will return a result in
+		type other than the operands'. For example, in the case of
+		<span class="monoText">short int</span>, if the result requires more than 2
+		bytes of memory, C++ will return a result of type
+		<span class="monoText">int</span>.
+	</p>
 
 	<p>
 		<span class="topic">Floating Types.</span> C++ has three base floating
@@ -372,7 +649,13 @@
 		2
 	</code></pre>
 
-	<p>Notice that the output is 2. Why is this? What's actually happening is that C++ is trying to figure out how many times it can fit 10 inside 21. In this case, 2. This is what happens when we divide an <span class="monoText">int</span> value by a non-multiple of that value. We won't get back a fractional number. For that, we need to use float types:</p>
+	<p>
+		Notice that the output is 2. Why is this? What's actually happening is that
+		C++ is trying to figure out how many times it can fit 10 inside 21. In this
+		case, 2. This is what happens when we divide an
+		<span class="monoText">int</span> value by a non-multiple of that value. We
+		won't get back a fractional number. For that, we need to use float types:
+	</p>
 
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
@@ -385,8 +668,6 @@
 	<pre class="language-bash"><code>
 		2.1
 	</code></pre>
-
-
 
 	<!-- Booleans -->
 

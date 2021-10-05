@@ -188,6 +188,7 @@ urlpatterns = [
 	path("cpp_insertionSort", views.cpp_insertionSort, name="cpp_insertionSort"),
 	path("cpp_mergeSort", views.cpp_mergeSort, name="cpp_mergeSort"),
 	path("cpp_peakFinder", views.cpp_peakFinder, name="cpp_peakFinder"),
+	path("cpp_hashing", views.cpp_hashing, name="cpp_hashing"),
 
 	# Prolog Paths
 	path("prolog_preface", views.prolog_preface, name="prolog_preface"),

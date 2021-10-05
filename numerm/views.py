@@ -3,18 +3,18 @@ from django.shortcuts import render
 # Create your views here.
 def index(request):
 	return render(request, "numerm/index.html")
+
+# TOC
 def toc(request):
-	return render(request, "numerm/toc.html")	
+	return render(request, "numerm/toc.html")
 
 # basic algebra functions
 def balg_preface(request):
 	return render(request,"numerm/balg/balg_preface.html")
 def balg_realProperties(request):
 	return render(request,"numerm/balg/balg_realProperties.html")
-def balg_ratios(request):
-	return render(request,"numerm/balg/balg_ratios.html")
-def balg_percents(request):
-	return render(request,"numerm/balg/balg_percents.html")
+def balg_equations(request):
+	return render(request,"numerm/balg/balg_equations.html")
 def balg_proportion(request):
 	return render(request,"numerm/balg/balg_proportion.html")
 def balg_exponents(request):
@@ -71,16 +71,6 @@ def cont_setTheoryReview(request):
 	return render(request, "numerm/cont/cont_setTheoryReview.html")
 def cont_intervals(request):
 	return render(request, "numerm/cont/cont_intervals.html")
-def cont_basicAlgebra(request):
-	return render(request, "numerm/cont/cont_basicAlgebra.html")
-def cont_expressionDomain(request):
-	return render(request, "numerm/cont/cont_expressionDomain.html")
-def cont_equations(request):
-	return render(request, "numerm/cont/cont_equations.html")
-def cont_quadratics(request):
-	return render(request, "numerm/cont/cont_quadratics.html")
-def cont_polynomials(request):
-	return render(request, "numerm/cont/cont_polynomials.html")
 def cont_cartesianPlane(request):
 	return render(request, "numerm/cont/cont_cartesianPlane.html")
 def cont_pythagoreanCartesian(request):
@@ -89,12 +79,6 @@ def cont_distanceFormula(request):
 	return render(request, "numerm/cont/cont_distanceFormula.html")
 def cont_graphLines(request):
 	return render(request, "numerm/cont/cont_graphLines.html")
-def cont_quadraticEquations(request):
-	return render(request, "numerm/cont/cont_quadraticEquations.html")
-def cont_equationInequalities(request):
-	return render(request, "numerm/cont/cont_equationInequalities.html")
-def cont_absoluteValuesInequalities(request):
-	return render(request, "numerm/cont/cont_absoluteValuesInequalities.html")
 def cont_introFunctions(request):
 	return render(request, "numerm/cont/cont_introFunctions.html")
 def cont_functionBehaviors(request):

@@ -3,14 +3,13 @@ from . import views
 
 app_name = 'numerm'
 urlpatterns = [
-	# toc
+	# toc path
 	path("toc", views.toc, name="toc"),
-	
+
 	# basic algebra paths
 	path("balg_preface", views.balg_preface, name="balg_preface"),
 	path("balg_realProperties", views.balg_realProperties, name="balg_realProperties"),
-	path("balg_ratios", views.balg_ratios, name="balg_ratios"),
-	path("balg_percents", views.balg_percents, name="balg_percents"),
+	path("balg_equations", views.balg_equations, name="balg_equations"),
 	path("balg_proportion", views.balg_proportion, name="balg_proportion"),
 	path("balg_exponents", views.balg_exponents, name="balg_exponents"),
 	path("balg_radicals", views.balg_radicals, name="balg_radicals"),
@@ -42,18 +41,10 @@ urlpatterns = [
 	path("", views.index, name="index"),
 	path("cont_setTheoryReview", views.cont_setTheoryReview, name="cont_setTheoryReview"),
 	path("cont_intervals", views.cont_intervals, name="cont_intervals"),
-	path("cont_basicAlgebra", views.cont_basicAlgebra, name="cont_basicAlgebra"),
-	path("cont_expressionDomain", views.cont_expressionDomain, name="cont_expressionDomain"),
-	path("cont_equations", views.cont_equations, name="cont_equations"),
-	path("cont_quadratics", views.cont_quadratics, name="cont_quadratics"),
-	path("cont_polynomials", views.cont_polynomials, name="cont_polynomials"),
 	path("cont_cartesianPlane", views.cont_cartesianPlane, name="cont_cartesianPlane"),
 	path("cont_pythagoreanCartesian", views.cont_pythagoreanCartesian, name="cont_pythagoreanCartesian"),
 	path("cont_distanceFormula", views.cont_distanceFormula, name="cont_distanceFormula"),
 	path("cont_graphLines", views.cont_graphLines, name="cont_graphLines"),
-	path("cont_quadraticEquations", views.cont_quadraticEquations, name="cont_quadraticEquations"),
-	path("cont_equationInequalities", views.cont_equationInequalities, name="cont_equationInequalities"),
-	path("cont_absoluteValuesInequalities", views.cont_absoluteValuesInequalities, name="cont_absoluteValuesInequalities"),
 	path("cont_introFunctions", views.cont_introFunctions, name="cont_introFunctions"),
 	path("cont_functionBehaviors", views.cont_functionBehaviors, name="cont_functionBehaviors"),
 	path("cont_commonDomainMistakes", views.cont_commonDomainMistakes, name="cont_commonDomainMistakes"),

@@ -356,6 +356,8 @@ def cpp_mergeSort(request):
 	return render(request, "numerc/cpp/cpp_mergeSort.html")
 def cpp_peakFinder(request):
 	return render(request, "numerc/cpp/cpp_peakFinder.html")
+def cpp_hashing(request):
+	return render(request, "numerc/cpp/cpp_hashing.html")
 
 # Prolog Functions
 def prolog_preface(request):

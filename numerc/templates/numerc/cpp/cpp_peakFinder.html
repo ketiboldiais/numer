@@ -1,6 +1,10 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Peak finding problem" />
+{% endblock %} {% block title %}
+<title>Peak Finding</title>
+{% endblock %} {% block content %}
+<h1>One-Dimensional Peak Finding</h1>
 <section id="peak_finder">
-	<h4>One-Dimensional Peak Finding</h4>
 	<p>Suppose we have the following array:</p>
 	<figure class="math-display">
 		<div>
@@ -18,6 +22,57 @@
 	<figure class="math-display">
 		<div class="rule">
 			<p><span class="topic">Problem.</span> Find a peak, if it exists.</p>
+		</div>
+	</figure>
+	<p>
+		Whenever we work with an array of size ${n,}$ we always want to think about
+		the special positions:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/array_specialPositions.svg' %}"
+			alt="The special positions of an array are the first, middle, second-to-last, and last elements."
+			class="sixty-p"
+		/>
+	</figure>
+	<p>
+		We can solve this problem with a fairly straightforward algorithm. We start
+		at the leftmost element, and call that the peak. Then we look at the next
+		element, and ask if it's greater than or equal to the previous element. We
+		keep doing this all the way to the very last element.
+	</p>
+	<p>
+		Using this algorithm, in the worst case scenario we'd have to perform ${n}$
+		steps; the algorithm doesn't find a peak until the very end, ${i = n.}$ In
+		the best-case scenario, the peak is the first element, ${i = 1.}$ We say
+		that this algorithm has a complexity of ${\Theta (n).}$
+	</p>
+	<p>
+		Is there way to get this lower? Sure. Another algorithm: Start at the
+		element at position ${\dfrac{n}{2}.}$ There, we do a check and branch:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<ol>
+				<li>
+					If ${A\begin{bmatrix}\dfrac{n}{2}\end{bmatrix} >
+					A\begin{bmatrix}\dfrac{n}{2} + 1\end{bmatrix},}$ then continue
+					searching for the peak ${P}$ with the left-half of the array, ${A =
+					\begin{bmatrix} 1 \ldots \dfrac{n}{2} - 1 \end{bmatrix}.}$
+				</li>
+				<li>
+					Else if ${A \begin{bmatrix}\dfrac{n}{2}\end{bmatrix} <
+					A\begin{bmatrix}\dfrac{n}{2} + 1\end{bmatrix},}$ search with the
+					right-half of the array, ${A = \begin{bmatrix}\dfrac{n}{2} + 1 \ldots
+					n\end{bmatrix}}$ for the peak ${P.}$
+				</li>
+				<li>
+					Else, if ${A \begin{bmatrix}\dfrac{n}{2}\end{bmatrix} =
+					A\begin{bmatrix}\dfrac{n}{2} + 1\end{bmatrix},}$ then there is a peak;
+					stop search.
+				</li>
+				<li>Repeat the steps above.</li>
+			</ol>
 		</div>
 	</figure>
 </section>
