@@ -1,6 +1,225 @@
 {% extends '../layout.html' %} {% load static %} {% block content %}
+
+<h1>Data Structures & Algorithms: C and C++</h1>
 <section id="introduction">
-	<h2>Data Structures with <span class="monoText">C++</span></h2>
+	<p>
+		In earlier sections, we defined a program as an ordered sequence of
+		instructions for solving a problem. We now further specify that definition:
+		A program is a set of instructions for performing computations with a given
+		collection of data. Using this definition, we can now see how closely linked
+		algorithms and data structures are. Without data, we cannot write programs,
+		and without programs, we cannot meaningfully use data.
+	</p>
+	<p>
+		<span class="term">Data</span>, broadly speaking, are representations of
+		real world information. Specific to computer science, they are
+		representations of information that computer can understand. For example, a
+		computer cannot determine whether two people are &#8220;attracted&#8221; to
+		one another, unless we feed the computer data: age difference, shared
+		properties like mutual interests, friends, and alma matter, favorite songs,
+		as well preferences. A <span class="term">data structure</span> is an
+		arrangement of all that collected data.
+	</p>
+	<p>
+		Whenever we program, we are actually creating two files: A
+		<span class="term">program file</span>, and a
+		<span class="term">data file</span>. To understand the roles for these two
+		files, let's consider what happens when a user opens a Word Document. On
+		double clicking the Word document's icon, the Word program (the program
+		file) is loaded into main memory. Once loaded into the main memory, the CPU
+		begins executing the Word program's source code. This is the point where we
+		start seeing things on the screen; if the program is coded well, it should
+		be almost instantaneous.
+		<span class="marginnote"
+			>For poorly code programs, we might notice the twirling beach ball on a
+			Mac, slow loading times, or the worst of all, a crash.</span
+		>
+		Now, if we clicked on a file icon (some file with the extension
+		<span class="monoText">.docx</span>), we would see all the that file's
+		contents as well as presets. This <span class="monoText">.docx</span> file
+		is a data file, and it too is loaded into main memory. All the text,
+		formatting, and presets we see in the Word file is the result of the Word
+		program operating on the
+		<span class="italicsText">data structure</span> contained in the data file.
+	</p>
+	<p>
+		What does this example tell us? It tells us that every program handles data
+		in some form or another. Even the simplest programs handle data &mdash; the
+		variables initialized, the functions called, the arrays declared, it's all
+		data.
+	</p>
+	<p>
+		How we arrange the data (i.e., our choice of data structure) dramatically
+		impacts our program, whether that's in terms of efficiency, security,
+		user-friendliness, or maintainability. Data structures impact how well a
+		computer handles the program, since data is loaded into main memory at
+		runtime. If the data structure is too memory intensive, then our program's
+		user base is necessarily limited. Apple's XCode IDE, the Unreal game engine,
+		Blender, and high definition games like GTA V or Fallout 4 are all heavy,
+		resource intensive, but relatively efficient, programs. They all work well
+		on computers with large amounts of RAM (i.e., at least 8GB), but anything
+		lower, and the programs start getting into trouble. In contrast, programs
+		like Sublime (with default settings) or TextEdit consume very little
+		resources, but come with less features.
+	</p>
+	<p>
+		The decisions above are fine, but only if they are intentional. Maybe the
+		programmers decided the features were more important, so the user has to
+		decide if they really want them. Or maybe the programmer decided efficiency
+		was more important, so it's up to the user to modify and tweak the program
+		with extensions. Nevertheless, some decisions are worse than others. No one
+		wants a program that offers a useless feature and hogs large amounts of
+		memory. Similarly, a user would be fairly reluctant to use an extremely
+		efficient program if the program has enormous security risks.
+		<span class="marginnote"
+			>Given how valuable of a commodity security has become in the modern era,
+			the operating system would likely prevent even the most efficient and
+			feature-filled programs from running.</span
+		>
+		Along the margins, if two programs offer the same features, the user is
+		usually going to decide based on some other criteria &mdash; efficiency,
+		reliability, user-friendliness, cheapness, etc. &mdash; all tradeoffs
+		determined, at the lowest level, by data structure choices.
+	</p>
+	<p>
+		A data structure should not be confused with a
+		<span class="term">database</span>. A database is a collection of related
+		data stored in some form of permanent storage (perhaps an HDD, an SD, a USB,
+		floppy disk) for ease of access by a program. Most databases are organized
+		as tables. The database, however, is really just a crude way of storing
+		data. We can think of it like a giant container filled (but organized) with
+		numerous, different pieces of wood, metal, nails, screws, glass, etc. To
+		build anything useful, however, we take the pieces we need, and arrange them
+		in our own way. The glass is separated, the wood is stacked, the nails in
+		one pouch, the screws in another. The same goes for data structures. The
+		program must retrieve the data from somewhere (i.e., a database), but the
+		data must still be arranged into a data structure. The database is really
+		just there for the program to easily retrieve data for structuring.
+		<span class="marginnote"
+			>The distinguishing trait between a data structure and a database: A data
+			structure answers the question, How do I efficiently and correctly store
+			this data in main memory (i.e., RAM), so that a program can use it easily?
+			A database answers the question, How do I efficiently and correctly store
+			this data in permanent memory (i.e., an HDD or SD), so that a program can
+			retrieve it easily?
+		</span>
+	</p>
+	<p>
+		Following this distinction between database and data structure, there is a
+		further distinction within databases. Data stored in databases generally
+		fall into two categories &mdash;
+		<span class="term">operational data</span> and
+		<span class="term">legacy data</span>. Generally, operational data is new
+		and frequently-used data. For example, a new user registering for a site, or
+		a user frequently using the site. Both users' data constitutes operational
+		data. In contrast, legacy data is data that is old, or not frequently used.
+		For example, that Gmail account we forgot the password to fifteen years ago.
+		It'd probably be fairly difficult to reset the password for the account
+		because the data has been stored in a
+		<span class="term">data warehouse</span> &mdash; a database specifically
+		made for legacy data.
+		<span class="marginnote"
+			>Developers tend not to want users touching or requesting legacy data.
+			Most data warehouses are simply arrays of disks, making retrieval costly.
+			Moreover, data warehouses are generally intended for the developer. They
+			are helpful in identifying factors like user behavior and trends; facts
+			crucial for making business decisions. The algorithms used for analyzing
+			such legacy data are called
+			<span class="term">data mining algorithms</span>.</span
+		>
+		As one might suspect, databases and data warehouses are more commonly used
+		by large, commercial programs, where there are enough users to justify the
+		costs of storage and maintenance.
+		<span class="marginnote"
+			>The term <span class="term">big data</span> refers to the vast amount of
+			data now available via the internet. Analyzing that data, with clever data
+			structures and algorithms, can lead to breakthrough insights, some of
+			which spawn new programs, companies, laws, and even entire markets.</span
+		>
+	</p>
+	<p>
+		In sum and crudely: A data structure is an arrangement of data in main
+		memory. A database is an arrangmenet of data in permanent memory. A data
+		warehouse is an arrangement of data in a collection of permanent memory.
+	</p>
+</section>
+
+<section id="memory_allocation">
+	<h2>Static v. Dynamic Memory Allocation</h2>
+	<p>
+		As we saw in the previous section, data structures concern the arrangement
+		of data in main memory. We now want to delve deeper into how the data is
+		arranged. To do so, we need a clearer perspective on main memory, and the
+		way memory is allocated.
+	</p>
+	<p>
+		Conceptually, we can think of main memory as a large grid of small squares.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/cpp_mainMemory.svg' %}"
+			alt="a grid of memory"
+			loading="lazy"
+			class="twenty-p"
+		/>
+	</figure>
+	<p>
+		Each of the small squares are units with addresses. We call the unit a
+		<span class="term">byte</span>, and the address a
+		<span class="term">memory address</span>. The memory addresses are linear,
+		and arranged in order:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/cpp_mainMemory1.svg' %}"
+			alt="a grid of memory"
+			loading="lazy"
+			class="seventy-p"
+		/>
+	</figure>
+	<p>
+		The sum of all the individual units, or bytes, is the total amount of memory
+		we have. For example, if a program consumes 64 kilobytes of memory at
+		runtime, then it takes up 64,000 bytes (64,000 of the grid's squares) in
+		memory. If the main memory is large (e.g., one of 8GB), then the bytes are
+		sectioned into <span class="term">segments</span>. Usually, the size of a
+		segment is 64KB.
+	</p>
+	<p>
+		At the highest level, there are four large segments, sometimes called
+		<span class="term">regions</span>, of memory: (1) the
+		<span class="term">code segment</span>; (2) the
+		<span class="term">data segment</span>; (3) the
+		<span class="term">stack segment</span>; and (4) the
+		<span class="term">heap segment</span>:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/cpp_memorySegments.svg' %}"
+			alt="memory segments"
+			loading="lazy"
+		/>
+	</figure>
+	<p>There's a lot going on in the diagram above, but for now, are just focusing on the stack, heap, and code regions. Suppose we wrote the following code:</p>
+	<pre class="language-cpp"><code>
+		void foo(int i) {
+			int a;
+		}
+		void boo() {
+			int x;
+			foo(x);
+		}
+		void main() {
+			int a;
+			float b;
+			boo();
+		}
+	</code></pre>
+	<p>Suppose further that according to the compiler, an <span class="monoText">int</span> takes 2 bytes, and a <span class="monoText">float</span> takes 4 bytes. We compile the code, and get back an executable. When we run the executable, the machine code is stored in the code region. Once there, the CPU executes, or loads, the machine code &mdash; the program begins using the stack and the heap. The variables <span class="monoText">a</span> and <span class="monoText">b</span> are allocated inside the stack, 6 bytes total. How does the CPU know to allocate 6 bytes total? With the compiler. The compiler determines 6 bytes are needed, and that amount is fixed. Because the amount of memory needed is fixed, we call this <span class="term">static memory allocation</span>.</p>
+	<p>What about those functions? Again, the machine code is stored in the code region &mdash; <span class="monoText">foo()</span>'s machine code; <span class="monoText">boo()</span>'s machine code; and <span class="monoText">main()</span>'s machine code. Now, to start, the <span class="monoText">main()</span> function's machine code is executed first. As stated before, <span class="monoText">a</span> and <span class="monoText">b</span> are allocated in the stack. While executing <span class="monoText">main()</span>, <span class="monoText">boo()</span> is encountered. There, we have another variable, <span class="monoText">x</span>. Again, this is stored in the stack, but this time in a different <span class="term">stack frame</span> &mdash; a sort of layer in the stack on top of the layer where <span class="monoText">a</span> and <span class="monoText">b</span> are stored.</p>
+</section>
+
+<section id="why_cpp">
 	<p>
 		<span class="topic">Why <span class="monoText">C++</span>?</span>
 		<span class="monoText">C++</span> is one of the most popular languages at
@@ -14,7 +233,8 @@
 		language. It used in implementing numerous applications, ranging from
 		operating systems like Windows and Mac OS X, to database languages like
 		MySQL, to consumer-facing services like Google, Amazon, PayPal, Facebook,
-		and many more. <span class="monoText">C++</span> is built for systems programming, where high speed and efficiency is prioritized.
+		and many more. <span class="monoText">C++</span> is built for systems
+		programming, where high speed and efficiency is prioritized.
 	</p>
 
 	<p>
@@ -99,7 +319,31 @@
 		<span class="monoText">C++</span> as effectively an entirely new language.
 	</p>
 
-	<p><span class="topic">Compilation.</span> As mentioned, <span class="monoText">C++</span> is a compiled language. Our source code goes into a <span class="monoText">.cpp</span> file. To run the source code in that <span class="monoText">.cpp</span> file, we must compile the source code. On compilation, the <span class="monoText">.cpp</span> file is compiled into an <span class="term">object file</span>, with the extension <span class="monoText">.o</span>. Furthermore, if we have any linked libraries, those libraries are all linked to the <span class="monoText">.o</span> files. The end result of this entire process is an <span class="term">executable</span>. Of note, in contrast to Java programs &mdash; which compile to a <span class="monoText">.class</span> file &mdash; <span class="monoText">C++</span> objects and executables are <span class="term">platform-dependent</span>. This means that the files will not run on an operating system other than the operating system we compiled in. <span class="marginnote">Those familiar with C might notice that the object files in <span class="monoText">C++</span> have the same <span class="monoText">.o</span> extension as the object files in C. This is no coincidence. <span class="monoText">C++</span> was created with the intent of being backwards-compatible with C.</span></p>
+	<p>
+		<span class="topic">Compilation.</span> As mentioned,
+		<span class="monoText">C++</span> is a compiled language. Our source code
+		goes into a <span class="monoText">.cpp</span> file. To run the source code
+		in that <span class="monoText">.cpp</span> file, we must compile the source
+		code. On compilation, the <span class="monoText">.cpp</span> file is
+		compiled into an <span class="term">object file</span>, with the extension
+		<span class="monoText">.o</span>. Furthermore, if we have any linked
+		libraries, those libraries are all linked to the
+		<span class="monoText">.o</span> files. The end result of this entire
+		process is an <span class="term">executable</span>. Of note, in contrast to
+		Java programs &mdash; which compile to a
+		<span class="monoText">.class</span> file &mdash;
+		<span class="monoText">C++</span> objects and executables are
+		<span class="term">platform-dependent</span>. This means that the files will
+		not run on an operating system other than the operating system we compiled
+		in.
+		<span class="marginnote"
+			>Those familiar with C might notice that the object files in
+			<span class="monoText">C++</span> have the same
+			<span class="monoText">.o</span> extension as the object files in C. This
+			is no coincidence. <span class="monoText">C++</span> was created with the
+			intent of being backwards-compatible with C.</span
+		>
+	</p>
 
 	<p>
 		<span class="topic">Executing a Program.</span> All the programs below are
