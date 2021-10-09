@@ -1,21 +1,28 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Overview of composite data types: product types, sum types, recursive types, datatype bindings."
+/>
+{% endblock %} {% block title %}
+<title>ML: Composite Data Types</title>
+{% endblock %} {% block content %}
 
+<h1>Composite Data Types</h1>
 <section id="custom_data_types">
-	<h3>Composite Data Types</h3>
-
 	<div class="toc">
 		<h3>Contents</h3>
 		<ol>
-			<li>Product Types</li>
+			<li><a href="#product_types">Product Types</a></li>
 			<ol>
-				<li>Record Types</li>
+				<li><a href="">Record Types</a></li>
 			</ol>
-			<li>Sum Types</li>
+			<li><a href="#sum_types">Sum Types</a></li>
 			<ol>
-				<li>Datatype Bindings</li>
+				<li><a href="#datatype_bindings">Datatype Bindings</a></li>
+				<li><a href="#caseExpressions">Pattern Matching</a></li>
 			</ol>
-			<li>Recursive Types</li>
-			<li>Type Synonyms</li>
+			<li><a href="#recursive_types">Recursive Types</a></li>
+			<li><a href="#type_synonyms">Type Synonyms</a></li>
 		</ol>
 	</div>
 
@@ -92,7 +99,7 @@
 </section>
 
 <section id="product_types">
-	<h4>Product Types</h4>
+	<h2>Product Types</h2>
 	<p>
 		The each-of type is more formally the product type. A product type describes
 		the values containing <span class="italicsText">each of</span> the values of
@@ -228,13 +235,14 @@
 	</p>
 
 	<p>
-		<span class="topic">Datatype Bindings.</span> Sum type data provide a good
-		segway to <span class="term">datatype bindings</span>. So far, we've seen
-		variable bindings, indicated by the use of
-		<span class="monoText">val</span>, and function bindings, indicated by the
-		use of <span class="monoText">fun</span>. With datetype bindings, we use the
-		symbol <span class="monoText">datatype</span>. To create custom sum types,
-		we create <span class="italicsText">datatype bindings</span>. The datatype
+		<span class="topic" id="datatype_bindings">Datatype Bindings.</span> Sum
+		type data provide a good segway to
+		<span class="term">datatype bindings</span>. So far, we've seen variable
+		bindings, indicated by the use of <span class="monoText">val</span>, and
+		function bindings, indicated by the use of
+		<span class="monoText">fun</span>. With datetype bindings, we use the symbol
+		<span class="monoText">datatype</span>. To create custom sum types, we
+		create <span class="italicsText">datatype bindings</span>. The datatype
 		binding takes the following form:
 	</p>
 	<figure class="math-display">
@@ -387,6 +395,57 @@
 		datatype id = BookNum of int
 								| Title of string*(string option)*string 
 	</code></pre>
+
+	<p>
+		Enumerations, or sum types more generally, are often neglected by beginning
+		programmers. Often, students will instead use a product type when a sum type
+		is a much better fit. For example, say we wanted to represent a student in a
+		course. Representing the cards with a product type, we might write:
+	</p>
+	<pre class="language-sml"><code>
+		{
+			studentID : int, (* if studentID is less than 0, use other fields, otherwise use studentID. *)
+			firstName : string,
+			middleName : string option, (* not all students have middle names *)
+			lastName : string
+		}
+	</code></pre>
+	<p>
+		The problem with the approach above is twofold: (1) It's not very concise
+		nor is it immediately clear; (2) the comments are playing too important of a
+		role. The second point is more problematic than the first. Comments are
+		important in code, but the moment they start controlling how a program runs,
+		we've entered dangerous territory. Our program can have hundreds, if not
+		thousands, of comments, and we can't expect either ourselves or others to
+		remember all of them. A much better approach is to use a sum type:
+	</p>
+	<pre class="language-sml"><code>
+		datatype student = studentID of int
+										 | firstName of string
+										 | middleName of string option
+										 | lastName of string
+	</code></pre>
+	<p>
+		The code above tells us that every value of type
+		<span class="monoText">student</span> has at least one of the constructors
+		above. Now, all this said, there are situations where we might want to use a
+		product type. For example, maybe the
+		<span class="monoText">student</span> type is one where every single
+		<span class="monoText">student</span> must have all the properties above. In
+		those situations, a product type would be more appropriate. But if we don't
+		need all these properties &mdash; i.e., we just need to identify a student
+		&mdash; a sum type is appropriate. As an aside, if we decide to use a
+		product type, we should use an <span class="monoText">option</span> instead
+		of a comment for the <span class="monoText">studentID</span>:
+	</p>
+	<pre class="language-sml"><code>
+		{
+			studentID : int option
+			firstName : string,
+			middleName : string option
+			lastName : string
+		}
+	</code></pre>
 </section>
 
 <section id="caseExpressions">
@@ -406,7 +465,7 @@
 		extract the data, if any, associated with that variant. Languages like ML
 		combine these two needs as a single construct through
 		<span class="term">case expressions</span> and
-		<span class="term">pattern matching</span>.
+		<span class="term">pattern-matching</span>.
 	</p>
 
 	<pre class="language-sml"><code>
@@ -422,10 +481,13 @@
 
 	<p>
 		In the code above, we have the same datatype we saw before &mdash;
-		<span class="monoText">fooType</span>. The more interesting part is that we
-		now have a function that takes a value of type
-		<span class="monoText">fooType</span> (note that the parameter list is
-		optional, but we include it for clarity). This function takes a
+		<span class="monoText">fooType</span>.
+		<span class="marginnote"
+			>In ML, pattern-matching is done in the order written.</span
+		>
+		The more interesting part is that we now have a function that takes a value
+		of type <span class="monoText">fooType</span> (note that the parameter list
+		is optional, but we include it for clarity). This function takes a
 		<span class="monoText">myType</span> and returns an
 		<span class="monoText">int</span>. The keywords
 		<span class="monoText">case ... of</span> denote a
@@ -483,6 +545,123 @@
 		evaluates to that pattern match's expression. ML will not continue to check
 		the remaining branches.
 	</p>
+	<p>
+		<span class="topic">Pattern Matching in Other Languages.</span>
+		Pattern-matching is almost synonymous with functional languages. This is
+		because in many functional language implementations, designers follow the
+		premise that the <span class="monoText">=</span> sign denotes
+		<span class="italicsText">equivalence</span> rather than
+		<span class="italicsText">assignment</span>.
+		<span class="marginnote"
+			>Introductory programming courses often emphasize that
+			<span class="monoText">=</span> means assignment, not equality. This is
+			usually the case for object-oriented languages like Java, but not
+			necessarily accurate for the functional languages. Of course, such courses
+			emphasize this point heavily without mention of the functional language
+			side to avoid overcomplicating an introductory course.</span
+		>
+		The distinction between equivalence and assignment is a good point to
+		distinguish the ways programs are written across various languages.
+	</p>
+	<p>
+		In functional languages like ML (and more broadly, declarative languages),
+		programs are written as a sequence of
+		<span class="italicsText">expressions</span>. In other words, every
+		expression in the language evaluates to some value, but the programmer
+		leaves it to the computer to decide what to do, or how to handle, those
+		values. In procedural languages (and more broadly, imperative languages)
+		like C, programs are written as a sequence of
+		<span class="italicsText">statements</span> &mdash; the programmer must
+		instruct the computer how to perform a particular computation. The premise
+		that <span class="monoText">=</span> means assignment stems from the
+		imperative language tradition.
+	</p>
+	<p>
+		Pattern matching in object-oriented languages like Java is not as clean or
+		straightforward as it is in functional languages like ML. In ML, we have the
+		<span class="monoText">case...of</span> construct. However, in other
+		languages, we may have to use either a
+		<span class="monoText">switch</span> statement or a series of
+		<span class="monoText">if-elseIf-else</span> statements. Consider for
+		example, Java:
+	</p>
+	<pre class="language-java"><code>
+		enum TrafficLight {
+			GREEN,
+			YELLOW,
+			RED
+		}
+
+		public class MainProgram{
+			public static void main(String []args){
+				TrafficLight streetA = TrafficLight.GREEN;
+				String result = motion(streetA);
+				System.out.println(result);
+			}
+			
+			public static String motion(TrafficLight light) {
+				if (light == TrafficLight.GREEN) {
+						return "Go";
+				}
+				else if (light == TrafficLight.YELLOW) {
+						return "Slow Down";
+				}
+				else {
+						return "Stop";
+				}
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Go
+	</code></pre>
+	<p>
+		The code above works, but it's not as clean as how we would write it in ML:
+	</p>
+	<pre class="language-sml"><code>
+		datatype TrafficLight = Green
+								 | Yellow
+								 | Red
+		fun motion x =
+			case x of
+				Green => "Go"
+				| Yellow => "Slow down"
+				| Red => "Stop"
+		val x = Green
+		val y = motion(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		datatype TrafficLight = Green | Red | Yellow
+		val motion = fn : TrafficLight -> string
+		val x = Green : TrafficLight
+		val y = "Go" : string
+	</code></pre>
+	<p>
+		Moreover, the Java implementation won't check to see if we missed a case. ML
+		will return a compiler error if we miss a case in a case expression.
+		Moreover, the Java implementation won't catch if we have duplicate cases in
+		the pattern-matching. ML again will return a compiler error. Both these
+		safeguards ensure that our program never uses runtime unless a pattern is
+		found.
+	</p>
+	<p>
+		Why isn't pattern-matching more common in object-oriented languages? It's
+		largely due to history and the market for programming languages.
+		Pattern-matching &mdash; and algebraic data types more generally &mdash; can
+		be traced to the Hope language in 1980. (Although, possibly earlier,
+		depending on how we define pattern-matching). From Hope, algebraic data
+		types and their associated features like pattern-matching made their way
+		into ML, and later on to Miranda, Haskell, and today, languages like Scala
+		and Erlang. Had functional languages taken off, we probably would see more
+		pattern-matching constructs today.
+	</p>
+	<p>
+		Unfortunately for the functional languages, the object-oriented languages
+		reigned supreme. In their traditions, algebraic data types are arguably
+		antithetical to the object-oriented philosophy, where data is expressed
+		through objects and subtyping. We will see why there may be an antithesis in
+		later sections.
+	</p>
 </section>
 
 <section id="recursive_types">
@@ -504,6 +683,123 @@
 			<li>${\darr}$</li>
 			<li>[1, 2, 3, 4, 5, 6]</li>
 		</ul>
+	</figure>
+
+	<h5>Expression Trees</h5>
+	<p>
+		Recursive types can be created through a combination of product or sum
+		types. One particularly powerful recursive type are
+		<span class="term">expression trees</span>. Expression trees are recursive
+		product types. Consider, for example, the following:
+	</p>
+	<pre class="language-sml"><code>
+		datatype exp = Constant of int
+								 | Negate of exp
+								 | Add of exp * exp
+								 | Multiply of exp * exp
+		fun eval e =
+			case e of
+				Constant i => i
+				| Negate e2 => ~ (eval e2)
+				| Add(e1, e2) => (eval e1) + (eval e2)
+				| Multiply(e1, e2) => (eval e1) * (eval e2)
+
+		val x = Add(Constant (10 + 9), Negate (Constant 4))
+		val y = eval(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		datatype exp
+			= Add of exp * exp | Constant of int | Multiply of exp * exp | Negate of exp
+		val eval = fn : exp -> int
+		val x = Add (Constant 19,Negate (Constant 4)) : exp
+		val y = 15 : int
+	</code></pre>
+	<p>
+		Let's walk through this slowly. First, let's look at the datatype binding:
+	</p>
+	<pre class="language-sml"><code>
+		datatype exp = Constant of int
+								 | Negate of exp
+								 | Add of exp * exp
+								 | Multiply of exp * ex	
+	</code></pre>
+	<p>
+		This datatype is called <span class="monoText">exp</span>. In it, there are
+		four constructors: <span class="monoText">Constant</span>,
+		<span class="monoText">Negate</span>, <span class="monoText">Add</span>, and
+		<span class="monoText">Multiply</span>. The
+		<span class="monoText">Constant</span> constructor is of type
+		<span class="monoText">int</span>. I.e., it's a function that takes an
+		<span class="monoText">int</span>. The other constructors,
+		<span class="monoText">Negate</span>, <span class="monoText">Add</span>, and
+		<span class="monoText">Multiply</span>, are recursive. They take an
+		<span class="monoText">exp</span>. Now, let's focus on the value bound to
+		<span class="monoText">x</span>:
+	</p>
+	<pre class="language-sml"><code>
+		val x = Add(Constant (10 + 9), Negate (Constant 4))
+	</code></pre>
+	<p>
+		This expression represents an
+		<span class="italicsText">expression tree</span>:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/expressTree.svg' %}"
+			alt="An expression tree"
+			loading="lazy"
+			class="forty-p"
+		/>
+	</figure>
+	<p>
+		The value we've assigned to <span class="monoText">x</span> is a value of
+		type <span class="monoText">exp</span>. The value itself is composed of
+		values of type <span class="monoText">exp</span>:
+		<span class="monoText">Constant (10 + 9)</span> and
+		<span class="monoText">Negate (Constant 4)</span>. The value
+		<span class="monoText">Constant(10 + 9)</span> is composed of just one
+		value, <span class="monoText">10 + 9</span>, which evaluates to an
+		<span class="monoText">int</span>, <span class="monoText">19</span>. The
+		value <span class="monoText">Negate(Constant 4)</span> consists of one
+		value, <span class="monoText">Constant(4)</span>. In turn,
+		<span class="monoText">Constant(4)</span> consists of one value,
+		<span class="monoText">4</span>, which is an
+		<span class="monoText">int</span>.
+	</p>
+	<p>
+		We've effectively encapsulated the entire tree above into a single
+		expression, made possible by a datatype binding. This means that every value
+		of type <span class="monoText">exp</span> will look like some sort of tree.
+		We can then pass that tree into a function:
+	</p>
+	<pre class="language-sml"><code>
+		fun eval e =
+			case e of
+				Constant i => i
+				| Negate e2 => ~ (eval e2)
+				| Add(e1, e2) => (eval e1) + (eval e2)
+				| Multiply(e1, e2) => (eval e1) * (eval e2)
+	</code></pre>
+	<p>
+		The function above will perform a pattern match. If the value is a
+		<span class="monoText">Constant</span>, return the integer. If the value is
+		a <span class="monoText">Negate</span>, return the negation. If it's
+		<span class="monoText">Add</span>, return the sum. And if it's a
+		<span class="monoText">Multiply</span>, return the product. When we pass
+		<span class="monoText">x</span> into the function, ML begins the pattern
+		matching:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				Add(Constant (10 + 9), Negate (Constant 4))
+				(Constant (10 + 9)) + (Negate(Constant 4))
+				19 + (Negate(Constant 4))
+				19 + (-(Constant 4))
+				19 + (-4)
+				15
+			</code></pre>
+		</div>
 	</figure>
 </section>
 
@@ -540,5 +836,29 @@
 		type. A type synonym, however, is a name binding &mdash; it is simply a name
 		that points to an existing data type.
 	</p>
+	<p>
+		Type synonyms are particularly useful when used with composite data types
+		(i.e., the types we've created ourselves). For example:
+	</p>
+	<pre class="language-sml"><code>
+		datatype suit = Club | Diamond | Heart | Spade
+		datatype rank = Jack | Queen | King | Ace | Number of int
+		type card = suit * rank
+	</code></pre>
+	<p>
+		In the code above, we've created two sum types,
+		<span class="monoText">suit</span> and <span class="monoText">rank</span>.
+		Then, we represent a card as a tuple,
+		<span class="monoText">(suit, rank)</span>. Instead of repeatedly writing
+		<span class="monoText">suit * rank</span>, we simply call it
+		<span class="monoText">card</span>. 
+	</p>
+	<p>The same idea extends to product types. Instead of repeatedly writing a record, we can encapsulate it in a type synonym:</p>
+	<pre class="language-sml"><code>
+		type studentIdentification = { studentID : int option, 
+																	 firstName : string,
+																	 middleName : string option,
+																	 lastName : string }
+	</code></pre>
 </section>
 {% endblock %}

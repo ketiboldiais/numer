@@ -348,6 +348,8 @@ def cpp_preprocessor(request):
 	return render(request, "numerc/cpp/cpp_preprocessor.html")
 def cpp_namespaces(request):
 	return render(request, "numerc/cpp/cpp_namespaces.html")
+def cpp_dataStructuresIntro(request):
+	return render(request, "numerc/cpp/cpp_dataStructuresIntro.html")
 def cpp_algorithmIntro(request):
 	return render(request, "numerc/cpp/cpp_algorithmIntro.html")
 def cpp_insertionSort(request):

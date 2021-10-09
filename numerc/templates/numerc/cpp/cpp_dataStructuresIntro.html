@@ -1,0 +1,735 @@
+{% extends '../layout.html' %} {% load static %} {% block content %}
+
+<h1>Data Structures</h1>
+<section id="introduction">
+	<p>
+		In earlier sections, we defined a program as an ordered sequence of
+		instructions for solving a problem. We now further specify that definition:
+		A program is a set of instructions for performing computations with a given
+		collection of data. Using this definition, we can now see how closely linked
+		algorithms and data structures are. Without data, we cannot write programs,
+		and without programs, we cannot meaningfully use data.
+	</p>
+	<p>
+		<span class="term">Data</span>, broadly speaking, are representations of
+		real world information. Specific to computer science, they are
+		representations of information that computer can understand. For example, a
+		computer cannot determine whether two people are &#8220;attracted&#8221; to
+		one another, unless we feed the computer data: age difference, shared
+		properties like mutual interests, friends, and alma matter, favorite songs,
+		as well preferences. A <span class="term">data structure</span> is an
+		arrangement of all that collected data.
+	</p>
+	<p>
+		Whenever we program, we are actually creating two files: A
+		<span class="term">program file</span>, and a
+		<span class="term">data file</span>. To understand the roles for these two
+		files, let's consider what happens when a user opens a Word Document. On
+		double clicking the Word document's icon, the Word program (the program
+		file) is loaded into main memory. Once loaded into the main memory, the CPU
+		begins executing the Word program's source code. This is the point where we
+		start seeing things on the screen; if the program is coded well, it should
+		be almost instantaneous.
+		<span class="marginnote"
+			>For poorly code programs, we might notice the twirling beach ball on a
+			Mac, slow loading times, or the worst of all, a crash.</span
+		>
+		Now, if we clicked on a file icon (some file with the extension
+		<span class="monoText">.docx</span>), we would see all the that file's
+		contents as well as presets. This <span class="monoText">.docx</span> file
+		is a data file, and it too is loaded into main memory. All the text,
+		formatting, and presets we see in the Word file is the result of the Word
+		program operating on the
+		<span class="italicsText">data structure</span> contained in the data file.
+	</p>
+	<p>
+		What does this example tell us? It tells us that every program handles data
+		in some form or another. Even the simplest programs handle data &mdash; the
+		variables initialized, the functions called, the arrays declared, it's all
+		data.
+	</p>
+	<p>
+		How we arrange the data (i.e., our choice of data structure) dramatically
+		impacts our program, whether that's in terms of efficiency, security,
+		user-friendliness, or maintainability. Data structures impact how well a
+		computer handles the program, since data is loaded into main memory at
+		runtime. If the data structure is too memory intensive, then our program's
+		user base is necessarily limited. Apple's XCode IDE, the Unreal game engine,
+		Blender, and high definition games like GTA V or Fallout 4 are all heavy,
+		resource intensive, but relatively efficient, programs. They all work well
+		on computers with large amounts of RAM (i.e., at least 8GB), but anything
+		lower, and the programs start getting into trouble. In contrast, programs
+		like Sublime (with default settings) or TextEdit consume very little
+		resources, but come with less features.
+	</p>
+	<p>
+		The decisions above are fine, but only if they are intentional. Maybe the
+		programmers decided the features were more important, so the user has to
+		decide if they really want them. Or maybe the programmer decided efficiency
+		was more important, so it's up to the user to modify and tweak the program
+		with extensions. Nevertheless, some decisions are worse than others. No one
+		wants a program that offers a useless feature and hogs large amounts of
+		memory. Similarly, a user would be fairly reluctant to use an extremely
+		efficient program if the program has enormous security risks.
+		<span class="marginnote"
+			>Given how valuable of a commodity security has become in the modern era,
+			the operating system would likely prevent even the most efficient and
+			feature-filled programs from running.</span
+		>
+		Along the margins, if two programs offer the same features, the user is
+		usually going to decide based on some other criteria &mdash; efficiency,
+		reliability, user-friendliness, cheapness, etc. &mdash; all tradeoffs
+		determined, at the lowest level, by data structure choices.
+	</p>
+	<p>
+		A data structure should not be confused with a
+		<span class="term">database</span>. A database is a collection of related
+		data stored in some form of permanent storage (perhaps an HDD, an SD, a USB,
+		floppy disk) for ease of access by a program. Most databases are organized
+		as tables. The database, however, is really just a crude way of storing
+		data. We can think of it like a giant container filled (but organized) with
+		numerous, different pieces of wood, metal, nails, screws, glass, etc. To
+		build anything useful, however, we take the pieces we need, and arrange them
+		in our own way. The glass is separated, the wood is stacked, the nails in
+		one pouch, the screws in another. The same goes for data structures. The
+		program must retrieve the data from somewhere (i.e., a database), but the
+		data must still be arranged into a data structure. The database is really
+		just there for the program to easily retrieve data for structuring.
+		<span class="marginnote"
+			>The distinguishing trait between a data structure and a database: A data
+			structure answers the question, How do I efficiently and correctly store
+			this data in main memory (i.e., RAM), so that a program can use it easily?
+			A database answers the question, How do I efficiently and correctly store
+			this data in permanent memory (i.e., an HDD or SD), so that a program can
+			retrieve it easily?
+		</span>
+	</p>
+	<p>
+		Following this distinction between database and data structure, there is a
+		further distinction within databases. Data stored in databases generally
+		fall into two categories &mdash;
+		<span class="term">operational data</span> and
+		<span class="term">legacy data</span>. Generally, operational data is new
+		and frequently-used data. For example, a new user registering for a site, or
+		a user frequently using the site. Both users' data constitutes operational
+		data. In contrast, legacy data is data that is old, or not frequently used.
+		For example, that Gmail account we forgot the password to fifteen years ago.
+		It'd probably be fairly difficult to reset the password for the account
+		because the data has been stored in a
+		<span class="term">data warehouse</span> &mdash; a database specifically
+		made for legacy data.
+		<span class="marginnote"
+			>Developers tend not to want users touching or requesting legacy data.
+			Most data warehouses are simply arrays of disks, making retrieval costly.
+			Moreover, data warehouses are generally intended for the developer. They
+			are helpful in identifying factors like user behavior and trends; facts
+			crucial for making business decisions. The algorithms used for analyzing
+			such legacy data are called
+			<span class="term">data mining algorithms</span>.</span
+		>
+		As one might suspect, databases and data warehouses are more commonly used
+		by large, commercial programs, where there are enough users to justify the
+		costs of storage and maintenance.
+		<span class="marginnote"
+			>The term <span class="term">big data</span> refers to the vast amount of
+			data now available via the internet. Analyzing that data, with clever data
+			structures and algorithms, can lead to breakthrough insights, some of
+			which spawn new programs, companies, laws, and even entire markets.</span
+		>
+	</p>
+	<p>
+		In sum and crudely: A data structure is an arrangement of data in main
+		memory. A database is an arrangmenet of data in permanent memory. A data
+		warehouse is an arrangement of data in a collection of permanent memory.
+	</p>
+</section>
+
+<section id="memory_allocation">
+	<h2>Static v. Dynamic Memory Allocation</h2>
+	<p>
+		As we saw in the previous section, data structures concern the arrangement
+		of data in main memory. We now want to delve deeper into how the data is
+		arranged. To do so, we need a clearer perspective on main memory, and the
+		way memory is allocated.
+	</p>
+	<p>
+		Conceptually, we can think of main memory as a large grid of small squares.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/cpp_mainMemory.svg' %}"
+			alt="a grid of memory"
+			loading="lazy"
+			class="twenty-p"
+		/>
+	</figure>
+	<p>
+		Each of the small squares are units with addresses. We call the unit a
+		<span class="term">byte</span>, and the address a
+		<span class="term">memory address</span>. The memory addresses are linear,
+		and arranged in order:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/cpp_mainMemory1.svg' %}"
+			alt="a grid of memory"
+			loading="lazy"
+			class="seventy-p"
+		/>
+	</figure>
+	<p>
+		The sum of all the individual units, or bytes, is the total amount of memory
+		we have. For example, if a program consumes 64 kilobytes of memory at
+		runtime, then it takes up 64,000 bytes (64,000 of the grid's squares) in
+		memory. If the main memory is large (e.g., one of 8GB), then the bytes are
+		sectioned into <span class="term">segments</span>. Usually, the size of a
+		segment is 64KB.
+	</p>
+	<p>
+		At the highest level, there are four large segments, sometimes called
+		<span class="term">regions</span>, of memory: (1) the
+		<span class="term">code segment</span>; (2) the
+		<span class="term">data segment</span>; (3) the
+		<span class="term">stack segment</span>; and (4) the
+		<span class="term">heap segment</span>:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/cpp_memorySegments.svg' %}"
+			alt="memory segments"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		There's a lot going on in the diagram above, but for now, are just focusing
+		on the stack, heap, and code regions. Suppose we wrote the following code:
+	</p>
+	<pre class="language-cpp"><code>
+		void func1(int i) {
+			int a;
+		}
+		void func2() {
+			int x;
+			func1(x);
+			// more code
+		}
+		void main() {
+			int a;
+			float b;
+			func2();
+			// more code
+		}
+	</code></pre>
+	<p>
+		Suppose further that according to the compiler, an
+		<span class="monoText">int</span> takes 2 bytes, and a
+		<span class="monoText">float</span> takes 4 bytes. We compile the code, and
+		get back an executable. When we run the executable, the machine code is
+		stored in the code region. Once there, the CPU executes, or loads, the
+		machine code &mdash; the program begins using the stack and the heap. The
+		variables <span class="monoText">a</span> and
+		<span class="monoText">b</span> are allocated inside the stack, 6 bytes
+		total. How does the CPU know to allocate 6 bytes total? With the compiler.
+		The compiler determines 6 bytes are needed, and that amount is fixed.
+		Because the amount of memory needed is fixed, we call this
+		<span class="term">static memory allocation</span>.
+	</p>
+	<p>
+		What about those functions? Again, the machine code is stored in the code
+		region &mdash; <span class="monoText">func1()</span>'s machine code;
+		<span class="monoText">func2()</span>'s machine code; and
+		<span class="monoText">main()</span>'s machine code. Now, to start, the
+		<span class="monoText">main()</span> function's machine code is executed
+		first. As stated earlier, the variables <span class="monoText">a</span> and
+		<span class="monoText">b</span> are allocated in the stack. While executing
+		<span class="monoText">main()</span>,
+		<span class="monoText">func2()</span> is encountered. The CPU begins
+		executing <span class="monoText">func2()</span>'s machine code. In doing so,
+		it encounters another variable, <span class="monoText">x</span>. Again, this
+		is stored in the stack, but this time in a different
+		<span class="term">stack frame</span> &mdash; a sort of layer in the stack
+		on top of the layer where <span class="monoText">a</span> and
+		<span class="monoText">b</span> are stored. As the CPU continues executing
+		<span class="monoText">func2()</span>'s machine code, it encounters
+		<span class="monoText">func1(x)</span>. The CPU begins executing
+		<span class="monoText">func1()</span>'s machine code. The CPU allocates
+		<span class="monoText">i</span> and <span class="monoText">a</span> to a
+		memory location in a different stack.
+	</p>
+	<p>
+		Once <span class="monoText">func1()</span> is done executing, the CPU
+		<span class="italicsText">pops off</span> its stack (i.e.,
+		&#8220;deletes&#8221; the stack), and continues in
+		<span class="monoText">func2()</span>. Once
+		<span class="monoText">func2()</span> is done executing, the CPU again pops
+		off its stack, and continues in <span class="monoText">main()</span>.
+		Finally, once the CPU finishes executing
+		<span class="monoText">main()</span>, it pops off its stack &mdash; the
+		program has finished.
+	</p>
+	<p>
+		Notice what this discussion entails. How much memory a function takes up
+		depends on its variables. And how much memory variables take up depend on
+		their sizes, which are in turn determined by the compiler.
+		<span class="marginnote"
+			>This demonstrates why optimization is critical in compiler design.</span
+		>
+		This means that we, the programmers, have little to no control over &mdash;
+		(a) the automatic destruction of stacks and (b) how much memory is allocated
+		for an initialized variable. The rules are different, however, for variables
+		that end up in the <span class="term">heap</span>.
+	</p>
+	<p>
+		The Oxford Dictionary defines a &#8220;heap&#8221; as a disorderly
+		collection of objects haphazardly on top of each other. This captures the
+		essence of the heap segment in memory. The heap is an open field of memory,
+		where values can be stored. The difference: everything allocated into the
+		heap is free to move around. We can think of the heap as this chaotic, open
+		field of memory &mdash; everything in it is crawling, walking, and running
+		in every direction. This is in contrast to the stack, where values are nice
+		and organized into small neighborhoods &mdash; stacks. As an open field, the
+		heap is a resource. We let values hang out in the heap momentarily, and once
+		the value is done being used, we remove the value from the heap. All values
+		allocated to the heap must be removed eventually. We can't have them hanging
+		out in there forever; we will see why shortly. This discussion entails that
+		memory in the heap is <span class="term">dynamic</span>.
+	</p>
+	<p>
+		Because heap memory is <span class="term">dynamic</span> the program cannot
+		<span class="italicsText">directly</span> access the values in the heap.
+		This is because of the point we made earlier &mdash; values in the heap are
+		all over the place; they don't just stay in one place. So how does the
+		program access values in the heap? With <span class="term">pointers</span>.
+		Pointers are how we take memory from the heap:
+	</p>
+	<pre class="language-cpp"><code>
+		main() {
+			int *p;
+		}
+	</code></pre>
+	<p>
+		In C and C++, we indicate a pointer with the asterisk symbol. For the sake
+		of discussion, we will say that the pointer
+		<span class="monoText">*p</span> above takes up 2 bytes of memory.
+		<span class="marginnote"
+			>The amount of memory a pointer takes varies. Usually, it depends on the
+			size of the pointer's type. For example, if an
+			<span class="monoText">int</span> type takes 2 bytes, an
+			<span class="monoText">int</span> pointer takes up 2 bytes.</span
+		>
+		Now, <span class="monoText">*p</span> is a variable inside the function
+		<span class="monoText">main()</span>. Accordingly,
+		<span class="monoText">*p</span> is allocated into the stack, taking up 2
+		bytes. To take up memory in the heap:
+	</p>
+	<pre class="language-cpp"><code>
+		main() {
+			int *p;
+			p = new int[5];  
+		}
+	</code></pre>
+	<p>
+		In writing <span class="monoText">p = new int[5]</span>, we do two things:
+		(1) create an <span class="monoText">int</span> array of size
+		<span class="monoText">5</span> in the
+		<span class="italicsText">heap</span>; and (2) made the pointer
+		<span class="monoText">*p</span> point to that array. This is a crucial
+		point to understand. The <span class="monoText">*p</span> variable resides
+		in the stack. The <span class="monoText">int[5]</span> value resides in the
+		heap. To access <span class="monoText">int[5]</span>, the program must use
+		the variable <span class="monoText">p</span>. It cannot directly access
+		things inside the heap.
+	</p>
+	<p>
+		As we said earlier, <span class="monoText">int[5]</span> must be
+		de-allocated from the heap. This is because there is no automatic
+		destruction for things we place in the heap.
+	</p>
+	<pre class="language-cpp"><code>
+		main() {
+			int *p;
+			p = new int[5];  
+			delete []p;
+			p = null;
+		}
+	</code></pre>
+	<p>
+		The statement <span class="monoText">delete []p</span> is the way we
+		de-allocate heap memory. In this case, we include
+		<span class="monoText">[]</span> because
+		<span class="monoText">*p</span> points to an array. We then must write
+		<span class="monoText">p = null;</span> to ensure the pointer no longer
+		points anywhere.
+	</p>
+
+	<h3>Overflows</h3>
+	<p>
+		Why must we de-allocate heap memory? Because of
+		<span class="term">overflows</span>. Remember, memory is
+		<span class="underlineText">finite</span>, and memory segments are discrete,
+		strict boundaries.
+	</p>
+	<p>
+		Going back to the diagram above, there are two arrows stemming from the heap
+		and the stack. These arrows symbolize how the heap and the stack are free to
+		grow in size. With the stack, we at least have automatic stack destruction,
+		which keeps its size in check to some extent. We say &#8220;to some
+		extent&#8221; because there are situations where automatic stack destruction
+		doesn't work. Automatic destruction only kicks in if the CPU finishes
+		executing the function's machine code. There are many situations where a CPU
+		cannot finish executing a given function's machine code. Some examples:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<ul>
+				<li>
+					The function calls itself without any way to terminate (i.e., a
+					recursive function without a base case or with a bad base case). This
+					causes the function to call itself over and over again, allocating
+					more and more memory in the stack.
+				</li>
+				<li>
+					The function takes up too much memory in the stack. For example, a
+					function with an infinite loop, or a function performing too complex
+					and large or a computation.
+				</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		In the situations above, the function continues taking up memory in the
+		stack, to the point where the stack segment collides with the heap segment.
+		This causes a <span class="term">stack overflow</span>.
+	</p>
+	<p>
+		On the other end, we have the heap, which is arguably even more insidious
+		than the stack. With the heap, we do not have any automatic destruction.
+		This means that when we create pointers without manually de-allocating, the
+		heap keeps growing. With enough pointers, the heap can grow so large that it
+		collides with the stack segment. What makes the heap so dangerous is that
+		heap overflows are much harder to detect. They almost always tend to be
+		extremely tiny and small amounts of overflow, but that's all it takes to
+		cause a collision. That collision results in a
+		<span class="term">heap overflow</span>.
+	</p>
+</section>
+
+<section id="physical_v_logical_dataStructures">
+	<h2>Data Structures: Physical v. Logical Interpretations</h2>
+	<p>
+		To better understand data structures, we will momentarily create a
+		distinction between <span class="term">physical data structures</span> and
+		<span class="term">logical data structures</span>. With this momentary
+		distinction, we analyze the differences. Let's first compare an array and a
+		linked list.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/array_v_linkedList.svg' %}"
+			alt="what's the difference betwen an array and a linked list?"
+			loading="lazy"
+			class="seventy-p"
+		/>
+	</figure>
+	<p>
+		An <span class="term">array</span> is the simplest data structure.
+		Physically (i.e., inside the computer) it is a contiguous collection of
+		memory. It has a fixed size, and it can reside either in the memory or the
+		heap (e.g., a pointer in the stack pointing to the array in the heap). The
+		array is what we normally use when (a) we have data that should be ordered,
+		and (b) we know for certain what the size of the array should be. We say
+		that the array is a <span class="term">static data structure</span> because
+		it is of fixed size.
+	</p>
+	<p>
+		A <span class="term">linked list</span> is like an array, but instead of a
+		contiguous collection of memory, it consists of
+		<span class="term">nodes</span> composed of two parts: (1) the value the
+		node stores, and (2) a pointer pointing to the next node. Structurally, the
+		linked list consists of a <span class="term">head</span> &mdash; the first
+		node in the list &mdash; and a <span class="term">tail</span> &mdash; the
+		last node in the list. The tail always points to
+		<span class="monoText">null</span>. Like the array, the linked list allows
+		us to order data. However, unlike the array, the pointer is a
+		<span class="term">dynamic data structure</span>. We can make it bigger or
+		smaller by having the tail of the node point to a new node rather than
+		<span class="monoText">null</span>. Furthermore, in contrast to the array, a
+		linked list is always created in the heap. The head may exist in the stack,
+		but the rest of the node always exists in the heap.
+	</p>
+	<p>
+		Both linked lists and arrays are examples of
+		<span class="term">physical data structures</span>. They directly state how
+		data is actually stored in memory. Physical data structures are different
+		from <span class="term">logical data structures</span>. Most of the data
+		structures we're interested in are logical data structures: stacks, queues,
+		trees, graphs, hash tables, and many more. These are all examples of logical
+		data structures. All logical data structures are implemented using some
+		combination of physical data structures, whether they're linked linked lists
+		or arrays.
+	</p>
+	<p>
+		Having said this, we now distill this artificial distinction. The difference
+		between physical data structures and logical data structures boils down to a
+		distinction between a data structure's underlying logic and its
+		implementation. The computer does not know how to organize data into a tree.
+		We have to actually give it instructions as to how a tree is structured. And
+		to do so, we must state those instructions in ways the computer understands
+		&mdash; with arrays or linked lists. Accordingly, every data structure has
+		two interpretations: (1) its
+		<span class="term">physical interpretation</span>, and (2) its
+		<span class="term">logical interpretation</span>. The physical
+		interpretation, what we momentarily referred to as a physical data
+		structure, refers to the way we
+		<span class="italicsText">implement</span> the data structure. The logical
+		interpretation, what we momentarily referred to as a logical data structure,
+		refers to the way we <span class="italicsText">design</span> the data
+		structure.
+	</p>
+	<p>
+		Both the logical interpretation and the physical interpretation are
+		necessary to constructing data structures, but call for different skill
+		sets. Implementing data structures requires knowledge and familiarity with
+		the language we are using and programming principles &mdash; i.e.,
+		<span class="italicsText">coding</span>. Designing data structures, however,
+		requires knowledge of <span class="italicsText">discrete mathematics</span>.
+		The materials that follow employ both skill sets, but err more so on the
+		side of design.
+	</p>
+</section>
+
+<section id="abstract_data_types">
+	<h2>Abstract Data Types</h2>
+	<p>
+		A <span class="term">data type</span> is a rule, or instruction, that
+		communicates to the computer how a particular piece of data should be
+		interpreted. More generally, a data type encapsulates, or contains, two
+		kinds of information: (1) how data of that data type is represented &mdash;
+		i.e., how the data is <span class="italicsText">stored</span>; and (2) what
+		operations can be performed with that data.
+	</p>
+	<p>
+		So, for example, the type <span class="monoText">int</span> is a data type.
+		The type <span class="monoText">int</span> contains the two kinds of
+		information above:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<ol>
+				<li>How is the data stored?</li>
+				<ul>
+					<li>
+						A datum of type <span class="monoText">int</span> is allocated in
+						the stack, taking 2 bytes of memory.
+					</li>
+				</ul>
+				<li>
+					What operations can be performed on a datum of type
+					<span class="monoText">int</span>?
+				</li>
+				<ul>
+					<li>
+						Addition, subtraction, multiplication, division, modulus, comparison
+						operators, increment, decrement, etc.
+					</li>
+				</ul>
+			</ol>
+		</div>
+	</figure>
+	<p>
+		In most languages, the data type above is what we would call a
+		<span class="term">base type</span> or a
+		<span class="term">primitive type</span>. Base types are data types provided
+		natively by the language. In other words, the language's implementation
+		provides the data type by default. An
+		<span class="term">abstract data type</span>, however, is most often a data
+		type that we, the programmers, create. More broadly, it's a data type that
+		hides away the implementations. In many languages, particuarly
+		object-oriented languages, we can create our own data types with special
+		constructs. For example, in Java and C++, we can create our own data types
+		with classes.
+	</p>
+	<p>For example, suppose we have the following data:</p>
+	<figure class="math-display">
+		<div>
+			<p>${John, Luke, Michael, Kento, Idris}$</p>
+		</div>
+	</figure>
+	<p>
+		We want the order to be kept as is. Based on this constraint, we can think
+		of an abstract data type &mdash; a <span class="term">list</span>. That idea
+		&mdash; the abstraction <span class="italicsText">list</span> &mdash; is
+		distinct from its implementation. How do we implement a list? We have two
+		options: An array, or a linked list.
+	</p>
+	<p>
+		The abstract type list contains the two kinds of information we discussed
+		earlier. (1) How is the data represented? The list type takes up space for
+		storing the element; it has a capacity (i.e., how big can list be); and it
+		has a size (how big the list actually is). (2) What operations can be
+		performed on data of type list? We can
+		<span class="italicsText">append</span> a new element;
+		<span class="italicsText">remove</span> an element;
+		<span class="italicsText">sort</span> the elements;
+		<span class="italicsText">search</span> the elements; and so on and so
+		forth.
+	</p>
+	<p>
+		The two kinds of information in an abstract data type correspond to the two
+		things we focus on in the materials. The question of how data is represented
+		is answered by a <span class="term">data structure</span>. The question of
+		what operations can be performed on the data is answered by
+		<span class="term">algorithms</span>. It should not be apparent why data
+		structures and algorithms are closely linked. The abstract data type is the
+		product of gathering a data structure and its operations (created via
+		algorithms) into a single box (e.g., a <span class="term">class</span> or a
+		<span class="term">struct</span>) so as to hide away all the
+		implementations.
+	</p>
+</section>
+
+<section id="complexity">
+	<h2>Complexity</h2>
+	<p>
+		Having seen the close connection between data structures and algorithms, we
+		are now ready to address the guiding concern of data structures and
+		algorithms &mdash; <span class="term">complexity</span>. We can think of
+		complexity as a quantification of how &#8220;costly&#8221; a given data
+		structure or algorithm is. Usually, that cost is measured in the context of
+		space and time. This results in two forms of complexity, or two kinds of
+		costs &mdash; (1) <span class="italicsText">time complexity</span> and
+		<span class="italicsText">space compexity</span>. We address the former
+		first and the later second.
+	</p>
+	<p>
+		A short story: A factory recently hired Luke, a 20 year-old male in good
+		shape. Part of Luke's job is transferring barrels from one rack to another
+		rack. As strong as Luke is, the barrels are large and weigh at least 100 lbs. The first few
+		days, he carries them, one by one. After a while, however, Luke notices how unwieldy this is.
+		It takes far too long, and his mornings are now marked by lingering pain in
+		his lower back. Luke begins asking, how do I completely move these barrels in
+		a shorter amount of time? Aha! Why not just roll
+		them? Luke takes this route, and it works almost miraculously. Suddenly,
+		what took him at least an hour is suddenly cut to 20 minutes. He's
+		delighted, and begins rolling two, three, four barrels at a time. Luke
+		continues his job, happily moving barrels, until management finds an even
+		faster solution &mdash; a giant robotic system that simply swaps the racks.
+	</p>
+	<p>
+		The question of &#8220;How long does it take to do ${x}$&#8221; is what
+		<span class="term">time complexity</span> answers, where ${x}$ is some task.
+		In programming, every task reduces to computations on data. Accordingly, the
+		time complexity of a given task is determined by the how those computations
+		are performed &mdash; the algorithm.
+	</p>
+	<p>
+		For example, let's say we have a <span class="monoText">list</span> type
+		datum:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				<span class="monoText">["Sam", "Julie", "Eric", "Dan", "Helen"]</span>
+			</p>
+		</div>
+	</figure>
+	<p>
+		Again, there are two says to implement this abstract type: an array or a
+		linked list. Say we use an array. Now suppose we want to check if
+		<span class="monoText">"Mike"</span> is in the list. Checking if
+		<span class="monoText">"Mike"</span> is in the list is a
+		<span class="italicsText">searching problem</span>. We have to search for a
+		string in the list that matches <span class="monoText">"Mike"</span>. How
+		long it takes to find a match depends on how we search for the match.
+	</p>
+	<p>
+		Whenever we think about algorithms, we must always keep this rule in mind:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>A computer can only &#8220;look&#8221; at one thing at a time.</p>
+		</div>
+	</figure>
+	<p>
+		In other words, a computer does not have the benefit of looking at many
+		things and pinpointing the match. In the example above, we have that
+		benefit. We can clearly see that <span class="monoText">"Mike"</span> is not
+		in the list.
+		<span class="marginnote"
+			>Of course, our benefit of seeing many things at once effectively
+			disappears once we have to deal with a list of a thousand, or a million
+			things.</span
+		>
+	</p>
+	<p>
+		Accordingly, when we write our algorithms, we must always follow the
+		fundamental constraint that a computer can only &#8220;look&#8221; at one
+		thing at a time. That said, what are some possible algorithms to search for
+		a match?
+	</p>
+	<p>
+		One possible algorithm is a <span class="term">linear search</span>. In a
+		linear search, the computer goes through each element in the list, one by
+		one, checking if there's a match. In the case above, the computer would go
+		through all 5 strings just to return a
+		<span class="monoText">false</span> (i.e., &#8220;False, there is no
+		"Mike".&#8221;). If the list contained ${n}$ elements and there was no
+		<span class="monoText">"Mike"</span>, then the algorithm takes a total of
+		${n}$ steps.
+	</p>
+	<p>
+		This is where we make a distinction in measuring time complexity. Time
+		complexity is not necessarily measured in units of time. Instead, we generally
+		measure time complexity in terms of the number of
+		<span class="italicsText">steps</span> a computer must take to complete the
+		task. We will explore why we measure time in this manner in later sections.
+	</p>
+	<p>
+		Because a linear search algorithm, in the worst-case scenario, might take
+		${n}$ steps to complete its task, we say that the linear search algorithm
+		has a complexity in the order of ${O(n).}$ However, note that when we
+		conduct a complexity analysis, we always want to also look at the code. For
+		example, the linear search algorithm might be implemend like this (in pseudocode):
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			for (i = 0; i < arr.length; i++) {
+				if i == "Mike" {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		</code></pre>
+	</figure>
+	<p>
+		In the code above, we have a loop that executes ${n}$ times. However, we
+		also have instructions inside the loop: (1) a variable initialization, which
+		occurs exactly once, <span class="monoText">i = 0</span>; (2) a comparison
+		check <span class="monoText">i < arr.length</span>, (3) a
+		<span class="monoText">arr.length</span> computation (which, depending on
+		the language, may be called at each iteration); (2) an equality check
+		<span class="monoText">==</span>, and an increment
+		<span class="monoText">i++</span>. These are are all distinct instructions,
+		that may result in the number of steps being something along the lines of
+		${an + b,}$ where ${a}$ and ${b}$ are constants. This does not, however,
+		change our previous result, ${O(n).}$ In complexity analysis, we focus on
+		the <span class="italicsText">leading terms</span>. In other words, the
+		&#8220;biggest&#8221; terms in the expression. Accordingly, this requires
+		dropping constants.
+	</p>
+	<p>
+		The same analysis for time complexity applies to
+		<span class="term">space complexity</span>. The difference: With space
+		complexity, we're concerned with how much space a given data structure, or
+		algorithm, uses up. For example, with a linked list of ${n}$ nodes, we have
+		a space complexity of ${O(2n).}$ Why ${2n?}$ Because every node contains two
+		parts &mdash; the value stored and a pointer. Of course, the actual result
+		might be something more than ${2n,}$ since an operation on the list may
+		require more memory. However, that amount is more than likely a constant, or
+		a variable that has no affect on the leading term, ${n.}$ as we said
+		earlier, we are only focused on the leading term. Accordingly, the data
+		structure has a space complexity of ${n.}$
+	</p>
+</section>
+{% endblock %}

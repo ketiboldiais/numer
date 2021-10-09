@@ -184,6 +184,7 @@ urlpatterns = [
 	path("cpp_controlFlow", views.cpp_controlFlow, name="cpp_controlFlow"),
 	path("cpp_preprocessor", views.cpp_preprocessor, name="cpp_preprocessor"),
 	path("cpp_namespaces", views.cpp_namespaces, name="cpp_namespaces"),
+	path("cpp_dataStructuresIntro", views.cpp_dataStructuresIntro, name="cpp_dataStructuresIntro"),
 	path("cpp_algorithmIntro", views.cpp_algorithmIntro, name="cpp_algorithmIntro"),
 	path("cpp_insertionSort", views.cpp_insertionSort, name="cpp_insertionSort"),
 	path("cpp_mergeSort", views.cpp_mergeSort, name="cpp_mergeSort"),
