@@ -1,7 +1,7 @@
 {% extends '../layout.html' %} {% load static %} {% block description %}
 <meta
 	name="description"
-	content="Overview of composite data types: product types, sum types, recursive types, datatype bindings."
+	content="Overview of composite data types: product types, sum types, recursive types, datatype bindings, polymorphic types"
 />
 {% endblock %} {% block title %}
 <title>ML: Composite Data Types</title>
@@ -10,7 +10,7 @@
 <h1>Composite Data Types</h1>
 <section id="custom_data_types">
 	<div class="toc">
-		<h3>Contents</h3>
+		<h3>Outline</h3>
 		<ol>
 			<li><a href="#product_types">Product Types</a></li>
 			<ol>
@@ -23,6 +23,21 @@
 			</ol>
 			<li><a href="#recursive_types">Recursive Types</a></li>
 			<li><a href="#type_synonyms">Type Synonyms</a></li>
+			<li><a href="#polymorphic_dataTypes">Polymorphic Datatypes</a></li>
+			<li>
+				<a href="#functions_patternMatching">Pattern Matching & Functions</a>
+			</li>
+			<li>
+				<a href="#type_inference_and_patternMatching"
+					>Type Inference & Pattern Matching</a
+				>
+			</li>
+			<ol>
+				<li>
+					<a href="#polymorphicEqualityTypes">Polymorphic & Equality Types</a>
+				</li>
+			</ol>
+			<li><a href="#nested_patterns">Nested Patterns</a></li>
 		</ol>
 	</div>
 
@@ -221,7 +236,7 @@
 </section>
 
 <section id="sum_types">
-	<h4>Sum Types</h4>
+	<h2>Sum Types</h2>
 	<p>
 		A sum type describes the values containing a value of
 		<span class="italicsText">one of</span> the types ${t_1, t_2, \ldots,
@@ -268,7 +283,7 @@
 	<p>
 		A <span class="term">constructor</span> is just another function. In the
 		case of datatype ${n,}$ it is a function that returns instances of datatype
-		${n.}$
+		${n.}$.
 	</p>
 	<pre class="language-sml"><code>
 		datatype fooType = TwoInts of int * int
@@ -449,7 +464,7 @@
 </section>
 
 <section id="caseExpressions">
-	<h4>Case Expressions</h4>
+	<h2>Case Expressions</h2>
 	<p>
 		Now that we know about variant-accessing functions, we might notice that
 		some data types do not have the variant-accessing functions we saw for
@@ -465,7 +480,7 @@
 		extract the data, if any, associated with that variant. Languages like ML
 		combine these two needs as a single construct through
 		<span class="term">case expressions</span> and
-		<span class="term">pattern-matching</span>.
+		<span class="term">pattern matching</span>.
 	</p>
 
 	<pre class="language-sml"><code>
@@ -483,7 +498,7 @@
 		In the code above, we have the same datatype we saw before &mdash;
 		<span class="monoText">fooType</span>.
 		<span class="marginnote"
-			>In ML, pattern-matching is done in the order written.</span
+			>In ML, pattern matching is done in the order written.</span
 		>
 		The more interesting part is that we now have a function that takes a value
 		of type <span class="monoText">fooType</span> (note that the parameter list
@@ -536,7 +551,7 @@
 		<span class="underlineText">match</span> against the result of evaluating
 		the case's first expression (in the syntax above,
 		<span class="monoText">${p_0}$ => ${exp_0}$</span>.) This form of evaluation
-		has a specific name &mdash; <span class="term">pattern-matching</span>.
+		has a specific name &mdash; <span class="term">pattern matching</span>.
 	</p>
 	<p>
 		Importantly, case expressions are <span class="term">first-match</span>,
@@ -546,8 +561,18 @@
 		the remaining branches.
 	</p>
 	<p>
+		Having introduced case expressions, we will stray from using
+		<span class="monoText">hd</span>, <span class="monoText">tl</span>, and
+		<span class="monoText">null</span>. These are all constructors, but it is
+		far better to use the constructors <span class="monoText">[]</span> and
+		<span class="monoText">::</span>. The constructor
+		<span class="monoText">[]</span> represents the empty list, and
+		<span class="monoText">::</span> represents the non-empty list. We will use
+		these constructors alongside case expressions.
+	</p>
+	<p>
 		<span class="topic">Pattern Matching in Other Languages.</span>
-		Pattern-matching is almost synonymous with functional languages. This is
+		pattern matching is almost synonymous with functional languages. This is
 		because in many functional language implementations, designers follow the
 		premise that the <span class="monoText">=</span> sign denotes
 		<span class="italicsText">equivalence</span> rather than
@@ -640,20 +665,20 @@
 		Moreover, the Java implementation won't check to see if we missed a case. ML
 		will return a compiler error if we miss a case in a case expression.
 		Moreover, the Java implementation won't catch if we have duplicate cases in
-		the pattern-matching. ML again will return a compiler error. Both these
+		the pattern matching. ML again will return a compiler error. Both these
 		safeguards ensure that our program never uses runtime unless a pattern is
 		found.
 	</p>
 	<p>
-		Why isn't pattern-matching more common in object-oriented languages? It's
-		largely due to history and the market for programming languages.
-		Pattern-matching &mdash; and algebraic data types more generally &mdash; can
-		be traced to the Hope language in 1980. (Although, possibly earlier,
-		depending on how we define pattern-matching). From Hope, algebraic data
-		types and their associated features like pattern-matching made their way
-		into ML, and later on to Miranda, Haskell, and today, languages like Scala
-		and Erlang. Had functional languages taken off, we probably would see more
-		pattern-matching constructs today.
+		Why isn't pattern matching more common in object-oriented languages? It's
+		largely due to history and the market for programming languages. pattern
+		matching &mdash; and algebraic data types more generally &mdash; can be
+		traced to the Hope language in 1980. (Although, possibly earlier, depending
+		on how we define pattern matching). From Hope, algebraic data types and
+		their associated features like pattern matching made their way into ML, and
+		later on to Miranda, Haskell, and today, languages like Scala and Erlang.
+		Had functional languages taken off, we probably would see more pattern
+		matching constructs today.
 	</p>
 	<p>
 		Unfortunately for the functional languages, the object-oriented languages
@@ -665,7 +690,7 @@
 </section>
 
 <section id="recursive_types">
-	<h4>Recursive Types</h4>
+	<h2>Recursive Types</h2>
 	<p>
 		A recursive compound data type is a type that can refer to itself in its
 		definition to describe a recusive structure. We've seen one such recursive
@@ -684,6 +709,34 @@
 			<li>[1, 2, 3, 4, 5, 6]</li>
 		</ul>
 	</figure>
+
+	<p>In fact, we can implement our own definition of a list:</p>
+
+	<pre class="language-sml"><code>
+		datatype list = Empty
+								  | Cons of int * list
+		val x = Cons(1, Cons(2, Cons (3, Empty)))
+	</code></pre>
+	<pre class="language-bash"><code>
+		datatype list = Cons of int * list | Empty
+		val x = Cons (1,Cons (2,Cons (3,Empty))) : list
+	</code></pre>
+
+	<p>
+		Those familiar with a languages of the Lisp family may recognize the example
+		above. With our implementation, we can write various functions:
+	</p>
+
+	<pre class="language-sml"><code>
+		datatype list = Empty
+							| Cons of int * list
+		val x = Cons(1, Cons(2, Cons (3, Empty)))
+
+		fun append (xs, ys) =
+			case xs of
+				Empty => ys
+				| Cons(x, xs') => Cons(x, append(xs', ys))
+	</code></pre>
 
 	<h5>Expression Trees</h5>
 	<p>
@@ -804,7 +857,7 @@
 </section>
 
 <section id="type_synonyms">
-	<h4>Type Synonyms</h4>
+	<h2>Type Synonyms</h2>
 	<p>
 		Another extremely useful binding is the
 		<span class="term">type synonym</span>. Many languages, for example Swift,
@@ -851,14 +904,402 @@
 		Then, we represent a card as a tuple,
 		<span class="monoText">(suit, rank)</span>. Instead of repeatedly writing
 		<span class="monoText">suit * rank</span>, we simply call it
-		<span class="monoText">card</span>. 
+		<span class="monoText">card</span>.
 	</p>
-	<p>The same idea extends to product types. Instead of repeatedly writing a record, we can encapsulate it in a type synonym:</p>
+	<p>
+		The same idea extends to product types. Instead of repeatedly writing a
+		record, we can encapsulate it in a type synonym:
+	</p>
 	<pre class="language-sml"><code>
 		type studentIdentification = { studentID : int option, 
 																	 firstName : string,
 																	 middleName : string option,
 																	 lastName : string }
 	</code></pre>
+</section>
+
+<section id="polymorphic_dataTypes">
+	<h2>Polymorphic Datatypes</h2>
+	<p>
+		Recall that we noted how the <span class="monoText">list</span> and
+		<span class="monoText">option</span> types are really datatype bindings. We
+		want to refine this notion just a bit further. Lists and options are a
+		special type of datatype binding &mdash; they are datatype bindings that
+		take <span class="term">option parameters</span>. Thus,
+		<span class="monoText">list</span> itself is not a type. The data types are
+		actually <span class="monoText">int list</span> or
+		<span class="monoText">string list</span>. The same goes for optionals.
+		<span class="monoText">option</span> is not a type; it's
+		<span class="monoText">int option</span>, or
+		<span class="monoText">string option</span>.
+	</p>
+	<p>
+		So what do the identifiers <span class="monoText">list</span> and
+		<span class="monoText">option</span> represent? They are
+		<span class="term">type constructors</span> &mdash; functions that take
+		<span class="italicsText">type parameters</span> to produce types. More
+		specifically, <span class="monoText">list</span> and
+		<span class="monoText">option</span> are
+		<span class="italicsText">polymorphic type constructors</span>.
+	</p>
+	<p>
+		The type constructors <span class="monoText">list</span> and
+		<span class="monoText">option</span> are examples of a big decision language
+		designers have to make. Do we want a single
+		<span class="term">polymorphic data type</span> (a data type that changes
+		depending on what's passed into it) list, or do we want a single constructor
+		called <span class="monoText">list</span> that produces different types
+		depending on its parameters? ML's designers went with the second option, and
+		included the ability for users to define their own polymorphic datatypes.
+	</p>
+	<p>
+		For example, we can create a
+		<span class="italicsText">polymorphic binary tree</span> type:
+	</p>
+	<pre class="language-sml"><code>
+		datatype ('a, 'b) tree = Node of 'a * ('a, 'b) tree * ('a, 'b) tree
+													 | Leaf of 'b
+	</code></pre>
+	<p>
+		In the data type above, the type is not <span class="monoText">tree</span>.
+		Instead, the types are <span class="monoText">int * string tree</span> or
+		<span class="monoText">int * int tree</span>. It all depends on what's
+		passed as arguments for alpha <span class="monoText">a</span> and alpha
+		<span class="monoText">b</span> (the parameters
+		<span class="monoText">'a</span> and <span class="monoText">'b</span>).
+	</p>
+</section>
+
+<section id="functions_patternMatching">
+	<h2>Pattern Matching & Functions</h2>
+	<p>
+		It turns out that in ML, we've been using pattern matching all along. To see
+		how, we explore pattern matching further.
+	</p>
+	<p>
+		In the previous sections, we used pattern matching with respect to sum
+		types. We did so because that's really the only way we access the values
+		stored in a sum type. But what about product types? We can actually use
+		pattern matching for records and tuples. Let's consider the tuple. Suppose
+		we had a function that takes a triple, and returns the sum of its individual
+		parts:
+	</p>
+	<pre class="language-sml"><code>
+		fun sum_triple triple =
+			case triple of
+				(x, y, z) => x + y + z
+		
+		val x = (1, 2, 3)
+		val y = sum_triple(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val sum_triple = fn : int * int * int -> int
+		val x = (1,2,3) : int * int * int
+		val y = 6 : int
+	</code></pre>
+	<p>
+		Above, we used a case expression. In this case, the function takes the
+		tuple, and performs a computation, addition, where each of
+		<span class="monoText">x</span>, <span class="monoText">y</span>, and
+		<span class="monoText">z</span> match.
+	</p>
+	<p>
+		The example above, however, is poor style. We've written what's called a
+		<span class="italicsText">one-armed case expression</span> &mdash; a case
+		expression that only has one case. A much better way:
+	</p>
+	<pre class="language-sml"><code>
+		fun sum_triple triple = 
+			let val (x, y, z) = triple
+			in
+				x + y + z
+			end
+		val x = (1, 2, 3)
+		val y = sum_triple(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val sum_triple = fn : int * int * int -> int
+		val x = (1,2,3) : int * int * int
+		val y = 6 : int
+	</code></pre>
+	<p>
+		Notice how we bound <span class="monoText">(x, y, z)</span> to
+		<span class="monoText">triple</span>, the argument passed. This is just a
+		pattern match. Another example:
+	</p>
+	<pre class="language-sml"><code>
+		fun full_name person =
+			let val { firstName = x, lastName = z } = person 
+			in
+				x ^ " " ^ z
+			end
+		val jane = { firstName = "Jane", lastName = "Eyre" } 
+		val janeEyre = full_name(jane)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val full_name = fn : {firstName:string, lastName:string} -> string
+		val jane = {firstName="Jane",lastName="Eyre"} :
+			{firstName:string, lastName:string}
+		val janeEyre = "Jane Eyre" : string
+	</code></pre>
+	<p>We can write the code above even more concisely:</p>
+	<pre class="language-sml"><code>
+		fun sum_triple (x, y, z) =
+			x + y + z
+		fun full_name { firstName = x, lastName = z } =
+			x ^ " " ^ z
+
+		val x = (1, 2, 3)
+		val y = sum_triple(x)
+		val jane = { firstName = "Jane", lastName = "Eyre" } 
+		val janeEyre = full_name(jane)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val sum_triple = fn : int * int * int -> int
+		val full_name = fn : {firstName:string, lastName:string} -> string
+		val x = (1,2,3) : int * int * int
+		val y = 6 : int
+		val jane = {firstName="Jane",lastName="Eyre"} :
+			{firstName:string, lastName:string}
+		val janeEyre = "Jane Eyre" : string
+	</code></pre>
+	<p>
+		Take a close look at how we wrote the functions. The variable we pass into
+		the function &mdash; the argument &mdash; is actually a pattern match! This
+		in turn means that we do not have to use the
+		<span class="monoText">#</span> symbol to extract data from a tuple. We can
+		simply pattern match. This also means that we do not always have to specify
+		types for arguments.
+	</p>
+	<p>
+		Having seen enough ML, we might notice something jump out at us. That
+		function <span class="monoText">sum_triple</span> looks an awful lot like a
+		function that takes three arguments. We've seen functions that take just one
+		argument:
+	</p>
+	<pre class="language-sml"><code>
+		fun double(x) =
+			x * 2
+		val x = 3
+		val y = double(3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val double = fn : int -> int
+		val x = 3 : int
+		val y = 6 : int
+	</code></pre>
+	<p>
+		How does ML know when we're doing a pattern match and when we're passing
+		arguments to a function? With a simple rule: Every function in ML only takes
+		one argument, and uses pattern matching to take the parts out. In the case
+		of our regular function definitions, the argument passed is a tuple. The
+		tuple is the one argument.
+		<span class="marginnote"
+			>This feature in ML leads to the peculiar observation that ML is a
+			language where there is no such thing as a multi-argument function. In
+			other words, functions in ML can only take one parameter. Of course, this
+			borders on pedantry and isn't a great marketing opener.</span
+		>
+		Whether the tuple has one, two, three, or a hundred parts, ML uses pattern
+		matching to extract them. But what about functions that take no arguments?
+	</p>
+	<pre class="language-sml"><code>
+		fun greet() = print "Hello!\n"
+	</code></pre>
+	<p>
+		The rule still applies. Every function takes only one argument. Here, there
+		are no arguments, so a pattern match is done. In this case, the pattern to
+		match is <span class="monoText">()</span>, and it matches to a value of type
+		<span class="monoText">unit</span>.
+	</p>
+	<p>
+		Using pattern matching for functions allows us to write functions that would
+		otherwise be extremely unwieldy to write in languages like Java.
+	</p>
+	<pre class="language-sml"><code>
+		fun turn_left (x, y, z) = (y, z, x)
+		fun turn_right coordinate = 
+			turn_left(turn_left coordinate)
+		fun complete_rotation coordinate = 
+			turn_right(turn_right(turn_right coordinate))
+
+		val original = (1, 2, 3)
+		val turnLeft = turn_left(original) 
+		val turnRight = turn_right(original)
+		val turnRight_turnRight_turnRight = complete_rotation(original)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val turn_left = fn : 'a * 'b * 'c -> 'b * 'c * 'a
+		val turn_right = fn : 'a * 'b * 'c -> 'c * 'a * 'b
+		val complete_rotation = fn : 'a * 'b * 'c -> 'a * 'b * 'c
+		val original = (1,2,3) : int * int * int
+		val turnLeft = (2,3,1) : int * int * int
+		val turnRight = (3,1,2) : int * int * int
+		val turnRight_turnRight_turnRight = (1,2,3) : int * int * int
+	</code></pre>
+	<p>
+		Using pattern matching allows us to write functions whose arguments
+		immediately pass into another function without the need to explicitly write
+		out parameters. This is something not very many languages can do. In ML, the
+		three functions above are written succinctly because of pattern matching. In
+		other languages like Java, it's fairly awkward to implement. Not only does
+		pattern matching allow ML to handle functions like those above easily, it
+		reduces the <span class="italicsText">size</span> of a language's
+		implementation. Here, ML's size is reduced by the fact that there is no
+		separate implementation for multi-argument functions.
+	</p>
+</section>
+
+<section id="type_inference_and_patternMatching">
+	<h2>Type Inference & Pattern Matching</h2>
+	<p>
+		Having discussed pattern matching, we should address its relationship to
+		type inference. The topic of type inference will be discussed in later
+		sections. Recall that we can use <span class="monoText">#</span> to access
+		the values in a record or tuple. With pattern matching, we no longer need to
+		use <span class="monoText">#</span>, nor do we need to explicitly state the
+		types for our function arguments. Why are we allowed to do this? Because ML
+		uses pattern-matching to infer types. However, for type inference to work,
+		we have to give ML enough information to work with.
+	</p>
+	<p>Notice ML's type inference for these functions:</p>
+	<pre class="language-sml"><code>
+		fun sum_triple (x, y, z) =
+			x + y + z
+		fun full_name {firstName = x, lastName = y} =
+			x ^ " " ^ y
+	</code></pre>
+	<pre class="language-bash"><code>
+		val sum_triple = fn : int * int * int -> int
+		val full_name = fn : {firstName:string, lastName:string} -> string
+	</code></pre>
+	<p>
+		ML can infer the types for these functions because of the computations we
+		intend to perform in the functions' bodies. For
+		<span class="monoText">sum_triple</span>, we are asking for addition, so ML
+		infers <span class="monoText">int</span>. In
+		<span class="monoText">full_name</span>, we are asking for concatenation, so
+		ML infers <span class="monoText">string</span>. The patterns told ML most of
+		what is needed for type inference; the rest of the necessary information is
+		provided by the operations. If we used the
+		<span class="monoText">#</span> syntax, type inference will still work:
+	</p>
+	<pre class="language-sml"><code>
+		fun sum_triple (triple : int*int*int) =
+			#1 triple + #2 triple + #3 triple
+		fun full_name (n: {firstName:string, lastName:string}) =
+			#firstName n ^ " " ^ #lastName n
+	</code></pre>
+	<pre class="language-bash"><code>
+		val sum_triple = fn : int * int * int -> int
+		val full_name = fn : {firstName:string, lastName:string} -> string
+	</code></pre>
+	<p>
+		Now, notice what happens when remove our explicit type indicator for the
+		first function:
+	</p>
+	<pre class="language-sml"><code>
+		fun sum_triple (triple) =
+			#1 triple + #2 triple + #3 triple
+		fun full_name (n: {firstName:string, lastName:string}) =
+			#firstName n ^ " " ^ #lastName n
+	</code></pre>
+	<pre class="language-bash"><code>
+		records.sml:1.3-2.36 Error: unresolved flex record (need to know the names of ALL the fields
+		in this context)
+			type: {1:'Y[OL(+,+)], 2:'Y[OL(+,+)], 3:'Y[OL(+,+)]; 'Z}
+	</code></pre>
+	<p>
+		ML cannot infer the type and returns a compilation error. This is because ML
+		knows that there must be a tuple, but it has no idea whether the tuple has
+		four, five, or even a hundred parts. Thus, we have to provide the indicator
+		explicitly.
+	</p>
+	<p>
+		<span class="topic">Polymorphic Functions.</span> What happens when a
+		function doesn't use all of its arguments? How does type inference work
+		there? Well, let's see an example:
+	</p>
+	<pre class="language-sml"><code>
+		fun partial_sum (x, y, z) =
+			x + z
+
+		fun full_name {firstName = x, middleName = y, lastName = z} =  
+			x ^ " " ^ z
+	</code></pre>
+	<pre class="language-bash"><code>
+		val partial_sum = fn : int * 'a * int -> int
+		val full_name = fn :
+			{firstName:string, lastName:string, middleName:'a} -> string
+	</code></pre>
+	<p>
+		Notice the <span class="monoText">'a</span>. The
+		<span class="monoText">'a</span> indicates that the particular part not used
+		can be of any type. The function will still work; the function is just more
+		general &mdash; i.e., a <span class="term">polymorphic function</span>.
+	</p>
+</section>
+
+<section id="polymorphicEqualityTypes">
+	<h3>Polymorphic & Equality Types</h3>
+	<p>
+		We can gain some insight into how ML infers types for polymorphic functions
+		by looking at a simple example:
+	</p>
+	<pre class="language-sml"><code>
+		fun append(xs, ys) =
+			case xs of
+				[] => ys
+				| x::xs' => x :: append(xs', ys)
+		val list1 = append(["a", "b"], ["c", "d"])
+		val list2 = append([1, 2], [3, 4])
+	</code></pre>
+	<pre class="language-bash"><code>
+		val append = fn : 'a list * 'a list -> 'a list
+		val list1 = ["a","b","c","d"] : string list
+		val list2 = [1,2,3,4] : int list
+	</code></pre>
+	<p>
+		Notice that ML can infer the list's type even if we didn't explicitly state
+		it. Our function <span class="monoText">append()</span> is polymorphic. It
+		has a type of <span class="monoText">'a list * 'a list -> 'a list</span>,
+		which is more general than some like
+		<span class="monoText">string list * string list -> string list</span>. The
+		<span class="monoText">xs</span> and <span class="monoText">ys</span> can be
+		of any type. What we cannot do is use
+		<span class="monoText">append()</span> with lists of different types:
+	</p>
+	<pre class="language-sml"><code>
+		fun append(xs, ys) =
+			case xs of
+				[] => ys
+				| x::xs' => x :: append(xs', ys)
+		val list3 = append([1, 2], ["a", "b"])
+	</code></pre>
+	<pre class="language-bash"><code>
+		records.sml:7.5-7.39 Error: operator and operand do not agree [overload - bad instantiation]
+		operator domain: 'Z[INT] list * 'Z[INT] list
+		operand:         'Z[INT] list * string list
+		in expression:
+			append (1 :: 2 :: nil,"a" :: "b" :: nil)
+	</code></pre>
+	<p>
+		We cannot do so because all the <span class="monoText">'a</span> must be
+		replaced with a single type. However, we can append two lists of different types, as long as we use a second type parameter, <span class="monoText">'b</span>.
+	</p>
+	<p>In some situations, we might notice a <span class="monoText">''a</span> &mdash; two quotations instead of one. For example, a function type that looks like:</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				''a list * ''a -> int
+			</code></pre>
+		</div>
+	</figure>
+	<p>The two prime ticks indicate an <span class="term">equality type</span>. An equality type is a type whose value can be used with the <span class="monoText">=</span> operator. This means that a function with the type above is polymorphic, but we the set of possible types that <span class="monoText">''a</span> can take is limited &mdash; only those that can be used with the <span class="monoText">=</span> operator. The set includes types like <span class="monoText">string</span>, <span class="monoText">int</span>, as well as tuples and lists (as long as they are composed of equality type values), but does not include types like <span class="monoText">real</span> (floating point values) and function types.</p>
+</section>
+
+<section id="nested_patterns">
+	<h2>Nested Patterns</h2>
+	<p>Return to pattern matching, we can nest case expressions as much as we'd like. However, a better approach is nesting the patterns rather than the case expressions themselves; nested patterns are usually much easier to read than nested case expressions.</p>
 </section>
 {% endblock %}
