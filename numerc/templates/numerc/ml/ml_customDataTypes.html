@@ -1301,5 +1301,80 @@
 <section id="nested_patterns">
 	<h2>Nested Patterns</h2>
 	<p>Return to pattern matching, we can nest case expressions as much as we'd like. However, a better approach is nesting the patterns rather than the case expressions themselves; nested patterns are usually much easier to read than nested case expressions.</p>
+	<p>Pattern matching is recursive. The process: ML takes a pattern (which itself can contain patterns) and a value (which can contain other values) and asks, does this value have the same &#8220;shape&#8221; described by the pattern? If the answer is yes, then ML binds the relevant variables to the corresponding parts. This is very abstract, so several examples are needed.</p>
+	<p>Suppose we have the following tuple of lists:</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				([1, 2, 3], [4, 5, 6], [7, 8, 9])
+			</code></pre>
+		</div>
+	</figure>
+	<p>We want to write a function that returns the following:</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				[(1, 4, 7), (2, 5, 6), (3, 6, 9)]
+			</code></pre>
+		</div>
+	</figure>
+	<p>Notice the pattern? The function takes a tuple of three lists, then returns a list of three tuples, where each the first tuple consists of all the first elements of the three lists, the second tuple consists of all the second elements of the three lists, and the third tuple consists of all the third elements of the three lists.</p>
+	<p>Without pattern matching, the function would look like:</p>
+	<pre class="language-sml"><code>
+		exception ListLengthMisMatch
+
+		fun zip1(l1, l2, l3) = 
+			if null l1 andalso null l2 andalso null l3
+			then []
+			else if null l1 orelse null l2 orelse null l3
+			then raise ListLengthMismatch
+			else (h2 l1, hd l2, hd l3) :: zip(tl l1, tl l2, tl l3)
+	</code></pre>
+	<p>The function above is pretty messy to look at. Worse, we are taking the risk of missing a case, and we aren't relying on any help from the type checker. What if we used pattern matching?</p>
+	<pre class="language-sml"><code>
+		fun zip2 (l1, l2, l3) =
+			case l1 of
+				[] =>
+				(case l2 of
+					[] => (case l3 of
+							[] => []
+							| _ => raise ListLengthMismatch)
+						| _ => raise ListLengthMismatch)
+					| hd1 :: tl1 =>
+						(case l2 of
+							[] => raise ListLengthMismatch
+							| hd2::tl2 => (case l3 of
+									[] => raise ListLengthMismatch
+									| hd3::tl3 =>
+										(hd1, hd2, hd3)::zip3(tl1, tl2, tl3)))
+	</code></pre>
+	<p>This looks even worse than the previous implementation. Rather than using <span class="monoText">andalso</span> and <span class="monoText">orelse</span>, we're manually checking for all the possible patterns. Luckily there's a better way. Instead of checking for every pattern, we want to use the fact that patterns can exist inside patterns.</p>
+	<p>Here is another implementation:</p>
+	<pre class="language-sml"><code>
+		fun zip list_triple =
+			case list_triple of
+				([], [], []) => []
+				| (hd1::tl1, hd2::tl2, hd3::tl3) => (hd1, hd2, hd3)::zip3(tl1, tl2, tl3)
+				| _ => raise ListLengthMismatch
+	</code></pre>
+	<p>In the example above, we're only considering three patterns. First:</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				([], [], [])
+			</code></pre>
+		</div>
+	</figure>
+	<p>The pattern above is a tuple with three lists. When ML sees this pattern, it will match any value it finds that has the pattern of three empty lists within a tuple. If ML finds a match, it returns the empty list <span class="monoText">[]</span>.</p>
+	<p>Then there's a second pattern:</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				(hd1::tl1, hd2::tl2, hd3::tl3)
+			</code></pre>
+		</div>
+	</figure>
+	<p>This pattern consists of a few parts: First, it is a tuple. Second, it is a 3-tuple with three non-empty lists. I.e., it has a head and a tail. This means that <span class="monoText">list_triple</span> will only match if it is a tuple with three non-empty lists. If matches, then we bind each head of the three lists in the tuple to <span class="monoText">hd1</span>, <span class="monoText">hd2</span>, and <span class="monoText">hd3</span>. The same goes for <span class="monoText">tl1</span>, <span class="monoText">tl2</span>, and <span class="monoText">tl3</span>. Then, <span class="monoText">cons</span> the result of <span class="monoText">(hd1, hd2, hd3)</span> to <span class="monoText">zip3(tl1, tl2, tl3)</span>. Notice how this is recursive.</p>
+
 </section>
 {% endblock %}

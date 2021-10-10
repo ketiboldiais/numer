@@ -360,6 +360,8 @@ def cpp_peakFinder(request):
 	return render(request, "numerc/cpp/cpp_peakFinder.html")
 def cpp_hashing(request):
 	return render(request, "numerc/cpp/cpp_hashing.html")
+def cpp_collections(request):
+	return render(request, "numerc/cpp/cpp_collections.html")
 
 # Prolog Functions
 def prolog_preface(request):
