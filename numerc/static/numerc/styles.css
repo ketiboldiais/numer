@@ -85,6 +85,7 @@
 		/* colors */
 		--beige: rgb(255, 253, 232);
 		--darkRed: #ea3c4dbc; 
+		--lightRed: #ff949f; 
 		--darkGreen: #6e9841;
 		--darkBlue: #0b98bb;
 		--indigo: #7d60c8ed;
@@ -349,7 +350,6 @@
 		margin-top: 1em;
 		font-weight: bold;
 		font-size: 1rem;
-		font-family: "Crimson";
 	}
 	div.rule span.topic{
 		font-variant: small-caps; 
@@ -370,7 +370,7 @@
 	}
 /* Paragraph styles */
 	p {
-		font-size: 0.9rem;
+		font-size: 0.95rem;
 		line-height: 1.4;
 		padding: 0.5rem;
 		padding-left: 0;
@@ -378,6 +378,51 @@
 		text-align: left;
 	}
 	p.fn {font-size: 0.85rem;}
+/* Tool Tip */
+	article .tooltip {
+		position:relative;
+	}
+
+	article .tooltip:before {
+		content: attr(data-text);
+		position:absolute;
+		z-index: 1;
+		
+		/* vertically center */
+		top:100%;
+		transform:translateY(-50%);
+		
+		/* move to right */
+		left:100%;
+		margin-left: 0.9rem;
+		
+		/* basic styles */
+		width: 10rem;
+		padding: 0.8em;
+		border-radius: 0.5em;
+		border: thin lightgray solid;
+		background: rgb(255, 254, 243);
+		color: rgb(59, 59, 59);
+		font-family: "Crimson";
+		font-size: 0.85rem;
+		display:none; /* hide by default */
+	}
+	article .tooltip:hover {
+		cursor: pointer;
+	}
+	
+	article .tooltip:hover::before {
+		display:block;
+	}
+/* Superscripts/Footnotes */
+	article {counter-reset: fn;}
+	sup {
+		counter-increment: fn;
+	}
+	sup::after {
+		content: counter(fn);
+		color: var(--lightRed);
+	}
 /* List styles */
 	li {
 		font-size: 0.9rem; 
@@ -1803,6 +1848,12 @@
         margin: 1em 0;
         position: relative;
     }
+		article .tooltip:before {
+			width: 12rem;
+			top: -8.5rem;
+			transform:translateY(0%);
+			transform: translateX(-120%);
+		}
 	}
 	@media (max-width: 600px) {
 		html {font-size: 3.4vw;}

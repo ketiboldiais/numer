@@ -84,8 +84,6 @@ def py_classes(request):
 	return render(request, "numerc/py/py_classes.html")
 def py_sets(request):
 	return render(request, "numerc/py/py_sets.html")
-def py_oopBenefits(request):
-	return render(request, "numerc/py/py_oopBenefits.html")
 def py_hierarchies(request):
 	return render(request, "numerc/py/py_hierarchies.html")
 def py_classVariables(request):

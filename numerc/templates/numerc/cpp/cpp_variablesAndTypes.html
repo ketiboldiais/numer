@@ -1,19 +1,11 @@
-{% extends '../layout.html' %} {% load static %} 
-
-
-{% block description %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
 <meta
 	name="description"
 	content="An overview of variables and primitive types in C++: int, float, boolean, char, string, variable declarations, variable initialization, pass by value, pass by reference."
 />
-{% endblock %} 
-
-{% block title %}
+{% endblock %} {% block title %}
 <title>C++: Variables and Data Types</title>
-{% endblock %} 
-
-
-{% block content %}
+{% endblock %} {% block content %}
 <h1>Variables &amp; Types</h1>
 <section id="variables_and_types">
 	<p>
@@ -931,6 +923,151 @@
 			return side_ * side_ * side_;
 		}
 	</code></pre>
+</section>
+
+<section id="overflow">
+	<h2>Overflow</h2>
+	<p>
+		A value of type <span class="monoText">char</span> takes 1 byte of memory.
+		Consider the output for the following code:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main() {
+			char x = 127;
+			cout << (int)x << endl;
+			x++;
+			cout << (int)x << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		127
+		-128
+	</code></pre>
+	<p>
+		Strange. By incrementing <span class="monoText">x</span> by 1, the value
+		went from 127 to 128. This demonstrates the concept of
+		<span class="term">overflow</span>. A character can store only 1 byte. This
+		means a value of type <span class="monoText">char</span> can only represent
+		numeric values in the range ${[127, -128].}$ So what happens when we go
+		beyond 127 or -128? We move to the beginning or the end of the range.
+	</p>
+	<p>
+		We can think of this like a clock. We start at 0, then go up to 127. After
+		127 is -128, then -127, then -126, all the way up to 0 and all way up to
+		127. It's cyclical. But why is it cyclical?
+	</p>
+	<p>
+		Because the numbers are represented as bits. The number 127 is represented
+		as <span class="monoText">01111111</span>. When we increment by 1, we get:
+		<span class="monoText">10000000</span>,
+		<span class="monoText">-128</span> in the decimal system. This is just
+		binary addition. The first bit is the sign, 0 for positive, and 1 for
+		negative.
+	</p>
+</section>
+
+<section id="bitwise_operators">
+	<h2>Bitwise Operators</h2>
+	<p>
+		The bitwise operators are interesting, but not often used operators in C++.
+		They are operators that allow us to manipulate data at the bit-level, rather
+		than one the entire value. The operators are the following:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Operator</th>
+				<th>Description</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">&</span></td>
+					<td>
+						Bitwise AND; given <span class="monoText">bit1</span> and
+						<span class="monoText">bit2</span>,
+						<span class="monoText">bit1 & bit2</span> are 1 if, and only if,
+						both bits are 1. Otherwise,
+						<span class="monoText">bit1 & bit2</span> are 0.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">|</span></td>
+					<td>
+						Bitwise OR; if either <span class="monoText">bit1</span> or
+						<span class="monoText">bit2</span> is 1, then
+						<span class="monoText">bit1 | bit2</span> is 1.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">^</span></td>
+					<td>
+						Bitwise XOR; if <span class="monoText">bit1</span> or
+						<span class="monoText">bit2</span> is 1, but not both
+						<span class="monoText">bit1</span> and
+						<span class="monoText">bit2</span> are 1, then
+						<span class="monoText">bit1 ^ bit2</span> is 1. If both
+						<span class="monoText">bit1</span> and
+						<span class="monoText">bit2</span> is 0, then
+						<span class="monoText">bit1 | bit2</span> is 1. If both
+						<span class="monoText">bit1</span> and
+						<span class="monoText">bit2</span> is 1, then
+						<span class="monoText">bit1 | bit2</span> is 0.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">~</span></td>
+					<td>
+						Bitwise NOT; if <span class="monoText">bit1</span> is 1, then
+						<span class="monoText">~bit1</span> is 0, and vice versa.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">&lt;&lt;</span></td>
+					<td>left shift</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">&gt;&gt;</span></td>
+					<td>right shift</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		Here is an example using the bitwise operator
+		<span class="monoText">&</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main() {
+			int x = 1;
+			int y = 2;
+			int z = x & y;
+			cout << z << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+	</code></pre>
+	<p>Why is it 0? Because of the following:</p>
+	<figure class="math-display">$$ 0 1 \\ 1 0 $$</figure>
+	<p>
+		The <span class="monoText">&</span> operator will pair each bit in
+		<span class="monoText">x</span> with each bit in
+		<span class="monoText">y</span>. In this case,
+		<span class="monoText">1 & 0</span> and <span class="monoText">0 & 1</span>.
+		Now, recall the rule: <span class="monoText">bit1 & bit2</span> are 1 if,
+		and only if, both values are 1. Otherwise,
+		<span class="monoText">bit1 & bit2</span> are 0. Thus,
+		<span class="monoText">x & y</span> evaluates to
+		<span class="monoText">00</span>, the integer 0 in the decimal system.
+	</p>
 </section>
 
 <section id="value_reference_semantics">

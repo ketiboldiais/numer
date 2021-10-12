@@ -673,12 +673,15 @@
 		Why isn't pattern matching more common in object-oriented languages? It's
 		largely due to history and the market for programming languages. pattern
 		matching &mdash; and algebraic data types more generally &mdash; can be
-		traced to the Hope language in 1980. (Although, possibly earlier, depending
-		on how we define pattern matching). From Hope, algebraic data types and
-		their associated features like pattern matching made their way into ML, and
-		later on to Miranda, Haskell, and today, languages like Scala and Erlang.
-		Had functional languages taken off, we probably would see more pattern
-		matching constructs today.
+		traced to the Hope language in 1980.<span
+			data-text="Although, possibly earlier, depending
+		on how we define pattern matching"
+			class="tooltip"
+			><sup></sup></span
+		> From Hope, algebraic data types and their associated features like
+		pattern matching made their way into ML, and later on to Miranda, Haskell,
+		and today, languages like Scala and Erlang. Had functional languages taken
+		off, we probably would see more pattern matching constructs today.
 	</p>
 	<p>
 		Unfortunately for the functional languages, the object-oriented languages
@@ -1148,6 +1151,50 @@
 		implementation. Here, ML's size is reduced by the fact that there is no
 		separate implementation for multi-argument functions.
 	</p>
+
+	<h3>Excursion: Pattern Matching in Swift</h3>
+	<p>
+		Some languages, like Swift, have been directly inspired by pattern matching
+		in functional languages. And rightly so; it is a truly killer feature. For
+		example, in Swift, we can iterate through a list of tuples in several ways.
+		Suppose we have an array of 2-tuples, and we want to print just the second
+		part of the tuple:
+	</p>
+	<pre class="language-swift"><code>
+		import Foundation
+
+		let arrTuple = [(0, 1), (2, 3), (4, 5)]
+		for i in 0..&lt;arrTuple.count {
+				print(arrTuple[i].1)
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		3
+		5
+	</code></pre>
+	<p>
+		The code above works fine, but it can be made more concise with pattern
+		matching:
+	</p>
+	<pre class="language-swift"><code>
+		import Foundation
+
+		let arr = [(0, 1), (2, 3), (4, 5)]
+		for (_, i) in arr {
+				print(i)
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		3
+		5
+	</code></pre>
+	<p>
+		In this case, we've used <span class="monoText">_</span> (the underscore) to
+		indicate a pattern match, since we don't care for the first part of the
+		tuple.
+	</p>
 </section>
 
 <section id="type_inference_and_patternMatching">
@@ -1250,7 +1297,7 @@
 		fun append(xs, ys) =
 			case xs of
 				[] => ys
-				| x::xs' => x :: append(xs', ys)
+				| x::<span data-text="Note that this is just a variable binding. We could have used anything here." class="tooltip">xs'</span> => x :: append(xs', ys)
 		val list1 = append(["a", "b"], ["c", "d"])
 		val list2 = append([1, 2], [3, 4])
 	</code></pre>
@@ -1285,9 +1332,15 @@
 	</code></pre>
 	<p>
 		We cannot do so because all the <span class="monoText">'a</span> must be
-		replaced with a single type. However, we can append two lists of different types, as long as we use a second type parameter, <span class="monoText">'b</span>.
+		replaced with a single type. However, we can append two lists of different
+		types, as long as we use a second type parameter,
+		<span class="monoText">'b</span>.
 	</p>
-	<p>In some situations, we might notice a <span class="monoText">''a</span> &mdash; two quotations instead of one. For example, a function type that looks like:</p>
+	<p>
+		In some situations, we might notice a
+		<span class="monoText">''a</span> &mdash; two quotations instead of one. For
+		example, a function type that looks like:
+	</p>
 	<figure class="math-display">
 		<div>
 			<pre class="language-pseudo"><code>
@@ -1295,13 +1348,36 @@
 			</code></pre>
 		</div>
 	</figure>
-	<p>The two prime ticks indicate an <span class="term">equality type</span>. An equality type is a type whose value can be used with the <span class="monoText">=</span> operator. This means that a function with the type above is polymorphic, but we the set of possible types that <span class="monoText">''a</span> can take is limited &mdash; only those that can be used with the <span class="monoText">=</span> operator. The set includes types like <span class="monoText">string</span>, <span class="monoText">int</span>, as well as tuples and lists (as long as they are composed of equality type values), but does not include types like <span class="monoText">real</span> (floating point values) and function types.</p>
+	<p>
+		The two prime ticks indicate an <span class="term">equality type</span>. An
+		equality type is a type whose value can be used with the
+		<span class="monoText">=</span> operator. This means that a function with
+		the type above is polymorphic, but we the set of possible types that
+		<span class="monoText">''a</span> can take is limited &mdash; only those
+		that can be used with the <span class="monoText">=</span> operator. The set
+		includes types like <span class="monoText">string</span>,
+		<span class="monoText">int</span>, as well as tuples and lists (as long as
+		they are composed of equality type values), but does not include types like
+		<span class="monoText">real</span> (floating point values) and function
+		types.
+	</p>
 </section>
 
 <section id="nested_patterns">
 	<h2>Nested Patterns</h2>
-	<p>Return to pattern matching, we can nest case expressions as much as we'd like. However, a better approach is nesting the patterns rather than the case expressions themselves; nested patterns are usually much easier to read than nested case expressions.</p>
-	<p>Pattern matching is recursive. The process: ML takes a pattern (which itself can contain patterns) and a value (which can contain other values) and asks, does this value have the same &#8220;shape&#8221; described by the pattern? If the answer is yes, then ML binds the relevant variables to the corresponding parts. This is very abstract, so several examples are needed.</p>
+	<p>
+		Return to pattern matching, we can nest case expressions as much as we'd
+		like. However, a better approach is nesting the patterns rather than the
+		case expressions themselves; nested patterns are usually much easier to read
+		than nested case expressions.
+	</p>
+	<p>
+		Pattern matching is recursive. The process: ML takes a pattern (which itself
+		can contain patterns) and a value (which can contain other values) and asks,
+		does this value have the same &#8220;shape&#8221; described by the pattern?
+		If the answer is yes, then ML binds the relevant variables to the
+		corresponding parts. This is very abstract, so several examples are needed.
+	</p>
 	<p>Suppose we have the following tuple of lists:</p>
 	<figure class="math-display">
 		<div>
@@ -1318,7 +1394,13 @@
 			</code></pre>
 		</div>
 	</figure>
-	<p>Notice the pattern? The function takes a tuple of three lists, then returns a list of three tuples, where each the first tuple consists of all the first elements of the three lists, the second tuple consists of all the second elements of the three lists, and the third tuple consists of all the third elements of the three lists.</p>
+	<p>
+		Notice the pattern? The function takes a tuple of three lists, then returns
+		a list of three tuples, where each the first tuple consists of all the first
+		elements of the three lists, the second tuple consists of all the second
+		elements of the three lists, and the third tuple consists of all the third
+		elements of the three lists.
+	</p>
 	<p>Without pattern matching, the function would look like:</p>
 	<pre class="language-sml"><code>
 		exception ListLengthMisMatch
@@ -1330,7 +1412,11 @@
 			then raise ListLengthMismatch
 			else (h2 l1, hd l2, hd l3) :: zip(tl l1, tl l2, tl l3)
 	</code></pre>
-	<p>The function above is pretty messy to look at. Worse, we are taking the risk of missing a case, and we aren't relying on any help from the type checker. What if we used pattern matching?</p>
+	<p>
+		The function above is pretty messy to look at. Worse, we are taking the risk
+		of missing a case, and we aren't relying on any help from the type checker.
+		What if we used pattern matching?
+	</p>
 	<pre class="language-sml"><code>
 		fun zip2 (l1, l2, l3) =
 			case l1 of
@@ -1348,7 +1434,14 @@
 									| hd3::tl3 =>
 										(hd1, hd2, hd3)::zip3(tl1, tl2, tl3)))
 	</code></pre>
-	<p>This looks even worse than the previous implementation. Rather than using <span class="monoText">andalso</span> and <span class="monoText">orelse</span>, we're manually checking for all the possible patterns. Luckily there's a better way. Instead of checking for every pattern, we want to use the fact that patterns can exist inside patterns.</p>
+	<p>
+		This looks even worse than the previous implementation. Rather than using
+		<span class="monoText">andalso</span> and
+		<span class="monoText">orelse</span>, we're manually checking for all the
+		possible patterns. Luckily there's a better way. Instead of checking for
+		every pattern, we want to use the fact that patterns can exist inside
+		patterns.
+	</p>
 	<p>Here is another implementation:</p>
 	<pre class="language-sml"><code>
 		fun zip list_triple =
@@ -1361,11 +1454,17 @@
 	<figure class="math-display">
 		<div>
 			<pre class="language-pseudo"><code>
+				
 				([], [], [])
 			</code></pre>
 		</div>
 	</figure>
-	<p>The pattern above is a tuple with three lists. When ML sees this pattern, it will match any value it finds that has the pattern of three empty lists within a tuple. If ML finds a match, it returns the empty list <span class="monoText">[]</span>.</p>
+	<p>
+		The pattern above is a tuple with three lists. When ML sees this pattern, it
+		will match any value it finds that has the pattern of three empty lists
+		within a tuple. If ML finds a match, it returns the empty list
+		<span class="monoText">[]</span>.
+	</p>
 	<p>Then there's a second pattern:</p>
 	<figure class="math-display">
 		<div>
@@ -1374,7 +1473,19 @@
 			</code></pre>
 		</div>
 	</figure>
-	<p>This pattern consists of a few parts: First, it is a tuple. Second, it is a 3-tuple with three non-empty lists. I.e., it has a head and a tail. This means that <span class="monoText">list_triple</span> will only match if it is a tuple with three non-empty lists. If matches, then we bind each head of the three lists in the tuple to <span class="monoText">hd1</span>, <span class="monoText">hd2</span>, and <span class="monoText">hd3</span>. The same goes for <span class="monoText">tl1</span>, <span class="monoText">tl2</span>, and <span class="monoText">tl3</span>. Then, <span class="monoText">cons</span> the result of <span class="monoText">(hd1, hd2, hd3)</span> to <span class="monoText">zip3(tl1, tl2, tl3)</span>. Notice how this is recursive.</p>
-
+	<p>
+		This pattern consists of a few parts: First, it is a tuple. Second, it is a
+		3-tuple with three non-empty lists. I.e., it has a head and a tail. This
+		means that <span class="monoText">list_triple</span> will only match if it
+		is a tuple with three non-empty lists. If matches, then we bind each head of
+		the three lists in the tuple to <span class="monoText">hd1</span>,
+		<span class="monoText">hd2</span>, and <span class="monoText">hd3</span>.
+		The same goes for <span class="monoText">tl1</span>,
+		<span class="monoText">tl2</span>, and <span class="monoText">tl3</span>.
+		Then, <span class="monoText">cons</span> the result of
+		<span class="monoText">(hd1, hd2, hd3)</span> to
+		<span class="monoText">zip3(tl1, tl2, tl3)</span>. Notice how this is
+		recursive.
+	</p>
 </section>
 {% endblock %}

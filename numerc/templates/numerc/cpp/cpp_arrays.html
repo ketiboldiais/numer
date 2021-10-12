@@ -1,0 +1,293 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Overview of arrays in C++" />
+{% endblock %} {% block title %}
+<title>C++ Arrays</title>
+{% endblock %} {% block content %}
+<h1>C++ Arrays</h1>
+<section id="arrays">
+	<p>
+		Arrays are the simplest data structure. Physically, arrays occupy a
+		contiguous region of memory in the computer. We can initialize an array in
+		C++ with the following:
+	</p>
+
+	<pre class="language-cpp"><code>
+		int main() {
+			int x[5] = { 1, 2, 3, 4, 5 };
+			cout << x << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		0x7ffeeb1462d0
+	</code></pre>
+
+	<p>
+		The line above declares a variable <span class="monoText">arr</span>, which
+		will store an <span class="monoText">int</span> array of size 10. In other
+		words, an array that can <span class="underlineText">only</span> take 10
+		values of type <span class="monoText">int</span>.
+	</p>
+	<p>
+		The output we see above is a
+		<span class="italicsText">memory address</span>. Specifically, it's the
+		memory address for where the array begins. This evidences the fact that an
+		array, physically, is a contiguous region in memory.
+	</p>
+	<p>
+		We can access individual elements in the array with square-bracket syntax:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+			
+			
+		int main() {
+			int x[5] = { 1, 2, 3, 4, 5 };
+			cout << x[0] << endl;
+			cout << x[1] << endl;
+			cout << x[2] << endl;
+			cout << x[3] << endl;
+			cout << x[4] << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		2
+		3
+		4
+		5
+	</code></pre>
+	<p>
+		Notice that like most other languages, C++ indexes its arrays starting from
+		0. This means that if we start a loop at 0 and use ${i}$ as a counter, then
+		the last element in the array is ${n-1,}$ where ${n}$ is the size of the
+		array. E.g., the size of the array above is 5, but the last element's index
+		is 4. This is point where many beginning programmers make mistakes, most
+		commonly seen in a
+		<span class="italicsText">fence post problem</span> &mdash; going one unit
+		beyond the limit. This can lead to frustrating bugs like an out-of-bounds
+		error:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main() {
+			int x[5] = { 1, 2, 3, 4, 5 };
+			cout << x[5] << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		main.cpp:7:10: warning: array index 5 is past the end of the array (which contains 5 elements) [-Warray-bounds]
+        cout << x[5] << endl;
+                ^ ~
+		main.cpp:6:2: note: array 'x' declared here
+						int x[5] = { 1, 2, 3, 4, 5 };
+						^
+		1 warning generated.
+	</code></pre>
+
+	<p>Let's print out all the elements in the array:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main() {
+			int x[5] = { 1, 2, 3, 4, 5 };
+			size_t LengthOfx = sizeof x / sizeof x[0];
+			for (int i = 0; i < LengthOfx; i++) {
+				cout << x[i] << endl;
+			}
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		2
+		3
+		4
+		5
+	</code></pre>
+	<p>
+		Above, we used the <span class="monoText">sizeof</span> operator to obtain
+		the array's length. The <span class="monoText">sizeof</span> operator is a
+		built-in operator that returns the number of bytes allocated to a particular
+		variable. Thus, when we call <span class="monoText">sizeof x</span>, we are
+		asking for the number of bytes for the
+		<span class="italicsText">entire</span> array. To obtain the actual length
+		of the array, we need to divide that number by the number of bytes for each
+		element in the array.
+	</p>
+	<p>
+		Alternatively, starting with C++11, we can use a
+		<span class="term">range-based loop</span>:
+		<span class="marginnote"
+			>The range-based loop is also called a
+			<span class="term">for-each loop</span>.</span
+		>
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main() {
+			int x[5] = { 1, 2, 3, 4, 5 };
+			cout << "[ ";
+			for (auto i : x)
+				cout << i << ", ";
+			cout << "]" << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		[ 1, 2, 3, 4, 5, ]
+	</code></pre>
+	<p>
+		Note that the code above was compiled with the following
+		<span class="monoText">make</span> file:
+	</p>
+	<pre class="language-bash"><code>
+		CXX=g++
+		CXXFLAGS=-g -Wall -MMD -std=c++20
+		clean:
+			$(RM) *.o *.d output
+	</code></pre>
+	<p>
+		The <span class="monoText">auto</span> keyword is used to infer the type of
+		an array. We could've used <span class="monoText">int</span> just as well.
+	</p>
+</section>
+
+<section id="array_exercises">
+	<h3>Exercises</h3>
+	<p>
+		Because of how important arrays are in computer science, it's critical that
+		we are comfortable with using them. Below are some exercises.
+	</p>
+	<div class="compare">
+		<ol>
+			<li>
+				Given the array:
+				<span class="monoText">[3, 9, 11, 23, 14, 10, 34, 18, 27]</span>,
+				compute the sum of all the elements.
+			</li>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Here is one possible solution:</p>
+				<pre class="language-cpp"><code>
+					#include &lt;iostream&gt;
+					using namespace std;
+					
+					
+					int main() {
+						int arr[] = { 3, 9, 11, 23, 14, 10, 34, 18, 27 };
+						int sum = 0;
+						for(int i:arr)
+							sum += i;
+						cout << (int)sum << endl;
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					149
+				</code></pre>
+			</details>
+			<li>Given the same array above, return the maximum.</li>
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-cpp"><code>
+					#include &lt;iostream&gt;
+					using namespace std;
+					
+					
+					int main() {
+						int arr[] = { 3, 9, 11, 23, 14, 10, 34, 18, 27 };
+						size_t LengthOfArr = sizeof(arr) / sizeof(arr[0]);
+						int max = arr[0];
+						for (int i = 0; i < LengthOfArr; i++) {
+							if (arr[i] > max) {
+								max = arr[i];
+							}
+						}
+						cout << (int)max << endl;
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					34
+				</code></pre>
+			</details>
+			<li>Given the same array, return the minimum.</li>
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-cpp"><code>
+						#include &lt;iostream&gt;
+						using namespace std;
+						
+						
+						int main() {
+							int arr[] = { 3, 9, 11, 23, 14, 10, 34, 18, 27 };
+							size_t LengthOfArr = sizeof(arr) / sizeof(arr[0]);
+							int max = arr[0];
+							for (int i = 0; i < LengthOfArr; i++) {
+								if (arr[i] < max) {
+									max = arr[i];
+								}
+							}
+							cout << (int)max << endl;
+							return 0;
+						}
+					</code></pre>
+				<pre class="language-bash"><code>
+						3
+					</code></pre>
+			</details>
+			<li>
+				Given the array above, determine (i.e., return true, or 1) if the
+				element 67 is in the array; otherwise false (0).
+			</li>
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-cpp"><code>
+					#include &lt;iostream&gt;
+					using namespace std;
+					
+					
+					int main() {
+						int arr[] = { 3, 9, 11, 23, 14, 10, 34, 18, 27 };
+						size_t LengthOfArr = sizeof(arr) / sizeof(arr[0]);
+						int queryElement = 67;
+						bool result = false;
+						for (int i = 0; i < LengthOfArr; i++)
+						{
+							if (arr[i] == queryElement) {
+								result = true;
+							}
+						}
+						cout << result << endl;
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					0
+				</code></pre>
+			</details>
+		</ol>
+	</div>
+	<p>
+		The last exercise above is an example of a
+		<span class="term">linear search</span> algorithm. We are searching for a
+		particular element. Given very large arrays, we can suspect that this is a
+		grossly inefficient algorithm. Why? Because the computer must check, one by
+		one, whether the value exists. In this case, the number 67 doesn't exist in
+		the array. The computer had to go through all of the elements to make that
+		determination!
+	</p>
+</section>
+
+{% endblock %}

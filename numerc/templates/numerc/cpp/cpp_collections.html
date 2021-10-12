@@ -24,5 +24,221 @@
 
 <section id="enumerations">
 	<h2>Enumerations</h2>
+	<p>
+		Enumerations are what we use to represent a range of
+		<span class="underlineText">discrete</span> values. An example most commonly
+		cited is the range of months in a year: January, February, March, April,
+		May, etc. are all discrete months. There are, however, numerous other
+		examples of enumerations: letter grades, traffic lights, the planets, zodiac
+		signs, days of the week, and many more.
+	</p>
+	<p>Here's an example of an enumeration (an enum) in C++:</p>
+	<pre class="language-cpp"><code>
+		enum class LetterGrade {
+			A,
+			B,
+			C,
+			D,
+			F
+		}
+	</code></pre>
+	<p>
+		Writing the above, we've created a new data type called
+		<span class="monoText">LetterGrade</span>. This means we can use it as we
+		would base types:
+	</p>
+	<pre class="language-cpp"><code>
+		enum class LetterGrade {
+			A,
+			B,
+			C,
+			D,
+			F
+		}
+		LetterGrade johnsGrade = {LetterGrade::A}
+	</code></pre>
+	<p>
+		Notice the syntax for initialization. We explicitly state the type, as we
+		would any other variable. But in initializing the value, we again state the
+		type alongside double colons <span class="monoText">::</span>. Each of
+		<span class="monoText">A</span>, <span class="monoText">B</span>,
+		<span class="monoText">C</span>, <span class="monoText">D</span>, and
+		<span class="monoText">F</span> are called
+		<span class="term">enumerators</span>.
+	</p>
+	<p>
+		Notice what happens when we cast a
+		<span class="monoText">LetterGrade</span> value into an
+		<span class="monoText">int</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		enum class LetterGrade {
+			A,
+			B,
+			C,
+			D,
+			F
+		};
+		
+		int main() {
+			LetterGrade johnsGrade{LetterGrade::A};
+			std::cout << "John's grade: " << static_cast&lt;int&gt;(johnsGrade) << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		John's grade: 0
+	</code></pre>
+
+	<p>
+		In C++, enums are actually a range of integers under the hood. By default,
+		the enumerators start at 0 and increment by 1, all the way up to however
+		many enumerators we've specified. These integers are called
+		<span class="term">raw values</span>. We can change the default behavior by
+		setting an initial raw value:
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		enum class LetterGrade {
+			A = 1,
+			B,
+			C,
+			D,
+			F
+		};
+		
+		int main() {
+			LetterGrade johnsGrade{LetterGrade::A};
+			std::cout << "John's grade: " << static_cast&lt;int&gt;(johnsGrade) << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<p>With this modification, we see the following:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		enum class LetterGrade {
+			A = 1,
+			B,
+			C,
+			D,
+			F
+		};
+		
+		int main() {
+			LetterGrade johnsGrade{LetterGrade::A};
+			std::cout << "John's grade: " << static_cast&lt;int&gt;(johnsGrade) << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		John's grade: 1
+	</code></pre>
+	<p>
+		We aren't limited to just positive integers. We can change them to negatives
+		as well:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		enum class LetterGrade {
+			A = -1,
+			B,
+			C,
+			D,
+			F
+		};
+		
+		int main() {
+			LetterGrade johnsGrade{LetterGrade::A};
+			LetterGrade bobsGrade{LetterGrade::B};
+			LetterGrade iansGrade{LetterGrade::C};
+			LetterGrade zanesGrade{LetterGrade::D};
+			LetterGrade heathersGrade{LetterGrade::F};
+			std::cout << "John's grade: " << static_cast&lt;int&gt;(johnsGrade) << std::endl;
+			std::cout << "Bob's grade: " << static_cast&lt;int&gt;(bobsGrade) << std::endl;
+			std::cout << "Ian's grade: " << static_cast&lt;int&gt;(iansGrade) << std::endl;
+			std::cout << "Zane's grade: " << static_cast&lt;int&gt;(zanesGrade) << std::endl;
+			std::cout << "Heather's grade: " << static_cast&lt;int&gt;(heathersGrade) << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		John's grade: -1
+		Bob's grade: 0
+		Ian's grade: 1
+		Zane's grade: 2
+		Heather's grade: 3
+	</code></pre>
+
+	<p>
+		<span class="topic">Size of an Enum.</span> Because enumerators are
+		inherently <span class="monoText">int</span>s, the size of an enumerator
+		will be the size of an <span class="monoText">int</span>, as determined by
+		the compiler. Thus, if the compiler employs a size of 4 bytes for
+		<span class="monoText">int</span>, then each enumerator has a size of 4
+		bytes.
+	</p>
+	<p>
+		We can, however, change an enumerator's internal representation. In other
+		words, we aren't limited to <span class="monoText">int</span>:
+	</p>
+
+	<pre class="language-cpp"><code>
+		enum class ErrorMessages: unsigned char {
+			0,
+			1,
+			2,
+			3
+		};
+	</code></pre>
+	<p>
+		Above, we tell <span class="monoText">C++</span> that each of the values
+		above are represented as <span class="monoText">unsigned char</span>. This
+		means that we are limited to a numeric range of 0 to 255.
+	</p>
+
+	<h3>Use Cases</h3>
+	<p>Enums are useful for when we have a discrete set of categories for values. One use case we see in the real world is an application's set of possible options. For example:</p>
+	<pre class="language-cpp"><code>
+		enum class UserOptions {
+			New,
+			Open,
+			Save,
+			SaveAs,
+			Close,
+			Export
+		};
+	</code></pre>
+</section>
+
+<section id="typedef">
+	<h2>Type Synonyms</h2>
+	<p>Like many other languages, C++ provides the ability to implement <span class="italicsText">type synonyms</span> (other languages might call these <span class="italicsText">type aliases</span>). For those unfamiliar, a type synonym is simply another name for an existing type. Type synonyms are particularly useful for readability:</p>
+	<pre class="language-cpp"><code>
+		typedef int wholeNumber
+	</code></pre>
+	<p>The type definition above creates another name for <span class="monoText">int</span>, called <span class="monoText">wholeNumber</span>. Every line of code thereafter, we can use <span class="monoText">wholeNumber</span> just as we would <span class="monoText">int</span>.</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		typedef unsigned int naturalNumber;
+		
+		int main() {
+			naturalNumber x = 7;
+			naturalNumber y = 2;
+			naturalNumber z = x + y;
+			cout << z << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		9
+	</code></pre>
 </section>
 {% endblock %}

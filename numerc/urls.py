@@ -46,7 +46,6 @@ urlpatterns = [
 	path("py_oop", views.py_oop, name="py_oop"),
 	path("py_classes", views.py_classes, name="py_classes"),
 	path("py_sets", views.py_sets, name="py_sets"),
-	path("py_oopBenefits", views.py_oopBenefits, name="py_oopBenefits"),
 	path("py_hierarchies", views.py_hierarchies, name="py_hierarchies"),
 	path("py_classVariables", views.py_classVariables, name="py_classVariables"),
 
