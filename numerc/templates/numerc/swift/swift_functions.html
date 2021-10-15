@@ -187,7 +187,13 @@
 		</code></pre>
 	</figure>
 
-	<p><span class="topic"><span class="monoText">inout.</span></span> Generally, we do not want functions to modify their arguments. Allowing functions to modify arguments increases the risk of values changing unexpectedly. However, there are situations where we might want the function to modify its argument. To do so, we use the <span class="monoText">inout</span> symbol:</p>
+	<p>
+		<span class="topic"><span class="monoText">inout.</span></span> Generally,
+		we do not want functions to modify their arguments. Allowing functions to
+		modify arguments increases the risk of values changing unexpectedly.
+		However, there are situations where we might want the function to modify its
+		argument. To do so, we use the <span class="monoText">inout</span> symbol:
+	</p>
 
 	<pre class="language-swift"><code>
 		func increment(_ value: inout Int) {
@@ -201,7 +207,12 @@
 		2
 	</code></pre>
 
-	<p>Notice the ampersand <span class="monoText">&</span> in the <span class="monoText">increment()</span> call's argument. This must be included when using <span class="monoText">inout</span>, as it makes it clear to Swift that we are using a copy-in-copy-out.</p>
+	<p>
+		Notice the ampersand <span class="monoText">&</span> in the
+		<span class="monoText">increment()</span> call's argument. This must be
+		included when using <span class="monoText">inout</span>, as it makes it
+		clear to Swift that we are using a copy-in-copy-out.
+	</p>
 
 	<p>
 		In some situations, we want to be able to call the function without having
@@ -414,6 +425,131 @@
 	</p>
 </section>
 
+<section id="closures">
+	<h4>Closures</h4>
+	<p>
+		Functions are a subset of <span class="term">closures</span>. Recall our two
+		functions, <span class="monoText">add()</span> and
+		<span class="monoText">minus()</span>. These functions can be assigned to a
+		variable and passed arguments:
+	</p>
+
+	<pre class="language-swift"><code>
+		func add(n: Int, m: Int) -> Int {
+			n + m
+		}
+		func minus(n: Int, m: Int) -> Int {
+			n - m
+		}
+		var sum = add
+		var diff = minus
+
+		// returns 3
+		add(n:1, m:2) 
+		sum(1, 2)
+
+		// returns 1
+		minus(n:3, m:2) 
+		diff(3, 2)
+	</code></pre>
+
+	<p>
+		Calling the function directly or by way of a variable returns the same
+		result. However, notice that when we use variables, we do not need to
+		include the argument labels. This is because the variable is actually a
+		<span class="term">closure</span>. Let's rewrite the
+		<span class="monoText">add()</span> function in closure form:
+	</p>
+
+	<pre class="language-swift"><code>
+		var plus:(Int,Int) -> Int = { (a:Int,b:Int) -> Int in a+b }
+		plus(3,2) // returns 5
+	</code></pre>
+
+	<p>
+		With closures, we cannot include argument labels, nor we can use default
+		values. For those abilities, we must use a function. Question: When should
+		we use closures? Closures are best used when we want to execute some custom
+		operation exactly once. In other words, situations where we want to write
+		some code that appears like a function (i.e., takes inputs and returns an
+		output) but does not need to be reused (recall that functions should be used
+		as much as possible because of reusability).
+	</p>
+
+	<p>There are multiple ways to write closures in Swift:</p>
+
+	<pre class="language-swift"><code>
+		typealias IntOp = (Int,Int) -> Int
+
+		// long form
+		let foo:IntOp = { (a:Int, b:Int) -> Int in a*b }
+
+		// no parameter types
+		let baz:IntOp = {(a,b) -> Int in a*b}
+
+		// no return type
+		let bop:IntOp = {(a,b) in a*b}
+
+		// short form
+		let lar:IntOp = { $0 * $1 }
+	</code></pre>
+
+	<p>
+		We can also write closures (and functions) that take no arguments and return
+		nothing. With functions, these are called
+		<span class="term">void functions</span>, and with closures, they are called
+		<span class="term">void closures</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		let greetWorld: ()->Void = { ()->Void in print("Hello, world!") }
+		greetWorld()
+	</code></pre>
+
+	<p>
+		The type <span class="monoText">Void</span> is actually a type alias for
+		<span class="monoText">()</span>. Thus, the same function above can be
+		written as:
+	</p>
+
+	<pre class="language-swift"><code>
+		let greetWorld: ()->() = { ()->() in print("Hello, world!") }
+		greetWorld()
+	</code></pre>
+
+	<p>But, we cannot write this:</p>
+
+	<pre class="language-swift"><code>
+		let greetWorld: Void->Void = { Void->Void in print("Hello, world!") }
+		greetWorld()
+	</code></pre>
+
+	<p>Why? Because parameters must always be placed in parentheses.</p>
+
+	<p>
+		<span class="topic">Trailing Closures.</span> One coding style we'll often
+		see in Swift development is the trailing closure. Consider this code:
+	</p>
+	<pre class="language-swift"><code>
+		typealias IntOp = (Int,Int) -> Int
+		func printr(_ a:Int, _ b:Int, _ operate: IntOp) {
+			print(operate(a, b))
+		}
+
+		// inline closure
+		printr(1, 2, {$0 * $1 + 3}) // returns (1*2+3) -> 5
+
+		// trailing closure
+		printr(2, 3) {$0 * $1 + 3} // returns (2*3+3) -> 9
+	</code></pre>
+
+	<p>
+		The trailing closure syntax can only be used if the the closure is the last
+		argument to be passed. Otherwise, we must use the typical inline closure
+		syntax.
+	</p>
+</section>
+
 <section id="functions_as_arguments">
 	<p>
 		<span class="topic">Functions as Arguments.</span> We mentioned previously
@@ -471,6 +607,82 @@
 	<pre class="language-bash"><code>
 		3
 		6
+	</code></pre>
+</section>
+
+<section id="variadic_parameters">
+	<p>
+		<span class="topic">Variadiac Parameters.</span> If we look at the
+		documentation for the <span class="monoText">print()</span> function, we see
+		the following:
+	</p>
+
+	<pre class="language-swift"><code>
+		func print(items: Any..., separator: String = " ", terminator: String = "\n")
+	</code></pre>
+
+	<p>
+		The <span class="monoText">Any...</span> tells us that the
+		<span class="monoText">print()</span> function takes zero or more arguments.
+		This is what we call a <span class="term">variadic parameter</span> &mdash;
+		the number of arguments passed into the function for that parameter
+		<span class="italicsText">varies</span>. We use the same syntax to write our
+		own variadic parameters. For example, here is a function that computes the
+		<span class="monoText">mean</span> of however many arguments we pass:
+	</p>
+
+	<pre class="language-swift"><code>
+		func mean(_ numbers: Double...) -> Double {
+			var total: Double = 0
+			for number in numbers {
+				total += number
+			}
+			return total / Double(numbers.count)
+		}
+		let classAverage = mean(85, 90, 50, 84, 76)
+		print(classAverage)
+	</code></pre>
+	<pre class="language-bash"><code>
+		77.0
+	</code></pre>
+
+	<p>
+		Notice that with a variadic parameter, the multiple arguments passed are
+		essentially an array. We can loop through them as we would an array.
+		Separately, we <span class="underlineText">cannot</span> pass an array into
+		a variadic parameter (since it's already effectively an array).
+	</p>
+</section>
+
+<section id="inout_parameters">
+	<p>
+		<span class="topic">Inout Parameters.</span> Recall that by default,
+		function arguments cannot be mutated when passed into the function. If we
+		want an output that is effectively a mutation of the argument passed in, we
+		can declare a variable and initialize it to the value of the parameter
+		(essentially making a copy), then mutating that variable. This is a
+		perfectly fine approach, but we are still just outputting a copy of the
+		argument mutated. What if we want a function to actually mutate the original
+		variable? Swift provides a built-in approach for doing so &mdash;
+		<span class="term">in-out parameters</span>.
+	</p>
+	<p>
+		In-out parameters are parameters that take an argument and effectively
+		mutate the argument:
+	</p>
+
+	<pre class="language-swift"><code>
+		func increment(_ value: inout Int) {
+			value += 1
+		}
+		var foo = 0
+		print(foo)
+		increment(&foo)
+		print(foo)
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+		1
 	</code></pre>
 </section>
 {% endblock %}

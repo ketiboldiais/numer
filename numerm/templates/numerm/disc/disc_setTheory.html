@@ -1,6 +1,33 @@
 {% extends '../layout.html' %} {% load static %} {% block content %}
 <h1>Set Theory</h1>
-<section id="set_theory" class="grid-item">
+<section id="set_theory">
+	<p>
+		There are two versions of set theory: (1)
+		<span class="term">naive set theory</span>, and (2)
+		<span class="term">axiomatic set theory</span>. We explore aspects of both
+		theories in the materials that follow. What are the differences? Naive set
+		theory is the version of set theory as originally constructed by the German
+		mathematician Georg Cantor.
+		<span class="marginnote"
+			>When Cantor first introduced set theory, the math community largely
+			ridiculed him. Over time, however, the theory gained big-name
+			mathematicians like David Hilbert. Nevertheless, the ridicule remained and
+			affected Cantor deeply. Comments at the time captured the split: David
+			Hilbert famously said, "No one will drive us from the paradise which
+			Cantor created for us." To which Wittgenstein&mdash;a philosopher and one
+			of Hilbert's most formidable opponents&mdash;responded, "If one person can
+			see it as a paradise of mathematicians, why should not another see it as a
+			joke?"</span
+		>
+		Axiomatic set theory is the version of set theory constructed in response to
+		several paradoxes, the most famous of which is
+		<span class="term">Russell's Paradox</span>. Axiomatic set theory itself
+		consists of several versions &mdash;
+		<span class="term">Zermelo set theory</span> and
+		<span class="term">Zermelo-Fraenkel set theory</span>. The paradoxes these
+		more modern theories attempted to resolve will appear as we explore the
+		basic concepts of naive set theory.
+	</p>
 	<p>
 		In mathematics, a <span class="boldText">set</span> is a collection of
 		objects. Those objects might be dogs, people, trees, numbers, values,
@@ -13,7 +40,7 @@
 		<img
 			src="{% static 'images/set_intro.svg' %}"
 			alt="simple set"
-			class="fifty-p"
+			class="sixty-p"
 			loading="lazy"
 		/>
 	</figure>
@@ -46,9 +73,14 @@
 	<h2 class="topic">Subsets</h2>
 	<p>
 		Some sets are themselves elements of another set. These sets are called
-		<span class="term">subsets</span>. For example, the set of all Herefords is
-		a subset of the set of all cows, and the set of all bonobos is a subset of
-		the set of all great apes. More formally:
+		<span class="term">subsets</span>.
+		<span class="marginnote"
+			>A set consisting of only one member is called a
+			<span class="term">singleton</span>.</span
+		>
+		For example, the set of all Herefords is a subset of the set of all cows,
+		and the set of all bonobos is a subset of the set of all great apes. More
+		formally:
 	</p>
 	<figure class="math-display">
 		<div class="rule">
@@ -70,6 +102,9 @@
 		${x \in A}$, then ${x \in B.}$ We describe ${A}$ and ${B's}$ relationship
 		with statements such as "${A}$ is contained in $B$" and "${B}$ contains
 		${A.}$"
+		<span class="marginnote"
+			>${A \subseteq B \iff \forall x(x \in A \implies x \in B)}$</span
+		>
 	</p>
 	<p>If $A$ is not a subset of $B$, then we write:</p>
 	<figure class="math-display">
@@ -81,7 +116,28 @@
 		If $A \nsubseteq B$ is true, then we can infer: There is at least one
 		element $x$ such that $x \in A$ and $x \notin B$. In other words, if $A$ is
 		not a subset of $B$, then there is at least one element in $A$ that is not
-		an element of B.
+		an element of ${B.}$
+	</p>
+	<p>
+		From the definition above, if we are asked to prove that ${A}$ is a subset
+		of ${B,}$ we must show that if ${x}$ belongs to ${A,}$ then ${x}$ also
+		belongs to ${B.}$ If we are asked to prove that ${A}$ is
+		<span class="underlineText">not</span> a subset of ${B,}$ we must find a
+		single ${x}$ that belongs to ${A}$ but does not belong to ${B.}$
+	</p>
+	<p>
+		The definition above implies that the empty set is a subset of all sets, and
+		a given set is a subset of itself. This follows directly from the
+		definition. The proposition ${\emptyset \subseteq A}$ if, for all ${x \in
+		\emptyset,}$ ${x \in A.}$ Because the sufficient condition, ${x \in
+		\emptyset}$ is false, it follows that ${x \in A}$ is true. This is an
+		example of a <span class="term">vacuous proof</span>.
+	</p>
+	<p>
+		The case of ${A \subseteq A}$ straightforward. Given that ${A}$ and ${A}$
+		are the same sets, every ${x \in A}$ implies that ${x \in A.}$ Because the
+		sufficient condition is true and the necessary condition is true, it follows
+		that ${A \subseteq A}$ by definition.
 	</p>
 	<h3>Proper Subsets</h3>
 	<p>
@@ -112,8 +168,12 @@
 				<span class="topic">Definition.</span> Suppose ${A}$ and ${B}$ are sets.
 				${A}$ is a <span class="term">proper subset</span> of ${B}$ if, and only
 				if, every element of ${A}$ is in ${B,}$ but there is at least one
-				element in $B$ that is not in $A$. If $A$ is a proper subset of $B$, we
-				write:
+				element in $B$ that is not in $A$.
+				<span class="marginnote"
+					>${A \subset B \iff [\forall x(x \in A \implies x \in B) \land \exists
+					x (x \in B \land x \notin A)]}$</span
+				>
+				If $A$ is a proper subset of $B$, we write:
 			</p>
 			<figure class="math-display">
 				<div>
@@ -262,6 +322,17 @@
 		</div>
 	</figure>
 	<p>
+		From the definition above, given to sets ${A}$ and ${B,}$ to prove that
+		${A}$ is equal to ${B,}$ we prove that ${A \subseteq B}$ and ${B \subseteq
+		A.}$ In other words, we must prove the following propositions:
+	</p>
+	<figure class="math-display">
+		<ol>
+			<li>${\forall x(x \in A \implies x \in B)}$ and</li>
+			<li>${\forall x(x \in B \implies x \in A)}$</li>
+		</ol>
+	</figure>
+	<p>
 		<span class="topic">1-to-1 Correspondence.</span> When Oliver Twist asked
 		for more gruel, the master grew pale and aimed a blow at Oliver's head. Why?
 		Because at meal time, each child was to receive one, and only one, serving
@@ -285,7 +356,7 @@
 	</figure>
 </section>
 
-<section id="set_roster_example" class="grid-item">
+<section id="set_roster_example">
 	<details>
 		<summary>Problems</summary>
 		<ol>
@@ -331,84 +402,8 @@
 	</details>
 </section>
 
-<section id="set_operations">
-	<p>
-		Suppose there exists a set $A$. If an entity or discrete mathematical object
-		$a$ belongs to $A$, we write ${a \in A}$ (read "$a$ is an element of $A$").
-		If $a$ does not belong to $A$, we write ${a \notin A}$ (read "$a$ is not an
-		element of $A$"). If the set $A$ has no elements, then it is the empty set
-		${\emptyset}$, and we write ${A = \emptyset.}$
-	</p>
-
-	<p>
-		Sets can be alluded to verbally, in set roster notation (where all its
-		elements are individually listed), or in set notation (where the set is
-		described in general). For example, the following sets are all identical:
-	</p>
-
-	<ul>
-		<li>
-			"The set of all integers whose square is between, and includes, one and
-			nine."
-		</li>
-		<li>${A = \{ x \in \mathbb{Z} : x^2 \leq 9 \}}$</li>
-		<li>${B = \{ x \in \mathbb{Z} : \lvert x \rvert \leq 3 \}}$</li>
-		<li>${C = \{ -3, -2, -1, 0, 1, 2, 3 \}}$</li>
-	</ul>
-
-	<h3 class="topic">Set Union</h3>
-	<p>
-		Suppose there are two sets, $A$ and $B$. The
-		<span class="term">union</span> of $A$ and $B$, denoted ${A \cup B,}$ is the
-		set of all elements of both $A$ and $B$. Visually:
-	</p>
-
-	<figure>
-		<img
-			src="{% static 'images/A_union_B.svg' %}"
-			alt="set union"
-			class="forty-p"
-			loading="lazy"
-		/>
-		<figcaption>${A \cup B}$</figcaption>
-	</figure>
-
-	<h3 class="topic">Set Intersection</h3>
-	<p>
-		Given two sets $A$ and $B$, the
-		<span class="term">intersection</span> of $A$ and $B$, denoted ${A \cap B,}$
-		is the set of all elements in both $A$ and $B$. Visually:
-	</p>
-
-	<figure>
-		<img
-			src="{% static 'images/A_intersect_B.svg' %}"
-			alt="intersection"
-			class="forty-p"
-			loading="lazy"
-		/>
-		<figcaption>${A \cap B}$</figcaption>
-	</figure>
-
-	<h3 class="topic">Set Difference</h3>
-	<p>
-		Let $A$ and $B$ both be sets. The difference of $A$ and $B$, denoted ${A
-		\setminus B}$ (read "$A$ set minus $B$) is the set of all elements in $A$
-		and not in $B.$ In other words, ${A \setminus B = \{ x : (x \in A) \land (x
-		\notin B) \}.}$
-	</p>
-
-	<figure>
-		<img
-			src="{% static 'images/A_setMinus_B.svg' %}"
-			alt="set minus"
-			class="forty-p"
-			loading="lazy"
-		/>
-		<figcaption>${A \setminus B}$</figcaption>
-	</figure>
-
-	<h3>Cardinality</h3>
+<section id="cardinality">
+	<h2>Cardinality</h2>
 	<p>Suppose we have the following set, called ${A:}$</p>
 	<figure class="math-display">
 		<div>
@@ -418,18 +413,25 @@
 	<p>
 		How many elements are in this set? There are 4. The number of elements in a
 		set is called the set's <span class="term">cardinality</span>.
+		<span class="marginnote"
+			>The term <span class="italicsText">cardinality</span> is derived from the
+			term <span class="italicsText">cardinal number.</span></span
+		>
 	</p>
 	<figure class="math-display">
 		<div class="rule">
 			<p>
-				<span class="topic">Definition.</span> Given a set ${A,}$ the notation:
+				<span class="topic">Definition.</span> Given a set ${A,}$ if there are
+				exactly ${m}$ elements in ${A,}$ where ${m \in \N,}$ then ${A}$ is a
+				<span class="italicsText">finite set</span> with a
+				<span class="italicsText">cardinality</span> of ${m.}$ We denote this
+				fact with:
 			</p>
 			<figure class="math-display">
 				<div>
-					<p>${n(A)}$</p>
+					<p>${n(A) = m}$</p>
 				</div>
 			</figure>
-			<p>denotes the <span class="italicsText">cardinality</span> of ${A.}$</p>
 		</div>
 	</figure>
 	<p>
@@ -473,7 +475,277 @@
 	</figure>
 </section>
 
-<section id="special_number_sets" class="grid-item">
+<section id="set_operations">
+	<h2>Foundational Operations</h2>
+	<p>
+		Suppose there exists a set $A$. If an entity or discrete mathematical object
+		$a$ belongs to $A$, we write ${a \in A}$ (read "$a$ is an element of $A$").
+		If $a$ does not belong to $A$, we write ${a \notin A}$ (read "$a$ is not an
+		element of $A$"). If the set $A$ has no elements, then it is the empty set
+		${\emptyset}$, and we write ${A = \emptyset.}$
+	</p>
+
+	<p>
+		Sets can be alluded to verbally, in set roster notation (where all its
+		elements are individually listed), or in set notation (where the set is
+		described in general). For example, the following sets are all identical:
+	</p>
+
+	<ul>
+		<li>
+			"The set of all integers whose square is between, and includes, one and
+			nine."
+		</li>
+		<li>${A = \{ x \in \mathbb{Z} : x^2 \leq 9 \}}$</li>
+		<li>${B = \{ x \in \mathbb{Z} : \lvert x \rvert \leq 3 \}}$</li>
+		<li>${C = \{ -3, -2, -1, 0, 1, 2, 3 \}}$</li>
+	</ul>
+
+	<h3 class="topic">Set Union</h3>
+	<p>
+		Suppose there are two sets, $A$ and $B$. The
+		<span class="term">union</span> of $A$ and $B$, denoted ${A \cup B,}$ is the
+		set of all elements of both $A$ and $B$.
+		<span class="marginnote"
+			>${A \cup B = \{ x \mid x \in A \lor x \in B \}}$</span
+		>
+		Visually:
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/A_union_B.svg' %}"
+			alt="set union"
+			class="forty-p"
+			loading="lazy"
+		/>
+		<figcaption>${A \cup B}$</figcaption>
+		<figcaption>
+			A <span class="term">Venn diagram</span>. Venn diagrams are named after
+			the English mathematician John Venn, who introduced their usage in 1881.
+		</figcaption>
+	</figure>
+	<p>More formally:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> Given sets ${A}$ and ${B,}$ ${A
+				\cup B}$ is the set of all elements in either ${A,}$ ${B,}$ or both
+				${A}$ and ${B.}$
+			</p>
+		</div>
+	</figure>
+
+	<h3 class="topic">Set Intersection</h3>
+	<p>
+		Given two sets $A$ and $B$, the
+		<span class="term">intersection</span> of $A$ and $B$, denoted ${A \cap B,}$
+		is the set of all elements in both $A$ and $B$. Visually:
+	</p>
+	<div class="marginnote">
+		<ul>
+			<li>${A \cap B = \{ x \mid x \in A \land x \in B \}}$</li>
+			<li>${(A \cap B = \emptyset) \implies disjoint(A, B)}$</li>
+		</ul>
+	</div>
+
+	<figure>
+		<img
+			src="{% static 'images/A_intersect_B.svg' %}"
+			alt="intersection"
+			class="forty-p"
+			loading="lazy"
+		/>
+		<figcaption>${A \cap B}$</figcaption>
+	</figure>
+
+	<p>
+		We say that two sets, ${A}$ and ${B,}$ are
+		<span class="term">disjoint</span> if, and only if, ${A \cap B =
+		\emptyset.}$
+	</p>
+
+	<h3 class="topic">Set Difference</h3>
+	<p>
+		Let $A$ and $B$ both be sets. The difference of $A$ and $B$, denoted ${A
+		\setminus B}$ (read "$A$ set minus $B$) is the set of all elements in $A$
+		and not in $B.$ In other words, ${A \setminus B = \{ x : (x \in A) \land (x
+		\notin B) \}.}$
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/A_setMinus_B.svg' %}"
+			alt="set minus"
+			class="forty-p"
+			loading="lazy"
+		/>
+		<figcaption>${A \setminus B}$</figcaption>
+	</figure>
+
+	<p>More formally:</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition: Set Difference.</span> Given sets ${A}$
+				and ${B,}$ ${A \setminus B}$ is the set containing all the elements in
+				${A}$ that are not contained in ${B.}$
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		We say that ${A \setminus B}$ is the <span class="term">complement</span> of
+		${B}$ with respect to ${A.}$
+	</p>
+
+	<h3>Complements</h3>
+	<p>The complement of a set ${S}$ more generally refers to the set of all elements not contained in ${S.}$ If we have a defined universal set ${U}$ and ${A \subset U,}$ then the complement of ${A}$ is the set of all elements in ${U}$ that are not inside ${A.}$</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p><span class="topic">Definition: Complement.</span> Suppose ${U}$ is the universal set. The complement of the set ${A,}$ denoted ${\overline{\rm A},}$ is the <span class="italicsText">complement</span> of ${A}$ with respect to ${U.}$ Hence:</p>
+			<figure class="math-display">
+				<div>
+					<p>${\overline{\rm A} = U \setminus A}$, or, alternatively:</p>
+					<p>${\overline{\rm A} = U - A}$</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+
+	<h4>Cardinality of Unions</h4>
+	<p>
+		Working with set theory, knowing the size of a union is tremendously useful.
+		However, we must be careful when counting the elements. Because ${A \cup B}$
+		consists of all the elements in ${A,}$ ${B,}$ and the elements in both ${A}$
+		and ${B,}$ the elements in both ${A}$ and ${B}$ are counted twice.
+		Accordingly, we must subtract the intersection of ${A}$ and ${B}$ to
+		retrieve the correct cardinality. This is called the
+		<span class="term">principle of inclusion-exclusion</span>:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Principle of Inclusion-exclusion.</span> Given ${A
+				\cup B,}$
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${n(A \cup B) = n(A) + n(B) - n(A \cap B)}$</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+</section>
+
+<section id="powersets">
+	<h2>Power Sets</h2>
+	<p>
+		Consider the set ${B = \{ 0, 1 \},}$ the set of binary digits. Using our
+		definition of subsets, what are all the different possible subsets of ${B?}$
+		We can lay them out:
+	</p>
+	<figure class="math-display">
+		<ol class="numd">
+			<li>${\emptyset }$</li>
+			<li>${\{ 0 \}}$</li>
+			<li>${\{ 1 \}}$</li>
+			<li>${\{ 0, 1 \}}$</li>
+		</ol>
+	</figure>
+	<p>
+		There are four different possible subsets. Suppose we place all these
+		possible subsets in an entirely new set:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\{ \emptyset, \{ 0 \}, \{ 1 \}, \{ 0, 1 \} \}}$</p>
+		</div>
+	</figure>
+	<p>
+		We call the set above the <span class="term">power set</span> of ${B.}$ We
+		denote the set above as such:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\mathcal{P}(B) = \{ \emptyset, \{ 0 \}, \{ 1 \}, \{ 0, 1 \} \}}$</p>
+		</div>
+	</figure>
+	<p>
+		The symbol ${\mathcal{P}}$ is used in these notes, but other symbols are
+		used throughout mathematics: ${\mathscr{P}, \mathbb{P}, \wp,}$ and a few
+		others. Defining the power set more formally:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> Given a set ${S,}$ the
+				<span class="italicsText">power set</span> of ${S}$ is the set of all
+				subsets of the set ${S.}$ The power set of ${S}$ is denoted
+				${\mathcal{P}(S).}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		One peculiar application of the definition above is with the empty set. What
+		is the size of the power set of ${\mathcal{P}(\emptyset)?}$ It is 1, since
+		the only subset of ${\emptyset}$ is ${\{\emptyset\}.}$ Next, what is the
+		size of the power set of ${ \{ \emptyset \}?}$ It is 2, since
+		${\mathcal{P}(\{ \emptyset \}) = \{ \emptyset, \{ \emptyset \} \}.}$ If we
+		continue this pattern:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${n(\mathcal{P}(\emptyset)) = 1}$</p>
+			<p>${n(\mathcal{P}(\mathcal{P}(\emptyset))) = 2}$</p>
+			<p>${n(\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset)))) = 3}$</p>
+			<p>
+				${n(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset))))) = 4}$
+			</p>
+			<p>
+				${n(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset))))))
+				= 5}$
+			</p>
+			<p>
+				${n(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset)))))))
+				= 6}$
+			</p>
+			<p>
+				${n(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset))))))))
+				= 7}$
+			</p>
+			<p>
+				${n(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset)))))))))
+				= 8}$
+			</p>
+			<p>
+				${n(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset))))))))))
+				= 9}$
+			</p>
+			<p>
+				${n(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\mathcal{P}(\emptyset)))))))))))
+				= 10}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		The pattern above yields to a direct corollary (as well as several other
+		ideas we will explore in the sections on number theory):
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Corollary.</span> If as set ${A}$ has ${n}$
+				elements, where ${n \in \N,}$ then ${\mathcal{P}(A) = 2^n.}$
+			</p>
+		</div>
+	</figure>
+</section>
+
+<section id="special_number_sets">
 	<h4>Special Number Sets</h4>
 	<p>
 		Certain number sets are used so frequently in mathematics that we denote
@@ -630,6 +902,344 @@
 		<span class="italicsText">discrete mathematical objects</span>, while
 		<span class="boldText">continuous mathematics</span> is the study of
 		<span class="italicsText">continuous mathematical objects</span>.
+	</p>
+</section>
+
+<section id="ordered_pairs">
+	<h2>Ordered Pairs</h2>
+	<p>
+		When set theory was first introduced, it faced a major issue &mdash; how do
+		you represent ordered pairs? The axiom of extension renders order irrelevant
+		for defining sets. For example, $\{ a, b \}$ is the same set as $\{ b, a
+		\}$. This is problematic if we are referring specifically to "$a$ then b",
+		rather than "$b$ then $a$."
+	</p>
+	<p>
+		The patch was to define ordered pairs as sets. An ordered pair is a set of
+		the form $\{ \{ a \}, \{ a, b \} \}$. The set has two elements: $\{ a \}$
+		and $\{ a, b \}$. If $a \neq b$, then the two sets are distinct, and $a$ is
+		in both sets but $b$ is not. With this definition, we can differentiate
+		between $a$, and $b$. If $a = b$, then we can say that $a$ is both the first
+		and second element of the pair.
+	</p>
+	<p>
+		Eventually, however, mathematicians learned that writing $\{ \{ a \}, \{ a,b
+		\} \mid a = b \}$ was too cumbersome. So, the syntax was shortened: $(a,
+		b)$.
+	</p>
+	<p>
+		Formalizing the discussion above: Let $a$ and $b$ be elements. The notation
+		$(a, b)$ means the <span class="boldText">ordered pair</span> consisting of
+		$a$ and $b$ together, such that $a$ is the first element of the pair and $b$
+		is the second element.
+	</p>
+
+	<p>
+		<span class="topic">Equality of Ordered Pairs.</span> Suppose $(a, b)$ and
+		$(c, d)$ are ordered pairs. The ordered pairs are equal if, and only if, $a
+		= c$ and $b = d$. Thus, the statement $(a, b) = (c, d)$ implies that $a = c$
+		and $b = d$.
+	</p>
+</section>
+
+<section id="tuples">
+	<h2>Tuples</h2>
+	<blockquote>
+		<p>
+			While $n \in \mathbb{Z}_{\geq 0} $, let $x_1, x_2, \ldots x_n$ be
+			elements. An $n$-tuple consists of $x_1, x_2, \ldots x_n$, ordered as:
+			first $x_1$, second $x_2$, third $x_3$, and so on, up to $x_n$.
+		</p>
+	</blockquote>
+
+	<p>
+		Ordered pairs are more generally called <span class="term">tuples</span>,
+		specifically 2-tuples. In mathematics, a tuple is a finite list of
+		<span class="underlineText">ordered</span> elements. An
+		<span class="term">${n-}$tuple</span> is a sequence of ${n}$ elements, where
+		$n \in \mathbb{Z}_{\geq 0}$ (a non-negative integer).
+		<span class="marginnote">
+			The name "tuple" is derived from the English nomenclature for multiple
+			things: 2 for couple, 3 for triple, 4 for quadruple, etc.</span
+		>
+		An <span class="term">ordered 2-tuple</span> is an
+		<span class="italicsText">ordered pair</span>. An
+		<span class="term">ordered 3-tuple</span> is an
+		<span class="italicsText">ordered triple,</span> and so on and so forth.
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition: Equality of Tuples.</span> Let A be the
+				ordered $n$-tuple $(x_1, x_2, x_3, \ldots x_n)$, and B the ordered
+				$n$-tuple $(y_1, y_2, y_3, \ldots y_n)$.
+			</p>
+			<p>
+				<span class="topic">Corollary.</span> A and B are equal if, and only if,
+				${x_1 = y_1, x_2 = y_2, x_3 = y_3, \ldots x_n = y_n}$.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		Tuples allow us to conclude that an object has the same properties as
+		another. For example:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>Jane = ${(female, 27, Wisconsin)}$</p>
+			<p>Alice = ${(female, 27, Wisconsin)}$</p>
+		</div>
+	</figure>
+	<p>
+		The elements in the tuples above are said to be equal. We say that tuples
+		are equal if, and only if, every element in the tuple is the same as the
+		element with the same position in the other tuple(s).
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> Suppose $n \in \mathbb{Z}^+$. Let
+				$x_1, x_2, \ldots x_n$ be elements. The
+				<span class="boldText">ordered $n$-tuple</span> consists of $x_1, x_2,
+				\ldots x_n$, with the ordering: first $x_1$, second $x_2$, and so on up
+				to $x_n$.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		An <span class="boldText">ordered 2-tuple</span> is an ordered pair, and an
+		<span class="boldText">ordered 3-tuple</span> is an ordered triple. Two
+		ordered $n$-tuples ($x_1, x_2, \ldots x_n$) and ($y_1, y_2, \ldots y_n$) are
+		equal if, and only if, $x_1 = y_1$, $x_2 = y_2$, $\ldots$, $x_n = y_n$.
+	</p>
+</section>
+
+<section id="cartesian_products">
+	<h2>Cartesian Products</h2>
+	<p>
+		Many objects have multiple properties. For example, a deck of cards can be
+		described as a set of 52 cards. Each card has a property in common with all
+		other cards &mdash; a face value. That face value itself has two properties
+		&mdash; (A) a suit, and (B) a rank. We can denote these sets as such:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				$A$ = { &spades;, <span class="redText">&hearts;</span>, &clubs;,
+				<span class="redText">&diams;</span> }
+			</p>
+			<p>$B$ = { 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A }</p>
+		</div>
+	</figure>
+	<p>
+		Every card in the deck can be represented as an ordered pair of 1 element
+		from ${A}$ and 1 element from ${B:}$
+	</p>
+
+	<figure>
+		<table>
+			<thead>
+				<th><span class="italicsText">Rank</span></th>
+				<th>&spades;</th>
+				<th><span class="redText">&hearts;</span></th>
+				<th>&clubs;</th>
+				<th><span class="redText">&diams;</span></th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>2</td>
+					<td>(&spades;, 2)</td>
+					<td>(<span class="redText">&hearts;</span>, 2)</td>
+					<td>(&clubs;, 2)</td>
+					<td>(<span class="redText">&diams;</span>, 2)</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>(&spades;, 3)</td>
+					<td>(<span class="redText">&hearts;</span>, 3)</td>
+					<td>(&clubs;, 3)</td>
+					<td>(<span class="redText">&diams;</span>, 3)</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>(&spades;, 4)</td>
+					<td>(<span class="redText">&hearts;</span>, 4)</td>
+					<td>(&clubs;, 4)</td>
+					<td>(<span class="redText">&diams;</span>, 4)</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>(&spades;, 5)</td>
+					<td>(<span class="redText">&hearts;</span>, 5)</td>
+					<td>(&clubs;, 5)</td>
+					<td>(<span class="redText">&diams;</span>, 5)</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>(&spades;, 6)</td>
+					<td>(<span class="redText">&hearts;</span>, 6)</td>
+					<td>(&clubs;, 6)</td>
+					<td>(<span class="redText">&diams;</span>, 6)</td>
+				</tr>
+				<tr>
+					<td>7</td>
+					<td>(&spades;, 7)</td>
+					<td>(<span class="redText">&hearts;</span>, 7)</td>
+					<td>(&clubs;, 7)</td>
+					<td>(<span class="redText">&diams;</span>, 7)</td>
+				</tr>
+				<tr>
+					<td>8</td>
+					<td>(&spades;, 8)</td>
+					<td>(<span class="redText">&hearts;</span>, 8)</td>
+					<td>(&clubs;, 8)</td>
+					<td>(<span class="redText">&diams;</span>, 8)</td>
+				</tr>
+				<tr>
+					<td>9</td>
+					<td>(&spades;, 9)</td>
+					<td>(<span class="redText">&hearts;</span>, 9)</td>
+					<td>(&clubs;, 9)</td>
+					<td>(<span class="redText">&diams;</span>, 9)</td>
+				</tr>
+				<tr>
+					<td>10</td>
+					<td>(&spades;, 10)</td>
+					<td>(<span class="redText">&hearts;</span>, 10)</td>
+					<td>(&clubs;, 10)</td>
+					<td>(<span class="redText">&diams;</span>, 10)</td>
+				</tr>
+				<tr>
+					<td>J</td>
+					<td>(&spades;, J)</td>
+					<td>(<span class="redText">&hearts;</span>, J)</td>
+					<td>(&clubs;, J)</td>
+					<td>(<span class="redText">&diams;</span>, J)</td>
+				</tr>
+				<tr>
+					<td>Q</td>
+					<td>(&spades;, Q)</td>
+					<td>(<span class="redText">&hearts;</span>, Q)</td>
+					<td>(&clubs;, Q)</td>
+					<td>(<span class="redText">&diams;</span>, Q)</td>
+				</tr>
+				<tr>
+					<td>K</td>
+					<td>(&spades;, K)</td>
+					<td>(<span class="redText">&hearts;</span>, K)</td>
+					<td>(&clubs;, K)</td>
+					<td>(<span class="redText">&diams;</span>, K)</td>
+				</tr>
+				<tr>
+					<td>A</td>
+					<td>(&spades;, A)</td>
+					<td>(<span class="redText">&hearts;</span>, A)</td>
+					<td>(&clubs;, A)</td>
+					<td>(<span class="redText">&diams;</span>, A)</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		<span class="term">Ordered pairs</span> are a clean and concise way of
+		describing the properties an object has. In mathematics, all of the pairings
+		above are called a <span class="term">Cartesian product</span>. More
+		formally:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> The
+				<span class="boldItalics">Cartesian product</span> of two sets ${A}$ and
+				${B,}$ denoted ${A \times B}$, is the set of all ordered pairs ${(a,
+				b)}$, where ${a \in A}$ and ${b \in B}$.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Symbolically, $A_1 \times A_2 \times \ldots \times A_n = \{ (a_1, a_2,
+		\ldots , a_n) \mid a_1 \in A_1, a_2 \in A_2, \ldots , a_n \in A_n \}$
+		Particularly, $A_1 \times A_2 = \{ (a_1, a_2) \mid a_1 \in A_1, a_2 \in A_2
+		\}$ is the Cartesian product of $A_1$ and $A_2$.
+	</p>
+	<p>
+		For example: Let ${A = \{ x, y \}}$, ${B = \{ 1, 2, 3 \}}$, and ${C = \{ a,
+		b \}.}$ ${A \times B}$ is:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${A \times B = \{ (x, 1), (y, 1), (x, 2), (y, 2), (x, 3), (y, 3) \}}$
+			</p>
+		</div>
+	</figure>
+	<p>${B \times A:}$</p>
+	<figure class="math-display">
+		<div>
+			<p>${B \times A = \{ (1,x), (1,y), (2,x), (2,y), (3,x), (3,y) \}}$</p>
+		</div>
+	</figure>
+	<p>
+		${A \times A}$ is a special case with its own notation. This is the
+		Cartesian product of a set and the set itself, so we denote it with ${A^2.}$
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${A^2 = \{ (x, x), (x, y), (y, x), (y, y) \}}$</p>
+		</div>
+	</figure>
+	<p>${(A \times B) \times C:}$</p>
+	<figure class="math-display">
+		$$ \begin{aligned} (A \times B) \times C = \{ \\ &((x,1), a), \\ &((x,1),
+		b), \\ &((y, 1), a), \\ &((y, 1), b), \\ &((x, 2), a), \\ &((x, 2), b), \\
+		&((y, 2), a), \\ &((y, 2), b), \\ &((x, 3), a), \\ &((x, 3), b), \\ &((y,
+		3), a), \\ &((y, 3), b) \\ \} \end{aligned} $$
+	</figure>
+
+	<p>
+		Because Cartesian products are more generally sets, they have cardinality:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${n(A \times B) = 6}$</p>
+			<p>${n(B \times A) = 6}$</p>
+			<p>${n(A \times A) = 4}$</p>
+			<p>${n((A \times B) \times C) = 12}$</p>
+		</div>
+	</figure>
+	<p>
+		The Cartesian products ${A \times B,}$ ${B \times A,}$ and ${(A \times B)
+		\times A}$ are more generally called <span class="term">relations</span>. We
+		will revisit relations in more detail later, but for now, know that the
+		Cartesian product ${A \times B}$ is said to be a
+		<span class="italicsText">relation</span> from the set ${A}$ to the set
+		${B.}$
+	</p>
+	<p>
+		Cartesian products are a bridge between discrete mathematics and continuous
+		mathematics. $\mathbb{R} \times \mathbb{R}$ is the Cartesian product &mdash;
+		the set of all ordered pairs &mdash; $(x, y)$ where both $x$ and $y$ are
+		real numbers. If we assign every $x$ to a point on a line and every $y$ to a
+		point on another line perpendicular to $x$'s line, the lines form a plane.
+		That plane is called the
+		<span class="boldText">Cartesian plane</span>, and every ordered pair $(x,
+		y)$ lies on it.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/cartesian_plane.svg' %}"
+			alt="cartesian_plane"
+			class="sixty-p"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		As we can likely gather, Cartesian products are useful for laying out the
+		possible arrangments of the set of two elements.
 	</p>
 </section>
 {% endblock %}

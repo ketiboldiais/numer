@@ -74,11 +74,6 @@ def disc_setTheory(request):
 def disc_openSentences(request):
 	return render(request, "numerm/disc/disc_openSentences.html")
 
-def disc_orderedPairs(request):
-	return render(request, "numerm/disc/disc_orderedPairs.html")
-
-def disc_tuples(request):
-	return render(request, "numerm/disc/disc_tuples.html")
 
 def disc_strings(request):
 	return render(request, "numerm/disc/disc_strings.html")

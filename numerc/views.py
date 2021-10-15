@@ -98,16 +98,10 @@ def swift_stacks(request):
 	return render(request, "numerc/swift/swift_stacks.html")
 def swift_basicConstructs(request):
 	return render(request, "numerc/swift/swift_basicConstructs.html")
-def swift_statements(request):
-	return render(request, "numerc/swift/swift_statements.html")
-def swift_comments(request):
-	return render(request, "numerc/swift/swift_comments.html")
 def swift_variables(request):
 	return render(request, "numerc/swift/swift_variables.html")
 def swift_baseTypes(request):
 	return render(request, "numerc/swift/swift_baseTypes.html")
-def swift_booleanOperators(request):
-	return render(request, "numerc/swift/swift_booleanOperators.html")
 def swift_optionals(request):
 	return render(request, "numerc/swift/swift_optionals.html")
 def swift_tuples(request):
@@ -120,20 +114,10 @@ def swift_functions(request):
 	return render(request, "numerc/swift/swift_functions.html")
 def swift_overloading(request):
 	return render(request, "numerc/swift/swift_overloading.html")
-def swift_variadicParameters(request):
-	return render(request, "numerc/swift/swift_variadicParameters.html")
-def swift_inoutParameters(request):
-	return render(request, "numerc/swift/swift_inoutParameters.html")
-def swift_closures(request):
-	return render(request, "numerc/swift/swift_closures.html")
 def swift_forEach(request):
 	return render(request, "numerc/swift/swift_forEach.html")
 def swift_filter(request):
 	return render(request, "numerc/swift/swift_filter.html")
-def swift_reduce(request):
-	return render(request, "numerc/swift/swift_reduce.html")
-def swift_sort(request):
-	return render(request, "numerc/swift/swift_sort.html")
 def swift_structs(request):
 	return render(request, "numerc/swift/swift_structs.html")
 def swift_properties(request):
@@ -148,10 +132,6 @@ def swift_switch(request):
 	return render(request, "numerc/swift/swift_switch.html")
 def swift_protocolsAndInheritance(request):
 		return render(request, "numerc/swift/swift_protocolsAndInheritance.html")
-def swift_override(request):
-		return render(request, "numerc/swift/swift_override.html")
-def swift_init(request):
-		return render(request, "numerc/swift/swift_init.html")
 def swift_standardLibrary(request):
 		return render(request, "numerc/swift/swift_standardLibrary.html")
 def swift_sets(request):
@@ -360,6 +340,8 @@ def cpp_hashing(request):
 	return render(request, "numerc/cpp/cpp_hashing.html")
 def cpp_collections(request):
 	return render(request, "numerc/cpp/cpp_collections.html")
+def cpp_pointers(request):
+	return render(request, "numerc/cpp/cpp_pointers.html")
 
 # Prolog Functions
 def prolog_preface(request):

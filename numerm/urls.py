@@ -51,10 +51,6 @@ urlpatterns = [
 
 	path("disc_openSentences", views.disc_openSentences, name="disc_openSentences"),
 
-	path("disc_orderedPairs", views.disc_orderedPairs, name="disc_orderedPairs"),
-
-	path("disc_tuples", views.disc_tuples, name="disc_tuples"),
-
 	path("disc_strings", views.disc_strings, name="disc_strings"),
 
 	path("disc_relations", views.disc_relations, name="disc_relations"),

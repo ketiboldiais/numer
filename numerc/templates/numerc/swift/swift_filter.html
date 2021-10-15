@@ -75,4 +75,175 @@
 		["a", "f", "g", "d", "j"]
 	</code></pre>
 </section>
+
+<section id="reduce">
+	<p>
+		<span class="topic"><span class="monoText">.reduce</span></span> Suppose we
+		have a collection of several values, and want to combine all those values
+		into a single new value. The most basic way to do this would be to use a
+		<span class="monoText">for</span> loop:
+	</p>
+	<pre class="language-swift"><code>
+		let arrNum = [1, 2, 3, 4, 5]
+		func sum(_ arr: [Int]) -> Int {
+			var result = 0
+			for val in arr {
+				result += val
+			}
+			return result
+		}
+		let total = sum(arrNum)
+		print(total)
+	</code></pre>
+	<pre class="language-bash"><code>
+		15
+	</code></pre>
+	<p>
+		The <span class="monoText">.reduce</span> method provides a more concise way
+		of accomplishing the same computation. The general syntax for
+		<span class="monoText">.reduce</span>:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>let ${r}$ = ${c}$.reduce(${i}$) {(${a, b}$) -> ${r_t}$ in</li>
+			<ul>
+				<li>${statements}$</li>
+			</ul>
+			<li>}</li>
+		</ul>
+	</figure>
+
+	<p>
+		In the syntax above: ${r}$ is the variable we want to store combined value
+		(the result of the computation) in. ${c}$ is some collection. ${i}$ is the
+		initial value of the accumulator (the variable to be mutated). ${a}$ and
+		${b}$ are arguments to be used inside the closure, where ${a}$ is the
+		accumulator, and ${b}$ is each element in the collection. Finally, ${r_t}$
+		is the return type of the computation. Applying this to the previous
+		example:
+	</p>
+
+	<pre class="language-swift"><code>
+		let arrNum = [1, 2, 3, 4, 5]
+		func sum(_ arr: [Int]) -> Int {
+			let result = arr.reduce(0) {(total, val) -> Int in
+				total + val
+			}
+			return result
+		}
+		let total = sum(arrNum)
+		print(total)
+	</code></pre>
+	<pre class="language-bash"><code>
+		15
+	</code></pre>
+
+	<p>The code above can be written even more concisely:</p>
+
+	<pre class="language-swift"><code>
+		let arrNum = [1, 2, 3, 4, 5]
+		func sum(_ arr: [Int]) -> Int {
+			let result = arr.reduce(0, +)
+			return result
+		}
+		let total = sum(arrNum)
+		print(total)
+	</code></pre>
+	<pre class="language-bash"><code>
+		15
+	</code></pre>
+
+	<p>
+		Of course, the above code assumes that the only thing we would like to do is
+		accumulate the result.
+	</p>
+
+	<p>
+		Suppose we want to perform a computation on each element of the array,
+		returning a new array where each element is modified in place. We can do so
+		by passing the <span class="monoText">into:</span> parameter.
+	</p>
+
+	<pre class="language-swift"><code>
+		let arrNum = [1, 2, 3, 4, 5]
+		func sum(_ arr: [Int]) -> [Int] {
+			let barr = arr.reduce(into: []) {(result, val) in
+				result.append(val * 2)
+			}
+			return barr
+		}
+		let total = sum(arrNum)
+		print(total)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[2, 4, 6, 8, 10]
+	</code></pre>
+
+	<p>
+		In the code above, we are telling Swift to reduce
+		<span class="monoText">arr</span> into an empty array called
+		<span class="monoText">result</span>. Then, we append to
+		<span class="monoText">result</span> each element of
+		<span class="monoText">arr</span> multiplied by 2.
+	</p>
+</section>
+
+<section id="sort">
+	<h4>Sort</h4>
+	<p>
+		Sorting algorithms can be cumbersome to implement, and for most
+		applications, Swift's built-in sort method can handle our needs easily. As
+		such, for most tasks, we won't need to write our own sorting algorithms
+		(most &mdash; there are situations where Swift's algorithms may not be the
+		best). To use Swift's <span class="monoText">.sort</span> method, we must
+		include a closure. That closure tells Swift how the elements in the
+		collection should be compared.
+	</p>
+
+	<p>
+		Swift provides several sorting methods. The
+		<span class="monoText">.sort()</span> method will sort elements
+		<span class="underlineText">in place</span>. This means
+		<span class="monoText">.sort()</span> will mutate the existing collection.
+	</p>
+
+	<pre class="language-swift"><code>
+		var names = ["Dan", "Alice", "Jane", "Fen"]
+		names.sort()
+		print(names)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["Alice", "Dan", "Fen", "Jane"]
+	</code></pre>
+
+	<p>
+		If we want to sort the elements in a particular way, we pass into the
+		parameter list a closure:
+	</p>
+
+	<pre class="language-swift"><code>
+		var names = ["Dan", "Alice", "Jane", "Fen"]
+		names.sort {(a, b) -> Bool in a > b}
+		print(names)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["Jane", "Fen", "Dan", "Alice"]
+	</code></pre>
+
+	<p>
+		If we want to create a new sorted array (i.e., not mutating the existing
+		array), we used the <span class="monoText">.sorted()</span> method. Suppose
+		we wanted to sort the names from longest to shortest:
+	</p>
+
+	<pre class="language-swift"><code>
+		var names = ["Dan", "Alice", "Jane", "Fen"]
+		var newArr = names.sorted { $0.count > $1.count }
+		print(newArr)
+	</code></pre>
+	<pre class="language-bash"><code>
+		["Alice", "Jane", "Dan", "Fen"]
+	</code></pre>
+</section>
 {% endblock %}

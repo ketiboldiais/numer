@@ -1,0 +1,784 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="C++ pointers: memory allocation, stack, heap, dereferencing, pointer arithmetic."
+/>
+{% endblock %} {% block title %}
+<title>C++ Pointers</title>
+{% endblock %} {% block content %}
+<h1>Pointers</h1>
+<section id="pointers">
+	<p>
+		We can think of pointers as a special kind of variable. More formally, a
+		<span class="term">pointer</span> is a variable that stores the address
+		where a particular piece of data is stored. To understand this definition,
+		we assume the following: There are two categories of variables &mdash; (1) a
+		<span class="term">data variable</span> and (2) an
+		<span class="term">address variable</span>. A data variable stores a
+		particular piece of data. An address variable stores a particular memory
+		address.
+	</p>
+	<p>Say we write the following:</p>
+	<pre class="language-cpp"><code>
+		int x = 1;
+	</code></pre>
+	<p>
+		Suppose, for the sake of example, that
+		<span class="monoText">int</span> takes 2 bytes of memory. Writing the line
+		above, we instruct the compiler to allocate 2 bytes in memory for the value
+		<span class="monoText">1</span>, and we are going to call that address
+		<span class="monoText">x</span>. The effect of doing so is storing the bits
+		comprising <span class="monoText">10</span> in memory. Suppose the address
+		of that byte is 1000—1001 (addresses 1000 to 1001). We have stored the bits
+		comprising <span class="monoText">1</span> in the address 1000—1001, and
+		that address will be referred to as <span class="monoText">x</span> (assume
+		the memory allocated is denoted by the first address, 1000).
+	</p>
+	<p>
+		Now, say we want to store the address of behind
+		<span class="monoText">x</span>, not the value assigned to
+		<span class="monoText">x</span> itself. To do so, we need a pointer:
+	</p>
+	<pre class="language-cpp"><code>
+		int x = 1;
+		int *p;
+	</code></pre>
+	<p>
+		Notice the asterisk. This is the syntax for declaring a pointer. Now, to
+		assign the address behind <span class="monoText">x</span> to
+		<span class="monoText">p</span>, we use the following syntax:
+	</p>
+	<pre class="language-cpp"><code>
+		int x = 1;
+		int *p;
+		p = &amp;x;
+	</code></pre>
+	<p>
+		Notice the ampersand. The address behind <span class="monoText">x</span> is
+		now assigned to the pointer <span class="monoText">p</span>. To see the
+		difference between <span class="monoText">x</span> and
+		<span class="monoText">&x</span>, consider the following output:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int x = 1;
+			int *p;
+			p = &amp;x;
+		
+			cout << "x = " << x << endl;
+			cout << "&x = " << &x << endl;
+			cout << "p = " << p << endl;
+		
+			return 0;
+			}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 1
+		&x = 0x7ffee689a18c
+		p = 0x7ffee689a18c
+	</code></pre>
+	<p>
+		Notice the difference. The value assigned to
+		<span class="monoText">x</span> is the data we stored in memory,
+		<span class="monoText">1</span>. The value assigned to
+		<span class="monoText">p</span>, however, is
+		<span class="monoText">0x7ffee3fc118c</span>, the address where
+		<span class="monoText">1</span> is stored (i.e., the address we've named
+		<span class="monoText">x</span>).
+	</p>
+	<p>
+		Question: What about would the output of
+		<span class="monoText">&p</span> and <span class="monoText">*p</span> look
+		like? Well, let's try it:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int x = 1;
+			int *p;
+			p = &amp;x;
+		
+			cout << "x = " << x << endl;
+			cout << "&x = " << &x << endl;
+			cout << "p = " << p << endl;
+		
+			cout << "*p = " << *p << endl;
+			cout << "&p = " << &p << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 1
+		&x = 0x7ffee97c618c
+		p = 0x7ffee97c618c
+		*p = 1
+		&p = 0x7ffee97c6180
+	</code></pre>
+	<p>
+		It looks like <span class="monoText">*p</span> stores the data stored in
+		<span class="monoText">x</span>. And <span class="monoText">&p</span> looks
+		like it stores an address. This output logically follows from our definition
+		of a poiner. The pointer <span class="monoText">p</span> is just another
+		variable. And because it is a variable, it is really just a name for an
+		address in memory. In this case,
+		<span class="monoText">0x7ffee97c6180</span>. That address, however, stores
+		an address in memory, the address behind <span class="monoText">x</span>. So
+		what's going on with <span class="monoText">*p</span>? This is where we have
+		to distinguish betwen <span class="monoText">p</span> and
+		<span class="monoText">*p</span>. The variable
+		<span class="monoText">p</span> stores an address. However, writing
+		<span class="monoText">*p</span> is called a
+		<span class="term">dereference</span>. In other words,
+		<span class="monoText">*p</span> tells the compiler to retrieve the value
+		stored in the address stored in <span class="monoText">p</span>. When we
+		first use <span class="monoText">*p</span>, we are declaring the pointer.
+		When we use <span class="monoText">*p</span> in subsequent code, we are
+		<span class="italicsText">dereferencing</span> that pointer.
+	</p>
+	<p>In sum, there are three checkboxes to tick whenever we use pointers:</p>
+	<figure class="math-display">
+		<ol>
+			<li>Declaration</li>
+			<li>Initialization</li>
+			<li>Dereferencing</li>
+		</ol>
+	</figure>
+</section>
+
+<section id="why_pointers">
+	<h2>Why are there pointers?</h2>
+	<p>
+		Recall that all of our programs primary source code is placed in the
+		<span class="monoText">main()</span> function. When run our program, the
+		<span class="monoText">main()</span> function's machine code is loaded in
+		the code section of memory. Now, if we have other functions in our program
+		that the code in <span class="monoText">main()</span> calls, those functions
+		are also loaded in the code section.
+	</p>
+	<p>
+		The <span class="monoText">main()</span> function has access to everything
+		in the code section, and everything in the stack. However, we know that
+		there is another section in memory relevant to our program &mdash; the heap.
+		<span class="monoText">main()</span>, however, cannot directly access the
+		heap. But, it can <span class="underlineText">indirectly</span> access the
+		heap with a <span class="italicsText">pointer</span>.
+	</p>
+	<p>
+		Although pointers are most commonly associated with values stored in the
+		heap, they are not limited to such application. Files outside of our program
+		are accessed with pointers. Our program's connection to a network is made
+		with a pointer. Our program's access to printers, keyboards, monitors,
+		speakers, and other external devices is provided with pointers.
+		<span class="marginnote"
+			>Not every language provides pointers. Most high-level languages like
+			Java, Python, JavaScript, and many others, do not provide any means to use
+			pointers. In contrast, because languages like C and C++ provide pointers,
+			they are often referred to as
+			<span class="term">systems-programming languages</span>; languages that
+			can be used for constructing system-level programs like device drivers and
+			operating systems.</span
+		>
+	</p>
+	<p>
+		Why restrict direct access to these entities and require pointers? Because
+		our program isn't the only thing using these entities. We might have other
+		programs using these shared entities, and we don't want one program to
+		potentially wreck everything for all the others. This is why entities like
+		the heap, external devices, and networks require the use of pointers.
+	</p>
+</section>
+
+<section id="allocating_memory_in_the_heap">
+	<h2>Allocating Memory in the Heap</h2>
+	<p>
+		In the previous example, <span class="monoText">int x = 1</span> assigns
+		<span class="monoText">1</span> to a memory location in the stack.
+		Accordingly, our pointer <span class="monoText">p</span> pointed to a stack
+		memory address. How do we allocate things to the heap? Again, we use the
+		pointer syntax:
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int x = 1;
+			
+			int *p;
+			p = new int;
+			*p = 1;
+		
+			return 0;
+		}
+	</code></pre>
+	<p>
+		In the code above, <span class="monoText">int x = 1</span> stores
+		<span class="monoText">1</span> in a memory address in the stack segment.
+		<span class="monoText">*p = 1</span>, however, stores another
+		<span class="monoText">1</span> in a memory address in the heap segment. To
+		see the differences:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int x = 1;
+			int *s;
+			s = &amp;x;
+		
+			cout << "s = " << s << endl;
+		
+			int *p;
+			p = new int;
+			*p = 1;
+		
+			cout << "p = " << p << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		./main
+		s = 0x7ffee69b418c
+		p = 0x7ff430c05c00
+
+		./main
+		s = 0x7ffee46f518c
+		p = 0x7fd160c05c00
+	</code></pre>
+	<p>
+		We cannot know from the address alone whether an address is in the stack or
+		the heap, but notice that the addresses are different. This tells us that
+		<span class="monoText">s</span> and <span class="monoText">p</span> store
+		different addresses. Both addresses store <span class="monoText">1</span>,
+		but they are different addresses.
+	</p>
+	<p>
+		A word of caution: When we allocate memory in the stack, the data occupying
+		those addresses are automatically destroyed when they are no longer needed.
+		This is not the case with the heap. Data stored in the heap will always stay
+		in the heap as long as our program runs. This means that the heap can grow
+		very large without our noticing. If the heap grows large enough, it will at
+		some point collide with the stack, and we are greeted with a
+		<span class="term">heap overflow</span>. We never want heap overflows
+		&mdash; the end result is the program crashing.
+	</p>
+	<p>
+		Because of this issue, we must always
+		<span class="term">de-allocate</span> memory we've instructed the compiler
+		to allocate. We can think of this as sort &#8220;clearing&#8221; the memory
+		we've allocated.
+		<span class="marginnote"
+			>This is such an important point that we denote it as a commandment: Heap
+			memory <span class="underlineText">must</span> be de-allocated.</span
+		>
+		For example, suppose we allocated memory in the heap for an array. To
+		de-allocate, we write the following:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int *p = new int[3] { 1, 2, 3 };
+		
+			for (int i = 0; i &lt; 3; i++) {
+				cout &lt;&lt; " " &lt;&lt; p[i] &lt;&lt; " " &lt;&lt; endl;
+			}
+		
+			delete []p;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		The second to last line, <span class="monoText">delete []p</span>, is what
+		we use to de-allocate <span class="monoText">p</span>. Notice that we also
+		used a new piece of syntax,
+		<span class="monoText">int *p = new int[3] { 1, 2, 3 };</span>, to both
+		declare and initialize the pointer <span class="monoText">p</span>. The
+		syntax above is equivalent to:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int *p;
+			p = new int[3] {1, 2, 3};
+		
+			for (int i = 0; i < 3; i++) {
+				cout << " " << p[i] << " " << endl;
+			}
+		
+			delete []p;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Briefly returning to why pointers are useful, suppose we have a program that
+		requires the use of an array. Suppose we wrote the following:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int arr[10];
+		
+			return 0;
+		}
+	</code></pre>
+	<p>
+		The problem with the code above is that arrays in C++ cannot be mutated.
+		Thus, the array <span class="monoText">arr</span> cannot later include more
+		than 10 elements. One way to fix this is by having the user specify the size
+		of the array:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int size;
+			cout << "Enter number of elements: ";
+			cin >> size;
+			int arr[size];
+			size_t arrLength = (sizeof arr) / 4;
+			cout << "Size of array: " << arrLength << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Enter number of elements size: 10
+		Size of array: 10
+	</code></pre>
+
+	<p>
+		We've now managed to get around hard-coding the size of an array, but we're
+		still left with the problem: Once the user enters the size of
+		<span class="monoText">arr</span>, we cannot change its size.
+	</p>
+	<p>The fix is with a pointer:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main(int argc, char *argv[]) {
+			int size;
+			cout &lt;&lt; "Enter array's size: ";
+			cin >> size;
+			int *p = new int[size];
+			
+			// various code using arr
+			// done using arr --> user selects new size
+		
+			cout &lt;&lt; "Enter new size: ";
+			cin >> size;
+			delete []p;
+			p = new int[size];
+			return 0;
+		}
+	</code></pre>
+</section>
+
+<section id="pointer_arithmetic">
+	<h2>Pointer Arithmetic</h2>
+	<p>
+		When we assign an address of an array to a pointer, the address stored in
+		the pointer is actually the address of the first element in the array. This
+		raises the question: What happens when we use the increment operator
+		<span class="monoText">++</span> on a pointer? Let's try it:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main(int argc, char *argv[]) {
+			int arr[3] {7, 13, 17};
+			int *p = arr;
+			cout << *p << endl;
+			p++;
+			cout << *p << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		7
+		13
+	</code></pre>
+	<p>
+		Notice that we obtained the first element of
+		<span class="monoText">arr</span> when we used
+		<span class="monoText">*p</span>, then we obtained the second element of
+		<span class="monoText">arr</span>, when we used
+		<span class="monoText">*p</span> after incrementing
+		<span class="monoText">p</span>. This leads to our first, and most important
+		insight, of pointer arithmetic. When we add a number to a pointer, we move
+		the pointer to the next memory address. In this case, we have an array of
+		<span class="monoText">int</span>, so when we increment by 1, the pointer
+		moves to the next <span class="monoText">int</span> in the array. Note that
+		this does not mean we move by exactly 1 byte. When we increment a pointer to
+		an array, how much we move depends on the size of the array's elements. So,
+		when we incremented above, we moved the pointer by 4 bytes, since an
+		<span class="monoText">int</span> takes up 4 bytes of memory. We can confirm
+		this with the following:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+			
+		int main(int argc, char *argv[]) {
+			int arr[3] {7, 13, 17};
+			int *p = arr;
+			cout << *p << endl;
+			cout << p << endl;
+			p++;
+			cout << *p << endl;
+			cout << p << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		7
+		0x7ffee1ea318c
+		13
+		0x7ffee1ea3190
+	</code></pre>
+	<p>
+		In the output above, the <span class="monoText">int</span> 7 is stored at
+		the address <span class="monoText">0x7ffee1ea318c</span>. The
+		<span class="monoText">int</span> 13, in contrast, is stored at
+		<span class="monoText">0x7ffee1ea3190</span>. These are hexadecimal numbers.
+		Converting them to decimal, we have:
+		<span class="monoText">140732688642444</span> and
+		<span class="monoText">140732688642448</span>. These two numbers have a
+		difference of exactly 4.
+	</p>
+	<p>
+		We aren't limited to incrementing. Pointers can be decremented (<span
+			class="monoText"
+			>--</span
+		>) as well.
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main(int argc, char *argv[]) {
+			int arr[3] {7, 13, 17};
+			int *p = arr;
+			cout << *p << endl;
+			cout << p << endl;
+			p++;
+			cout << *p << endl;
+			cout << p << endl;
+			p--;
+			cout << *p << endl;
+			cout << p << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		7
+		0x7ffee018518c
+		13
+		0x7ffee0185190
+		7
+		0x7ffee018518c
+	</code></pre>
+	<p>
+		What happens when we subtract a pointer from another pointer? Consider the
+		following code:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main(int argc, char *argv[]) {
+			int arr[3]{7, 13, 17};
+			int size = sizeof(arr[0]);
+
+			int *a = arr;
+			int *b = &arr[0];
+			int *c = &arr[1];
+			int *d = &arr[2];
+			int diff = d - b;
+		
+			cout << "size of int: " << sizeof(int) << " bytes" << endl;
+			cout << "size of arr[0]: " << size << " bytes" << endl;
+			cout << "a : " << (long int)a << endl;
+			cout << "b : " << (long int)b << endl;
+			cout << "c : " << (long int)c << endl;
+			cout << "d : " << (long int)d << endl;
+			cout << "d - b = " << diff << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		size of int: 4 bytes
+		size of arr[0]: 4 bytes
+		a : 140732903379340
+		b : 140732903379340
+		c : 140732903379344
+		d : 140732903379348
+		d - b = 2
+	</code></pre>
+	<p>
+		Let's carefully consider the code above. First we created a pointed call
+		<span class="monoText">*b</span> just to confirm that the pointer to an
+		array points to the first element in the array. In this case, we outputted
+		the address pointed to by the pointer as a
+		<span class="monoText">long int</span>. Notice that
+		<span class="monoText">*a</span>, which points to the array, and
+		<span class="monoText">*b</span>, which points to the first element in the
+		array, are the same.
+	</p>
+	<p>
+		Next, we confirmed that each element in the array are separated by 4 bytes.
+		We confirm this by showing that <span class="monoText">int</span> has a size
+		of 4 bytes, and the first element in the array, an
+		<span class="monoText">int</span>, has a size of 4 bytes. Examining the
+		decimal form of the memory address, they all differ by exactly 4 bytes.
+	</p>
+	<p>
+		Now the tricky part. When we subtracted the address
+		<span class="monoText">d</span> (the address of the third element in the
+		array) from the address <span class="monoText">b</span> (the address of the
+		first element), we got back <span class="monoText">2</span>. Why is it 2?
+		Let's consider some more code:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main(int argc, char *argv[]) {
+			int arr[3]{7, 13, 17};
+			int size = sizeof(arr[0]);
+			int sizeInt = sizeof(int);
+		
+			int *a = arr;
+			int *b = &arr[0];
+			int *c = &arr[1];
+			int *d = &arr[2];
+		
+			int e = (d - b) * sizeInt;
+			int f = d - b;
+			int g = e / sizeInt;
+		
+			cout << "size of int: " << sizeInt << " bytes" << endl;
+			cout << "size of arr[0]: " << size << " bytes" << endl;
+			cout << "a : " << (long int)a << endl;
+			cout << "b : " << (long int)b << endl;
+			cout << "c : " << (long int)c << endl;
+			cout << "d : " << (long int)d << endl;
+			cout << "Difference in memory:  " << e << endl;
+			cout << "Abstraction: " << f << endl;
+			cout << "Distance in memory: " << g << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		size of int: 4 bytes
+		size of arr[0]: 4 bytes
+		a : 140732783632780
+		b : 140732783632780
+		c : 140732783632784
+		d : 140732783632788
+		Difference in memory:  8
+		Abstraction: 2
+		Distance in memory: 2
+	</code></pre>
+	<p>
+		In the code above, we've changed a few things. First,
+		<span class="monoText">e</span> stores the value resulting from subtracting
+		<span class="monoText">d</span> and <span class="monoText">b</span>, and
+		multiplying it by the size of an <span class="monoText">int</span>. This
+		gives us the exact difference between <span class="monoText">d</span>, the
+		address of the third element, and <span class="monoText">b</span>, the
+		address of the first element &mdash; 8 bytes. Indeed, the
+		<span class="italicsText">actual</span> difference between
+		<span class="monoText">d</span> and <span class="monoText">b</span> is 8
+		bytes. In other words, <span class="monoText">b</span> is 8 bytes away from
+		<span class="monoText">d</span>. If we divide that by the size of an
+		<span class="monoText">int</span>, 4 bytes, we get 2. That 2 is the
+		<span class="italicsText">abstracted</span> distance between the first
+		element and the third element (index at 0 to index at 2). I.e., the third
+		element is exactly 2 blocks of memory away from the first element.
+	</p>
+	<p>
+		Thus, in pointer arithmetic, subtracting two pointers ${a}$ and ${b}$ gives
+		you the <span class="italicsText">abstracted</span> distance between ${a}$
+		and ${b,}$ not the <span class="underlineText">exact</span> distance, in
+		memory, between the two addresses. To confirm, consider the following:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		
+		int main(int argc, char *argv[]) {
+			int arr[5]{7, 13, 17, 22, 19};
+			int size = sizeof(arr[0]);
+			int sizeInt = sizeof(int);
+		
+			int *a = arr;
+			int *d = &arr[4];
+		
+			int e = (d - a) * sizeInt;
+			int f = d - a;
+			int g = e / sizeInt;
+		
+			cout << "size of int: " << sizeInt << " bytes" << endl;
+			cout << "size of arr[0]: " << size << " bytes" << endl;
+			cout << "a : " << (long int)a << endl;
+			cout << "d : " << (long int)d << endl;
+			cout << "Difference in memory:  " << e << endl;
+			cout << "Abstraction: " << f << endl;
+			cout << "Distance in memory: " << g << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		size of int: 4 bytes
+		size of arr[0]: 4 bytes
+		a : 140732787970432
+		d : 140732787970448
+		Difference in memory: 16
+		Abstraction: 4
+		Distance in memory: 4
+	</code></pre>
+	<p>
+		Above, we subtracted the address of the first element from the address of
+		the last element. This is a difference of 16 bytes in memory (confirmed by
+		the decimal representation of the addresses). However, the actual output
+		from <span class="monoText">d - b</span>, a pointer subtraction, is 4. Why?
+		Because in C++, the result of a pointer subtraction is the actual
+		difference, 16, divided by the number of bytes the datum takes (for an
+		<span class="monoText">int</span>, 4 bytes). This results in 4,
+		corresponding to index 4 minus index 0.
+	</p>
+	<p>
+		Why does C++ use this abstraction of dividing the actual difference by the
+		size of the data type? Because by and large, programmers aren't working with
+		bytes (with the exception of the data types that take only 1 byte). Most
+		data types take up more than 1 byte of memory, so C++ made the decision to
+		return the result of pointer arithmetic in terms of units of bytes (i.e.,
+		blocks of memory). Had C++ decided not to, its users would have to
+		constantly remember to include the sizes of the relevant types, leading to
+		more verbose code. And where there is longer, more verbose code, there is a
+		greater likelihood of bugs.
+	</p>
+	<p>
+		Note that performing pointer arithmetic allows us to draw several
+		inferences: Suppose ${p}$ and ${q}$ are pointers to elements in an array.
+		Suppose ${p}$ points to element ${m,}$ and ${q}$ points to element ${n.}$ If
+		the result of ${q - p}$ is positive, then ${m}$ comes before ${n}$ If the
+		result of ${q - p}$ is negative, then ${n}$ comes before ${n.}$ If ${q - p}$
+		is 0, then ${p}$ and ${q}$ are pointing to the same element. Furthermore, if
+		we divide ${q - p}$ by 2, then we obtain the index of the element in the
+		middle of the array.
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main(int argc, char *argv[]) {
+			int arr[5]{7, 13, 17, 22, 19};
+		
+			int *a = arr;
+			int *b = &arr[4];
+			int f = b - a;
+			int g = a - b;
+			int h = (b - a) / 2;
+		
+			cout << "b - a = " << f << endl;
+			cout << "a - b = " << g << endl;
+			cout << "first element: " << arr[0] << endl;
+			cout << "middle element: " << arr[h] << endl;
+			cout << "last element: " << arr[4] << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		b - a = 4
+		a - b = -4
+		first element: 7
+		middle element: 17
+		last element: 19
+	</code></pre>
+	<p>
+		The code above confirms our previous analysis. The element
+		<span class="monoText">7</span> comes before
+		<span class="monoText">19</span>, so the positive result of
+		<span class="monoText">b - a</span> indicates that
+		<span class="monoText">b</span>, the pointer to the address storing
+		<span class="monoText">19</span>, comes after
+		<span class="monoText">a</span>, the pointer to the address storing
+		<span class="monoText">7</span>. Computing
+		<span class="monoText">a - b</span> is the mirror image. Further, dividing
+		the difference by 2 returns the index of the middle element of the array.
+	</p>
+	<p>What happens if the array has an even number length?</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main(int argc, char *argv[]) {
+			int arr[6]{7, 13, 17, 22, 19, 21};
+		
+			int *a = arr;
+			int *b = &arr[5];
+			int g = (b - a) / 2;
+		
+			cout << "first element: " << arr[0] << endl;
+			cout << "middle element: " << arr[g] << endl;
+			cout << "last element: " << arr[5] << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		first element: 7
+		middle element: 17
+		last element: 21
+	</code></pre>
+	<p>
+		We get back <span class="monoText">17</span>. Understandably so. Indexing
+		into an array requires using a whole number, so the result of dividing 5 by
+		2 &mdash; 2.5 &mdash; is truncated to 2 (it's implicitly cast into an
+		<span class="monoText">int</span>).
+	</p>
+</section>
+
+<section id="pointer_dangers">
+	<h2>Pointer Dangers</h2>
+	<p>
+		Some dangers always lurk with pointers: (1) uninitialized pointers; (2)
+		memory leaks; and (3) dangling pointers. These are the three most common
+		problems with pointers.
+	</p>
+</section>
+{% endblock %}

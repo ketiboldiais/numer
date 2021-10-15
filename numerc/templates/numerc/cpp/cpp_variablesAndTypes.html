@@ -9,19 +9,45 @@
 <h1>Variables &amp; Types</h1>
 <section id="variables_and_types">
 	<p>
-		In a computer, data is stored inside a memory location. To use that data, we
-		must reference that particular location. In languages like Assembly, this is
-		in fact how we access that data. Now, these memory locations are fairly
-		cryptic and difficult to read (they're in hexadecimal). Instead of
-		referencing these memory locations, we can associate a
-		<span class="italicsText">name</span> to that particular location, and
-		reference that name instead. This is called a
+		In a computer, data is stored inside a memory location. We can think of
+		computer memory as a large grid of small squares with unique addresses.
+		These small squares, or cells, are arranged in a logical order. Each cell
+		can store <span class="underlineText">1 byte</span>, or
+		<span class="underlineText">8 bits</span> of data. A bit is either a 0 or a
+		1. With 8 bits, we have 256 different combinations (${2^8 = 256.}$) Those
+		combinations can be used to represent the numbers 0 to 255. In statically
+		typed languages, we must explicitly state variable's type during
+		declaration. This tells the compiler what type of data the variable will
+		store. Given that information, the compiler can determine how much memory to
+		allocate. To use that data, we must reference that particular location. In
+		languages like Assembly, this is in fact how we access that data. Now, these
+		memory locations are fairly cryptic and difficult to read (they're in
+		hexadecimal). Instead of referencing these memory locations, we can
+		associate a <span class="italicsText">name</span> to that particular
+		location, and reference that name instead. This is called a
 		<span class="term">binding</span>.
 	</p>
 
 	<p>
-		A <span class="term">variable</span> is a programming construct that allows
-		us to associate a <span class="italicsText">value</span> with a
+		Variables are essentialy &#8220;cabinets&#8221; where we can place data.
+		Those cabinets, however, have specific labels called
+		<span class="italicsText">types</span>. The data we place in a cabinet must
+		have a type that matches the label. However, we can change the contents of
+		the cabinets. More formally, variables are locations in memory where we can
+		store data. Instead of referring to that location with its memory address,
+		we give that location a name called an
+		<span class="italicsText">identifier</span>. In source code, the identifier
+		is the name we give a variable. Identifiers should be descriptive and
+		meaningful, so as to make later recall easier. Identifiers can only consist
+		of (a) upper-case alphabets, (b) lower-case alphabets (c) numbers, and (d)
+		underscores. Additionally, the first character in the identifier must be
+		either an alphabet or an underscore. Thus, identifiers cannot contain
+		special characters (&, !, #, ;, etc.) nor can it contain whitespace.
+		Upper-case alphabets and lower-case alphabets are distinct. Thus, the
+		identifier <span class="monoText">foo</span> is different from the
+		identifier <span class="monoText">Foo</span>. A
+		<span class="term">variable</span> is a programming construct that allows us
+		to associate a <span class="italicsText">value</span> with a
 		<span class="italicsText">name</span>. More formally, a variable is a named
 		piece of memory that a programmer uses to store specific types of data. In
 		other words, it is an abstraction for the process described previously.
@@ -42,8 +68,18 @@
 		be accessed through a variable stored somewhere in memory). For example, the
 		variable <span class="monoText">pi</span> will be stored somewhere in
 		memory. The literal <span class="monoText">3.14</span>, however, will be
-		directly represented as binary in the executable. For example, suppose we
-		wrote the following:
+		directly represented as binary in the executable.
+		<span class="marginnote">
+			A <span class="italicsText">variable declaration</span> is an instruction
+			to the compiler to <span class="underlineText">reserve</span> space in
+			memory for data. Because C++ is a
+			<span class="italicsText">statically typed</span> language, variable
+			declarations must explicitly include the variable's type. A
+			<span class="italicsText">variable initialization</span> is an instruction
+			to the compiler to <span class="underlineText">store</span> data in the
+			reserved space.
+		</span>
+		For example, suppose we wrote the following:
 	</p>
 
 	<pre class="language-cpp"><code>
@@ -137,6 +173,95 @@
 		<span class="monoText">float</span> literal. If we fail to include the
 		suffix, we risk C++ treating the value as a
 		<span class="monoText">double</span>.
+	</p>
+
+	<h3>Data Types</h3>
+	<p>
+		C++ has three kinds of data types: (1)
+		<span class="italicsText">primitive types</span>; (2)
+		<span class="italicsText">derived types</span>; and (3)
+		<span class="italicsText">user-defined types</span>.
+		<span class="marginnote"
+			>Mathematically, a data type is really just a
+			<span class="italicsText">set</span>. It is the set of all the possible
+			values that belong to that type, alongside the operations that can be
+			performed on those values.</span
+		>
+		The primitive types are types provided by default in C++. They include:
+		<span class="monoText">int</span>, <span class="monoText">float</span>,
+		<span class="monoText">double</span>, <span class="monoText">char</span>,
+		<span class="monoText">boolean</span>, and
+		<span class="monoText">void</span>. The derived types are types derived from
+		the primitive data types. They include:
+		<span class="monoText">Function</span>, <span class="monoText">Array</span>,
+		<span class="monoText">Pointer</span>, and
+		<span class="monoText">Reference</span>. The user-defined types are types
+		defined by the user. They include: <span class="monoText">Structure</span>,
+		<span class="monoText">Union</span>, <span class="monoText">Enum</span>,
+		<span class="monoText">Class</span>, and
+		<span class="monoText">Typedef</span>.
+	</p>
+
+	<p>
+		A variable of type <span class="monoText">float</span>, as well as a
+		variable of type <span class="monoText">double</span>, stores floating point
+		values (i.e., numbers with a decimal point).
+		<span class="monoText">double</span> is allocated 8 bytes of memory. Thus,
+		it can store values ranging from ${-2^{63}}$ to ${2^{63} - 1.}$ How precise
+		floating-point value is depends on how many numbers follow the decimal
+		point. A <span class="monoText">float</span> can store up to 7 digits.
+	</p>
+
+	<p>
+		A variable of type <span class="monoText">int</span> takes up 4 bytes of
+		memory. It can store any value from ${-2^{31}}$ to ${2^{31} - 1.}$ If we
+		store a floating point value (e.g., ${2.32}$) in an
+		<span class="monoText">int</span> variable, C++ will truncate the value to
+		2. A <span class="monoText">double</span> can store up to 15 digits A
+		variable of type <span class="monoText">char</span> stores a character from
+		the ASCII table. In reality, <span class="monoText">char</span> represents
+		the character's numeric ASCII value. <span class="monoText">char</span> is
+		allocated 1 byte of memory. It can store any Unicode value from ${-2^7}$ to
+		${2^7 - 1.}$
+	</p>
+
+	<p>
+		A variable of type <span class="monoText">bool</span> stores one of two
+		values &mdash; <span class="monoText">true</span> or
+		<span class="monoText">false</span>. A variable of type
+		<span class="monoText">bool</span> is allocated 1 byte of memory. The
+		<span class="monoText">void</span> data type represents &#8220;no
+		value.&#8221; This is a specific instruction to the compiler not to allocate
+		any memory.
+	</p>
+
+	<p>
+		<span class="italicsText">Data type modifiers</span> are special symbols we
+		can prepend to a data type to modify the data type's instructions. The
+		modifier <span class="monoText">long</span> will instruct the compiler to
+		allocate 4 more bytes. We can use <span class="monoText">long</span> with
+		<span class="monoText">int</span> and <span class="monoText">double</span>.
+		The modifier <span class="monoText">short</span> instructs the compiler to
+		only allocate 2 bytes. <span class="monoText">short</span> applies only to
+		<span class="monoText">int</span>. We
+		<span class="underlineText">cannot</span> use modifiers with the
+		<span class="monoText">float</span> type. The
+		<span class="monoText">unsigned</span> modifier allows us to store only
+		positive values (i.e., values without the signed bit). The
+		<span class="monoText">signed</span> modifier allows us to store both
+		positive and negative values. <span class="monoText">signed</span> is the
+		default declaration for <span class="monoText">int</span> and
+		<span class="monoText">char</span>.
+	</p>
+
+	<p>
+		<span class="italicsText">Type-casting</span> is when we instruct the
+		compiler to convert a value of one type to another. There are two types of
+		type-casting: <span class="italicsText">implicit casting</span> and
+		<span class="monoText">explicit casting</span>. In implicit-casting, the
+		compiler automatically converts one data type to another. In
+		explicit-casting, we, the programmers, explicitly instruct the compiler to
+		convert.
 	</p>
 
 	<p>
@@ -253,6 +378,12 @@
 		<span class="topic">Constants.</span> Constants are variables whose bound
 		values are immutable &mdash; the value cannot be changed. We can initialize
 		constants in C++ as such:
+		<span class="marginnote">
+			A <span class="italicsText">constant</span> is a variable whose constants
+			<span class="underlineText">cannot</span> be changed. We can think of it
+			as a locked cabinet. Because they are locked cabinets, constants must be
+			initialized and declared at the same time.
+		</span>
 	</p>
 
 	<pre class="language-cpp"><code>
@@ -713,6 +844,34 @@
 		auto val6 {923u}; // type inferred: unsigned
 		auto val7 {197ul}; // type inferred: unsigned long
 		auto val9 {9291ll}; // type inferred: long long
+	</code></pre>
+
+	<!-- User Input -->
+	<p>
+		<span class="topic">User Input.</span> In the examples above, we used
+		<span class="monoText">cout</span> to output data.
+		<span class="monoText">cout</span> has sibling,
+		<span class="monoText">cin</span>, which
+		<span class="italicsText">inputs</span> data:
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main(int argc, char *argv[]) {
+			int userNumber;
+			cout << "Pick a number:" << endl;
+			cin >> userNumber;
+			cout << "You picked: " << userNumber << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Pick a number: 
+		27
+		You picked: 27
 	</code></pre>
 
 	<!-- global v. local variables -->

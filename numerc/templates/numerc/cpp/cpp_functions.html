@@ -1,13 +1,11 @@
-{% extends '../layout.html' %} {% load static %} 
-{% block description %}
-<meta name="description" content="C++ functions">
-{% endblock %}
-{% block title %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="C++ functions" />
+{% endblock %} {% block title %}
 <title>C++ Functions</title>
-{% endblock %}
-{% block content %}
+{% endblock %} {% block content %}
+
+<h1>Functions</h1>
 <section id="functions">
-	<h4>Functions</h4>
 	<p>
 		In <span class="monoText">C++</span>, the order in which we write functions
 		matters. Any call to a function <span class="underlineText">must</span> be
@@ -174,7 +172,7 @@
 </section>
 
 <section id="pass_by_value">
-	<h4>Pass by Value</h4>
+	<h2>Pass-by-value v. Pass-by-reference</h2>
 	<p>What is the output of the following code:</p>
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
@@ -200,6 +198,51 @@
 		<span class="monoText">doubleValue</span>. We call this mode of operation
 		<span class="term">pass-by-value</span>, and it is the default mode of
 		operation in <span class="monoText">C++</span>.
+		<span class="marginnote"
+			>One way to think about pass-by-value is a professor sending out his
+			syllabus. Every student gets a copy of the syllabus, which they are free
+			to mark, highlight, remove parts of, etc. However, the original syllabus
+			&mdash; likely some Word or LaTeX document &mdash; exists only with the
+			professor, and no student can modify it.</span
+		>
+		In pass-by-value, the arguments passed to a function are stored in a memory
+		location other than the value passed into the parameter. This is why we say
+		that functions receive a &#8220;copy,&#8221; rather than the original.
+	</p>
+
+	<p>
+		Suppose, however, that we want the modify the original. In that situation,
+		we use <span class="term">pass-by-reference</span> &mdash; the parameters
+		and the arguments refer to the same memory location. To do so, we prepend
+		the parameter name with an ampersand (<span class="monoText">&</span>).
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void cube(int &x);
+		
+		int main(int argc, char *argv[]) {
+			int num = 3;
+			cout << num << endl;
+			cube(num);
+			cout << num << endl;
+			return 0;
+		}
+		
+		void cube(int &x) {
+			x = x * x * x;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		3
+		27
+	</code></pre>
+	<p>
+		Notice how the value assigned to <span class="monoText">num</span> changed.
+		This is because we passed a reference, rather than a copy. Accordingly, the
+		value originally assigned to <span class="monoText">num</span> was modified.
 	</p>
 
 	<p>
@@ -232,8 +275,16 @@
 	</code></pre>
 </section>
 
+<section id="variable_scope">
+	<h2>Variable Scope</h2>
+	<p>
+		Functions are good point for us to switch gears and discuss
+		<span class="term">scope</span>.
+	</p>
+</section>
+
 <section id="value_of_functions">
-	<h4>Why use functions?</h4>
+	<h2>Why use functions?</h2>
 	<p>
 		Functions are more than just a way of reusing code. They are the building
 		blocks for <span class="term">procedural decomposition</span> &mdash;
