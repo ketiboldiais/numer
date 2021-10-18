@@ -1,0 +1,1326 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="" />
+{% endblock %} {% block title %}
+<title></title>
+{% endblock %} 
+{% block content %}
+<h1>Predicate Calculus</h1>
+<section id="quantified_statements">
+	<h2>Logic of Quantified Statements</h2>
+	<p>Recall the famous argument:</p>
+	<figure class="math-display">
+		<div>
+			<ul class="larg">
+				<li>All men are mortal.</li>
+				<li>Socrates is a man.</li>
+				<li class="conc">Socrates is mortal.</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		We cannot determine this argument's validity with the previous tools we
+		used, ${\neg,}$ ${\land,}$ ${\lor,}$ ${\implies,}$ and ${\iff.}$ Those tools
+		are exclusive to
+		<span class="boldText">propositional calculus</span> &mdash; the symbolic
+		analysis of <span class="italicsText">ordinary compound statements</span>.
+	</p>
+	<p>
+		In contrast, the argument above requires
+		<span class="boldText">predicate calculus</span> &mdash; the symbolic
+		analysis of <span class="italicsText">predicates</span> and
+		<span class="italicsText">quantified statements</span>. Predicate calculus
+		requires us to take a closer look at words like &#8220;all,&#8221;
+		&#8220;some,&#8221; and &#8220;is,&#8221; to name a few.
+	</p>
+	<p>
+		<span class="topic">What is a predicate?</span> In everyday grammar, a
+		<span class="italicsText">predicate</span> is the part of the sentence that
+		gives information about the subject. For example, the sentence,
+		&#8220;Bertrand Russell is a British philosopher.&#8221; The subject is
+		&#8220;Bertrand Russell&#8221; and the predicate is &#8220;is a British
+		philosopher.&#8221;
+	</p>
+	<p>
+		In logic, we obtain predicates by isolating various parts of the sentence.
+		From the previous example, we can isolate the sentence into several
+		variables:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>Let ${P \coloneqq \text{"is a British philosopher"}}$</p>
+			<p>Let ${Q \coloneqq \text{"is a British"}}$</p>
+		</div>
+	</figure>
+	<p>
+		The symbols $P$ and $Q$ are called
+		<span class="boldText">predicate symbols</span>, and we can use them to
+		generalize the example sentence. For example, the sentence &#8220;$x$ is a
+		British philosopher&#8221; can be symbolized as ${P(x).}$ Likewise, the
+		sentence &#8220;$x$ is a British $y$&#8221; can be symbolized as ${Q(x,
+		y).}$ The variables $x$ and $y$ are called
+		<span class="boldText">predicate variables</span>, which take values from
+		specified sets. When concrete values are substituted into those variables,
+		we obtain a <span class="boldText">sentence</span>. Otherwise, these
+		generalized sentences, ${P(x)}$ and ${Q(x, y),}$ are called by various
+		names: <span class="boldText">propositional functions</span>,
+		<span class="boldText">open sentences</span>, or
+		<span class="boldText">open formulas</span>.
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Definition</span>. An
+			<span class="boldItalics">open formula</span> is a sentence that contains
+			a finite number of variables. It outputs a proposition when specific
+			values are substituted for such variables.
+		</p>
+		<p>
+			<span class="topic">Definition</span>. The
+			<span class="boldItalics">domain</span>, or the
+			<span class="boldItalics">domain of discourse</span>, of an open formula
+			variable is the set of all values that may be substituted in place of the
+			variable. It is denoted by the symbol ${\mathbb{D}.}$
+		</p>
+	</div>
+	<p>
+		<span class="exh">Exercise</span>. Let ${P(x): x^2 > x,}$ where ${\mathbb{D}
+		\coloneqq \R.}$ Expand the following statements and indicate whether they
+		are true or false:
+	</p>
+	<ol>
+		<li>${P(2)}$</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<ul class="answer">
+				<li>${P(2): (2)^2 > (2)}$</li>
+				<li>${\phantom{P(2)}: 4 > 2}$</li>
+				<li>True.</li>
+			</ul>
+		</details>
+		<li>${P\left(\frac{1}{2}\right)}$</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<ul class="answer">
+				<li>
+					${P\left(\dfrac{1}{2}\right): \left(\dfrac{1}{2}\right)^2 >
+					\left(\dfrac{1}{2}\right)}$
+				</li>
+				<li>
+					${\phantom{P\left(\dfrac{1}{2}\right)}: \dfrac{1}{4} > \dfrac{1}{2}}$
+				</li>
+				<li>False.</li>
+			</ul>
+		</details>
+		<li>${P\left(-\frac{1}{2}\right)}$</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<ul class="answer">
+				<li>
+					${P\left(-\dfrac{1}{2}\right): \left(-\dfrac{1}{2}\right)^2 >
+					\left(-\dfrac{1}{2}\right)}$
+				</li>
+				<li>
+					${\phantom{P\left(\dfrac{1}{2}\right)}: \dfrac{1}{4} > -\dfrac{1}{2}}$
+				</li>
+				<li>True.</li>
+			</ul>
+		</details>
+	</ol>
+	<p>
+		Once a value is substituted into a propositional function's variable, the
+		proposotional function outputs a proposition, which, as we know, is either
+		true or false. The set of all values taken by the propositional function so
+		as to output true propositions is called the propositional function's
+		<span class="boldText">truth set</span>.
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Definition</span>. Suppose ${P(x)}$ is a predicate,
+			and ${x}$ has the domain ${\mathbb{D}.}$ The
+			<span class="boldItalics">truth set</span> of ${P(x)}$ is the set of all
+			${x \in \mathbb{D}}$ such that ${P(x)}$ is true. The truth set is denoted
+			with the notation:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\{x \in \mathbb{D} \mid P(x)\}}$</p>
+			</div>
+		</figure>
+	</div>
+</section>
+
+<section id="universal_quantifier">
+	<h2>Quantifiers</h2>
+	<p>
+		A <span class="boldText">quantifier</span> is a logical operator that
+		specifies how many individuals in the domain of discourse ${\mathbb{D}}$
+		satisfy a propositional function. Like the logical connectives, quantifiers
+		come in various forms: &#8220;all,&#8221; &#8220;some,&#8221; &#8220;at
+		least one,&#8221; &#8220;none,&#8221; etc. These words all serve to
+		answering the question: Given an open formula ${P(x),}$ for how many
+		individuals in ${\mathbb{D}}$ is ${P(x)}$ true? We explore these quantifiers
+		below.
+	</p>
+	<p>
+		<span class="topic">The Universal Quantifier: ${\forall}$</span>. The
+		universal quantifier is indicated by a variety of words. Below is a short
+		list of the most common indicators.
+	</p>
+	<ul>
+		<li>&#8220;every&#8221;</li>
+		<li>&#8220;each&#8221;</li>
+		<li>&#8220;all&#8221;</li>
+		<li>&#8220;any&#8221;</li>
+	</ul>
+	<p>
+		Consider, for example, the sentence &#8220;All hippos are mammals.&#8221; We
+		can formalize this sentence with the following:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\forall x \in H: \text{ $x$ is a mammal.}}$</p>
+			<ul class="def">
+				<li class="where">${H \coloneqq \text{the set of all hippos.}}$</li>
+			</ul>
+		</div>
+	</figure>
+	<p>We can also use ${\forall}$ for multiple variables:</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				Open Formula: &#8220;For all real numbers $x$ and $y$, ${x + y = y +
+				x.}$&#8221;
+			</p>
+			<p>Symbolic: ${\forall x \text{ and } y, \space x + y = y + x}$</p>
+			<p>Formal Symbolism: ${\forall x, y \in \R : x + y = y + x}$</p>
+		</div>
+	</figure>
+	<p>
+		The last notation is the notation we will use for propositional calculus.
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Definition</span>. Let ${Q(x)}$ be a propositional
+			function and ${\mathbb{D}}$ be the domain of ${x.}$ A
+			<span class="boldItalics">universal statement</span> is a statement of the
+			form ${\forall x \in \mathbb{D}: Q(x).}$ It is a proposition iff some ${x
+			\in \mathbb{D}}$ is substituted for ${x.}$
+		</p>
+		<ul>
+			<li>
+				${\forall x \in \mathbb{D}: Q(x)}$ is true proposition iff ${Q(x)}$ is
+				true <span class="italicsText">for all</span> ${x \in \mathbb{D}.}$
+			</li>
+			<li>
+				${\forall x \in \mathbb{D}: Q(x)}$ is false proposition iff ${Q(x)}$ is
+				false for <span class="italicsText">at least one</span> ${x \in
+				\mathbb{D}.}$
+			</li>
+		</ul>
+		<p>
+			If some ${x \in \mathbb{D}}$ yields ${Q(x)}$ false, then such an ${x}$ is
+			called a <span class="boldItalics">counterexample</span> to ${Q(x).}$
+		</p>
+	</div>
+	<p>
+		<span class="exh">Exercise</span>. Suppose ${\mathbb{D} = \{ 1, 2, 3, 4, 5
+		\}.}$ Read this statement aloud and show its proposition is true: ${\forall
+		x \in \mathbb{D}: x^2 \geq x.}$
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			&#8220;For each number 1, 2, 3, 4, and 5, the square of the number is
+			greater than or equal to the number.&#8221;
+		</p>
+		<p>
+			&#8220;For all the numbers 1, 2, 3, 4, and 5, the square of the number is
+			greater than or equal to the number.&#8221;
+		</p>
+		<p>
+			&#8220;For every $x$ in ${\mathbb{D},}$ ${x^2}$ is greater than or equal
+			to ${x.}$&#8221;
+		</p>
+		<p>We know this is true by checking each of the possibilities:</p>
+		<div class="compare">
+			<div>
+				<p class="subheading">Case: ${x \coloneqq 1}$</p>
+				<p>${(1^2 = 1) \geq 1}$; true</p>
+			</div>
+			<div>
+				<p class="subheading">Case: ${x \coloneqq 2}$</p>
+				<p>${(2^2 = 4) \geq 2}$; true</p>
+			</div>
+			<div>
+				<p class="subheading">Case: ${x \coloneqq 3}$</p>
+				<p>${(3^2 = 9) \geq 3}$; true</p>
+			</div>
+			<div>
+				<p class="subheading">Case: ${x \coloneqq 4}$</p>
+				<p>${(4^2 = 16) \geq 3}$; true</p>
+			</div>
+			<div>
+				<p class="subheading">Case: ${x \coloneqq 5}$</p>
+				<p>${(5^2 = 25) \geq 3}$; true</p>
+			</div>
+		</div>
+	</details>
+	<p>
+		<span class="exh">Exercise</span>. Consider the statement: ${\forall x \in
+		\R: x^2 \geq x.}$ Find a counterexample to show its proposition is false.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			A clear counterexample to the statement is a float &mdash; fractional real
+			numbers:
+		</p>
+		<ul class="answer">
+			<li>Let ${x \coloneqq \frac{1}{2}}$</li>
+			<li>
+				${\left(\left( \frac{1}{2} \right)^2 = \frac{1}{4}\right) \ngeq
+				\frac{1}{2}}$
+			</li>
+		</ul>
+		<p>&#8756; The statement ${\forall x \in {\R} : x^2 \geq x}$ is false.</p>
+	</details>
+	<p>
+		In the exercises above, we proved particular propositions false by checking
+		each possible case, or, more specifically, each element in the proposition's
+		domain. This is called the
+		<span class="boldText">method of exhaustion</span>. The method will work
+		whenever a proposition's domain is finite (of course, assuming we do not
+		exhaust ourselves before we exhaust the possibilities).
+	</p>
+	<p>
+		Most propositions in mathematics, however, will have domains with infinite
+		individuals, or, if not infinite, a large enough size to render the method
+		of exhaustion impractical. For this reason, the method of exhaustion rarely
+		work for producing general mathematical propositions. Nevertheless, it is a
+		method we should always consider when confronting logical predicates.
+	</p>
+</section>
+
+<section id="existential_quantifier">
+	<h2>Existential Quantifiers</h2>
+	<p>
+		The symbol ${\exists}$ means &#8220;there exists.&#8221; As its meaning
+		implies, the symbol tells us that a particular thing exists. For example,
+		consider the sentence &#8220;There exists a student of mathematics.&#8221;
+		Using the symbol ${\exists,}$ we can formalize the sentence:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="def">
+				<li class="where">${P \coloneqq \text{ the set of all people }}$</li>
+			</ul>
+			<p>${\exists p \in P: \text{ $p$ is a student of mathematics }}$</p>
+		</div>
+	</figure>
+	<p>
+		An example from mathematics: &#8220;There are integers $m$ and $n$ such that
+		${m + n = m \cdot n.}$&#8221; Symbolically:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\exists m, n \in \Z : m + n = m \cdot n}$</p>
+		</div>
+	</figure>
+	<div class="rule">
+		<p>
+			<span class="topic">Definition</span>. Let ${Q(x)}$ be a propositional
+			function and ${\mathbb{D}}$ be the domain of ${x.}$ An
+			<span class="boldItalics">existential statement</span> is a statement of
+			the form ${\exists x \in \mathbb{D} : Q(x).}$ The statement is a
+			proposition iff some ${x \in \mathbb{D}}$ is substituted for ${x.}$
+		</p>
+		<ul>
+			<li>
+				${\exists x \in \mathbb{D} : Q(x)}$ is true iff ${Q(x)}$ is true
+				<span class="italicsText">for at least one</span> ${x \in \mathbb{D}.}$
+			</li>
+			<li>
+				${\exists x \in \mathbb{D} : Q(x)}$ is false iff ${Q(x)}$ is false
+				<span class="italicsText">for all</span> ${x \in \mathbb{D}.}$
+			</li>
+		</ul>
+	</div>
+	<p><span class="exh">Exercise</span>. Consider the statement:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\exists m \in \Z^{+} : m^2 = m}$</p>
+		</div>
+	</figure>
+	<p>Read this statement aloud and show that it is true.</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			&#8220;There exists a positive integer $m$ such that ${m^2 = m.}$&#8221;
+		</p>
+		<p>
+			We can prove that this proposition is true by finding just one member of
+			${\Z^{+}}$ for which the proposition is true. In this case, the number 1:
+		</p>
+		<div class="mproof">
+			<div class="premises">
+				<ul>
+					<li>${1 \in \Z^{+}}$</li>
+					<li>definition</li>
+				</ul>
+				<ul>
+					<li>Let ${m \coloneqq 1}$</li>
+					<li>assumption</li>
+				</ul>
+				<ul>
+					<li>${1^2 = 1}$</li>
+					<li>the statement ${\exists m \in \Z^{+} : m^2 = m}$</li>
+				</ul>
+			</div>
+			<div class="conclusion">
+				<ul>
+					<li>${\therefore T(\exists m \in \Z^{+} : m^2 = m)}$</li>
+					<li>Q.E.D.</li>
+				</ul>
+			</div>
+		</div>
+	</details>
+</section>
+
+<section id="trailing_quantifiers">
+	<h2>Trailing Quantifiers</h2>
+	<p>
+		Quantifiers will often be found at the end of a statement rather than the
+		beginning. These are called
+		<span class="italicsText">trailing quantifiers</span>. For example, each set
+		below contains statmeents expressing the same propositions:
+	</p>
+	<div class="compare">
+		<div class="rule">
+			<p>${2n}$ is even for any integer ${n.}$</p>
+			<p>For any integer ${n,}$ ${2n}$ is even.</p>
+		</div>
+		<div class="rule">
+			<p>${x^2 \leq 0}$ for some real number ${x.}$</p>
+			<p>There is at least one real number $x$ such that ${x^2 \leq 0.}$</p>
+		</div>
+	</div>
+
+	<p>
+		<span class="exh">Exercise.</span> Translate each statement below into
+		formal logic notation.
+	</p>
+	<ol>
+		<li>All triangles have three sides.</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				${\forall t \in T : \text{ has three sides, }}$ where ${T \coloneqq
+				\text{the set of all triangles} }$
+			</p>
+		</details>
+		<li>No dogs have wings.</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				${\forall d \in D : \text{no wings,}}$ where ${\text{D} \coloneqq
+				\text{the set of all dogs.}}$ Alternatively:
+			</p>
+			<p>
+				${\nexists d \in D : \text{has wings,}}$ where ${D \coloneqq \text{the
+				set of all dogs.}}$
+			</p>
+		</details>
+		<li>Some programs are structured.</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				${\exists p \in P : \text{is structured},}$ where ${P \coloneqq
+				\text{the set of all programs.}}$
+			</p>
+		</details>
+	</ol>
+</section>
+
+<section id="universal_conditional_statements">
+	<h2>Universal Conditional Statements</h2>
+	<p>
+		Consider this statement: &#8220;For all persons, if the person was born in
+		the United States, then the person is a United States citizen.&#8221; In
+		logic, this is called a
+		<span class="boldItalics">universal conditional statement</span>. Universal
+		conditionals take the form:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\forall x: P(x) \implies Q(x)}$</p>
+		</div>
+		<ul class="def">
+			<li class="where">$x$ is an individual of some set of individuals;</li>
+			<li>${P(x)}$ is a sufficient condition; and</li>
+			<li>${Q(x)}$ is a necessary condition.</li>
+		</ul>
+	</figure>
+	<p>
+		Translating universal conditionals to informal language and vice versa is a
+		core skill in mathematics.
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Problem.</span> Translate the following universal
+			conditional into informal language: ${\forall x \in \R : (x > 3) \implies
+			(x^2 > 9)}$
+		</p>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>Possible translations:</p>
+			<ul>
+				<li>
+					If <span class="italicsText">a real number</span> is greater than 3,
+					then its square is greater than 9.
+				</li>
+				<li>
+					<span class="italicsText">Whenever</span> a real number is greater
+					than 3, then its square is greater than 9.
+				</li>
+				<li>
+					the square of <span class="italicsText">any</span> real number greater
+					than 3 is greater than 9.
+				</li>
+				<li>
+					The squares of <span class="italicsText">all</span> real numbers
+					greater than 3 are greater than 9.
+				</li>
+			</ul>
+		</details>
+		<p>
+			<span class="topic">Problem.</span> Translate the following informal
+			statements into a universal conditional:
+		</p>
+		<ol>
+			<li>If a real number is an integer, then it is a rational number.</li>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>${\forall x \in \R : (x \in \Z) \implies (x \in \mathbb{Q})}$</p>
+			</details>
+			<li>All bytes have two nibbles.</li>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>${\forall x : (x \in b) \implies (\text{$x$ has two nibbles})}$</p>
+				<ul class="def">
+					<li class="where">$b$ is the set of all bytes</li>
+				</ul>
+			</details>
+			<li>No fire trucks are blue.</li>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>${\forall t : (t \in f) \implies (\text{$t$ is blue})}$</p>
+				<ul class="def">
+					<li class="where">$t$ is a truck; and</li>
+					<li>$f$ is the set of all trucks.</li>
+				</ul>
+			</details>
+		</ol>
+	</div>
+</section>
+
+<section id="universal_conditionals_and_if-then_propositions">
+	<h2>Universal Conditions</h2>
+	<p>
+		From the problems above, we can see why the truth table for
+		<span class="italicsText">if-then</span> propositions are structured the way
+		they are. Recall the <span class="italicsText">if-then</span> proposition's
+		truth table:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>${p}$</th>
+				<th>${q}$</th>
+				<th>${p \implies q}$</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>T</td>
+					<td>T</td>
+					<td>T</td>
+				</tr>
+				<tr>
+					<td>T</td>
+					<td>F</td>
+					<td>F</td>
+				</tr>
+				<tr>
+					<td>F</td>
+					<td>T</td>
+					<td>T</td>
+				</tr>
+				<tr>
+					<td>F</td>
+					<td>F</td>
+					<td>T</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>Now consider the proposition:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\forall x \in \R : (x > 2) \implies (x^2 > 4)}$</p>
+		</div>
+	</figure>
+	<p>
+		This proposition implies that the conditional ${(x > 2 \implies (x^2 > 4))}$
+		must be true for all ${x \in \R.}$ However, we can find examples where (a)
+		the sufficient condition is false and the necessary condition is false, and
+		(b) the sufficient condition is false and the necessary condition is true:
+	</p>
+	<div class="rule">
+		<p>
+			Suppose ${x = 1.}$ Then ${(1 > 2) \implies ((1)^2 > 4).}$ The sufficient
+			condition is false, and the necessary condition is false.
+		</p>
+		<p>
+			Suppose ${x = -3.}$ Then ${(1 > 3) \implies ((-3)^2 > 9).}$ The sufficient
+			condition is false, and the necessary condition is true.
+		</p>
+	</div>
+	<p>
+		Because of the fact that a false sufficient condition leads to either a true
+		or false necessary condition, we treat conditional propositions as true
+		whenever the sufficient condition is false.
+	</p>
+</section>
+
+<section id="equivalence_universal_existential">
+	<h2>Equivalence: Universal Propositions</h2>
+	<p>Consider these two propositions:</p>
+	<div class="rule">
+		<p>${\forall x \in \R : (x \in \Z) \implies (x \in \mathbb{Q})}$</p>
+		<ul>
+			<li>
+				&#8220;For all real numbers ${x,}$ if $x$ is an integer, then $x$ is
+				rational.&#8221;
+			</li>
+		</ul>
+		<p>${\forall x \in \Z : x \in \mathbb{Q}}$</p>
+		<ul>
+			<li>&#8220;All integers are rationals.&#8221;</li>
+		</ul>
+	</div>
+	<p>
+		These two statements express the same proposition, since ${\Z \subseteq
+		\R.}$ We can express this more generally:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule.</span> Every statement of the form ${\forall x
+			\in U : P(x) \implies Q(x)}$ can be written as ${\forall x \in D : Q(x),}$
+			provided ${D \subseteq U.}$
+		</p>
+	</div>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule.</span> Every statement of the form ${\forall x
+			\in D : Q(x)}$ can be written as ${\forall x : (x \in D) \implies Q(x).}$
+		</p>
+	</div>
+	<p>
+		<span class="exh">Exercise.</span> Rewrite the following statement in the
+		two forms above: &#8220;All squares are rectangles.&#8221;
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>${\forall s : s \in r.}$</p>
+		<ul class="def">
+			<li class="where">$s$ is a square; and</li>
+			<li>$r$ is the set of all rectangles.</li>
+		</ul>
+		<p>${\forall x : (x \in s) \implies (s \in r)}$</p>
+		<ul class="def">
+			<li class="where">$s$ the set of all squares; and</li>
+			<li>$r$ is the set of all rectangles.</li>
+		</ul>
+	</details>
+</section>
+
+<section id="euivalent_forms_existentials">
+	<h2>Equivalence: Existential Propositions</h2>
+	<p>
+		Like universal propositions, existential propositions have equivalent forms.
+		A
+		<span class="italicsText">prime number</span> is an integer greater than 1
+		whose only positive integer factors are itself and 1. With this definition,
+		consider the statement &#8220;There is an integer that is both prime and
+		even.&#8221; We can express this statement's proposition with the following:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\exists n : \text{Prime($n$)} \land \text{Even($n$)}.}$</p>
+		</div>
+	</figure>
+	<p>The proposition above itself consists of two component propositions:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\exists n : \text{Prime($n$)};}$</p>
+			<p>${\exists n : \text{Even($n$)}}$</p>
+		</div>
+	</figure>
+</section>
+
+<section id="variables_and_scope">
+	<h2>Variables and Scope</h2>
+	<p>Consider the following statements:</p>
+	<figure class="math-display">
+		<ol>
+			<li>For every integer ${x,}$ ${x^2 \geq 0.}$</li>
+			<li>There exists a real number ${x}$ such that ${x^2 = 16.}$</li>
+		</ol>
+	</figure>
+	<p>
+		Observe: We don't actually have to call the variable ${x.}$ We could call it
+		whatever we'd like, it's at our discretion, so long as we use that variable
+		name consistently.
+	</p>
+	<p>
+		We say that the variable ${x}$ is <span class="italicsText">bound</span> by
+		the quantifier that controls it. In the first statement, ${x}$ is bound by a
+		universal quantifier, and in the second statement, ${x}$ is bound by an
+		existential quantifier.
+	</p>
+	<p>
+		In both statements, the variable ${x}$ has a
+		<span class="italicsText">scope</span>. The scope of ${x}$ in the first
+		statement begins with the universal quantifier, and ends at the quantified
+		statement's end. Thus, the variable ${x}$ is in the first statement is
+		different from the variable ${x}$ in the second statement, and vice versa.
+	</p>
+</section>
+
+<section id="implicit_quantification">
+	<h2>Implicit Quantification</h2>
+	<p>
+		Quantifiers often appear
+		<span class="italicsText">implicitly</span> in mathematics. For example:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>If a number is an integer, then it is a rational number.</p>
+		</div>
+	</figure>
+	<p>
+		This statement is a universal statement. The indicator here is the
+		indefinite article &#8220;a.&#8221; The clause &#8220;If
+		<span class="italicsText">a</span> number is&#8221; implies &#8220;for all
+		numbers.&#8221; We call this phenomenon
+		<span class="term">implicit universal quantification.</span>
+	</p>
+	<p>
+		Implicit quantification also occurs for existential statements. For example:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>The number 12 can be written as a sum of two even integers.</p>
+		</div>
+	</figure>
+	<p>
+		The key word in the above statement is the word &#8220;can.&#8221; That
+		implies possibility, and where there is possibility, there is an assertion
+		of existence. In this case, the existence of two even integers that summate
+		to 12.
+	</p>
+	<p>
+		Many of us have encountered implicit quantifications in mathematics for
+		years without even realizing it. For example, consider the statement:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>If ${x > 2,}$ then ${x^2 > 4.}$</p>
+		</div>
+	</figure>
+	<p>The statement is more formally understood as:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>For all ${x \in \R,}$ if ${x > 2,}$ then ${x^2 = 4.}$</p>
+		</div>
+	</figure>
+	<p>If we wanted to be even more formal:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>${\forall (x \in \R) : [(x > 2) \implies (x^2 > 4)]}$</p>
+		</div>
+	</figure>
+</section>
+
+<section id="negations_of_quantified_statements">
+	<h2>Negating Universal Quantifiers</h2>
+	<p>Suppose the following proposition:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>&#8220;All angels love humanity.&#8221;</p>
+		</div>
+	</figure>
+	<p>
+		What might be the negation for this statement? Some might quickly jump to
+		&#8220;No angels love humanity.&#8221; But this would be false &mdash;
+		Lucifer might want to have a word on the matter. Owing to his intelligence,
+		he might appeal to logic rather than Genesis, and he would win on that
+		shoulder. The correct negation for the statement above is: &#8220;There
+		exists at least one angel that does not love humanity.&#8221;
+	</p>
+	<p>
+		Thus, if we see a proposition asserting &#8220;all ... are ...&#8221; or
+		&#8220;every ... is ...,&#8221; then the proposition's negation is
+		&#8220;some are not&#8221; or &#8220;there is at least one that is
+		not.&#8221; More formally:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Theorem.</span> Suppose a proposition of the form:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\forall x \in \mathbb{D} : Q(x)}$</p>
+				</div>
+			</figure>
+			<p>Then the proposition's negation is:</p>
+			<figure class="math-display">
+				<div>
+					<p>${\exists x \in \mathbb{D} : \neg Q(x)}$</p>
+				</div>
+			</figure>
+			<p>Symbolically:</p>
+			<figure class="math-display">
+				<div>
+					<p>
+						${\neg [ \forall x \in \mathbb{D} : Q(x) ] \equiv [ \exists x \in
+						\mathbb{D} : \neg Q(x) ]}$
+					</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+	<p>
+		<span class="topic">Negations of Existential Quantifiers.</span> Consider
+		the following proposition:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>&#8220;Some humans are robots.&#8221;</p>
+		</div>
+	</figure>
+	<p>
+		What is the negation of this statement? The negation asserts the
+		proposition's opposite truth value. Thus, the negation is &#8220;No humans
+		are robots&#8221; or &#8220;All humans are not robots.&#8221; This
+		proposition effectively states, if we checked every single human, we would
+		find that not a single one of them is a robot.
+	</p>
+	<p>
+		Hence, whenever we see a proposition asserting &#8220;some are&#8221; or
+		&#8220;there is a ...,&#8221; the negation is &#8220;none are&#8221; or
+		&#8220;all are not.&#8221; More formally:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p><span class="topic">Theorem.</span> Suppose the proposition:</p>
+			<figure class="math-display">
+				<div>
+					<p>${\exists x \in \mathbb{D} : Q(x)}$</p>
+				</div>
+			</figure>
+			<p>Then the proposition's negation is:</p>
+			<figure class="math-display">
+				<div class="rule">
+					<p>${\forall x \in \mathbb{D} : \neg Q(x)}$</p>
+				</div>
+			</figure>
+			<p>Symbolically:</p>
+			<figure class="math-display">
+				<div>
+					<p>
+						${\neg [\exists x \in \mathbb{D}] \implies [\forall x \in \mathbb{D}
+						: \neg Q(x)]}$
+					</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+	<p>
+		Notice the elegant symmetry between the negations of existential and
+		universal quantifiers.
+	</p>
+</section>
+
+<section id="negations_of_universal_conditional_statements">
+	<h2>Negating Universal Conditionals</h2>
+	<p>
+		Universal conditional statements are found throughout mathematics. (e.g.,
+		&#8220;For all real numbers ${x,}$ if ... then ...&#8221; Because of their
+		pervasiveness, we must be comfortable negating them.
+	</p>
+	<p>Consider the following universal conditional:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				For all U.S. citizens, if the person is 18, then the person can vote.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The negation of this statement is an
+		<span class="monoText">and</span> statement:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				There exists a U.S. citizen who is 18
+				<span class="italicsText">and</span> cannot vote.
+			</p>
+		</div>
+	</figure>
+	<p>Formalizing this observation into a rule:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Rule.</span> Suppose ${P(x)}$ and ${Q(x)}$ are
+				propositions. Then
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>
+						${\neg (\forall x : [P(x) \implies Q(x)]) \equiv \exists x : [P(x)
+						\land Q(x)]}$
+					</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+</section>
+
+<section id="vacuously_true">
+	<h2>Vacuous Truth</h2>
+	<p>
+		At a conference, there is 1 physicist and 5 mathematicians. John says,
+		&#8220;All the attendees are mathematicians.&#8221; Is this true? It is true
+		if and only if its negation is false. The negation: &#8220;There is at least
+		one attendee that is not a mathematician.&#8221; Clearly, this is true,
+		since the physicist attends. Hence, John's statement is false.
+	</p>
+	<p>
+		Now, suppose the conference has no attendees. John again says, &#8220;All
+		the attendees are mathematicians.&#8221; Is this true? Again, it is true if
+		and only if its negation is false. The negation: &#8220;There is at least
+		one attendee that is not mathematician.&#8221; This statement is false,
+		since there are no attendees.
+	</p>
+	<p>
+		So is John's statement true? Yes, but it is a special kind of truth. We call
+		such a statement <span class="term">vacuously true</span> (&#8220;true by
+		default&#8221;).
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> Generally, a statement of the
+				form:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\forall x \in D : [P(x) \implies Q(x)]}$</p>
+				</div>
+			</figure>
+			<p>
+				is <span class="italicsText">vacuously true</span> if, and only if, P(x)
+				is false for all ${x \in D.}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		As an aside, the phrase &#8220;in general&#8221; has a special place in
+		mathematics. In ordinary speech, the phrase means &#8220;usually, but not
+		always.&#8221; In mathematics, we use it to mean &#8220;always true.&#8221;
+	</p>
+</section>
+
+<section id="contrapositives_existentials">
+	<h2>Variants of Universal Conditionals.</h2>
+	<p>
+		Recall that for every conditional, there is a contrapositive, converse, and
+		inverse. The same rule applies for universal conditional propositions. For
+		example, consider the following universal conditional:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>For all animals, if the animal is a dog, then the animal barks.</p>
+		</div>
+	</figure>
+	<p>
+		When constructing the <span class="italicsText">variants</span>, we retain
+		the quantifier and construct as we would usually. The contrapositive: For
+		all animals, if the animal does not bark, then the animal is not a dog. The
+		inverse: For all animals, if the animal is not a dog, then the animal does
+		not bark. The converse: For all animals, if the animal barks, then the
+		animal is a dog. More formally:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p><span class="topic">Rule</span>. Given a statement of the form:</p>
+			<figure class="math-display">
+				<div>
+					<p>${\forall x \in D : [P(x) \implies Q(x)]}$</p>
+				</div>
+			</figure>
+			<ol>
+				<li>
+					The <span class="italicsText">contrapositive</span> is: ${\forall x
+					\in D : [\neg Q(x) \implies \neg P(x)].}$
+				</li>
+				<li>
+					The <span class="italicsText">inverse</span> is: ${\forall x \in D :
+					\neg P(x) \implies Q(x).}$
+				</li>
+				<li>
+					The <span class="italicsText">converse</span> is: ${\forall x \in D :
+					Q(x) \implies P(x).}$
+				</li>
+			</ol>
+		</div>
+	</figure>
+</section>
+
+<section id="multiple_quantifiers">
+	<h2>Multiple Quantifiers</h2>
+	<p>Consider the following statement:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>There is a teaching assistant supervising every student section.</p>
+		</div>
+	</figure>
+	<p>
+		This is an example of a statement containing multiple quantifiers. Moreover,
+		it is an <span class="italicsText">ambiguous</span> statement because there
+		are two possible interpretations: (1) There is a single teaching assistant
+		supervising all of the student sections; or (2) For each student section,
+		there is exactly one teaching assistant supervising. In everyday speech, we
+		rely on context to resolve this ambiguity. If there are 20 student sections
+		occurring at different times, some simultaneously, then (2) is likely the
+		correct interpretation.
+	</p>
+
+	<p>
+		In mathematics, we <span class="underlineText">cannot</span> rely on
+		context, and ambiguity must be quickly rooted out or prevented at all costs.
+		This is done by ensuring our statements conform to established rules. The
+		core rule:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Rule.</span> When a statement contains multiple
+				quantifiers, we assume the actions suggested by the quantifiers are
+				performed in the order in which they occur.
+			</p>
+		</div>
+	</figure>
+
+	<p>For example, suppose:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\forall x \in D : (\exists y \in E : P(x, y))}$</p>
+		</div>
+	</figure>
+	<p>
+		The statement above is read: For all ${x}$ in ${D,}$ there exists a ${y}$ in
+		${E}$ such that the property ${P}$ holds for ${x}$ and ${y.}$ For the
+		proposition to be true, the following must be true:
+	</p>
+
+	<ol>
+		<li>
+			Suppose someone selected <span class="underlineText">any</span> element in
+			${D,}$ call it ${x.}$
+		</li>
+		<li>Then suppose she looks inside ${E.}$</li>
+		<li>
+			She would find that there is an element ${y}$ inside ${E}$ such that both
+			${x}$ and ${y}$ satisfy property ${P.}$
+		</li>
+	</ol>
+
+	<p>Now consider the following statement:</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${\exists x \in D : [\forall y \in E : P(x, y)]}$</p>
+		</div>
+	</figure>
+
+	<p>
+		We read the statement above as: There exists an ${x}$ in ${D}$ such that,
+		for all ${y}$ in ${E,}$ the property ${P}$ holds for both ${x}$ and ${y.}$
+	</p>
+
+	<p>To prove the statement is true, we must prove the following:</p>
+	<ol>
+		<li>
+			Suppose someone selects <span class="underlineText">any</span> ${y}$ in
+			${E.}$
+		</li>
+		<li>
+			Then, she can find at least one ${x}$ in ${D}$ such that ${x}$ and ${y}$
+			will always satisfy the property ${P.}$
+		</li>
+	</ol>
+	<p>
+		In other words, we must find an ${x}$ will work to satisfy ${P(x, y)}$ no
+		matter what ${y}$ is selected.
+	</p>
+
+	<p>
+		<span class="topic">Negating Multiple Quantifier Statements.</span> Consider
+		the statement: For all people, there exists a friend who is a criminal. To
+		negate this statement, we follow the same rule of evaluating the operations
+		in the order in which they appear: There exists a person where none of his
+		or her friends are criminal.
+	</p>
+	<p>
+		Another example: There exists a politician all of whose statements made are
+		honest. The negation: For all politicians, there exists a statement made
+		that is not honest. More formally:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Rule.</span> The negations of multiple quantifier
+				statements are the following:
+			</p>
+			<p>
+				$\neg (\forall x \in D : [\exists y \in E : P(x, y)]) \equiv \exists x
+				\in D : [\forall y \in E : \neg P(x, y)]$
+			</p>
+			<p>
+				$\neg (\exists x \in D : [\forall y \in E : P(x,y)]) \equiv \forall x
+				\in D : [\exists y \in E : \neg P(x, y)]$
+			</p>
+		</div>
+	</figure>
+</section>
+
+<section id="arguments_with_quantified_statements">
+	<h2>Arguments with Quantified Statements</h2>
+	<p>
+		Below are some of the most common argument forms and rules related to
+		quantified statements.
+	</p>
+
+	<p>
+		<span class="topic">Universal Instantiation.</span> If a property is true
+		for everything in a set, then it is true for a particular member of that
+		set. A famous example:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="larg">
+				<li>All men are mortal.</li>
+				<li>Socrates is a man.</li>
+				<li class="conc">Socrates is mortal.</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		Universal instantiation is the foundational principle of deductive logic.
+		Because ${x}$ is an instance of a particular type ${m,}$ and we know that
+		all instances of type ${m}$ inherit property ${N,}$ it must be true that
+		${x}$ has the property ${N.}$
+	</p>
+
+	<p>
+		<span class="topic">Universal Modus Ponens.</span> Consider the following
+		argument:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="larg">
+				<li>
+					For all mangoes, if the mango is yellow, then the mango is ripe.
+				</li>
+				<li>This fruit is a yellow mango.</li>
+				<li class="conc">This fruit is a ripe mango.</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		This is an example of
+		<span class="italicsText">universal modus ponens</span>. More formally:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> The argument form
+				<span class="italicsText">universal modus ponens</span> takes the form:
+			</p>
+			<figure class="math-display">
+				<div>
+					<ul class="larg">
+						<li>${\forall x \in D : [P(x) \implies Q(x)]}$</li>
+						<li>${a \in D : P(a)}$</li>
+						<li class="conc">${Q(a)}$</li>
+					</ul>
+				</div>
+			</figure>
+		</div>
+	</figure>
+
+	<p>
+		<span class="topic">Universal Modus Tollens.</span> Now consider this
+		argument:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="larg">
+				<li>All humans are mortal.</li>
+				<li>Zeus is not mortal.</li>
+				<li class="conc">Zeus is not human.</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		We call this argument form
+		<span class="italicsText">universal modus tollens</span>. The argument
+		provides: All instances of ${x}$ have some property ${P.}$ Since ${z}$ does
+		not have the property ${P,}$ ${z}$ is not an instance of ${x.}$
+	</p>
+</section>
+
+<section id="translating_quantifiers">
+	<h2>Translating Informal Language to Formal Logic</h2>
+	<p>
+		To properly analyze statements, we must be able to quickly translate
+		informal language to formal logic and vice versa. Below are translation
+		methods, both for propositional and predicate calculus.
+	</p>
+	<p>
+		<span class="topic">Exclusive Disjunction</span>. The word
+		<span class="italicsText">or</span>, by default, is inclusive. Thus, given
+		two propositions $p$ and $q$, When we refer to the
+		<span class="italicsText">exclusive or</span>, we mean ${(p \lor q) \land
+		(\neg (p \land q)),}$ or ${p \oplus q}$ for short.
+	</p>
+	<p>
+		Note that when we say ${p \oplus q,}$ we are saying that $p$ and $q$ have
+		different truth-values. Because they have different truth values, we are
+		denying the biconditional ${p \iff q.}$ Thus, ${(p \oplus q) \implies (\neg
+		(p \iff q.))}$
+	</p>
+	<p>
+		For example, the sentence &#8220;Either John is lying or Jane is
+		lying&#8221; implies that it cannot be true that John or Jane is lying if
+		and only if the other is lying.
+	</p>
+	<p>
+		<span class="topic">Conjunctions</span>. The following words all indicate a
+		conjunction:
+	</p>
+	<ul>
+		<li>&#8220;and&#8221;</li>
+		<li>&#8220;including&#8221;</li>
+		<li>&#8220;but&#8221;</li>
+		<li>&#8220;moreover&#8221;</li>
+		<li>&#8220;furthermore&#8221;</li>
+		<li>&#8220;however&#8221;</li>
+		<li>&#8220;although&#8221;</li>
+		<li>&#8220;even though&#8221;</li>
+		<li>&#8220;additionally&#8221;</li>
+	</ul>
+	<p>
+		Conjunctions often connect nouns or adjectives rather than propositions.
+		When confronted with such conjunctions, there are individual propositions.
+	</p>
+	<div class="compare">
+		<div>
+			<p>&#8220;John and Jane are siblings.&#8221;</p>
+			<ul>
+				<li>&#8220;John is a sibling.&#8221;</li>
+				<li>&#8220;Jane is a sibling.&#8221;</li>
+			</ul>
+		</div>
+		<div>
+			<p>&#8220;The kiwi is ripe, green, and sweet.&#8221;</p>
+			<ul>
+				<li>&#8220;The kiwi is ripe.&#8221;</li>
+				<li>&#8220;The kiwi is green.&#8221;</li>
+				<li>&#8220;The kiwi is sweet.&#8221;</li>
+			</ul>
+		</div>
+	</div>
+	<p>
+		Notice that the John and Jane example sentence does not imply that John and
+		Jane are siblings to one another.
+	</p>
+	<p>
+		<span class="topic">Words Indicating Existential Quantifiers</span> There
+		are numerous indicators of existential quantifiers:
+	</p>
+	<ul>
+		<li>&#8220;there exists&#8221;</li>
+		<li>&#8220;there is a&#8221;</li>
+		<li>&#8220;there are&#8221; (this implies there is at least one)</li>
+		<li>&#8220;we can find a&#8221;</li>
+		<li>&#8220;there is at least one&#8221;</li>
+		<li>&#8220;for some&#8221;</li>
+		<li>&#8220;for at least one&#8221;</li>
+		<li>&#8220;for most&#8221; (this also implies there is at least one)</li>
+	</ul>
+	<p>
+		<span class="topic">&#8220;neither ... nor ...&#8221;</span> Given two
+		propositions $p$ and ${q,}$ the proposition &#8220;Neither $p$ nor
+		$q$&#8221; means that both $p$ and $q$ are false:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\text{neither $p$ nor $q$} \equiv (\neg p) \land (\neg q)}$</p>
+			<p>${\phantom{\text{Neither $p$ nor $q$}} \equiv \neg (p \lor q)}$</p>
+		</div>
+	</figure>
+	<p>
+		<span class="topic">&#8220;not both, both not&#8221;</span> Given the
+		proposition ${\text{not both $p$ and $q$},}$ we mean that $p$ and $q$ cannot
+		both be true. One of them may be true, but not both. In contrast, when we
+		say ${\text{both not $p$ and $q$},}$ we are denying each of $p$ and $q$.
+		Thus:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\text{not both $p$ and $q$} \equiv \neg (p \land q)}$</p>
+			<p>
+				${\phantom{\text{not both $p$ and $q$}} \equiv (\neg p) \lor (\neg q)}$
+			</p>
+			<p>${\text{both not $p$ and $q$} \equiv (\neg p) \land (\neg q)}$</p>
+		</div>
+	</figure>
+	<p>
+		<span class="topic">&#8220;unless&#8221;</span> The word
+		<span class="italicsText">unless</span> denotes an inclusive disjunction,
+		and in some instances, an exclusive disjunction. A helpful way to translate
+		such statements is the following: Suppose $a$ and $b$ are propositions.
+		Then:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\text{$a$ unless $b$} \equiv b \implies (\neg a)}$</p>
+			<p>${\phantom{\text{$a$ unless $b$}} \equiv a \implies (\neg b)}$</p>
+		</div>
+	</figure>
+	<p>
+		<span class="topic">Words Indicating Universal Quantifiers</span> Likewise,
+		for universal quantifiers:
+	</p>
+	<ul>
+		<li>&#8220;every&#8221;</li>
+		<li>&#8220;each&#8221;</li>
+		<li>&#8220;all&#8221;</li>
+		<li>&#8220;any&#8221;</li>
+	</ul>
+</section>
+{% endblock %}

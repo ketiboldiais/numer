@@ -34,6 +34,16 @@ urlpatterns = [
 
 	path("geo_trig", views.geo_trig, name="geo_trig"),
 
+	# logic paths
+	path("log_preface", views.log_preface, name="log_preface"),
+
+	path("log_propositional", views.log_propositional, name="log_propositional"),
+
+	path("log_arguments", views.log_arguments, name="log_arguments"),
+
+	path("log_predicateCalculus", views.log_predicateCalculus, name="log_predicateCalculus"),
+	
+
 	# discrete math paths
 	path("disc_preface", views.disc_preface, name="disc_preface"),
 
@@ -57,13 +67,15 @@ urlpatterns = [
 
 	path("disc_functionsRelations", views.disc_functionsRelations, name="disc_functionsRelations"),
 
-	path("disc_logic", views.disc_logic, name="disc_logic"),
-
 	path("disc_logicCircuits", views.disc_logicCircuits, name="disc_logicCircuits"),
 
 	path("disc_counting", views.disc_counting, name="disc_counting"),
 
 	path("disc_combinatorics", views.disc_combinatorics, name="disc_combinatorics"),
+
+	path("disc_algorithms", views.disc_algorithms, name="disc_algorithms"),
+
+
 	
 	# continuous math paths
 	path("", views.index, name="index"),

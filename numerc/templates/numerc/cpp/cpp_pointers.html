@@ -780,5 +780,134 @@
 		memory leaks; and (3) dangling pointers. These are the three most common
 		problems with pointers.
 	</p>
+	<p>
+		An uninitialized pointer occurs when we simply declare a pointer &mdash;
+		e.g., <span class="monoText">int *p;</span> &mdash; and do not assign to it
+		an address. When we do so, the pointer <span class="monoText">p</span> will
+		point to some address. That address likely contains
+		<span class="term">garbage value</span> &mdash; values that may or may not
+		belong to our program. Because we do not know what that address contains,
+		uninitialized pointers can cause serious problems.
+	</p>
+	<p>
+		The fix is to ensure that upon declaring a pointer, there is always an
+		assignment following thereafter. One way to do this is to momentarily have
+		the pointer immediately point to an existing variable. Another way is to
+		dynamically allocate some memory immediately after the pointer's
+		declaration. E.g.,
+	</p>
+	<pre class="language-cpp"><code>
+		int *p;
+		p = new int;
+	</code></pre>
+	<p>
+		The second problem, memory leaks, occurs when we fail to de-allocate
+		pointers. If we've ever used an application and it suddenly crashes while
+		we're working, a likely culprit is the memory leak. This happens because the
+		program may contain hundreds of pointers, some of which may not be
+		de-allocated after use, or not de-allocated soon enough.
+	</p>
+	<p>
+		The fix is to ensure that every pointer is de-allocated when no longer in
+		use:
+	</p>
+	<pre class="language-cpp"><code>
+		int *p = new int[5];
+
+		// some code using p
+
+		// de-allocate:
+		delete []p;
+		p = nullptr; 
+	</code></pre>
+	<p>
+		Note that when de-allocating, we can also write
+		<span class="monoText">p = NULL;</span> or
+		<span class="monoText">p = 0;</span>. However, because
+		<span class="monoText">nullptr</span> is a special literal in C++, it is
+		best practice to use <span class="monoText">nullptr</span>. Furthermore,
+		always ensure that the pointer is deleted
+		<span class="underlineText">before</span> assigning
+		<span class="monoText">nullptr</span>.
+	</p>
+	<p>
+		The third problem, a dangling pointer, is best explained with an example:
+	</p>
+	<pre class="language-cpp"><code>
+		void func(int *q) {
+			// func is a function that takes an int pointer
+			// coding using q
+			delete []q;
+		}
+		int main() {
+			int *p = new int[5];
+			/* 
+			 * some code using p
+			*/
+			func(p); // call to func
+		}
+	</code></pre>
+	<p>
+		In the code above, the function <span class="monoText">func()</span> takes a
+		pointer as an argument. Inside <span class="monoText">main()</span>, we have
+		a pointer <span class="monoText">p</span> pointing to some address in the
+		heap. We then pass <span class="monoText">p</span> as an argument to
+		<span class="monoText">func()</span>. Now, inside
+		<span class="monoText">func</span>, the parameter
+		<span class="monoText">q</span> is assigned the pointer
+		<span class="monoText">p</span>. This means that
+		<span class="monoText">q</span> and <span class="monoText">p</span> are
+		pointing to the same address in the heap. When we delete the pointer
+		<span class="monoText">q</span>, we effectively de-allocate the memory we
+		set aside in the heap. This in turn means that
+		<span class="monoText">p</span>, inside
+		<span class="monoText">main()</span>, is now pointing to some garbage
+		address. <span class="monoText">p</span> has now become a
+		<span class="italicsText">dangling pointer</span>, tantamount to an
+		uninitialized pointer.
+	</p>
+</section>
+
+<section id="references">
+	<h2>References</h2>
+	<p>
+		This discussion on pointers presents an ideal segway to
+		<span class="term">references</span> &mdash; aliases to variables. To
+		consider how this works, examine the output of the following code:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main() {
+			int x = 10;
+			int &y = x;
+			cout << "x = " << x << endl;
+			cout << "y = " << y << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 10
+		y = 10
+	</code></pre>
+	<p>
+		Notice that <span class="monoText">x</span> and
+		<span class="monoText">y</span> output the same value. This is because the
+		<span class="monoText">&</span> operator is a
+		<span class="italicsText">referencing</span> operator. In other words, by
+		appending an ampersand to <span class="monoText">y</span> and assigning it
+		an existing variable, <span class="monoText">y</span> has become an
+		<span class="italicsText">alias</span> of <span class="monoText">x</span>.
+	</p>
+	<p>
+		This operation relates closely to pointers. The identifier
+		<span class="monoText">x</span> is just a name for the memory address that
+		stores the bits comprising <span class="monoText">10</span>. When we write
+		<span class="monoText">&y</span>, we instruct C++, this identifier,
+		<span class="monoText">y</span>, is another name for the address identified
+		as <span class="monoText">x</span>.
+	</p>
 </section>
 {% endblock %}

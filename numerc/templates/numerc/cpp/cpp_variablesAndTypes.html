@@ -1331,6 +1331,521 @@
 <section id="strings">
 	<h2>Strings in <span class="monoText">C++</span></h2>
 	<p>
+		In C++, there are two approaches to represent strings: (1) as an array of
+		<span class="monoText">char</span> values; or (2) as an instance of the
+		class <span class="monoText">string</span>. In C++, the second approach is
+		preferred.
+		<span class="marginnote"
+			>The first approach, representing strings as an array of character values,
+			originates in the C language. It is how strings are represented in C, and
+			because C++ is a superset of C, the same approach can be applied in
+			C++.</span
+		>
+	</p>
+
+	<h3>Character Arrays</h3>
+	<p>Applying the first approach:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void printString(char arr[], int n);
+		int main() {
+			char greet[] = "Hello world!";
+			cout << greet << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Hello world!
+	</code></pre>
+	<p>
+		Notice the use of square bracket syntax to denote an array of
+		<span class="monoText">char</span>. An important point to notice about
+		character arrays is their size. Recalling the fact that a
+		<span class="monoText">char</span> type takes 1 byte, consider this output:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void printString(char arr[], int n);
+		int main() {
+			char greet[] = "Hello world!";
+			int sizeOf_greet = sizeof(greet);
+			cout << "size of greet = " << sizeOf_greet << " bytes" << endl;
+
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		size of greet = 13 bytes
+	</code></pre>
+	<p>
+		The array <span class="monoText">greet</span> consists of 12 elements (there
+		are 12 characters in &#8220;Hello world!&#8221;). Why are we seeing 13 bytes
+		as the size of <span class="monoText">greet</span>? Because every character
+		array, denoted as a string, takes one extra byte, reserved for
+		<span class="monoText">\0</span>. This value,
+		<span class="monoText">\0</span>, is called the
+		<span class="term">null byte</span>, or more specifically, the
+		<span class="term">string delimiter</span>. It is the byte at the very end
+		of the array, placed there to indicate the end of an array of characters, a
+		string.
+		<span class="marginnote"
+			>Note that not every character array is a string. The array
+			<span class="monoText">{'b', 'y', 'e'}</span> is a
+			<span class="monoText">char</span> array, but it is not a string. However,
+			once we include the string delimiter, it is considered a string:
+			<span class="monoText">{'b', 'y', 'e', '\0'}</span>.</span
+		>
+	</p>
+	<p>
+		<span class="topic">Reading & Writing Character Arrays.</span> We can read
+		and write <span class="monoText">char</span> arrays with
+		<span class="monoText">cin</span> and <span class="monoText">cout</span>.
+		The catch, however, is that we must indicate the size of the character
+		array. This can lead to wasted space, but we will address this problem
+		later.
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void printString(char arr[], int n);
+		int main() {
+			char name[20];
+			cout << "What's your name?" << endl;
+			cin >> name;
+			cout << "Hello, " << name << "." << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		What's your name?
+		Dorian
+		Hello, Dorian.
+	</code></pre>
+	<p>
+		The problem with the approach above, however, is that it will not read
+		anything after a whitespace:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void printString(char arr[], int n);
+		int main() {
+			char name[20];
+			cout << "What's your name?" << endl;
+			cin >> name;
+			cout << "Hello, " << name << "." << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		What's your name?
+		Dorian Gray
+		Hello, Dorian.
+	</code></pre>
+	<p>To fix this, we need to use <span class="monoText">cin.get</span>:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void printString(char arr[], int n);
+		int main() {
+			char name[20];
+			cout << "What's your name?" << endl;
+			cin.get(name, 20);
+			cout << "Hello, " << name << "." << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		What's your name?
+		Dorian Gray
+		Hello, Dorian Gray.
+	</code></pre>
+	<p>
+		Notice the syntax for <span class="monoText">cin.get()</span>. We must pass
+		into it the variable we want to store the input in, and the number of
+		characters to be read. With <span class="monoText">cin.get()</span>, if we
+		pass in 20 for the number of characters, the number of characters to be read
+		is actually 19, with 1 for the null byte.
+	</p>
+	<p>
+		If we want multiple string inputs from the user, we use
+		<span class="monoText">cin.getline()</span>. This is a separate function for
+		reading strings because <span class="monoText">cin.get()</span> does not
+		differentiate between different <span class="monoText">enter</span> key
+		inputs. If we do want to use <span class="monoText">cin.get()</span>, we
+		should separate the different <span class="monoText">cin.get()</span> calls
+		with a <span class="monoText">cin.ignore()</span>. Of course, it is much
+		easier to just use <span class="monoText">cin.getline()</span> whenever we
+		seek multiple inputs from the user.
+	</p>
+
+	<h3>Functions on Strings</h3>
+	<p>
+		C++ provides several string functions through
+		<span class="monoText">string.h</span>, a header file, or alternatively,
+		through <span class="monoText">cstring</span>. These are both libraries
+		providing various operations we can perform on strings.
+	</p>
+	<p>
+		<span class="topic">Finding a String's Length.</span> Without the
+		aforementioned libraries, one way to find a string's length is with the
+		<span class="monoText">sizeof()</span> operator:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main() {
+			char greet[] = "Foo bar baz bang";
+			int sizeOfGreet = sizeof(greet) - 1;
+			cout << "size of greet = " << sizeOfGreet << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		size of greet = 16
+	</code></pre>
+	<p>
+		We subtract 1 because there is 1 extra element in the array, reserved for
+		the null byte. Alternatively, we can simply use the
+		<span class="monoText">strlen()</span> method provided by
+		<span class="monoText">cstring</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char greet[] = "Foo bar baz bang";
+			int sizeOfGreet = strlen(greet);
+			cout << "size of greet = " << sizeOfGreet << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		size of greet = 16
+	</code></pre>
+	<p>
+		Notice the syntax for <span class="monoText">strlen()</span>. We simply pass
+		in the variable storing the string, or the string itself, we seek the length
+		for.
+	</p>
+	<p>
+		<span class="topic">Concatenating Strings.</span> When we
+		<span class="term">concatenate</span> two strings, we merge the strings
+		together. We can concatenate strings with the
+		<span class="monoText">strcat()</span> method:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char foo[] = "John ";
+			char bar[] = "Kim";
+			strcat(foo, bar);
+			cout << foo << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		John Kim
+	</code></pre>
+	<p>The syntax for <span class="monoText">strcat()</span> is as follows:</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>strcat(${destination}$, ${source}$)</li>
+		</ul>
+	</figure>
+	<p>
+		where ${destination}$ is the string to be merged on to (here
+		<span class="monoText">foo</span>), and ${source}$ is the string to merge
+		(here <span class="monoText">bar</span>). To understand how concatenation
+		works, examine the array of characters:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p><span class="monoText">['J', 'o', 'h', 'n', ' ', '\0']</span></p>
+			<p><span class="monoText">['K', 'i', 'm', '\0']</span></p>
+		</div>
+	</figure>
+	<p>
+		When we concatenate <span class="monoText">Kim</span> onto
+		<span class="monoText">John</span>, we take the first character of
+		<span class="monoText">Kim</span> &mdash;
+		<span class="monoText">K</span> &mdash; and use it to replace the null byte
+		of <span class="monoText">John</span>. If we want to concatenate only some
+		characters in the source string, we use
+		<span class="monoText">strncat()</span>:
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char x[] = "Big ";
+			char y[] = "Apple";
+			strncat(x, y, 3);
+			cout << x << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Big App
+	</code></pre>
+
+	<p>
+		<span class="topic">Copying Strings.</span> With the functions above, we
+		mutated an existing string. What if we do not want to mutate an existing
+		string? For that, we need the ability to copy strings. We can do so with
+		<span class="monoText">strcpy()</span>. The general syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>strcpy(${destination}$, ${source}$)</li>
+		</ul>
+	</figure>
+	<p>For example:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char x[] = "Hello";
+			int sizeOfx = sizeof(x);
+			char z[sizeOfx];
+			char y[] = " world!";
+			strcpy(z, x);
+			strcat(z, y);
+			cout << "x: " << x << endl;
+			cout << "z: " << z << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x: Hello
+		z: Hello world!
+	</code></pre>
+	<p>
+		Notice that we did not mutate <span class="monoText">x</span>. This is
+		because we made a copy of the string stored in
+		<span class="monoText">x</span>, and stored that copy in
+		<span class="monoText">z</span>.
+	</p>
+
+	<p>
+		<span class="topic">Substrings.</span> Another useful feature to have when
+		working with strings is determining whether a given string is a
+		<span class="italicsText">substring</span> of another string. For example,
+		the string &#8220;corn&#8221; is a substring of the string
+		&#8220;acorn.&#8221; We can make this determination with
+		<span class="monoText">strstr()</span>. The general syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>strstr(${main}$, ${substring}$)</li>
+		</ul>
+	</figure>
+	<p>
+		In the syntax above, ${main}$ is the existing string, and ${substring}$ is
+		the substring we want to check for. An example:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char x[] = "Apple pie";
+			bool result = strstr(x, "Apple");
+			cout << result << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+	</code></pre>
+	<p>
+		We get back <span class="monoText">1</span>, indicating
+		<span class="monoText">"Apple"</span> is a substring of the string
+		<span class="monoText">"Apple pie"</span>. Remember that upper and lowercase
+		characters are different. Checking for the substring
+		<span class="monoText">"apple"</span> will return
+		<span class="monoText">0</span>.
+	</p>
+	<p>
+		If we want to find an instance of a <span class="monoText">char</span>, we
+		use <span class="monoText">strchar()</span>. The general syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>strchr(${string}$, ${char}$)</li>
+		</ul>
+	</figure>
+	<p>
+		The function <span class="monoText">strchr()</span> will search for a given
+		character starting from the left. If we want to find a given character from
+		the right, we use <span class="monoText">strrchar()</span>.
+	</p>
+	<p>
+		<span class="topic">Comparing Strings.</span> In some languages, we can
+		compare strings with the <span class="monoText">&lt;</span> or
+		<span class="monoText">&gt;</span> operators. These operations output which
+		of the given strings appears first in the alphabet. C++ provides a similar
+		function, <span class="monoText">strcmp()</span>.
+		<span class="marginnote"
+			>&#8220;strcmp&#8221; is a clipping of &#8220;string compare.&#8221;</span
+		>
+		The general syntax:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>strcmp(${s_1}$, ${s_2}$)</li>
+			</ul>
+		</div>
+		<figcaption>
+			Where ${s_1}$ and ${s_2}$ are the strings to be compared
+		</figcaption>
+	</figure>
+	<p>For example:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char apple[] = "apple";
+			char kiwi[] = "kiwi";
+			char peach[] = "peach";
+		
+			int result1 = strcmp(apple, kiwi);
+			int result2 = strcmp(peach, apple);
+			int result3 = strcmp(peach, peach);
+		
+			cout << "result1 = " << result1 << endl;
+			cout << "result2 = " << result2 << endl;
+			cout << "result3 = " << result3 << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		result1 = -10
+		result2 = 15
+		result3 = 0
+	</code></pre>
+	<p>
+		Let's examine this output. First,
+		<span class="monoText">strcmp(${s_1}$, ${s_2}$)</span> returns either a
+		negative, 0, or positive value. If ${s_1}$ comes before ${s_2}$ in the
+		alphabet, the value returned is negative. If ${s_1}$ comes after ${s_2}$ in
+		the alphabet, the value returns positive. Finally, if both ${s_1}$ and
+		${s_2}$ are the same, the value returned is 0.
+	</p>
+	<p>
+		How does <span class="monoText">strcmp()</span> work? It compares the ACII
+		integer values of the first non-matching character. For example, with
+		<span class="monoText">apple</span> and <span class="monoText">kiwi</span>,
+		the first non-matching characters are <span class="monoText">a</span> and
+		<span class="monoText">k</span>. The character
+		<span class="monoText">a</span> has an ASCII value of 97, and the character
+		<span class="monoText">k</span> has an ASCII value of
+		<span class="monoText">107</span>. Thus,
+		<span class="monoText">apple</span> is different from
+		<span class="monoText">kiwi</span> by -10 in terms in ASCII value.
+	</p>
+	<p>
+		<span class="topic">String to Number.</span> Suppose we have the following
+		strings:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char num1[] = "157";
+			char num2[] = "2.49";
+		
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Strings containing numbers are common in programming. So much so that C++
+		provides functions for converting a string of numbers into a numeric type.
+		These functions are <span class="monoText">strtol()</span> and
+		<span class="monoText">strtof()</span>.
+		<span class="marginnote"
+			><span class="monoText">strtol()</span> is a clipping of &#8220;string to
+			long&#8221; and <span class="monoText">strtof()</span> is a clipping of
+			&#8220;string to float.&#8221;</span
+		>
+		The function <span class="monoText">strtolong()</span> will convert a number
+		string into a <span class="monoText">long int</span>, and
+		<span class="monoText">strtof()</span> will convert a number string into a
+		<span class="monoText">float</span>.
+	</p>
+
+	<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			#include &lt;cstring&gt;
+			#include &lt;typeinfo&gt;
+			using namespace std;
+			
+			int main() {
+				char num1[] = "157";
+				char num2[] = "2.49";
+				long int x = strtol(num1, NULL, 10);
+				float y = strtof(num2, NULL);
+			
+				cout << typeid(num1).name() << " num1 : " << num1 << endl;
+				cout << typeid(num2).name() << " num2 : " << num2 << endl;
+				cout << typeid(x).name() << " x : " << x << endl;
+				cout << typeid(y).name() << " y : " << y << endl;
+			
+				return 0;
+			}
+		</code></pre>
+	<pre class="language-bash"><code>
+			A4_c num1 : 157
+			A5_c num2 : 2.49
+			l x : 157
+			f y : 2.49
+		</code></pre>
+	<p>
+		Notice how the types have changed. The function
+		<span class="monoText">strtol()</span> takes three arguments: (1) the string
+		we wish to convert; (2) <span class="monoText">NULL</span>; and (3) the base
+		for the relevant number system (e.g., 10 for the decimal systemm; 2 for the
+		binary system; 16 for hexadecimalese; etc.). The
+		<span class="monoText">strtof()</span> function takes the same arguments,
+		but without the need for a number system parameter.
+	</p>
+
+	<p><span class="topic">Tokenizing.</span> </p>
+
+	<h3>String Class</h3>
+	<p>
 		In <span class="monoText">C++</span>, strings are not a primitive type. We
 		must include a system library:
 	</p>

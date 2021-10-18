@@ -1,42 +1,18 @@
 {% extends '../layout.html' %} {% load static %} {% block content %}
+<h1>Views</h1>
 <section id="views">
-	<h3>Views</h3>
+	<blockquote>Views are immutable structures.</blockquote>
 	<p>
 		In SwiftUI, we implement user interface design with
 		<span class="term">views</span>. There are many different kinds of views
 		&mdash; <span class="monoText">text</span>,
 		<span class="monoText">slider</span>, <span class="monoText">button</span>,
 		etc. Everything we see on the screen when we open an application is a
-		<span class="monoText">view</span>.
+		<span class="monoText">view</span>. Below are some examples of views.
 	</p>
 
+	<h2>Stacks</h2>
 	<p>
-		<span class="topic"><span class="monoText">text view.</span></span> The
-		<span class="monoText">text</span> view is a view that displays one or more
-		lines of read-only text. We can think of this view as a text field, with the
-		added limitation that it is read-only (no writing/modifying by the user).
-	</p>
-
-	<p>
-		<span class="topic"><span class="monoText">slider view.</span></span> The
-		<span class="monoText">slider</span> view displays a slider. The slider is
-		an input interface that allows a user to enter a number by moving a control,
-		called a <span class="italicsText">thumb</span>, along a straight line. The
-		endpoints of the slider represent the minimum and the maximum input value.
-	</p>
-
-	<p>
-		<span class="topic"><span class="monoText">button view.</span></span> The
-		<span class="monoText">button</span> view displays a button. This input
-		interface has takes only one of two inputs: (a) the button is pressed, and
-		(b) the button is not pressed. We can place a
-		<span class="monoText">text</span> view inside the button as a label.
-	</p>
-
-	<p>
-		<span class="topic"
-			><span class="monoText">vertical stack view.</span></span
-		>
 		The <span class="monoText">vertical stack</span>, or
 		<span class="monoText">v-stack</span>, is a view that acts like a container
 		for other views, called the <span class="monoText">v-stack</span>'s
@@ -46,19 +22,84 @@
 	</p>
 
 	<p>
-		<span class="topic"
-			><span class="monoText">horizontal stack view.</span></span
-		>
 		The <span class="monoText">horizontal stack</span>, or
 		<span class="monoText">h-stack</span>, also acts like a container for other
 		views. In contrast to the <span class="monoText">v-stack</span>, the
 		<span class="monoText">h-stack</span> arranges its children in a horizontal
 		stack.
 	</p>
+
+	<p>
+		Where the VStack and the HStack arrange their children along the ${x}$ and
+		${y}$ axis respectively, the ZStack arranges their children along the ${z}$
+		axis. In other words, children inside the ZStack are laid on top of one
+		another.
+	</p>
+
+	<h2>Views: UI Components</h2>
+	<p>
+		Swift provides built-in components like buttons and text fields. Below are
+		some of the most commonly used of these components.
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>View</th>
+				<th>Description</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">Text()</span></td>
+					<td>
+						The <span class="monoText">text</span> view is a view that displays
+						one or more lines of read-only text. We can think of this view as a
+						text field, with the added limitation that it is read-only (no
+						writing/modifying by the user).
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">Slider()</span></td>
+					<td>
+						The <span class="monoText">slider</span> view displays a slider. The
+						slider is an input interface that allows a user to enter a number by
+						moving a control, called a <span class="italicsText">thumb</span>,
+						along a straight line. The endpoints of the slider represent the
+						minimum and the maximum input value.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">Button()</span></td>
+					<td>
+						The <span class="monoText">button</span> view displays a button.
+						This input interface has takes only one of two inputs: (a) the
+						button is pressed, and (b) the button is not pressed. We can place a
+						<span class="monoText">text</span> view inside the button as a
+						label.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">Spacer()</span></td>
+					<td>Creates even spacing between views.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">ScrollView</span></td>
+					<td>Scrollable view; for when the view is too large to fit the screen</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">List</span></td>
+					<td>Creates a list view; similar to scroll view, but provides several other functionalities.</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
 </section>
 
 <section id="view_immutability">
-	<p><span class="topic">View Immutability.</span> Views are immutable structures. This means we cannot modify their properties once set. For example, suppose we had the following view:</p>
+	<h2>View Immutability</h2>
+	<p>
+		Views are immutable structures. This means we cannot modify their properties
+		once set. For example, suppose we had the following view:
+	</p>
 	<pre class="language-swift"><code>
 		struct TileView: View {
 			var isOpen: Bool = true
@@ -78,7 +119,17 @@
 			}
 		}
 	</code></pre>
-	<p>The last line, <span class="monoText">isOpen = !isOpen</span>, will return an error, telling us that we cannot assign to the property <span class="monoText">isOpen</span>. This is because <span class="monoText">self</span>, the structure <span class="monoText">TileView</span>, is immutable. If we want to modify the variable <span class="monoText">isOpen</span>, we will have to write separate code, the <span class="italicsText">logic</span> behind our views. There is, however, a small change we can make now to modify the property <span class="monoText">isOpen</span>:</p>
+	<p>
+		The last line, <span class="monoText">isOpen = !isOpen</span>, will return
+		an error, telling us that we cannot assign to the property
+		<span class="monoText">isOpen</span>. This is because
+		<span class="monoText">self</span>, the structure
+		<span class="monoText">TileView</span>, is immutable. If we want to modify
+		the variable <span class="monoText">isOpen</span>, we will have to write
+		separate code, the <span class="italicsText">logic</span> behind our views.
+		There is, however, a small change we can make now to modify the property
+		<span class="monoText">isOpen</span>:
+	</p>
 	<pre class="language-swift"><code>
 		struct TileView: View {
 			@State var isOpen: Bool = true
@@ -98,14 +149,22 @@
 			}
 		}
 	</code></pre>
-	<p>Notice how we appended the <span class="monoText">@State</span> keyword. Appending the keyword <span class="monoText">@State</span> creates a pointer for the variable <span class="monoText">isOpen</span>, and that pointer points to a certain space in memory. When we tap on the rounded rectangle, we modify the value stored in the memory location pointed to by the pointer (in this case, changing <span class="monoText">isOpen</span> to its negated Boolean value).</p>
+	<p>
+		Notice how we appended the <span class="monoText">@State</span> keyword.
+		Appending the keyword <span class="monoText">@State</span> creates a pointer
+		for the variable <span class="monoText">isOpen</span>, and that pointer
+		points to a certain space in memory. When we tap on the rounded rectangle,
+		we modify the value stored in the memory location pointed to by the pointer
+		(in this case, changing <span class="monoText">isOpen</span> to its negated
+		Boolean value).
+	</p>
 </section>
 
 <section id="view_modifiers">
+	<h2>View Modifiers</h2>
 	<p>
-		<span class="topic">View Modifiers.</span> View modifiers are what we use to
-		style views. For example, if we want to set an opacity to text as well as a
-		border, we would write:
+		View modifiers are what we use to style views. For example, if we want to
+		set an opacity to text as well as a border, we would write:
 	</p>
 
 	<pre class="language-swift"><code>
@@ -138,11 +197,32 @@
 			.opacity(0.5)
 	</code></pre>
 
-	<p>This demonstrates a rule with view modifiers: Order matters.</p>
+	<p>
+		This demonstrates a rule with view modifiers: Order matters. Below are some
+		helpful view modifiers.
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>View Modifier</th>
+				<th>Description</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">.onTapGesture(perform: {})</span></td>
+					<td>Executes a function on tap.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">.aspectRatio()</span></td>
+					<td>Sets the dimensions of a given view</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
 </section>
 
 <section id="theory_behind_views">
-	<h3>Swift Theory: <span class="monoText">Views</span></h3>
+	<h2>Swift Theory: <span class="monoText">Views</span></h2>
 	<p>
 		The foundational axiom of OOP (Object-oriented Programming) is to associate
 		certain pieces of data with functionality. For example, a data of type
@@ -229,10 +309,12 @@
 			.kerning(2.0)
 	</code></pre>
 
+	<h3>Local Variables</h3>
 	<p>
-		<span class="topic">Properties.</span> Swift provides two ways to bind
-		properties to an object: (1) a <span class="term">stored property</span>,
-		and (2) a <span class="term">computed property</span>.
+		Views can have local variables. Those variables are called the view's
+		<span class="italicsText">properties</span>. Swift provides two ways to bind
+		properties to a view: (1) a <span class="term">stored property</span>, and
+		(2) a <span class="term">computed property</span>.
 	</p>
 
 	<pre class="language-swift"><code>
@@ -339,28 +421,5 @@
 		contents of <span class="monoText">body</span>. All of the lines containing
 		view modifiers are examples of calling methods.
 	</p>
-</section>
-
-<section id="spacer">
-	<h3><span class="monoText">Spacer()</span></h3>
-	<p>A <span class="monoText">Spacer()</span> is what we use to set space between stacks and other views. A spacer will take up as much space as it can, so long as that space is unoccupied.</p>
-</section>
-
-<section id="aspectRatio">
-	<h3><span class="monoText">.aspectRatio()</span></h3>
-	<p><span class="monoText">.aspectRatio()</span> is a view modifier that sets the dimensions of a given view. For example, if wanted a view to have an aspect ratio of 2:3, we would write:</p>
-	<pre class="language-swift"><code>
-		.aspectRatio(2/3, .contentMode: .fit)
-	</code></pre>
-</section>
-
-<section id="scrollView">
-	<h3><span class="monoText">ScrollView</span></h3>
-	<p>If we have a view that is too large to fit into the screen all at once, we should consider placing the entire view in a <span class="monoText">ScrollView</span>. This allows the user to scroll down to content that is cut off.</p>
-</section>
-
-<section id="List">
-	<h3><span class="monoText">List</span></h3>
-	<p>The <span class="term">list view</span> is a special view in Swift that allows us to organize displayed data into a scrollable column of rows. We see this everywhere in modern Swift apps &mdash; Apple's Notes, Clock, and Music applications, Spotify, Snapchat, all those lists of messages, text, and songs are scrollable rows &mdash; list views. We can think of the list view as something like a scrollable VStack. Each of the rows in the List is itself a View. It can be any View, containing other Views.</p>
 </section>
 {% endblock %}

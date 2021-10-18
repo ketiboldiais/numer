@@ -1,0 +1,299 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="What is Big O notation? Algorithmic analysis, asymptotic analysis, theta notation, and omega notation."
+/>
+{% endblock %} {% block title %}
+<title>Algorithms</title>
+{% endblock %} {% block content %}
+<h1>Algorithmic Analysis</h1>
+<section id="introduction">
+	<p>
+		In discrete mathematics &mdash; and computer science &mdash; many problems
+		are best solved by first constructing a
+		<span class="italicsText">model</span>: translate the problem into
+		mathematical terms. For example, to find a fleeing murder suspect, we might
+		place all their possible hiding places into a set. We might then arrange the
+		hiding places into a graph, where each hiding place is a node. Each of those
+		nodes likely have varying distances between them, so we might construct a
+		function computing each node's likelihood of containing the suspect. That
+		function might take numerous inputs, ranging from the distance between the
+		nodes to sightings made by various eyewitnesses. Based on the function's
+		outputs, we might abstract the nodes into an array, sorted from most likely
+		to least likely to contain the suspect.
+	</p>
+	<p>
+		Discrete mathematics provides a war chest of various structures we can use
+		for modelling: sets, classes, algebras, sequences, matrices, functions,
+		permutations, relations, graphs, trees, networks, finite state machines,
+		truth tables, and countless others.
+		<span class="marginnote"
+			>Our problem solving abilities are further expanded with tools from
+			continuous mathematics.</span
+		>
+		However, knowing <span class="italicsText">what</span> the tools do is
+		insufficient. We can buy expensive knives and cutting-edge kitchen
+		appliances, but they do not make us Michellin-star chefs. Just as with any
+		skilled craft, the tools are only useful if we know
+		<span class="italicsText">how to</span> use them. That
+		<span class="italicsText">how-to</span> knowledge is provided by an
+		<span class="term">algorithm</span>.
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> An algorithm is a finite sequence
+				of instructions for performing a computation.
+			</p>
+		</div>
+	</figure>
+	<p>
+		To study algorithms from a discrete mathematics perspective, we will employ
+		pseudocode. For those familiar with at least one programming language, the
+		pseudocode that follows should be straightforward and immediately readable.
+		<span class="marginnote"
+			>For those without a programming knowledge background, this author
+			recommends an introductory course on Python. Two reasons: (1) It is a
+			fairly &mdash; almost deceptively &mdash; beginner-friendly language. (2)
+			When writing the pseudocode for these materials, some of the code looked
+			an awful lot like Python.</span
+		>
+	</p>
+	<p>For example, consider this problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Problem.</span> Given a finite sequence of integers,
+				find the maximum value.
+			</p>
+		</div>
+	</figure>
+	<p>
+		In constructing an algorithm, we must always think in terms of a computer. A
+		computer cannot see all the values in a structure all at once, whether that
+		structure is a sequence, graph, tree, etc. Instead, the computer can only
+		&#8220;see&#8221; one value at a time. We can think of it like standing
+		right in front of an opening at the airport's baggage claim area. Standing
+		just in front of the opening, we can only see one bag come out at a time. We
+		cannot see all the bags coming before it. The same idea goes for computers
+		&mdash; the computer can only see one value at a time.
+	</p>
+	<p>
+		With that in mind, we can elaborate on a potential algorithm as such: (1)
+		Suppose the first integer in the sequence is the maximum; call it ${max.}$
+		(2) Compare ${max}$ to the next integer in the sequence: If the integer is
+		greater than ${max,}$ then suppose ${max}$ is that integer. Otherwise,
+		compare the next integer. (3) Repeat the previous steps until all the
+		integers in the sequence have been compared. (4) If all the integers in the
+		seuqence have been compared, then the maximum is ${max.}$
+	</p>
+	<p>
+		Those are a lot of words for a relatively simple computation. While its
+		expressiveness in poetry and literature is immeasurable, English is a
+		painful and severely limited language for expressing complex and abstract
+		ideas, while maintaining precision (hence the human tendency to develop
+		notation systems, as seen in symbolic logic, mathematics, and the sciences).
+		Because of this limitation, let's write the algorithm in pseudocode:
+	</p>
+	<figure class="math-display">
+		<div class="syntax">
+			<ul>
+				<li>${\ell \coloneqq [a_1, a_2, \ldots a_n] : n \in \Z}$</li>
+				<li>${\text{max}(\ell)}$</li>
+				<ul>
+					<li>${\text{max} \coloneqq a_1}$</li>
+					<li>for ${i \coloneqq 2}$ to ${n}$:</li>
+					<ul>
+						<li>${\text{max} < a_i \implies \text{max} \coloneqq a_i}$</li>
+					</ul>
+					<li>return ${\text{max}}$</li>
+				</ul>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		The algorithm above works. This is a good point for further refining our
+		definition of an algorithm. We can think of an algorithm as a sequence of
+		instructions towards solving a problem. However, with that definition,
+		numerous procedures would qualify as algorithms: the banana bread recipe;
+		the YouTube video on changing a tire; counsel's instructions on how to avoid
+		a congressional hearing; counsel's instructions on how to testify at a
+		congressional hearing. While the WikiHow article falls under the definition
+		of an algorithm, it is likely not the kind of algorithm we are concerned
+		with. Instead, the algorithms we study are those with the following
+		properties:
+	</p>
+	<div class="compare">
+		<div>
+			<p>
+				<span class="term">Domain.</span> Every algorithm takes an element,
+				called an <span class="italicsText">input</span>, from its domain
+				&mdash; the set of all possible values the algorithm may take from.
+			</p>
+			<p>
+				<span class="term">Range.</span> For every input an algorithm takes, the
+				algorithm returns an element, called the
+				<span class="italicsText">output</span>, from its range &mdash; the set
+				of all possible values the algorithm may return. The algorithm's outputs
+				are a subset of the range. This subset is called the algorithm's
+				<span class="term">solution</span>.
+			</p>
+			<p>
+				<span class="term">Definiteness.</span> An algorithm is definite if, and
+				only if, all of its operation, or steps, are defined precisely.
+			</p>
+			<p>
+				<span class="term">Correctness.</span> An algorithm is correct if, and
+				only if, the algorithm returns the desired output for every input.
+			</p>
+		</div>
+		<div>
+			<p>
+				<span class="term">Finiteness.</span> An algorithm is finite if, and
+				only if, it produces the desired output after a finite number of
+				operations, or steps, for every input from the domain.
+			</p>
+			<p>
+				<span class="term">Effectiveness.</span> An algorithm is effective if,
+				and only if, it is possible to perform each of its operations, or steps,
+				exactly and in a finite amount of time.
+			</p>
+			<p>
+				<span class="term">Generality.</span> An algorithm is general if, and
+				only if, it can be executed for all the problem's inputs, rather than a
+				subset of the problem's inputs.
+			</p>
+		</div>
+	</div>
+</section>
+
+<section id="searching">
+	<h2>Search</h2>
+	<p>
+		A <span class="term">search</span> is an algorithm for locating a given
+		element in a list. That list may be
+		<span class="italicsText">ordered</span> &mdash; i.e., a sequence &mdash; or
+		it may be <span class="italicsText">unordered</span>. For the algorithms
+		that follow, we will assume the list is ordered. A more explicit, and
+		general, definition of the searching problem:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Problem.</span> Given the list ${[a_0, a_1, \ldots ,
+				a_n],}$ locate the element ${x}$ if it exists.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The solution to a searching problem is the location of the element that
+		equals ${x.}$ I.e. ${i}$ is the solution iff ${a_i = x.}$ Otherwise, the
+		solution is ${\emptyset.}$
+	</p>
+</section>
+
+<section id="linear_search">
+	<h3>Linear Search</h3>
+	<p>
+		The simplest searching algorithm is
+		<span class="italicsText">linear search</span>. Linear search works as such:
+		First, compare ${x}$ and ${a_0,}$ the first element in the list. If ${x =
+		a_0,}$ then the solution is 0, the location of ${a_0.}$ If ${x \neq a_0,}$
+		compare ${x}$ with ${a_1.}$ If ${x = a_1,}$ then the solution is 1, the
+		position of ${a_1.}$ Otherwise, compare ${x}$ with ${a_2.}$ We continue this
+		process until either (a) a match is found, or (b) we have gone through the
+		entire list.
+	</p>
+	<p>In pseudocode:</p>
+	<figure class="math-display">
+		<div class="syntax">
+			<ul>
+				<li>${\ell \coloneqq [a_1, a_2, \ldots, a_n]}$</li>
+				<li>${x \coloneqq \text{ search term}, x \in \Z}$</li>
+				<li>linear-search(${x, \ell}$):</li>
+				<ul>
+					<li>${i \coloneqq 1}$</li>
+					<li>while (${i \leq n}$):</li>
+					<ul>
+						<li>
+							${ \begin{cases} \text{if } (a_i = x) &\implies &\text{ location}
+							\coloneqq i \\ \text{else } &\implies &\text{ location} \coloneqq
+							0 \end{cases} }$
+						</li>
+						<li>${i \coloneqq i + 1}$</li>
+					</ul>
+					<li>return ${\text{location}}$</li>
+				</ul>
+			</ul>
+		</div>
+	</figure>
+</section>
+
+<section id="binary_search">
+	<h3>Binary Search</h3>
+	<p>
+		Another searching algorithm we could use is
+		<span class="term">binary search</span>. Binary search works much like how
+		we would look for a word in a dictionary. To begin, the list's elements must
+		be ordered from least to greatest. Only then can we perform the search.
+	</p>
+	<p>
+		Assuming the elements are ordered, we begin: Suppose our search term is
+		${x,}$ and our list contains ${n}$ elements. First, locate the list's middle
+		element, ${a_{m},}$ where ${m = \lfloor \frac{n+1}{2} \rfloor.}$ If ${x =
+		a_{m}}$ then our search is complete. Otherwise, if ${x \neq a_{m},}$ then we
+		split the list in half. This results in two new lists, ${[a_1, \ldots,
+		a_{m}]}$ and ${[a_{m + 1}, \ldots, a_n].}$ If ${a_{m} < x,}$ then we examine
+		the second-half of the list ${[a_{m + 1}, \ldots, a_n].}$ If ${a_{m} > x,}$
+		then we examine the first-half of the list ${[a_1, \ldots, a_{n/2}].}$
+		Examining that list, we perform the same procedure: Locate the middle
+		element; compare; split. We keep repeating this until we either (1) find a
+		match, or (2) have no more lists to split. Consider the diagram below:
+	</p>
+	<p>In pseudocode:</p>
+	<figure class="math-display">
+		<div class="syntax">
+			<ul>
+				<li>
+					${\ell \coloneqq [a_1, a_2, \ldots, a_n] : a_1 < a_2 < \ldots < a_n}$
+				</li>
+				<li>${x \coloneqq \text{search term} }$</li>
+				<li>${i \coloneqq 1}$</li>
+				<li>${j \coloneqq n}$</li>
+				<li>linear-search(${x, \ell}$)</li>
+				<ul>
+					<li>while ${i < j}$:</li>
+					<ul>
+						<li>${m \coloneqq \lfloor \frac{i + j}{2} \rfloor }$</li>
+						<li>
+							${ \begin{cases} \text{if } (x > a_m) &\implies &i \coloneqq m + 1
+							\\ \text{else } &\implies &j \coloneqq m \end{cases} }$
+						</li>
+					</ul>
+					<li>
+						${ \begin{cases} \text{if } (x = a_i) &\implies &\text{ location}
+						\coloneqq i \\ \text{else } &\implies &\text{ location} \coloneqq 0
+						\end{cases} }$
+					</li>
+					<li>return ${location}$</li>
+				</ul>
+			</ul>
+		</div>
+	</figure>
+</section>
+
+<section id="sorting">
+	<h2>Sorting</h2>
+	<p>
+		The previous algorithms &mdash; and many other algorithms &mdash; depend on
+		ordered inputs. In other words, the algorithms only work under the
+		assumption that its set of inputs are
+		<span class="italicsText">sorted</span>. Sorting a list of elements requires
+		transforming an unordered list into a list where the elements are ordered
+		from least to greatest. The problem of sorting elements creates an entirely
+		separate class of algorithms: <span class="term">sorting algorithms</span>.
+		More explicitly: The sorting algorithm's purpose is to take an unordered
+		list, say ${[ 1, 3, 2, 4],}$ and output an ordered list, ${[1, 2, 3, 4].}$
+	</p>
+</section>
+{% endblock %}

@@ -49,6 +49,16 @@ def geo_foundations(request):
 def geo_trig(request):
 	return render(request,"numerm/geo/geo_trig.html")
 
+# Logic functions
+def log_preface(request):
+	return render(request,"numerm/log/log_preface.html")
+def log_propositional(request):
+	return render(request, "numerm/log/log_propositional.html")
+def log_arguments(request):
+	return render(request, "numerm/log/log_arguments.html")
+def log_predicateCalculus(request):
+	return render(request, "numerm/log/log_predicateCalculus.html")
+
 # discrete math functions
 def disc_preface(request):
 	return render(request, "numerm/disc/disc_preface.html")
@@ -74,7 +84,6 @@ def disc_setTheory(request):
 def disc_openSentences(request):
 	return render(request, "numerm/disc/disc_openSentences.html")
 
-
 def disc_strings(request):
 	return render(request, "numerm/disc/disc_strings.html")
 
@@ -84,9 +93,6 @@ def disc_relations(request):
 def disc_functionsRelations(request):
 	return render(request, "numerm/disc/disc_functionsRelations.html")
 
-def disc_logic(request):
-	return render(request, "numerm/disc/disc_logic.html")
-
 def disc_logicCircuits(request):
 	return render(request, "numerm/disc/disc_logicCircuits.html")
 
@@ -95,6 +101,9 @@ def disc_counting(request):
 
 def disc_combinatorics(request):
 	return render(request, "numerm/disc/disc_combinatorics.html")
+
+def disc_algorithms(request):
+	return render(request, "numerm/disc/disc_algorithms.html")
 
 # continuous math functions
 def cont_intervals(request):

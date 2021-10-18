@@ -1,0 +1,58 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Swift generics" />
+{% endblock %} {% block title %}
+<title>Swift Generics</title>
+{% endblock %} {% block content %}
+<h1>Generics</h1>
+<section id="generics">
+	<p>
+		In some situations, we might have a data structure that we want to
+		manipulate in a &#8220;type-agnostic&#8221; way. In other words, we don't
+		want the data structured to be tied to a specific type &mdash; we don't
+		really care what type it is, as long as we can use it. In formal terms,
+		these types are called <span class="term">generics</span>.
+	</p>
+	<blockquote>A generic is a 'Do not care' type.</blockquote>
+	<p>
+		The simplest example of a generic is an
+		<span class="monoText">Array</span> type. An
+		<span class="monoText">array</span> can contain any other datatype; it truly
+		does not care. The array can contain <span class="monoText">Ints</span>,
+		<span class="monoText">Doubles</span>,
+		<span class="monoText">Strings</span>, even other arrays. It does not
+		matter.
+	</p>
+	<p>
+		Questions: But doesn't an array have various methods like adding and
+		removing elements from it? How is the array implemented to be type agnostic
+		when it has rules like requiring all its elements to be of only one type? To
+		answer these questions, we look at how the
+		<span class="monoText">Array</span> type is implemented in Swift. Roughly,
+		it might look something like this:
+	</p>
+	<pre class="language-swift"><code>
+		struct Array&lt;Element&gt; {
+			...
+			func append(_ element: Element) { ... }
+		}
+	</code></pre>
+	<p>
+		The type of the argument to append is <span class="monoText">Element</span>.
+		More specifically, it is a generic type element. Now, whenever we call the
+		function <span class="monoText">append()</span>, we can add some generic
+		<span class="monoText">Element</span>. This is a very simple way of
+		implementing generics &mdash; simply use the angle brackets.
+	</p>
+	<p>
+		The element we referenced above is called a
+		<span class="term">type parameter</span>. When we actually create an
+		<span class="monoText">Array</span> instance, the values we insert into that
+		array will have a type. Now, the <span class="monoText">Array</span> generic
+		has no idea what that type is &mdash; it's a generic, after all. The Swift
+		compiler, however, will replace the type parameter
+		<span class="monoText">Element</span> with the appropriate type. This is why
+		when we ask for the type of an array, we see something like:
+		<span class="monoText">Array&lt;Int&gt;</span>.
+	</p>
+</section>
+{% endblock %}

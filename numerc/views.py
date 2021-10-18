@@ -150,6 +150,8 @@ def swift_xcodeShortcuts(request):
 		return render(request, "numerc/swift/swift_xcodeShortcuts.html")
 def swift_mvvm(request):
 		return render(request, "numerc/swift/swift_mvvm.html")
+def swift_generics(request):
+		return render(request, "numerc/swift/swift_generics.html")
 
 # java functions
 def java_preface(request):
@@ -342,6 +344,8 @@ def cpp_collections(request):
 	return render(request, "numerc/cpp/cpp_collections.html")
 def cpp_pointers(request):
 	return render(request, "numerc/cpp/cpp_pointers.html")
+def cpp_sorting(request):
+	return render(request, "numerc/cpp/cpp_sorting.html")
 
 # Prolog Functions
 def prolog_preface(request):

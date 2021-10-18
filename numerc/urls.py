@@ -80,6 +80,7 @@ urlpatterns = [
 	path("swift_programArchitecture", views.swift_programArchitecture, name="swift_programArchitecture"),
 	path("swift_xcodeShortcuts", views.swift_xcodeShortcuts, name="swift_xcodeShortcuts"),
 	path("swift_mvvm", views.swift_mvvm, name="swift_mvvm"),
+	path("swift_generics", views.swift_generics, name="swift_generics"),
 
 	# java paths
 	path("java_preface", views.java_preface, name="java_preface"),
@@ -181,6 +182,7 @@ urlpatterns = [
 	path("cpp_hashing", views.cpp_hashing, name="cpp_hashing"),
 	path("cpp_collections", views.cpp_collections, name="cpp_collections"),
 	path("cpp_pointers", views.cpp_pointers, name="cpp_pointers"),
+	path("cpp_sorting", views.cpp_sorting, name="cpp_sorting"),
 
 	# Prolog Paths
 	path("prolog_preface", views.prolog_preface, name="prolog_preface"),

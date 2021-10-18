@@ -1,6 +1,10 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Number theory" />
+{% endblock %} {% block title %}
+<title>Number Theory</title>
+{% endblock %} {% block content %}
+<h1>Number Theory</h1>
 <section id="number_theory">
-	<h4>Number Theory</h4>
 	<p>
 		<span class="italicsText">Number theory</span> is the study of the integers.
 		Despite being one of the oldest fields in mathematics, there is still a
@@ -8,7 +12,10 @@
 		implications, most commonly in cryptography &mdash; the study of hiding
 		numbers.
 	</p>
+</section>
 
+<section id="motivating_problem">
+	<h2>Motivating Problem</h2>
 	<p>
 		Here is a simple number theory problem: We have two jugs, one can only hold
 		3 gallons, the other can only hold 5 gallons. Assume we have an infinite
@@ -34,16 +41,47 @@
 	</p>
 
 	<p>
-		Let's provide some definitions. First, the notation for
-		&#8220;divides&#8221;:
+		To understand why this occurs, we should construct a proof for why the
+		solution works. Before we construct that proof, however, we must explore the
+		number theory idea of divisibility.
+	</p>
+</section>
+
+<section id="divisibility">
+	<h2>Divisibility</h2>
+	<p>
+		To better understand the proof above, we explore the concept of divisiblity.
+		When we divide an integer by a positive integer, we obtain a
+		<span class="term">quotient</span> and a
+		<span class="term">remainder</span>. Remainders are the building blocks for
+		<span class="term">modular arithmetic</span>, a topic we will explore
+		further in the following materials.
+	</p>
+
+	<p>
+		When an integer is divided by a nonzero integer, the quotient may or may not
+		be an integer. For example, ${15/5 = 3.}$ However, ${15/2 = 7.5}$ Suppose
+		${a}$ and ${b}$ are integers. If ${b / a}$ returns an integer, then we say
+		&#8220;${a}$ divides ${b.}$&#8221; More formally:
 	</p>
 
 	<figure class="math-display">
 		<div class="rule">
 			<p>
-				<span class="topic">Definition.</span> When we write ${m
-				\space\vert\space a,}$ we mean that ${m}$ divides ${a.}$ We define
-				"${m}$ divides ${a}$" as such:
+				<span class="topic">Definition.</span> Suppose ${a, b \in \Z,}$ and ${a
+				\neq 0.}$ If ${b/a \in \Z,}$ then we say that &#8220;${a}$ divides
+				${b,}$&#8221; denoted:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${a \space\vert\space b}$</p>
+				</div>
+			</figure>
+			<p>
+				If ${a \space\vert\space b}$ is true, then ${a}$ is a
+				<span class="term">factor</span>, or <span class="term">divisor</span>,
+				of ${b,}$ and ${b}$ is a <span class="term">multiple</span> of ${a.}$
+				Further:
 			</p>
 			<figure class="math-display">
 				<div>
@@ -67,6 +105,153 @@
 	</p>
 
 	<p>
+		The definition for divisibility implies several other propositions. We state
+		these as lemmas:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p><span class="topic">Lemma.</span> Let ${a, b, c \in \Z.}$ Then:</p>
+			<ol>
+				<li>
+					${a \space\vert\space b \land a \space\vert\space c \implies a
+					\space\vert\space (b + c)}$
+				</li>
+				<li>
+					${\forall c \in \Z : [(a \space\vert\space b) \implies (a
+					\space\vert\space b \cdot c)]}$
+				</li>
+				<li>
+					${[(a \space\vert\space b) \land (b \space\vert\space c)] \implies (a
+					\space\vert\space c)}$
+				</li>
+				<li>
+					${\forall s, t: [(a \space\vert\space b \land a \space\vert\space c)
+					\implies (a \space\vert\space sb + tc)]}$
+				</li>
+			</ol>
+		</div>
+	</figure>
+	<p>
+		Because the lemmas above are so important, let's explore them more
+		explicitly in words. The first lemma: If ${a}$ divides ${b,}$ and ${a}$
+		divides ${c,}$ then ${a}$ divides ${b + c.}$ For example, 2 divides 10 and
+		20. Following lemma 1, 2 divides 30.
+	</p>
+	<p>
+		The second lemma: If ${a}$ divides ${b,}$ then ${a}$ divides ${b}$ times
+		${c,}$ for any integer ${c.}$ For example, 3 divides 30. It follows that 3
+		divides 2(30), or 60.
+	</p>
+	<p>
+		The third lemma: If ${a}$ divides ${b}$ and ${b}$ divides ${c,}$ then ${a}$
+		divides ${c.}$ E.g., 2 divides 4, and 4 divides 16. It follows that 2
+		divides 16.
+	</p>
+	<p>
+		Finally, if ${a}$ divides ${b}$ and ${a}$ divides ${c,}$ then ${a}$ divides
+		some <span class="term">linear combination</span> ${sb + tc.}$ Example: 3
+		divides 6 and 3 divides 9. It follows that 3 divides the linear combination
+		${6s + 3t.}$
+	</p>
+
+	<h3>Quotients & Remainders</h3>
+	<p>
+		We know that division sometimes returns a remainder. This phenomenon is
+		encapsulated by the <span class="term">division algorithm</span>. The
+		division algorithm is not really an algorithm; it's more so a theorem. Its
+		formal statement:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Theorem.</span> Suppose ${a \in \Z}$ and ${a, b \in
+				\Z^{+}.}$ Then:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\exists q, r \in \Z : (a = dq + r) \land (0 \leq r < d)}$</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+	<p>
+		In other words, given two integers ${a,}$ and ${d,}$ ${a}$ and ${d}$ can be
+		linearly combined into ${a = dq + r,}$ such that ${q}$ and ${r}$ are unique
+		integers and ${r}$ is greater than or equal to 0 but less than ${d.}$ This
+		is the formal description of what happens in the long division we performed
+		in grade school.
+	</p>
+	<p>
+		In the equality ${a = dq + r,}$ ${a}$ is called the
+		<span class="term">dividend</span>, ${d}$ is called the
+		<span class="term">divisor</span>, and ${r}$ is called the
+		<span class="term">remainder</span>. We use the following notation to
+		express these ideas:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${q = a \text{ div } d}$</p>
+			<p>${r = a \bmod d}$</p>
+		</div>
+	</figure>
+	<p>
+		The functions ${\text{ div }}$ and ${\bmod}$ are functions only applicable
+		to integers. They are what allow us to compute the quotient and the
+		remainder from integer division separately. For example, consider the
+		integer ${101.}$ We can express the integer as ${101 = 11 \cdot 9 + 2.}$
+		Thus, ${101 \text{ div } 11 = 9,}$ and ${101 \bmod 11 = 2.}$
+	</p>
+</section>
+
+<section id="modular_arithmetic">
+	<h2>Modular Arithmetic</h2>
+	<p>
+		Imagine a clock displaying the time 9:00A.M. If a friend informs you their
+		flight is in 6 hours, what time do we deduce? Well, we would deduce,
+		3:00P.M., by simplying adding the 6 hours. However, ${9 + 6 \neq 3.}$ The
+		fact that we can determine 3:00 P.M. is 6 hours from 9:00 A.M. goes straight
+		to the heart of modular arithmetic.
+		<span class="marginnote"
+			>9 + 6 = 15. If we used the 24-hour clock, we would quickly determine 3:00
+			P.M.</span
+		>
+	</p>
+	<p>
+		What we're actually doing whenever we add or subtract times on a 12-hour
+		clock is <span class="italicsText">arithmetic modular 12</span>. In the
+		simplest terms, this means that when we get to the number 12, we start the
+		count again. The numbers &#8220;wrap around&#8221; like a circle &mdash;
+		exactly like a clock. For example, if we instead performed addition with
+		<span class="term">arithmetic modular 3</span>, we would go ${1, 2, 3, 1, 2,
+		3, 1, 2, 3, \ldots}$ and so on and so forth. Thus, in arithmetic modular 3,
+		${1 + 3 = 1.}$ Pretty cool!
+	</p>
+	<p>
+		How does this tie back to divisibility? Think about the original example,
+		${9 + 6 = 3.}$ In normal arithmetic, ${9 + 6 = 15.}$ However, within 15 is a
+		single group of 12. The difference between 15 and 12 &mdash; the
+		<span class="italicsText">remainder</span> &mdash; is 3. Hence, ${9 + 6 =
+		3.}$ Clearly, however, we can't go around saying ${9 + 6 = 3,}$ as most persons do not automatically assume modular arithmetic. We instead must explicitly write:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${9 + 6 = 3 \bmod 12}$</p>
+		</div>
+	</figure>
+	<p>Here are a few other examples (think of a clock to confirm):</p>
+	<figure class="math-display">
+		<div>
+			<p>${9 + 25 = 10 \bmod 12}$</p>
+			<p>${1 + 17 = 6 \bmod 12}$</p>
+			<p>${8 + 29 = 1 \bmod 12}$</p>
+			<p>${11 + 43 = 5 \bmod 12}$</p>
+		</div>
+	</figure>
+</section>
+
+<section id="jug">
+	<h3>Proving Our Motivating Problem</h3>
+	<p>
 		Using this idea, <span class="term">divisibility</span>, we revisit the
 		jug-filling problem with more formality. First, let's state our assumptions:
 	</p>
@@ -81,7 +266,6 @@
 					Suppose further there is a ${b-}$gallon jug (in the original, ${b =
 					5}$)
 				</li>
-				<li>Finally, suppose ${a}$ is at most ${b.}$</li>
 			</ol>
 		</div>
 	</figure>
@@ -141,7 +325,7 @@
 		<span class="marginnote"
 			>When writing proofs, it's often best to write out what comes to mind, and
 			if we can't think of anything else immediately, simply move to another
-			though.</span
+			thought.</span
 		>
 		Let's now think about the <span class="term">transitions</span> &mdash; the
 		set of all possible ways we can move from one state to another. One
@@ -171,6 +355,376 @@
 		</div>
 	</figure>
 
-	<p>Finally, we have pouring. This is a somewhat more complex transition.</p>
+	<p>
+		Finally, we have pouring. This is a somewhat more complex transition. Let's
+		first start with ${(x, y).}$ Let's consider the possibilities. One
+		possibility is pouring all of the gallons in ${a}$ into all of the gallons
+		in ${b.}$ Thus:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${(x, y) \to (0, x+y) \implies x+y \geq b}$</p>
+		</div>
+	</figure>
+	<p>
+		Notice the caveat we appended to the end, ${x+y \geq b.}$ This is because
+		the ${b}$ jug has a finite amount of space for how many gallons it can take.
+		For example, if ${b}$ takes only 3 gallons, as was the case in the original
+		game, then ${x + y \geq 3.}$ Hence, the possibility ${(x, y) \to (0, x+y)}$
+		can occur only if ${x + y}$ is at most ${b.}$ If ${x + y \geq b}$ is false,
+		then we can only pour some of the contents in ${a}$ into ${b.}$
+	</p>
+	<p>
+		How do we generalize <span class="italicsText">some</span> gallons? Well,
+		thinking about the start state, ${(x, y).}$ The amount of gallons poured
+		into ${b}$ is ${y.}$ This means that the amount of gallons poured from ${a}$
+		into ${b}$ such that ${b}$ is completely filled is ${b - y.}$ Accordingly:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${(x, y) \to (x - (b - y), b) = (x + y - b, b) \implies x + y \leq b}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		The caveat in this possibility is ${x + y \leq b.}$ This is the
+		complementary of the previous caveat. We are within the realm of this
+		possibility only if there are enough gallons in ${b}$ to pour into ${a.}$
+	</p>
+	<p>
+		By symmetry, we can list the reverse &mdash; pouring the gallons in ${b}$
+		into ${a:}$
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${(x, y) \to (x + y, 0) \implies x + y \leq 0}$</p>
+			<p>
+				${(x, y) \to (a, y - (a - x)) = (a, x + y - a) \implies x + y \leq a}$
+			</p>
+		</div>
+	</figure>
+	<p>Thus, we now have all the possibilities of pouring:</p>
+	<figure class="math-display">
+		<ol class="numd">
+			<li>${(x, y) \to (0, x+y) \implies x+y \geq b}$</li>
+			<li>
+				${(x, y) \to (x - (b - y), b) = (x + y - b, b) \implies x + y \leq b}$
+			</li>
+			<li>${(x, y) \to (x + y, 0) \implies x + y \leq 0}$</li>
+			<li>
+				${(x, y) \to (a, y - (a - x)) = (a, x + y - a) \implies x + y \leq a}$
+			</li>
+		</ol>
+	</figure>
+	<p>
+		Let's ensure the propositions we drew above fully describe the original
+		game.
+	</p>
+	<p>
+		We have two jugs that can only store a finite amount of gallons: ${a = 3}$
+		and ${b = 5.}$ Suppose the current number of gallons in the jug is
+		represented with ${(x, y),}$ where ${x}$ is the number of gallons in the
+		${a}$ jug, and ${y}$ is the number of gallons in the ${b}$ jug. At the very
+		start, the jugs are empty: ${(x, y) = (0,0).}$
+	</p>
+	<p>Then, we fill up the ${b}$ jug:</p>
+	<figure class="math-display">
+		<div>
+			<p>${(0, 0) \to (0, 5)}$</p>
+		</div>
+	</figure>
+	<p>
+		We then pour as much of the gallons in the ${b}$ jug into the ${a}$ jug:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${(0, 5) \to (3, 2).}$</p>
+		</div>
+	</figure>
+	<p>Next, we emptied the ${a}$ jug:</p>
+	<figure class="math-display">
+		<div>
+			<p>${(3, 2) \to (0, 2)}$</p>
+		</div>
+	</figure>
+	<p>Then we poured all of the ${b}$ jug into the ${a}$ jug:</p>
+	<figure class="math-display">
+		<div>
+			<p>${(0, 2) \to (2, 0)}$</p>
+		</div>
+	</figure>
+	<p>Then we filled the ${b}$ jug:</p>
+	<figure class="math-display">
+		<div>
+			<p>${(2, 0) \to (2, 5)}$</p>
+		</div>
+	</figure>
+	<p>After which we poured as much as we would to the ${a}$ jug:</p>
+	<figure class="math-display">
+		<div>
+			<p>${(2, 5) \to (3, 4)}$</p>
+		</div>
+	</figure>
+	<p>
+		Given that our state machine accurately describes the original game, we can
+		now prove our hypothesis:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				If ${m \space\vert\space a}$ and ${m \space\vert\space b,}$ then ${m}$
+				should divide any result from pouring, emptying, and filling the jugs.
+			</p>
+		</div>
+	</figure>
+	<p>To construct this proof, we first define an invariant:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				${P(n) \coloneqq}$ If ${(x, y)}$ is the state after ${n}$ transitions,
+				then ${m \space\vert\space x}$ and ${m \space\vert\space y.}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Now we construct the base case. Here, we want to recall the definition of
+		divisiblity. ${m \space\vert\space a}$ is true iff there exists an integer
+		${k}$ such that ${a = (k)(m).}$ In this case, the start state, ${(x, y) =
+		(0,0)}$ complies with our invariant, since ${m}$ divides ${0.}$ Thus, our
+		base case:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${P(0) \coloneqq (0,0) \implies m \space\vert\space 0}$</p>
+		</div>
+	</figure>
+	<p>
+		We know that ${m \space\vert\space 0}$ is true for all integers, so the base
+		case, ${P(0)}$ is true. Now we perform the inductive step. Assume ${P(n)}$
+		is true. We now want to prove that ${P(n + 1)}$ is true. This amounts to
+		proving, if we move from ${n,}$ a state, to the next state, ${n + 1,}$ the
+		property ${m \space\vert\space x}$ and ${m \space\vert\space y}$ is true.
+	</p>
+	<p>
+		Suppose ${(x,y)}$ is the state after ${n}$ transitions. Since we suppose
+		that ${P(n)}$ is true, we know that ${m \space\vert\space x}$ and ${m
+		\space\vert\space y}$ after ${n}$ transitions. Now, we that after a
+		transition, we have the following possibilities:
+	</p>
+	<figure class="math-display">
+		<ul>
+			<li>${(x, y) \to (0, x+y) \implies x+y \geq b}$</li>
+			<li>
+				${(x, y) \to (x - (b - y), b) = (x + y - b, b) \implies x + y \leq b}$
+			</li>
+			<li>${(x, y) \to (x + y, 0) \implies x + y \leq 0}$</li>
+			<li>
+				${(x, y) \to (a, y - (a - x)) = (a, x + y - a) \implies x + y \leq a}$
+			</li>
+		</ul>
+	</figure>
+	<p>
+		More generally, after a transition, each of the jugs are either empty (0),
+		both jugs are empty (${x}$ and ${y}$), completely filled (${a}$ or ${b}$),
+		or partially filled (${x + y - b,}$ or ${x + y - a}$). Now, we also know the
+		following: ${m \space\vert\space 0}$ (by definition), ${m \space\vert\space
+		a}$ (from our base case) and ${m \space\vert\space b}$ (also from our base
+		case). We also know that ${m \space\vert\space x}$ (by ${P(n)}$) and ${m
+		\space\vert\space y}$ (also from ${P(n)}$). Because ${a,}$ ${b,}$ ${x,}$ and
+		${y}$ are all divisible by ${m,}$ it follows that the linear combinations
+		${x + y,}$ ${x + y - a,}$ and ${x + y - b}$ are all divisible by ${m.}$ This
+		fact implies that ${m}$ divides any of the possibilities stated above. This
+		completes the proof.
+	</p>
 </section>
+
+<section id="gcd">
+	<h2>Greatest Common Divisor</h2>
+	<p>
+		The <span class="term">GCD</span> (greatest common divisor) of numbers ${a}$
+		and ${b}$ is the largest number that divides
+		<span class="underlineText">both</span> ${a}$ and ${b.}$ For example,
+		${gcd(10, 5) = 2.}$ Similarly, ${gcd(18, 12) = 6.}$ With 18 and 12, 3 is a
+		<span class="italicsText">common divisor</span>, but it is not the
+		<span class="italicsText">greatest</span> common divisor.
+	</p>
+	<p>
+		What is ${gcd(5, 2)?}$ The only divisors of 5 are 1 and 5, and the only
+		divisors of 2 are 1 and 2. Accordingly, ${gcd(5, 2) = 1.}$ When the greatest
+		common divisor of two numbers is 1, we say that the numbers are
+		<span class="term">relatively prime</span>.
+	</p>
+	<p>
+		Recall the theorem we proved above: If ${m \space\vert\space a}$ and ${m
+		\space\vert\space b,}$ then ${m \space\vert\space \text{ any result}.}$ The
+		corollary to this theorem is that the GCD of ${a}$ and ${b}$ divides any
+		result of our state machine (the jug game).
+	</p>
+	<p>
+		Let's prove the corollary: Any linear combination, or state, of ${a}$ and
+		${b,}$ where the linear combination is ${L = sa + tb}$ and ${0 \leq L \leq
+		b,}$ can be reached. For example, if ${s = -2}$ and ${t = 2,}$ then ${L =
+		-2(3) + 2(5) = 4.}$ 4 is a linear combination of ${a}$ and ${b,}$ and we can
+		reach that state through ${n}$ transitions.
+	</p>
+	<p>
+		When we prove the corollary above, we will want to keep ${s}$ and ${t}$
+		positive (largely because negative integers can be unwieldy). To keep the
+		numbers positive, we just have to play around with some natural numbers. For
+		example, the linear combination ${L = 4}$ can be constructed with ${L =
+		(-2)(3) + (5)(3) + (2)(5) - (3)(5) = (3)(3) - (1)(5) = 4.}$
+	</p>
+	<p>
+		Let's formalize this trick. Currently, ${L = sa + tb.}$ We can rewrite this
+		as ${L = (s + mb)a + (t - ma)b.}$ We can then choose an ${m}$ such that ${m
+		> 0.}$ This proves to us that there exists an ${s'}$ and a ${t'}$ such that
+		L can be rewritten as ${L = s'a + t'b}$ where ${s' > 0.}$ Knowing this fact,
+		we can write an algorithm that solves the jug problem.
+	</p>
+	<p>
+		Assume ${0 < L < b.}$ The algorithm will repeatedly fill and pour jugs: To
+		obtain ${L_{gallons},}$ we repeat ${s'}$ times the following steps:
+	</p>
+	<ul>
+		<li>Fill the ${a}$ jug.</li>
+		<li>Pour the ${a}$ jug into the ${b}$ jug.</li>
+		<li>When the ${b}$ jug is full, empty the ${b}$ jug.</li>
+		<li>Continue pouring the ${a}$ jug until the ${a}$ jug is empty.</li>
+	</ul>
+	<p></p>
+	<p>
+		To see that this works, consider obtaining the 4 gallons. We want the linear
+		combination ${L = (3)(3) - (1)(5).}$ Accordingly, we must repeat the process
+		3 times.
+	</p>
+	<figure class="math-display">
+		<div>
+			<ol>
+				<li>
+					First loop:
+					<ul>
+						<li>${(0, 0) \to (3, 0)}$</li>
+						<li>${(3, 0) \to (0, 3)}$</li>
+					</ul>
+				</li>
+				<li>
+					Second loop:
+					<ul>
+						<li>${(0, 3) \to (3, 3)}$</li>
+						<li>${(3, 3) \to (1, 5)}$</li>
+						<li>${(1, 5) \to (1, 0)}$</li>
+						<li>${(1, 0) \to (0, 1)}$</li>
+					</ul>
+				</li>
+				<li>
+					Third loop:
+					<ul>
+						<li>${(0, 1) \to (3, 1)}$</li>
+						<li>${(3, 1) \to (0, 4)}$</li>
+					</ul>
+				</li>
+			</ol>
+		</div>
+	</figure>
+	<p>
+		Let's prove that this algorithm is correct (i.e., prove the corollary). We
+		know that we must fill the ${a}$ jug ${s'}$ times. Suppose that the ${b}$
+		jug is emptied ${u}$ times. We do not know how many times we have to empty
+		the ${b}$ jug, but we will denote it with ${u.}$ Next, let ${r}$ be the
+		remainder in the ${b}$ jug.
+	</p>
+	<p>
+		We know that ${0 \leq r \leq b,}$ since ${r}$ is what is left in the ${b}$
+		jug. Furthermore, we know that ${r = s' \cdot a - u \cdot b.}$ Now, we
+		assumed that ${0 < L < b.}$ We also know that ${L = s'a + t'b.}$ Thus, we
+		want to show that ${r = L.}$ Hence:
+	</p>
+	<figure class="math-display">
+		<div>
+			$$ \begin{aligned} r &= \overbrace{s'a + t'b}^{L} - t'b - ub \\ &= L - (t'
+			- u)b \end{aligned} $$
+		</div>
+	</figure>
+	<p>
+		What exactly does ${L - (t' - u)b}$ imply? Well, if ${t' + u \neq 0,}$ then
+		${r < 0}$ or ${r > b.}$ Now, it cannot be true that ${[r < 0 \lor r > b],}$
+		since ${0 \leq r \leq b.}$ Because ${[r < 0 \lor r > b],}$ it must be the
+		case that ${t' + u = 0.}$ Hence, ${u = t'.}$ Because of this fact, ${r =
+		L.}$
+	</p>
+	<p>
+		The fact that ${r = L}$ leads to a big conclusion. If ${L = 1,}$ we can
+		express ${L}$ as ${L = 1 = (2)(3) - (1)(5).}$ This means that using our
+		algorithm above, we can reach any ${L}$ that is a multiple of 1. This result
+		is generalized through <span class="term">Euclid's algorithm.</span>
+	</p>
+</section>
+
+<section id="euclids_algorithm">
+	<h2>Euclid's Algorithm</h2>
+	<p>
+		To understand <span class="italicsText">Euclid's algorithm</span>, we begin
+		with the following proposition:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Theorem.</span> There exists a unique ${q,}$ (a
+				quotient), and ${r}$ (a remainder), such that ${b = qa + r.}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		We will denote ${r,}$ the remainder, with ${rem(b, a).}$ With this theorem,
+		we can prove the following lemma:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Lemma.</span> The greatest common denominator of
+				${a}$ and ${b}$ is the greatest common denominator of the remainder of
+				${b}$ and ${a}$ and ${a.}$ I.e.,
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${gcd(a, b) = gcd(rem(b, a), a)}$</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+	<p>For example, consider the integers 105 and 224. Following the lemma:</p>
+	<figure class="math-display">
+		$$ \begin{aligned} gcd(105, 224) &= gcd(rem(224, 105), 105) \\ &= gcd(14,
+		105) \\ &= gcd(rem(105, 14), 14) \\ &= gcd(7, 14) \\ &= gcd(rem(14, 7), 7)
+		\\ &= gcd(0, 7) \\ &= 7 \end{aligned} $$
+	</figure>
+	<p>
+		Applying the lemma repeatedly, as we did above, is called Euclid's
+		algorithm. To prove the lemma, we want to show that if ${m \space\vert\space
+		a}$ and ${m \space\vert\space b,}$ then ${m \space\vert\space rem(b,a)}$ and
+		${m \space\vert\space a.}$
+	</p>
+	<p>
+		Suppose ${m \space\vert\space a}$ and ${m \space\vert\space b.}$ Then it
+		must be true that ${m \space\vert\space b - qa}$ and ${m \space\vert\space
+		a.}$ Now we know that ${b - qa = rem(b, a),}$ so it must be the case that
+		${m \space\vert\space rem(b, a).}$ This proves that ${gcd(a, b)
+		\space\vert\space gcd(rem(b,a), a).}$ In turn, this implies that ${gcd(a, b)
+		\leq gcd(rem(b,a), a).}$
+	</p>
+	<p>
+		Let's now consider the cases. First case: If ${rem(b, a) \neq 0,}$ then ${[m
+		\space\vert\space rem(b - a) = b - qa \land m \space\vert\space a] \implies
+		[m \space\vert\space a \land m \space\vert\space b.]}$ This is because if
+		${m \space\vert\space a}$ and ${m \space\vert\space b,}$ then ${m}$ divides
+		any linear combination of ${a}$ and ${b.}$
+	</p>
+	<p>
+		Second case: If ${rem(b, a) = 0,}$ then ${b - qa = 0.}$ We can rewrite ${b -
+		qa = 0}$ as ${b = qa.}$ Thus, if ${rem(b, a) = 0,}$ then ${b = qa.}$ Hence,
+		if ${m \space\vert\space a,}$ then ${m \space\vert\space b.}$
+	</p>
+</section>
+
 {% endblock %}
