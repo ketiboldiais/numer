@@ -12,6 +12,9 @@ def toc(request):
 def balg_preface(request):
 	return render(request,"numerm/balg/balg_preface.html")
 
+def balg_mathese(request):
+	return render(request,"numerm/balg/balg_mathese.html")
+
 def balg_realProperties(request):
 	return render(request,"numerm/balg/balg_realProperties.html")
 

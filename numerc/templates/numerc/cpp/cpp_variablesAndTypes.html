@@ -1342,7 +1342,9 @@
 			C++.</span
 		>
 	</p>
+</section>
 
+<section id="character_arrays">
 	<h3>Character Arrays</h3>
 	<p>Applying the first approach:</p>
 	<pre class="language-cpp"><code>
@@ -1569,13 +1571,13 @@
 		<ul class="syntax">
 			<li>strcat(${destination}$, ${source}$)</li>
 		</ul>
+		<figcaption>
+			where ${destination}$ is the string to be merged on to (here
+			<span class="monoText">foo</span>), and ${source}$ is the string to merge
+			(here <span class="monoText">bar</span>).
+		</figcaption>
 	</figure>
-	<p>
-		where ${destination}$ is the string to be merged on to (here
-		<span class="monoText">foo</span>), and ${source}$ is the string to merge
-		(here <span class="monoText">bar</span>). To understand how concatenation
-		works, examine the array of characters:
-	</p>
+	<p>To understand how concatenation works, examine the array of characters:</p>
 	<figure class="math-display">
 		<div>
 			<p><span class="monoText">['J', 'o', 'h', 'n', ' ', '\0']</span></p>
@@ -1842,22 +1844,200 @@
 		but without the need for a number system parameter.
 	</p>
 
-	<p><span class="topic">Tokenizing.</span> </p>
-
-	<h3>String Class</h3>
-	<p>
-		In <span class="monoText">C++</span>, strings are not a primitive type. We
-		must include a system library:
-	</p>
+	<p><span class="topic">Tokenizing.</span> Consider the following string:</p>
 	<pre class="language-cpp"><code>
-		#include &lt;string&gt;
-		...
-		string foo = "hello";
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char userInput[] = "Hello world";
+		
+			return 0;
+		}
+	</code></pre>
+
+	<p>
+		Can we separate the string <span class="monoText">userInput</span> into the
+		smaller strings <span class="monoText">"Hello"</span> and
+		<span class="monoText">"world"</span>? Yes, we can. The process of breaking
+		down a string into smaller pieces is called
+		<span class="term">tokenizing</span>. The term &#8220;tokenizing&#8221;
+		comes from the fact that every string consists of discrete parts. For
+		example, the string <span class="monoText">"Hello world"</span> consists of
+		the tokens <span class="monoText">"Hello"</span> and
+		<span class="monoText">"world"</span>. Tokens are defined according to some
+		common separator. For example, in
+		<span class="monoText">"Hello world"</span> the separator is a whitespace.
+	</p>
+	<p>
+		To tokenize a string in C++, we use the
+		<span class="monoText">strtok()</span> function. The general syntax:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>strtok(${s_1}$, "${d}$")</li>
+			</ul>
+		</div>
+		<figcaption>
+			where ${s_1}$ is the string to tokenize, and ${d}$ is the delimiter, or
+			separator
+		</figcaption>
+	</figure>
+	<p>
+		For example, let's tokenize the string
+		<span class="monoText">userInput</span>:
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		int main() {
+			char userInput[] = "Hello world";
+			char *substr = strtok(userInput, " ");
+			cout << substr << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Hello
 	</code></pre>
 	<p>
-		Like Java and other languages, strings in
+		We managed to extract <span class="monoText">Hello</span>, but what about
+		<span class="monoText">world</span>? This is the expected behavior for
+		<span class="monoText">strtok()</span>. With only the arguments we passed
+		into <span class="monoText">strtok()</span>, C++ will only extract the first
+		token. To extract all the tokens, we will need to run
+		<span class="monoText">strtok()</span> repeatedly. In other words, we must
+		use a loop. Let's use a while loop, and store the respective tokens into a
+		string array:
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;cstring&gt;
+		using namespace std;
+		
+		void printStringArray(char *arr[], int n);
+		
+		int main() {
+			char str[] = "Hello world";
+			char *token = strtok(str, " ");
+			char *tokenArr[2];
+			int i = 0;
+			while (token != NULL) {
+				tokenArr[i] = token;
+				token = strtok(NULL, " ");
+				i++;
+			}
+		
+			printStringArray(tokenArr, 2);
+			// we can then index into the array
+			cout << tokenArr[0] << endl;
+			cout << tokenArr[1] << endl;
+		
+			return 0;
+		}
+		
+		void printStringArray(char *arr[], int n) {
+			cout << "[ ";
+			for (int i = 0; i < n; i++) {
+				cout << arr[i] << "  ";
+			}
+			cout << "]" << endl;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		[ Hello  world ]
+		Hello
+		world
+	</code></pre>
+</section>
+
+<section id="string_class">
+	<h3>String Class</h3>
+	<p>
+		As we saw, in <span class="monoText">C++</span>, strings are not a primitive
+		type. We have to either use a <span class="monoText">char</span> array
+		&mdash; the historic and traditional way of creating strings &mdash; or, we
+		can use the class <span class="monoText">String</span>. When using the
+		<span class="monoText">String</span> class to create a string, we are
+		creating a <span class="italicsText">string object</span>. These differences
+		are made more apparent after a discussion on classes.
+	</p>
+	<p>
+		To use the <span class="monoText">String</span> class, we must include the
+		<span class="monoText">String</span> library:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;string&gt;
+		using namespace std;
+		
+		int main() {
+			string greet = "Good morning";
+			cout << greet << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Good morning
+	</code></pre>
+	<p>
+		Notice that unlike the <span class="monoText">char</span> array method, we
+		simply used the word <span class="monoText">string</span>. The advantage to
+		using the <span class="monoText">String</span> class is that it cuts down on
+		the amount of code we have to write, and we don't have worry so much about
+		arrays. The underlying mechanism behind
+		<span class="monoText">string</span>, however, is the same. We are still
+		creating an array of <span class="monoText">char</span>, with a null byte at
+		the end. The <span class="monoText">string</span> class simply abstracts
+		away the implementation.
+	</p>
+	<p>
+		The one catch to a <span class="monoText">string</span> object is that the
+		<span class="monoText">char</span> array allocated in memory isn't
+		necessarily the length of the string plus 1 for the null byte:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;string&gt;
+		using namespace std;
+		
+		int main() {
+			char foo1[] = "foo";
+			string foo2 = "foo";
+			int foo1Size = sizeof(foo1);
+			int foo2Size = sizeof(foo2);
+			cout << "size of foo1: " << foo1Size << endl;
+			cout << "size of foo2: " << foo2Size << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		size of foo1: 4
+		size of foo2: 24
+	</code></pre>
+	<p>
+		Notice the size difference between <span class="monoText">foo1</span>,
+		created with the traditional method, and <span class="monoText">foo2</span>,
+		created using the <span class="monoText">string</span> class.
+		<span class="monoText">string</span> will allocate a larger array in memory
+		for the string. This is to ensure that the
+		<span class="monoText">string</span> can grow as needed. We call this extra
+		memory the string's <span class="term">capacity</span>. C++ implements this
+		string capacity in response to the fact that it can get somewhat unwieldy
+		concatenating strings with the traditional method.
+	</p>
+	<p>
+		Again, strings in
 		<span class="monoText">C++</span> are a (potentially empty) sequence of
-		characters. And as a sequence of characters, they are indexed from
+		characters. And as a sequence of characters, instances of
+		<span class="monoText">String</span> are indexed from
 		<span class="monoText">0</span> to ${n,}$ where ${n}$ is some positive
 		integer. We can access the individual characters of a string using
 		<span class="monoText">[${i}$]</span> where ${i}$ is some nonnegative
@@ -1876,8 +2056,7 @@
 		corresponding ASCII encoding.
 	</p>
 	<p>
-		<span class="topic">Basic Operators.</span> We can
-		<span class="term">concatenate</span> strings in
+		<span class="topic">Basic Operators.</span> We can concatenate strings in
 		<span class="monoText">C++</span> as we would most other languages:
 	</p>
 	<pre class="language-cpp"><code>
@@ -1885,11 +2064,13 @@
 		s1 += "World!" // "Hello world!"
 	</code></pre>
 	<p>
-		One thing we can do with strings in <span class="monoText">C++</span> that
-		we cannot do in other languages is use the comparison operators. The
-		comparison operators will compare the ASCII encodings of the strings. Thus,
-		the character <span class="monoText">a</span> is "less than"
+		We can also use the comparison operators on strings, as we did with
+		<span class="monoText">char</span> arrays. The comparison operators will
+		compare the ASCII encodings of the strings. Thus, the character
+		<span class="monoText">a</span> is "less than"
 		<span class="monoText">b</span> becomes it has a smaller ASCII enscoding.
+		Below are some other useful methods we can use with the
+		<span class="monoText">string</span> class:
 	</p>
 	<figure class="table">
 		<table class="truth_table">
@@ -1914,7 +2095,78 @@
 				</tr>
 				<tr>
 					<td><span class="monoText">${v}$.length()</span></td>
-					<td>return the number of characters in the string</td>
+					<td>return the number of characters in the string ${v}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.size()</span></td>
+					<td>return the size of the string ${v}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.capacity()</span></td>
+					<td>return the capacity of the string ${v}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.resize(${n}$, ${c}$)</span></td>
+					<td>
+						increases the length of the string ${v}$ by ${n}$ characters; pass
+						the <span class="monoText">char</span> parameter ${c}$, which will
+						occupy the new spaces
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.max_size()</span></td>
+					<td>
+						returns the maximum size the string ${v}$ can grow to given current
+						system limitations
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.clear()</span></td>
+					<td>
+						erase the contents of the string ${v}$; results in an empty string
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.empty()</span></td>
+					<td>determines whether the string ${v}$ is the empty string</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText">${v}$.replace(${i}$, ${n}$, "${s}$")</span>
+					</td>
+					<td>
+						replaces the characters in ${i}$ up to ${i + (n - 1)}$ with the
+						character ${s.}$ For example:
+						<pre class="language-cpp"><code>
+							#include &lt;iostream&gt;
+							#include &lt;string&gt;
+							using namespace std;
+							
+							int main() {
+								string foo = "foo";
+								cout << foo << endl;
+								foo.replace(0, 1, "b");
+								cout << foo << endl;
+								return 0;
+							}
+						</code></pre>
+						<pre class="language-bash"><code>
+							foo
+							boo
+						</code></pre>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.push_back('${c}$')</span></td>
+					<td>
+						Given a string ${v}$ containing the character ${c,}$ pushes the
+						character ${c}$ back by one space; the opposite operation is
+						<span class="monoText">.pop_back()</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.swap(w)</span></td>
+					<td>Given strings ${v}$ and ${w,}$ swap the strings.</td>
 				</tr>
 			</tbody>
 		</table>

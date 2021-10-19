@@ -7,6 +7,132 @@
 <h1>Functions</h1>
 <section id="functions">
 	<p>
+		In the simplest terms, a function is a piece of code that performs a
+		specific task. It takes inputs, called <span class="term">arguments</span>,
+		and returns an output, called a <span class="term">return value</span>.
+		There are many ways to think about functions. For now, we can think of
+		functions as ways to <span class="italicsText">modularize</span> our code.
+		If we have a particular computation that must be performed over and over
+		again, that computation would be best capsulated as a function. For example,
+		consider this code that prints out an array:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main() {
+			int arr[]{1, 2, 3, 4};
+			int sizeOfArr = sizeof(arr) / sizeof(int);
+			for (int i = 0; i < sizeOfArr; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		If we had multiple arrays, we would have to write that
+		<span class="monoText">for</span> loop multiple times.
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main() {
+			int arr1[]{1, 2, 3, 4};
+			int arr2[]{5, 6, 7, 8};
+			int sizeOfArr1 = sizeof(arr1) / sizeof(int);
+			int sizeOfArr2 = sizeof(arr2) / sizeof(int);
+			for (int i = 0; i < sizeOfArr1; i++) {
+				cout << arr1[i] << " ";
+			}
+			cout << endl;
+			for (int i = 0; i < sizeOfArr2; i++) {
+				cout << arr2[i] << " ";
+			}
+			cout << endl;
+			return 0;
+		}
+	</code></pre>
+	<p>It would be much cleaner if we just wrote a function:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void printIntArr(int arr[], int length);
+		
+		int main() {
+			int arr1[]{1, 2, 3, 4};
+			int arr2[]{5, 6, 7, 8};
+			int sizeOf_arr1 = sizeof(arr1) / sizeof(int);
+			int sizeOf_arr2 = sizeof(arr2) / sizeof(int);
+			printIntArr(arr1, sizeOf_arr1);
+			printIntArr(arr2, sizeOf_arr2);
+			return 0;
+		}
+		
+		void printIntArr(int arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+	</code></pre>
+	<p>
+		It may look like there's not much of a difference, but we have effectively
+		modularized our code, allowing us to call it whenever we'd like, for however
+		many arrays we want, without having to write
+		<span class="monoText">for</span> loops over and over. To clean the code up
+		a bit more, we can use a macro (don't worry about this for now, we will
+		expore macros in later sections):
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		#define SIZEOF(a) sizeof(a)/sizeof(*a)
+		
+		void printIntArr(int arr[], int length);
+		
+		int main() {
+			int arr1[]{1, 2, 3, 4};
+			int arr2[]{5, 6, 7, 8};
+			printIntArr(arr1, SIZEOF(arr1));
+			printIntArr(arr2, SIZEOF(arr2));
+			return 0;
+		}
+		
+		void printIntArr(int arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+	</code></pre>
+	<p>
+		Erring on the side of functions when writing code is a hallmark of the
+		programming paradigm <span class="term">functional programming</span>. The
+		benefits of functional programming is modularized code, and it is the exact
+		opposite of <span class="term">monolithic programming</span> &mdash; writing
+		all of our code in a single area, such as
+		<span class="monoText">main()</span>. If we wrote all of our code in
+		<span class="monoText">main()</span>, then we take on several risks. First,
+		suppose our program spanned several thousand lies (not at all unusual). If
+		we so happen to encounter a bug, we would have to weave through several
+		thousand lines trying to pinpoint the problem. With modularized code, we can
+		more quickly find the source by examining each module separately. Moreover,
+		modularized code avoids cross-contamination by isolating pieces of code.
+	</p>
+	<p>
+		Second, our program required performing a computation in a for loop, or a
+		computation in a function, or a computation in a function in a function
+		(again, not at all unusual). Without using functions, we would have to copy
+		and paste the computation's code everywhere it's needed. This is (1) not
+		productive and (2) almost assuredly will cause bugs (think about how many
+		times you've copied and pasted and missed a character; one character is all
+		it takes in programming).
+	</p>
+	<blockquote>Order matters.</blockquote>
+	<p>
 		In <span class="monoText">C++</span>, the order in which we write functions
 		matters. Any call to a function <span class="underlineText">must</span> be
 		made <span class="underlineText">after</span> the function is implemented.

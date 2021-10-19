@@ -27,6 +27,8 @@ urlpatterns = [
 
 	path("balg_complexNumbers", views.balg_complexNumbers, name="balg_complexNumbers"),
 
+	path("balg_mathese", views.balg_mathese, name="balg_mathese"),
+
 	# geometry paths
 	path("geo_preface", views.geo_preface, name="geo_preface"),
 
