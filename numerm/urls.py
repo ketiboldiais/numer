@@ -71,8 +71,6 @@ urlpatterns = [
 
 	path("disc_logicCircuits", views.disc_logicCircuits, name="disc_logicCircuits"),
 
-	path("disc_counting", views.disc_counting, name="disc_counting"),
-
 	path("disc_combinatorics", views.disc_combinatorics, name="disc_combinatorics"),
 
 	path("disc_algorithms", views.disc_algorithms, name="disc_algorithms"),

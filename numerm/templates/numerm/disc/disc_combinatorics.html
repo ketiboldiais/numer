@@ -1,23 +1,624 @@
-{% extends '../layout.html' %}
-{% load static %}
-{% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Combinatorics, counting" />
+{% endblock %} {% block title %}
+<title>Combinatorics</title>
+{% endblock %} {% block content %}
 <h1>Combinatorics</h1>
 <section>
 	<p>Consider the following problem:</p>
 	<figure class="math-display">
 		<div>
-			<p>John plays a video game where there are 50 characters to chose from. John must construct a team of characters. The team can only consist of 5 unique characters, selected from the 50 characters. How many different teams can John construct?</p>
+			<p>
+				John plays a video game where there are 50 characters to chose from.
+				John must construct a team of characters. The team can only consist of 5
+				unique characters, selected from the 50 characters. How many different
+				teams can John construct?
+			</p>
 		</div>
 	</figure>
-	<p>This is an example of a <span class="term">combinatorics</span> problem. Combinatorics is the study of <span class="italicsText">combinations</span>, or <span class="italicsText">arrangements</span>, of discrete objects. By and large, questions in combinatorics fall into a few categories:</p>
+	<p>
+		This is an example of a <span class="term">combinatorics</span> problem.
+		Combinatorics is the study of <span class="italicsText">combinations</span>,
+		or <span class="italicsText">arrangements</span>, of discrete objects. By
+		and large, questions in combinatorics fall into a few categories:
+	</p>
 	<figure class="math-display">
 		<ol>
-			<li><span class="topic">Existence.</span> Given some things and a set of conditions, does a particular arrangement ${x}$ exist?</li>
-			<li><span class="topic">Enumeration.</span> How many different ways are there to arrange these things given this set of conditions?</li>
-			<li><span class="topic">Analysis.</span> What are the properties, or characteristics, of this particular arrangement?</li>
-			<li><span class="topic">Optimization.</span> Given all these different arrangements, what is the most optimal?</li>
+			<li>
+				<span class="topic">Existence.</span> Given some things and a set of
+				conditions, does a particular arrangement ${x}$ exist?
+			</li>
+			<li>
+				<span class="topic">Enumeration.</span> How many different ways are
+				there to arrange these things given this set of conditions?
+			</li>
+			<li>
+				<span class="topic">Analysis.</span> What are the properties, or
+				characteristics, of this particular arrangement?
+			</li>
+			<li>
+				<span class="topic">Optimization.</span> Given all these different
+				arrangements, what is the most optimal?
+			</li>
 		</ol>
 	</figure>
-	<p>Not every combinatorics problem falls into the categories above, and of those that do, they may not fit so neatly. The categorization presented is intended to be illustrative, rather than comprehensive. However, many of the most useful ideas in combinatorics stem from the aforementioned questions, and it is these ideas that we explore. Accordingly, for our purposes, combinatorics is the study of the existence, enumeration, analysis, and optimization of arranging discrete objects.</p>
+	<p>
+		Not every combinatorics problem falls into the categories above, and of
+		those that do, they may not fit so neatly. The categorization presented is
+		intended to be illustrative, rather than comprehensive. However, many of the
+		most useful ideas in combinatorics stem from the aforementioned questions,
+		and it is these ideas that we explore. Accordingly, for our purposes,
+		combinatorics is the study of the existence, enumeration, analysis, and
+		optimization of arranging discrete objects.
+	</p>
+</section>
+
+<section id="enumeration" class="grid-item">
+	<h2>Enumeration</h2>
+	<p>
+		In these next few sections, we explore the basics of
+		<span class="italicsText">enumeration</span>, the formal term for what we
+		think of when we hear the word &#8220;counting.&#8221; The concept of
+		counting things might seem intuitive, but looks can be deceiving. Many
+		counting problems require us to first determine (a)
+		<span class="italicsText">what</span> exactly it is we are counting, and (b)
+		<span class="italicsText">how</span> we should count. It is these problems
+		that concern the next sections.
+	</p>
+	<p>
+		For example, suppose on August 1, a friend says, &#8220;We'll meet in a
+		week.&#8221; Does the friend mean, August 7 or August 8? Both meanings are
+		plausible. If we count August 1, then:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${[1, 2, 3, 4, 5, 6, 7]}$</p>
+		</div>
+	</figure>
+	<p>If, however, we do not count August 1, then:</p>
+	<figure class="math-display">
+		<div>
+			<p>${[2, 3, 4, 5, 6, 7, 8]}$</p>
+		</div>
+	</figure>
+	<p>
+		This is an example of what we call an
+		<span class="term">indexing problem</span> &mdash; where do we start the
+		count? In reality, indexing depends enormously on convention. In the
+		English-speaking world, if at 10:00 a.m. the lecturer says, &#8220;We'll
+		meet again in 2 hours&#8221; they almost assuredly mean, &#8220;Reconvene at
+		12:00 p.m.&#8221;
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${[10, 11, 12]}$</p>
+		</div>
+	</figure>
+	<p>
+		At its core, every counting issue boils down to a deceptively simple
+		question: &#8220;What do we count?&#8221;
+	</p>
+	<p>
+		In many programming languages, if an array contains 4 elements, then the
+		third element in the array is actually element number 2, because the count
+		starts at 0:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${0, 1, 2, 3, 4}$</p>
+		</div>
+	</figure>
+	<p>Here is another problem:</p>
+	<p>How many numbers are in this sequence:</p>
+	<figure class="math-display">
+		<div>
+			<p>${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}$</p>
+		</div>
+	</figure>
+	<p>
+		Clearly, there are 10 numbers. This is a very basic counting problem, and it
+		is what we think of when hear the word &#8220;counting&#8221;. Now, how many
+		numbers are between 8 and 16 inclusive (i.e., including 8 and 16)?:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${[8, 9, 10, 11, 12, 13, 14, 15, 16]}$</p>
+		</div>
+	</figure>
+	<p>
+		We could manually count each element. But, that approach is inefficient,
+		particularly for very long sequences. A better way would be to simplify
+		sequence into the one we saw previously:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				$[ (8-7), (9-7), (10-7), (11-7), (12-7), (13-7), (14-7), (15-7), (16-7)
+				]$
+			</p>
+		</div>
+		<div><p>${\text{\textbardbl}}$</p></div>
+		<div><p>${[1, 2, 3, 4, 5, 6, 7, 8, 9]}$</p></div>
+	</figure>
+	<p>
+		From this approach, we can see that given two positive numbers ${a}$ and
+		${b}$ where ${b > a,}$ the number of integers in the sequence ${[a, a+1,
+		\ldots, b-1, b]}$ is: ${(b - a) + 1.}$
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Proposition.</span> Let ${a}$ and ${b}$ be integers,
+			where ${b > a.}$ Given a sequence ${L = [a, a+1, \ldots, b-1, b],}$ the
+			number of elements in the sequence, ${n(L),}$ is given by:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${n(L) = (b - a) + 1}$</p>
+			</div>
+		</figure>
+	</div>
+	<p>
+		We can use the proposition above for even more complex problems. For
+		example, how many multiples of 3 are between 62 and 215?
+	</p>
+	<p>
+		Well, we know the first multiple of three between 62 and 215 is 63. The last
+		multiple of three is 213. Thus, the actual array we want to count is ${63,
+		66, 69, \ldots, 213.}$ Now, we need to convert this array into one we know
+		how to count, so we divide each element in the array by 3: ${21, 22, 23,
+		\ldots , 71.}$ From our previous proposition, we know how to count this
+		array: ${(71 - 21) + 1 = 51.}$ Thus, there are 51 numbers in the array
+		&mdash; i.e., there are 51 multiples of 3 between 62 and 215.
+	</p>
+	<p>
+		Let's try another one. How many multiples of 10 are between 9 and 101?
+		Again, the first multiple of 10 is 10. The last multiple of 10 is 100. Thus,
+		the sequence is ${[10, 20, \ldots, 100].}$ We divide by 10: ${[1, 2, 3,
+		\ldots, 10].}$ And again, we know how to count this sequence: ${(10 - 1) + 1
+		= 10.}$ There are 10 multiples of 10 between 9 and 101.
+	</p>
+	<p>
+		How many multiples of 10 are between 11 and 103? Here, the first multiple of
+		10 is 20. The last multiple of 10 is 100. We have the sequence ${[20, 30,
+		\ldots, 100].}$ Dividing by 3: ${[2, 3, 4, \ldots, 10.]}$ Then counting:
+		${(10-2) + 1 = 9.}$ There are 9 multiples of 10 between 11 and 103.
+	</p>
+	<p>
+		Now that we know how to count multiples, we can start counting even more
+		elaborate sequences: How many four-digit positive integers are perfect
+		cubes?
+	</p>
+	<p>
+		Solution: We know that the first four-digit positive integer that is a
+		perfect cube is ${10 \cdot 10 \cdot 10 = 1000.}$ The last four-digit perfect
+		cube is a bit trickier to find. Fortunately, the method of exhaustion is
+		feasible here. We know ${20 \cdot 20 \cdot 20 = 8000.}$ This is already
+		pretty close to five-digits, so let's just try the next positive integer:
+		${21 \cdot 21 \cdot 21 = 9,261.}$ Now we're very close; 22 will probably
+		enter five-digit territory: ${22 \cdot 22 \cdot 22 = 10,648.}$ Great, so we
+		know our sequence is ${[1000, \ldots, 9261].}$ Taking the cubic root of each
+		element, we have ${[10, \ldots, 21.]}$ Counting this list: ${(21 - 10) + 1 =
+		12.}$ Hence, there are 12 four-digit positive integers that are perfect
+		cubes.
+	</p>
+	<p>
+		<span class="exh">Exercise.</span> How many numbers are in the following
+		sequences:
+	</p>
+	<ol>
+		<li>${L = [36, 37, 38, \ldots , 92, 93]}$</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				We use the relevant proposition: ${(93 - 36) + 1 = 58.}$ There are 58
+				numbers in the sequence ${L;}$ ${n(L) = 58.}$
+			</p>
+		</details>
+		<li>${N = [4, 6, 8, \ldots, 128, 130]}$</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Again, we convert the sequence into one we can actually count. We can
+				see each element is a multiple of 2. Thus, the sequence is: ${[(4/2),
+				(6/2), (8/2), \ldots, (128/2), (130/2)].}$ Simplifying: ${2, 3, 4,
+				\ldots, 64, 65.}$ Using the proposition: ${(65 - 2) + 1 = 64.}$ Thus,
+				${n(N) = 64.}$.
+			</p>
+		</details>
+		<li>${S = [-33, -28, -23, \ldots, 52, 57]}$</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Again, we convert the sequence into one we can count. We can see that
+				each element in the sequence differs by 5. To simplify the sequence so
+				we can divide by 5, let's add 3 to each element: ${[-30, -25, -20,
+				\ldots, 55, 60.]}$ Now let's divide by 5: ${-6, -5, -4, \ldots, 11,
+				12.}$ Using our formula: ${(12 - (-6)) + 1 = 19.}$ Thus, ${n(S) = 19.}$
+			</p>
+		</details>
+		<li>${Q = [147, 144, 141, \ldots, 42, 39]}$</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				In this sequence, we can see each element differs by 3. Let's try
+				subtracting 9 from each element: ${[30, 33, \ldots , 132, 135, 138.]}$
+				Reverse the list and divde by 3: ${[10, 11, \ldots, 44, 45, 46.]}$ Using
+				our proposition: ${(46-10) + 1 = 37.}$ Thus, ${n(Q) = 37.}$
+			</p>
+		</details>
+		<li>
+			${C = [3 \frac{2}{3}, 4 \frac{1}{3}, 5, 5 \frac{2}{3}, \ldots , 26
+			\frac{1}{3}, 27]}$
+		</li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				We can see each element differs by ${\frac{2}{3}.}$ Let's try and give
+				all of the elements a common denominator: ${[\frac{11}{3}, \frac{13}{3},
+				\frac{15}{3}, \ldots, \frac{79}{3}, \frac{81}{3}].}$ Since each of the
+				elements has a multiplier of ${\frac{1}{3},}$ we can factor
+				${\frac{1}{3}}$ out, leaving us with: ${[11, 13, 15, \ldots, 79, 81.]}$
+				These are all separated by 2, so let's subtract 1 to each element:
+				${[10, 12, 14, \ldots, 78, 80];}$ then divide by 2: ${[5, 6, 7, \ldots,
+				39, 40.]}$ We can count this list: ${(40-5) + 1 = 36.}$ Thus, ${n(C) =
+				36.}$
+			</p>
+		</details>
+	</ol>
+	<p>
+		<span class="exh">Exercise.</span> How many odd perfect squares are between
+		5 and 211?
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			Again, let's come up with a sequence. First, let's find the first element.
+			The first element is 9: ${3^2 = 9.}$ Now let's find the last element. We
+			know ${12^2 = 144.}$ So just a little higher. ${13^2 = 169.}$ ${15 \times
+			15 = 225;}$ too high. ${14^2 = 196,}$ but this is even. So, the first
+			element is 9, and the last element is 169. Thus, we have ${[9, 25, 49, 81,
+			\ldots 196].}$ Taking the square root each element: ${[3, 5, 7, 9, \ldots
+			, 13.]}$ Subtracting 1 from each element: ${[2, 4, 6, 8, \ldots , 12.]}$
+			Dividing each element by 2: ${[1, 2, 3, 4, \ldots, 6.]}$ Thus, there are 6
+			odd perfect squares between 5 and 211.
+		</p>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> How many sets of four consecutive
+		positive integers are there such that the product of the four integers is
+		less than 100,000?
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			First, the smallest element in this sequence is ${[1, 2, 3, 4] = 1 \cdot 2
+			\cdot 3 \cdot 4 = 24}$ (remember, we're looking for consecutive positive
+			integers). Now, we have to look for the largest set. Let's focus on the
+			value 100,000.
+		</p>
+		<p>
+			We're looking for four numbers that when multiplied together produce
+			100,000. Let's look at a simpler case, a number to the power of 4. We know
+			that ${20^4 = 160,000.}$ Let's try another number: ${19^4 = 130,321.}$
+			Getting a little closer. ${18^4 = 104,976.}$ This is pretty close, so the
+			last number has to be immediately next to 18. Let's try another one:
+			${17^4 = 83,521.}$ This is lower than 100,000. This means the set of four
+			integers is somewhere in the vicinity of 17 and 18. Let's try: ${15 \cdot
+			16 \cdot 17 \cdot 18 = 73,440.}$ Close, but let's just try one more: ${16
+			\cdot 17 \cdot 18 \cdot 19 = 93,024;}$ include 20 in the next set and we
+			are definitely over 100,000. Thus, this is definitely the last element.
+			Great, this means we have the following:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${M = [\{1, 2, 3, 4\}, \ldots, \{16, 17, 18, 19\}]}$</p>
+			</div>
+		</figure>
+		<p>
+			Now, the question is how do we count these? Well, let's think about how
+			each of these sets work:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${ \{ 1 \cdot 2 \cdot 3 \cdot 4 \} }$</p>
+				<p>${ \{ 2 \cdot 3 \cdot 4 \cdot 5 \} }$</p>
+				<p>${ \{ 3 \cdot 4 \cdot 5 \cdot 6 \} }$</p>
+				<p>${ \{ 4 \cdot 5 \cdot 6 \cdot 7 \} }$</p>
+				<p>${\vdots}$</p>
+				<p>${ \{ 15 \cdot 16 \cdot 17 \cdot 18 \} }$</p>
+				<p>${ \{ 16 \cdot 17 \cdot 18 \cdot 19 \} }$</p>
+			</div>
+		</figure>
+		<p>
+			If we focus on just the first number for each of the sets above, we get:
+			${1, 2, 3, 4, \ldots, 15, 16.}$ Thus, there are 16 different possible
+			sets.
+		</p>
+	</details>
+	<p>
+		Counting is deeply intertwined with arithmetic. Consider the following
+		problem:
+	</p>
+	<div class="rule">
+		<p>
+			12 students are taking at least 1 foreign language. The school offers only
+			Spanish and French. 8 students take Spanish, 5 take both Spanish and
+			French. How many students take French?
+		</p>
+	</div>
+	<p>
+		There are multiple ways to approach this problem, but the worst possible way
+		is to blindly add and subtract. We want to think as logically as possible.
+		More importantly, we want to think about this problem in terms of set
+		theory. Here, we have a situation where students take Spanish, French, or
+		both Spanish and French. The problem can be viewed as sets intersecting,
+		where ${F = \text{French},}$ ${S = \text{Spanish}:}$
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/french_and_spanish.svg' %}"
+			alt="int"
+			loading="lazy"
+			class="sixty-p"
+		/>
+	</figure>
+	<p>
+		The Venn diagram above can be thought of as representing several sections:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${F \cup S}$ = {all students}</p>
+			<p>${F}$ = {all French students}</p>
+			<p>${S}$ = {all Spanish students}</p>
+			<p>${F \cap S}$ = {students taking French and Spanish}</p>
+			<p>${F \setminus S}$ = {students taking only French}</p>
+			<p>${S \setminus F}$ = {students taking only Spanish}</p>
+		</div>
+	</figure>
+	<p>Here, we are asked to find ${n(F).}$ We have the following data:</p>
+	<figure class="math-display">
+		<div>
+			<p>${n(F \cup S) = 12}$</p>
+			<p>${n(S) = 8}$</p>
+			<p>${n(F \cap S) = 5}$</p>
+		</div>
+	</figure>
+	<p>
+		What else can we infer from this data? Well, we know that ${n(F \cap S) =
+		5.}$ These are the students that take both Spanish and French. Next, we know
+		${n(S) = 8;}$ there are 8 total students taking Spanish. Thus, we can make
+		the following inference:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${n(S \setminus F) = n(S) - n(F \cap S) = 8 - 5 = 3.}$</p>
+		</div>
+	</figure>
+	<p>
+		Thus, there are 3 students that take only Spanish. How many students take
+		only French? Well, it must be 4, since ${n(F \cup S) - n(S) = 12 - 8 = 4.}$
+		Hence, ${n(F) = n(F \setminus S) + n(F \cap S) = 4 + 5 = 9.}$
+	</p>
+	<p>Here is another problem:</p>
+	<div class="rule">
+		<p>
+			Agnes has 27 cats. 14 cats are short-haired. 11 cats are kittens. 5 cats
+			are long-haired adult cats (not kittens). How many short-haired kittens?
+		</p>
+	</div>
+	<p>
+		Again, set theory allows us to think about this as logically as possible.
+		Here, we have several sets from the data above:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${S}$ = short-hairs</p>
+			<p>${L}$ = long-hairs</p>
+			<p>${K}$ = kittens</p>
+			<p>${A}$ = adults</p>
+		</div>
+	</figure>
+	<p>
+		The problem gives us the following data, and the last line is what we want
+		to find:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${n(S \cup L) = n(A \cup K)}$ = total cats = 27</p>
+			<p>${n(S) = n(K \cup S) + n(A \cup S)}$</p>
+			<p>${n(L) = n(K \cup L) + n(A \cup L)}$</p>
+			<p>${n(S) = 14}$</p>
+			<p>${n(K) = 11}$</p>
+			<p>${n(L \cap A) = 5}$</p>
+			<p>${n(K \cap S) = ?}$</p>
+		</div>
+	</figure>
+	<p>
+		First, we know that ${n(K \cup A) = 27.}$ We also know that ${n(K) = 11.}$
+		Thus, ${n(A) = n(K \cup A) - n(K) = 27 - 11 = 16.}$ There are 16 adults.
+	</p>
+	<p>
+		We know that ${n(L \cap A) = 5,}$ so ${n(A \cap S) = n(A) - n(A \cap L) = 16
+		- 5 = 11.}$ There are 11 short-hair adults. Now, we know ${n(S) = 14,}$ and
+		we know that ${n(S) = n(K \cap S) + n(A \cap S).}$ Hence, ${n(K \cap S) =
+		n(S) - n(A \cap S) = 14 - 11 = 3.}$ Therefore, there are 3 short-hair
+		kittens.
+	</p>
+</section>
+
+<section id="counting_outcomes">
+	<h2>Counting Outcomes</h2>
+	<p>Consider the following problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				A reality TV show features 4 women, each of whom are paired with 2 men.
+				Only one woman and one of their paired men may be chosen as the most
+				romantic couple. How many different outcomes are possible?
+			</p>
+		</div>
+	</figure>
+	<p>
+		This is a basic counting problem. Suppose the women are Jane, Binita, Yuna,
+		and Miremba. Jane is paired with: Remmy, Kento. Binita is paired with:
+		Aiden, Jose. Yuna is paired with: Hans, Luka. And Miremba is paired with:
+		Dan, Bo. Enumerating the different possible choices:
+	</p>
+	<div class="compare">
+		<div>
+			<p>${(Jane, Remmy)}$</p>
+			<p>${(Jane, Kento)}$</p>
+		</div>
+		<div>
+			<p>${(Binita, Aiden)}$</p>
+			<p>${(Binita, Jose)}$</p>
+		</div>
+		<div>
+			<p>${(Yuna, Hans)}$</p>
+			<p>${(Yuna, Luka)}$</p>
+		</div>
+		<div>
+			<p>${(Miremba, Dan)}$</p>
+			<p>${(Miremba, Bo)}$</p>
+		</div>
+	</div>
+	<p>
+		There are 8 possible outcomes. This corresponds to the following principle:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Product Rule.</span> Suppose two decisions, ${a}$
+				and ${b,}$ are made. If ${a}$ results in
+				<span class="underlineText">any one</span> of ${m}$ possible outcomes,
+				and if, for each outcome of ${a}$ there are ${n}$ possible outcomes of
+				${b,}$ then together there are ${m \cdot n}$ possible outcomes of the
+				two decisions ${a}$ and ${b.}$
+			</p>
+		</div>
+	</figure>
+	<p>We can see that the rule above is true with a picture:</p>
+	<figure class="math-display">
+		<div>
+			$$ \begin{aligned} &(1, 1), (1, 2), \ldots, (1, n) \\ &(2, 1), (2, 2),
+			\ldots, (2, n) \\ &(3, 1), (3, 2), \ldots, (3, n) \\ &\vdots \\ &(m, 1),
+			(m, 2), \ldots, (m, n) \end{aligned} $$
+		</div>
+	</figure>
+	<p>
+		We can generalize the rule above for when there are more than 2 decisions
+		made:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">General Product Rule.</span> Suppose there are ${r_1
+				\ldots r_i}$ decisions to be performed, where ${r, i \in \Z^{+}.}$
+				Suppose further that ${r_1}$ results in ${n_1}$ possible outcomes,
+				${r_2}$ results in ${n_2}$ possible outcomes, ${r_3}$ in ${n_3}$
+				possible outcomes, ad infinitum. Then there is a total of ${n_1 \times
+				n_2 \times n_3 \times \ldots \times n_r}$ possible outcomes.
+			</p>
+		</div>
+	</figure>
+
+	<!-- * exercise -->
+	<p>
+		<span class="exh">Exercise.</span> A senate committee consists of 3 lawyers,
+		4 engineers, 5 doctors, and 2 mathematicians. The committee must construct a
+		subcommittee of 4, consisting of 1 person from each profession. How many
+		different subcommittees are possible?
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>This is a simple application of the decision outcome rule:</p>
+		<figure class="math-display">
+			<div>
+				<p>${3 \cdot 4 \cdot 5 \cdot 2 = 120}$</p>
+			</div>
+		</figure>
+		<p>There are 120 possible subcommittees.</p>
+	</details>
+
+	<!-- * exercise -->
+	<p>
+		<span class="exh">Exercise.</span> A university identifies its members with
+		an identification string. The string consists of 7 characters, of which the
+		first 3 characters must be an English alphabet, and the last 4 characters
+		must be numbers (e.g., <span class="monoText">AXX7980</span>). How many
+		possible strings are there?
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>There are 26 English alphabets, and there 10 possible numbers. Thus:</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${26 \cdot 26 \cdot 26 \cdot 10 \cdot 10 \cdot 10 \cdot 10 =
+					175,760,000}$
+				</p>
+			</div>
+		</figure>
+		<p>More than enough strings for a university right?</p>
+	</details>
+
+	<!-- * exercise -->
+	<p>
+		<span class="exh">Exercise.</span> Suppose a graph consists of ${n}$ points.
+		How many different functions are defined on these ${n}$ points if each
+		function is either ${0,}$ ${1,}$ or ${\texttt{null}?}$
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			When dealing with problems involving abstractions, it's often best to
+			consider a simpler, concrete case first. Suppose the function is called
+			${f.}$ Next, instead of considering ${n}$ points, suppose there is just 1
+			point. With just 1 point, we have ${f(1) = -1,}$ ${f(1) = 0,}$ ${f(1) =
+			\texttt{null}.}$ This means that with just 1 point, we have 3 possible
+			functions. Because we're dealing with a function, the value after ${f(1)}$
+			&mdash; the value of ${f(2)}$ &mdash; could be either ${-1,}$ ${0,}$ or
+			${\texttt{null}.}$ This means that we have ${3 \cdot 3 = 3^2 = 9}$
+			possible functions. With 3 points, we have ${3 \cdot 3 \cdot 3 = 3^3 =
+			27.}$ Expanding on this thought process, there are ${3^n}$ possible
+			functions.
+		</p>
+	</details>
+
+	<!-- * exercise -->
+	<p>
+		<span class="exh">Exercise.</span> Blackacre Corp. has two divisions,
+		software and hardware. Blackacre owns a building with 12 floors. Assuming
+		Blackacre will assign 1 floor to each division, how many different ways are
+		there to assign different floors to each division?
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			There are 12 possible floors to assign to software (or hardware), leaving
+			11 possible floors for the other. Accordingly, there are ${12 \times 11 =
+			121}$ possible assignments.
+		</p>
+	</details>
+
+	<!-- * exercise -->
+	<p>
+		<span class="exh">Exercise.</span> The seats on a plane are identified with
+		an uppercase English alphabet, followed by a positive integer no greater
+		than 100. What is the largest number of seats that can be labeled
+		differently?
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			There are 26 letters in the alphabet, and 100 positive integers no greater
+			than 100. Accordingly: ${26 \times 100 = 2600}$ possible seats.
+		</p>
+	</details>
+	<p><span class="exh">Exercise.</span> How many different bit strings of length 12 are there?</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>A bit is either a 0 or a 1. Accordingly, for a bit of length 1, there are two possibilities: 0 or 1. For a bit string of length 2, there are 4 possibilities: 00, 01, 10, 11. For a bit string of length 3, there are 9. And so on. Thus, for a bit string of length 12, there are ${2^{12},}$ or ${4096,}$ bit strings.</p>
+	</details>
 </section>
 {% endblock %}

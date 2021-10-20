@@ -99,9 +99,6 @@ def disc_functionsRelations(request):
 def disc_logicCircuits(request):
 	return render(request, "numerm/disc/disc_logicCircuits.html")
 
-def disc_counting(request):
-	return render(request, "numerm/disc/disc_counting.html")
-
 def disc_combinatorics(request):
 	return render(request, "numerm/disc/disc_combinatorics.html")
 
