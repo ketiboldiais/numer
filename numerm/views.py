@@ -185,6 +185,9 @@ def cont_transcendentalFunctions(request):
 def lin_intro(request):
 	return render(request, "numerm/lin/lin_intro.html")
 
+def lin_systems(request):
+	return render(request, "numerm/lin/lin_systems.html")
+
 # calculus functions
 def calc_preface(request):
 	return render(request, "numerm/calc1/calc_preface.html")

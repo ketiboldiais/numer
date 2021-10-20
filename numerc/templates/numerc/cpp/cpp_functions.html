@@ -295,82 +295,6 @@
 		<span class="monoText">main()</span> has no access to
 		<span class="monoText">a</span> and <span class="monoText">b</span>.
 	</p>
-</section>
-
-<section id="pass_by_value">
-	<h2>Pass-by-value v. Pass-by-reference</h2>
-	<p>What is the output of the following code:</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-
-		int doubleValue(int x) {
-			x *= 2;
-			return x
-		}
-
-		int main() {
-			int myValue = 5;
-			int result = doubleValue(myValue);
-			
-			cout << "myValue: " << myValue << " ";
-			cout << "result: " << result << endl;
-		}
-	</code></pre>
-	<p>
-		The output is <span class="monoText">10</span>. This is because we passed a
-		<span class="italicsText">copy</span> of
-		<span class="monoText">myValue</span> into the function
-		<span class="monoText">doubleValue</span>. We call this mode of operation
-		<span class="term">pass-by-value</span>, and it is the default mode of
-		operation in <span class="monoText">C++</span>.
-		<span class="marginnote"
-			>One way to think about pass-by-value is a professor sending out his
-			syllabus. Every student gets a copy of the syllabus, which they are free
-			to mark, highlight, remove parts of, etc. However, the original syllabus
-			&mdash; likely some Word or LaTeX document &mdash; exists only with the
-			professor, and no student can modify it.</span
-		>
-		In pass-by-value, the arguments passed to a function are stored in a memory
-		location other than the value passed into the parameter. This is why we say
-		that functions receive a &#8220;copy,&#8221; rather than the original.
-	</p>
-
-	<p>
-		Suppose, however, that we want the modify the original. In that situation,
-		we use <span class="term">pass-by-reference</span> &mdash; the parameters
-		and the arguments refer to the same memory location. To do so, we prepend
-		the parameter name with an ampersand (<span class="monoText">&</span>).
-	</p>
-
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		void cube(int &x);
-		
-		int main(int argc, char *argv[]) {
-			int num = 3;
-			cout << num << endl;
-			cube(num);
-			cout << num << endl;
-			return 0;
-		}
-		
-		void cube(int &x) {
-			x = x * x * x;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		3
-		27
-	</code></pre>
-	<p>
-		Notice how the value assigned to <span class="monoText">num</span> changed.
-		This is because we passed a reference, rather than a copy. Accordingly, the
-		value originally assigned to <span class="monoText">num</span> was modified.
-	</p>
-
 	<p>
 		<span class="topic">Default Values.</span> In
 		<span class="monoText">C++</span>, we can set default values for function
@@ -399,6 +323,446 @@
 		2
 		3
 	</code></pre>
+</section>
+
+<section id="function_overloading">
+	<h2>Function Overloading</h2>
+	<p>
+		Notice that the three functions, <span class="monoText">print()</span>, have
+		the same name, but they compile just fine:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		#define SIZEOF(a) sizeof(a)/sizeof(*a)
+		
+		void print(int arr[], int length);
+		void print(char arr[], int length);
+		void print(double arr[], int length);
+		
+		int main() {
+			int intArr[]{1, 2, 3, 4};
+			char charArr[]{'a', 'b', 'c', 'd'};
+			double doubleArr[]{1.2, 2.9, 3.1, 3.10};
+		
+			print(intArr, SIZEOF(intArr));
+			print(charArr, SIZEOF(charArr));
+			print(doubleArr, SIZEOF(doubleArr));
+			return 0;
+		}
+		
+		void print(int arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+
+		void print(char arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+
+		void print(double arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1 2 3 4 
+		a b c d 
+		1.2 2.9 3.1 3.1 
+	</code></pre>
+	<p>
+		This is an example of <span class="term">function overloading</span> &mdash;
+		the phenomenon of when different functions performing different tasks, have
+		the same identifier. More abstractly, we can think of it as if the function
+		&mdash; an operator &mdash; can perform multiple tasks. In C++, we can
+		accomplish function overloading by either (a) having different type
+		parameters, (b) having a different number of parameters. In general, to
+		accomplish function overloading, we have to provide C++ a way to
+		differentiate between the functions. In the example of
+		<span class="monoText">print()</span>, this is done by providing different
+		arguments.
+	</p>
+	<p>
+		Things that will not work, on their own, for differentiating: Return type,
+		the order the functions are written, and default parameters. Using these
+		differences alone are insufficient to allowing C++ to differentiate the
+		functions, resulting in a <span class="term">name conflict</span>.
+	</p>
+	<p>
+		Function overloading is tremendously useful. One of the hardest tasks in
+		programming is naming things, made all the more difficult when we have
+		functions that perform something very similar &mdash; like printing an array
+		to the console &mdash; but differ by just one or two things, such as
+		argument type. However, as with all features, there are tradeoffs.
+	</p>
+	<p>
+		Function overloading is a kind of
+		<span class="italicsText">polymorphism</span>, a topic we will discuss
+		further in later sections. In a nutshell, polymorphism is when we have an
+		entity of a particular type behaving like something else of a particular
+		type. For example, a person's dog can behave like a loving friend. Yet in
+		other situations, a vicious guard. The same idea &mdash; and risk &mdash;
+		applies to overloaded functions. We must always be cognizant of what our
+		functions are capable of doing, just as a dog owner should be cognizant of
+		when and where their dogs are a danger to others. If a function is
+		overloaded with too many tasks, we risk losing track of what the function
+		does when passed certain arguments. A similar risk occurs when we overload a
+		function with tasks that don't intuitively correspond to the identifier. For
+		example, it would be a poor choice to allow
+		<span class="monoText">print()</span> to average the elements of an
+		<span class="monoText">int</span> array &mdash; it's not clear how averaging
+		something relates to <span class="monoText">print</span>.
+	</p>
+</section>
+
+<section id="function_templates">
+	<h2>Function Templates</h2>
+	<p>
+		Recall the <span class="monoText">print()</span> function we saw in the
+		previous example:
+	</p>
+	<pre class="language-cpp"><code>
+		void print(int arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+		void print(char arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+		void print(double arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+	</code></pre>
+	<p>
+		The only thing that differentiates this function is the argument type. When
+		programming, it's not uncommon to have functions like this &mdash; the same
+		computation, but different arguments. In these situations, it's best to use
+		a <span class="term">function template</span>. We can think of a function
+		template as simply a more general, or abstract form of the function. We can
+		reduce the functions above into a single function:
+	</p>
+	<pre class="language-cpp"><code>
+		template&lt;class T&gt;
+		void print(T arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+	</code></pre>
+	<p>
+		The <span class="monoText">T</span> in the code above essentially acts like
+		a placeholder. C++ will replace the <span class="monoText">T</span> with the
+		appropriate data type. This results in
+		<span class="monoText">print()</span> becoming a
+		<span class="term">generic function</span>. Applying this feature, our code
+		begins to look cleaner, while keeping the added functionality:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		#define SIZEOF(a) sizeof(a)/sizeof(*a)
+		
+		template&lt;class T&gt;
+		void print(T arr[], int length);
+		
+		int main() {
+			int intArr[]{1, 2, 3, 4};
+			char charArr[]{'a', 'b', 'c', 'd'};
+			double doubleArr[]{1.2, 2.9, 3.1, 3.10};
+		
+			print(intArr, SIZEOF(intArr));
+			print(charArr, SIZEOF(charArr));
+			print(doubleArr, SIZEOF(doubleArr));
+			return 0;
+		}
+		
+		template&lt;class T&gt;
+		void print(T arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1 2 3 4 
+		a b c d 
+		1.2 2.9 3.1 3.1 
+	</code></pre>
+	<p>
+		Notice that because we must include function signatures, the template
+		declaration must appear both before the function signature and before the
+		function's definition. Of course, we can avoid this by simply placing our
+		function definition before <span class="monoText">main()</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		#define SIZEOF(a) sizeof(a)/sizeof(*a)
+		
+		template &lt;class T&gt;
+		void print(T arr[], int length) {
+			for (int i = 0; i < length; i++) {
+				cout << arr[i] << " ";
+			}
+			cout << endl;
+		}
+		
+		int main() {
+			int intArr[]{1, 2, 3, 4};
+			char charArr[]{'a', 'b', 'c', 'd'};
+			double doubleArr[]{1.2, 2.9, 3.1, 3.10};
+		
+			print(intArr, SIZEOF(intArr));
+			print(charArr, SIZEOF(charArr));
+			print(doubleArr, SIZEOF(doubleArr));
+			return 0;
+		}
+	</code></pre>
+</section>
+
+<section id="argument_passing">
+	<h2>Argument Passing</h2>
+	<p>
+		When functions have parameters without default values, they must be passed
+		arguments. In C++, passing arguments into functions can be done in three
+		ways: (1) <span class="term">pass-by-value</span>, (2)
+		<span class="term">pass-by-reference</span>, and (3)
+		<span class="term">pass-by-address</span>.
+	</p>
+	<p>
+		To illustrate these differences, let's consider a canonical function in
+		programming, <span class="monoText">swap()</span>. Before we write the
+		function, let's recall how the function works. Say we have an
+		<span class="monoText">int a = 0</span> and an
+		<span class="monoText">int b = 1</span>. To swap the values assigned to the
+		variables, we create a temporary variable, called
+		<span class="monoText">temp</span>. Then, we assign to
+		<span class="monoText">temp</span> the variable
+		<span class="monoText">a.</span> Thus,
+		<span class="monoText">temp = a = 0.</span> Then, we assign to
+		<span class="monoText">a</span> the variable
+		<span class="monoText">b.</span> Thus,
+		<span class="monoText">a = b = 1.</span> Finally, we assign to
+		<span class="monoText">b</span> the variable
+		<span class="monoText">temp</span>:
+		<span class="monoText">b = temp = 0</span>. The end result:
+		<span class="monoText">a = 1</span> and <span class="monoText">b = 0</span>.
+		Putting it all together:
+	</p>
+
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int main() {
+			int a = 0;
+			int b = 1;
+		
+			cout << "Before the swap: " << endl;
+			cout << "x = " << a << endl;
+			cout << "y = " << b << endl;
+		
+			// The swap
+			int temp;
+			temp = a;
+			a = b;
+			b = temp;
+		
+			cout << "After the swap: " << endl;
+			cout << "x = " << a << endl;
+			cout << "y = " << b << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Before the swap: 
+		x = 0
+		y = 1
+		After the swap: 
+		x = 1
+		y = 0
+	</code></pre>
+	<p>
+		Great, it works. Swapping variables, however, is a very common operation.
+		Accordingly, we want to place this computation in a function, to be used
+		whenever we'd like:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void swap(int a, int b) {
+			int temp;
+			temp = a;
+			a = b;
+			b = temp;
+		}
+		
+		int main() {
+			int a = 0;
+			int b = 1;
+		
+			cout << "Before the swap: " << endl;
+			cout << "x = " << a << endl;
+			cout << "y = " << b << endl;
+		
+			swap(a, b);
+		
+			cout << "After the swap: " << endl;
+			cout << "x = " << a << endl;
+			cout << "y = " << b << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Before the swap: 
+		x = 0
+		y = 1
+		After the swap: 
+		x = 0
+		y = 1
+	</code></pre>
+	<p>
+		Strange. It didn't perform the swap. Why? Because calling functions the way
+		we did above, <span class="monoText">swap(a, b)</span>, is by default
+		<span class="term">pass-by-value</span>. In pass-by-value, the function only
+		receives a <span class="underlineText">copy</span> of the values passed.
+		They are not pass an original. To understand what this implies, recall what
+		happens in main memory when we execute a function.
+	</p>
+	<p>
+		When <span class="monoText">main()</span> is loaded, a stack in main memory
+		is allocated for it. Let's call it
+		<span class="italicsText">stack main</span>. Inside
+		<span class="italicsText">stack main</span>, memory is allocated for
+		<span class="monoText">int a = 0</span> and
+		<span class="monoText">int b = 1</span>. Going down the code, we encounter
+		<span class="monoText">swap(a, b)</span>. This is a new function, so a new
+		stack is created to accomodate its variables. Call it
+		<span class="italicsText">stack swap</span>. Inside
+		<span class="italicsText">stack swap</span>, memory is allocated for
+		<span class="monoText">int a</span>, <span class="monoText">int b</span>,
+		and <span class="monoText">temp</span>. Now, arguments were passed into
+		<span class="monoText">swap()</span>, so the memory allocated is for
+		<span class="monoText">int a = 0</span>,
+		<span class="monoText">int b = 1</span>, and
+		<span class="monoText">temp</span>.
+	</p>
+	<p>
+		Inside <span class="italicsText">swap stack</span>, the body of
+		<span class="monoText">swap()</span> works as expected. The variables do in
+		fact swap. We can see that's true by running the function without arguments:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void swap(int a = 0, int b = 1) {
+			cout << "Before swap: " << endl;
+			cout << "\t a = " << a << endl;
+			cout << "\t b = " << b << endl;
+		
+			// The swap
+			int temp;
+			temp = a;
+			a = b;
+			b = temp;
+		
+			cout << "After swap: " << endl;
+			cout << "\t a = " << a << endl;
+			cout << "\t b = " << b << endl;
+		}
+		
+		int main() {
+			swap();
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Before swap: 
+				a = 0
+				b = 1
+		After swap: 
+				a = 1
+				b = 0
+	</code></pre>
+	<p>
+		So what does this all mean? It means that the swap never actually occurs in
+		the <span class="monoText">main()</span> function. It only occurs in
+		<span class="monoText">swap()</span>, and once
+		<span class="monoText">swap()</span> is done,
+		<span class="italicsText">stack swap</span> is destroyed. There was no
+		effect whatsoever on the <span class="monoText">int a = 0</span> and
+		<span class="monoText">int b = 1</span> in
+		<span class="italicsText">stack main</span>.
+	</p>
+	<p>
+		This embodies the concept of pass-by-value. When we simply pass regular
+		variables into a function, we only pass copies of the values into the
+		function. We never pass the originals.
+	</p>
+	<p>Call-by-value is what we use when we want the function to simply return a result based on the arguments passed. In fact, most of the functions we write are computations based on arguments. We generally do not want the original values changed &mdash; we want a new result. For example, suppose we had a function that computes acceleration:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		double acceleration(double velocity1, double velocity2, double time) {
+			return (velocity2 - velocity1) / time;
+		}
+		
+		int main() {
+			double v1 = 12.4;
+			double v2 = 14.6;
+			double t = 3.48;
+		
+			cout << "Before function call:" << endl;
+			cout << "v1 = " << v1 << endl;
+			cout << "v2 = " << v2 << endl;
+			cout << "t = " << t << endl;
+			
+			double a = acceleration(v1, v2, t);
+		
+			cout << "After function call:" << endl;
+			cout << "v1 = " << v1 << endl;
+			cout << "v2 = " << v2 << endl;
+			cout << "t = " << t << endl;
+			cout << "a = " << a << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Before function call:
+		v1 = 12.4
+		v2 = 14.6
+		t = 3.48
+		After function call:
+		v1 = 12.4
+		v2 = 14.6
+		t = 3.48
+		a = 0.632184
+	</code></pre>
+	<p>We obtained a value, but we did not modify the actual arguments, <span class="monoText">v1</span>, <span class="monoText">v2</span>, and <span class="monoText">t</span>. In programming, we want to minimize mutation as much as possible. Pass-by-value is one means of ensuring that. But what if we do want mutation? I.e., what if we truly want to modify the actual arguments?</p>
+	<p>One way to do so is with <span class="term">pass-by-address</span>.</p>
 </section>
 
 <section id="variable_scope">

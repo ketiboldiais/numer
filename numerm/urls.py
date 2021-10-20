@@ -132,6 +132,8 @@ urlpatterns = [
 
 	# linear algebra paths
 	path("lin_intro", views.lin_intro, name="lin_intro"),
+
+	path("lin_systems", views.lin_systems, name="lin_systems"),
 	
 
 	# calculus paths
