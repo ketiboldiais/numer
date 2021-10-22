@@ -184,6 +184,9 @@ urlpatterns = [
 	path("cpp_pointers", views.cpp_pointers, name="cpp_pointers"),
 	path("cpp_sorting", views.cpp_sorting, name="cpp_sorting"),
 
+	# C# paths
+	path("csh_preface", views.csh_preface, name="csh_preface"),
+
 	# Prolog Paths
 	path("prolog_preface", views.prolog_preface, name="prolog_preface"),
 	path("prolog_atoms", views.prolog_atoms, name="prolog_atoms"),

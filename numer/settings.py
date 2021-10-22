@@ -33,6 +33,7 @@ if os.getcwd() == '/app':
     DEBUG = False
 
 ALLOWED_HOSTS = [
+    'www.sublimis.xyz',
     'www.numerstack.xyz',
     'numerstack.xyz',
     '0.0.0.0',

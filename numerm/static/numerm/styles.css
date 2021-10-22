@@ -94,8 +94,8 @@
 	}
 	section {
 		margin: 0; 
-		padding: 1.5em 1.5em;
-		padding-right: 40%;
+		padding: 1.5em;
+		padding-right: 35%;
 	}
 /* Nav Bar */
 	html {
@@ -233,7 +233,7 @@
 		float: right;
 		clear: right;
 		margin-right: -45%;
-		width: 35%;
+		width: 40%;
 		margin-top: 0.3rem;
 		margin-bottom: 0;
 		font-size: 0.8rem;
@@ -397,6 +397,17 @@
 	}
 	sup {font-size: 0.6rem;}
 	p.fn {font-size: 0.85rem;}
+	/* Drop cap */
+		span.drop {
+			color: #903;
+			float: left;
+			font-family: Georgia;
+			font-size: 75px;
+			line-height: 60px;
+			padding-top: 4px;
+			padding-right: 8px;
+			padding-left: 3px;
+		}
 /* List styles */
 	li {
 		font-size: 0.95rem; 
@@ -549,14 +560,23 @@
 		width: 100%;
 	}
 	details.answer {
-		margin: 0 3% 0 3%;
+			padding: 0.1em 0.3em;
+			background-color: var(--page);
+			width: fit-content;
+			margin: 1% 0;
+			text-decoration: none;
+			display: block;
+	}
+	details.answer[open] {
+		border-radius: 0.2em;
+		box-shadow: inset 0.063rem 0.063rem 0.125rem #a6a6a6bd, inset -0.063rem -0.063rem 0.125rem #f0f0f0;
 	}
 	details > p {padding: 0 0 1% 0;}
 	details:hover {cursor: pointer;}
-	details summary {
+	details.answer summary {
+		color: rgb(173, 173, 173);
 		list-style: none; 
-		font-size: 0.9rem;
-		color: rgb(137, 137, 137);
+		font-size: 0.7rem;
 		margin: 0; 
 		padding: 0;
 	}
@@ -608,16 +628,17 @@
 	}
 	figcaption {
 		padding: 0;
-		margin: 0.3em 0 0 0;
-		font-style: italic;
-		font-size: 0.85rem;
+		line-height: 1.2;
+		color: rgb(77, 77, 77);
+		margin: 0.8em 0 0 0;
+		font-size: 0.8rem;
 	}
 	/* Use math-display instead of katex display math; katex is absolute hell with styling */
 	figure.math-display, 
 	figure.table {
 		display: flex;
 		padding: 0;
-		margin: 1em; 
+		margin: 0 1em; 
 		align-content: center;
 		flex-wrap: nowrap;
 	}
@@ -744,19 +765,69 @@
 
 	/* Another proof style, this one is vertical; horizontal layout is not good for long equations -- longer equations, need wrapping, less readable. This uses nested list items. Reasons are numbered, computation is nested below number. Some margin placed on the ul element because with large fractions, becomes too unreadable.*/
 	ol.arg>ul {list-style: none; margin: 0.5em}
-/* Media Queries */
+
+/* ! Question Sets Styling */
+	/* Question sets are styled with masonry */
+	/* with flexbox */
+		ol.ex * {
+			font-size: 0.78rem;
+		}
+		ol.ex {
+			margin: 0.5em 0;
+			padding: 0;
+		}
+		ol.ex ol {
+			padding: 0 0.9em;
+		}
+		
+		ol.ex li {
+			padding: 0.2em 0;
+			padding-left: 0.1em;
+			margin: 0;
+		}
+		ol.ex li.grid-item::marker {
+			margin: 0;
+			padding: 0;
+			color: rgb(0, 161, 161);
+		}
+		ol.ex li.grid-item {
+			margin: 0 0.8em;
+		}
+		.grid {
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: -ms-flexbox;
+			display: flex;
+		}
+
+		.grid-col {
+			-webkit-box-flex: 1;
+			-webkit-flex-grow: 1;
+			-ms-flex-positive: 1;
+			flex-grow: 1;
+		}
+
+		/* 2 columns by default, hide columns 2 & 3 */
+		.grid-col--2, .grid-col--3, .grid-col--4 { display: none }
+
+		/* 3 columns at medium size */
+		@media ( min-width: 768px ) {
+			.grid-col--2, .grid-col--3 { display: block; } /* show column 2 */
+		}
+	
+/* ! Media Queries */
 	/* Font Media Queries */
 	html {
 		font-size: 14px;
 	}
 	@media (min-width: 640px) and (max-width: 1439px) {
 		html {
-			font-size: calc(15px + (23 - 15) * (100vw - 640px) / (1439 - 640));
+			font-size: calc(14px + (23 - 14) * (100vw - 640px) / (1439 - 640));
 		}
 	}
 	@media (min-width: 1440px) {
 		html {
-			font-size: 1.25vw;
+			font-size: 1.2vw;
 		}
 		section {
 			padding-left: 5%;

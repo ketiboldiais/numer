@@ -347,6 +347,10 @@ def cpp_pointers(request):
 def cpp_sorting(request):
 	return render(request, "numerc/cpp/cpp_sorting.html")
 
+# C# funtions
+def csh_preface(request):
+	return render(request, "numerc/csh/csh_index.html")
+
 # Prolog Functions
 def prolog_preface(request):
 	return render(request, "numerc/prolog/prolog_preface.html")

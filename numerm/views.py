@@ -210,6 +210,14 @@ def calc_limits(request):
 def calc_derivativeFormulas(request):
 	return render(request, "numerm/calc1/calc_derivativeFormulas.html")
 
+# Sequences & Series
+
+def sqs_index(request):
+	return render(request, "numerm/sqs/sqs_index.html")
+
+def sqs_foundations(request):
+	return render(request, "numerm/sqs/sqs_foundations.html")
+
 
 
 

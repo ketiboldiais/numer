@@ -546,6 +546,8 @@
 		<span class="term">pass-by-reference</span>, and (3)
 		<span class="term">pass-by-address</span>.
 	</p>
+
+	<h3>Pass-by-value</h3>
 	<p>
 		To illustrate these differences, let's consider a canonical function in
 		programming, <span class="monoText">swap()</span>. Before we write the
@@ -720,7 +722,13 @@
 		variables into a function, we only pass copies of the values into the
 		function. We never pass the originals.
 	</p>
-	<p>Call-by-value is what we use when we want the function to simply return a result based on the arguments passed. In fact, most of the functions we write are computations based on arguments. We generally do not want the original values changed &mdash; we want a new result. For example, suppose we had a function that computes acceleration:</p>
+	<p>
+		Call-by-value is what we use when we want the function to simply return a
+		result based on the arguments passed. In fact, most of the functions we
+		write are computations based on arguments. We generally do not want the
+		original values changed &mdash; we want a new result. For example, suppose
+		we had a function that computes acceleration:
+	</p>
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
 		using namespace std;
@@ -761,8 +769,79 @@
 		t = 3.48
 		a = 0.632184
 	</code></pre>
-	<p>We obtained a value, but we did not modify the actual arguments, <span class="monoText">v1</span>, <span class="monoText">v2</span>, and <span class="monoText">t</span>. In programming, we want to minimize mutation as much as possible. Pass-by-value is one means of ensuring that. But what if we do want mutation? I.e., what if we truly want to modify the actual arguments?</p>
-	<p>One way to do so is with <span class="term">pass-by-address</span>.</p>
+	<p>
+		We obtained a value, but we did not modify the actual arguments,
+		<span class="monoText">v1</span>, <span class="monoText">v2</span>, and
+		<span class="monoText">t</span>. In programming, we want to minimize
+		mutation as much as possible. Pass-by-value is one means of ensuring that.
+		But what if we do want mutation? I.e., what if we truly want to modify the
+		actual arguments, like how we intended in
+		<span class="monoText">swap()</span>?
+	</p>
+
+	<h3>Pass-by-address</h3>
+	<p>
+		One way to do so is with <span class="term">pass-by-address</span>.
+		Pass-by-address is exactly what it sounds like. Instead of sending copies of
+		the values to a function, we send the address of the values:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void swap(int *a, int *b) {
+			int temp;
+			temp = *a;
+			*a = *b;
+			*b = temp;
+		}
+		
+		int main() {
+			int a = 0;
+			int b = 1;
+		
+			cout << "Before the swap: " << endl;
+			cout << "x = " << a << endl;
+			cout << "y = " << b << endl;
+		
+			swap(&a, &b);
+		
+			cout << "After the swap: " << endl;
+			cout << "x = " << a << endl;
+			cout << "y = " << b << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Before the swap: 
+		x = 0
+		y = 1
+		After the swap: 
+		x = 1
+		y = 0
+	</code></pre>
+	<p>
+		Now it works. But how? Notice that with the function call
+		<span class="monoText">swap()</span>, we passed as arguments
+		<span class="monoText">&a</span> and <span class="monoText">&b</span>. These
+		are the addresses of <span class="monoText">a</span> and
+		<span class="monoText">b</span> in <span class="monoText">main()</span>.
+		Then, inside <span class="monoText">swap()</span>, the parameters are
+		<span class="monoText">*a</span> and <span class="monoText">*b</span>. These
+		are pointers. Why are they pointers? Because if we want to store memory
+		addresses, we must use pointers. Accordingly, inside the body of
+		<span class="monoText">swap()</span>, we use pointers to perform the swap.
+		Those pointers always refer to the addresses of
+		<span class="monoText">a</span> and <span class="monoText">b</span> in
+		<span class="monoText">main()</span>.
+	</p>
+
+	<h3>Pass-by-reference</h3>
+	<p>
+		Recall that we can think of a <span class="italicsText">reference</span> as
+		a nickname, or pseudonym, for a variable.
+	</p>
 </section>
 
 <section id="variable_scope">

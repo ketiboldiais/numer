@@ -150,4 +150,9 @@ urlpatterns = [
 	path("calc_limits", views.calc_limits, name="calc_limits"),
 	
 	path("calc_derivativeFormulas", views.calc_derivativeFormulas, name="calc_derivativeFormulas"),
+
+	# sequences & series paths 
+	path("sqs_index", views.sqs_index, name="sqs_index"),
+
+	path("sqs_foundations", views.sqs_foundations, name="sqs_foundations"),
 ]
