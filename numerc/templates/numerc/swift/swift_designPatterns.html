@@ -1,10 +1,80 @@
 {% extends '../layout.html' %} {% load static %} {% block description %}
-<meta name="description" content="MVVM design paradigm" />
+<meta name="description" content="Design patterns in Swift" />
 {% endblock %} {% block title %}
-<title>Swift MVVM</title>
+<title>Swift Design Patterns</title>
 {% endblock %} {% block content %}
-<h1>MVVM</h1>
+<h1>Design Patterns in Swift</h1>
+<section id="intro">
+	<p>
+		This essay presents several common design patterns in not just Swift, but
+		other object-oriented programming languages.
+	</p>
+</section>
+
+<section id="single_responsibility">
+	<h2>The Single Responsibility Principle</h2>
+	<p>
+		The
+		<span class="italicsText">Single Responsibility Principle</span> (SRP)
+		provides that a function or <span class="monoText">class</span>, or more
+		generally, any module, has one, and only one, principle. More specifically,
+		every module in our programs should only have responsibility over a single
+		part of our program's functionality.
+	</p>
+	<p>
+		To satisfy SRP, we first ask: What is the purpose of this module? If the
+		answer includes multiple purposes, then we fail SRP. Here is a very simple
+		example: A function that averages an array of numbers.
+	</p>
+	<p>We could write the function as such:</p>
+	<pre class="language-swift"><code>
+		import Foundation
+
+		let vals = [8, 3, 12, 7, 16]
+		func avgArray(_ intArray: [Int]) -> Int {
+			var accum = 0
+			for val in intArray {
+					accum += val
+			}
+			return accum / intArray.count
+		}
+		var valsAvg = avgArray(vals)
+		print(valsAvg) // 9
+	</code></pre>
+	<p>
+		A strict adherence to SRP reveals that
+		<span class="monoText">avg()</span> performs two responsibilities: (1)
+		summing all of the elements in the array, then (2) dividing that sum by the
+		number of elements in the array. Because these are two responsibilities,
+		they ought to be separated into separate modules:
+	</p>
+	<pre class="language-swift"><code>
+		import Foundation
+		let vals = [8, 3, 12, 7, 16]
+
+		func sumArray(_ intArray: [Int]) -> Int {
+			var accum = 0
+			for val in intArray {
+				accum += val
+			}
+			return accum
+		}
+
+		func avgArray(_ intArray: [Int]) -> Int {
+			sumArray(intArray) / intArray.count
+		}
+
+		var valsAvg = avgArray(vals)
+		print(valsAvg)
+	</code></pre>
+	<p>
+		While the code appears longer, having a clear separation between the two
+		functions allows us to read and debug code quickly.
+	</p>
+</section>
+
 <section id="mvvm">
+	<h2>MVVM</h2>
 	<p>
 		As we've seen, Swift is a multiparadigm language. When it comes to program
 		architecture, however, Swift follows a very specific model called

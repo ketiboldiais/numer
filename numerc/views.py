@@ -148,10 +148,10 @@ def swift_programArchitecture(request):
 		return render(request, "numerc/swift/swift_programArchitecture.html")
 def swift_xcodeShortcuts(request):
 		return render(request, "numerc/swift/swift_xcodeShortcuts.html")
-def swift_mvvm(request):
-		return render(request, "numerc/swift/swift_mvvm.html")
 def swift_generics(request):
 		return render(request, "numerc/swift/swift_generics.html")
+def swift_designPatterns(request):
+		return render(request, "numerc/swift/swift_designPatterns.html")
 
 # java functions
 def java_preface(request):
@@ -237,6 +237,9 @@ def js_scope(request):
 def js_angular(request):
 		return render(request, "numerc/js/js_angular.html")
 
+def js_dsalg(request):
+		return render(request, "numerc/js/js_dsalg.html")
+
 # Lisp functions
 def lisp_preface(request):
 		return render(request, "numerc/lisp/lisp_preface.html")
@@ -289,27 +292,18 @@ def lisp_selfReference(request):
 def lisp_designingLargePrograms(request):
 		return render(request, "numerc/lisp/lisp_designingLargePrograms.html")
 
+def lisp_onRecursion(request):
+		return render(request, "numerc/lisp/lisp_onRecursion.html")
+
 # ML functions
 def ml_preface(request):
 		return render(request, "numerc/ml/ml_preface.html")
 def ml_simpleData(request):
 		return render(request, "numerc/ml/ml_simpleData.html")
-def ml_expressionVariableBindings(request):
-		return render(request, "numerc/ml/ml_expressionsVariableBindings.html")
-def ml_variableImmutability(request):
-		return render(request, "numerc/ml/ml_variableImmutability.html")
-def ml_logicalOperators(request):
-		return render(request, "numerc/ml/ml_logicalOperators.html")
-def ml_functionBindings(request):
-		return render(request, "numerc/ml/ml_functionBindings.html")
-def ml_pairs(request):
-		return render(request, "numerc/ml/ml_pairs.html")
-def ml_tuples(request):
-		return render(request, "numerc/ml/ml_tuples.html")
-def ml_errors(request):
-		return render(request, "numerc/ml/ml_errors.html")
 def ml_customDataTypes(request):
 		return render(request, "numerc/ml/ml_customDataTypes.html")
+def ml_functions(request):
+		return render(request, "numerc/ml/ml_functions.html")
 
 #  C++ functions
 def cpp_preface(request):
@@ -344,8 +338,15 @@ def cpp_collections(request):
 	return render(request, "numerc/cpp/cpp_collections.html")
 def cpp_pointers(request):
 	return render(request, "numerc/cpp/cpp_pointers.html")
+
 def cpp_sorting(request):
 	return render(request, "numerc/cpp/cpp_sorting.html")
+
+def cpp_dynamicArrays(request):
+	return render(request, "numerc/cpp/cpp_dynamicArrays.html")
+
+def cpp_oop(request):
+	return render(request, "numerc/cpp/cpp_oop.html")
 
 # C# funtions
 def csh_preface(request):
@@ -364,3 +365,14 @@ def haskell_lambdaCalculus(request):
 	return render(request, "numerc/haskell/haskell_lambdaCalculus.html")
 def haskell_variables(request):
 	return render(request, "numerc/haskell/haskell_variables.html")
+
+# Compiler functions
+def cmp_index(request):
+	return render(request, "numerc/cmp/cmp_index.html")
+
+# Computer systems functions
+def sys_index(request):
+	return render(request, "numerc/sys/sys_index.html")
+
+def sys_cIntro(request):
+	return render(request, "numerc/sys/sys_cIntro.html")

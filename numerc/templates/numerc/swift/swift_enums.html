@@ -1,9 +1,12 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="What is an enum? Enumerations in Swift." />
+{% endblock %} {% block title %}
+<title>Enumerations</title>
+{% endblock %} {% block content %}
+<h1>Enumerations</h1>
 <section id="enumerations">
-	<h3>Enumerations</h3>
 	<p>
-		In this section, we explore <span class="term">enumerations</span>, or, as
-		Swift and other languages call them, <span class="monoText">enums</span>. An
+		An
 		<span class="monoText">enum</span> is an abstract data type. More
 		specifically, it is a datatype that can only have one of a particular set of
 		values. For example, we can might write a datatype called
@@ -13,8 +16,352 @@
 		<span class="monoText">yellow</span>, and <span class="monoText">red</span>.
 		The type <span class="monoText">TrafficLight</span> is an
 		<span class="monoText">enum</span>.
+		<span class="marginnote"
+			>Whenever we model data, we want to always consider whether there are
+			<span class="italicsText">mutually exclusive</span> properties. If there
+			are mutually exclusive properties and there's a finite set of them, then
+			an <span class="monoText">enum</span> should be our gut reaction.</span
+		>
+	</p>
+	<p>
+		We can think of the <span class="monoText">enum</span> as an
+		&#8220;or&#8221; type. The <span class="monoText">enum</span> type can only
+		be one thing at any given time. A six-sided die can only have one face value
+		at any given time &mdash; 1, 2, 3, 4, 5,
+		<span class="underlineText">or</span> 6. A day of the week can only be one
+		of seven values &mdash; Sunday, Monday, Tuesday, Wednesday, Thursday,
+		Friday, <span class="underlineText">or</span> Saturday.
+	</p>
+</section>
+
+<section id="argument_passing">
+	<h2>Argument Passing</h2>
+	<p>
+		Enumerations are similar to <span class="monoText">struct</span> and
+		<span class="monoText">class</span>, but they can only have discrete values.
+		For example:
 	</p>
 
+	<pre class="language-swift"><code>
+		enum FoodItem {
+			case hamburger
+			case fries
+			case drink
+		}
+	</code></pre>
+
+	<p>
+		Moreover, an <span class="monoText">enum</span> is a
+		<span class="underlineText">value type</span> like
+		<span class="monoText">struct</span>. Because it's a value type, an
+		<span class="monoText">enum</span> is copied as it is passed around. This
+		means that when an instance of an <span class="monoText">enum</span> is
+		created, that instance is entirely independent and stored in its own memory
+		address. For example:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum PasswordValidity {
+			case isValid
+			case isInvalid
+			case undetermined
+		}
+		
+		var p1Validity = PasswordValidity.isValid // isValid
+		var p2Validity = p1Validity // isValid
+		p1Validity = .isInvalid // isInvalid
+		
+		print("p1Validity = \(p1Validity)")
+		print("p2Validity = \(p2Validity)")
+	</code></pre>
+	<pre class="language-bash"><code>
+		p1Validity = isInvalid
+		p2Validity = isValid
+	</code></pre>
+	<p>
+		In the code above, we have an <span class="monoText">enum</span> called
+		<span class="monoText">PasswordValidity</span> with three states:
+		<span class="monoText">isValid</span>,
+		<span class="monoText">isInvalid</span>, and
+		<span class="monoText">undetermined</span>. We then initiated a variable
+		<span class="monoText">p1Validity</span> with the value
+		<span class="monoText">PasswordValidity.isValid</span>. Accordingly,
+		<span class="monoText">p1Validity</span> is an instance of
+		<span class="monoText">PasswordValidity</span>.
+	</p>
+	<p>
+		Next, we created another variable called
+		<span class="monoText">p2Validity</span>, and initialized it to the
+		<span class="monoText">enum</span> instance
+		<span class="monoText">p1Validity</span>. In doing so, we assigned a
+		<span class="underlineText">copy</span> of
+		<span class="monoText">p1Validity</span> to
+		<span class="monoText">p2Validity</span>.
+		<span class="monoText">p2Validity</span> is itself and entirely independent
+		instance of <span class="monoText">PasswordValidity</span>, just as
+		<span class="monoText">p1Validity</span> is an independent instance.
+	</p>
+	<p>
+		When we then modified <span class="monoText">p1Validity</span> by change its
+		state to <span class="monoText">isInvalid</span>, we modified
+		<span class="monoText">p1Validity</span> but did not modify
+		<span class="monoText">p2Validity</span>. Why? Because
+		<span class="monoText">p2Validity</span> only has a copy of
+		<span class="monoText">p1Validity</span>. They are both independent
+		instances of <span class="monoText">PasswordValidity</span>. If we modify
+		<span class="monoText">p2Validity</span>, we would not affect
+		<span class="monoText">p1Validity</span>:
+	</p>
+
+	<pre class="language-swift"><code>
+		enum PasswordValidity {
+			case isValid
+			case isInvalid
+			case undetermined
+		}
+		
+		var p1Validity = PasswordValidity.isValid
+		var p2Validity = p1Validity
+		p1Validity = .isInvalid
+		
+		print("p1Validity = \(p1Validity)")
+		print("p2Validity = \(p2Validity)")
+		
+		p2Validity = .undetermined
+		
+		print("p1Validity = \(p1Validity)")
+		print("p2Validity = \(p2Validity)")
+	</code></pre>
+	<pre class="language-bash"><code>
+		p1Validity = isInvalid
+		p2Validity = isValid
+		p1Validity = isInvalid
+		p2Validity = undetermined
+	</code></pre>
+</section>
+
+<section id="associated_data">
+	<h2>Associated Data</h2>
+	<p>
+		Each state in an <span class="monoText">enum</span> can have
+		<span class="italicsText">associated data</span>, or
+		<span class="italicsText">associated values</span>. Associated data allows
+		us to use an <span class="monoText">enum</span> to represent more detailed,
+		or nuanced, data. For example:
+	</p>
+	<pre class="language-swift"><code>
+		enum FoodItem {
+			case hamburger(numberOfPatties: Int)
+			case fries(orderSize: PortionSize)
+			case drink(beverage: AvailableDrink, size: PortionSize)
+		}
+		enum PortionSize {
+			case small
+			case medium
+			case large
+			case extraLarge
+		}
+		enum AvailableDrink {
+			case lemonade
+			case horchata
+			case water
+		}
+	</code></pre>
+	<p>
+		In the <span class="monoText">enum FoodItem</span>, we have the three cases,
+		as we saw earlier. This time we've included some associated data: If the
+		value is <span class="monoText">hamburger</span>, we can include
+		<span class="monoText">numberOfPatties.</span> If the value is
+		<span class="monoText">fries</span> or <span class="monoText">drink</span>,
+		we can include <span class="monoText">orderSize</span>. The associated value
+		<span class="monoText">orderSize</span> itself takes an
+		<span class="monoText">enum</span> type value, namely
+		<span class="monoText">PortionSize</span>. For the value
+		<span class="monoText">drink</span>, there's an associated value
+		<span class="monoText">beverage</span>, which takes a value of type
+		<span class="monoText">AvailableDrinks</span>, itself an
+		<span class="monoText">enum</span>.
+		<span class="marginnote"
+			>The associated data in an <span class="monoText">enum</span>, as written
+			in the example, is actually a <span class="boldText">tuple</span>.</span
+		>
+	</p>
+</section>
+
+<section id="switch_statement">
+	<h2>Switch</h2>
+	<p>
+		We can check use a <span class="monoText">switch</span> statement to execute
+		code given a particular <span class="monoText">enum</span> state. For
+		example:
+	</p>
+	<pre class="language-swift"><code>
+		enum FoodItem {
+			case hamburger(numberOfPatties: Int)
+			case fries(orderSize: PortionSize)
+			case drink(beverage: AvailableDrink, size: PortionSize)
+		}
+		
+		enum PortionSize {
+			case small
+			case medium
+			case large
+			case extraLarge
+		}
+		
+		enum AvailableDrink {
+			case lemonade
+			case horchata
+			case water
+		}
+		
+		var order1 = FoodItem.hamburger(numberOfPatties: 2)
+		
+		switch order1 {
+			case .hamburger: print("burger")
+			case .fries: print("fries")
+			case .drink: break
+			default: print("no FoodItem value")
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		burger
+	</code></pre>
+	<p>
+		When writing a <span class="monoText">switch</span> for an
+		<span class="monoText">enum</span>, we must provide code for all the
+		possible states in the <span class="monoText">enum</span>. Failing to do so
+		will lead to an error.
+	</p>
+	<p>
+		What if we do not want to do anything for a particular state? In that
+		situation, we can use a <span class="monoText">break</span> statement. In
+		the code above, the state <span class="monoText">.drink</span> will execute
+		<span class="monoText">break</span>, which effectively tells Swift not to
+		bother with the state <span class="monoText">.drink</span>.
+	</p>
+	<p>
+		If we do not want to go through all of the states, we can include a
+		<span class="monoText">default</span> case. With
+		<span class="monoText">default</span>, Swift will go through all of the
+		types we check, and if none of them match, it will go to the
+		<span class="monoText">default</span> case, executing the code therein. Note
+		that if a case is a <span class="monoText">String</span> type, then we must
+		include a <span class="monoText">default</span> case. Again because with
+		<span class="monoText">switch</span>, we must check for every possible case;
+		there are numerous possibilities for <span class="monoText">String</span>.
+	</p>
+	<p>
+		How about the associated data? Can we access those with a
+		<span class="monoText">switch</span> statement? Sure we can. We just need to
+		use <span class="monoText">let</span> syntax:
+	</p>
+	<pre class="language-swift"><code>
+		enum FoodItem {
+			case hamburger(numberOfPatties: Int)
+			case fries(orderSize: PortionSize)
+			case drink(beverage: AvailableDrink, size: PortionSize)
+		}
+		
+		enum PortionSize {
+			case small
+			case medium
+			case large
+			case extraLarge
+		}
+		
+		enum AvailableDrink {
+			case lemonade
+			case horchata
+			case water
+		}
+		
+		var order1 = FoodItem.hamburger(numberOfPatties: 2)
+		
+		switch order1 {
+			case .hamburger(let p): print("Burger: \(p) patties")
+			case .fries: print("fries")
+			case .drink: print("drink")
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Burger: 2 patties
+	</code></pre>
+	<p>
+		Notice that with the code above, we used a different variable name,
+		<span class="monoText">p</span>, for
+		<span class="monoText">numberOfPatties</span>. We're allowed to do so
+		because Swift uses pattern patching to retrieve the relevant value. If we
+		wanted to only target one of the associated values but not the other, we use
+		the under var, <span class="monoText">_</span>.
+	</p>
+	<pre class="language-swift"><code>
+		enum FoodItem {
+			case hamburger(numberOfPatties: Int)
+			case fries(orderSize: PortionSize)
+			case drink(beverage: AvailableDrink, size: PortionSize)
+		}
+		
+		enum PortionSize {
+			case small
+			case medium
+			case large
+			case extraLarge
+		}
+		
+		enum AvailableDrink {
+			case lemonade
+			case horchata
+			case water
+		}
+		
+		var order1 = FoodItem.hamburger(numberOfPatties: 2)
+		
+		switch order1 {
+			case .hamburger(let p): print("Burger: \(p) patties")
+			case .fries: print("fries")
+			case .drink (_, let s): print("drink-size: \(s)")
+		}
+	</code></pre>
+</section>
+
+<section id="method_and_properties">
+	<h2>Method & Properties</h2>
+	<p>
+		An <span class="monoText">enum</span> can contain methods and properties.
+		However, unlike the <span class="monoText">struct</span> and
+		<span class="monoText">class</span>, the
+		<span class="monoText">enum</span> can only contain
+		<span class="underlineText">computed properties</span> &mdash; no stored
+		properties allowed. Why can't an <span class="monoText">enum</span> have
+		stored properties? Because the purpose of an
+		<span class="monoText">enum</span> is to store discrete values. A stored
+		property is not a discrete value. The work around is to use a
+		<span class="italicsText">computed property</span>:
+	</p>
+	<pre class="language-swift"><code>
+		enum FoodItem {
+			case hamburger(numberOfPatties: Int)
+			case fries(orderSize: PortionSize)
+			case drink(beverage: AvailableDrink, size: PortionSize)
+			
+			func isSpecial(orderNumber: Int) -> Bool {
+				if orderNumber == 1000 { return true }
+					else { return false }
+			}
+			var calories: Int {
+				switch self {
+					case .hamburger: return 500
+					case .fries: return 300
+					case .drink: return 100
+				}
+			}
+		}
+	</code></pre>
+</section>
+
+<section id="case_analysis">
+	<h2>Case Analysis</h2>
 	<p>
 		Enumerations are most useful when our program requires a
 		<span class="term">case analysis</span> &mdash; structuring a program
@@ -150,6 +497,162 @@
 			case clubs
 		}
 		let DECK = Suit.allCases
+	</code></pre>
+</section>
+
+<section id="optionals_enums">
+	<h2>Aside: Optionals are Enumerations</h2>
+	<p>
+		We saw optionals in a previous section. However, because of how important
+		they are, we revisit them here in the
+		<span class="monoText">enum</span> context. Optionals are, in fact, an
+		<span class="monoText">enum</span>. More precisely, the optional is an
+		<span class="monoText">enum</span> with two cases:
+	</p>
+	<pre class="language-swift"><code>
+		enum Optional&lt;T&gt; {
+			case none
+			case some(T)
+		}
+	</code></pre>
+	<p>
+		Notice that the optional is an <span class="monoText">enum</span> with a
+		generic type, like <span class="monoText">Array&lt;T&gt;</span>. In the case
+		<span class="monoText">none</span>, the optional has the value
+		<span class="monoText">nil</span>. And in the case
+		<span class="monoText">some</span>, the optional has a value of generic type
+		<span class="monoText">T</span>. That type
+		<span class="monoText">T</span> is the associated value of the case
+		<span class="monoText">some</span>.
+	</p>
+	<p>
+		Recall that to assign an optional type value, we use the question mark,
+		<span class="monoText">?</span>. Really, the
+		<span class="monoText">?</span> is just a form of
+		<span class="italicsText">syntactic sugar</span>:
+	</p>
+	<pre class="language-swift"><code>
+		var id: String? // var id: Optional&lt;String&gt; = .none
+		var id: String? = "ax43" // var id: Optional&lt;String&gt; = .some("ax43")
+		var id: String? = nil // var id: Optional&lt;String&gt; = .none
+	</code></pre>
+
+	<h3>Unwrapping Optionals</h3>
+	<p>
+		When we &#8220;unwrap&#8221; optionals, we are really just accessing the
+		associated data of a particular state. For example, when we write:
+	</p>
+	<pre class="language-swift"><code>
+		let preferredName: String? = "Haley"
+		print(preferredName!)
+	</code></pre>
+	<p>The corresponding code executed looks something like:</p>
+	<pre class="language-swift"><code>
+		enum Optional&lt;T&gt; {
+			case none
+			case some(T)
+		}
+		switch preferredName {
+			case .none: // raise an exception (crash)
+			case .some(let data): print(data)
+		}
+	</code></pre>
+	<p>
+		In the previous section on optionals, we stated to avoid force unwrapping at
+		all costs. Now that we have a better understanding of optionals and
+		enumerations, we state a more nuanced view of using force unwrapping: We
+		should always use force unwrapping during development when we know that a
+		particular instance should always have the
+		<span class="monoText">.some(T)</span> state. If it crashes, then that's a
+		piece of information we should know, since the value should always have a
+		<span class="monoText">.some(T)</span> state.
+	</p>
+	<p>
+		Outside of those situations where an optional
+		<span class="underlineText">must</span> have a
+		<span class="monoText">.some</span> state &mdash; i.e., the optional can be
+		either <span class="monoText">.none</span> or
+		<span class="monoText">.some</span> &mdash; then we should use the
+		<span class="monoText">if-let</span> construct. Again, the
+		<span class="monoText">if-let</span> construct is just another form of
+		syntactic sugar. When we write:
+	</p>
+	<pre class="language-swift"><code>
+		let preferredName: String? = "Haley"
+		if let existingPreferredName = preferredName {
+			print(existingPreferredName)
+		} else {
+			print("N/A")
+		}
+	</code></pre>
+	<p>The underlying code executed looks like:</p>
+	<pre class="language-swift"><code>
+		enum Optional&lt;T&gt; {
+			case none
+			case some(T)
+		}
+		switch preferredName {
+			case .none: print("N/A")
+			case .some(let data): print(data)
+		}
+	</code></pre>
+
+	<h3>Optional Defaulting</h3>
+	<p>
+		The <span class="italicsText">nil-coalescing operator</span>
+		<span class="monoText">??</span>, is syntactic sugar for
+		<span class="italicsText">optional defaulting</span>. For example, when we
+		write:
+	</p>
+	<pre class="language-swift"><code>
+		let x: String? = "foo"
+		let y = x ?? "NULL"
+	</code></pre>
+	<p>The underlying code is actually:</p>
+	<pre class="language-swift"><code>
+		switch x {
+			case .none: y = "NULL"
+			case .some(let data): y = data
+		}
+	</code></pre>
+	<p>
+		The nil-coalescing operator is syntactic sugar for performing several steps:
+		(1) If <span class="monoText">x</span>, an optional, has a
+		<span class="monoText">.some</span> state, return that
+		<span class="monoText">.some</span> state's associated data; (2) otherwise,
+		return the value following <span class="monoText">??</span>.
+	</p>
+</section>
+
+<section id="optional_chaining">
+	<h3>Optional Chaining</h3>
+	<p>
+		With <span class="italicsText">optional chaining</span>, we can ensure that
+		an optional ${x}$ has a <span class="monoText">.some</span> state
+		<span class="underlineText">only</span> if other optionals have a
+		<span class="monoText">.some</span> state. Otherwise &mdash; i.e., if any of
+		the other optionals have a <span class="monoText">.none</span> state, ${x}$
+		is strictly <span class="monoText">nil</span> (in the
+		<span class="monoText">.none</span> state). For example, when we write:
+	</p>
+	<pre class="language-swift"><code>
+		let x: String? = "foo"
+		let y = x?.foo()?.bar?.z
+	</code></pre>
+	<p>The underlying code is actually:</p>
+	<pre class="language-swift"><code>
+		switch x {
+			case .none: y = nil
+			case .some(let xval):
+				switch xval.foo() {
+					case .none: y = nil
+					case .some(let xfooval):
+						switch xfooval.bar {
+							case .none: y = nil
+							case .some(let xfbval): y = xfbval.z
+						}
+				}
+		}
 	</code></pre>
 </section>
 {% endblock %}

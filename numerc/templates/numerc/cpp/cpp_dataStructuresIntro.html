@@ -1,12 +1,11 @@
-{% extends '../layout.html' %} {% load static %} 
-
-{% block description %}
-<meta name="description" content="C++ data structures: Dynamic vs. static memory, heap, stack, overflows, arrays, linked-lists.">
-{% endblock %}
-{% block title %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="C++ data structures: Dynamic vs. static memory, heap, stack, overflows, arrays, linked-lists."
+/>
+{% endblock %} {% block title %}
 <title>C++ Data Structures</title>
-{% endblock %}
-{% block content %}
+{% endblock %} {% block content %}
 
 <h1>Data Structures</h1>
 <section id="introduction">
@@ -508,45 +507,48 @@
 
 <section id="abstract_data_types">
 	<h2>Abstract Data Types</h2>
+	<span class="marginnote"
+		>Abstract data types are also called
+		<span class="italicsText">interfaces</span> or
+		<span class="italicsText">Application Programming Interface (API)</span
+		>.</span
+	>
 	<p>
-		A <span class="term">data type</span> is a rule, or instruction, that
-		communicates to the computer how a particular piece of data should be
-		interpreted. More generally, a data type encapsulates, or contains, two
-		kinds of information: (1) how data of that data type is represented &mdash;
-		i.e., how the data is <span class="italicsText">stored</span>; and (2) what
-		operations can be performed with that data.
+		There is a distinction between an
+		<span class="italicsText">abstract data type</span> and a
+		<span class="italicsText">data structure</span>. In the broadest terms, an
+		abstract data type represents &#8220;what we want to do&#8221; while the
+		data structure represents &#8220;how we do it.&#8221; Thus, an abstract data
+		type is a specification; it tells us what data we can store. The data
+		structure, in contrast, is the implementation; examining it tells us
+		<span class="italicsText">how</span> the data is stored.
+	</p>
+	<p>
+		In sum, the <span class="term">abstract data type</span> is a rule, or
+		instruction, that communicates to the computer how a particular piece of
+		data should be interpreted. More generally, a data type encapsulates, or
+		contains, two kinds of information: (1) what data can be
+		<span class="italicsText">stored</span>; and (2) what operations can be
+		performed with that data.
+	</p>
+	<p>
+		The data structure is what implements the two pieces of information above.
+		It dictates how the data is stored, and how the operations are performed
+		(via algorithms).
 	</p>
 	<p>
 		So, for example, the type <span class="monoText">int</span> is a data type.
 		The type <span class="monoText">int</span> contains the two kinds of
-		information above:
+		information for abstract data types. What data can be stored with
+		<span class="monoText">int</span>? A datum of type
+		<span class="monoText">int</span> stores integers. What operations can be
+		performed on a datum of type <span class="monoText">int</span>? Addition,
+		subtraction, multiplication, division, modulus, and a plethora of other
+		arithmetic operations.
 	</p>
-	<figure class="math-display">
-		<div class="rule">
-			<ol>
-				<li>How is the data stored?</li>
-				<ul>
-					<li>
-						A datum of type <span class="monoText">int</span> is allocated in
-						the stack, taking 2 bytes of memory.
-					</li>
-				</ul>
-				<li>
-					What operations can be performed on a datum of type
-					<span class="monoText">int</span>?
-				</li>
-				<ul>
-					<li>
-						Addition, subtraction, multiplication, division, modulus, comparison
-						operators, increment, decrement, etc.
-					</li>
-				</ul>
-			</ol>
-		</div>
-	</figure>
 	<p>
-		In most languages, the data type above is what we would call a
-		<span class="term">base type</span> or a
+		In most languages, the data type <span class="monoText">int</span> is what
+		we would call a <span class="term">base type</span> or a
 		<span class="term">primitive type</span>. Base types are data types provided
 		natively by the language. In other words, the language's implementation
 		provides the data type by default. An
@@ -597,7 +599,7 @@
 </section>
 
 <section id="complexity">
-	<h2>Complexity</h2>
+	<h2>Complexity; Big-O Notation</h2>
 	<p>
 		Having seen the close connection between data structures and algorithms, we
 		are now ready to address the guiding concern of data structures and
@@ -612,16 +614,17 @@
 	<p>
 		A short story: A factory recently hired Luke, a 20 year-old male in good
 		shape. Part of Luke's job is transferring barrels from one rack to another
-		rack. As strong as Luke is, the barrels are large and weigh at least 100 lbs. The first few
-		days, he carries them, one by one. After a while, however, Luke notices how unwieldy this is.
-		It takes far too long, and his mornings are now marked by lingering pain in
-		his lower back. Luke begins asking, how do I completely move these barrels in
-		a shorter amount of time? Aha! Why not just roll
-		them? Luke takes this route, and it works almost miraculously. Suddenly,
-		what took him at least an hour is suddenly cut to 20 minutes. He's
-		delighted, and begins rolling two, three, four barrels at a time. Luke
-		continues his job, happily moving barrels, until management finds an even
-		faster solution &mdash; a giant robotic system that simply swaps the racks.
+		rack. As strong as Luke is, the barrels are large and weigh at least 100
+		lbs. The first few days, he carries them, one by one. After a while,
+		however, Luke notices how unwieldy this is. It takes far too long, and his
+		mornings are now marked by lingering pain in his lower back. Luke begins
+		asking, how do I completely move these barrels in a shorter amount of time?
+		Aha! Why not just roll them? Luke takes this route, and it works almost
+		miraculously. Suddenly, what took him at least an hour is suddenly cut to 20
+		minutes. He's delighted, and begins rolling two, three, four barrels at a
+		time. Luke continues his job, happily moving barrels, until management finds
+		an even faster solution &mdash; a giant robotic system that simply swaps the
+		racks.
 	</p>
 	<p>
 		The question of &#8220;How long does it take to do ${x}$&#8221; is what
@@ -631,7 +634,188 @@
 		are performed &mdash; the algorithm.
 	</p>
 	<p>
-		For example, let's say we have a <span class="monoText">list</span> type
+		Let's take an example. Suppose we want to summate all the integers from
+		${0}$ some integer ${n.}$ One way to do this would be to write:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int addUpTo(int n) {
+			int x = 0;
+			for (int i = 1; i <= n; i++) {
+				x += i;
+			}
+			return x;
+		}
+		
+		int main() {
+			int sum3 = addUpTo(5);
+			cout << sum3 << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		15
+	</code></pre>
+	<p>
+		With the code above, we use a loop to compute the sum. Here is another
+		possible approach, using Gauss's formula:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int addUpTo(int n) {
+			return n * (n + 1) / 2;
+		}
+		
+		int main() {
+			int sum3 = addUpTo(5);
+			cout << sum3 << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		15
+	</code></pre>
+	<p>
+		Complexity analysis is what allows us to compare these two approaches.
+		Consider the two implementations of
+		<span class="monoText">addUpTo()</span> side by side:
+	</p>
+	<div class="compare">
+		<pre class="language-cpp"><code>
+			int addUpToLoop(int n) {
+				int x = 0;
+				for (int i = 1; i <= n; i++) {
+					x += i;
+				}
+				return x;
+			}
+		</code></pre>
+		<pre class="language-cpp"><code>
+			int addUpToFormula(int n) {
+				return n * (n + 1) / 2;
+			}
+		</code></pre>
+	</div>
+	<p>
+		Clearly, <span class="monoText">addUpToFormula()</span> is much shorter than
+		<span class="monoText">addUpToLoop()</span>. But brevity does not imply
+		better, at least not always. Instead, we count the number of operations each
+		implementation requires. That count provides one premise for an argument of
+		the form &#8220;This algorithm is better than this one.&#8221;
+	</p>
+	<p>
+		Let's consider <span class="monoText">addUpToLoop()</span>. How many
+		operations occur here? We can start by counting all of the individual steps
+		the code performs.
+	</p>
+	<pre class="language-cpp"><code>
+		int addUpToLoop(int n) {
+			int x = 0;
+			for (int i = 1; i <= n; i++) {
+				x += i;
+			}
+			return x;
+		}
+
+		/* 
+		Operations:
+			int x = 0 happens once. (1).
+			int i = 1 happense once. (1).
+			int i <= n happens n times. (n).
+			int i++ happens n times. (n).
+			int x + i happens n times. (n).
+			int x = i happens n times. (n).
+			return x happens once. (1).
+		*/
+	</code></pre>
+	<p>
+		Putting the commented analysis above together, we have ${4n + 3}$ steps
+		(another count might yield more steps, but we'll see that this doesn't
+		really matter). Accordingly, we have ${O(4n + 3)}$ complexity for this
+		approach. However, with complexity analysis, we're really just concerned
+		with the leading term. In this case, the leading term is ${n.}$ Thus, the
+		<span class="monoText">addUpToLoop()</span> function executes in
+		<span class="italicsText">linear time</span>.
+	</p>
+	<p>
+		Now compare that with <span class="monoText">addUpToFormula()</span>. Again,
+		we count the operations:
+	</p>
+	<pre class="language-cpp"><code>
+		int addUpToFormula(int n) {
+			return n * (n + 1) / 2;
+		}
+
+		/*
+		Operations:
+			n + 1 happens once. (1).
+			n * (n + 1) happens once. (1).
+			n * (n + 1) / 2 happens once. (1).
+		*/
+	</code></pre>
+	<p>
+		Here, we have 3 steps. Thus, the
+		<span class="monoText">addUpToFormula()</span> has a complexity of ${O(3).}$
+		More generally, it has a complexity of ${O(1);}$
+		<span class="italicsText">constant time</span>. Comparing the two: ${O(1),}$
+		constant time, is much faster than ${O(n),}$ linear time. We now have a
+		premise for arguing that <span class="monoText">addUpToFormula()</span> is
+		better than <span class="monoText">addUpToLoop()</span> in terms of time
+		complexity. When handling big-O expressions, there are several helpful rules
+		to keep in mind.
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Rule 1.</span>
+				Constants are dropped. For example, ${O(2n)}$ is simply ${O(n).}$
+				${O(1,000),}$ i.e., an algorithm that takes ${1,000}$ operations every
+				time, is simply ${O(1).}$ Similarly, ${O(17n^2)}$ is simply ${O(n^2).}$
+			</p>
+			<p>
+				<span class="topic">Rule 2.</span>
+				Smaller terms are dropped. ${O(n + 2)}$ is reduced to ${O(n).}$ ${O(38n
+				+ 7)}$ is ${O(n).}$ ${O(n^2 + 2n - 1)}$ is reduced to ${O(n^2).}$
+			</p>
+			<p>
+				<span class="topic">Rule 3.</span>
+				Arithmetic operations are in constant time. Thus, the operations
+				<span class="monoText">+</span>, <span class="monoText">-</span>,
+				<span class="monoText">*</span>, <span class="monoText">/</span> and
+				<span class="monoText">%</span> are all operations that take constant
+				time.
+			</p>
+			<p>
+				<span class="topic">Rule 4.</span>
+				Variable declarations and assignments are in constant time. Thus,
+				writing <span class="monoText">int n</span> is in constant time, and
+				<span class="monoText">int n = 2</span> is in constant time.
+			</p>
+			<p>
+				<span class="topic">Rule 5.</span>
+				Accessing elements in an array by index is in constant time. E.g., given
+				the array <span class="monoText">arr[] {1, 2, 3}</span>, writing
+				<span class="monoText">arr[0]</span> to access
+				<span class="monoText">1</span> takes constant time.
+			</p>
+			<p>
+				<span class="topic">Rule 6.</span>
+				In a loop, the complexity is the length of the loop, multiplied by the
+				the complexity of the loop's body. For example, a loop that runs from
+				${0}$ to ${n}$ has a complexity of ${O(n).}$ If the loop's body (the
+				code to be executed at each iteration) has a complexity of ${O(4),}$
+				then we have ${O(4n),}$ or simply ${O(n).}$ If the loop contains a loop
+				in its body, then the outer loop has a complexity of ${O(n \cdot n) =
+				O(n^2).}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Another example: let's say we have a <span class="monoText">list</span> type
 		datum:
 	</p>
 	<figure class="math-display">
@@ -687,8 +871,8 @@
 	</p>
 	<p>
 		This is where we make a distinction in measuring time complexity. Time
-		complexity is not necessarily measured in units of time. Instead, we generally
-		measure time complexity in terms of the number of
+		complexity is not necessarily measured in units of time. Instead, we
+		generally measure time complexity in terms of the number of
 		<span class="italicsText">steps</span> a computer must take to complete the
 		task. We will explore why we measure time in this manner in later sections.
 	</p>
@@ -697,7 +881,8 @@
 		${n}$ steps to complete its task, we say that the linear search algorithm
 		has a complexity in the order of ${O(n).}$ However, note that when we
 		conduct a complexity analysis, we always want to also look at the code. For
-		example, the linear search algorithm might be implemend like this (in pseudocode):
+		example, the linear search algorithm might be implemend like this (in
+		pseudocode):
 	</p>
 	<figure class="math-display">
 		<pre class="language-pseudo"><code>
@@ -726,6 +911,8 @@
 		&#8220;biggest&#8221; terms in the expression. Accordingly, this requires
 		dropping constants.
 	</p>
+
+	<h3>Space Complexity</h3>
 	<p>
 		The same analysis for time complexity applies to
 		<span class="term">space complexity</span>. The difference: With space
@@ -739,5 +926,30 @@
 		earlier, we are only focused on the leading term. Accordingly, the data
 		structure has a space complexity of ${n.}$
 	</p>
+	<p>
+		With space complexity, there are a few general rules we can keep in mind:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Rule 1.</span> Primitive types take up constant
+				space ${O(1).}$ For example, <span class="monoText">int</span>,
+				<span class="monoText">char</span>,
+				<span class="monoText">bool</span> and others take up ${O(1)}$ space.
+				Granted, a more detailed analysis would be that something like
+				<span class="monoText">int</span> takes up ${O(4),}$ since an
+				<span class="monoText">int</span> takes up 4 bytes in memory. But again,
+				we reduce ${O(4)}$ to ${O(1).}$
+			</p>
+			<p>
+				<span class="topic">Rule 2.</span> Strings are of linear space
+				complexity ${O(n),}$ where ${n}$ is the length of the string.
+			</p>
+			<p>
+				<span class="topic">Rule 3.</span> Arrays are or linear space
+				complexity, ${O(n),}$ where ${n}$ is the length of the array.
+			</p>
+		</div>
+	</figure>
 </section>
 {% endblock %}

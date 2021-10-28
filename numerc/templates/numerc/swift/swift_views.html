@@ -3,37 +3,86 @@
 <section id="views">
 	<blockquote>Views are immutable structures.</blockquote>
 	<p>
-		In SwiftUI, we implement user interface design with
-		<span class="term">views</span>. There are many different kinds of views
-		&mdash; <span class="monoText">text</span>,
+		<span class="drop">S</span>wiftUI implements user interface with
+		<span class="term">views</span>. At a lower level, we implement a view with
+		a <span class="monoText">struct</span>. There are many different kinds of
+		views &mdash; <span class="monoText">text</span>,
 		<span class="monoText">slider</span>, <span class="monoText">button</span>,
-		etc. Everything we see on the screen when we open an application is a
-		<span class="monoText">view</span>. Below are some examples of views.
+		etc. Everything we see on the screen when we open an application is a view.
 	</p>
+	<p>
+		We can think of a view as box, or Lego brick. They are rectangular in shape,
+		and are placed in a modular fashion, much like a Lego structure. But how do
+		we place these bricks?
+	</p>
+</section>
 
+<section id="some_view">
+	<h2><span class="monoText">some view</span></h2>
+	<p>When we write views in Swift, we write the following:</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>struct ${\lang view \space name \rang}$: View {</li>
+				<ul>
+					<li>var body: some View {</li>
+					<ul>
+						<li>${\lang statements \rang}$</li>
+					</ul>
+					<li>}</li>
+				</ul>
+				<li>}</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		What exactly is <span class="monoText">some View</span>? A view is just a
+		<span class="monoText">struct</span>. The variable
+		<span class="monoText">body</span> is a property of the view
+		<span class="monoText">struct</span>, and
+		<span class="monoText">: someView</span> tells Swift that this particular
+		property, <span class="monoText">body</span> behaves like a view. This is
+		what allows Swift to infer the <span class="monoText">body</span> variable's
+		type.
+	</p>
+</section>
+
+<section id="stacks">
 	<h2>Stacks</h2>
 	<p>
-		The <span class="monoText">vertical stack</span>, or
-		<span class="monoText">v-stack</span>, is a view that acts like a container
-		for other views, called the <span class="monoText">v-stack</span>'s
-		<span class="italicsText">children</span>. A
-		<span class="monoText">v-stack</span> arranges its children in a vertical
+		To organize views, we need a way to tell Swift how to place the views
+		relative to one another. We do so with
+		<span class="italicsText">view modifiers</span>, the most basic of which is
+		a <span class="italicsText">view stack.</span> A view stack is essentially a
+		container for other views. The views inside a view stack are called the view
+		stack's <span class="italicsText">children</span>. View stacks come in three
+		flavors: The <span class="monoText">VStack</span>,
+		<span class="monoText">HStack</span>, and
+		<span class="monoText">ZStack</span>.
+	</p>
+	<p>
+		As with all view stacks, the
+		<span class="monoText">VStack</span> (&#8220;Vertical Stack&#8221;) is a
+		view that acts like a container for other views. The
+		<span class="monoText">VStack</span> arranges its children in a vertical
 		stack.
 	</p>
 
 	<p>
-		The <span class="monoText">horizontal stack</span>, or
-		<span class="monoText">h-stack</span>, also acts like a container for other
-		views. In contrast to the <span class="monoText">v-stack</span>, the
-		<span class="monoText">h-stack</span> arranges its children in a horizontal
+		The <span class="monoText">HStack</span> (&#8220;Horizontal Stack&#8221;),
+		also acts like a container for other views. In contrast to the
+		<span class="monoText">VStack</span>, the
+		<span class="monoText">HStack</span> arranges its children in a horizontal
 		stack.
 	</p>
 
 	<p>
-		Where the VStack and the HStack arrange their children along the ${x}$ and
-		${y}$ axis respectively, the ZStack arranges their children along the ${z}$
-		axis. In other words, children inside the ZStack are laid on top of one
-		another.
+		Where the <span class="monoText">VStack</span> and
+		<span class="monoText">HStack</span> arrange their children along the ${x}$
+		and ${y}$ axis respectively, the
+		<span class="monoText">ZStack</span> arranges its children along the ${z}$
+		axis. In other words, children inside a
+		<span class="monoText">ZStack</span> are laid on top of one another.
 	</p>
 
 	<h2>Views: UI Components</h2>
@@ -83,15 +132,44 @@
 				</tr>
 				<tr>
 					<td><span class="monoText">ScrollView</span></td>
-					<td>Scrollable view; for when the view is too large to fit the screen</td>
+					<td>
+						Scrollable view; for when the view is too large to fit the screen
+					</td>
 				</tr>
 				<tr>
 					<td><span class="monoText">List</span></td>
-					<td>Creates a list view; similar to scroll view, but provides several other functionalities.</td>
+					<td>
+						Creates a list view; similar to scroll view, but provides several
+						other functionalities.
+					</td>
 				</tr>
 			</tbody>
 		</table>
 	</figure>
+</section>
+
+<section id="repeatingViews">
+	<h2>Repeating Views</h2>
+	<p>Suppose we have an array <span class="monoText">arr</span> with elements:</p>
+	<pre class="language-swift"><code>
+		let arr = ["a", "b", "c"]
+	</code></pre>
+	<p>Now suppose we want to create a view for each of the elements in <span class="monoText">arr</span>. We can do so with <span class="monoText">ForEach</span>:</p>
+
+	<pre class="language-swift"><code>
+		struct ContentView: View {
+			let arr = ["a", "b", "c"]
+				var body: some View {
+					VStack {
+						ForEach(arr, id: \.self) { element in
+							Text(element)
+						}
+					}
+				}
+		}
+	</code></pre>
+
+	<p>The code above will create three <span class="monoText">Text()</span> views, each containing a string interpolated with the corresponding elements in <span class="monoText">arr</span>.</p>
 </section>
 
 <section id="view_immutability">

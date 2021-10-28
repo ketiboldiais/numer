@@ -7,14 +7,15 @@
 <h1>Functions</h1>
 <section id="functions">
 	<p>
-		In the simplest terms, a function is a piece of code that performs a
-		specific task. It takes inputs, called <span class="term">arguments</span>,
-		and returns an output, called a <span class="term">return value</span>.
-		There are many ways to think about functions. For now, we can think of
-		functions as ways to <span class="italicsText">modularize</span> our code.
-		If we have a particular computation that must be performed over and over
-		again, that computation would be best capsulated as a function. For example,
-		consider this code that prints out an array:
+		<span class="drop">I</span>n the simplest terms, a function is a piece of
+		code that performs a specific task. It takes inputs, called
+		<span class="term">arguments</span>, and returns an output, called a
+		<span class="term">return value</span>. There are many ways to think about
+		functions. For now, we can think of functions as ways to
+		<span class="italicsText">modularize</span> our code. If we have a
+		particular computation that must be performed over and over again, that
+		computation would be best capsulated as a function. For example, consider
+		this code that prints out an array:
 	</p>
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
@@ -840,16 +841,172 @@
 	<h3>Pass-by-reference</h3>
 	<p>
 		Recall that we can think of a <span class="italicsText">reference</span> as
-		a nickname, or pseudonym, for a variable.
+		a nickname, or pseudonym, for a variable. That nickname, or pseudonym, can
+		be passed as an argument to a function. Passing references as arguments to a
+		function is called <span class="term">pass-by-reference</span>. For example,
+		using our code above:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void swap(int &a, int &b) {
+			int temp;
+			temp = a;
+			a = b;
+			b = temp;
+		}
+		
+		int main() {
+			int a = 0;
+			int b = 1;
+		
+			cout << "Before the swap: " << endl;
+			cout << "x = " << a << endl;
+			cout << "y = " << b << endl;
+		
+			swap(a, b);
+		
+			cout << "After the swap: " << endl;
+			cout << "x = " << a << endl;
+			cout << "y = " << b << endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Before the swap: 
+		x = 0
+		y = 1
+		After the swap: 
+		x = 1
+		y = 0
+	</code></pre>
+	<p>
+		The same result from passing by address is obtained. This is because we
+		employed <span class="term">pass-by-reference</span>. When
+		<span class="monoText">main()</span> is memory is allocated for its
+		variables, as usual. However, the distinction is when the loader encounters
+		<span class="monoText">swap(a, b)</span>. The formal parameters of
+		<span class="monoText">a</span> and <span class="monoText">b</span> are
+		<span class="monoText">&a</span> and <span class="monoText">&b</span>.
+	</p>
+	<p>
+		What happens when these parameters are used? The entire definition for
+		<span class="monoText">swap()</span> is &#8220;copied-and-pasted&#8221; into
+		the body of <span class="monoText">main()</span>. In other words,
+		<span class="monoText">swap()</span> isn't loaded separately from
+		<span class="monoText">main()</span>. It is loaded as a part of
+		<span class="monoText">main()</span>. And because
+		<span class="monoText">swap()</span> is a part of
+		<span class="monoText">main()</span>,
+		<span class="monoText">swap()</span> can effectively &#8220;see&#8221;, or
+		has access, to the preceding variables inside
+		<span class="monoText">main()</span>. In practice, pass-by-reference is used
+		far more often than pass-by-address. Why? Because it's simpler to write and
+		easier to read.
 	</p>
 </section>
 
-<section id="variable_scope">
-	<h2>Variable Scope</h2>
+<section id="returns">
+	<h2>Function Returns</h2>
 	<p>
-		Functions are good point for us to switch gears and discuss
-		<span class="term">scope</span>.
+		Just as functions can take different parameters, functions can also have
+		different returns. The default return method is
+		<span class="italicsText">return-by-value</span>. The function performs a
+		computation, and returns the result. We can, however, also perform
+		<span class="italicsText">return-by-address</span> and
+		<span class="italicsText">return-by-reference</span>.
 	</p>
+
+	<h3>Return-by-address</h3>
+	<p>
+		Suppose we wanted a function to return an array, which we can then use and
+		mutate elsewhere. One way to do so is to write a function with
+		<span class="term">return-by-address</span> &mdash; a function that returns
+		the address of stored data:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int* natNumArray(int size) {
+			int *p = new int[size];
+			for (int i = 0; i < size; i++) {
+				p[i] = i+1;
+			}
+			return p;
+		}
+		
+		int main() {
+			int *natNumPTR = natNumArray(5);
+			return 0;
+		}
+	</code></pre>
+	<p>
+		In the code above, we allocated memory in the heap for an
+		<span class="monoText">int</span> array, using the function
+		<span class="monoText">natNumArray()</span>. The function returns the
+		resulting array's address, and in <span class="monoText">main()</span>, that
+		address is assigned to a pointer called
+		<span class="monoText">*natNumPTR</span>. As a result, both
+		<span class="monoText">p</span> in
+		<span class="monoText">natNumArray()</span> and
+		<span class="monoText">natNumPTR</span> point to the same address,
+		effectively allowing us to modify the newly allocated array.
+	</p>
+
+	<h3>Return-by-reference</h3>
+	<p>
+		With return-by-address, we use an explicit pointer. We can instead use an
+		implicit pointer with <span class="term">return-by-reference</span>. By
+		writing a function as return-by-reference, we instruct C++ that the
+		particular reference returns a pointer to its return value, rather than the
+		value itself. The end result: We can use functions on the
+		<span class="underlineText">left</span> side of an assignment statement,
+		rather than the typical right side.
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+			
+		double& setValues(double vals[], int i) {
+			return vals[i];
+		}
+			
+		int main () {
+			double arr[] = {1.1, 9.8, 3.1, 2.1, 5.7};
+			cout << "Value before change" << endl;
+			for ( int i = 0; i < 5; i++ ) {
+				cout << "\t arr[" << i << "] = ";
+				cout << arr[i] << endl;
+			}
+			
+			setValues(arr, 1) = 19.2;
+			setValues(arr, 3) = 58.8;
+			
+			cout << "Value after change" << endl;
+			for ( int i = 0; i < 5; i++ ) {
+				cout << "\t arr[" << i << "] = ";
+				cout << arr[i] << endl;
+			}
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Value before change
+			arr[0] = 1.1
+			arr[1] = 9.8
+			arr[2] = 3.1
+			arr[3] = 2.1
+			arr[4] = 5.7
+		Value after change
+			arr[0] = 1.1
+			arr[1] = 19.2
+			arr[2] = 3.1
+			arr[3] = 58.8
+			arr[4] = 5.7
+	</code></pre>
 </section>
 
 <section id="value_of_functions">
@@ -872,4 +1029,228 @@
 		functions. And (4) the function stores data in the narrowest scope possible.
 	</p>
 </section>
+
+<section id="variable_scope">
+	<h2>Variable Scope</h2>
+	<p>
+		Functions are good point for us to switch gears and discuss
+		<span class="term">variable scope</span>. Generally, there are kinds of
+		scope: (1) the <span class="term">global scope</span> and (2) a
+		<span class="term">local scope</span>. Consider the following code:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int a = 1; 
+		
+		bool isEven(int n) {
+			return (n % 2 == 0);
+		}
+		
+		int main() {
+			int x = 0;
+			cout << x << endl;
+			x += a;
+			if (isEven(x)) {
+				cout << x << " is even." << endl;
+			} else {
+				cout << x << " is not even." << endl;
+			}
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+		1 is not even.
+	</code></pre>
+	<p>
+		In the code above, we have two functions,
+		<span class="monoText">main()</span> and
+		<span class="monoText">isEven()</span>. Outside of these functions, we have
+		<span class="monoText">int a = 1</span>. This is a
+		<span class="italicsText">global variable</span>. Inside
+		<span class="monoText">main()</span>, we have the variable
+		<span class="monoText">int x = 0</span>. This is a
+		<span class="italicsText">local variable</span> (more specifically, a
+		variable <span class="italicsText">local to</span>
+		<span class="monoText">main</span>). Inside both
+		<span class="monoText">main()</span> and
+		<span class="monoText">isEven()</span>, we have access to
+		<span class="monoText">int a</span>. This is because
+		<span class="monoText">int a</span> is a global variable &mdash; it's a
+		variable that can be &#8220;seen&#8221; by all the functions following it.
+	</p>
+	<p>
+		Recall that when we load a function in memory, each function's variables are
+		allocated memory in a stack. Those stacks are popped off (i.e., the
+		variables are destroyed) once the function finishes executing. This rule is
+		true only for local variables (and function variables are local to the
+		function). The rule is not true for global variables. Global variables exist
+		in memory so long as the program continues running. Where do they exist? Not
+		in the stack or the heap. Instead, they are allocated memory in the code
+		section, where they stay as long as our program runs.
+	</p>
+
+	<h3>Block Level Scope</h3>
+	<p>
+		In addition to the global and local distinction, C++ also distinguishes
+		scopes with block levels. A simple rule for block level scope: During
+		compilation, C++ can see the variables to the left, but not variables to the
+		right. For example:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		int x = 1;
+		
+		int main() {
+			int x = 2;
+			{
+				int x = 3;
+				cout << "x (from block): " << x << endl;
+				cout << "Global x (from block): " << ::x << endl;
+			}
+			cout << "x (from main): " << x << endl;
+			cout << "Global x (from main): " << ::x << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x (from block): 3
+		Global x (from block): 1
+		x (from main): 2
+		Global x (from main): 1
+	</code></pre>
+	<p>
+		The <span class="monoText">::</span> operator is called the
+		<span class="term">scope resolution operator</span>. It allows us to access
+		a particular global variable when we have a variable with the same name
+		locally.
+	</p>
+</section>
+
+<section id="static_variables">
+	<h2>Static Variables</h2>
+	<p>
+		Static variables are often a source of confusion for beginning programmers.
+		In part, this is due to being overloaded with too many details all at once.
+		Consider this issue, we study static variables by first considering a
+		relatable problem. Consider the following code:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+			using namespace std;
+			
+			int x = 1;
+			
+			void func1() {
+				x++;
+				cout << x << endl;
+			}
+			
+			int main() {
+				func1();
+				func1();
+				func1();
+				return 0;
+			}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		2
+		3
+	</code></pre>
+	<p>
+		In the code above, we have a global variable,
+		<span class="monoText">int x = 1</span>. We then have a function,
+		<span class="monoText">func1()</span>, which increments the global variable,
+		<span class="monoText">x</span> by <span class="monoText">1</span>. Thus,
+		when we go into <span class="monoText">main()</span>, each call to
+		<span class="monoText">func1()</span> results in an increment of
+		<span class="monoText">x</span>.
+	</p>
+	<p>
+		Now, suppose we don't want that <span class="monoText">x</span> to be a
+		global variable. There are many reasons for why might not want
+		<span class="monoText">x</span> to be a global variable (in fact, we
+		generally do not want global variables). Perhaps
+		<span class="monoText">x</span> is a variable that should only be mutated by
+		<span class="monoText">func1()</span>; no other function or module should be
+		able to touch it. How do we achieve this? Well, why not just place
+		<span class="monoText">x</span> inside the body of
+		<span class="monoText">func1()</span>? Let's try that:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void func1() {
+			int x = 0;
+			x++;
+			cout << x << endl;
+		}
+		
+		int main() {
+			func1();
+			func1();
+			func1();
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		1
+		1
+	</code></pre>
+	<p>
+		Nope, that didn't work. Remember: After a function has finished executing,
+		the stack where its variables are allocated is popped off. Thus, we never
+		see <span class="monoText">1 2 3</span> because each function call starts
+		with <span class="monoText">int x = 0</span>.
+	</p>
+	<p>Static variables are intended to address this problem:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		void func1() {
+			static int x = 0;
+			x++;
+			cout << x << endl;
+		}
+		
+		int main() {
+			func1();
+			func1();
+			func1();
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		2
+		3
+	</code></pre>
+	<p>
+		By appending the <span class="monoText">static</span> keyword to
+		<span class="monoText">int x = 0</span>, we've ensured that
+		<span class="monoText">x</span> is treated as a static variable of the
+		function <span class="monoText">func1()</span>. This effectively makes
+		<span class="monoText">x</span> a variable akin to being
+		&#8220;global&#8221; to <span class="monoText">func1()</span>. Thus, for
+		every call to <span class="monoText">func1()</span>,
+		<span class="monoText">func1()</span> uses the current value of
+		<span class="monoText">x</span>.
+	</p>
+	<p>
+		Like global variables, static variables exist in memory so long as our
+		program runs. The different: Static variables are only accessible to their
+		respective modules. In this case, <span class="monoText">x</span> is only
+		accessible to <span class="monoText">func1()</span>; nowhere else.
+	</p>
+</section>
+
 {% endblock %}

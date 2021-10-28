@@ -79,8 +79,8 @@ urlpatterns = [
 	path("swift_stateAndSwiftUI", views.swift_stateAndSwiftUI, name="swift_stateAndSwiftUI"),
 	path("swift_programArchitecture", views.swift_programArchitecture, name="swift_programArchitecture"),
 	path("swift_xcodeShortcuts", views.swift_xcodeShortcuts, name="swift_xcodeShortcuts"),
-	path("swift_mvvm", views.swift_mvvm, name="swift_mvvm"),
 	path("swift_generics", views.swift_generics, name="swift_generics"),
+	path("swift_designPatterns", views.swift_designPatterns, name="swift_designPatterns"),
 
 	# java paths
 	path("java_preface", views.java_preface, name="java_preface"),
@@ -125,6 +125,7 @@ urlpatterns = [
 	path("js_this", views.js_this, name="js_this"),
 	path("js_scope", views.js_scope, name="js_scope"),
 	path("js_angular", views.js_angular, name="js_angular"),
+	path("js_dsalg", views.js_dsalg, name="js_dsalg"),
 
 	# Lisp paths
 	path("lisp_preface", views.lisp_preface, name="lisp_preface"),
@@ -152,18 +153,13 @@ urlpatterns = [
 	path("lisp_designingData", views.lisp_designingData, name="lisp_designingData"),
 	path("lisp_selfReference", views.lisp_selfReference, name="lisp_selfReference"),
 	path("lisp_designingLargePrograms", views.lisp_designingLargePrograms, name="lisp_designingLargePrograms"),
+	path("lisp_onRecursion", views.lisp_onRecursion, name="lisp_onRecursion"),
 
 	# ML paths
 	path("ml_preface", views.ml_preface, name="ml_preface"),
 	path("ml_simpleData", views.ml_simpleData, name="ml_simpleData"),
-	path("ml_expressionsVariableBindings", views.ml_expressionVariableBindings, name="ml_expressionsVariableBindings"),
-	path("ml_variableImmutability", views.ml_variableImmutability, name="ml_variableImmutability"),
-	path("ml_logicalOperators", views.ml_logicalOperators, name="ml_logicalOperators"),
-	path("ml_functionBindings", views.ml_functionBindings, name="ml_functionBindings"),
-	path("ml_pairs", views.ml_pairs, name="ml_pairs"),
-	path("ml_tuples", views.ml_tuples, name="ml_tuples"),
-	path("ml_errors", views.ml_errors, name="ml_errors"),
 	path("ml_customDataTypes", views.ml_customDataTypes, name="ml_customDataTypes"),
+	path("ml_functions", views.ml_functions, name="ml_functions"),
 
 	# C++ paths
 	path("cpp_preface", views.cpp_preface, name="cpp_preface"),
@@ -183,6 +179,8 @@ urlpatterns = [
 	path("cpp_collections", views.cpp_collections, name="cpp_collections"),
 	path("cpp_pointers", views.cpp_pointers, name="cpp_pointers"),
 	path("cpp_sorting", views.cpp_sorting, name="cpp_sorting"),
+	path("cpp_dynamicArrays", views.cpp_dynamicArrays, name="cpp_dynamicArrays"),
+	path("cpp_oop", views.cpp_oop, name="cpp_oop"),
 
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),
@@ -195,6 +193,13 @@ urlpatterns = [
 	path("haskell_intro", views.haskell_intro, name="haskell_intro"),
 	path("haskell_lambdaCalculus", views.haskell_lambdaCalculus, name="haskell_lambdaCalculus"),
 	path("haskell_variables", views.haskell_variables, name="haskell_variables"),
+
+	# Compilers Paths
+	path("cmp_index", views.cmp_index, name="cmp_index"),
+
+	# Computer Systems Paths
+	path("sys_index", views.sys_index, name="sys_index"),
+	path("sys_cIntro", views.sys_cIntro, name="sys_cIntro"),
 
 ]
 

@@ -1,0 +1,740 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Introduction to object-oriented programming in C++"
+/>
+{% endblock %} {% block title %}
+<title>OOP in C++</title>
+{% endblock %} {% block content %}
+<h1>OOP</h1>
+<section id="intro">
+	<p>
+		In this essay, we explore object-oriented programming (OOP) in C++. OOP is
+		the reigning paradigm in modern programming. A core goal of this essay is to
+		understand why the OOP status quo continues, as well as reasons for why this
+		may or may not change in the future.
+	</p>
+	<p>
+		The cornerstone of object-oriented programming is the ability to construct
+		our own data types. We know that there are types provided natively by a
+		language, what we might call
+		<span class="italicsText">primitive types</span>.
+		<span class="marginnote"
+			>Primitive types are also called
+			<span class="italicsText">base types</span> or
+			<span class="italicsText">atomic types</span>.</span
+		>
+		In C++, these types include <span class="monoText">char</span>,
+		<span class="monoText">int</span>, <span class="monoText">double</span>,
+		<span class="monoText">bool</span>, <span class="monoText">float</span>,
+		etc.
+	</p>
+	<p>
+		Although we can solve many problems with just these types, having such a
+		small set of types can feel restrictive and stuffy. What if we have data
+		that should be paired together? The airline passenger isn't just a number;
+		they have a name, an age, gender, address, consumer preferences, mileage
+		quantity, and possibly a special customer status. The solar system isn't
+		just an array of eight planets; there are moons, dwarf planets, revolution
+		paths, which themselves have related data.
+	</p>
+	<p>
+		Related data doesn't even just occur with discrete entities. Mathematical
+		formulas might be classified according to fields. We might have a formula
+		related to probability, another related to geometry, another to calculus,
+		another to number theory.
+	</p>
+	<p>
+		Trying to model these complex ideas with just primitive types is painful.
+		Worse, what if we need to change those models? What we need is an
+		<span class="italicsText">abstraction</span> &mdash;
+		<span class="term">higher-order data types</span>.
+	</p>
+	<p>
+		Recall that a data type is a set consisting of two subsets: a set of values,
+		called the data type's <span class="term">domain</span>, and a
+		<span class="term">set of operations</span> on those values. For example,
+		the data type <span class="monoText">int</span> is a data type pre-defined
+		by C++. The values it represents are the integers (specifically ${-2^{31}}$
+		to ${2^{31}}$), and the operations we may perform on those values are the
+		various arithmetic and comparison operators (<span class="monoText">+</span
+		>, <span class="monoText">*</span>, <span class="monoText">%</span>, etc.).
+	</p>
+	<p>
+		With object-oriented programming, we write C++ code to define new data
+		types. We say that an <span class="term">object</span> is an entity that
+		holds a <span class="italicsText">data-type value</span> &mdash; you can
+		manipulate the data type value by using the object's data-type operations.
+		The practice of defining new data types and manipulating objects holding
+		data-type values is called <span class="term">data abstraction</span>.
+	</p>
+	<p>The foundational principle of object-oriented programming:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Principle.</span> Always separate data from
+				operations on that data.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Notice that with the primitive data types, we were never really worried
+		about how the data type represents the values. Of course, we know how the
+		data is represented (bits allocated in memory), but when using the data
+		types, we rarely stopped to consider the data type's implementation. This is
+		precisely what data types are supposed to do. For the data type user, the
+		only concern should be the <span class="italicsText">operations</span> that
+		can be performed with that data type. Of course, the story is different for
+		the data type implementer. The implementer must always think about both the
+		set of values represented, as well as the operations that can be performed
+		on those values.
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Principle.</span> A data type should not require the
+				user to know how the data type is implemented.
+			</p>
+		</div>
+	</figure>
+</section>
+
+<section id="classes">
+	<h2><span class="monoText">class</span></h2>
+	<p>
+		The C++ <span class="monoText">class</span> provides a way to define data
+		types. In a <span class="monoText">class</span>, we specify the data-type
+		values and implement the data-type operations. Let's write a simple class
+		for a rectangle:
+	</p>
+	<pre class="language-cpp"><code>
+		class Rectangle {
+			int width;
+			int height;
+			int area() {
+				return width * height;
+			}
+			int perimeter() {
+				return 2 * (width + height);
+			}
+		};
+		
+	</code></pre>
+	<p>
+		Above, we created a class called <span class="monoText">Rectangle</span>.
+		This is a new data type. It has two
+		<span class="italicsText">properties</span>,
+		<span class="monoText">width</span> and
+		<span class="monoText">height</span>, of type
+		<span class="monoText">int</span>. It also has two functions &mdash; called
+		<span class="italicsText">methods</span> &mdash; which have a return type of
+		<span class="monoText">int</span>.
+	</p>
+	<p>Now, let's try using this new class:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Rectangle {
+			int width;
+			int height;
+			int area() {
+				return width * height;
+			}
+			int perimeter() {
+				return 2 * (width + height);
+			}
+		};
+		
+		int main() {
+			Rectangle r1;
+			r1.width = 7;
+			r1.height = 2;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Above, we created an <span class="italicsText">objects</span> of type
+		<span class="monoText">Rectangle</span>. This object is named
+		<span class="monoText">r1</span>. Alternatively, we say that
+		<span class="monoText">r1</span> is an
+		<span class="italicsText">instance</span> of the class
+		<span class="monoText">Rectangle</span>. Having created these two objects,
+		we attempt to assign to <span class="monoText">r1</span>'s properties
+		&mdash; <span class="monoText">width</span> and
+		<span class="monoText">height</span> &mdash; that
+		<span class="monoText">int</span> values <span class="monoText">7</span> and
+		<span class="monoText">2</span> respectively. The compiler's response:
+	</p>
+	<pre class="language-bash"><code>
+		rectangle.cpp:17:5: error: 'width' is a private member of 'Rectangle'
+						r1.width = 7;
+							^
+		rectangle.cpp:5:6: note: implicitly declared private here
+						int width;
+								^
+		rectangle.cpp:18:5: error: 'height' is a private member of 'Rectangle'
+						r1.height = 2;
+							^
+		rectangle.cpp:6:6: note: implicitly declared private here
+						int height;
+								^
+		2 errors generated.
+	</code></pre>
+	<p>
+		We get back an error. Why? Because by default, all class properties and
+		methods are <span class="monoText">private</span>. This is an example of an
+		<span class="term">access modifier</span>. If a property or method is
+		<span class="monoText">private</span>, then
+		<span class="underlineText">only</span> the class has access to the
+		properties or methods. Nowhere else in the code do we have access to those
+		properties or methods. So how do we fix this? By appending the keyword
+		<span class="monoText">public</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Rectangle {
+			public:
+				int width;
+				int height;
+				int area() {
+					return width * height;
+				}
+				int perimeter() {
+					return 2 * (width + height);
+				}
+		};
+		
+		int main() {
+			Rectangle r1;
+			r1.width = 7;
+			r1.height = 2;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		By appending the keyword <span class="monoText">public</span>, we have
+		effectively made the class's properties and methods available for any part
+		of our program to see and use. Now let's try using the methods:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Rectangle {
+			public:
+				int width;
+				int height;
+				int area() {
+					return width * height;
+				}
+				int perimeter() {
+					return 2 * (width + height);
+				}
+		};
+		
+		int main() {
+			Rectangle r1;
+			r1.width = 7;
+			r1.height = 2;
+			cout << r1.area() << endl;
+			cout << r1.perimeter() << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		14
+		18
+	</code></pre>
+	<p>
+		It works. Notice the use of dots, or periods, to access properties and
+		methods. This is called <span class="term">dot notation</span>, and is a
+		common syntactic approach for accessing properties and methods in
+		object-oriented languages.
+		<span class="marginnote"
+			>The use of <span class="term">dot notation</span> can be traced back to
+			Simula 67, the language widely credited as the first object-oriented
+			language. However, there is evidence of the dot notation being used even
+			further back: The PL/I language for the IBM 360 used dot notation to
+			specify fields in a record.</span
+		>
+	</p>
+</section>
+
+<section id="pointers_to_objects">
+	<h2>Objects in the Stack, Objects in the Heap</h2>
+	<p>
+		We saw in earlier sections that we can create values of primitive types in
+		either the stack or the heap. We also saw that we can create pointers to
+		those values. We can do the same with classes. Let's first consider how to
+		create pointers to objects.
+	</p>
+	<h3>Pointers to Objects</h3>
+	<p>Let's write another class, called <span class="monoText">Circle</span>:</p>
+	<pre class="language-cpp"><code>
+		class Circle {
+			public:
+				double radius;
+				double pi = 3.14;
+		
+				double area() {
+					return pi * (radius * radius);
+				}
+				double perimeter() {
+					return 2 * pi * radius;
+				}
+		};
+	</code></pre>
+	<p>
+		Now suppose we want to create a pointer to a
+		<span class="monoText">Circle</span> object (i.e., an instance of
+		<span class="monoText">Circle</span>). To do so, we write the following:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Circle {
+			public:
+				double radius;
+				double pi = 3.14;
+		
+				double area() {
+					return pi * (radius * radius);
+				}
+				double perimeter() {
+					return 2 * pi * radius;
+				}
+		};
+		
+		int main() {
+			Circle c; // create a Circle object, called 'c' in the STACK
+			Circle *p; // Create a pointer 'p' of type Circle
+			p = &amp;c; // p now points to the Circle object, 'c'
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Above, we instantiated the class <span class="monoText">Circle</span>,
+		creating a <span class="monoText">Circle</span> object with the identifier
+		<span class="monoText">c</span>. The object
+		<span class="monoText">c</span> lives in the stack. After creating
+		<span class="monoText">c</span>, we then created a pointer
+		<span class="monoText">p</span> of type
+		<span class="monoText">Circle</span>. Finally, when we wrote
+		<span class="monoText">p = &c</span>, we are saying, &#8220;This pionter
+		<span class="monoText">p</span> points to the object
+		<span class="monoText">c</span>.&#8221; Because pointer
+		<span class="monoText">p</span> points to the address where
+		<span class="monoText">c</span> is located, we can assign properties to it
+		via pointer:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Circle {
+			public:
+				double radius;
+				double pi = 3.14;
+		
+				double area() {
+					return pi * (radius * radius);
+				}
+				double perimeter() {
+					return 2 * pi * radius;
+				}
+		};
+		
+		int main() {
+			Circle c; // create a Circle object, called 'c' in the STACK
+			Circle *p; // Create a pointer 'p' of type Circle
+			p = &amp;c; // p now points to the Circle object, 'c'
+			p->radius = 3.2;
+			cout << p->area() << endl;
+			cout << p->perimeter() << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		32.1536
+		20.096
+	</code></pre>
+	<p>
+		Notice the syntax. To instantiate a property of
+		<span class="monoText">c</span> with a pointer, we wrote
+		<span class="monoText">p->radius</span>. To call the methods of
+		<span class="monoText">c</span> with a pointer, we wrote
+		<span class="monoText">p->area()</span> and
+		<span class="monoText">p->perimeter()</span> respectively.
+	</p>
+
+	<h3>Storing Objects in the Heap</h3>
+	<p>
+		We can store class instances in the heap, just as we would store values of
+		primitive types.
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Trapezoid {
+			public:
+				double side_a;
+				double side_b;
+				double height;
+				double area() {
+					return ((side_a + side_b) * height) / 2;
+				}
+		};
+		
+		int main() {
+			Trapezoid *ptr; // declare a pointer ptr
+			ptr = new Trapezoid; // create a Trapezoid in the heap
+			ptr->side_a = 3.2;
+			ptr->side_b = 6.1;
+			ptr->height = 8.9;
+			cout << ptr->area() << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		41.385
+	</code></pre>
+	<p>
+		Above, we stored a <span class="monoText">Trapezoid</span> object in the
+		heap via the pointer <span class="monoText">ptr</span>. Notice the keyword
+		<span class="monoText">new</span>. This keyword tells C++ that we are
+		instantiating the class <span class="monoText">Trapezoid</span>; i.e.,
+		creating a <span class="italicsText">new</span> instance of
+		<span class="monoText">Trapezoid</span>. Then, using the arrow operator,
+		<span class="monoText">-></span>, we initialized the properties of that
+		<span class="monoText">Trapezoid</span>, pointed to by
+		<span class="monoText">ptr</span>. Alternatively, we can write the pointer
+		declaration, initialization all in one line:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Trapezoid {
+			public:
+				double side_a;
+				double side_b;
+				double height;
+				double area() {
+					return ((side_a + side_b) * height) / 2;
+				}
+		};
+		
+		int main() {
+			Trapezoid *ptr = new Trapezoid();
+			ptr->side_a = 2.2;
+			ptr->side_b = 5.3;
+			ptr->height = 3.8;
+			double ptrArea = ptr->area();
+			cout << ptrArea << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		14.25
+	</code></pre>
+</section>
+
+<section id="accessors">
+	<h2>Access Modifiers</h2>
+	<p>
+		In the examples above, we set the properties and methods in our classes
+		<span class="monoText">public</span>. This is not always a good idea. For
+		starters, having them set to <span class="monoText">public</span> implies
+		that anyone has access to them. This can be very dangerous, depending on
+		what our class is being used for. How do we ensure that properties and
+		methods are hidden? I.e., only the class has access to its methods and
+		properties? For that, we need <span class="term">access modifiers</span>.
+		<span class="marginnote"
+			>Access modifiers are also called
+			<span class="italicsText">accessors</span> or
+			<span class="italicsText">access specifiers</span>.</span
+		>
+	</p>
+	<p>
+		In C++, there are three access modifiers:
+		<span class="monoText">public</span>,
+		<span class="monoText">protected</span>, and
+		<span class="monoText">private</span>. We'll look at each of them in turn.
+	</p>
+
+	<h3><span class="monoText">private</span></h3>
+	<p>
+		By default, all properties and methods in a C++ class are set to
+		<span class="monoText">private</span>. This means that outside of the class
+		containing those properties and methods, no access is provided. For example:
+	</p>
+	<pre class="language-cpp"><code>
+		// we don't have to write out 'private', but we do so here to be explicit
+		class Cylinder {
+			private:
+				double pi = 3.14;
+				double radius;
+				double height;
+			public:
+				double surfaceArea() {
+					return 2 * pi * radius * (radius + height);
+				}
+				double volume() {
+					return pi * radius * radius * height;
+				}
+		};
+	</code></pre>
+	<p>
+		By default, all of the properties in class
+		<span class="monoText">Cylinder</span> is set to
+		<span class="monoText">private</span>. However, we set the methods
+		<span class="monoText">public</span>, because those are functions we would
+		like to access directly. Now, because the properties of
+		<span class="monoText">Cylinder</span> are set to
+		<span class="monoText">private</span>, we cannot access them in
+		<span class="monoText">main()</span>, nor anywhere else outside of
+		<span class="monoText">class Cylinder</span>'s definition. But this means
+		that the methods <span class="monoText">surfaceArea()</span> and
+		<span class="monoText">volume()</span> are essentially useless, because we
+		don't have a way to set the values of
+		<span class="monoText">radius</span> and
+		<span class="monoText">height</span>. But we want to keep the properties
+		<span class="monoText">private</span>
+		<span class="underlineText">and</span> be still be able to initialize them
+		outside of the <span class="monoText">class</span> definition. Can we do so?
+		It seems like we can't.
+	</p>
+	<p>
+		Oh but we can. We can get around the
+		<span class="monoText">private</span> barrier by setting some function in
+		the inside the class as <span class="monoText">public</span>. Think of it as
+		leaving a tiny gap, or window, for us to access the class.
+	</p>
+	<p>
+		Let's start with one of the properties,
+		<span class="monoText">radius</span>. To be able to initialize this
+		property, we just need a <span class="monoText">public</span> method that
+		initializes the property:
+	</p>
+	<pre class="language-cpp"><code>
+		class Cylinder {
+			double pi = 3.14;
+			double radius;
+			double height;
+			public:
+				double surfaceArea() {
+					return 2 * pi * radius * (radius + height);
+				}
+				double volume() {
+					return pi * radius * radius * height;
+				}
+				void setRadius(double r) {
+					radius = r; // remember you don't need a return for void return types
+				}
+				void setHeight(double h) {
+					height = h;
+				}
+		};
+	</code></pre>
+	<p>
+		The functions <span class="monoText">setRadius()</span> and
+		<span class="monoText">setHeight()</span> are set to
+		<span class="monoText">public</span>, and they are what allow us to access
+		to initialize the properties <span class="monoText">radius</span> and
+		<span class="monoText">height</span>, even if they are set to
+		<span class="monoText">private</span>. Let's try it:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Cylinder {
+			double pi = 3.14;
+			double radius;
+			double height;
+			public:
+				double surfaceArea() {
+					return 2 * pi * radius * (radius + height);
+				}
+				double volume() {
+					return pi * radius * radius * height;
+				}
+				void setRadius(double r) {
+					radius = r; // remember you don't need a return for void return types
+				}
+				void setHeight(double h) {
+					height = h;
+				}
+		};
+		
+		int main() {
+			Cylinder cindy = Cylinder();
+			cindy.setRadius(3.2);
+			cindy.setHeight(8.6);
+			cout << cindy.surfaceArea() << endl;
+			cout << cindy.volume() << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		237.133
+		276.521
+	</code></pre>
+	<p>
+		Great. It works. Unfortunately, we can't directly access
+		<span class="monoText">radius</span> and
+		<span class="monoText">height</span> because they're still set to
+		<span class="monoText">private</span>. But what if we need the
+		<span class="monoText">radius</span> and
+		<span class="monoText">height</span>? Well, we'll just write another
+		<span class="monoText">public</span> method, one that retrieves
+		<span class="monoText">radius</span> and
+		<span class="monoText">height</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Cylinder {
+			double pi = 3.14;
+			double radius;
+			double height;
+			public:
+				double surfaceArea() {
+					return 2 * pi * radius * (radius + height);
+				}
+				double volume() {
+					return pi * radius * radius * height;
+				}
+				void setRadius(double r) {
+					radius = r; // remember you don't need a return for void return types
+				}
+				double getRadius() {
+					return radius;
+				}
+				void setHeight(double h) {
+					height = h;
+				}
+				double getHeight() {
+					return height;
+				}
+		};
+		
+		int main() {
+			Cylinder cindy = Cylinder();
+			cindy.setRadius(3.2);
+			cindy.setHeight(8.6);
+			cout << cindy.getRadius() << endl;
+			cout << cindy.getHeight() << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		3.2
+		8.6
+	</code></pre>
+	<p>
+		Above, we wrote two new functions,
+		<span class="monoText">getRadius()</span> and
+		<span class="monoText">getHeight()</span>, both of which are of type
+		<span class="monoText">double</span>, since they return a
+		<span class="monoText">double</span>. Let's think a little more carefully
+		about what this means. The methods
+		<span class="monoText">getRadius()</span> and
+		<span class="monoText">getHeight()</span> are one way streets. We can only
+		<span class="italicsText">retrieve</span> the values assigned to the
+		properties <span class="monoText">radius</span> and
+		<span class="monoText">height</span>, but in no way can we use them to
+		<span class="italicsText">modify</span> the values assigned. This
+		effectively ensures that <span class="monoText">radius</span> and
+		<span class="monoText">height</span> remain
+		<span class="monoText">private</span>; we cannot modify them, we can only
+		read them. Hence the term <span class="italicsText">access modifier</span>,
+		rather than something like &#8220;visibility modifier.&#8221; In other
+		words, the access modifier only restricts the ability to write; it doesn't
+		necessarily restrict the ability to read.
+	</p>
+	<p>
+		The methods <span class="monoText">setRadius()</span> and
+		<span class="monoText">setHeight()</span> are examples of what we call
+		<span class="term">setters</span>. Setters are methods for
+		<span class="italicsText">initializing</span>
+		properties in a class definition. The methods
+		<span class="monoText">getRadius()</span> and
+		<span class="monoText">getHeight()</span> are examples of
+		<span class="term">getters</span>: methods that
+		<span class="italicsText">retrieve</span>, or
+		<span class="italicsText">read</span>, the values assigned to properties in
+		a class definition.
+	</p>
+	<p>
+		With getters and setters, we can now be more elaborate in how class
+		properties are initialized. For example, there's a troubling aspect to our
+		properties and methods: What if the user sets a property to negative? That
+		would make no sense mathematically, because the lengths, widths, heights,
+		radii, volumes, etc. of geometric figures cannot be negative. Accordingly,
+		we should ensure that these values are always positive:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Maths {
+			public:
+				template&lt;class T&gt;
+				T abs(T x) {
+					if (x == 0) {
+						return 0;
+					} else if (x < 0) {
+						return -1 * x;
+					} else {
+						return x;
+					}
+				}
+		};
+		
+		class Cylinder {
+			double pi = 3.14;
+			double radius;
+			double height;
+			public:
+				double surfaceArea() {
+					return 2 * pi * radius * (radius + height);
+				}
+				double volume() {
+					return pi * radius * radius * height;
+				}
+				void setRadius(double r) {
+					radius = abs(r);
+				}
+				double getRadius() {
+					return radius;
+				}
+				void setHeight(double h) {
+					height = abs(h);
+				}
+				double getHeight() {
+					return height;
+				}
+		};
+		
+		int main() {
+			Cylinder cindy = Cylinder();
+			cindy.setRadius(-1.2);
+			cindy.setHeight(-4.3);
+			cout << cindy.getRadius() << endl;
+			cout << cindy.getHeight() << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1.2
+		4.3
+	</code></pre>
+</section>
+{% endblock %}

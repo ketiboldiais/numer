@@ -1,6 +1,13 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="How to write a function in Java; what is modularity?"
+/>
+{% endblock %} {% block title %}
+<title>Java Functions</title>
+{% endblock %} {% block content %}
+<h1>Functions: Structuring Programs Well</h1>
 <section id="functions_in_java">
-	<h3>Functions: Structuring Good Programs</h3>
 	<p>
 		With the tools we have thus far, we can create a wide variety of programs.
 		But, programs have <span class="italicsText">structure</span>, and there is
@@ -19,17 +26,44 @@
 		<li>Code reuses preexisting solutions as much as possible.</li>
 	</ol>
 	<p>
-		<span class="topic">Functions.</span> A
-		<span class="italicsText">function</span> is a collection of statements
-		aimed at completing a specific task, and whenever such a task must be
-		completed, the collection can be reused to complete the task. For example,
-		suppose we wanted to compute the average of several values. We can write
-		several statements that computes the average, using the values as inputs.
-		Instead of writing these statements every time we must compute an average,
-		we would write these statements in such a way that they can take any
-		quantity of values as inputs. We would then package these statements into a
-		&#8220;unit&#8221;, or collection, which can reference anytime we must
-		compute an average.
+		One way to meet the criteria above is with a
+		<span class="italicsText">function</span>. Before we consider functions in
+		the programming context, let's first recall what a function is in
+		mathematics. Both ideas are closely linked. In mathematics, a function is a
+		relation that maps one output to one input. For example, the function ${f(x)
+		= x^2,}$ a parabolic function, maps values of ${x}$ to a set of outputs,
+		${f(x).}$ We say that ${f}$ is the function's name, ${x}$ is the function's
+		independent variable (through which inputs are placed), ${f(x)}$ is the
+		output, and ${x^2}$ is the function's formula.
+	</p>
+	<p>
+		All of these ideas have corresponding terms in programming. In programming
+		generally, ${x}$ is called the <span class="term">parameter</span>, the
+		values we place into ${x}$ are called the
+		<span class="term">arguments</span>, ${f}$ is the function's
+		<span class="term">identifier</span> (or
+		<span class="italicsText">name</span>), ${f(x)}$ is the function's
+		<span class="term">return value</span>, and ${x^2}$ is the function's
+		<span class="term">body</span>.
+		<span class="marginnote"
+			>In Java, a function is more accurately called a
+			<span class="italicsText">method</span>. We will see why in the materials
+			on classes. Because we have yet to investigate classes, all of the
+			functions in this essay are called
+			<span class="italicsText">static methods</span>.</span
+		>
+	</p>
+	<p>
+		In programming, <span class="term">function</span> is a collection of
+		statements aimed at completing a specific task, and whenever such a task
+		must be completed, the collection can be reused to complete the task. For
+		example, suppose we wanted to compute the average of several values. We can
+		write several statements that computes the average, using the values as
+		inputs. Instead of writing these statements every time we must compute an
+		average, we would write these statements in such a way that they can take
+		any quantity of values as inputs. We would then package these statements
+		into a &#8220;unit&#8221;, or collection, which can reference anytime we
+		must compute an average.
 	</p>
 	<p>
 		In Java, a function, also called a
@@ -47,6 +81,107 @@
 		<span class="italicsText">functional programming</span> &mdash; structuring
 		our programs by way of functions.
 	</p>
+	<p>The general syntax for static methods (functions):</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>public static ${returnType}$ ${name}$ (${argType}$ ${p}$) {</li>
+				<ul>
+					<li>${body}$</li>
+					<li>return ${...}$</li>
+				</ul>
+				<li>}</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		In the syntax above, the first line is called the function's
+		<span class="term">signature</span>. It consists of the keywords
+		<span class="monoText">public</span> and
+		<span class="monoText">static</span>, because the function is a static
+		method (again, we will study these in more detail in the essay on classes).
+		Additionally, we have the function's <span class="italicsText">name</span>.
+		Following the name is the <span class="italicsText">parameter list</span>,
+		<span class="monoText">(${argType}$ ${p}$)</span>, where ${argType}$ is the
+		parameter's type, and ${p}$ is the parameter variable. The parameter ${p}$
+		carries the inputs to be used in the function's ${body.}$ Inside the
+		function's body, we have a
+		<span class="italicsText">return statement</span>, which is what transfers
+		control back to the caller.
+	</p>
+	<ol class="ex grid" data-colcade="columns: .grid-col, items: .grid-item">
+		<div class="grid-col grid-col--1"></div>
+		<div class="grid-col grid-col--2"></div>
+		<div class="grid-col grid-col--3"></div>
+		<div class="grid-col grid-col--4"></div>
+
+		<li class="grid-item">
+			Write a function that returns the absolute value of an integer argument.
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-java"><code>
+					public static int abs(int x) {
+						if (x < 0) { return -x; }
+						else { return x; }
+					}
+				 </code></pre>
+			</details>
+		</li>
+		<li class="grid-item">
+			Write a function that returns the absolute value of a double argument.
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-java"><code>
+					public static double abs(double x) {
+						if (x < 0.0) { return - x; }
+						else { return x; }
+					}
+				 </code></pre>
+			</details>
+		</li>
+		<li class="grid-item">
+			Write a function that determines whether an integer argument is prime.
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-java"><code>
+					public static boolean isPrime(int n) {
+						if (n < 2) { return false; }
+						for (int i = 2; i < n/i; i++) {
+							if (n % i == 0) { return false; }
+						}
+						return true;
+					}
+				 </code></pre>
+			</details>
+		</li>
+		<li class="grid-item">
+			Write a function that computes the hypotenuse given two lengths of type
+			<span class="monoText">double</span>.
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-java"><code>
+					public static double hypotenuse(double a, double b) {
+						return Math.sqrt(a * a + b * b);
+					}
+				</code></pre>
+			</details>
+		</li>
+		<li class="grid-item">
+			Write a function that computes the harmonic number of an integer argument.
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-java"><code>
+					public static double harmonic(int n) {
+						double sum = 0.0;
+						for (int i = 1; i <= n; i++) {
+							sum += 1.0 / i;
+						}
+						return sum;
+					}
+				 </code></pre>
+			</details>
+		</li>
+	</ol>
 	<p>
 		A good function has several characteristics. First, good functions have
 		<span class="italicsText">specificity</span>: it should perform one, and

@@ -207,8 +207,11 @@ def calc_rateOfChange(request):
 def calc_limits(request):
 	return render(request, "numerm/calc1/calc_limits.html")
 
-def calc_derivativeFormulas(request):
-	return render(request, "numerm/calc1/calc_derivativeFormulas.html")
+def calc_trigDerivatives(request):
+	return render(request, "numerm/calc1/calc_trigDerivatives.html")
+
+def calc_generalRules(request):
+	return render(request, "numerm/calc1/calc_generalRules.html")
 
 # Sequences & Series
 

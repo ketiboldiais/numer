@@ -1,0 +1,364 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Introduction to recursion" />
+{% endblock %} {% block title %}
+<title>Master Recursion</title>
+{% endblock %} {% block content %}
+<h1>On Recursion</h1>
+<section id="intro">
+	<p>
+		<span class="drop">R</span>ecursion is a method that tends to confuse
+		newcomers to programming. We will reduce that confusion through practice.
+		Accordingly, the brunt of this essay consists of recursive exercises, rather
+		than exposition.
+	</p>
+</section>
+
+<section id="the_list">
+	<h2><span class="monoText">car</span></h2>
+	<p>
+		We begin with the list in Scheme. Before that, however, we introduce some
+		terminology. In Scheme, an <span class="italicsText">atom</span> is the
+		simplest entity. For our purpoes, we will think of an atom as anything that
+		(1) is not a list; and (2) is not <span class="monoText">null</span>.
+	</p>
+
+	<ol class="ex grid" data-colcade="columns: .grid-col, items: .grid-item">
+		<div class="grid-col grid-col--1"></div>
+		<div class="grid-col grid-col--2"></div>
+		<div class="grid-col grid-col--3"></div>
+		<div class="grid-col grid-col--4"></div>
+		<li class="grid-item">
+			True or false: <span class="monoText">"atom"</span> an atom.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">"atom"</span> is a lone string. It is not
+					a list, and it is not <span class="monoText">null</span>.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">"duck"</span> is an atom.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">"duck"</span> is also a lone string
+					&mdash; neither a list nor <span class="monoText">null</span>.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">1492</span> is an atom.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">1492</span> is an
+					<span class="monoText">int</span>, and it is neither a list nor
+					<span class="monoText">null</span>.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">"u"</span> is an atom.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">"u"</span> is a string (or a
+					<span class="monoText">char</span> in other languages); not a list,
+					and not <span class="monoText">null</span>.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">"*abc$"</span> is an atom.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">"*abc$"</span> is a string. Neither list
+					nor <span class="monoText">null</span>.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'("atom")</span> is an atom.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					False. <span class="monoText">'("atom")</span> is a list. An atom
+					surrounded by parentheses is a list.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'("atom" "list" "or")</span> is an
+			atom.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					False. <span class="monoText">'("atom" "turkey" "or")</span> is a list
+					of strings. The most general way to write a list in Scheme is to write
+					out the elements, separated by a single whitespace.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'("atom" "list") "or"</span> is a
+			list.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					False. There are two S-expressions:
+					<span class="monoText">'("atom" "list")</span> which is a list, and
+					<span class="monoText">"or</span> which is an atom.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'('("atom" "list") "or")</span> is a
+			list.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">'('("atom" "list") "or")</span> is a list
+					containing <span class="monoText">'("atom" "list")</span>, a list, and
+					<span class="monoText">"or</span> an atom.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">"abc"</span> is an S-expression.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">"abc"</span> is an atom; all atoms are
+					S-expressions.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'("x" "y" "z")</span> is an
+			S-expression.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">'("x" "y" "z")</span> is a list; all
+					lists are S-expressions.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'('("e" "f") "g")</span> is an
+			expression.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">'('("e" "f") "g")</span> is a list; all
+					lists are S-expressions.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'("how" "are" "you" "?")</span> is
+			an S-expression.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. <span class="monoText">'("How" "are" "you" "?")</span> is a
+					list; all lists are S-expressions.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			How many S-expressions are in the list
+			<span class="monoText">'("a" "b" "c" "d") and what are they?</span>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					There are four: <span class="monoText">"a</span>,
+					<span class="monoText">"b"</span>, <span class="monoText">"c"</span>,
+					and <span class="monoText">"d"</span>.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false:
+			<span class="monoText">'('('("How") "are")) '('("you") '("?")))</span> is
+			a list.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>True. This is a list composed of lists.</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			How many S-expressions are in the list
+			<span class="monoText">'('('("How") "are")) '('("you") '("?")))</span>?
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Two: <span class="monoText">'('("How") "are")</span> and
+					<span class="monoText">'('("you") '("?"))</span>.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">()</span> is a list.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					True. The S-expression <span class="monoText">'()</span> is the
+					<span class="italicsText">empty list</span>.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'()</span> is an atom.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					False. <span class="monoText">'()</span> is a list, the special empty
+					list.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			True or false: <span class="monoText">'('() '() '())</span> is a list.
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>True. It is a list consisting of three empty lists.</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			What is the <span class="monoText">car</span> of
+			<span class="monoText">'("a" "b" "c")</span>?
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					The <span class="monoText">car</span> operator returns the first
+					element of a list. <span class="monoText">"a"</span> because it is the
+					first element of the list.
+				</p>
+				<pre class="language-scheme"><code>
+					#lang scheme
+					(car '("a" "b" "c"))
+				</code></pre>
+				<pre class="language-bash"><code>
+					"a"
+				</code></pre>
+			</details>
+		</li>
+		<li class="grid-item">
+			What is the <span class="monoText">car</span> of
+			<span class="monoText">'('("a" "b" "c") "d" "e" "f")</span>?
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					<span class="monoText">'("a" "b" "c")</span>. It is the first element
+					in the list.
+				</p>
+				<pre class="language-scheme"><code>
+					#lang scheme
+					(car '('("a" "b" "c") "d" "e" "f"))
+				</code></pre>
+				<pre class="language-bash"><code>
+					(quote ("a" "b" "c"))
+				</code></pre>
+			</details>
+		</li>
+		<li class="grid-item">
+			What is the <span class="monoText">car</span> of
+			<span class="monoText">"hamburger"</span>?
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					No answer. You cannot ask for the <span class="monoText">car</span> of
+					an atom; <span class="monoText">car</span> only applies to lists.
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			What is the <span class="monoText">car</span> of
+			<span class="monoText">()</span>?
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					No answer. You cannot ask for the <span class="monoText">car</span> of
+					an empty list; <span class="monoText">car</span> only applies to
+					non-empty lists. (Note that in Common Lisp, asking for the
+					<span class="monoText">car</span> of an empty list returns
+					<span class="monoText">nil</span>).
+				</p>
+			</details>
+		</li>
+		<li class="grid-item">
+			What result:
+			<pre class="language-pseudo"><code>
+				(car '('('("fish")) '("taro") "coconut" ))
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p><span class="monoText">'('("fish"))</span></p>
+			</details>
+		</li>
+		<li class="grid-item">
+			What result:
+			<pre class="language-pseudo"><code>
+				(car (car '('('("tapioca"))) '("yam")))
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-pseudo"><code>
+					('('("tapioca")))
+				</code></pre>
+			</details>
+		</li>
+	</ol>
+	<p>
+		From the exercises above, we see that
+		<span class="monoText">car</span> returns the
+		<span class="underlineText">first element</span> of a
+		<span class="underlineText">nonempty list</span>. It will not work on atoms,
+		nor will it work with the empty list.
+	</p>
+	<p>
+		Why is it called <span class="monoText">car</span>? It's a relic from the
+		ancient days of computing. Back then, Lisp ran on a machine called the IBM
+		704, a computer so primitive it ran on vacuum tubes! Each
+		&#8220;register&#8221; on the 704 had two key parts: an address component
+		and a decrement component. That address component was called &#8220;Content
+		of Address portion of Register&#8221; (&#8220;car&#8221;) and the decrement
+		component was called &#8220;Content of Decrement portion of Register&#8221;
+		(&#8220;cdr&#8221;). This brings us to our next operation,
+		<span class="monoText">cdr</span>.
+	</p>
+</section>
+
+<section id="cdr">
+	<h2><span class="monoText">cdr</span></h2>
+	<p>
+		Attempt the exercises below to learn what
+		<span class="monoText">cdr</span> performs.
+		<span class="marginnote"
+			><span class="monoText">cdr</span> is pronounced &#8220;cooder,&#8221; as
+			in &#8220;gooder&#8221; with a &#8220;c.&#8221;</span
+		>
+		<ol class="ex grid" data-colcade="columns: .grid-col, items: .grid-item">
+			 <div class="grid-col grid-col--1"></div>
+			 <div class="grid-col grid-col--2"></div>
+			 <div class="grid-col grid-col--3"></div>
+			 <div class="grid-col grid-col--4"></div>
+			 <li class="grid-item">What result:
+				 <pre class="language-pseudo"><code>
+					 (cdr '("a" "b" "c"))
+				 </code></pre>
+				 <details class="answer">
+					 <summary>Solution</summary>
+					 <pre class="language-pseudo"><code>
+						 "a"
+					 </code></pre>
+				 </details>
+			 </li>
+		</ol>
+	</p>
+</section>
+
+{% endblock %}

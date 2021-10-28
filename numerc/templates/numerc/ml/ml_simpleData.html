@@ -1,10 +1,11 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Simple data in ML" />
+{% endblock %} {% block title %}
+<title>ML Simple Data</title>
+{% endblock %} {% block content %}
+<h1>Simple Data</h1>
 <section id="simple_data">
-	<h3>Simple Data</h3>
-	<p>
-		<span class="topic">Basic Data Types.</span>
-		<span class="monoText">ML</span> has the following data types:
-	</p>
+	<p>ML has the following base types:</p>
 
 	<figure class="table">
 		<table class="truth_table heading_center">
@@ -47,5 +48,1312 @@
 			</tbody>
 		</table>
 	</figure>
+</section>
+
+<section id="expressions_and_variable_bindings">
+	<h2>Expressions & Variable Bindings</h2>
+	<p>
+		Before we study ML, we must first understand its foundational terminology
+		and concepts. In ML, a program is a sequence of
+		<span class="term">bindings</span>. Each
+		<span class="term">binding</span> has a <span class="term">type</span>,
+		which is checked. If it the binding passes its type-check, then it is
+		<span class="term">evaluated</span>.
+	</p>
+
+	<p>
+		A binding's type depends on its
+		<span class="term">static environment</span> &mdash; roughly, the
+		<span class="italicsText">types</span> of the preceding bindings. How a
+		binding is evaluated depends on its
+		<span class="term">dynamic environment</span> &mdash; roughly, the
+		<span class="italicsText">values</span> of the preceding bindings. The term
+		<span class="term">environment</span> usually refers to the dynamic
+		environment, and the term <span class="term">context</span> usually refers
+		to the static environment. The following are some common expressions in ML:
+	</p>
+
+	<figure class="table">
+		<table class="truth_table heading_center">
+			<thead>
+				<th>Expression</th>
+				<th>Type</th>
+				<th>Result Type</th>
+				<th>Comments</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<span class="monoText">if ${c}$ then ${e_1}$ else ${e_2}$</span>
+					</td>
+					<td>
+						${b}$ must be an expression of type
+						<span class="boldText">bool</span>. ${e_1}$ and ${e_2}$ must have
+						the same types.
+					</td>
+					<td>same as ${e_1}$ and ${e_2}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>${e_1}$ andalso ${e_2}$</td>
+					<td>
+						${e_1}$ and ${e_2}$ must both be of type
+						<span class="boldText">bool</span>
+					</td>
+					<td><span class="boldText">bool</span></td>
+					<td>logical AND</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ orelse ${e_2}$</td>
+					<td>
+						${e_1}$ and ${e_2}$ must both be of type
+						<span class="boldText">bool</span>
+					</td>
+					<td><span class="boldText">bool</span></td>
+					<td>logical OR</td>
+				</tr>
+				<tr>
+					<td>NOT ${e}$</td>
+					<td>${e}$ must be of type <span class="boldText">bool</span></td>
+					<td><span class="boldText">bool</span></td>
+					<td>logical NOT</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ + ${e_2}$</td>
+					<td>
+						Either: (1) Both ${e_1}$ and ${e_2}$ are both of type
+						<span class="boldText">int</span>; or (2) both ${e_1}$ and ${e_2}$
+						are both of type <span class="boldText">real</span>
+					</td>
+					<td>Same as ${e_1}$ and ${e_2}$</td>
+					<td>${e_1 + e_2}$; overload operator</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ - ${e_2}$</td>
+					<td>
+						Either: (1) Both ${e_1}$ and ${e_2}$ are both of type
+						<span class="boldText">int</span>; or (2) both ${e_1}$ and ${e_2}$
+						are both of type <span class="boldText">real</span>
+					</td>
+					<td>Same as ${e_1}$ and ${e_2}$</td>
+					<td>${e_1 - e_2}$; overload operator</td>
+				</tr>
+				<tr>
+					<td>${e_1}$/${e_2}$</td>
+					<td>
+						Both ${e_1}$ and ${e_2}$ must both be
+						<span class="boldText">real</span>
+					</td>
+					<td><span class="boldText">real</span></td>
+					<td>real division</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ div ${e_2}$</td>
+					<td>
+						Both ${e_1}$ and ${e_2}$ must both be
+						<span class="boldText">int</span>
+					</td>
+					<td><span class="boldText">int</span></td>
+					<td>integer division</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ * ${e_2}$</td>
+					<td>
+						Either: (1) Both ${e_1}$ and ${e_2}$ are both of type
+						<span class="boldText">int</span>; or (2) both ${e_1}$ and ${e_2}$
+						are both of type <span class="boldText">real</span>
+					</td>
+					<td>Same as ${e_1}$ and ${e_2}$</td>
+					<td>${e_1 \cdot e_2}$; overload operator</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ < ${e_2}$</td>
+					<td>
+						Either: (1) Both ${e_1}$ and ${e_2}$ are both of type
+						<span class="boldText">int</span>; or (2) both ${e_1}$ and ${e_2}$
+						are both of type <span class="boldText">real</span>
+					</td>
+					<td><span class="boldText">bool</span></td>
+					<td>${e_1 < e_2?}$; overload operator</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ > ${e_2}$</td>
+					<td>
+						Either: (1) Both ${e_1}$ and ${e_2}$ are both of type
+						<span class="boldText">int</span>; or (2) both ${e_1}$ and ${e_2}$
+						are both of type <span class="boldText">real</span>
+					</td>
+					<td><span class="boldText">bool</span></td>
+					<td>${e_1 > e_2?}$; overload operator</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ <= ${e_2}$</td>
+					<td>
+						Either: (1) Both ${e_1}$ and ${e_2}$ are both of type
+						<span class="boldText">int</span>; or (2) both ${e_1}$ and ${e_2}$
+						are both of type <span class="boldText">real</span>
+					</td>
+					<td><span class="boldText">bool</span></td>
+					<td>${e_1 \leq e_2?}$; overload operator</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ >= ${e_2}$</td>
+					<td>
+						Either: (1) Both ${e_1}$ and ${e_2}$ are both of type
+						<span class="boldText">int</span>; or (2) both ${e_1}$ and ${e_2}$
+						are both of type <span class="boldText">real</span>
+					</td>
+					<td><span class="boldText">bool</span></td>
+					<td>${e_1 \geq e_2?}$; overload operator</td>
+				</tr>
+				<tr>
+					<td>${e_1}$ = ${e_2}$</td>
+					<td>
+						${e_1}$ and ${e_2}$ must both be either
+						<span class="boldText">unit</span>,
+						<span class="boldText">int</span>,
+						<span class="boldText">char</span>, or
+						<span class="boldText">string</span>.
+						<span class="underlineText">Cannot</span> be
+						<span class="boldText">real</span>.
+					</td>
+					<td><span class="boldText">bool</span></td>
+					<td>${e_1 = e_2?}$</td>
+				</tr>
+				<tr>
+					<td>${e_1}$^${e_2}$</td>
+					<td>
+						${e_1}$ and ${e_2}$ must both be
+						<span class="boldText">string</span>
+					</td>
+					<td><span class="boldText">string</span></td>
+					<td>concatenation</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<p>
+		There are many kinds of bindings in ML, but the simplest binding is the
+		<span class="term">variable binding</span>. It takes the general form:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>val ${v}$ = ${e}$</li>
+		</ul>
+	</figure>
+
+	<p>
+		In the syntax above, <span class="monoText">val</span> is a
+		<span class="italicsText">keyword</span>, ${v}$ is the
+		<span class="italicsText">variable</span>, and ${e}$ is any
+		<span class="italicsText">expression</span>. The semicolon is optional, but
+		it is necessary in a <span class="term">REPL</span> (<span
+			class="italicsText"
+			>read-eval-print</span
+		>
+		loop) to inform the <span class="italicsText">interpreter</span> that the
+		binding is complete.
+	</p>
+
+	<p>
+		Every binding in ML has a
+		<span class="term">scope</span>, which we can think of as &#8220;where it
+		can be used.&#8221;
+	</p>
+
+	<p>
+		The example above tells us the <span class="italicsText">syntax</span> for a
+		variable binding (how to write it), but it does not tell us the
+		<span class="italicsText">semantics</span> (how the binding is type-checked
+		and evaluated; its <span class="italicsText">meaning</span>). The semantics
+		of a variable binding are largely determined by the
+		<span class="monoText">⟨expression⟩</span>.
+	</p>
+
+	<p>
+		To type check the variable binding, the interpreter uses the
+		<span class="italicsText">current static environment</span> (the types of
+		preceding bindings) to type check the
+		<span class="monoText">⟨expression⟩</span>. Once the
+		<span class="monoText">⟨expression⟩</span> is type-checked, the interpreter
+		produces a <span class="italicsText">new static environment</span> where the
+		<span class="monoText">⟨variable⟩</span> has the type of the the
+		<span class="monoText">⟨expression⟩</span>.
+	</p>
+
+	<p>
+		To evaluate the variable binding, the interpreter uses the
+		<span class="italicsText">current dynamic environment</span> (the
+		<span class="italicsText">values</span> of the preceding bindings) to
+		evaluate the <span class="monoText">⟨expression⟩</span>. Once the
+		<span class="monoText">⟨expression⟩</span> is evaluated, the interpreter
+		produces a <span class="italicsText">new dynamic environment</span> where
+		the current dynamic environment now includes
+		<span class="monoText">⟨variable⟩</span> with the value of the
+		<span class="monoText">⟨expression⟩</span>'s evaluation.
+	</p>
+
+	<p>
+		What is a <span class="term">value</span>? A
+		<span class="italicsText">value</span> is an expression that cannot be
+		further simplified &mdash; i.e., there is no more work to be done. For
+		example, <span class="monoText">10</span> is a value, but
+		<span class="monoText">5 + 5</span> is not. Both
+		<span class="monoText">10</span> and <span class="monoText">5 + 5</span>,
+		however, are <span class="italicsText">expressions</span>. In ML, all values
+		are expressions, but not all expressions are values. From the facts above,
+		we have different <span class="italicsText">kinds of expressions</span>.
+		These kinds are defined as such.
+	</p>
+
+	<figure class="table">
+		<table class="truth_table heading_center">
+			<thead>
+				<th>Kind of Expression</th>
+				<th>Syntax</th>
+				<th>Type-checking</th>
+				<th>Evaluation</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>integer constant</td>
+					<td>a sequence of digits</td>
+					<td>
+						type <span class="redText">int</span> in any static environment
+					</td>
+					<td>to itself in any dynamic environment (it is a value)</td>
+				</tr>
+				<tr>
+					<td>addition</td>
+					<td>
+						<span class="redText">${a}$ + ${b}$</span> where ${a}$ and ${b}$ are
+						expressions
+					</td>
+					<td>
+						type <span class="redText">int</span> if and only if ${a}$ and ${b}$
+						have type <span class="redText">int</span> in the same static
+						environment; else does not type-check
+					</td>
+					<td>
+						evaluate ${a}$ to ${v}$ and ${b}$ to ${w}$ in the same static
+						environment, where ${v}$ and ${w}$ are values; then produce the sum
+						of ${v}$ and ${w}$
+					</td>
+				</tr>
+				<tr>
+					<td>variables</td>
+					<td>a sequence of letters, underscores, etc.</td>
+					<td>
+						look up the variable in the current static environment and use that
+						type
+					</td>
+					<td>
+						look up the variable in the current dynamic environment and use that
+						type
+					</td>
+				</tr>
+				<tr>
+					<td>conditionals</td>
+					<td>
+						<span class="redText">if ${a}$ then ${b}$ else ${c}$</span> where
+						${a,}$ ${b,}$ and ${c}$ are expressions.
+					</td>
+					<td>
+						type-checks only if (1) ${a}$ has type
+						<span class="monoText">bool</span>, and (2) ${b}$ and ${c}$ have the
+						same type. The type of the whole expression is the type of ${b}$ and
+						${c.}$
+					</td>
+					<td>
+						using the current dynamic environment, evaluate ${a.}$ If the result
+						is <span class="redText">true</span>, the result of ${b}$ is the
+						overall result. If the result is <span class="redText">false</span>,
+						then the result of ${c}$ is the overall result.
+					</td>
+				</tr>
+				<tr>
+					<td>boolean constants</td>
+					<td>
+						either <span class="redText">true</span> or
+						<span class="redText">false</span>
+					</td>
+					<td>
+						type <span class="redText">bool</span> in any static environment.
+					</td>
+					<td>to itself in any dynamic environment (it is a value)</td>
+				</tr>
+				<tr>
+					<td>comparison</td>
+					<td>
+						<span class="redText">${a}$ < ${b}$</span> where ${a}$ and ${b}$ are
+						expressions
+					</td>
+					<td>
+						type <span class="redText">bool</span> if and only if ${a}$ and
+						${b}$ have type <span class="redText">int</span> in the same static
+						environment; else does not type-check
+					</td>
+					<td>
+						in the same dynamic environment, evaluate ${a}$ to ${v}$ and ${b}$
+						to ${w}$ where ${v}$ and ${w}$ are values; produce
+						<span class="redText">true</span> if ${v}$ is less than ${w,}$
+						otherwise <span class="redText">false</span>.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Whenever we learn a new construct in a programming language, there are
+			three things we must seek out and ingrain in memory:
+		</p>
+		<ol>
+			<li>What is the construct's syntax?</li>
+			<li>What is the rule for type-checking the construct?</li>
+			<li>What is the rule for evaluating the construct?</li>
+		</ol>
+	</figure>
+</section>
+
+<section id="variable_immutability">
+	<h2>Variable Immutability</h2>
+	<p>
+		In ML, bindings are
+		<span class="underlineText">immutable</span>. This is in stark contrast to
+		languages like <span class="monoText">Java</span>,
+		<span class="monoText">Python</span>, and
+		<span class="monoText">JavaScript</span>. Once we write:
+	</p>
+
+	<pre class="language-sml"><code>
+		val x = 8+9;
+	</code></pre>
+
+	<p>
+		we create a dynamic environment where <span class="monoText">x</span> maps
+		to <span class="monoText">17</span>. In this new dynamic environment,
+		<span class="monoText">x</span>
+		<span class="underlineText">will always</span> map to
+		<span class="monoText">17</span>. Unlike languages like Java, there is no
+		<span class="italicsText">assignment statement</span> to change what
+		<span class="monoText">x</span> maps to.
+	</p>
+
+	<p>Now, we are free to later write:</p>
+
+	<pre class="language-sml"><code>
+		val x = 20;
+	</code></pre>
+
+	<p>
+		but all this does is create a
+		<span class="italicsText">different dynamic environment</span> where
+		<span class="monoText">x = 20</span> <span class="term">shadows</span>
+		<span class="monoText">x = 8+9</span>.
+	</p>
+</section>
+
+<section id="logical_operators">
+	<h2>Boolean Operators</h2>
+	<p>
+		Like all useful programming languages, ML provides constructs for Boolean
+		expressions:
+	</p>
+	<figure class="table">
+		<table class="truth_table heading_center">
+			<thead>
+				<th>operator</th>
+				<th>semantics</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<span class="monoText"
+							>${e_1}$ <span class="blueText">andalso</span> ${e_2}$</span
+						>
+					</td>
+					<td>
+						The logical AND. Evaluates ${e_2}$ only if ${e_1}$ evaluates to
+						<span class="greenText">true</span>. If both ${e_1}$ and ${e_2}$
+						evaluate to <span class="greenText">true</span>, then the entire
+						expression is <span class="redText">true</span>. Otherwise,
+						<span class="redText">false</span>. Both ${e_1}$ and ${e_2}$ must be
+						of type <span class="boldText">bool</span>.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText"
+							>${e_1}$ <span class="blueText">orelse</span> ${e_2}$</span
+						>
+					</td>
+					<td>
+						The logical OR. Evaluates ${e_2}$ only if ${e_1}$ evaluates to
+						<span class="redText">false</span>. If ${e_1}$ evaluates to
+						<span class="greenText">true</span> or ${e_2}$ evaluates to
+						<span class="greenText">true</span>, then the entire expression
+						evaluates to <span class="greenText">true</span>. If both ${e_1}$
+						and ${e_2}$ evaluate to <span class="redText">false</span>, then the
+						entire expression evaluates to <span class="redText">false</span>.
+						Both ${e_1}$ and ${e_2}$ must be of type
+						<span class="boldText">bool</span>.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText"
+							><span class="blueText">not</span> ${e}$</span
+						>
+					</td>
+					<td>
+						The logical NOT. ${e}$ must be of type
+						<span class="boldText">bool</span>. If ${e}$ is
+						<span class="greenText">true</span>, then
+						<span class="blueText">not ${e}$</span> evaluates to
+						<span class="redText">false</span>. If ${e}$ is
+						<span class="redText">false</span>, then
+						<span class="blueText">not ${e}$</span> evaluates to
+						<span class="greenText">true</span>.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${e_1}$ = ${e_2}$</span></td>
+					<td>
+						The equality operator. Asks the question, "Is ${e_1}$ equal to
+						${e_2}$?"
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${e_1}$ <> ${e_2}$</span></td>
+					<td>
+						Equivalent of ${e_1}$ != ${e_2}$ in other programming languages.
+						Asks the question, "Are ${e_1}$ and ${e_2}$ different?" We can
+						simply write <span class="blueText">NOT (${e_1}$ = ${e_2}$)</span>,
+						but ML provides the <span class="boldText"><></span> operator for us
+						to use (less than or greater than operator).
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText"> >, <, >=, <= </span></td>
+					<td>The usual comparison operators as found in other languages.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">~${n}$</span></td>
+					<td>
+						Where ${n}$ is a numeric type value, the tilde ~ indicates the
+						negative. E.g., ~7 is ${-7.}$
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</section>
+
+<section id="function_bindings">
+	<h2>Function Bindings</h2>
+	<p>
+		To define and use functions in ML, we create
+		<span class="term">function bindings</span>. For those coming from a Python
+		or Java background, functions in ML work much the same way, with a few stark
+		differences: (1) There is no notion of a
+		<span class="italicsText">class</span>; (2) there is no notion of a
+		<span class="monoText">return</span> statement. As an example, consider a
+		function that computes ${x^y}$ iff ${y \geq 0:}$
+	</p>
+
+	<pre class="language-sml"><code>
+		fun pow (x:int, y:int) = (* correct only for y >= 0 *)
+			if y = 0
+				then 1
+			else x * pow(x,y-1)
+	</code></pre>
+
+	<p>The general syntax for a function in ML:</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>fun ${f}$ (${a_1}$ : ${t_1}$, ${\ldots}$, ${a_n}$ : ${t_n}$) =</li>
+			<ul>
+				<li>${e_1}$</li>
+				<li>${\vdots}$</li>
+				<li>${e_n}$</li>
+			</ul>
+		</ul>
+	</figure>
+
+	<p>
+		In the syntax above the definition is prefaced by the keyword
+		<span class="monoText">fun</span>. ${f}$ is the function's name. It takes
+		arguments ${a_1 \ldots a_n}$ of types ${t_1 \ldots t_n}$. The function's
+		body is defined by the expressions ${e_1 \ldots e_n}$.
+	</p>
+
+	<p>
+		<span class="topic">Function Type-checking.</span> To type check a function,
+		the interpreter type-checks the function's body,
+		<span class="monoText">⟨expressions⟩</span>, in a static environment,
+		consisting of (1) all the earlier bindings and (2)
+		<span class="monoText">arg-1</span> mapped to
+		<span class="monoText">type-1</span> ...
+		<span class="monoText">arg-n</span> mapped to
+		<span class="monoText">type-n</span>. Because the static environment also
+		includes <span class="monoText">⟨function-name⟩</span>, the function's body
+		<span class="monoText">⟨expressions⟩</span> can include a call to
+		<span class="monoText">⟨function-name⟩</span> (i.e., a
+		<span class="italicsText">recursive function call</span>).
+	</p>
+
+	<p>
+		<span class="topic">Evaluating Functions.</span> A function is a value; we
+		are merely adding <span class="monoText">⟨function-name⟩</span> to be called
+		later. Thus, <span class="monoText">⟨function-name⟩</span> is included in
+		the dynamic environment in the function body and for subsequent bindings.
+		However, <span class="monoText">⟨function-name⟩</span>
+		<span class="underlineText">is not</span> included in the preceding
+		bindings, so the order in which functions are defined is critical (i.e., the
+		interpreter cannot &#8220;jump forward&#8221; to a function definition later
+		down the program to evaluate the current expression).
+	</p>
+
+	<p>
+		<span class="topic">Function Calls.</span> Function bindings are only useful
+		if we can <span class="italicsText">call</span> them. To do so, we write a
+		<span class="term">function call</span>. The syntax:
+	</p>
+
+	<figure class="math-display">$$ f \space (a_1, \ldots, a_n) $$</figure>
+
+	<p>The parentheses are optional if there is exactly one argument:</p>
+
+	<figure class="math-display">$$ f \space a $$</figure>
+
+	<p>Here is an example of a function call:</p>
+
+	<pre class="language-sml"><code>
+		fun pow (x:int, y:int) = (* correct only for y >= 0 *)
+			if y=0
+				then 1
+			else x * pow(x, y-1)
+
+		fun cube (x:int) =
+			pow(x, 3)
+
+		val ans = cube(4)
+	</code></pre>
+</section>
+
+<section id="recursion">
+	<h2>Recursive Functions</h2>
+	<p>
+		ML is a language that encourages recursion. While there are looping
+		constructs, ML implements them awkwardly. Because recursion is effectively
+		mandatory when using ML, it is important that we are as comfortable with
+		recursion as possible.
+	</p>
+	<p>
+		A <span class="term">recursive</span> function is a function that calls
+		itself. Because the function calls itself, we must always have a
+		<span class="term">base case</span> &mdash; a call to the function that
+		immediately returns a value, ending the line of calls made. The recursive
+		function also requires an <span class="term">inductive case</span> &mdash;
+		all other calls not handled by the base case; the function calls itself with
+		smaller and smaller arguments.
+	</p>
+
+	<h3>Linear Recursion</h3>
+	<p>
+		Here is a simple example: We want a function called
+		<span class="monoText">reverse(L)</span> that takes a list
+		<span class="monoText">L</span> and reverses the order of its elements. For
+		example, given the list <span class="monoText">[0, 1, 2]</span>, return
+		<span class="monoText">[2, 1, 0]</span>.
+	</p>
+	<p>
+		First question: What is the base case? Here, the base case is the empty
+		list, <span class="monoText">[]</span>. Next question: Is the hypothesis
+		true for the base case? I.e., if the argument
+		<span class="monoText">[]</span> is passed, do we get back a reverse of
+		<span class="monoText">[]</span>? Yes, it is. The reverse of
+		<span class="monoText">[]</span> is <span class="monoText">[]</span>. In
+		other words, <span class="monoText">reverse([]) = []</span>.
+	</p>
+	<p>
+		Third question: What is the inductive step? To perform the inductive step,
+		we consider a simple case. Suppose <span class="monoText">L</span> has only
+		one element; <span class="monoText">[0]</span>. Let's say that the head of
+		<span class="monoText">L</span> is <span class="monoText">h</span>, and the
+		tail of <span class="monoText">L</span> is the list
+		<span class="monoText">T</span>. In the case of a single element &mdash;
+		<span class="monoText">[0]</span> &mdash; <span class="monoText">h</span> is
+		<span class="monoText">0</span> and <span class="monoText">T</span> is
+		<span class="monoText">[]</span>. To construct the reverse then, we want to
+		reverse <span class="monoText">T</span> and insert to its end
+		<span class="monoText">h</span>. Thus, for the single element
+		<span class="monoText">[0]</span>, the reverse is
+		<span class="monoText">[0]</span>.
+	</p>
+	<p>
+		Now consider a two-element list, <span class="monoText">[0, 1]</span>. Here,
+		<span class="monoText">h</span> is <span class="monoText">0</span> and
+		<span class="monoText">T</span> is <span class="monoText">[1]</span>. We
+		take the tail of the list, <span class="monoText">[1]</span>, reverse that,
+		<span class="monoText">[1]</span>, and insert
+		<span class="monoText">0</span> &mdash; [1, 0].
+	</p>
+	<p>The function:</p>
+	<pre class="language-sml"><code>
+		fun reverse(L) =
+			if L = nil 
+				then nil
+			else reverse(tl L) @ [hd L]
+
+		val list1 = [0, 1, 2, 3, 4]
+		val list2 = reverse(list1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val reverse = fn : ''a list -> ''a list
+		val list1 = [0,1,2,3,4] : int list
+		val list2 = [4,3,2,1,0] : int list
+	</code></pre>
+	<p>
+		The function above is an example of
+		<span class="term">linear recursion</span>: Each recursive call either (1)
+		results in another recursive call with a smaller argument, or (2) results in
+		the base case. However, we can also perform <span class="italicsText">nonlinear recursion</span>.
+	</p>
+
+	<h3>Nonlinear Recursion</h3>
+	<p>In <span class="term">nonlinear recursion</span>, the recursion involves more than one recursive call.</p>
+</section>
+
+<section id="pairs">
+	<h2>Pairs</h2>
+	<p>
+		As we already know, a good programming language provides ways of building
+		compound data from simpler data. The simplest way of forming compound data
+		in ML is through
+		<span class="term">pairs</span>. To build a pair, we use the following
+		syntax:
+	</p>
+
+	<figure class="math-display">$$ (e_1, e_2) $$</figure>
+
+	<p>
+		When a pair is built, ${e_1}$ is evaluated to ${v_1}$ and ${e_2}$ is
+		evaluated to ${v_2}$. In doing so, the pair, as a whole, is evaluated to
+		${(v_1, v_2)}$, a value. Because a pair is evaluated to a value, a pair can
+		consist of pairs:
+	</p>
+
+	<figure class="math-display">
+		$$ (P_1, P_2) \\ [1em] \darr \\[0.3em] (v_1, v_2) \\ [1em] \darr \\[0.3em]
+		((e_1, e_2) (e_1, e_2)) $$
+	</figure>
+
+	<p>
+		The type of a pair is <span class="monoText">${t_1}$ * ${t_2}$</span> where
+		${t_1}$ is the type of the first part, ${v_1,}$ and ${t_2}$ is type of the
+		second part, ${v_2.}$
+	</p>
+
+	<p>
+		To access the values ${v_1}$ and ${v_2}$ in a pair, we must write a
+		function. The following is a function that accesses and sums the parts of a
+		pair:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun sum_two_pairs (pr1 : int*int, pr2 : int*int) =
+			(#1 pr1) + (#2 pr1) + (#1 pr2) + (#2 pr2)
+	</code></pre>
+
+	<p>
+		Notice how we access the parts with <span class="monoText">#1</span> and
+		<span class="monoText">#2</span>. Here is another function that takes a pair
+		to return an answer with two parts, a quotient, and a remainder:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun div_mod (x : int, y : int) = 
+			(x div y, x mod y)
+	</code></pre>
+
+	<p>Here is another function that sorts a pair:</p>
+
+	<pre class="language-sml"><code>
+		fun sort_pair(pr : int*int) =
+			if (#1 pr) < (#2 pr) 
+				then pr
+			else ((#2 pr), (#1 pr))
+	</code></pre>
+</section>
+
+<section id="tuples">
+	<h2>Tuples &amp; Lists</h2>
+	<p>
+		A pair is really a 2-tuple. ML allows us to have ${n-\text{tuples}.}$ For
+		example, a 3-tuple (a triple):
+	</p>
+
+	<pre class="language-sml"><code>
+		(*
+			a 3-tuple
+			type: int*int*int
+		*)
+		(2, 4, 6)
+	</code></pre>
+
+	<p>
+		<span class="topic">Nesting Tuples.</span> Tuples are of fixed but
+		<span class="term">arbtirary arity</span> &mdash; we can nest tuples however
+		much we would like:
+	</p>
+
+	<pre class="language-sml"><code>
+		(*
+			Below is a 3-tuple containing a 2-tuple
+			Type: int*(int*int)*int
+		*)
+
+		(2, (4, 6), 8) 
+
+		(*
+		Below is a 2-tuple containing a 2-tuple
+		Type: int*(bool*int)
+		*)
+
+		(2, (true, 4))
+	</code></pre>
+
+	<p>
+		<span class="topic">Lists.</span> We can nest pairs as much as we would
+		like, but it can be difficult to determine how many parts are in a pair,
+		since the type determines the amount of data contained in a pair. To get
+		around this difficulty, ML provides <span class="term">lists</span>. A list
+		containing ${n}$ values is initialized with the following syntax:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>[${v_1, v_2, \ldots, v_n}$]</li>
+		</ul>
+	</figure>
+
+	<p>
+		Note that unlike tuples, lists are
+		<span class="term">homogeneous</span> &mdash; a list's members must all be
+		of the same type.
+	</p>
+
+	<p>
+		The <span class="italicsText">empty list</span>,
+		<span class="monoText">[]</span>, is the list with 0 elements. However,
+		while it does not have any elements, it is a value nevertheless, and it
+		evaluates to itself immediately. With the empty list
+		<span class="monoText">[]</span>,
+		<span class="monoText">null</span> evaluates to true. For non-empty lists,
+		<span class="monoText">null</span> evaluates to
+		<span class="monoText">false</span>. Here are some useful operators for
+		lists:
+	</p>
+
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Operator</th>
+				<th>Semantics</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>null</td>
+					<td>
+						evaluates to <span class="redText">true</span> if the list is the
+						empty list []; otherwise <span class="redText">false</span> for
+						non-empty lists
+					</td>
+				</tr>
+				<tr>
+					<td>hd</td>
+					<td>
+						return the first element of the list; i.e., the
+						<span class="boldText">head</span> of the list; if the list is
+						empty, an <span class="boldText">exception</span> is raised
+					</td>
+				</tr>
+				<tr>
+					<td>t1</td>
+					<td>
+						return the list without the first element; i.e., the
+						<span class="boldText">tail</span> of the list; if the list is
+						empty, an exception is raised
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<p>Here are some functions operating on lists:</p>
+
+	<pre class="language-sml"><code>
+		fun sum_list (x_list : int list) =
+			if null x_list
+				then 0
+			else hd(x_list) + sum_list(t1 x_list)
+
+		fun countdown (x : int) =
+			if x=0
+				then []
+			else x :: countdown(x-1)
+
+		fun append (x_list : int list, y_list : int list) =
+			if null x_list
+				then y_list
+			else (hd x_list) :: append(t1 x_list, y_list)
+	</code></pre>
+
+	<p>
+		Functions using lists are almost always recursive because a list has an
+		unknown length. When writing recursive functions for lists, there are two
+		things to determine:
+	</p>
+
+	<ol>
+		<li>The base case: What should the result be for an empty list?</li>
+		<li>
+			The recursive case: How can the answer be expressed in terms of the answer
+			for the rest of the list?
+		</li>
+	</ol>
+
+	<p>
+		Thinking of terms of recursion rather than loops and assignment statements
+		can both simplify a problem considerably, as well as yield a greater
+		understanding of the problem parameters.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">let</span> Expressions.</span> In
+		ML, the <span class="monoText">let</span> expression is what gives us
+		<span class="italicsText">local bindings</span>, and as an expression, we
+		can place it anywhere an expression may be placed. The
+		<span class="monoText">let</span> expression takes the form:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>let ${b_1 \space b_2 \ldots b_n}$ in ${e}$ end</li>
+		</ul>
+	</figure>
+
+	<p>
+		Above: Each ${b}$ is a binding, ${e}$ is an expression, and the symbols
+		<span class="monoText">let</span>, <span class="monoText">in</span>, and
+		<span class="monoText">end</span> are keywords.
+	</p>
+
+	<p>
+		To evaluate a <span class="monoText">let</span> expression, we evaluate each
+		${b}$ using all earlier bindings in evaluating the
+		<span class="monoText">let</span> expression and create a larger environment
+		for the subsequent bindings.
+	</p>
+
+	<p>
+		Recall that every binding in ML has a scope. For the
+		<span class="monoText">let</span> expression, the scope of a binding
+		contained therein is the later bindings in that
+		<span class="monoText">let</span> expression, and the
+		<span class="italicsText">body</span> of the
+		<span class="monoText">let</span> expression &mdash; the expression ${exp.}$
+		The value of the entire <span class="monoText">let</span> expresion is the
+		value of ${e.}$ Accordingly, the type of the entire
+		<span class="monoText">let</span> expression is the type of the value of
+		${e.}$ Here is a simple <span class="monoText">let</span> expression:
+	</p>
+
+	<pre class="language-sml"><code>
+		let val x = 1
+		in
+			(let val x = 2 in x+1 end) + (let val y = x+2 in y+1 end)
+		end
+	</code></pre>
+
+	<p>
+		<span class="monoText">let</span> expressions in ML are extremely handy with
+		functions. For example, we can use a
+		<span class="monoText">let</span> expression to bind a function, since a
+		function is itself a binding. This leads to common design pattern:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Convention.</span> If a
+				<span class="italicsText">helper function</span> is needed by only one
+				other function and is unlikely to be useful elsewhere, we ought to bind
+				it locally to the parent function:
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		For example, here is a function that produces the list
+		<span class="monoText">[1, 2, ..., ${x}$]</span>:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun countUp_from_1 (x:int) =
+			let fun count (from:int, to:int) =
+				if from=to
+					then to :: []
+				else from :: count(from+1, to)
+			in
+				count(1,x)
+			end
+	</code></pre>
+
+	<p>
+		How does the code above work? First, we defined a function called
+		<span class="monoText">countUp_from_1()</span>. This function consumes an
+		<span class="monoText">int</span> type value, stored in the
+		<span class="monoText">int</span> type variable
+		<span class="monoText">x</span>. Inside the body of
+		<span class="monoText">countUp_from_1</span>, we execute the function
+		<span class="monoText">count()</span>. The function
+		<span class="monoText">count</span> is
+		<span class="italicsText">local</span> to the function
+		<span class="monoText">countUp_from_1()</span>. How? Because we defined it
+		through a <span class="monoText">let</span> expression inside the body of
+		<span class="monoText">countUp_from_1</span>.
+	</p>
+
+	<p>
+		Now, <span class="monoText">count()</span> takes two arguments: (1) an
+		<span class="monoText">int</span> type value stored in the
+		<span class="monoText">int</span> type variable
+		<span class="monoText">from</span>, and (2) an
+		<span class="monoText">int</span> type value stored in the
+		<span class="monoText">int</span> type variable
+		<span class="monoText">to</span>. However, given that the function
+		<span class="monoText">countUp_from_1()</span> calls the function
+		<span class="monoText">count()</span> with the arguments
+		<span class="monoText">1</span> and <span class="monoText">x</span>, the
+		variable <span class="monoText">from</span> is bound to the value
+		<span class="monoText">1</span>, and the variable
+		<span class="monoText">to</span> is bound to whatever
+		<span class="monoText">int</span> type value we passed as an argument into
+		<span class="monoText">countUp_from_1()</span>.
+	</p>
+
+	<p>
+		Inside <span class="monoText">count()</span>, we ask several questions.
+		First, <span class="monoText">from=to</span>, which is, Is
+		<span class="monoText">from</span> equal to
+		<span class="monoText">?</span> If it is, then return the singleton list
+		<span class="monoText">[to]</span>. If it not, then ask the second question,
+		<span class="monoText">else</span>. The answer to
+		<span class="monoText">else</span> is always
+		<span class="monoText">true</span>, so we return a list starting with
+		<span class="monoText">from</span> and ending with
+		<span class="monoText">count(from+1, to)</span>. So, for example,
+		<span class="monoText">countUp_from_1(5)</span>, where
+		<span class="monoText">countUp_from_1</span> is ${f}$ and
+		<span class="monoText">count</span> is ${c}$
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${f(5)}$</li>
+			<li>${c(1, 5)}$</li>
+			<li>${[1, c(2, 5)]}$</li>
+			<li>${[1, 2, c(3, 5)]}$</li>
+			<li>${[1, 2, 3, c(4, 5)]}$</li>
+			<li>${[1, 2, 3, 4, c(5, 5)]}$</li>
+			<li>${[1, 2, 3, 4, 5]}$</li>
+		</ul>
+	</figure>
+
+	<p>
+		Although the algorithm works, there is room for optimization. First, notice
+		that <span class="monoText">count()</span>'s first parameter,
+		<span class="monoText">from:int</span>, always has the value
+		<span class="monoText">1</span>. Second, notice that
+		<span class="monoText">count()</span>'s second parameter,
+		<span class="monoText">to:int</span>, is always the value stored in
+		<span class="monoText">countUp_from_1()</span>'s second parameter,
+		<span class="monoText">x</span>. Can we use <span class="monoText">x</span>?
+		Of course! Never forget the core rule of dynamic environments in ML: To
+		evaluate a binding, we use all of the preceding bindings. Accordingly,
+		<span class="monoText">count()</span> is absolutely free to use
+		<span class="monoText">x</span>. Thus, we can write the function more
+		concisely:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun countUp_from_1 (x:int) = 
+			let fun count (from:int) =
+				if from = x
+					then x::[]
+				else from :: count(from+1)
+			in
+				count 1
+			end
+	</code></pre>
+
+	<p>
+		The optimization above demonstrates a common technique in functional
+		programming:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Convention.</span> In defining functions, reuse
+				variables within the function's scope.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		Be aware: The technique above is unique to functional programming languages.
+		Unfortunately, many languages absolutely prohibit such practices. In
+		functional programming &mdash; and programming in general &mdash; local
+		variables should be preferred over
+		<span class="italicsText">global variables</span>. For starts, locals make
+		code easier to read rather than globals. For example, consider the following
+		function that returns the maximum value in a list:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun max (x_list : int list) =
+			if null x_list
+				then 0
+			else if null (t1 x_list) 
+				then hd x_list
+			else if hd x_list > max(t1 x_list)
+				then hd x_list
+			else max(t1 x_list)
+	</code></pre>
+
+	<p>The code above asks 4 different questions:</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<ol>
+				<li>Is <span class="monoText">x_list</span> the empty list?</li>
+				<ul>
+					<li>Yes ${\implies}$ evaluate to <span class="monoText">0</span>.</li>
+					<li>No ${\implies}$ ask the next question.</li>
+				</ul>
+				<li>
+					Is the tail of <span class="monoText">x_list</span> the empty list?
+					(i.e., Is the list a singleton list?)
+				</li>
+				<ul>
+					<li>
+						Yes ${\implies}$ evaluate to the head of
+						<span class="monoText">x_list</span>.
+					</li>
+					<li>No ${\implies}$ ask the next question.</li>
+				</ul>
+				<li>
+					Is the head of <span class="monoText">x_list</span> greater than the
+					maximum of the tail of the list?
+				</li>
+				<ul>
+					<li>
+						Yes ${\implies}$ evaluate to the head of
+						<span class="monoText">x_list</span>
+					</li>
+					<li>No ${\implies}$ ask the next question.</li>
+				</ul>
+				<li><span class="monoText">else</span>.</li>
+				<ul>
+					<li>evaluate to the maximum of the tail of the list.</li>
+				</ul>
+			</ol>
+		</div>
+	</figure>
+
+	<p>
+		What is the problem with this algorithm? The problem is we are calling
+		<span class="monoText">max()</span> twice recursively. This is an example of
+		a common recursive error, the
+		<span class="term">exponential blowup</span> &mdash;
+		<span class="monoText">max()</span> asks for
+		<span class="monoText">max()</span> twice, and in both those
+		<span class="monoText">max()</span> calls,
+		<span class="monoText">max()</span> is asked twice (now 4
+		<span class="monoText">max()</span> calls), and in each of those 4
+		<span class="monoText">max()</span> calls,
+		<span class="monoText">max()</span> is asked twice (now 16
+		<span class="monoText">max()</span> calls), etc. If we passed into
+		<span class="monoText">max()</span> the value of
+		<span class="monoText">countUp_from_1(100)</span>, we would execute
+		${2^{100}}$ calls.
+	</p>
+
+	<p>
+		<span class="monoText">let</span> expressions solve this problem: Compute
+		the <span class="monoText">max</span> of the tail once, store that result in
+		<span class="monoText">tail_max</span>, and use
+		<span class="monoText">tail_max</span> as the comparison:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun max (x_list : int list) =
+			if null x_list
+				then 0
+			else if null (t1 x_list)
+				then hd x_list
+			else
+				let val tail_max = max(t1 x_list)
+				in
+					if hd x_list > tail_max
+						then hd x_list
+					else tail_max 
+				end
+	</code></pre>
+
+	<p>
+		With the code above, we go through the same first two questions, and if they
+		are both <span class="monoText">false</span>, then we go through the
+		<span class="monoText">else</span> question: First, bind the value of the
+		max of the list's tail to the variable
+		<span class="monoText">tail_max</span>. If the head of
+		<span class="monoText">x_list</span> is greater than
+		<span class="monoText">tail_max</span>, evaluate to the head of
+		<span class="monoText">x_list</span>. Otherwise, evaluate to
+		<span class="monoText">tail_max</span>. So, for example, suppose we wrote
+		<span class="monoText">max([1, 2, 3, 4, 5])</span>. Where
+		<span class="monoText">max()</span> is ${M,}$
+		<span class="monoText">hd</span> is ${h}$,
+		<span class="monoText">t1</span> is ${t,}$ ${\ell}$ is
+		<span class="monoText">[1, 2, 3, 4, 5]</span>, and ${v}$ is
+		<span class="monoText">tail_max</span>:
+	</p>
+
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${M(\ell)}$</li>
+			<li>${M([1, 2, 3, 4, 5])}$</li>
+			<li>${h(\ell) > v}$</li>
+			<li>${h(\ell) > M(t(\ell))}$</li>
+			<li>${1 > M([2, 3, 4, 5])}$</li>
+			<li>${1 > (h(\ell) > v)}$</li>
+			<li>${1 > (h(\ell) > M(t(\ell)))}$</li>
+			<li>${1 > (2 > M([3, 4, 5]))}$</li>
+			<li>${1 > (2 > (3 > v))}$</li>
+			<li>${1 > (2 > (3 > M(t(\ell))))}$</li>
+			<li>${1 > (2 > (3 > M[4, 5]))}$</li>
+			<li>${1 > (2 > (3 > (4 > v)))}$</li>
+			<li>${1 > (2 > (3 > (4 > M(t(\ell)))))}$</li>
+			<li>${1 > (2 > (3 > (4 > M([5]))))}$</li>
+			<li>${1 > (2 > (3 > (4 > (5 > v))))}$</li>
+			<li>${1 > (2 > (3 > (4 > (5 > M(t(\ell))))))}$</li>
+			<li>${1 > (2 > (3 > (4 > (5 > M([])))))}$</li>
+			<li>${1 > (2 > (3 > (4 > (5 > 0))))}$</li>
+			<li>${1 > (2 > (3 > (4 > (5))))}$</li>
+			<li>${1 > (2 > (3 > (5)))}$</li>
+			<li>${1 > (2 > (5))}$</li>
+			<li>${1 > (5)}$</li>
+			<li>${5}$</li>
+		</ul>
+	</figure>
+
+	<p>
+		<span class="topic">Options.</span> There is a small problem with the
+		algorithm above. The answer to the first question,
+		<span class="monoText">null x_list</span> is
+		<span class="monoText">0</span>. But this isn't logically correct. The
+		maximum value of an empty list isn't zero, because there are no values in an
+		empty list to compare with in the first place. We should avoid making such
+		illogical statements. So what can we do? We could raise an exception.
+		However, a better way would be to use an
+		<span class="monoText">option</span>. In ML, an
+		<span class="monoText">option</span> is a data type with only one of two
+		values: <span class="monoText">NONE</span> or
+		<span class="monoText">SOME</span>. The
+		<span class="monoText">option</span> value
+		<span class="monoText">NONE</span> represents
+		<span class="italicsText">nothingness</span>, or &#8220;carries
+		nothing.&#8221; The <span class="monoText">option</span> value
+		<span class="monoText">SOME ${e}$</span>, where ${e}$ is an expression,
+		represents <span class="italicsText">existence</span>, or &#8220;carries
+		something.&#8221; More specifically, the value
+		<span class="monoText">SOME ${e}$</span> will evaluate ${e}$ to a value
+		${v,}$ at which point <span class="monoText">SOME ${e}$</span> becomes the
+		option carrying the one and only value ${v.}$
+	</p>
+
+	<p>
+		Like <span class="monoText">null</span>, we can ask whether a value is
+		<span class="monoText">SOME ${e}$</span> or
+		<span class="monoText">NONE</span>. The operator
+		<span class="monoText">isSome</span> evaluates to
+		<span class="monoText">false</span> if its argument is
+		<span class="monoText">NONE</span>. And if we want to access the value
+		carried by a <span class="monoText">SOME</span>, we use the operator
+		<span class="monoText">valOf</span>. Using options, we can rewrite the code
+		above as such:
+	</p>
+
+	<pre class="language-sml"><code>
+		fun max (x_list : int list) =
+			if null x_list
+				then NONE
+			else
+				let val tail_max = max(t1 x_list)
+				in
+					if isSome tail_max andalso valOf tail_max > hd x_list
+						then tail_max
+					else
+						SOME (hd x_list)
+				end
+	</code></pre>
+</section>
+
+<section id="errors">
+	<h2>Errors Generally</h2>
+	<p>
+		Errors in ML fall into three groups: (1)
+		<span class="italicsText">syntax errors</span>, (2)
+		<span class="italicsText">type errors</span>, and (3)
+		<span class="italicsText">runtime errors</span>.
+	</p>
+	<p>
+		<span class="term">Syntax errors</span> are errors caused by writing
+		something incorrectly. Incorrect meaning we have written something in
+		violation of ML's syntax.
+	</p>
+	<p>
+		<span class="term">Type errors</span> are errors caused by failing to pass a
+		type check. These errors occur when we fail to follow the type checking
+		rules; e.g., adding an <span class="monoText">int</span> type variable to a
+		<span class="monoText">bool</span> type variable.
+	</p>
+	<p>
+		<span class="term">Runtime errors</span> are errors that occur during
+		evaluation. This might be because we used an operator incorrectly, or
+		because we wrote a recursive function that
+		<span class="italicsText">bottoms out</span> &mdash; making too many
+		recursive calls such that the program terminates.
+	</p>
+	<p>
+		<span class="topic">Logic errors.</span> Errors that are not caught by ML
+		can be broadly classified as <span class="term">logic errors</span>. Here,
+		we complied with syntax and semantics, so we do not see any syntax, type, or
+		runtime errors, but our program does something outside of our expections.
+		Perhaps it hangs (enters an infinite loop), returns an unexpected value, or
+		returns an expected value but not in the way we intended.
+	</p>
+	<p>
+		The errors above all occur in sequence. In other words, in order of
+		occurrence, we will see syntax errors, then type errors, then runtime errors
+		last. This means that if we see a runtime error, then we did not have a
+		syntax or type error, but if we see a syntax error, we do not know if there
+		is a type or runtime error, at least not yet.
+	</p>
 </section>
 {% endblock %}

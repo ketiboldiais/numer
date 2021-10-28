@@ -1,0 +1,312 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Higher-order functions; first class functions"
+/>
+{% endblock %} {% block title %}
+<title>Functions</title>
+{% endblock %} {% block content %}
+<h1>Functions</h1>
+<section id="intro">
+	<p>
+		<span class="drop">W</span>e now examine functions even more broadly. In
+		languages like ML, functions are <span class="term">first-class</span>. The
+		term <span class="italicsText">first-class functions</span> means that
+		functions in the language can be computed, passed, and stored just like any
+		other value. For example, when functions in a language are first-class, they
+		can be stored in a variable, passed as arguments to functions, our outputted
+		as values from functions.
+	</p>
+	<p>
+		When a language implements functions as first-class, as ML does, we have at
+		our disposal <span class="term">higher-order functions</span>. A
+		higher-order function is simply a function that takes or returns other
+		functions.
+	</p>
+	<p>
+		The notion of using functions as values is a hallmark of
+		<span class="term">functional languages</span>. In fact, functional
+		programming can usually be identified through two principles: (1) The
+		treatment of functions as values; (2) the eschewing of mutability. In our
+		exploration of ML, we've seen the second principle &mdash; abstaining from
+		mutation &mdash; applied over and over again. Once a value is set, it is
+		set. We cannot change it thereafter in ML. The first principle, treating
+		functions as values, is the primary focus of this essay.
+	</p>
+	<p>
+		From the two principles above, functional programming tends towards several
+		common traits: Heavy use, and encouragement, of recursion and recursive data
+		structures; syntax and style close to the mathematical function; the use of
+		<span class="italicsText">lazy evaluation</span> (a topic to be discussed
+		extensively in a later essay).
+	</p>
+</section>
+
+<section id="functions_as_arguments">
+	<h2>Functions are First Class</h2>
+	<p>
+		Our first vantage point for the concept of a first-class function is to see
+		how it can be treated just like any other value. Consider the code below,
+		where functions are placed inside a tuple:
+	</p>
+	<pre class="language-sml"><code>
+		fun double x = 2 * x
+		fun increment x = x + 1
+		fun decrement x = x - 1
+
+		val arithTuple = (double, increment, decrement)
+		val e = (#1 arithTuple) 4
+		val f = (#2 arithTuple) 4
+		val g = (#3 arithTuple) 4
+	</code></pre>
+	<pre class="language-bash"><code>
+		val double = fn : int -> int
+		val increment = fn : int -> int
+		val decrement = fn : int -> int
+		val arithTuple = (fn,fn,fn) : (int -> int) * (int -> int) * (int -> int)
+		val e = 8 : int
+		val f = 5 : int
+		val g = 3 : int
+	</code></pre>
+	<p>
+		Notice how we can place the functions inside a tuple and access those
+		functions just as we would any other value. Here is another view, a
+		higher-order function:
+	</p>
+	<pre class="language-sml"><code>
+		fun double x = 2 * x
+		fun increment x = x + 1
+		fun decrement x = x - 1
+
+		val n = double(increment 4)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val double = fn : int -> int
+		val increment = fn : int -> int
+		val decrement = fn : int -> int
+		val n = 10 : int
+	</code></pre>
+	<p>
+		The value of <span class="monoText">n</span> is the result of evaluating
+		<span class="monoText">increment 4</span>, which is then passed into
+		<span class="monoText">double</span> as an argument.
+	</p>
+</section>
+
+<section id="functions_as_arguments">
+	<h3>Functions as Arguments</h3>
+	<p>
+		In a language with first-class functions, functions can be passed as
+		arguments into other functions. For example, here are two functions, one returns the double of an integer, the other its square:
+	</p>
+	<pre class="language-sml"><code>
+		fun double(x) = 2 * x
+		fun square(x) = x * x
+		val n = 2
+		val n_doubled = double(n)
+		val n_squared = square(n)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val double = fn : int -> int
+		val square = fn : int -> int
+		val n = 2 : int
+		val n_doubled = 4 : int
+		val n_squared = 4 : int
+	</code></pre>
+	<p>Two fairly simple functions. If we wanted to compute the quadruple of an integer or the fourth power:</p>
+	<pre class="language-sml"><code>
+		fun double(x) = 2 * x
+		fun square(x) = x * x
+		val q = 2
+		val r = double(double(q))
+		val s = square(square(q))
+	</code></pre>
+	<pre class="language-bash"><code>
+		val double = fn : int -> int
+		val square = fn : int -> int
+		val q = 2 : int
+		val r = 8 : int
+		val s = 16 : int
+	</code></pre>
+	<p>Works as expected. But it's a little cumbersome. If we wanted to return double fifty times, we'd have to write an awful lot of <span class="monoText">double</span>. The same goes for <span class="monoText">square</span>. Can we do better? Sure we can; write a higher-order function:</p>
+	<pre class="language-sml"><code>
+		fun double(x) = 2 * x
+		fun square(x) = x * x
+		fun apply_n_times(f, n, x) =
+			if n = 0
+				then x
+			else 
+				f (apply_n_times(f, n-1, x))
+
+		val q = apply_n_times(double, 3, 2)
+		val r = apply_n_times(square, 3, 2)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val double = fn : int -> int
+		val square = fn : int -> int
+		val apply_n_times = fn : ('a -> 'a) * int * 'a -> 'a
+		val q = 16 : int
+		val r = 256 : int
+	</code></pre>
+	<p>Some more examples:</p>
+	<pre class="language-sml"><code>
+		(* A function that increments a number n times *)
+		fun increment_n_times (n, x) =
+			if n = 0
+				then x
+			else 1 + increment_n_times(n - 1, x)
+
+		(* 
+		 * A function that doubles a number n times. 
+		 * I.e., (2^n)(x)
+		*)
+		fun double_n_times(n, x) = 
+			if n = 0
+				then x
+			else 2 * double_n_times(n - 1, x)
+
+		(* 
+		 * A function that returns the nth tail of a list 
+		 * e.g., (3, [0, 1, 2, 3]) --> [3]
+		 * 'tail of tail of tail'
+		*)
+		fun nth_tail (n, xs) = 
+			if n = 0
+				then xs
+			else tl (nth_tail(n - 1, xs))
+	</code></pre>
+	<p>
+		The functions above are all
+		<span class="italicsText">first-order functions</span>; functions that do
+		not take functions as input. Furthermore, they are somewhat similar. For
+		starters, they all involve some variable <span class="monoText">n</span>,
+		and decrementing that variable by <span class="monoText">1</span>. Where
+		they vary is with the the second argument's type and what operations are
+		performed.
+	</p>
+	<p>The functions above are a perfect use case for higher-order functions:</p>
+	<pre class="language-sml"><code>
+		fun n_times(f, n, x) = 
+			if n = 0
+				then x
+			else f (n_times(f, n-1, x))
+
+		fun increment x = x + 1
+		fun double x = x + x
+
+		val a = n_times(increment, 4, 5)
+		val b = n_times(double, 4, 5)
+		val c = n_times(tl, 2, [0, 1, 2, 3])
+	</code></pre>
+	<pre class="language-bash"><code>
+		val n_times = fn : ('a -> 'a) * int * 'a -> 'a
+		val increment = fn : int -> int
+		val double = fn : int -> int
+		val a = 9 : int
+		val b = 80 : int
+		val c = [2,3] : int list
+	</code></pre>
+	<p>
+		We can write the code above even more modularly by using the three distinct
+		functions:
+	</p>
+	<pre class="language-sml"><code>
+		fun n_times(f, n, x) = 
+			if n = 0
+				then x
+			else f (n_times(f, n-1, x))
+			
+		fun increment x = x + 1
+
+		fun double x = x + x
+
+		fun increment_n_times (n, x) = 
+			n_times(increment, n, x)
+
+		fun double_n_times (n, x) = 
+			n_times(double, n, x)
+
+		fun nth_tail (n, x) = 
+			n_times(tl, n, x)
+
+		val a = increment_n_times(4, 5)
+		val b = double_n_times(4, 5)
+		val c = nth_tail(2, [0, 1, 2, 3])
+	</code></pre>
+	<pre class="language-bash"><code>
+		val n_times = fn : ('a -> 'a) * int * 'a -> 'a
+		val increment = fn : int -> int
+		val double = fn : int -> int
+		val increment_n_times = fn : int * int -> int
+		val double_n_times = fn : int * int -> int
+		val nth_tail = fn : int * 'a list -> 'a list
+		val a = 9 : int
+		val b = 80 : int
+		val c = [2,3] : int list
+	</code></pre>
+</section>
+
+<section id="polymorphism_functions">
+	<h2>Polymorphic Types: Functions</h2>
+	<p>In the previous demonstration's output, we saw this line:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			val n_times = fn : ('a -> 'a) * int * 'a -> 'a
+		</code></pre>
+	</figure>
+	<p>
+		The function's type,
+		<span class="monoText">('a -> 'a) * int * 'a -> 'a</span>, indicates that
+		the higher-order function <span class="monoText">n_times</span> is of
+		polymorphic type. As a polymorphic type function,
+		<span class="monoText">n_times</span> can be described as a more generic
+		function. However, being a higher-order function does not imply that the
+		function is of polymorphic type, nor does being a polymorphic type function
+		imply that the function is of higher-order. There are first-order functions
+		that are polymorphic, and polymorphic functions that are first-order. In
+		other words, the trait of being higher-order and the trait of being
+		polymorphic are distinct. A function can be one, the other, or both.
+	</p>
+	<p>
+		Why are we hammering this nail so deeply? Because understanding a function's
+		type directly implicates how we use that function. What arguments does the
+		function take? What arguments <span class="italicsText">can</span> the
+		function take? What functions can we pass the function into?
+		<span class="italicsText">Can</span> we pass the function into a function?
+		All these questions affect how we use a given function. And to properly
+		understand function's type, we can't make false assumptions.
+	</p>
+	<p>
+		In the type <span class="monoText">('a -> 'a) * int * 'a -> 'a</span>, the
+		function will work as long as the arguments provided are: (1) a function of
+		type alpha to alpha, (2) an <span class="monoText">int</span>, and (3) an
+		alpha, and the return type is an alpha. We could just as easily written a
+		function of type:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			val n_times = fn : (int -> int) * int * int -> int
+		</code></pre>
+	</figure>
+	<p>
+		But in doing so, our function wouldn't be nearly as general and reusable. In
+		fact, it is the type alpha (<span class="monoText">'a</span>) that allows us
+		to pass functions of differen types like
+		<span class="monoText">int</span> and
+		<span class="monoText">list</span> into the function
+		<span class="monoText">n_times</span> as arguments. Passing those functions
+		into <span class="monoText">n_times</span>, we
+		<span class="italicsText">instantiate</span> the type alpha into the
+		relevant types. For example, passing
+		<span class="monoText">increment</span> into
+		<span class="monoText">n_times</span> as an argument, the type went from
+		<span class="monoText">fn : ('a -> 'a) * int * 'a -> 'a</span> to
+		<span class="monoText">(int * int) * int -> int</span>.
+	</p>
+</section>
+
+<section id="anonymous_functions">
+	<h2>Anonymous Functions</h2>
+	<p></p>
+</section>
+{% endblock %}

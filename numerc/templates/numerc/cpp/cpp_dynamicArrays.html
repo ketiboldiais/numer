@@ -1,0 +1,115 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Dynamic arrays, sets, and sequences." />
+{% endblock %} {% block title %}
+<title>Dynamic Arrays</title>
+{% endblock %} {% block content %}
+
+<h1>Dynamic Arrays</h1>
+<section id="intro">
+	<p>
+		<span class="drop">T</span>he first set of abstract data types we explore
+		are the <span class="term">set</span> and the
+		<span class="term">sequence</span>. Sets and sequences allow us to store
+		${n}$ things. Those things could be strings, integers, floating point
+		values, objects, or even other abstract data types. With sets, storage is
+		simply a collection. However, for some data, we want things to be ordered;
+		in which case we use the sequence.
+	</p>
+</section>
+
+<section id="sequence">
+	<h2>Sequences</h2>
+	<p>
+		The sequence data type consists of two subtypes: (a) a
+		<span class="term">static sequence</span> and (b) a
+		<span class="term">dynamic sequence</span>. The static sequence type is a
+		sequence with a fixed size. I.e., the number of elements in the sequence
+		does not change. The dynamic sequence type is a sequence with a dynamic
+		size; the sequence can grow or shrink by inserting or removing elmeents in
+		the sequence.
+	</p>
+
+	<h3>Static Sequences</h3>
+	<p>
+		Focusing on just the static sequence, what are some operations we might want
+		to include with the interface? We have several:
+		<span class="monoText">.build(x)</span> operator, which creates the sequence
+		<span class="monoText">x</span>;
+		<span class="monoText">.length()</span> operator, which returns the length
+		of the sequence; <span class="monoText">.iterSeq()</span> operator, which
+		iterates through the elements in the sequence;
+		<span class="monoText">.get(i)</span> operator, which returns the element at
+		index <span class="monoText">i.</span> And a
+		<span class="monoText">.set(i, x)</span> operator, which replaces the
+		element at index <span class="monoText">i</span> with the element
+		<span class="monoText">x</span>.
+	</p>
+
+	<p>
+		<span class="topic">Static Arrays.</span>
+		We can implement the static sequence described with a
+		<span class="term">static array</span>. A static array is a data structure
+		that occupies a contiguous and consecutive chunk of memory. Because the
+		static array is a consecutive block of memory, the operations
+		<span class="monoText">.get(i)</span>,
+		<span class="monoText">.set(i, x)</span>, and
+		<span class="monoText">.length()</span> take ${O(1),}$ constant time, to
+		execute.
+	</p>
+	<p>
+		In contrast, <span class="monoText">.build(x)</span> and
+		<span class="monoText">.iterSeq()</span> will take ${O(n),}$ linear time, to
+		execute, since they require processing ${n}$ elements.
+	</p>
+	<p>
+		Additionally, we might also want the operations:
+		<span class="monoText">.getFirst()</span> for returning the first element in
+		the sequence; <span class="monoText">.getLast()</span> for returning the
+		last element in the sequence;
+		<span class="monoText">.setFirst(x)</span> which replaces the first element
+		in the sequence with the element <span class="monoText">x</span>; and
+		<span class="monoText">.setLast(x)</span>, which replaces the last element
+		in the sequence with the element <span class="monoText">x</span>.
+	</p>
+
+	<h3>Dynamic Sequences</h3>
+	<p>
+		Now let's consider the dynamic sequence. For the dynamic sequence, we want
+		all of the operations available to static sequences, a few more: (1)
+		<span class="monoText">insertAt(i, x)</span>, which inserts at index
+		<span class="monoText">i</span> the element <span class="monoText">x</span>;
+		and (2) <span class="monoText">deleteAt(i)</span>, which removes the element
+		at index <span class="monoText">i</span>. Both of these operations change
+		the size of the sequence. In the case of
+		<span class="monoText">.insertAt()</span>, we shift all of the elements
+		after <span class="monoText">i</span> to the right by one. And for
+		<span class="monoText">.deleteAt()</span>, we shift all the elements after
+		<span class="monoText">i</span> to the left by one.
+	</p>
+	<p>
+		We also want a few more operations pertaining to the sequence's endpoints:
+		(1) <span class="monoText">insertFirst(x)</span>, which inserts at index ${i
+		= 0}$ the element <span class="monoText">x</span>;
+		<span class="monoText">deleteFirst()</span> which removes the first element
+		in the sequence; <span class="monoText">insertLast(x)</span> which inserts
+		at the last index the element <span class="monoText">x</span>; and
+		<span class="monoText">deleteLast()</span>, which deletes the last element
+		in the sequence.
+	</p>
+
+	<p>
+		<span class="topic">Linked Lists.</span> We can implement the dynamic
+		sequence type above with a <span class="term">linked list</span>. In a
+		linked list, elements in the sequence are stored in
+		<span class="italicsText">nodes</span>. Each node consists of: (1) the
+		sequence element and (2) a pointer to the next node.
+	</p>
+	<p>
+		With linked lists, there are two points of particular interest: the
+		<span class="italicsText">head</span> of the linked list (the first node in
+		the linked list) and the <span class="italicsText">tail</span> of the list
+		(the last node in the linked list). Importantly, the tail consists of a node
+		whose pointer points to nothing (i.e., a <span class="italicsText">null pointer</span>).
+	</p>
+</section>
+{% endblock %}

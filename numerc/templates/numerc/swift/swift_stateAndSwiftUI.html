@@ -1,7 +1,15 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="State in SwiftUI; Object bindings, environment bindings"
+/>
+{% endblock %} {% block title %}
+<title>Swift State</title>
+{% endblock %} {% block content %}
+<h1>SwiftUI and State</h1>
 <section id="state_and_swiftUI">
 	<p>
-		<span class="topic">SwiftUI and State.</span> Suppose we had a
+		Suppose we had a
 		<span class="monoText">button View</span> inside our
 		<span class="monoText">ContentView</span>:
 	</p>
@@ -165,6 +173,50 @@
 		<span class="monoText">isPresented</span> is what determines whether the
 		alert is visible. If its value is <span class="monoText">true</span>, then
 		the alert is displays, otherwise, the alert is not displayed.
+	</p>
+</section>
+
+<section id="at_state">
+	<h2><span class="monoText">@State</span></h2>
+	<p>
+		Recall that a View is read-only in Swift. This means that when we construct
+		Views, only variables declared with <span class="monoText">let</span> (i.e.,
+		constants) and computed properties (also read-only) should be placed in a
+		View. The exception to this rule is a
+		<span class="term">property wrapper</span>. We have several property
+		wrappers in Swift: <span class="monoText">@State</span>,
+		<span class="monoText">@ObservedObject</span>, and
+		<span class="monoText">@EnvironmentObject</span>. We begin by discussing
+		<span class="monoText">@State</span>.
+	</p>
+	<p>
+		Like other property wrappers, the
+		<span class="monoText">@State</span> variable watches for changes, and upon
+		detecting a change, the View it belongs to is rebuilt. Remember: The View
+		<span class="monoText">struct</span> is constantly built, destroyed, and
+		rebuilt; but the View <span class="monoText">body</span> lives on so long as
+		the program runs. There are, however, certain aspects of
+		<span class="monoText">@State</span> that we must always bear in mind.
+	</p>
+	<p>
+		First, when we create an <span class="monoText">@State</span> variable for a
+		View, we are storing data for that View. That storage is
+		<span class="underlineText">always</span> temporary. If we ever have a need
+		to store data permanently, that data must be stored in the Model.
+	</p>
+	<p>
+		Second, <span class="monoText">@State</span> variables are also
+		<span class="underlineText">always</span> private. In other words, an
+		<span class="monoText">@State</span> variable is something used only for a
+		particular View.
+	</p>
+	<p>
+		How does <span class="monoText">@State</span> work? During compilation, the
+		<span class="monoText">@State</span> variable is replaced with a pointer to
+		some space in the heap. Why a pointer? Two reasons: (1) the View is
+		read-only; (2) The View <span class="monoText">struct</span> is destroyed
+		and rebuilt upon the relevant changes, but the View's
+		<span class="monoText">var body</span> lives on.
 	</p>
 </section>
 {% endblock %}
