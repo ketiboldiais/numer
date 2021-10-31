@@ -4,9 +4,9 @@
 	content="Introduction to object-oriented programming in C++"
 />
 {% endblock %} {% block title %}
-<title>OOP in C++</title>
+<title>Classes in C++</title>
 {% endblock %} {% block content %}
-<h1>OOP</h1>
+<h1>Classes</h1>
 <section id="intro">
 	<p>
 		In this essay, we explore object-oriented programming (OOP) in C++. OOP is
@@ -696,13 +696,8 @@
 			public:
 				template&lt;class T&gt;
 				T abs(T x) {
-					if (x == 0) {
-						return 0;
-					} else if (x < 0) {
-						return -1 * x;
-					} else {
-						return x;
-					}
+					if (x < 0) { return -1 * x; }
+					else { return x; }
 				}
 		};
 		
@@ -755,5 +750,460 @@
 
 <section id="constructors">
 	<h2>Constructors</h2>
+	<p>
+		In the examples above, we initialized the properties of
+		<span class="monoText">Cylinder()</span> with special methods &mdash;
+		getters and setters. Getters and setters, however, should not be the default
+		way we initialize properties. To understand why, let's think more abstractly
+		about what a class does. A class is akin to a factory. It produces objects
+		that have certain properties and can do certain things. When we write:
+	</p>
+	<pre class="language-cpp"><code>
+		Cylinder cindy = Cylinder();
+	</code></pre>
+	<p>
+		we are asking the <span class="monoText">Cylinder</span> factory to give us
+		a cylinder. Does it make sense for that cylinder to have no radius and
+		height? Of course not. Every cylinder has a radius and a height. The same
+		goes for other objects. when we order a
+		<span class="monoText">Cake()</span>, it would be odd for the cake not to
+		have ingredients or volume. It's an <span class="italicsText">object</span>.
+	</p>
+	<p>
+		Of course, there are objects in the world where we order the recipe or
+		instructions, but not the object itself. Those transactions are best modeled
+		with getters and setters. These processes, however, are the exception rather
+		than the rule.
+	</p>
+	<p>
+		Having said that, when we order something from a factory, we want to
+		specifically state the properties our ordered object should have. For
+		example, when we order a <span class="monoText">Cylinder()</span>, we should
+		state what the <span class="monoText">Cylinder()</span>'s radius and height
+		should be. This is especially important because in C++, when we order an
+		object without its properties initialized (using the code we wrote above),
+		the properties have <span class="italicsText">garbage values</span>. It's
+		akin to a factory sending us some random cylinder.
+	</p>
+	<p>
+		So how do we ensure that the factory doesn't send us a random cylinder? By
+		ensuring that the factory forces us to specify what the cylinder's radius
+		and height should be. To do so, we use a
+		<span class="term">constructor</span>. A constructor is a method we write
+		inside a class that is automatically called when we create an instance of
+		that class. I.e., whenever we order a particular object, we must specify
+		what that object's properties are.
+	</p>
+	<p>
+		There are four different types of constructors in C++: (1) the
+		<span class="term">default constructor</span>; (2)
+		<span class="term">non-parameterized constructor</span>; (3)
+		<span class="term">parameterized constructor</span>; and (4)
+		<span class="term">copy constructor</span>. Of these four, the last three
+		are constructors that we write. The default constructor is the constructor
+		provided by the compiler. There are several other constructors, but we will
+		focus on the latter three first. To do so, let's write a new class called
+		<span class="monoText">Cuboid</span>
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+			using namespace std;
+			
+			class Maths {
+				public:
+					template&lt;class T&gt;
+					T abs(T x) {
+						if (x < 0) { return -1 * x; }
+						else { return x; }
+					}
+			};
+			
+			class Cuboid {
+				double length;
+				double width;
+				double height;
+			
+				public:
+					double volume() {
+						return length * width * height;
+					}
+					double surfaceArea() {
+						return 2 * ((length * width) + (width * height) + (height * length));
+					}
+					double lateralSurfaceArea() {
+						return 2 * ((width * height) + (height * length));
+					}
+					// Getters and setters
+					void setLength(double l) {
+						length = Maths().abs(l);
+					}
+					double getLength() {
+						return length;
+					}
+					void setWidth(double w) {
+						width = w;
+					}
+					double getWidth() {
+						return width;
+					}
+					void setHeight(double h) {
+						height = h;
+					}
+					double getHeight() {
+						return height;
+					}
+			};
+			
+			int main() {
+				return 0;
+			}
+	</code></pre>
+
+	<p>
+		Notice how many getters and setters we have. This evidences yet another
+		problem with getters and setters: The more properties we have that must be
+		initialized, the more getters and setters we have to write. Constructors
+		allow us to define our <span class="monoText">Cuboid</span> class more
+		concisely. Before we see how much more concise our code can be, let's first
+		consider what the constructor does.
+	</p>
+	<p>
+		The constructor is just another function (or method to be precise). First,
+		let's consider the
+		<span class="italicsText">non-parameterized constructor</span>. This is a
+		constructor that performs one task: If we call the constructor without
+		passing it any arguments, it creates a new object whose properties are
+		initialized with <span class="italicsText">default values</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Maths {
+			public:
+				template&lt;class T&gt;
+				T abs(T x) {
+					if (x < 0) { return -1 * x; }
+					else { return x; }
+				}
+		};
+		
+		class Cuboid {
+			double length;
+			double width;
+			double height;
+		
+			public:
+				double volume() {
+					return length * width * height;
+				}
+				double surfaceArea() {
+					return 2 * ((length * width) + (width * height) + (height * length));
+				}
+				double lateralSurfaceArea() {
+					return 2 * ((width * height) + (height * length));
+				}
+				// Getters and setters
+				void setLength(double l) {
+					length = Maths().abs(l);
+				}
+				double getLength() {
+					return length;
+				}
+				void setWidth(double w) {
+					width = w;
+				}
+				double getWidth() {
+					return width;
+				}
+				void setHeight(double h) {
+					height = h;
+				}
+				double getHeight() {
+					return height;
+				}
+				// Non-parameterized constructor
+				Cuboid() {
+					length = 1.0;
+					width = 1.0;
+					height = 1.0;
+				}
+		};
+		
+		int main() {
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Now whenever we write <span class="monoText">Cuboid()</span>, we will create
+		a <span class="monoText">Cuboid</span> object whose properties are all
+		initialized to <span class="monoText">1.0</span>. The non-parameterized
+		constructor ensures that we never get back an object whose properties are
+		initialized to garbage values.
+	</p>
+	<p>
+		But what if the user passes an argument? For that case, we write a
+		<span class="italicsText">parameterized constructor</span>. This constructor
+		will take the arguments, and <span class="underlineText">set</span> the
+		properties to those values.
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Maths {
+			public:
+				template&lt;class T&gt;
+				T abs(T x) {
+					if (x < 0) { return -1 * x; }
+					else { return x; }
+				}
+		};
+		
+		class Cuboid {
+			double length;
+			double width;
+			double height;
+		
+			public:
+				double volume() {
+					return length * width * height;
+				}
+				double surfaceArea() {
+					return 2 * ((length * width) + (width * height) + (height * length));
+				}
+				double lateralSurfaceArea() {
+					return 2 * ((width * height) + (height * length));
+				}
+				// Getters and setters
+				void setLength(double l) {
+					length = Maths().abs(l);
+				}
+				double getLength() {
+					return length;
+				}
+				void setWidth(double w) {
+					width = w;
+				}
+				double getWidth() {
+					return width;
+				}
+				void setHeight(double h) {
+					height = h;
+				}
+				double getHeight() {
+					return height;
+				}
+				// Non-parameterized constructor
+				Cuboid() {
+					length = 1.0;
+					width = 1.0;
+					height = 1.0;
+				}
+				// Parameterized constructor
+				Cuboid(double l, double w, double h) {
+					setLength(l);
+					setWidth(w);
+					setHeight(h);
+				}
+		};
+		
+		int main() {
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Notice that with the parameterized constructor, we take the arguments, and
+		use those arguments as arguments to the setters. This has the effect of
+		initializing all of the <span class="monoText">Cuboid</span> object's
+		properties. With the parameterized constructor, we can now clean up our
+		code. The setters are all redundant. We can simply take the arguments passed
+		to the parameterized constructor and assign them directly, rather than
+		passing them into separate functions:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Maths {
+			public:
+				template&lt;class T&gt;
+				T abs(T x) {
+					if (x < 0) { return -1 * x; }
+					else { return x; }
+				}
+		};
+		
+		class Cuboid {
+			double length;
+			double width;
+			double height;
+		
+			public:
+				double volume() {
+					return length * width * height;
+				}
+				double surfaceArea() {
+					return 2 * ((length * width) + (width * height) + (height * length));
+				}
+				double lateralSurfaceArea() {
+					return 2 * ((width * height) + (height * length));
+				}
+				// Getters
+				double getLength() {
+					return length;
+				}
+				double getWidth() {
+					return width;
+				}
+				double getHeight() {
+					return height;
+				}
+				// Non-parameterized constructor
+				Cuboid() {
+					length = 1.0;
+					width = 1.0;
+					height = 1.0;
+				}
+				// Parameterized constructor
+				Cuboid(double l, double w, double h) {
+					length = l;
+					width = w;
+					height = h;
+				}
+		};
+		
+		int main() {
+			return 0;
+		}
+	</code></pre>
+	<p>
+		The non-paramterized constructor is also redundant because we can pass
+		default values to functions:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Maths {
+			public:
+				template&lt;class T&gt;
+				T abs(T x) {
+					if (x < 0) { return -1 * x; }
+					else { return x; }
+				}
+		};
+		
+		class Cuboid {
+			double length;
+			double width;
+			double height;
+		
+			public:
+				// Constructor
+				Cuboid(double l=1.0, double w=1.0, double h=1.0) {
+					length = Maths().abs(l);
+					width = Maths().abs(w);
+					height = Maths().abs(h);
+				}
+				// Methods
+				double volume() {
+					return length * width * height;
+				}
+				double surfaceArea() {
+					return 2 * ((length * width) + (width * height) + (height * length));
+				}
+				double lateralSurfaceArea() {
+					return 2 * ((width * height) + (height * length));
+				}
+				// Getters
+				double getLength() {
+					return length;
+				}
+				double getWidth() {
+					return width;
+				}
+				double getHeight() {
+					return height;
+				}
+		};
+		
+		int main() {
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Finally, a helpful constructor to write alongside the parameterized
+		constructor is a <span class="italicsText">copy constructor</span>. This
+		constructor creates a copy of an existing object:
+
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Maths {
+			public:
+				template&lt;class T&gt;
+				T abs(T x) {
+					if (x < 0) { return -1 * x; }
+					else { return x; }
+				}
+		};
+		
+		class Cuboid {
+			double length;
+			double width;
+			double height;
+		
+			public:
+				// Constructor
+				Cuboid(double l=1.0, double w=1.0, double h=10) {
+					length = Maths().abs(l);
+					width = Maths().abs(w);
+					height = Maths().abs(h);
+				}
+				// Copy Constructor
+				Cuboid(Cuboid &c) {
+					length = c.length;
+					width = c.width;
+					height = c.height;
+				}
+				// Methods
+				double volume() {
+					return length * width * height;
+				}
+				double surfaceArea() {
+					return 2 * ((length * width) + (width * height) + (height * length));
+				}
+				double lateralSurfaceArea() {
+					return 2 * ((width * height) + (height * length));
+				}
+				// Getters
+				double getLength() {
+					return length;
+				}
+				double getWidth() {
+					return width;
+				}
+				double getHeight() {
+					return height;
+				}
+				
+		};
+		
+		int main() {
+			Cuboid c1 = Cuboid(2.0, 3.0, 5.0);
+			Cuboid c2 = Cuboid(c1);
+			cout << c1.volume() << endl;
+			cout << c2.volume() << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		30
+		30
+	</code></pre>
 </section>
+
 {% endblock %}
