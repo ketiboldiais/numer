@@ -1,28 +1,29 @@
-/* Global Variables */
-	/* @font-face {
+
+/* Font Imports */
+	@font-face {
 		font-family: "CMU";
-		src: url("./numerc_fonts/cmu_serif/cmunrm.woff");
+		src: url("./numerc_fonts/cmu_serif/mlmr17.ttf");
 		font-weight: normal;
 		font-style: normal;
 	}
 	@font-face {
 		font-family: "CMU";
-		src: url("./numerc_fonts/cmu_serif/cmunti.woff");
+		src: url("./numerc_fonts/cmu_serif/mlmri12.ttf");
 		font-weight: normal;
 		font-style: italic;
 	}
 	@font-face {
 		font-family: "CMU";
-		src: url("./numerc_fonts/cmu_serif/cmunbx.woff");
+		src: url("./numerc_fonts/cmu_serif/mlmbx12.ttf");
 		font-weight: bold;
 		font-style: normal;
 	}
 	@font-face {
 		font-family: "CMU";
-		src: url("./numerc_fonts/cmu_serif/cmunbi.woff");
+		src: url("./numerc_fonts/cmu_serif/mlmbxi10.ttf");
 		font-weight: bold;
 		font-style: italic;
-	} */
+	}
 	@font-face {
 		font-family: "Inconsolata";
 		src: url("./numerc_fonts/inconsolata/inconsolata_regular.ttf");
@@ -44,40 +45,42 @@
 		-webkit-font-smoothing: antialiased;
 	}
 	@font-face {
-		font-family: "MS";
-		src: url("./numerc_fonts/inconsolata/ms_sans_serif.woff");
-		font-weight: normal;
-		font-style: normal;
+		font-family: "Fira";
+		src: url("./numerc_fonts/inconsolata/FiraCode-Regular.woff");
 	}
-	@font-face {
-		font-family: "MS";
-		src: url("./numerc_fonts/inconsolata/ms_sans_serif_bold.woff");
-		font-weight: bold;
-		font-style: normal;
-	}
+	/* @supports (font-size-adjust: 1) {
+    article {
+        font-size-adjust: 0.5;
+    }
+	} */
+/* Colors & Fonts */
 	:root {
-		/* colors */
-		--page: #fffffe;
-		--darkRed: #ea3c4dbc; 
-		--scarlet: #a00000;
-		--lightRed: #ff949f; 
-		--darkGreen: #6e9841;
-		--darkBlue: #0b98bb;
-		--indigo: #7d60c8ed;
-		--lightGrey: rgb(168, 168, 168);
-		--textColor: rgb(42, 42, 42);
-		--blackBG: #e4e4e4;
-		--sky: rgb(246, 250, 252);
+	--page: #ffffff;
+	--darkRed: #ea3c4dbc; 
+	--scarlet: #a00000; 
+	--lightRed: #ff949f; 
+	--darkGreen: #679436;
+	--darkBlue: #0077B6;
+	--lightBlue: #ffffff;
+	--mediumBlue: #9eddf4;
+	--indigo: #7d60c8ed;
+	--lightGrey: rgb(164, 164, 164);
+	--textColor: rgb(42, 42, 42);
+	--blackBG: #EFF2EF;
+	--sky: rgb(246, 250, 252);
+	--gold: #D4AF37;
 
-		/* system fonts */
-		--serif: "Hoefler Text", "Palatino", "Apple Garamond", "New York", "Iowan Old Style", "Baskerville", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
+	--serif: "CMU", "Hoefler Text", "Palatino", "Apple Garamond", "New York", "Iowan Old Style", "Baskerville", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
 
-		--mono: "Inconsolata", "Menlo", "Monaco", "Consolas", "monospace",  "Liberation Mono", "Lucida Console"; 
+	--mono: "Inconsolata", "Menlo", "Monaco", "Consolas", "monospace",  "Liberation Mono", "Lucida Console"; 
 
-		--sansSerif: "avenir", "-apple-system", "BlinkMacSystemFont", "avenir next",  "segoe ui", "helvetica neue", "helvetica", "Ubuntu", "roboto", "noto", "arial", "sans-serif"; 
+	--sansSerif: "avenir", "-apple-system", "BlinkMacSystemFont", "avenir next",  "segoe ui", "helvetica neue", "helvetica", "Ubuntu", "roboto", "noto", "arial", "sans-serif"; 
 	}
 /* global styles */
-	* {box-sizing: border-box;}
+	* {
+		box-sizing: border-box;
+		text-rendering: optimizeSpeed;
+	}
 	body {
 		font-family: var(--serif);
 		color: var(--textColor);
@@ -114,8 +117,9 @@
 	}
 	section {
 		margin: 0; 
-		padding: 0.5em 2em;
-		padding-right: 35%;
+		margin-top: 2%;
+		padding: 0.5em 6em;
+		padding-right: 45%;
 	}
 	/* Footer */
 		footer {padding: 0.5em;}
@@ -126,19 +130,37 @@
 			text-align: center;
 			font-size: 0.95rem;
 		}
+/* Table of Contents -- Index Page */
 	ul.toc {
-		list-style: upper-roman;
-		margin: 0.5em;
+		list-style: none;
+		counter-reset: volume-number;
+		font-family: "Linux Biolinum";
+		padding: 2em;
+		margin: 0 1.5em;
+	}
+	ul.toc li {
+		counter-increment: volume-number; 
+	}
+	ul.toc li::marker {
+		content: "Vol. " counter(volume-number);
 	}
 	ul.toc ul {
-		list-style:decimal;
+		list-style-type: none;
+		counter-reset: section-number;
+		margin: 0;
+		padding: 0;
 	}
-	ul.toc li::marker {font-size: 0.8rem;}
+	ul.toc ul li {
+		font-size: 0.85rem;
+		counter-increment: section-number;
+	}
+	ul.toc ul li::marker {
+		content: "§ " counter(section-number);
+	}
 /* Nav Bar */
 	html {
 		scroll-behavior: smooth;
 	}
-
 	main > nav {
 		padding: 0;
 		margin-top: 0;
@@ -149,42 +171,40 @@
 		overflow-y: auto;
 		background: var(--sky);
 	}
-	
-
+	nav.section-nav > h6 {margin: 5%;}
 	nav.section-nav > h6 > a {
 		font-family: var(--sansSerif);
 		font-size: 1.7rem;
 	}
-
 	main > nav ul {
-		margin: 0 1rem;
-		padding: 0;
+		margin: 0 0.7rem;
+		padding: 0 0.5em;
 		list-style-type: none;
 	}
-
 	main > nav ul li {
-		font-size: 0.95rem;
-		font-family: "Linux Biolinum";
+		font-size: 0.9rem;
+		padding: 0;
+		font-family: var(--sansSerif);
+		font-weight: bold;
 	}
-
-	.section-nav li.active > a {
-		font-weight: 500;
+	main > nav ul li ul li {
+		font-size: 0.85rem;
+		font-weight: normal;
 	}
-
+	.section-nav {
+		padding: 0.3em;
+	}
 	.section-nav a {
 		text-decoration: none;
+		padding: 0.5em;
 		display: block;
-		padding: 0.2em;
-		color: rgb(39, 39, 39);
+		color: rgb(56, 56, 56);
 	}
-
-
 	.section-nav a:hover,
 	.section-nav a:focus {
-		background-color: #ffffff;
-		color: rgb(0, 0, 0);
+		background-color: var(--lightBlue);
 	}
-	
+/* Nav Button */
 	div.nav {
 		margin: 0 0.4rem;
 		padding: 0.4rem;
@@ -197,21 +217,17 @@
 		justify-content: end;
 		z-index: 1;
 	}
-	div.nav p {
-		padding: 0;
-		margin: 1% 0;
-		font-size: 0.8rem;
-		text-align: center;
-		font-family: "Linux Biolinum";
-	}
 	div.nav a {
+		font-family: var(--sansSerif);
+		font-size: 0.7rem;
+		margin: 1%;
 		padding: 0.3em;
 		text-decoration: none;
 		border-radius: 0.25rem;
-		background: var(--page);
-		box-shadow: 0.063rem 0.063rem 0.188rem #929292, -0.063rem -0.063rem 0.188rem #e4e4e4;
+		background: rgba(255, 255, 255, 0.793);
+		box-shadow: 1px 1px 2px #c2c2c2, -1px -1px 2px #e4e4e4;
 		text-decoration: none;
-		color: var(--textColor);
+		color: var(--gold);
 		transition: color 1s;
 		display: inline-block;
 	}
@@ -245,41 +261,59 @@
 /* Margin Notes */
 	.sidenote,
 	.marginnote {
-		padding: 0.2em;
+		padding: 2em 5em;
 		float: right;
 		clear: right;
-		margin-right: -40%;
-		width: 35%;
-		margin-top: 0.3rem;
-		margin-bottom: 0;
-		font-size: 0.8rem;
-		line-height: 1.3;
+    margin-right: -75%;
+    width: 80%;
+    margin-top: 0.3rem;
+    margin-bottom: 0;
+		font-size: 0.85rem;
+		line-height: 1.2;
 		vertical-align: baseline;
 		position: relative;
-		color: rgb(50, 135, 168);
+		color: rgb(45, 146, 185);
 	}
-
 	.sidenote-number {
-			counter-increment: sidenote-counter;
+		counter-increment: sidenote-counter;
 	}
-
 	.sidenote-number:after,
 	.sidenote:before {
-			position: relative;
-			vertical-align: baseline;
+		position: relative;
+		vertical-align: baseline;
 	}
-
 	.sidenote-number:after {
-			content: counter(sidenote-counter);
-			font-size: 0.7rem;
-			top: -0.5rem;
-			left: 0.1rem;
+		content: counter(sidenote-counter);
+		font-size: 0.7rem;
+		top: -0.5rem;
+		left: 0.1rem;
 	}
-
 	.sidenote:before {
-			content: counter(sidenote-counter) " ";
-			font-size: 0.7rem;
-			top: -0.5rem;
+		content: counter(sidenote-counter) " ";
+		font-size: 0.7rem;
+		top: -0.5rem;
+	}
+	input.margin-toggle {display: none;}
+	label.sidenote-number {
+		display: inline-block;
+		max-height: 2rem; /*should be less than or equal to paragraph line-height*/
+	}
+	label.margin-toggle:not(.sidenote-number) {
+		color: var(--darkBlue);
+		display: none;
+	}
+	.iframe-wrapper {
+		position: relative;
+		padding-bottom: 56.25%; /* 16:9 */
+		padding-top: 25px;
+		height: 0;
+	}
+	.iframe-wrapper iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 	}
 /* Figure element styling */
 	figure {
@@ -291,7 +325,9 @@
 	}
 	div.compare figure {display: block;}
 	figcaption {
-		font-size: 0.7rem;
+		font-size: 0.8rem;
+		width: 50%;
+		margin-top: 2%;
 		font-family: var(--serif);
 		text-align: center;
 	}
@@ -310,6 +346,7 @@
 	}
 	.math-display > div {margin: 0; padding: 0; width: fit-content;}
 	.math-display > div > p {
+		width: 100%;
 		font-size: 0.9rem;
 		padding: 0; 
 		margin: 0; 
@@ -342,33 +379,37 @@
 /* Heading styles */
 	h1,h2,h3,h4,h5,h6,p.h7,p.h8,p.h9,p.h10,p.subheading,p.warning-heading {
 		font-family: "Linux Biolinum";
-		margin: 0;
-		line-height: 1.1;
-		margin-top: 1.5rem;
-		margin-bottom: -0.6rem;
 		display: block;
-		padding: 0 0 0.5em 0;
 	}
 	h1 {
-		font-size: 2.5rem;
-		border-bottom: none;
+		font-size: 2.5em;
+    line-height: calc(1ex / 0.42);
+    margin: calc(1ex / 0.42) 0;
 		text-align: center;
-		line-height: 1.1;
 		color: var(--textColor);
-		margin: 1rem;
 	}
 	h2 {
-		font-size: 1.5rem;
-		padding: 0.2em 0;
-		margin: 0.1em 0;
+		font-size: 2em;
+    line-height: calc(1ex / 0.42);
+    margin: calc(1ex / 0.42) 0;
+		margin-bottom: -0.4em;
 		text-align: left;
 		border-bottom: thin solid var(--scarlet);
 		color: var(--scarlet);
 	}
 	h3 {
-		font-size: 1.2rem; 
+		font-size: 1.75em;
+    line-height: calc(1ex / 0.38);
+    margin: calc(1ex / 0.38) 0;
+		margin-bottom: -0.4em;
 	}
-	h4 {font-size: 1rem;}
+	h4 {
+		font-size: 1.5em;
+    line-height: calc(1ex / 0.37);
+    margin: calc(1ex / 0.37) 0;
+		margin-bottom: -0.4em;
+		font-size: 1rem;
+	}
 	h5 {font-size: 0.95rem;}
 	h6 {
 		font-size: 0.9rem; 
@@ -422,23 +463,29 @@
 	}
 /* Paragraph styles */
 	p {
-		margin: 0;
-		padding: 0.6em 0; 
 		text-align: left;
-		line-height: 1.5;
-		font-size: 0.95rem;
 	}
-	/* Drop cap */
-		span.drop {
-			color: #903;
-			float: left;
-			font-family: Georgia;
-			font-size: 75px;
-			line-height: 60px;
-			padding-top: 4px;
-			padding-right: 8px;
-			padding-left: 3px;
-		}
+	section > p {
+		line-height: calc(1ex / 0.32);
+		margin: calc(1ex / 0.32) 0;
+		font-size: 1rem;
+		letter-spacing: .02em;
+
+		/* 60 to 70 characters per line */
+		width: 70ch;
+    max-width: 100%;
+	}
+/* Drop cap */
+	span.drop {
+		color: var(--scarlet);
+		float: left;
+		font-family: Georgia;
+		font-size: 75px;
+		line-height: 60px;
+		padding-top: 4px;
+		padding-right: 8px;
+		padding-left: 3px;
+	}
 /* Tool Tip */
 	article .tooltip {
 		position:relative;
@@ -518,11 +565,16 @@
 	}
 /* List styles */
 	li {
-		font-size: 0.9rem; 
-		line-height: 1.2; 
-		margin: 0.8em 0;
+		font-size: 0.95rem; 
+		padding:0.5em;
+		line-height: 1.4;
 	}
-	ul>li::marker {font-size: 0.8em;}
+	ol,ul {
+		margin: 0;
+		padding: 0.3em;
+		padding-left: 2em;
+	}
+	ul>li::marker {font-size: 0.9rem;}
 	ol > ol {list-style-type:lower-latin;}
 	figure.math-display>div>ul.larg {
 		list-style-type: none; 
@@ -553,56 +605,58 @@
 		content: "where  "; 
 		font-size: 1em;
 	}
+	
 	/* Special list for code general syntax */
-	ul.syntax {
-		margin: 0.5em;
-		padding:0;
-	}
-	ul.syntax li {
-		list-style-type: none;
-		font-family: var(--mono);
-	}
+		ul.syntax {
+			margin: 0.5em;
+			padding:0;
+		}
+		ul.syntax li {
+			list-style-type: none;
+			font-family: var(--mono);
+		}
 	/* Section TOC styles */
-	div.toc {
-		width: -moz-fit-content;
-		width: fit-content;
-		margin: 0.9rem 0;
-		padding: 0 1em;
-	}
-	div.toc h3 {
-		font-variant: small-caps;
-		font-weight: normal;
-		margin: 0.3rem 0;
-		margin-left: -0.8em;
-		margin-top: 0.5rem;
-		padding: 0.2em 0;
-		width: fit-content;
-	}
-	div.toc > ol {
-		padding: 0.6em;
-		list-style-type: upper-roman;
-		margin: 0;
-		margin-left: 1.2rem;
-		margin-right: 0.5rem;
-		padding-right: 0;
-		padding-top: 0;
-		width: fit-content;
-	}
-	div.toc li::marker {font-size: 0.9rem}
-	figure {
-    counter-reset: list;
-	}
-	ol.numd > li {
-		list-style: none;
-		position: relative;
-	}
-	ol.numd > li:before {
-			counter-increment: list;
-			content: "(" counter(list, decimal) ") ";
-			position: absolute;
-			left: -2em;
-			font-size: 0.85rem;
-	}
+		div.toc h3 {
+			font-variant: small-caps;
+			font-weight: normal;
+			margin: 0.3rem 0;
+			margin-left: -0.8em;
+			margin-top: 0.5rem;
+			padding: 0.2em 0;
+			width: fit-content;
+		}
+		div.toc {
+			width: -moz-fit-content;
+			width: fit-content;
+			margin: 0.9rem 0;
+			padding: 0 1em;
+		}
+		
+		div.toc > ol {
+			padding: 0.6em;
+			list-style-type: upper-roman;
+			margin: 0;
+			margin-left: 1.2rem;
+			margin-right: 0.5rem;
+			padding-right: 0;
+			padding-top: 0;
+			width: fit-content;
+		}
+		div.toc li::marker {font-size: 0.9rem}
+	/* Counter Reset for Figures */
+		figure { counter-reset: list; }
+	/* numbered list */
+		ol.numd > li {
+			list-style: none;
+			position: relative;
+		}
+		ol.numd > li:before {
+				counter-increment: list;
+				content: "(" counter(list, decimal) ") ";
+				position: absolute;
+				left: -2em;
+				font-size: 0.85rem;
+		}
 /* Text styles */
 	.redText {color: var(--darkRed);}
 	.greenText {color: var(--darkGreen);}
@@ -619,8 +673,9 @@
 		font-style: italic;
 	}
 	.monoText {
-		font-family: var(--mono); 
-		font-size: 0.95em; 
+		font-family: "Fira"; 
+		font-size: 0.8em; 
+		margin: 0 2px;
 		font-style: normal; 
 		white-space: pre;
 	}
@@ -827,7 +882,7 @@
 		hyphens: none;
 	}
 	pre {
-		margin: 1px 10%;
+		margin: 1px 5%;
 		padding: 0.5rem 0.5rem;
 		overflow: auto;
 		border-radius: 0.2em;
@@ -839,6 +894,10 @@
 		/* cursor: pointer; */
 	}
 	div.compare > div > pre.language-pseudo {width: fit-content; border: none;}
+	code[class*="language-"]>.token.comment {
+		font-family: "Fira";
+		font-size: 0.7rem;
+	}
 /* Language - Pseudo */
 	pre[class*="language-pseudo"] {
 		padding: 0.2em 0.4em;
@@ -1697,7 +1756,7 @@
 
 	:not(pre) > code[class*="language-sml"],
 	pre[class*="language-sml"] {
-		background: rgb(49, 38, 51);
+		background: rgb(42, 31, 44);
 	}
 
 	code[class*="language-sml"] > .token.comment,
@@ -1706,7 +1765,7 @@
 	code[class*="language-sml"] > .token.prolog,
 	code[class*="language-sml"] > .token.doctype,
 	code[class*="language-sml"] > .token.cdata {
-		color: rgb(148, 118, 142);
+		color: rgb(196, 166, 190);
 	}
 
 	code[class*="language-sml"] > .token.punctuation {
@@ -2031,30 +2090,20 @@
 	}
 
 /* ! Media Queries */
-	/* Font Media Queries */
-	html {
-		font-size: 14px;
-	}
-	@media (min-width: 640px) and (max-width: 1439px) {
-		html {
-			font-size: calc(14px + (23 - 14) * (100vw - 640px) / (1439 - 640));
-		}
-	}
-	@media (min-width: 1440px) {
-		html {
-			font-size: 1.05vw;
-		}
-		section {
-			padding-left: 5%;
-			padding-right: 45%;
-		}
-	}
 
-	@media (max-width: 850px) {
+	@media (max-width: 600px) { html {font-size: 11px;} }
+	@media (max-width: 800px) { html {font-size: 11px;} }
+	@media (max-width: 1180px) { html {font-size: 11px;} }
+	@media (max-width: 1300px) { html {font-size: 12px;} }
+	@media (max-width: 1750px) { html {font-size: 13px;} }
+	@media (max-width: 1900px) { html {font-size: 14px;} }
+	@media (max-width: 2100px) { html {font-size: 15px;} }
+	@media (max-width: 2400px) { html {font-size: 16px;} }
+
+
+	@media (max-width: 1100px) {
 		nav {display: none;}
-		main {
-			display: block;
-		}
+		main { display: block; }
 		section {padding: 1em 15vw;}
     .sidenote,
     .marginnote {
@@ -2065,6 +2114,30 @@
         width: 100%;
         margin: 1em 0;
         position: relative;
+    }
+		label.margin-toggle:not(.sidenote-number) {
+        display: inline;
+    }
+
+    .sidenote,
+    .marginnote {
+        display: none;
+    }
+
+    .margin-toggle:checked + .sidenote,
+    .margin-toggle:checked + .marginnote {
+        display: block;
+        float: left;
+        left: 1rem;
+        clear: both;
+        width: 95%;
+        margin: 1rem 2.5%;
+        vertical-align: baseline;
+        position: relative;
+    }
+
+    label {
+        cursor: pointer;
     }
 		article .tooltip:before {
 			width: 12rem;
@@ -2080,3 +2153,4 @@
 		section {padding: 1em 8vw}
 		html {font-size: 3.5vw;}
 	}
+	

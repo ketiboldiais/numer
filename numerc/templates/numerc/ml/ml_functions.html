@@ -97,7 +97,8 @@
 	<h3>Functions as Arguments</h3>
 	<p>
 		In a language with first-class functions, functions can be passed as
-		arguments into other functions. For example, here are two functions, one returns the double of an integer, the other its square:
+		arguments into other functions. For example, here are two functions, one
+		returns the double of an integer, the other its square:
 	</p>
 	<pre class="language-sml"><code>
 		fun double(x) = 2 * x
@@ -113,7 +114,10 @@
 		val n_doubled = 4 : int
 		val n_squared = 4 : int
 	</code></pre>
-	<p>Two fairly simple functions. If we wanted to compute the quadruple of an integer or the fourth power:</p>
+	<p>
+		Two fairly simple functions. If we wanted to compute the quadruple of an
+		integer or the fourth power:
+	</p>
 	<pre class="language-sml"><code>
 		fun double(x) = 2 * x
 		fun square(x) = x * x
@@ -128,7 +132,13 @@
 		val r = 8 : int
 		val s = 16 : int
 	</code></pre>
-	<p>Works as expected. But it's a little cumbersome. If we wanted to return double fifty times, we'd have to write an awful lot of <span class="monoText">double</span>. The same goes for <span class="monoText">square</span>. Can we do better? Sure we can; write a higher-order function:</p>
+	<p>
+		Works as expected. But it's a little cumbersome. If we wanted to return
+		double fifty times, we'd have to write an awful lot of
+		<span class="monoText">double</span>. The same goes for
+		<span class="monoText">square</span>. Can we do better? Sure we can; write a
+		higher-order function:
+	</p>
 	<pre class="language-sml"><code>
 		fun double(x) = 2 * x
 		fun square(x) = x * x
@@ -307,6 +317,1105 @@
 
 <section id="anonymous_functions">
 	<h2>Anonymous Functions</h2>
-	<p></p>
+	<p>
+		Suppose we have a function that squares a number ${n}$ times. We could write
+		the function as the following:
+	</p>
+	<pre class="language-sml"><code>
+		fun apply_n_times(f, n, x) =
+			if n = 0
+				then x
+			else
+				f (apply_n_times(f, n-1, x))
+
+		fun square(x) = x * x
+
+		val p = 2
+		val q = apply_n_times(square, 2, p)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val apply_n_times = fn : ('a -> 'a) * int * 'a -> 'a
+		val square = fn : int -> int
+		val p = 2 : int
+		val q = 16 : int
+	</code></pre>
+	<p>
+		The function above works fine, but what if we want to make
+		<span class="monoText">square</span> even more general? In other words, what
+		if we wanted a function called <span class="monoText">square_n_times</span>?
+		We could write the following:
+	</p>
+	<pre class="language-sml"><code>
+		fun apply_n_times(f, n, x) =
+			if n = 0
+				then x
+			else
+				f (apply_n_times(f, n-1, x))
+
+		fun square(x) = x * x
+
+		fun square_n_times(n, x) = apply_n_times(square, n, x)
+
+		val p = 2
+		val q = square_n_times(2, p)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val apply_n_times = fn : ('a -> 'a) * int * 'a -> 'a
+		val square = fn : int -> int
+		val square_n_times = fn : int * int -> int
+		val p = 2 : int
+		val q = 16 : int
+	</code></pre>
+	<p>
+		The approach above works, but <span class="monoText">square</span> and
+		<span class="monoText">square_n_times</span> seem a bit redundant. Why
+		bother having <span class="monoText">square</span> when we could just call
+		<span class="monoText">square_n_times</span> and pass it the argument
+		<span class="monoText">1</span>? I.e., &#8220;square the number once&#8221;.
+		It seems like we can't get around this because we need to pass
+		<span class="monoText">square</span> as an argument. Fortunately, we can
+		overcome this hurdle with the following:
+	</p>
+	<pre class="language-sml"><code>
+		fun apply_n_times(f, n, x) =
+			if n = 0
+				then x
+			else
+				f (apply_n_times(f, n-1, x))
+		
+		fun square_n_times(n, x) = 
+			apply_n_times((fn (x) => x * x), n, x)
+		
+		val a = square_n_times(1, 3)
+		val b = square_n_times(2, 3)
+		val c = square_n_times(3, 3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val apply_n_times = fn : ('a -> 'a) * int * 'a -> 'a
+		val square = fn : int -> int
+		val square_n_times = fn : int * int -> int
+		val a = 9 : int
+		val b = 81 : int
+		val c = 6561 : int
+	</code></pre>
+	<p>
+		We've gotten rid of the <span class="monoText">square</span> function, in
+		favor of a more general function,
+		<span class="monoText">square_n_times</span>, which squares a number ${n}$
+		times. Thus, <span class="monoText">square_n_times(1, 3)</span> squares
+		${3}$ once, i.e., ${3^2 = 81.}$
+		<span class="monoText">square_n_times(2, 3)</span>
+		squares ${3}$ twice, i.e., ${(3^2)^2 = 3^4 = 81.}$ And
+		<span class="monoText">square_n_times(3, 3)</span> squares ${3}$ thrice,
+		i.e., ${((3^2)^2)^2 = 3^8 = 6561.}$ Now notice how we did it. Instead of
+		passing the function <span class="monoText">square</span> into the
+		higher-order function <span class="monoText">apply_n_times</span>, we
+		instead passed this:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>fn (x) => x * x</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		This is a special expression called an
+		<span class="term">anonymous function</span> &mdash; a function without a
+		name. This is <span class="underlineText">not</span> a function
+		<span class="italicsText">binding</span>. Function bindings cannot be passed
+		as arguments to a function, since arguments to functions must
+		<span class="underlineText">always</span> be expressions. The anonymous
+		function is just an expression, an
+		<span class="italicsText">argument pattern</span>.
+	</p>
+	<p>
+		Anonymous functions are ideal when we want to pass a function as an argument
+		to another function, but neither need nor want to define the function
+		argument separately. There are, however, limitations. If the function
+		argument is a recursive function, then the function must be defined with a
+		binding. This is a perfectly reasonable limitation; anonymous functions have
+		no name!
+	</p>
 </section>
+
+<section id="map_filter">
+	<h2>Mapping and Filtering</h2>
+	<p>
+		We now look at two higher-order functions called
+		<span class="monoText">map</span> and <span class="monoText">filter</span>.
+		It may seem strange to devote an entirely separate section for these
+		functions, but there's a reason for this special treatment.
+		<span class="monoText">map</span> and
+		<span class="monoText">filter</span> are functions found in numerous
+		languages, whether they're provided natively or via a library. They are
+		ubiquitous with modern programming; if there was a hall of fame for the most
+		important operations in computing, the operations behind
+		<span class="monoText">map</span> and
+		<span class="monoText">filter</span> would certainly be found.
+	</p>
+	<h3>Map</h3>
+	<p>
+		Suppose we have a list of numbers: ${\lang 1, 2, 3, 4 \rang.}$ For each of
+		the elements in this list, we want to apply some operation, resulting in a
+		new list, with the operation applied. In other words, we want to take this
+		list, pass it as an argument into a function, and get back a new list. Let's
+		say the function is ${f(\ell) = 2\ell.}$ We pass the list ${\lang 1, 2, 3, 4
+		\rang}$ into the function ${f}$, and get back the list ${\lang 2, 4, 6, 8
+		\rang.}$ This operation is called a <span class="term">mapping</span>, and
+		the function applied is often named <span class="monoText">map</span>.
+	</p>
+	<p>
+		In ML, writing the <span class="monoText">map</span> function is very
+		straightforward:
+	</p>
+	<pre class="language-sml"><code>
+		fun map(f, xs) =
+			case xs of
+					[] => []
+				| x::xs' => (f x)::map(f, xs')
+	</code></pre>
+	<p>
+		The function <span class="monoText">map</span> is a higher-order recursive
+		function that takes two arguments: a function
+		<span class="monoText">f</span>, and a list
+		<span class="monoText">xs</span>. Inside the body of
+		<span class="monoText">map</span>, we evaluate a case expression. If
+		<span class="monoText">xs</span> is the empty list, return the empty list.
+		Otherwise, if <span class="monoText">xs</span> is a non-empty list, cons
+		<span class="monoText">(f x)</span> &mdash; the function
+		<span class="monoText">f</span> applied to an element
+		<span class="monoText">x</span> of the list &mdash; to the result of
+		<span class="monoText">map(f, xs')</span>.
+	</p>
+	<p>Let's try this function:</p>
+	<pre class="language-sml"><code>
+		fun map(f, xs) =
+			case xs of
+					[] => []
+				| x::xs' => (f x)::map(f, xs')
+
+		val list1 = [1, 2, 3, 4]
+		val list2 = map((fn x => 2 * x), list1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val map = fn : ('a -> 'b) * 'a list -> 'b list
+		val list1 = [1,2,3,4] : int list
+		val list2 = [2,4,6,8] : int list
+	</code></pre>
+
+	<h3>Filter</h3>
+	<p>
+		Say we have the list ${\ell \coloneqq \lang 1, 3, 4, 9, 12, 22 \rang.}$
+		Given this list, we want a list of all the elements in ${\ell}$ that are
+		even. This is an example of <span class="term">filtering</span>: An
+		operation that takes a list ${a}$, and returns a sublist of ${a}$ that
+		satisfy a set of conditions. In the case of ${\ell,}$ the sublist is ${\lang
+		4, 12, 22 \rang.}$
+	</p>
+	<p>
+		Like the <span class="monoText">map</span> function we wrote above, we can
+		implement a <span class="monoText">filter</span> function in ML with a
+		higher-order function:
+	</p>
+	<pre class="language-sml"><code>
+		fun filter(f, xs) =
+			case xs of
+				[] => []
+			| x::xs' => if f x 
+										then x::(filter (f, xs'))
+									else filter(f, xs')
+	</code></pre>
+	<p>Using the function with our previous list ${\ell:}$</p>
+	<pre class="language-sml"><code>
+		fun filter(f, xs) =
+			case xs of
+				[] => []
+			| x::xs' => if f x 
+										then x::(filter (f, xs'))
+									else filter(f, xs')
+
+		fun is_even(v) = (v mod 2 = 0)
+
+		fun list_of_evens(xs) = filter(is_even, xs)
+
+		val l1 = [1, 3, 4, 9, 12, 22]
+		val l2 = list_of_evens(l1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val filter = fn : ('a -> bool) * 'a list -> 'a list
+		val is_even = fn : int -> bool
+		val list_of_evens = fn : int list -> int list
+		val l1 = [1,3,4,9,12,22] : int list
+		val l2 = [4,12,22] : int list
+	</code></pre>
+	<p>
+		We could make write a more general function that returns a sublist of all
+		those elements divisible by some number ${n:}$
+	</p>
+	<pre class="language-sml"><code>
+		fun filter(f, xs) =
+			case xs of
+				[] => []
+			| x::xs' => if f x 
+										then x::(filter (f, xs'))
+									else filter(f, xs')
+
+		fun list_divisible_by(n, l) =
+			filter((fn x => (x mod n = 0)), l)
+			
+
+		val l1 = [35, 3, 177, 9, 12, 56, 72, 22]
+		val l2 = list_divisible_by(2, l1)
+		val l3 = list_divisible_by(3, l1)
+		val l4 = list_divisible_by(4, l1)
+		val l5 = list_divisible_by(5, l1)
+		val l6 = list_divisible_by(6, l1)
+		val l7 = list_divisible_by(7, l1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val filter = fn : ('a -> bool) * 'a list -> 'a list
+		val list_divisible_by = fn : int * int list -> int list
+		val l1 = [35,3,177,9,12,56,72,22] : int list
+		val l2 = [12,56,72,22] : int list
+		val l3 = [3,177,9,12,72] : int list
+		val l4 = [12,56,72] : int list
+		val l5 = [35] : int list
+		val l6 = [12,72] : int list
+		val l7 = [35,56] : int list
+	</code></pre>
+</section>
+
+<section id="functions_returning_functions">
+	<h2>Functions Returning Functions</h2>
+	<p>
+		The notion of a function returning a function is not that unusual. Arguably
+		the most cited example is the derivative in calculus. It's a function that
+		takes functions as input, and returns a function as output. While the
+		derivative is a great example, it doesn't relay the concept very well for
+		those unfamiliar with calculus.
+	</p>
+	<p>
+		Alternative example: Recall the last time you took an in-person exam. We can
+		think of the proctor saying, &#8220;You may begin&#8221; as a function, call
+		it <span class="monoText">begin_exam()</span>. The function
+		<span class="monoText">begin_exam()</span> might then return another
+		function &mdash; <span class="monoText">open_exam_packet()</span>.
+	</p>
+	<p>
+		Here's another: On an eCommerce website, there's a pay button. Click that
+		pay button, and the function <span class="monoText">pay()</span> is
+		executed. The <span class="monoText">pay()</span> function then returns
+		another function called <span class="monoText">verify_payment()</span>.
+	</p>
+	<p>
+		One more: a video game. The player's character is low on health. They open
+		the menu, and they click on some button, which executes
+		<span class="monoText">heal()</span>. The function
+		<span class="monoText">heal()</span> then returns
+		<span class="monoText">increase_health()</span>. These are all examples of
+		functions returning functions.
+	</p>
+	<p>
+		However, the notion of a function returning a function goes beyond the
+		examples above. Here is a somewhat silly example. The function
+		<span class="monoText">square_or_cube</span> takes a function as an
+		argument, and returns a function as output; the output function is either a
+		function that squares a number or cubes it. In this case, if the call
+		<span class="monoText">f 2</span> is true, we square, otherwise we cube:
+	</p>
+	<pre class="language-sml"><code>
+		fun square_or_cube f =
+		if f 2
+			then fn n => n * n
+		else
+			fn n => n * n * n
+
+		val x = square_or_cube(fn g => g mod 2 = 0)
+		val y = square_or_cube(fn h => h mod 3 = 0)
+		val z = square_or_cube(fn i => i - 2 = 0)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val square_or_cube = fn : (int -> bool) -> int -> int
+		val x = fn : int -> int
+		val y = fn : int -> int
+		val z = fn : int -> int
+	</code></pre>
+	<p>
+		Above, we passed all sorts of different functions into
+		<span class="monoText">square_or_cube</span>. We passed a function that
+		determines whether a number is even, another that determines whether a
+		number is a multiple of 3, and another that checks whether the argument
+		minus 2 equals 0.
+	</p>
+</section>
+
+<section id="lexical_scope">
+	<h2>Lexical Scope</h2>
+	<p>
+		As we know, a function's body has access to any bindings already in the
+		environment &mdash; i.e., scope. Now that we can pass functions to other
+		functions, the question now becomes: Which environment, or scope, are we
+		referring to? It turns out that for most programming languages &mdash; not
+		just ML &mdash; the environment we're referring to is the
+		<span class="term">lexical scope</span>. In the context of functions, the
+		lexical scope is the scope the function was defined in.
+	</p>
+	<p>Consider the following:</p>
+	<pre class="language-sml"><code>
+		(* Mapping x to 1. *)
+		val x = 1 
+
+		(* f maps to a function, adds 1 to its argument. *)
+		fun f y = x + y 
+
+		(* Now we're shadowing. x maps to 2. *)
+		(* Remember, everything before this: x maps to 1. *)
+		val x = 2
+
+		(* y maps to 3; x still maps to 2. *)
+		val y = 3
+
+		(* Question: What does z map to? *)
+		val z = f (x + y)
+	</code></pre>
+	<p>
+		Following lexical scope, <span class="monoText">z</span> maps to ${6.}$ Why?
+		Because: (1) Evaluating <span class="monoText">(x + y)</span>, we get
+		<span class="monoText">(2 + 3)</span>. This is because
+		<span class="monoText">(x + y)</span> evaluates using whatever is in the
+		current environment. In the current environment,
+		<span class="monoText">x = 2</span> and <span class="monoText">y = 3</span>.
+		Thus, the function <span class="monoText">f</span> is passed the argument
+		<span class="monoText">5</span>.
+	</p>
+	<p>
+		Inside the body of <span class="monoText">f</span>,
+		<span class="monoText">y</span> evaluates to
+		<span class="monoText">5</span>, which is then added to
+		<span class="monoText">x</span>. That
+		<span class="monoText">x</span> evaluates to
+		<span class="monoText">1</span> because again, we're using the environment
+		where the function was defined. In this case, that environment contains
+		<span class="monoText">x = 1.</span> Evaluating the function,
+		<span class="monoText">val z = 6</span>. The results:
+	</p>
+	<pre class="language-bash"><code>
+		val x = &lt;hidden&gt; : int
+		val f = fn : int -> int
+		val x = 2 : int
+		val y = 3 : int
+		val z = 6 : int
+	</code></pre>
+	<p>
+		Now, recall that when we shadow a variable, we enter a new environment with
+		a new binding for that variable. For all intents and purposes, the shadowing
+		effectively causes the old environment to &#8220;disappear.&#8221; So if the
+		old environment doesn't exist anymore, how are functions able to access
+		those previous values? Answer: With
+		<span class="italicsText">closures</span>.
+	</p>
+</section>
+
+<section id="closures">
+	<h2>Closures</h2>
+	<p>
+		Because of closures, the old environment does not actually
+		&#8220;disappear.&#8221; Instead, whenever we define a function, ML keeps
+		them available as long as necessary. This is done with a
+		<span class="term">closure</span>.
+	</p>
+	<p>
+		A closure is a semantic. Whenever we define a function, we create a function
+		value consisting of two parts: (a) the code, and (b) the environment that
+		was current when the function was defined. These two parts are a tuple
+		(specifically a pair). Unlike other tuples, however, we cannot access the
+		tuple's pieces. We call this tuple the
+		<span class="term">function closure</span>. Whenever we evaluate a function,
+		we evaluate the function's code (as extended with arguments, if any), using
+		the function's environment.
+	</p>
+	<p>This rule extends to functions containg nested let-expressions:</p>
+	<pre class="language-sml"><code>
+		val x = 1 (* x maps to 1 *)
+		fun f(y) = (* f takes an argument y *)
+			let
+				val x = y + 1 (* local var: x maps to y + 1 *)
+			in
+				fn z => x + y + z (* return function z: 2y + 1 + z *)
+			end
+		val x = 3 (* x maps to 3 *)
+		val g = f(4) (* g maps to f(4), f(4) evaluates to fn z => 9 + z *)
+		val y = 5 (* x maps to 5 *)
+		val z = g(6) (* z maps to g(6), g(x) evaluates to fn 6 => 9 + 6 => 15 *) 
+	</code></pre>
+</section>
+
+<section id="functional_linear_search">
+	<h2>Exists</h2>
+	<p>
+		In most introductory courses, linear search is done via iteration. In
+		functional programming, we can perform something similar with closures.
+		We'll call this function <span class="monoText">exists</span>:
+	</p>
+	<pre class="language-sml"><code>
+		fun exists(f, xs) =
+			case xs of
+				[] => false
+				| x::xs' => f x orelse exists(f, xs')
+
+		val aList = ["John", "Nancy", "Suji", "Reina"]
+		val list_contains_nancy = exists((fn x => x = "Nancy"), aList)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val exists = fn : ('a -> bool) * 'a list -> bool
+		val aList = ["John","Nancy","Suji","Reina"] : string list
+		val list_contains_nancy = true : bool
+	</code></pre>
+</section>
+
+<section id="lexical_v_dynamic">
+	<h2>Lexical Scope v. Dynamic Scope</h2>
+	<p>
+		With lexical scope, the function has access to, and uses, the environment
+		where the function is <span class="underlineText">defined</span>. Language
+		designers, however, aren't limited to lexical scope. They could also decide
+		to go with <span class="term">dynamic scope</span> &mdash; functions have
+		access to, and use, the environment where the function is
+		<span class="underlineText">called</span>.
+	</p>
+	<p>
+		Some languages use dynamic scope, and there are reasons for preferring the
+		call, rather than define, route. Nevertheless, lexical scope is the
+		prevailing standard today for a few compelling reasons.
+	</p>
+	<p>
+		First, lexical scope allows functions to have meanings completely
+		independent of the variable names used. This is not necessarily the case for
+		dynamic scope. For example, consider the following code:
+	</p>
+	<pre class="language-sml"><code>
+		fun f y =
+			let
+				val x = y + 1
+			in
+				fn z => x + y + z
+			end
+
+		fun g y = 
+			let 
+				val q = y + 1
+			in
+				fn z => q + y + z
+			end
+
+		val x = 17
+		val a = (f 7) 4
+		val b = (g 7) 4
+	</code></pre>
+	<pre class="language-bash"><code>
+		val f = fn : int -> int -> int
+		val g = fn : int -> int -> int
+		val x = 17 : int
+		val a = 19 : int
+		val b = 19 : int
+	</code></pre>
+	<p>
+		Under lexical scoping, the functions <span class="monoText">f</span> and
+		<span class="monoText">g</span> are evaluated the same way; the only
+		differences are (a) their identifiers, or names, and (b) the local variables
+		are <span class="monoText">x</span> and
+		<span class="monoText">q</span> respectively.
+	</p>
+	<p>
+		With dynamic scoping, the function <span class="monoText">g</span> would
+		cause a problem. Since dynamic scoping uses the environment where the
+		function is called, a problem arises because there is no
+		<span class="monoText">q</span> binding in the environment.
+	</p>
+	<p>
+		Second, under lexical scoping, we can type-check and reason about functions
+		where they are <span class="italicsText">defined</span>. Consider this code:
+	</p>
+	<pre class="language-sml"><code>
+		(* x is bound to 1 *)
+		val x = 1
+		fun f y = 
+			let 
+				val x = y + 1 (* x is bound to y + 1 *)
+			in 
+				fn z => x + y + z (* return a function that returns 2y + 1 + z *)
+			end
+		val x = "hi" (* x bound to "hi" *)
+		val g = f 7 (* g bound to f(7) --> f(z) => 15 + z *)
+		val z = g 4 (* z bound to g(4) => 15 + 4 => 19 *)
+	</code></pre>
+	<p>
+		Examining the code above, we reason through the code easily, and the REPL
+		confirms our analysis:
+	</p>
+	<pre class="language-bash"><code>
+		val x = &lt;hidden&gt; : int
+		val f = fn : int -> int -> int
+		val x = "hi" : string
+		val g = fn : int -> int
+		val z = 19 : int
+	</code></pre>
+	<p>
+		With dynamic scoping, a call to <span class="monoText">g</span> would have
+		us looking at the environment for the
+		<span class="monoText">x</span> binding, which happens to be
+		<span class="monoText">"hi"</span>. This would thus result in adding
+		<span class="monoText">"hi"</span> to a number and an undefined variable
+		<span class="monoText">z</span>. This would return an error not just in ML,
+		but most other languages.
+	</p>
+	<p>
+		Finally, with lexical scoping, closures can be used to store whatever data
+		the closure requires. This in turn allows us to perform elaborate and
+		complex computations within closures (which, as we know, can be passed and
+		returned), without having to worry about that data contaminating other
+		blocks of code.
+	</p>
+</section>
+
+<section id="closures_and_recomputation">
+	<h2>Function Recomputation</h2>
+	<p>
+		Whenever we implement recursive functions, there is a concern for
+		<span class="term">recomputation</span> &mdash; performing a computation
+		that has already been performed. This results from several facts we already
+		know: (1) A function's body &mdash; i.e., a function binding &mdash; is not
+		evaluated until the function is invoked, and (2) The function's body is
+		evaluated every time the function is invoked. In contrast to functions, a
+		variable binding evaluates its expression just once &mdash; when the binding
+		is evaluated.
+	</p>
+	<p>
+		Based on these three facts, we can avoid recomputation by using closures.
+		Remember, closures are not function bindings. They are just expressions, and
+		because they are just expressions, they can be assigned to variables.
+		Accordingly, closures can be particularly helpful for efficiency
+		improvements.
+	</p>
+	<p>Consider the following code:</p>
+	<pre class="language-sml"><code>
+		fun filter(f, xs) =
+			case xs of
+				[] => []
+				| x::xs' => if f x 
+											then x::(filter(f, xs')) 
+										else filter(f, xs')
+		fun all_shorter_than_1(xs, s) =								 
+			filter(fn x => String.size x < String.size s, xs)
+	</code></pre>
+	<p>
+		The <span class="monoText">filter()</span> function above is the same
+		implementation we saw previously. The
+		<span class="monoText">all_shorter_than_1()</span> function takes a string
+		list, <span class="monoText">xs</span>, and returns another string list. The
+		function also takes a second argument, <span class="monoText">s</span>.
+		Examining the function's body,
+		<span class="monoText">all_shorter_than_1()</span> returns a sublist of
+		<span class="monoText">xs</span> consisting of all the strings that are
+		longer than the string <span class="monoText">s</span>.
+	</p>
+	<p>
+		<span class="monoText">all_shorter_than_1()</span> works fine, but because
+		<span class="monoText">filter()</span> is recursive, we end up computing
+		<span class="monoText">String.size</span> everytime
+		<span class="monoText">filter()</span> is called. This is an example of
+		recomputation. This is an unnecessary computation because the size of
+		<span class="monoText">s</span> never changes.
+	</p>
+	<p>
+		We can fix this by simply using a local variable that stores the size of
+		<span class="monoText">s</span>, called <span class="monoText">i</span>,
+		then passing that variable <span class="monoText">i</span> into the closure:
+	</p>
+	<pre class="language-sml"><code>
+		fun filter(f, xs) =
+		case xs of
+			[] => []
+			| x::xs' => if f x 
+										then x::(filter(f, xs')) 
+									else filter(f, xs')
+
+		fun all_shorter_than_2(xs, s) =
+			let
+				val i = String.size s
+			in
+				filter(fn x => String.size x < i, xs)
+			end
+	</code></pre>
+</section>
+
+<section id="fold">
+	<h2>Fold</h2>
+	<p>
+		Previously, we saw two operations ubiquitous with programming,
+		<span class="italicsText">mapping</span> and
+		<span class="italicsText">filtering</span>. The operation of
+		<span class="term">folding</span> sits alongside them in the function hall
+		of fame.
+	</p>
+	<p>
+		To understand how folding works, let's consider an example. Suppose we have
+		the list ${\ell \coloneqq \lang 1, 2, 3, 4 \rang.}$ Then suppose we want the
+		sum of all the elements in the list. This is a classic problem in
+		introductory courses for introducing loops and iteration. We can tackle this
+		problem with folding. Like iteration, we start with some accumulator. Then,
+		we apply a summing function to the accumulator and the first element in the
+		list. Then we take the result of that, and add it to the second, then that
+		result and the third, and the fourth, and so on. Thus, for our list
+		${\ell,}$ the execution appears as such:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>fold(f, acc, ${\ell}$)</li>
+			<li>f(f(f(f(acc, ${\ell_1}$), ${\ell_2}$), ${\ell_3}$), ${\ell_4}$)</li>
+			<li>f(f(f(f(0, 1), ${\ell_2}$), ${\ell_3}$), ${\ell_4}$)</li>
+			<li>f(f(f(1, ${\ell_2}$), ${\ell_3}$), ${\ell_4}$)</li>
+			<li>f(f(f(1, 2), ${\ell_3}$), ${\ell_4}$)</li>
+			<li>f(f(3, ${\ell_3}$), ${\ell_4}$)</li>
+			<li>f(f(3, 3), ${\ell_4}$)</li>
+			<li>f(6, ${\ell_4}$)</li>
+			<li>f(6, 4)</li>
+			<li>10</li>
+		</ul>
+	</figure>
+	<p>Here is an implementation:</p>
+	<pre class="language-sml"><code>
+		fun fold(f, acc, xs) =
+			case xs of
+				[] => acc
+				| x::xs' => fold(f, f(acc, x), xs')
+
+		fun summate(xs) = fold((fn (x, y) => x + y), 0, xs)
+
+		val l1 = [1, 2, 3, 4]
+		val l1_sum = summate(l1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val fold = fn : ('a * 'b -> 'a) * 'a * 'b list -> 'a
+		val summate = fn : int list -> int
+		val l1 = [1,2,3,4] : int list
+		val l1_sum = 10 : int
+	</code></pre>
+	<p>With folding, we can implement a wide variety of functions for lists:</p>
+	<pre class="language-sml"><code>
+		fun fold(f, acc, xs) =
+			case xs of
+				[] => acc
+				| x::xs' => fold(f, f(acc, x), xs')
+
+		fun summate(xs) = fold((fn (x, y) => x + y), 0, xs)
+
+		fun product(xs) = fold((fn (x, y) => x * y, 1, xs))
+
+		fun all_natural_numbers(xs) = 
+			fold((fn (x, y) => x andalso y >= 0), true, xs)
+
+		fun all_positive_integers(xs) = 
+			fold((fn (x, y) => x andalso y > 0), true, xs)
+
+		val l1 = [1, 2, 3, 4]
+		val l1_sum = summate(l1)
+		val l1_product = product(l1)
+		val l1_all_naturals = all_natural_numbers(l1)
+		val l1_all_positive_integers = all_positive_integers(l1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val fold = fn : ('a * 'b -> 'a) * 'a * 'b list -> 'a
+		val summate = fn : int list -> int
+		val product = fn : int list -> int
+		val all_natural_numbers = fn : int list -> bool
+		val all_positive_integers = fn : int list -> bool
+		val l1 = [1,2,3,4] : int list
+		val l1_sum = 10 : int
+		val l1_product = 24 : int
+		val l1_all_naturals = true : bool
+		val l1_all_positive_integers = true : bool
+	</code></pre>
+</section>
+
+<section id="combining_functions">
+	<h2>Function Composition</h2>
+	<p>
+		In mathematics, <span class="term">function composition</span> is the
+		operation of taking two functions as inputs, and outputing a single
+		function. For example, the composition of the functions ${f}$ and ${g}$
+		results in some function ${h,}$ such that ${h(x) = g(f(x)).}$ E.g., if
+		${f(x) = 2x}$ and ${g(x) = 3x,}$ then the output ${h(x)}$ is the output of
+		passing the output of ${2x}$ as input to ${3(x).}$ If ${x}$ is ${3,}$ we get
+		${f(3) = 2(3) = 6,}$ which is then passed to ${g(6) = 3(6) = 18.}$ Hence,
+		${h(3) = 18.}$
+	</p>
+	<p>From a programming perspective, we might write these functions as:</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>fun h(g, f) = fn x => g(f(x))</li>
+		</ul>
+	</figure>
+	<p>
+		If we can recall our basic algebra, function composition ${g(f(x))}$ can be
+		denoted as ${g \circ f(x).}$ ML's designers were aware of this notation and
+		implemented syntactic sugar for function composition (a lower case
+		<span class="monoText">o</span> for a circle):
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>fun h(x) = (g o f) x</li>
+		</ul>
+	</figure>
+	<p>
+		For example, suppose we wanted to compute ${\sqrt{\lvert x \rvert },}$ where
+		${x}$ is some integer. We could write this as a function composition:
+	</p>
+	<pre class="language-sml"><code>
+		fun sqrt_of_abs i = (Math.sqrt o Real.fromInt o abs) i
+		val x = ~2
+		val sqrt_abs_x = sqrt_of_abs x 
+	</code></pre>
+	<pre class="language-bash"><code>
+		val sqrt_of_abs = fn : int -> real
+		val x = 2 : int
+		val sqrt_abs_x = 1.41421356237 : real
+	</code></pre>
+	<p>The function works properly. We can write this more concisely:</p>
+	<pre class="language-sml"><code>
+		val sqrt_of_abs = Math.sqrt o Real.fromInt o abs
+		val x = ~3
+		val sqrt_abs_x = sqrt_of_abs x 
+	</code></pre>
+	<pre class="language-bash"><code>
+		val sqrt_of_abs = fn : int -> real
+		val x = ~3 : int
+		val sqrt_abs_x = 1.73205080757 : real
+	</code></pre>
+	<p>
+		We can just a step further. In mathematics, we read function compositions
+		from right to left. This isn't always so intuitive for other programmers; in
+		the Western world, we read things from left to right. Accordingly, some
+		newer languages, like F#, provide a
+		<span class="italicsText">pipe operator</span> (in F#, ${\texttt{|>}}$) for
+		function composition. ML, being an older language, doesn't provide these
+		operators natively, but we can define them on our own with the keyword
+		<span class="monoText">infix</span>.
+	</p>
+	<pre class="language-sml"><code>
+		infix |>
+		fun x |> f = f x
+		fun sqrt_of_abs i = 
+			i |> abs |> Real.fromInt |> Math.sqrt
+		val x = ~4
+		val sqrt_abs_x = sqrt_of_abs x 
+	</code></pre>
+	<pre class="language-bash"><code>
+		infix |>
+		val |> = fn : 'a * ('a -> 'b) -> 'b
+		val sqrt_of_abs = fn : int -> real
+		val x = ~4 : int
+		val sqrt_abs_x = 2.0 : real
+	</code></pre>
+	<p>
+		The infix operator is particular useful for creating our own idioms.
+		Unfotunately, not every language provides such an operator.
+	</p>
+</section>
+
+<section id="currying">
+	<h2>Currying</h2>
+	<p>
+		Recall that in ML, every function takes one, and only one, argument &mdash;
+		a tuple. Of course, that tuple might contain several elements: an
+		${n-}$tuple. But this isn't the only way to convey functions requiring
+		multiple inputs. We could instead write a function that takes one argument,
+		which returns a function that takes another argument, which returns a
+		function that takes another argument, and so on. This approach is called
+		<span class="term">currying</span>, after the American logician Haskell
+		Curry.
+		<label for="curry" class="margin-toggle">&#8853;</label>
+		<input type="checkbox" id="curry" class="margin-toggle" />
+		<span class="marginnote">
+			Haskell Curry is a household name among logicians. Curry's work in logic
+			established lambda calculus, which in turn provided the grounds for
+			functional programming languages. His most notable work, the Curry-Howard
+			Isomorphism, concludes that a mathematical proof in a deductive system
+			directly corresponds with typed lambda calculus. By creating a bridge
+			between provability and computability, computer science was no longer an
+			extension of mathematics; it held a place at the very foundations of
+			mathematical knowledge.
+		</span>
+	</p>
+	<p>For example, consider this function that checks if a 3-tuple is sorted:</p>
+	<pre class="language-sml"><code>
+		fun is_sorted(x, y, z) = z >= y andalso y >= x
+		val tuple1 = is_sorted(1, 2, 3)
+		val tuple2 = is_sorted(2, 1, 3)	
+	</code></pre>
+	<pre class="language-bash"><code>
+		val is_sorted = fn : int * int * int -> bool
+		val tuple1 = true : bool
+		val tuple2 = false : bool
+	</code></pre>
+	<p>With currying, we would instead write:</p>
+	<pre class="language-sml"><code>
+		val is_sorted = fn x => fn y => fn z => z >= y andalso y >= x
+
+		val tuple1 = (((is_sorted 1) 2) 3)
+		val tuple2 = (((is_sorted 2) 1) 3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val is_sorted = fn : int -> int -> int -> bool
+		val tuple1 = true : bool
+		val tuple2 = false : bool
+	</code></pre>
+	<p>
+		Let's think a little more carefully about what's happening here. Consider
+		<span class="monoText">(((is_sorted 1) 2) 3)</span>. When we call
+		<span class="monoText">(is_sorted 1)</span>, we evaluate
+		<span class="monoText">fn x</span>. That evaluation returns a closure
+		containing two parts, (1) the code, and (2) the environment:
+	</p>
+	<figure class="math-display">
+		<ul>
+			<li>
+				Code:
+				<span class="monoText">fn y => fn z => z >= y andalso y >= x</span>
+			</li>
+			<li>
+				Environment: <span class="monoText">x</span> is mapped to
+				<span class="monoText">1</span>.
+			</li>
+		</ul>
+	</figure>
+	<p>
+		The closure returned is passed an argument, <span class="monoText">2</span>.
+		Now we evaluate <span class="monoText">fn y</span>. Again this returns a
+		closure containing two parts:
+	</p>
+	<figure class="math-display">
+		<ul>
+			<li>Code: <span class="monoText">fn z => z >= y andalso y >= x</span></li>
+			<li>
+				Environment: <span class="monoText">x</span> is mapped to
+				<span class="monoText">1</span>; <span class="monoText">y</span> is
+				mapped to 2.
+			</li>
+		</ul>
+	</figure>
+	<p>
+		This closure is then passed an argument, <span class="monoText">3</span>.
+		Now <span class="monoText">z</span> is mapped to
+		<span class="monoText">3</span>. We finally evaluate
+		<span class="monoText">z >= y andalso y >= x</span>. I.e.,
+		<span class="monoText">3 >= 2</span> and
+		<span class="monoText">2 >= 1</span>? True.
+	</p>
+	<p>
+		Because of how common currying is in functional programming, ML provides
+		some syntactic sugar. We can omit the parentheses:
+	</p>
+	<pre class="language-sml"><code>
+		val is_sorted = fn x => fn y => fn z => z >= y andalso y >= x
+
+		val tuple1 = is_sorted 1 2 3
+	</code></pre>
+	<pre class="language-bash"><code>
+		val is_sorted = fn : int -> int -> int -> bool
+		val tuple1 = true : bool
+	</code></pre>
+	<p>
+		We can even go a step further and avoid having to write multiple anonymous
+		functions:
+	</p>
+	<pre class="language-sml"><code>
+		fun is_sorted x y z = z >= y andalso y >= x
+
+		val tuple1 = is_sorted 3 4 5
+	</code></pre>
+	<pre class="language-bash"><code>
+		val is_sorted = fn : int -> int -> int -> bool
+		val tuple1 = true : bool
+	</code></pre>
+	<p>
+		Currying can lead to much more concise code. Consider the folding function:
+	</p>
+	<pre class="language-sml"><code>
+		fun fold f acc xs = 
+			case xs of 
+				[] => acc
+				| x::xs' => fold f(f(acc, x)) xs'
+	</code></pre>
+</section>
+
+<section id="partial_functions">
+	<h2>Partial Functions</h2>
+	<p>
+		With currying, we can write functions that can take too few arguments. Such
+		functions are called <span class="term">partial functions</span>.
+		<label for="partial_func" class="margin-toggle">&#8853;</label>
+		<input type="checkbox" id="partial_func" class="margin-toggle" />
+		<span class="marginnote"
+			>The term partial function originates in mathematics: A function that maps
+			outputs to only some of the elements in its domain.</span
+		>
+		Consider our last curried function:
+	</p>
+	<pre class="language-sml"><code>
+		fun is_sorted x y z = z >= y andalso y >= x
+	</code></pre>
+	<p>Now suppose we only passed two arguments:</p>
+	<pre class="language-sml"><code>
+		fun is_sorted x y z = z >= y andalso y >= x
+		val x = ((is_sorted 0) 0)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val is_sorted = fn : int -> int -> int -> bool
+		val x = fn : int -> bool
+	</code></pre>
+	<p>
+		As expected, we get back a function. Interestingly, by passing the argument
+		<span class="monoText">0</span>, we got back a function that checks if a
+		number is greater than or equal to 0. Not the most interesting function, but
+		there's an idea: With curried functions, if we pass too few arguments, we
+		get back a function. Let's play with this idea by considering another
+		example:
+	</p>
+	<pre class="language-sml"><code>
+		fun fold f acc xs = 
+			case xs of 
+				[] => acc
+				| x::xs' => fold f(f(acc, x)) xs'
+
+		val y = fold (fn (x, y) => x + y) 0
+	</code></pre>
+	<pre class="language-bash"><code>
+		val fold = fn : ('a * 'b -> 'a) -> 'a -> 'b list -> 'a
+		val y = fn : int list -> int
+	</code></pre>
+	<p>
+		This is more interesting. Here, we omitted the
+		<span class="monoText">xs</span> argument, a list. What we got back is a
+		function that adds all of the elements in a list. Let's rename this function
+		to <span class="monoText">summate_list_elements</span> and try it:
+	</p>
+	<pre class="language-sml"><code>
+		fun fold f acc xs = 
+			case xs of 
+				[] => acc
+				| x::xs' => fold f(f(acc, x)) xs'
+
+		val summate_list_elements = fold (fn (x, y) => x + y) 0
+		val cookies = [12, 14, 19, 13, 10, 15]
+		val total_cookies = summate_list_elements cookies
+	</code></pre>
+	<pre class="language-bash"><code>
+		val fold = fn : ('a * 'b -> 'a) -> 'a -> 'b list -> 'a
+		val summate_list_elements = fn : int list -> int
+		val cookies = [12,14,19,13,10,15] : int list
+		val total_cookies = 83 : int
+	</code></pre>
+	<p>
+		Here's another example. Recall the <span class="monoText">exists</span> we
+		wrote previously. Let's rewrite that function in curried form:
+	</p>
+	<pre class="language-sml"><code>
+		fun exists predicate xs =
+		case xs of
+			[] => false
+			| x::xs' => predicate x orelse exists predicate xs'
+	</code></pre>
+	<pre class="language-bash"><code>
+		val exists = fn : ('a -> bool) -> 'a list -> bool
+	</code></pre>
+	<p>
+		Suppose we want a function that checks if any number in the list is
+		negative. We can do so by simply omitting the list argument and passing a
+		closure that checks if a number is less than zero:
+	</p>
+	<pre class="language-sml"><code>
+		fun exists predicate xs =
+			case xs of
+				[] => false
+				| x::xs' => predicate x orelse exists predicate xs'
+
+		val contains_negative = exists (fn x => x < 0)
+
+		val list1 = [1, 2, ~3, 0, 8, 9]
+		val list2 = [1, 2, 3, 0, 8, 9]
+		val list1_contains_negative = contains_negative list1
+		val list2_contains_negative = contains_negative list2
+	</code></pre>
+	<pre class="language-bash"><code>
+		val exists = fn : ('a -> bool) -> 'a list -> bool
+		val contains_negative = fn : int list -> bool
+		val list1 = [1,2,~3,0,8,9] : int list
+		val list2 = [1,2,3,0,8,9] : int list
+		val list1_contains_negative = true : bool
+		val list2_contains_negative = false : bool
+	</code></pre>
+</section>
+
+<section id="mutable_references">
+	<h2>Mutable References & Closures</h2>
+	<p>
+		As we've seen, functional programming abstains from mutability. This
+		abstinence, however, is not necessarily absolute for all functional
+		languages. Nor should it be; many problems are best approached with
+		mutability. When a problem inolves a <span class="term">state</span> &mdash;
+		a current description of the world or situation &mdash; and changes to the
+		state propogate throughout the solution (i.e., changes necessarily cause all
+		other modules to present a different solution), then mutability is the most
+		efficient approach.
+	</p>
+	<p>
+		However, it bears repeating: Immutability is arguably a better default rule.
+		Why? Because immutability forces us to restrain ourselves. A foundational
+		principle of computer science is managing complexity, and immutability
+		supports that principle by forcing us not to introduce
+		<span class="italicsText">unnecessary</span> complexity. With
+		immutability-by-default, we are less likely to immediately approach problems
+		with mutation in mind. This in turn forces us to modularize problems. On
+		first glance, we may think that a problem involves propogating changes.
+		However, with the constraint of immutability, we often end up seeing parts
+		of the problem that can be isolated, and their solutions modularized.
+		Mutability is then left for those parts that cannot.
+	</p>
+	<p>
+		ML provides a special construct, <span class="term">references</span>, for
+		mutability. To create a new reference in ML, we use the following syntax:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p><span class="monoText">val ${n}$ = ${t}$ ref ${v}$</span></p>
+		</div>
+		<figcaption>
+			Where ${n}$ is some variable, ${t}$ is a type (optional, given type
+			inference), and ${v}$ is some expression.
+		</figcaption>
+	</figure>
+	<p>
+		To retrieve the contents of some reference variable ${n,}$ we write
+		<span class="monoText">!${n}$</span>. To update, or write, the contents of
+		${n,}$ we use the syntax <span class="monoText">${n}$ := ${w}$</span>, where
+		${w}$ is some new expression. To retrieve, or read, the contents of ${n,}$
+		we use the syntax ${!n.}$ Illustration:
+	</p>
+	<pre class="language-sml"><code>
+		val x = ref 1
+		val y = ref 1
+		val z = x
+		val _ = x := 2
+		val w = (!y) + (!z)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val x = ref 2 : int ref
+		val y = ref 1 : int ref
+		val z = ref 2 : int ref
+		val w = 3 : int
+	</code></pre>
+</section>
+
 {% endblock %}
