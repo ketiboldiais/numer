@@ -201,6 +201,12 @@ urlpatterns = [
 	path("sys_index", views.sys_index, name="sys_index"),
 	path("sys_cIntro", views.sys_cIntro, name="sys_cIntro"),
 
+	# Software Design
+	path("des_index", views.des_index, name="des_index"),
+	path("des_naming", views.des_naming, name="des_naming"),
+	path("des_functions", views.des_functions, name="des_functions"),
+	path("des_classes", views.des_classes, name="des_classes"),
+
 ]
 
 

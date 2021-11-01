@@ -376,3 +376,16 @@ def sys_index(request):
 
 def sys_cIntro(request):
 	return render(request, "numerc/sys/sys_cIntro.html")
+
+# Software Design Functions
+def des_index(request):
+	return render(request, "numerc/des/des_index.html")
+
+def des_naming(request):
+	return render(request, "numerc/des/des_naming.html")
+
+def des_functions(request):
+	return render(request, "numerc/des/des_functions.html")
+
+def des_classes(request):
+	return render(request, "numerc/des/des_classes.html")

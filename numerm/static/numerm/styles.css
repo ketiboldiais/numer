@@ -258,41 +258,59 @@
 /*? Margin Notes */
 	.sidenote,
 	.marginnote {
-		padding: 0.2em;
+		padding: 2em 5em;
 		float: right;
 		clear: right;
-		margin-right: -45%;
-		width: 40%;
-		margin-top: 0.3rem;
-		margin-bottom: 0;
-		font-size: 0.8rem;
+    margin-right: -75%;
+    width: 80%;
+    margin-top: 0.3rem;
+    margin-bottom: 0;
+		font-size: 0.85rem;
 		line-height: 1.2;
 		vertical-align: baseline;
 		position: relative;
 		color: rgb(45, 146, 185);
 	}
-
 	.sidenote-number {
-			counter-increment: sidenote-counter;
+		counter-increment: sidenote-counter;
 	}
-
 	.sidenote-number:after,
 	.sidenote:before {
-			position: relative;
-			vertical-align: baseline;
+		position: relative;
+		vertical-align: baseline;
 	}
-
 	.sidenote-number:after {
-			content: counter(sidenote-counter);
-			font-size: 0.7rem;
-			top: -0.5rem;
-			left: 0.1rem;
+		content: counter(sidenote-counter);
+		font-size: 0.7rem;
+		top: -0.5rem;
+		left: 0.1rem;
 	}
-
 	.sidenote:before {
-			content: counter(sidenote-counter) " ";
-			font-size: 0.7rem;
-			top: -0.5rem;
+		content: counter(sidenote-counter) " ";
+		font-size: 0.7rem;
+		top: -0.5rem;
+	}
+	input.margin-toggle {display: none;}
+	label.sidenote-number {
+		display: inline-block;
+		max-height: 2rem; /*should be less than or equal to paragraph line-height*/
+	}
+	label.margin-toggle:not(.sidenote-number) {
+		color: var(--darkBlue);
+		display: none;
+	}
+	.iframe-wrapper {
+		position: relative;
+		padding-bottom: 56.25%; /* 16:9 */
+		padding-top: 25px;
+		height: 0;
+	}
+	.iframe-wrapper iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 	}
 /*? Scroll Bar */
 	nav::-webkit-scrollbar {
@@ -858,40 +876,55 @@
 		}
 	
 /* ! Media Queries */
-	/* Font Media Queries */
-	html {
-		font-size: 14px;
-	}
-	@media (min-width: 640px) and (max-width: 1439px) {
-		html {
-			font-size: calc(14px + (23 - 14) * (100vw - 640px) / (1439 - 640));
-		}
-	}
-	@media (min-width: 1440px) {
-		html { font-size: 1.1vw; }
-		section {
-			padding-left: 5%;
-			padding-right: 45%;
-		}
-	}
+	@media (max-width: 600px) { html {font-size: 11px;} }
+	@media (max-width: 800px) { html {font-size: 11px;} }
+	@media (max-width: 1180px) { html {font-size: 11px;} }
+	@media (max-width: 1300px) { html {font-size: 12px;} }
+	@media (max-width: 1750px) { html {font-size: 13px;} }
+	@media (max-width: 1900px) { html {font-size: 14px;} }
+	@media (max-width: 2100px) { html {font-size: 15px;} }
+	@media (max-width: 2400px) { html {font-size: 16px;} }
 
-	@media (max-width: 850px) {
+
+	@media (max-width: 1100px) {
 		nav {display: none;}
-		main {
-			display: block;
-			margin: 0.5rem;
-		}
+		main { display: block; }
 		section {padding: 1em 15vw;}
-    .sidenote,
-    .marginnote {
+		pre {margin: 1px 0;}
+		.sidenote,
+		.marginnote {
 				display: block;
-        float: left;
-        left: 0;
-        clear: both;
-        width: 100%;
-        margin: 1em 0;
-        position: relative;
-    }
+				float: left;
+				left: 0;
+				clear: both;
+				width: 100%;
+				margin: 1em 0;
+				position: relative;
+		}
+		label.margin-toggle:not(.sidenote-number) {
+				display: inline;
+		}
+
+		.sidenote,
+		.marginnote {
+				display: none;
+		}
+
+		.margin-toggle:checked + .sidenote,
+		.margin-toggle:checked + .marginnote {
+				display: block;
+				float: left;
+				left: 1rem;
+				clear: both;
+				width: 95%;
+				margin: 1rem 2.5%;
+				vertical-align: baseline;
+				position: relative;
+		}
+
+		label {
+				cursor: pointer;
+		}
 		article .tooltip:before {
 			width: 12rem;
 			top: -8.5rem;

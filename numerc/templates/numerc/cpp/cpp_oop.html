@@ -1136,7 +1136,6 @@
 		Finally, a helpful constructor to write alongside the parameterized
 		constructor is a <span class="italicsText">copy constructor</span>. This
 		constructor creates a copy of an existing object:
-
 	</p>
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
@@ -1204,6 +1203,64 @@
 		30
 		30
 	</code></pre>
+
+	<h3>Deep Copy Constructor</h3>
+	<p>
+		Because copy constructors use references, there's an underlying problem we
+		might potentially encounter whenever we use them. Consider a class called
+		<span class="monoText">A</span> (for the sake of simplicity, we will think
+		of this outside the context of a real-world application):
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class A {
+			int x;
+			int *p;
+			A(int n) {
+				x = n;
+				p = new int[x];
+			}
+			A(A &t) {
+				x = t.x;
+				p = t.p;
+			}
+		};
+		
+		int main() {
+			return 0;
+		}
+	</code></pre>
+	<p>
+		The class <span class="monoText">A</span> has two properties:
+		<span class="monoText">x</span>, which takes an
+		<span class="monoText">int</span> value, and
+		<span class="monoText">*p</span>, which is a pointer.
+	</p>
+	<p>
+		Next, the class <span class="monoText">A</span> also has two methods. First,
+		a parameterized constructor, which assigns to
+		<span class="monoText">x</span> the argument passed as
+		<span class="monoText">n</span>. Additionally, the parameterized constructor
+		initializes <span class="monoText">p</span> with a new
+		<span class="monoText">int</span> array, of size
+		<span class="monoText">x</span> (which is the value of
+		<span class="monoText">n</span>, the integer passed as argument). Thus,
+		whenever we create an instance of <span class="monoText">A</span>, we create
+		a new <span class="monoText">int</span> array in the heap.
+	</p>
+	<p>
+		The class <span class="monoText">A</span> also contains a copy constructor,
+		which takes as argument a reference, <span class="monoText">&t</span>. That
+		argument is a reference to an existing instance of
+		<span class="monoText">A</span>. Inside the copy constructor, we assign to
+		<span class="monoText">x</span> the <span class="monoText">x</span> property
+		of the existing <span class="monoText">A</span> instance, and to
+		<span class="monoText">p</span> the pointer property
+		<span class="monoText">p</span> of the existing
+		<span class="monoText">A</span> instance.
+	</p>
 </section>
 
 {% endblock %}
