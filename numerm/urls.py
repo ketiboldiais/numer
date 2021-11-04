@@ -75,6 +75,8 @@ urlpatterns = [
 
 	path("disc_algorithms", views.disc_algorithms, name="disc_algorithms"),
 
+	path("disc_graphTheory", views.disc_graphTheory, name="disc_graphTheory"),
+
 
 	
 	# continuous math paths
@@ -157,4 +159,8 @@ urlpatterns = [
 	path("sqs_index", views.sqs_index, name="sqs_index"),
 
 	path("sqs_foundations", views.sqs_foundations, name="sqs_foundations"),
+
+	# physics paths
+
+	path("phys_vectors", views.phys_vectors, name="phys_vectors"),
 ]

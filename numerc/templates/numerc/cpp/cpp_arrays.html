@@ -1,9 +1,9 @@
 {% extends '../layout.html' %} {% load static %} {% block description %}
 <meta name="description" content="Overview of arrays in C++" />
 {% endblock %} {% block title %}
-<title>C++ Arrays</title>
+<title>C++ Arrays & Vectors</title>
 {% endblock %} {% block content %}
-<h1>C++ Arrays</h1>
+<h1>C++ Arrays & Vectors</h1>
 <section id="arrays">
 	<p>
 		Arrays are the simplest data structure. Physically, arrays occupy a
@@ -304,7 +304,7 @@
 		
 		int main(int argc, char *argv[]) {
 		
-			int a[3][3] = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
+			int a[3][3] = &lcub;{0, 1, 2}, {3, 4, 5}, {6, 7, 8}&rcub;;
 		
 			cout << "i a[i][j]" << endl;
 			for (int i = 0; i < 3; i++) {
@@ -333,6 +333,124 @@
 		Notice how we must use a nested for loop to target each element in the
 		nested array.
 	</p>
+</section>
+
+<section id="vectors">
+	<h2>Vectors</h2>
+	<p>
+		As we can likely tell, arrays in C++ are restrictive and somewhat dangerous.
+		They are examples of
+		<span class="italicsText">static lists</span> &mdash; an indexed list of
+		elements with a <span class="underlineText">fixed</span> size; we cannot
+		delete elements, nor can we insert elements. We can resize them, but it's a
+		long and unwieldy process. Perhaps worst of all, C++ also allows us to index
+		out of the array bounds. Contrast this with a language like Python, which
+		provides <span class="italicsText">dynamic lists</span> &mdash; lists that
+		can grow and shrink as needed. What we want instead is a dynamic list.
+	</p>
+	<p>
+		In C++, dynamic lists are called <span class="term">vectors</span>. Vectors
+		are not provided by default; they must be imported from the standard
+		library. As such, to use vectors in our program, we will have to use a
+		preprocessor: <span class="monoText">#include &lt;vector&gt;.</span>
+	</p>
+	<p>Here is an example:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;vector&gt;
+		using namespace std;
+		
+		int main() {
+			vector&lt;int&gt; arrNums {22, 48, 92, 44};
+			cout << arrNums[1] << endl;
+			arrNums[1] = 14;
+			cout << arrNums[1] << endl;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		48
+		14
+	</code></pre>
+	<p>
+		Notice that we can using the usual indexing methods. More importantly, we
+		can mutate the array. Vectors in C++ also come with a variety of member
+		functions. Some of the most common ones:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th style="text-align: center;">Member Function</th>
+				<th style="text-align: center;">Description</th>
+				<th style="text-align: center;">Comment</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">${v}$.add(${val}$)</span></td>
+					<td>Appends the value ${val}$ to the end of the vector ${v.}$</td>
+					<td>
+						Alternative syntax: <span class="monoText">${v}$ += ${val}$</span>;
+						or
+						<span class="monoText"
+							>${v}$ += ${val_1}$, ${val_2}$, ${\ldots}$, ${val_n}$</span
+						>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.clear()</span></td>
+					<td>Removes all element in the vector ${v.}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$[${i}$]</span></td>
+					<td>Returns the value at index ${i}$</td>
+					<td>
+						Alternative syntax: <span class="monoText">${v}$.get(${i}$)</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.insert(${i}$, ${val}$)</span></td>
+					<td>Inserts the element ${val}$ just before index ${i}$</td>
+					<td>Operation shifts the subsequent elements to the right.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.isEmpty()</span></td>
+					<td>Returns true if ${v}$ contains no elements; else false.</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.remove(${i}$)</span></td>
+					<td>
+						Removes <span class="underlineText">and</span> returns the value at
+						index ${i.}$
+					</td>
+					<td>Operation shifts subsequent elements to the left.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$[${i}$] = ${val}$</span></td>
+					<td>Replaces the element at index ${i}$ with the value ${val.}$</td>
+					<td>
+						Alternative syntax:
+						<span class="monoText">${v}$.set(${i}$, ${val}$)</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.sublist(${i}$, ${j}$)</span></td>
+					<td>Returns a new vector containing elements from index ${i}$ to index ${j.}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.size()</span></td>
+					<td>Returns the number of elements in the vector.</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${v}$.toString()</span></td>
+					<td>Returns a string representation of the vector.</td>
+					<td>E.g., <span class="monoText">"{1, 2, 3}"</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
 </section>
 
 {% endblock %}

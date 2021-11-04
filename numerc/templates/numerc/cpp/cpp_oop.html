@@ -1209,13 +1209,15 @@
 		Because copy constructors use references, there's an underlying problem we
 		might potentially encounter whenever we use them. Consider a class called
 		<span class="monoText">A</span> (for the sake of simplicity, we will think
-		of this outside the context of a real-world application):
+		of this outside the context of a real-world application and keep the
+		properties public):
 	</p>
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
 		using namespace std;
 		
 		class A {
+		public:
 			int x;
 			int *p;
 			A(int n) {
@@ -1260,6 +1262,547 @@
 		<span class="monoText">p</span> the pointer property
 		<span class="monoText">p</span> of the existing
 		<span class="monoText">A</span> instance.
+	</p>
+	<p>Instantiating:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+			
+		class A {
+		public:
+			int x;
+			int *p;
+			public:
+				A(int n) {
+					x = n;
+					p = new int[x];
+				}
+				A(A &t) {
+					x = t.x;
+					p = t.p;
+				}
+		};
+		
+		int main() {
+			A foo = A(3);
+			return 0;
+		}
+	</code></pre>
+	<p>
+		We've now created an instance of <span class="monoText">A</span> called
+		<span class="monoText">foo</span>. That instance has a property
+		<span class="monoText">x</span>, containing the
+		<span class="monoText">int 3</span>. More importantly, it contains a pointer
+		property <span class="monoText">p</span>, which points to an array in the
+		heap of size 5. Now what happens when we create a copy of
+		<span class="monoText">foo</span>?
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class A {
+		public:
+			int x;
+			int *p;
+			public:
+				A(int n) {
+					x = n;
+					p = new int[x];
+				}
+				A(A &t) {
+					x = t.x;
+					p = t.p;
+				}
+		};
+		
+		int main() {
+			A foo = A(3);
+			A boo = A(foo);
+			return 0;
+		}
+	</code></pre>
+	<p>
+		We've created a copy of <span class="monoText">foo</span> called
+		<span class="monoText">boo</span>. Did
+		<span class="monoText">boo</span> create a new array of its own? Well, we
+		can check by outputting the address. If
+		<span class="monoText">boo</span> created its own array, they should be
+		different:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class A {
+		public:
+			int x;
+			int *p;
+				A(int n) {
+					x = n;
+					p = new int[x];
+				}
+				A(A &t) {
+					x = t.x;
+					p = t.p;
+				}
+		};
+		
+		int main() {
+			A foo = A(3);
+			A boo = A(foo);
+			foo.p[0] = 1;
+			cout << foo.p << endl;
+			cout << boo.p << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		0x7fc6f1405c00
+		0x7fc6f1405c00
+	</code></pre>
+	<p>
+		They're the same address. The copy of <span class="monoText">foo</span>,
+		named <span class="monoText">boo</span>, didn't create its own array. We now
+		have two pointers pointing to the same array in the heap. This is something
+		we have to be very careful with. If we want a copy to have its own array in
+		the heap, we must write a
+		<span class="italicsText">deep copy constructor</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class A {
+		public:
+			int x;
+			int *p;
+				A(int n) {
+					x = n;
+					p = new int[x];
+				}
+				A(A &t) {
+					x = t.x;
+					p = new int[x]; // revision
+				}
+		};
+		
+		int main() {
+			A foo = A(3);
+			A boo = A(foo);
+			foo.p[0] = 1;
+			cout << foo.p << endl;
+			cout << boo.p << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		0x7fe603c05c00
+		0x7fe603c05c10
+	</code></pre>
+	<p>
+		Having revised our copy constructor, we now see that copies create their own
+		arrays.
+	</p>
+</section>
+
+<section id="scope_resolution">
+	<h2>Scope Resolution</h2>
+	<p>
+		Let's consider a simple class called
+		<span class="monoText">Rectangle</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Rectangle {
+			double length;
+			double height;
+			public:
+				Rectangle(double l = 1.0, double h = 1.0) {
+					length = l;
+					height = h;
+				}
+				// method
+				double area() { return length * height; }
+				double perimeter() { return 2 * (length + height); }
+		};
+		
+		int main() {
+			Rectangle r = Rectangle(2.1, 4.7);
+			cout << r.area() << endl;
+			cout << r.perimeter() << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		9.87
+		13.6
+	</code></pre>
+	<p>
+		While the class above works fine, it doesn't exactly coincide with C++'s
+		approach to OOP. For starters, a core rule of OOP is to hide away the
+		implementation details. Here, we can clearly see how the methods
+		<span class="monoText">perimeter()</span> and
+		<span class="monoText">area()</span> are implemented. The first step to
+		ensuring they're hidden is to use the
+		<span class="term">scope resolution operator</span>, denoted with
+		<span class="monoText">::</span> (two colons).
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Rectangle {
+			double length;
+			double height;
+			public:
+				Rectangle(double l=1.0, double h=1.0);
+				double area();
+				double perimeter();
+		};
+		
+		int main() {
+			Rectangle r = Rectangle(2.1, 4.7);
+			cout << r.area() << endl;
+			cout << r.perimeter() << endl;
+			return 0;
+		}
+		
+		Rectangle::Rectangle(double l, double h) {
+			length = l;
+			height = h;
+		};
+		double Rectangle::area() { return length * height; }
+		double Rectangle::perimeter() { return 2 * (length + height); }
+	</code></pre>
+	<pre class="language-bash"><code>
+		9.87
+		13.6
+	</code></pre>
+	<p>
+		Notice how we moved the implementations to below the
+		<span class="monoText">main()</span> function. On first glance, this appears
+		even worse than the original implementation, because now the code looks even
+		longer. However, the idea is to hide away these implementation details. What
+		we want to do next is move these implementations into separate files. First,
+		we create two files in the same directory: (1) a file called
+		<span class="monoText">Rectangle.cpp</span>, (2) a file called
+		<span class="monoText">Rectangle.h</span>, and (3) a file called
+		<span class="monoText">main.cpp</span>.
+	</p>
+	<p>Inside the <span class="monoText">Rectangle.cpp</span> file, we write:</p>
+	<pre class="language-cpp"><code>
+		#include "Rectangle.h"
+		Rectangle::Rectangle(double l, double h) {
+			length = l;
+			height = h;
+		};
+		double Rectangle::area() { return length * height; }
+		double Rectangle::perimeter() { return 2 * (length + height); }
+	</code></pre>
+	<p>Inside the <span class="monoText">Rectangle.h</span> file, we write:</p>
+	<pre class="language-cpp"><code>
+		#ifndef RECTANGLE_H
+		#define RECTANGLE_H
+
+		class Rectangle {
+			double length;
+			double height;
+			public:
+				Rectangle(double l=1.0, double h=1.0);
+				double area();
+				double perimeter();
+		};
+		#endif
+	</code></pre>
+	<p>Finally, inside the <span class="monoText">main.cpp</span>, we have:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include "Rectangle.h"
+		using namespace std;
+		
+		int main() {
+			Rectangle r = Rectangle(2.1, 4.7);
+			cout << r.area() << endl;
+			cout << r.perimeter() << endl;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Now, to run the main program, we have to compile the
+		<span class="monoText">Rectangle.cpp</span> file and the
+		<span class="monoText">main.cpp</span> file separately:
+	</p>
+	<pre class="language-bash"><code>
+		g++ -c Rectangle.cpp
+		g++ -c main.cpp
+	</code></pre>
+	<p>
+		This will output two object files,
+		<span class="monoText">Rectangle.o</span> and
+		<span class="monoText">main.o</span>. Because we now have to separate object
+		files, we'll need to link them into a single executable. We'll call this
+		single object file <span class="monoText">mainProgram</span>:
+	</p>
+	<pre class="language-bash"><code>
+		g++ -o mainProgram main.o Rectangle.o
+	</code></pre>
+	<p>Then when we execute the single executable:</p>
+	<pre class="language-cpp"><code>
+		./mainProgram
+		9.87
+		13.6
+	</code></pre>
+	<p>
+		It works as expected. This seems like a lot of trouble, but notice what
+		we've done: First, we've cleanly separated all of the different parts of our
+		program: (1) The main program resides in its own file; (2) the
+		<span class="monoText">Rectangle</span> class resides its own file; and (3)
+		the implementation details of the
+		<span class="monoText">Rectangle</span> class reside in their own files.
+		Then, even better, the <span class="monoText">Rectangle</span> class can be
+		passed around and use with any other program we write. We do not have to
+		copy and paste code. All we need to do is place the executable elsewhere,
+		and link it. Even better, the implementation details are completely hidden
+		away from the user.
+	</p>
+	<p>
+		Now, we might be thinking, that's so much work! We have to compile each of
+		these files separately and then link them ourselves? Is separation really
+		worth it for all the time spent? The answer is yes, it is. The amount of
+		time used to keep all of these different components separate is far less
+		than the amount of time we would spend having to debug and improve massive
+		source code files. Furthermore, the premise that compiling these files
+		separately takes too much time is not necessarily true. This is precisly why
+		we use <span class="italicsText">make files</span>.
+	</p>
+</section>
+
+<section id="make_files">
+	<h2>Make Files</h2>
+	<p>
+		On UNIX systems, <span class="monoText">make</span> is a tool provided to
+		simplify building executables from different project modules. In our
+		<span class="monoText">Rectangle</span> example above, we have three
+		separate modules: <span class="monoText">main.cpp</span>,
+		<span class="monoText">Rectangle.cpp</span>, and
+		<span class="monoText">mainProgram</span> (the final executable containing
+		all of the individual executables, linked). A
+		<span class="monoText">make</span> file is simply a text file that the
+		<span class="monoText">make</span> command referencs to build the
+		<span class="term">targets</span> &mdash; the modules we want built.
+	</p>
+	<p>
+		The basic idea behind <span class="monoText">make</span> is this: We want to
+		be able to write <span class="monoText">make ${t}$</span>, where ${t}$ is
+		some target file, after which ${t}$ is built. We also want to write things
+		like <span class="monoText">make clean</span>, upon which the
+		<span class="monoText">rm</span> command is executed on certain files
+		(thereby &#8220;cleaning up&#8221; previous executables).
+	</p>
+	<p>
+		To see how all this works, let's write a
+		<span class="monoText">make</span> file for our
+		<span class="monoText">Rectangle</span> example above. First, we note all
+		the different modules we have: (1)
+		<span class="monoText">main.cpp</span> (the main driver of our program); (2)
+		<span class="monoText">Rectangle.h</span> (the header file for the
+		<span class="monoText">Rectangle</span> class); and (3)
+		<span class="monoText">Rectangle.cpp</span> (the C++ implementation file for
+		the <span class="monoText">Rectangle</span> class).
+	</p>
+	<p>
+		Now, when run <span class="monoText">g++ -c main.cpp</span>, we generate the
+		object file (executable), <span class="monoText">main.o</span>. And when we
+		write <span class="monoText">g++ -c Rectangle.cpp</span>, we generate the
+		object file <span class="monoText">Rectangle.o</span>. These are two
+		individual compilations, resulting in two individual executables. For our
+		program to run, we need a single executable, where
+		<span class="monoText">main.o</span> and
+		<span class="monoText">Rectangle.o</span> are linked.
+	</p>
+	<p>
+		To link those files, we write:
+		<span class="monoText">g++ -o main main.o Rectangle.o</span>. The single
+		word <span class="monoText">main</span> is just the name of the final
+		executable. We could just as easily written it,
+		<span class="monoText">mainProgram</span> (as we did previously), or
+		<span class="monoText">mainDriver</span>, or
+		<span class="monoText">program</span>. Ideally, it should be descriptive.
+	</p>
+	<p>
+		We can run this entire process by executing
+		<span class="monoText">make</span>. To do so, we create a new file called
+		<span class="monoText">Makefile</span>, in the same directory as our
+		project. Inside <span class="monoText">Makefile</span>, we write the
+		following:
+	</p>
+	<pre class="language-bash"><code>
+		CC = g++
+		CFLAGS = -Wall -g
+		clean:
+			$(RM) main Rectangle
+		main: main.o Rectangle.o
+			$(CC) $(CFLAGS) -o main main.o Rectangle.o
+	</code></pre>
+	<p>
+		Let's go over what the symbols in this file mean. First,
+		<span class="monoText">CC</span> and
+		<span class="monoText">CFLAGS</span> are constants. The
+		<span class="monoText">CC</span> constant indicates which C compiler to use.
+		In this case, we indicated the <span class="monoText">g++</span> compiler.
+		We could also have indicated <span class="monoText">gcc</span>.
+	</p>
+	<p>
+		The <span class="monoText">CFLAGS</span> constant indicates what flags we
+		should pass to the compilation command. The
+		<span class="monoText">-g</span> flags tells the compiler to include
+		debugging information in the executable file. The
+		<span class="monoText">-Wall</span> flag tells the compiler to include
+		compiler warnings.
+	</p>
+	<p>
+		The next two symbols, <span class="monoText">clean</span> and
+		<span class="monoText">main</span>, are
+		<span class="italicsText">targets</span>. Targets can be file names used as
+		input, or the name of an action to be carried out. In the case where it's
+		the name of an action such as <span class="monoText">clean</span>, we
+		effectively create a new rule, called
+		<span class="monoText">make clean</span>. When we execute
+		<span class="monoText">make clean</span>, we execute the command
+		<span class="monoText">$(RM) main Rectangle</span>, or, in bash terms,
+		<span class="monoText">rm main.o rectangle.o</span>. This effectively cleans
+		up the object files we have in our project.
+	</p>
+	<p>
+		When we execute <span class="monoText">make main</span>, we execute the
+		command <span class="monoText">CC CFLAGS -o main main.o Rectangle.o</span>.
+		This command evaluates to,
+		<span class="monoText">g++ -Wall -g -o main main.o Rectangle.o</span>.
+		Notice that this is the line we executed when we didn't have the makefile.
+		The only difference is now we just need to write
+		<span class="monoText">make main</span>.
+	</p>
+	<p>Here's a slightly better makefile:</p>
+	<pre class="language-bash"><code>
+		CC = g++
+		CFLAGS = -Wall -g
+		objects = main.o Rectangle.o
+		all: $(objects)
+		clean:
+			$(RM) *.o all
+	</code></pre>
+	<p>
+		With the implementation above, we list all of the files we want compiled in
+		a variable called <span class="monoText">objects</span>. That variable is
+		then used for the target <span class="monoText">all</span>. When execute
+		<span class="monoText">make all</span>, the files
+		<span class="monoText">main.cpp</span> and
+		<span class="monoText">Rectangle.cpp</span> are compiled and linked.
+	</p>
+	<p>
+		To summarize, using scope resolution, we've separated our files program into
+		the following:
+	</p>
+
+	<pre class="language-cpp"><code>
+			// Rectangle.cpp
+			#include "Rectangle.h"
+			Rectangle::Rectangle(double l, double h) {
+				length = l;
+				height = h;
+			};
+			double Rectangle::area() { return length * height; }
+			double Rectangle::perimeter() { return 2 * (length + height); }
+		</code></pre>
+	<pre class="language-cpp"><code>
+			// Rectangle.h
+			#ifndef RECTANGLE_H
+			#define RECTANGLE_H
+	
+			class Rectangle {
+				double length;
+				double height;
+				public:
+					Rectangle(double l=1.0, double h=1.0);
+					double area();
+					double perimeter();
+			};
+			#endif
+		</code></pre>
+	<pre class="language-cpp"><code>
+			// main.cpp
+			#include &lt;iostream&gt;
+			#include "Rectangle.h"
+			using namespace std;
+			
+			int main() {
+				Rectangle r = Rectangle(2.1, 4.7);
+				cout << r.area() << endl;
+				cout << r.perimeter() << endl;
+				return 0;
+			}
+		</code></pre>
+</section>
+
+<section id="inline_functions">
+	<h2>Inline Functions</h2>
+	<p>Consider the following functions:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Foo {
+			public:
+				void func1() {
+					cout << "Hi" << endl;
+				}
+				void func2();
+		};
+		
+		void Foo::func2() {
+			cout << "Hi" << endl;
+		}
+		
+		int main() {
+			Foo x;
+			x.func1();
+			x.func2();
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Hi
+		Hi
+	</code></pre>
+	<p>
+		Notice that the function <span class="monoText">func1</span> is defined
+		inside the class definition for <span class="monoText">Foo</span>, while
+		<span class="monoText">func2</span> is defined outside the definition
+		through scope resolution.
+	</p>
+	<p>
+		Both <span class="monoText">func1</span> and
+		<span class="monoText">func2</span> perform the same computation; namely,
+		outputting the string <span class="monoText">"Hi"</span> to the console.
+		However, both functions go about it differently.
+	</p>
+	<p>
+		the function <span class="monoText">func1</span> is an
+		<span class="term">inline function</span>, while the function
+		<span class="monoText">func2</span> is a
+		<span class="term">non-inline function</span>. What's the difference between
+		an inline function and a non-inline function?
+	</p>
+	<p>
+		With an inline function, the machine code is &#8220;copied-and-pasted&#8221;
+		directly into the function that calls functions. In this case, the function
+		<span class="monoText">func1()</span> has its machine code directly pasted
+		into the <span class="monoText">main()</span> function's machine code. In
+		contrast, the function <span class="monoText">func2()</span> will have its
+		machine code allocated in a separate stack.
 	</p>
 </section>
 

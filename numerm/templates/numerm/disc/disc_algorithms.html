@@ -296,4 +296,175 @@
 		list, say ${[ 1, 3, 2, 4],}$ and output an ordered list, ${[1, 2, 3, 4].}$
 	</p>
 </section>
+
+<section id="bubble_sort">
+	<h3>Bubble Sort</h3>
+	<p>
+		The first sorting algorithm we consider the
+		<span class="term">bubble sort</span> (also called the
+		<span class="italicsText">sinking sort</span>). The earliest reference of
+		bubble sort was in a 1956 paper by computer scientist Edward H.
+		Friend.<label for="friendE" class="margin-toggle"><sup></sup></label>
+		<input type="checkbox" id="friendE" class="margin-toggle sidenote-number" />
+		<span class="sidenote"
+			>Friend, E., Sorting on Electronic Computer Systems, J. ACM 3, 134-168
+			(1956) (the article refers to the algorithm as "sorting by exchange"
+			rather than bubble sort).</span
+		>
+		Bubble sort is straightforward: We look at the first element, then compare
+		it with the second. If the second is larger than the first, we switch their
+		positions. Otherwise, we leave them as is. Then we look at the second
+		element, and compare it with the third. If the third element is larger, we
+		switch their positions. Otherwise, we leave them as is. Then we look at the
+		third, the fourth, the fifth, and so on. We continue this process over and
+		over again until no switches are made. Graphically, this has the appearance
+		of the largest elements &#8220;bubbling up&#8221; the list.
+	</p>
+	<p>
+		For example, suppose we have the list ${\lang 3, 4, 1, 8, 2 \rang.}$ The
+		bubble sort for this list would look as such:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th colspan="4">Initial state: ${\ell = \lang 3, 4, 1, 8, 2 \rang}$</th>
+			</thead>
+			<thead>
+				<th>Pass</th>
+				<th>Result of: ${\ell[i] > \ell[i + 1]}$</th>
+				<th>Swap?</th>
+				<th>Resulting State</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td rowspan="4">1</td>
+					<td>${3 > 4 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 3, 4, 1, 8, 2 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${4 > 1 \implies }$ true</td>
+					<td>yes</td>
+					<td>${\lang 3, 1, 4, 8, 2 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${4 > 8 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 3, 1, 4, 8, 2 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${8 > 2 \implies }$ true</td>
+					<td>yes</td>
+					<td>${\lang 3, 1, 4, 2, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td rowspan="4">2</td>
+					<td>${3 > 1 \implies }$ true</td>
+					<td>yes</td>
+					<td>${\lang 1, 3, 4, 2, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${3 > 4 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 3, 4, 2, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${4 > 2 \implies }$ true</td>
+					<td>yes</td>
+					<td>${\lang 1, 3, 2, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${4 > 8 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 3, 2, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td rowspan="4">3</td>
+					<td>${1 > 3 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 3, 2, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${3 > 2 \implies }$ true</td>
+					<td>yes</td>
+					<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${3 > 4 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${4 > 8 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td rowspan="4">4</td>
+					<td>${1 > 2 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${2 > 3 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${3 > 4 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td>${4 > 8 \implies }$ false</td>
+					<td>no</td>
+					<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
+				</tr>
+				<tr>
+					<td colspan="4">end</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>Implementing the algorithm in pseudocode:</p>
+	<figure class="math-display">
+		<div class="syntax">
+			<ul>
+				<li>${\ell = \lang a_1, a_2, \ldots, a_n \rang : n \geq 2}$</li>
+				<li>bubble-sort(${\ell}$)</li>
+				<ul>
+					<li>
+						<span class="monoText">for ${i \coloneqq 1}$ to ${n - 1}$:</span>
+					</li>
+					<ul>
+						<li>
+							<span class="monoText">for ${j \coloneqq 1 }$ to ${n - i}$:</span>
+						</li>
+						<ul>
+							<li>
+								${\texttt{if } a_j > a_{j + 1} \implies \texttt{swap}(a_j,
+								a_{j+1}) }$
+							</li>
+						</ul>
+					</ul>
+				</ul>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		As we can tell, the bubble sort algorithm is not very efficient. However,
+		it's worth investigating because (1) it's an algorithm traditionally
+		presented early in the study of algorithms, and (2) it provides a good
+		exercise in analyzing algorithms.
+	</p>
+</section>
+
+<section id="insertion_sort">
+	<h3>Insertion Sort</h3>
+	<p>
+		Like bubble sort, <span class="term">insertion sort</span> is not very
+		efficient, but we again explore its mechanics for the aforementioned
+		reasons.
+	</p>
+</section>
 {% endblock %}

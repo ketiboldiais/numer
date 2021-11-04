@@ -163,23 +163,44 @@ urlpatterns = [
 
 	# C++ paths
 	path("cpp_preface", views.cpp_preface, name="cpp_preface"),
+
 	path("cpp_errors", views.cpp_errors, name="cpp_errors"),
+
 	path("cpp_variablesAndTypes", views.cpp_variablesAndTypes, name="cpp_variablesAndTypes"),
+
 	path("cpp_basicOperators", views.cpp_basicOperators, name="cpp_basicOperators"),
+
 	path("cpp_functions", views.cpp_functions, name="cpp_functions"),
+
 	path("cpp_controlFlow", views.cpp_controlFlow, name="cpp_controlFlow"),
-	path("cpp_preprocessor", views.cpp_preprocessor, name="cpp_preprocessor"),
-	path("cpp_namespaces", views.cpp_namespaces, name="cpp_namespaces"),
-	path("cpp_dataStructuresIntro", views.cpp_dataStructuresIntro, name="cpp_dataStructuresIntro"),
-	path("cpp_algorithmIntro", views.cpp_algorithmIntro, name="cpp_algorithmIntro"),
-	path("cpp_insertionSort", views.cpp_insertionSort, name="cpp_insertionSort"),
-	path("cpp_mergeSort", views.cpp_mergeSort, name="cpp_mergeSort"),
-	path("cpp_peakFinder", views.cpp_peakFinder, name="cpp_peakFinder"),
-	path("cpp_hashing", views.cpp_hashing, name="cpp_hashing"),
+
 	path("cpp_collections", views.cpp_collections, name="cpp_collections"),
+
+	path("cpp_arrays", views.cpp_arrays, name="cpp_arrays"),
+
+	path("cpp_preprocessor", views.cpp_preprocessor, name="cpp_preprocessor"),
+
+	path("cpp_namespaces", views.cpp_namespaces, name="cpp_namespaces"),
+
+	path("cpp_dataStructuresIntro", views.cpp_dataStructuresIntro, name="cpp_dataStructuresIntro"),
+
+	path("cpp_algorithmIntro", views.cpp_algorithmIntro, name="cpp_algorithmIntro"),
+
+	path("cpp_insertionSort", views.cpp_insertionSort, name="cpp_insertionSort"),
+
+	path("cpp_mergeSort", views.cpp_mergeSort, name="cpp_mergeSort"),
+
+	path("cpp_peakFinder", views.cpp_peakFinder, name="cpp_peakFinder"),
+
+	path("cpp_hashing", views.cpp_hashing, name="cpp_hashing"),
+
+
 	path("cpp_pointers", views.cpp_pointers, name="cpp_pointers"),
+
 	path("cpp_sorting", views.cpp_sorting, name="cpp_sorting"),
+
 	path("cpp_dynamicArrays", views.cpp_dynamicArrays, name="cpp_dynamicArrays"),
+
 	path("cpp_oop", views.cpp_oop, name="cpp_oop"),
 
 	# C# paths
@@ -203,8 +224,11 @@ urlpatterns = [
 
 	# Software Design
 	path("des_index", views.des_index, name="des_index"),
+
 	path("des_naming", views.des_naming, name="des_naming"),
+
 	path("des_functions", views.des_functions, name="des_functions"),
+
 	path("des_classes", views.des_classes, name="des_classes"),
 
 ]

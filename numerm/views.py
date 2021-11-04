@@ -105,6 +105,9 @@ def disc_combinatorics(request):
 def disc_algorithms(request):
 	return render(request, "numerm/disc/disc_algorithms.html")
 
+def disc_graphTheory(request):
+	return render(request, "numerm/disc/disc_graphTheory.html")
+
 # continuous math functions
 def cont_intervals(request):
 	return render(request, "numerm/cont/cont_intervals.html")
@@ -214,12 +217,15 @@ def calc_generalRules(request):
 	return render(request, "numerm/calc1/calc_generalRules.html")
 
 # Sequences & Series
-
 def sqs_index(request):
 	return render(request, "numerm/sqs/sqs_index.html")
 
 def sqs_foundations(request):
 	return render(request, "numerm/sqs/sqs_foundations.html")
+
+# Physics
+def phys_vectors(request):
+		return render(request, "numerm/phys/phys_vectors.html")
 
 
 

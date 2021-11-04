@@ -308,34 +308,52 @@ def ml_functions(request):
 #  C++ functions
 def cpp_preface(request):
 	return render(request, "numerc/cpp/cpp_preface.html")
+
 def cpp_errors(request):
 	return render(request, "numerc/cpp/cpp_errors.html")
+
 def cpp_variablesAndTypes(request):
 	return render(request, "numerc/cpp/cpp_variablesAndTypes.html")
-def cpp_basicOperators(request):
-	return render(request, "numerc/cpp/cpp_basicOperators.html")
-def cpp_controlFlow(request):
-	return render(request, "numerc/cpp/cpp_controlFlow.html")
-def cpp_functions(request):
-	return render(request, "numerc/cpp/cpp_functions.html")
-def cpp_preprocessor(request):
-	return render(request, "numerc/cpp/cpp_preprocessor.html")
-def cpp_namespaces(request):
-	return render(request, "numerc/cpp/cpp_namespaces.html")
-def cpp_dataStructuresIntro(request):
-	return render(request, "numerc/cpp/cpp_dataStructuresIntro.html")
-def cpp_algorithmIntro(request):
-	return render(request, "numerc/cpp/cpp_algorithmIntro.html")
-def cpp_insertionSort(request):
-	return render(request, "numerc/cpp/cpp_insertionSort.html")
-def cpp_mergeSort(request):
-	return render(request, "numerc/cpp/cpp_mergeSort.html")
-def cpp_peakFinder(request):
-	return render(request, "numerc/cpp/cpp_peakFinder.html")
-def cpp_hashing(request):
-	return render(request, "numerc/cpp/cpp_hashing.html")
+
 def cpp_collections(request):
 	return render(request, "numerc/cpp/cpp_collections.html")
+
+def cpp_arrays(request):
+	return render(request, "numerc/cpp/cpp_arrays.html")
+
+def cpp_basicOperators(request):
+	return render(request, "numerc/cpp/cpp_basicOperators.html")
+
+def cpp_controlFlow(request):
+	return render(request, "numerc/cpp/cpp_controlFlow.html")
+
+def cpp_functions(request):
+	return render(request, "numerc/cpp/cpp_functions.html")
+
+def cpp_preprocessor(request):
+	return render(request, "numerc/cpp/cpp_preprocessor.html")
+
+def cpp_namespaces(request):
+	return render(request, "numerc/cpp/cpp_namespaces.html")
+
+def cpp_dataStructuresIntro(request):
+	return render(request, "numerc/cpp/cpp_dataStructuresIntro.html")
+
+def cpp_algorithmIntro(request):
+	return render(request, "numerc/cpp/cpp_algorithmIntro.html")
+
+def cpp_insertionSort(request):
+	return render(request, "numerc/cpp/cpp_insertionSort.html")
+
+def cpp_mergeSort(request):
+	return render(request, "numerc/cpp/cpp_mergeSort.html")
+
+def cpp_peakFinder(request):
+	return render(request, "numerc/cpp/cpp_peakFinder.html")
+
+def cpp_hashing(request):
+	return render(request, "numerc/cpp/cpp_hashing.html")
+
 def cpp_pointers(request):
 	return render(request, "numerc/cpp/cpp_pointers.html")
 

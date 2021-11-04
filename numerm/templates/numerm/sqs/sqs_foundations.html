@@ -1,14 +1,30 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
-<h1>Number Sequences</h1>
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Review of arithmetic, geometric, and Fibonacci sequences and series, summations, and products."
+/>
+{% endblock %} {% block title %}
+<title>Sequences & Series</title>
+{% endblock %} {% block content %}
+<h1>Sequences & Series</h1>
 <section class="intro">
 	<p>
-		<span class="drop">A</span> <span class="term">number sequence</span> is an ordered list of numbers.
-		In computer science, we might think of that sequence as an
-		<span class="italicsText">array</span>. The sequence's order is defined by a
-		rule. The rule might be described symbolically (to be discussed momentarily)
-		or with words. For example, the rule &#8220;The sequence starts at 1 and
-		each term is 2 more than the previous term&#8221; yields the sequence:
-		${\lang 1, 3, 5, 7, 9, 11, \ldots \rang.}$
+		<span class="drop">A</span> <span class="term">number sequence</span> is an
+		ordered list of numbers. In computer science, we might think of that
+		sequence as an <span class="italicsText">array</span>. The sequence's order
+		is defined by a rule. The rule might be described symbolically (to be
+		discussed momentarily) or with words. For example, the rule &#8220;The
+		sequence starts at 1 and each term is 2 more than the previous term&#8221;
+		yields the sequence: ${\lang 1, 3, 5, 7, 9, 11, \ldots \rang.}$
+		<label for="natnums" class="margin-toggle">&#8853;</label>
+		<input type="checkbox" id="natnums" class="margin-toggle" />
+		<span class="marginnote"
+			>Note that we define the natural numbers ${N}$ to include 0. Other texts
+			may define ${N}$ as not including ${0.}$ Because we define the natural
+			numbers to include ${0,}$ the first term of a sequence has an index of
+			${0.}$ I.e., in this text, we will always start the ordinal numbers from
+			${0.}$</span
+		>
 	</p>
 	<figure class="math-display">
 		<div class="rule">
@@ -25,6 +41,31 @@
 			</p>
 		</div>
 	</figure>
+	<p>
+		Sequences are inherently functions. Accordingly, every sequence is a
+		relation between two sets, the <span class="italicsText">domain</span> and
+		the <span class="italicsText">image</span>. The domain of a sequence is
+		always a subset of the integers; i.e., either the natural numbers ${\N,}$ or
+		the positive integers ${\Z^{+}.}$ The terms of the sequence are the elements
+		of the image that map to the domain. That image need not be integers; it
+		could be floating point numbers, strings, or various constants.
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> A sequence is a
+				<span class="italicsText">function</span> from a subset of the set of
+				integers to a set ${S.}$ The notation ${a_n}$ denotes the
+				<span class="italicsText">image</span> of the integer ${n.}$ An image of
+				the set integer ${n}$ is called the <span class="term">term</span> of
+				the sequence.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Example: The sequence ${\lang a_n : a_n = \dfrac{1}{n} \rang}$ denotes the
+		sequence ${\lang 1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \ldots \rang.}$
+	</p>
 	<p>
 		Some sequences carry on forever. We call such sequences
 		<span class="term">infinite sequences</span>. For example, the sequence of
@@ -269,25 +310,29 @@
 			src="{% static 'images/sqs_pyramid.svg' %}"
 			alt="Pyramid recursion"
 			loading="lazy"
-			width="220w"
-			height="220vw"
+			width="150w"
+			height="150vw"
 		/>
 		<figcaption>A pyramid with blocks, where ${i}$ is a row.</figcaption>
 	</figure>
-	<p>We can express this pyramid as a number sequence. For each row, represend by ${i,}$ there are a certain number of blocks. In words: &#8220;A pyramid where the top row consists of 1 block, and subsequent rows consist of 1 block more than the preceding.&#8221; Listing the terms: ${\lang 1, 2, 3, 4, \ldots \rang.}$ Or, with an explicit formula: ${u_n = n}$ Confirming the formula:</p>
+	<p>
+		We can express this pyramid as a number sequence. For each row, represend by
+		${i,}$ there are a certain number of blocks. In words: &#8220;A pyramid
+		where the top row consists of 1 block, and subsequent rows consist of 1
+		block more than the preceding.&#8221; Listing the terms: ${\lang 1, 2, 3, 4,
+		\ldots \rang.}$ Or, with an explicit formula: ${u_n = n}$ Confirming the
+		formula:
+	</p>
 	<figure class="math-display">
 		<div>
-			$$
-				\begin{align*}
-					 u_1 &= 1 \\
-					 u_2 &= 2 \\
-					 u_3 &= 3 \\
-					 \vdots
-				\end{align*}
+			$$ \begin{align*} u_0 &= 1 \\ u_1 &= 2 \\ u_2 &= 3 \\ \vdots \end{align*}
 			$$
 		</div>
 	</figure>
-	<p>Or, with a recurrence formula: ${u_1 = 1; \space u_n = u_{n-1} + 1; \space n > 1.}$ Finally, with a graph:</p>
+	<p>
+		Or, with a recurrence formula: ${u_0 = 1; \space u_n = u_{n-1} + 1; \space n
+		> 1.}$ Finally, with a graph:
+	</p>
 	<figure>
 		<img
 			src="{% static 'images/sqs_pyramidGraph.svg' %}"
@@ -296,7 +341,336 @@
 			width="220w"
 			height="220vw"
 		/>
-		<figcaption>With a graph, we do not draw any line between the points; these are strictly integer values.</figcaption>
+		<figcaption>
+			With a graph, we do not draw any line between the points; these are
+			strictly integer values.
+		</figcaption>
 	</figure>
+</section>
+
+<section id="arithmetic_sequence">
+	<h2>Arithmetic Sequence</h2>
+	<p>Consider the following sequence ${A}$:</p>
+	<figure class="math-display">
+		<div>
+			<p>${A = \lang 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, \ldots \rang}$</p>
+		</div>
+	</figure>
+	<p>
+		Each subsequent element in the sequence ${A}$ differs from the previous term
+		by ${0.5,}$ or ${\frac{1}{2}.}$ This is an example of an arithmetic
+		sequence. An <span class="term">arithmetic sequence</span> is a sequence
+		where each subsequent term differs from the previous by the same fixed
+		number. Arithmetric sequences are also called
+		<span class="italicsText">arithmetic progressions</span>.
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> An
+				<span class="italicsText">arithmetic sequence</span> is a sequence of
+				the form:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\lang a, {a + d}, {a + 2d}, {\ldots}, {a + nd} \rang}$</p>
+				</div>
+			</figure>
+			<p>
+				where ${a,}$ the initial term, and ${d,}$ the common difference, are
+				real numbers.
+			</p>
+			<p>
+				Alternatively, the sequence ${\lang u_n \rang}$ is arithmetic if and
+				only if ${u_{n + 1} - u_{n} = d.}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		We can think of arithmetic sequences as analogous the linear function ${f(x)
+		= dx + a.}$ For example, with the sequence ${C = \lang 1, 3, 5, 7, 9, \ldots
+		\rang},$ the linear function is ${f(x) = 2x + 1,}$ where ${x \in \N.}$
+	</p>
+	<p>
+		<span class="topic">Why &#8220;arithmetic&#8221;?</span>
+		The arithmetic sequence is called arithmetic because every term in the
+		sequence is the <span class="term">arithmetic mean</span> of its two
+		adjacent terms. Suppose we had a sequence of the form ${\lang a, b, c
+		\rang.}$ If we equate the common difference:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${b - a = c - b}$</p>
+		</div>
+	</figure>
+	<p>Rearranging, we have:</p>
+	<figure class="math-display">
+		<div>
+			<p>${2b = a + c}$</p>
+		</div>
+	</figure>
+	<p>The middle term, ${b,}$ is:</p>
+	<figure class="math-display">
+		<div>
+			<p>${b = \dfrac{a + c}{2}}$</p>
+		</div>
+	</figure>
+	<p>
+		For example, consider the arithmetic sequence ${\lang 10, 11, 12 \rang.}$
+		${10 + 12 = 22.}$ Divide ${22}$ by ${2,}$ and we have ${11,}$ the middle
+		term.
+	</p>
+
+	<h3>General Term Formula</h3>
+	<p>
+		Let's say the first term of some arithmetic sequence is ${u_0,}$ and the
+		common difference is ${d.}$ Because each term in an arithmetic sequence is
+		some number ${d}$ plus the previous term, it follows that:
+	</p>
+	<figure class="math-display">
+		<div>
+			$$ u_1 = u_0 + d \\[1em] u_2 = u_0 + 2d \\[1em] u_3 = u_0 + 3d \\[1em] u_4
+			= u_0 + 4d \\[1em] \vdots $$
+		</div>
+	</figure>
+	<p>
+		We can generalize this pattern into a formula: ${u_n = u_0 + nd,}$ where ${n
+		\in \N.}$ <label for="aside1" class="margin-toggle"><sup></sup></label>
+		<input type="checkbox" id="aside1" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>Where the natural numbers are defined as not including 0, the formula is:
+			${u_n = u_1 + (n - 1)d.}$ The ${-1}$ must be included because where ${0
+			\notin \N,}$ the index starts at 1.</span
+		>
+		The number ${n}$ is the term number, or the
+		<span class="term">index</span> of the term and the number ${d}$ is called
+		the
+		<span class="term">common difference.</span>
+	</p>
+</section>
+
+<section id="geometric_sequence">
+	<h2>Geometric Sequences</h2>
+	<p>Consider the following sequence:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\lang 2, 10, 50, 250, \ldots \rang}$</p>
+		</div>
+	</figure>
+	<p>
+		In this sequence, each subsequent term is 5 times the previous. We call this
+		sequence a <span class="term">geometric sequence</span>. A sequence is
+		geometric if subsequent terms are obtained by multiplying the previous term
+		with the same non-zero constant. Geometric sequences are also called
+		<span class="italicsText">geometric progressions</span>.
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> A geometric sequence is a
+				sequence of the form:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${a, ar, ar^2, \ldots, ar^n, \ldots}$</p>
+				</div>
+			</figure>
+			<p>
+				where the initial term ${a}$ and the
+				<span class="term">common ratio</span> ${r}$ are real numbers.
+			</p>
+			<p>
+				Alternatively, the sequence ${\lang u_n \rang}$ is geometric if, and
+				only if, ${r = \dfrac{u_{n+1}}{u_n}}$ for all ${n, r \in \Z^{+}.}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Notice that the geometric sequence is analogous, to the exponential function
+		${f(x) = ar^x.}$ For example, consider the sequence ${B = \lang 2, 4, 8, 16,
+		32, 64, \ldots \rang.}$ Each term in this sequence is a product of 2 times
+		the previous term. Accordingly, we can represent this sequence as:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${u = 2; u_n = u2^n,}$ where ${u, n \in \N}$</p>
+		</div>
+	</figure>
+	<p>
+		Thus, ${u_0 = 2(2^0) = 2,}$ ${u_1 = 2(2^1) = 4,}$ ${u_2 = 2(2^2) = 8,}$
+		${u_3 = 2(2^3) = 16,}$ and so on. In terms of functions:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${f(x) = 2^x,}$ where ${x \in \N}$</p>
+		</div>
+	</figure>
+
+	<p>
+		<span class="topic">Why &#8220;Geometric?&#8221;</span> The geometric
+		sequence is so named because a term in the sequence is the
+		<span class="term">geometric mean</span> of its adjacent terms. Say we had
+		the geometric sequence ${\lang x, y, z \rang.}$ From the definition of a
+		geometric sequence, it follows that:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{y}{x} = \dfrac{z}{y}}$</p>
+		</div>
+	</figure>
+	<p>
+		It then follows that ${y^2 =xz.}$ Accordingly, ${y = \pm \sqrt{xz}.}$ The
+		expression ${\sqrt{xz}}$ is the
+		<span class="italicsText">geometric mean</span> of ${x}$ and ${z,}$ the two
+		terms adjacent to ${y.}$
+	</p>
+
+	<h3>General Term Formula</h3>
+	<p>
+		Let's say the initial term of a geometric sequence is ${u_0,}$ and the
+		common ratio is ${r.}$ It follows that:
+	</p>
+	<figure class="math-display">
+		<div>
+			$$ \begin{aligned} u_1 &= u_0r \\[1em] u_2 &= u_0r^2 \\[1em] u_3 &= u_0r^3
+			\\[1em] u_4 &= u_0r^4 \\[1em] \vdots \end{aligned} $$
+		</div>
+	</figure>
+	<p>
+		Like the arithmetic sequence, we can generalize this pattern into a formula.
+		The ${n^{\text{\scriptsize{th}}}}$ term of a geometric sequence is given by:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${u_n = u_0r^n}$</p>
+		</div>
+	</figure>
+	<p>
+		Here, ${n \in \N,}$ and ${u_n}$ is the ${n^{\text{\scriptsize{th}}}}$ term.
+		${n}$ is the index of the term, ${u_0}$ is the initial term, and ${r}$ is
+		the common ratio.
+		<label for="aside3" class="margin-toggle"><sup></sup></label>
+		<input type="checkbox" id="aside3" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>Where ${0 \notin \N,}$ the formula is ${u_n = u_1r^{n-1}.}$ Again,
+			because the index starts at ${1,}$ we must subtract ${1}$ from the
+			index.</span
+		>
+	</p>
+</section>
+
+<section id="harmonic_sequence">
+	<h2>Harmonic Sequences</h2>
+	<p>Earlier, we introduced the following sequence:</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\lang 1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4}, \frac{1}{5}, \ldots
+				\rang}$
+			</p>
+		</div>
+	</figure>
+	<p>This is an example of a <span class="term">harmonic sequence</span>.</p>
+</section>
+
+<section id="recurrence_relations">
+	<h2>Recurrence Relations</h2>
+	<p>
+		A <span class="term">recurrence relation</span> (or
+		<span class="italicsText">recurrence formula</span>) is an equation that
+		describes the ${n^{\text{\scriptsize{th}}}}$ term of a sequence by using the
+		preceding terms. Accordingly, every recurrence formula must specify the
+		initial terms necessary for the formula to begin with. For example, to
+		denote the sequence ${4, 7, 10, 13, 16, \ldots}$ we can write:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${u_0 = 4, u_n = u_{n-1} + 3, n > 1}$</p>
+		</div>
+	</figure>
+	<p>
+		Recurrence relations are the bedrock of
+		<span class="term">recursion</span> in programming. Indeed, understanding
+		recursion is a natural consequence of understanding recurrence relations.
+		Let's state the formal definition of a recurrence relation:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> A
+				<span class="italicsText">recurrence relation</span> for a given
+				sequence ${\lang u_n \rang}$ is an equation that expresses ${\lang u_n
+				\rang}$ in terms of one or more of the previous terms of the sequence;
+				i.e., ${u_0, u_1, \ldots, u_{n-1},}$ where ${n \in \N.}$ The sequence
+				${\lang u_n \rang}$ is a <span class="italicsText">solution</span> of
+				the recurrence relation if all its terms satisfy the recurrence
+				relation. The recurrence relation
+				<span class="italicsText">recursively defines</span> the sequence
+				${u_n.}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Recurrence relations must always specify
+		<span class="term">initial conditions</span>. The initial conditions are the
+		premises that must be true before the recurrence relation is found to be
+		true or false. For example, consider the sequence ${\lang 1, 3, 9, 27, 81,
+		\ldots \rang.}$ This is a geometric sequence, where each term is 3 times the
+		previous. We can define this sequence with the following recurrence
+		relation:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${u_0 = 1; u_n = u_0(3^n),}$ where ${n \in \N}$</p>
+		</div>
+	</figure>
+	<p>
+		In this case, the initial condition is ${u_0 = 1.}$ In other words, the
+		initial term in the sequence is 1. This must be stated for the recurrence
+		relation to be properly interpreted; otherwise, ${u_0}$ could be any number,
+		in which case it would be not correctly define the sequence.
+	</p>
+
+	<h3>Fibonacci Sequence</h3>
+	<p>
+		A recurrence relation can have multiple initial conditions. Take for example
+		a particularly useful structure, the
+		<span class="term">Fibonacci sequence</span>. We will repeatedly see this
+		sequence throughout the other volumes, so it's worth pointing out at this
+		juncture. Moreover, it lends itself well to a recursive definition.
+	</p>
+	<p>The Fibonacci sequence looks like this:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\lang 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, \ldots \rang}$</p>
+		</div>
+	</figure>
+	<p>
+		Notice a pattern? Each term in the sequence is the sum of the two previous
+		terms, <span class="underlineText">starting from 0 and 1</span>. We
+		underline the preceding clause because it evidences two initial conditions.
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> The
+				<span class="italicsText">Fibonaci sequence</span> ${\lang f_0, f_1,
+				f_2, \ldots, f_n \rang}$ is recursively defined as follows:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${f_0 = 0; \space f_1 = 1; \space f_n = f_{n - 1} + f_{n - 2}}$</p>
+				</div>
+			</figure>
+			<p>
+				where ${\{ n = \N \mid n \neq 0, 1 \},}$ i.e., ${n \in \{ 2, 3, 4, 5, 6,
+				\ldots \}}$
+			</p>
+		</div>
+	</figure>
+</section>
+
+<section id="summations">
+	<h2>Summations</h2>
 </section>
 {% endblock %}
