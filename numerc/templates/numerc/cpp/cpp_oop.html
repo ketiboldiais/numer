@@ -1804,6 +1804,127 @@
 		contrast, the function <span class="monoText">func2()</span> will have its
 		machine code allocated in a separate stack.
 	</p>
+	<p>
+		If we want <span class="monoText">func2()</span> to be treated as an inline
+		function, we simply include the
+		<span class="monoText">inline</span> keyword:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+		
+		class Foo {
+			public:
+				void func1() {
+					cout << "Hi" << endl;
+				}
+				inline void func2();
+		};
+		
+		void Foo::func2() {
+			cout << "Hi" << endl;
+		}
+		
+		int main() {
+			Foo x;
+			x.func1();
+			x.func2();
+			return 0;
+		}
+	</code></pre>
+</section>
+
+<section id="this">
+	<h2><span class="monoText">this</span></h2>
+	<p>Suppose we wrote a class called <span class="monoText">City</span>:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;string&gt;
+		using namespace std;
+		
+		class City {
+			string city_name;
+			int population;
+			City(string cn = "uninitialized", int p = 0) {
+				city_name = cn;
+				population = p;
+			}
+		};
+		
+		int main() {
+			return 0;
+		}
+	</code></pre>
+	<p>
+		The code above runs well, but notice the constructor's parameters. Those
+		names &mdash; <span class="monoText">cn</span> and
+		<span class="monoText">p</span> &mdash; are pretty bad. Names should always
+		be descriptive. We could get around this problem by simply writing a more
+		descriptive name, but what would be more descriptive than
+		<span class="monoText">city_name</span>? We don't want to use something like
+		<span class="monoText">cityName</span>; differentiating names purely on the
+		way they look is almost always a bad idea. What if we instead just used the
+		original identifiers, <span class="monoText">city_name</span> and
+		<span class="monoText">population</span>?
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;string&gt;
+		using namespace std;
+		
+		class City {
+			string city_name;
+			int population;
+			City(string city_name = "uninitialized", int population = 0) {
+				city_name = city_name;
+				population = population;
+			}
+		};
+		
+		int main() {
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		city.cpp:8:13: warning: explicitly assigning value of variable of type 'std::__1::string' (aka 'basic_string&lt;char&gt;') to itself [-Wself-assign-overloaded]
+					city_name = city_name;
+					~~~~~~~~~ ^ ~~~~~~~~~
+		city.cpp:9:14: warning: explicitly assigning value of variable of type 'int' to itself [-Wself-assign]
+					population = population;
+					~~~~~~~~~~ ^ ~~~~~~~~~~
+		city.cpp:6:6: warning: private field 'population' is not used [-Wunused-private-field]
+		int population;
+	</code></pre>
+	<p>
+		Nope. Not a good idea. The compiler can't differentiate between the variable
+		<span class="monoText">city_name</span> and
+		<span class="monoText">population</span> inside the class, and the
+		parameters <span class="monoText">city_name</span> and
+		<span class="monoText">population</span>. And fairly so; just reading those
+		two lines looks off.
+	</p>
+	<p>The solution? Use the <span class="monoText">this</span> keyword:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;string&gt;
+		using namespace std;
+		
+		class City {
+			string city_name;
+			int population;
+			City(string city_name = "uninitialized", int population = 0) {
+				this->city_name = city_name;
+				this->population = population;
+			}
+		};
+		
+		int main() {
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Compiling the code above, we don't get any problems. The
+		<span class="monoText">this</span> keyword operates as it sounds like. It
+		tells the <span class="monoText">compiler</span>, &#8220;I'm refer to
+		<span class="underlineText">this object's</span> variable.&#8221;
+	</p>
 </section>
 
 {% endblock %}
