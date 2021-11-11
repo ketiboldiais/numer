@@ -10,19 +10,15 @@ urlpatterns = [
 	path("arch_logic", views.arch_logic, name="arch_logic"),
 	
 # Python paths
-	path("py_arithmeticOperators", views.py_arithmeticOperators, name="py_arithmeticOperators"),
 	path("py_preface", views.py_preface, name="py_preface"),
 	path("py_computability", views.py_computability, name="py_computability"),
 	path("py_programs", views.py_programs, name="py_programs"),
 	path("py_libraryImport", views.py_libraryImport, name="py_libraryImport"),
-	path("py_objects", views.py_objects, name="py_objects"),
-	path("py_typeConvert", views.py_typeConvert, name="py_typeConvert"),
+
 	path("py_variables", views.py_variables, name="py_variables"),
-	path("py_comparisonOperators", views.py_comparisonOperators, name="py_comparisonOperators"),
-	path("py_booleanOperators", views.py_booleanOperators, name="py_booleanOperators"),
+
 	path("py_branchingPrograms", views.py_branchingPrograms, name="py_branchingPrograms"),
-	path("py_strings", views.py_strings, name="py_strings"),
-	path("py_io", views.py_io, name="py_io"),
+
 	path("py_loops", views.py_loops, name="py_loops"),
 	path("py_bisectionSearch", views.py_bisectionSearch, name="py_bisectionSearch"),
 	path("py_floatsFractions", views.py_floatsFractions, name="py_floatsFractions"),
@@ -33,7 +29,6 @@ urlpatterns = [
 	path("py_keywordArguments", views.py_keywordArguments, name="py_keywordArguments"),
 	path("py_specifications", views.py_specifications, name="py_specifications"),
 	path("py_recursion", views.py_recursion, name="py_recursion"),
-	path("py_files", views.py_recursion, name="py_files"),
 	path("py_structuredTypes", views.py_structuredTypes, name="py_structuredTypes"),
 	path("py_tuples", views.py_tuples, name="py_tuples"),
 	path("py_lists", views.py_lists, name="py_lists"),
@@ -160,6 +155,7 @@ urlpatterns = [
 	path("ml_simpleData", views.ml_simpleData, name="ml_simpleData"),
 	path("ml_customDataTypes", views.ml_customDataTypes, name="ml_customDataTypes"),
 	path("ml_functions", views.ml_functions, name="ml_functions"),
+	path("ml_typeInference", views.ml_typeInference, name="ml_typeInference"),
 
 	# C++ paths
 	path("cpp_preface", views.cpp_preface, name="cpp_preface"),
@@ -202,6 +198,8 @@ urlpatterns = [
 	path("cpp_dynamicArrays", views.cpp_dynamicArrays, name="cpp_dynamicArrays"),
 
 	path("cpp_oop", views.cpp_oop, name="cpp_oop"),
+
+	path("cpp_fileIO", views.cpp_fileIO, name="cpp_fileIO"),
 
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),

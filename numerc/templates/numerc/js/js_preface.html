@@ -1,103 +1,230 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="What is JavaScript? How does the internet works? Introduction to JavaScript."
+/>
+{% endblock %} {% block title %}
+<title>Intro to JavaScript</title>
+{% endblock %} {% block content %}
+<h1>Web Programming: JavaScript</h1>
 <section id="preface">
-	<h2>Web Development: JavaScript, Python, and SQL</h2>
 	<p>
-		The name &#8220;JavaScript&#8221; is the par excellence of marketing mayhem. JavaScript
-		was originally referred to by its developers as &#8220;Mocha&#8221; (an arguably much
-		better name, coffea genericism aside), but because the language was created
-		to entice Java developers, the marketing experts concluded that JavaScript
-		was a better fit, as &#8220;script&#8221; was the word du jour for &#8220;easy of use.&#8221; While
-		there are some similarities between Java and JavaScript, they are two
-		completely different and unrelated languages&mdash;Java is to JavaScript
-		what ham is to hamster.
+		The name &#8220;JavaScript&#8221; is a product of history and marketing.
+		JavaScript was originally referred to by its developers as
+		&#8220;Mocha,&#8221; but because the language was created to entice Java
+		developers, the marketing experts concluded that JavaScript was a better
+		fit, as &#8220;script&#8221; was the word du jour for &#8220;easy of
+		use.&#8221; While there are some similarities between Java and JavaScript,
+		they are two completely different and unrelated languages&mdash;Java is to
+		JavaScript what ham is to hamster.
+	</p>
+	<p>
+		JavaScript is a dynamically- and weakly-typed programming language. Thus,
+		unlike languages like C++ and Java, JavaScript is compiled and executed at
+		runtime. Undoubtedly, that execution most commonly occurs as part of a
+		webpage in a browser, but thanks to various JavaScript libraries, we can
+		execute also JavaScript directly on a machine through a host environment. To
+		begin understanding why JavaScript exists and how it works, we should talk
+		about the internet from a very high-level overview.
 	</p>
 </section>
 
-<section id="html_and_css" class="grid-item">
-	<h3>HTML &amp; CSS</h3>
+<section id="internet">
+	<h2>The Internet</h2>
 	<p>
-		Most of the materials below address programming constructs. We briefly
-		address <span class="monoText">HTML</span> (&#8220;Hypertext Markup
-		Language&#8221;) and <span class="monoText">CSS</span> (&#8220;Cascading
-		Style Sheets&#8221;), as they central languages in web development. How to
-		use these languages effectively is a topic best left for
-		<span class="italicsText">web design</span>, a separate field deserving of
-		unique treatment. In this section, we look at a broader overview of the two
-		languages, and how they relate to computer science more broadly.
+		In the modern era, we've gotten used to everything being wireless. This
+		author fondly remembers the days of dial up. With smartphones growing more
+		and more pervasive, we no longer ask if a hotel room provides in-unit
+		ethernet cables. In fact, we don't even ask questions at all &mdash; we just
+		assume the business provides WiFi, and if that isn't the case, that there's
+		service for LTE usage.
 	</p>
 	<p>
-		<span class="monoText">HTML</span> is a markup language. It it is not a
-		programming language per se (at least if we define a programming language as
-		one that is Turing complete), but it is a language nevertheless.
-		<span class="monoText">HTML</span> describes the
-		<span class="italicsText">structure</span> of a webpage &mdash; where
-		sections, buttons, paragraphs, and other
-		<span class="italicsText">elements</span> are placed.
-		<span class="monoText">CSS</span>, like <span class="monoText">HTML</span>,
-		is not a programming language on its own, but it provides a means for
-		<span class="italicsText">styling</span>
-		<span class="monoText">HTML</span> content.
+		The shocker: On the internet, <span class="underlineText">most</span> data
+		is <span class="underlineText">not</span> moved on a wireless connection. In
+		fact, wireless connections are at the very fringe of the internet. What do
+		we mean by this? Imagine the interent as akin to the Tokyo train lines.
+		There are numerous stops; the wireless connection is among the very last (if
+		not the last). The vast majority of data transmitted via the internet is
+		moved via fiber optic cables. Wireless connections are simply too slow, too
+		small, and have too little range to transmit the voluminous amounts of data
+		we supply and demand.
 	</p>
 	<p>
-		A very basic <span class="monoText">HTML</span> page is written as such:
+		The fiber optic cables supporting the internet lay across land and sea. They
+		go through the oceans, passing from country to country, and within the
+		countries, pass from state to state (or provinces/prefectures/etc.), city to
+		city, and so on. The data we obtain and transmit wirelessly is actually
+		received from, and sent to, a tower, which is itself connected to some
+		juncture along the myriad of cables.
+		<label for="trains" class="margin-toggle"><sup></sup></label>
+		<input type="checkbox" id="trains" class="margin-toggle sidenote-number" />
+		<span class="marginnote">
+			In the United States, one very interesting aspect of these fiber optic
+			cables is that they usually run along the federal interstate highways.
+			These highways themselves trace their origins to railroad lines from the
+			19th Century. Why do these connections exist? It's a lot easier to
+			maintain things and fix problems on large infrastructures if we use
+			pre-existing paths to traverse the infrastructure.</span
+		>
 	</p>
-	<pre class="language-html"><code>
-		&lt;!DOCTYPE html&gt;
-		&lt;html lang=&quot;en&quot;&gt;
-		&lt;head&gt;
-		&#x9;&lt;title&gt;Hello!&lt;/title&gt;
-		&lt;/head&gt;
-		&lt;body&gt;
-		&#x9;&lt;p&gt;Hello world!&lt;/p&gt;
-		&lt;/body&gt;
-		&lt;/html&gt;
-	</code></pre>
+	<p>
+		For example, suppose we're on our home WiFi network, and want to see some
+		lecture notes, contained in a PDF file, from a course offered at the
+		University of Adelaide in Australia. Then suppose that those notes were
+		stored on a server in Australia. When click on the link to that PDF, we are
+		sending a <span class="italicsText">request</span> for those notes (more on
+		this later), and the server <span class="italicsText">responds</span> with
+		the notes. We do not send that request or receive the response with only a
+		wireless connection. That would be far, far too slow. What instead happens
+		is that the request is sent from our computer to our router, then from the
+		router to some closer server, then from there to a tower, then from the
+		tower all the way through the fiber optic cables across land and sea to that
+		server in Australia. The truly remarkable aspect of all this is that
+		depending on our internet connection and how large the PDF file is, this all
+		occurs in a second or less. Even more remarkable: Countries have agreed to
+		how these fiber optics cables transmit data, whether they have good or bad
+		diplomatic relations.
+	</p>
+	<p>
+		How do these fiber optic cables work so quickly? Through light and glass.
+		Data is transmitted across these cables in the form of light, bouncing off
+		the glass from point to point. Given that light travels at the fastest speed
+		known to man (roughly 300,000 kilometers per second or 186,000 miles per
+		second) &mdash; it's no surprise that data transmission along the cables is
+		swift.
+	</p>
+	<p>
+		At the very edges of these fiber optic cables, there are copper-based
+		connections. For example, in a large building, there is likely a wall socket
+		connecting some router, or multiple routers. Each router provides a wireless
+		connection for a certain area (recall how walking away from a certain area
+		reduces the strength of a wireless connection). The router's connections are
+		copper-based, not fiber optic. For particularly large buildings, the router
+		connections might lead to some obscure closet containing a hub for all the
+		routers. Behind that hub, there's likely a few slender fiber optic cables
+		leading some electrical tower nearby, which itself connects to other
+		junctions along the fiber optic cable network. These shorter copper-based
+		connections are used primarily because copper is cheaper than glass fiber.
+		However, we do not use copper for long-range connections because electrical
+		signals along copper generally only have a range of 100 meters. Beyond 100
+		meters, these signals begin degrading.
+	</p>
+	<p>
+		In recent years, numerous companies have jumped in on the fiber-optic cable
+		market. In various suburban areas, we might notice signs saying a particular
+		company offers fiber-optic connections in the area. These companies
+		essentially lay fiber-optic connections from homes (usually much smaller
+		buildings, and as such, rely on slower copper connections) to a nearby
+		tower. What may be perplexing is that these areas appear almost arbitrary
+		&mdash; one side of the neighborhood has access to a connection, while the
+		other does not. This is a result of how expensive fiber-optic connections
+		are. Companies will provide these connections only if there's sufficient
+		interest to warrant the cost of laying down a cable. It would be a poor
+		investment to lay a fiber optic cable for a single home.
+	</p>
+
+	<h3>Wireless Connections</h3>
+	<p>
+		In the modern era, wireless connections are almost always our first
+		connection to the internet. Wireless connections come in various forms, one
+		of which is a <span class="italicsText">Wifi network</span>. In a large
+		building or room, we might notice medium-sized boxes with blinking lights
+		(and potentially an antenna). These are <span class="term">routers</span>,
+		and they provide a Wifi connection. As mentioned earlier, these routers have
+		copper based connections to some hub elsewhere. Wifi is what we use for
+		short-range connections, and they primarily set up for personal use.
+	</p>
+	<p>
+		Another form of wireless connection is through a
+		<span class="italicsText">mobile data network</span>. Instead of a router,
+		mobile data networks are provided by large cell towers. If we've ever
+		wondered why cell phone plans cost so much, one contributing factor is the
+		cost of maintaining and improving the mobile data networks provided by the
+		cell towers.
+	</p>
+
+	<h3>How Do Devices Communicate on the Internet?</h3>
+	<p>
+		We've established a broad overview of the internet's underlying
+		infastructure, but now we have another question: How do devices connected to
+		the internet know when to send and receive data? In other words, how do
+		these devices communciate?
+	</p>
+	<p>
+		The answer this question, we add another layer of abstraction to the
+		internet: The internet is not just a physical infrastructure; it's also a
+		<span class="term">communication protocol</span> &mdash; agreement as to how
+		two or more entities exchange data. The
+		<span class="term">Internet Protocol</span> (IP) is series of agreements
+		that allow internet-connected devices to communicate. IP specifies the
+		format of <span class="italicsText">IP addresses</span> &mdash; the
+		identifiers, or names, for devices connected to the internet. IP has
+		underwent several changes to the way IP addresses are formatted:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p><span class="monoText">192.18.21.4</span></p>
+		</div>
+		<figcaption>An IPv4 address</figcaption>
+	</figure>
+	<p>
+		The IP address above is an IPv4 (read &#8220;IP version 4&#8221;) address,
+		formatted in
+		<span class="italicsText">dotted decimal notation</span>. Under IPv4, IP
+		addresses consisted of 32 bits. With 32 bits, we can generate ${2^{32},}$
+		roughly 4.3 billion, unique addresses. The problem: There are now more than
+		4.3 billion people on Earth, many of whom have multiple devices, not
+		counting all of the devices that aren't directly used by people. Because of
+		this problem, we are now on IPv6 (IPv5 was proposed but never formally
+		adopted):
+	</p>
+	<figure class="math-display">
+		<div>
+			<p><span class="monoText">2607:f8b0:4002:801::2104</span></p>
+		</div>
+		<figcaption>An IPv6 address</figcaption>
+	</figure>
+	<p>
+		With IPv6, addresses went from 32 bits to 128 bits. With 128 bits, we
+		generate ${2^{128}}$ unique addresses, roughly ${3.4 \times 10^{38},}$ or
+		340 undecillion. This is probably big enough.
+		<label for="numbers" class="margin-toggle"><sup></sup></label>
+		<input type="checkbox" id="numbers" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>Fun aside: ${2^{32}}$ is roughly 4.3 billion, ${2^{64}}$ is about 18.4
+			quintillion ${(\approx 1.8 \times 10^{19})}$, ${2^{128}}$ about 340
+			undecillion ${(\approx 3.4 \times 10^{38})}$, ${2^{256}}$ is roughly 115
+			quattuorvigintillion ${(\approx 1.158 \times 10^{77}),}$ ${2^{512}}$ is
+			about ${1.34 \times 10^{154}}$ (Latin has its limits), ${2^{1024}}$ is
+			about ${1.798 \times 10^{308},}$ and ${2^{2056}}$ is about ${8.27 \times
+			10^{618}.}$</span
+		>
+	</p>
+	<p>
+		In addition to the naming rule, IP also specifies how messages should be
+		formatted when they're exchanged across the internet. We can think of this
+		as akin to the local post office's rules on what we can and cannot put into
+		certain boxes or envelopes. We can place whatever we want in the box or
+		envelope (subject to criminal sanctions), but for the box or envelope to be
+		sent, we have to follow the carrier's rules. In IP terms, that box or
+		envelope is called a <span class="term">datagram</span>.
+	</p>
+	<p>
+		The datagram consists of several fields. For our purposes, the three most
+		important fields are the
+		<span class="term">source IP address</span>,
+		<span class="term">destination IP address</span>, and
+		<span class="term">data field</span>. As we can guess, the the source IP
+		address indicates where the datagram originates, and the destination IP
+		address indicates where the datagram should arrive. The data field is where
+		all of actual content we want transmitted is placed. That content could be a
+		video, an image, a text file, pretty much anything that can be represented
+		in 1s and 0s. IP itself doesn't care what the content is. This freedom, of
+		course, comes at a price: Just as we can send and receive cat videos,
+		malevolent actors can send malicious content &mdash; viruses, worms, Trojan
+		horses, phishing attacks, scams, and false information.
+	</p>
 </section>
 
-<section id="programming_introduction" class="grid-item">
-	<h3>Programming In JavaScript</h3>
-	<p>
-		Recall that a <span class="term">program</span> is a set of instructions
-		directing a computer to perform tasks. Programs are written in a
-		<span class="term">computer language</span>&mdash;a language that can be
-		<span class="term">compiled</span> and understood by the computer.
-	</p>
-	<p>
-		Computer languages have <span class="term">syntax</span>, which is the set
-		of rules defining how we spell, arrange, and use words, punctuation, and
-		symbols. This is very much like human language, with the key difference that
-		computer languages have strict contours (e.g., words and characters have
-		exact and undisputed definitions), with little to no room for ambiguity (in
-		that sense, computer languages are much less complex).
-	</p>
-	<p>
-		To direct a computer to perform a task, we write
-		<span class="term">statements</span>, following the relevant language's
-		syntax. Statements themselves are composed of one or more
-		<span class="term">expressions</span>, just as English sentences are
-		composed of clauses.
-	</p>
-	<p>
-		A program, then, is simply a collection of these statements. Within the
-		collection of <span class="term">statements</span>, there are
-		<span class="term">code blocks</span>. A code block is a group of statements
-		intended to carry out a specific task. In JavaScript, we group statements
-		together with <span class="monoText">{}</span>. For example:
-	</p>
-	<pre class="language-javascript">
-			<code>
-				{
-					let x = 4;
-					let y = x * 3;
-					console.log(y);
-				}
-				// output: <span class="output">12</span>
-			</code>
-		</pre>
-	<p>
-		When we <span class="term">execute</span> the program, the JavaScript
-		interpreter translates the statements into machine code, the code the
-		computer actually understands.
-	</p>
-</section>
 {% endblock %}

@@ -677,11 +677,12 @@
 			data-text="Although, possibly earlier, depending
 		on how we define pattern matching"
 			class="tooltip"
-			><sup></sup></span
-		> From Hope, algebraic data types and their associated features like
-		pattern matching made their way into ML, and later on to Miranda, Haskell,
-		and today, languages like Scala and Erlang. Had functional languages taken
-		off, we probably would see more pattern matching constructs today.
+			><sup></sup
+		></span>
+		From Hope, algebraic data types and their associated features like pattern
+		matching made their way into ML, and later on to Miranda, Haskell, and
+		today, languages like Scala and Erlang. Had functional languages taken off,
+		we probably would see more pattern matching constructs today.
 	</p>
 	<p>
 		Unfortunately for the functional languages, the object-oriented languages
@@ -1491,6 +1492,316 @@
 
 <section id="exceptions">
 	<h2>Exceptions</h2>
-	<p></p>
+	<p>
+		Having discussed patterns, we can now more thoroughly investigate
+		<span class="term">exceptions</span>: idioms for indicating a particular
+		condition as a runtime error. Exceptions are not unique to ML; they are
+		found in numerous languages, both old and new. They are even found in
+		reality &mdash; they are quite literally exceptions to a general rule or
+		condition. For example, a professor might have a general rule of not
+		accepting late assignments. However, there may be exceptions to that general
+		rule: A personal emergency, being ill, or obtaining special permission for a
+		late submission. Examining this from a programming perspective, we might
+		model the professor's grading scheme as including a function called
+		<span class="monoText">is_generally_compliant()</span>, which checks whether
+		a given submission is late. If the submission is late, it returns false.
+		But, if some condition is true (i.e., excused earlier), we
+		<span class="italicsText">throw</span>, or
+		<span class="italicsText">raise</span> an exception. When that exception is
+		raised, we need some way to <span class="italicsText">handle</span>, or
+		<span class="italicsText">catch</span>, that exception: Return some message,
+		execute that function, or store this data, etc.
+	</p>
+	<p>The syntax for defining exceptions in ML:</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>exception ${e_n}$</li>
+			</ul>
+		</div>
+		<figcaption>where ${e_n}$ is some identifier</figcaption>
+	</figure>
+	<p>
+		Th expression ${e_n}$ is actually a constructor, with the identifier
+		${e_n.}$ Because constructors are functions, exceptions in ML are first
+		class, so they are themselves values. And because they are values, they have
+		type, namely <span class="monoText">exn</span>. Thus, if we wrote:
+	</p>
+	<pre class="language-sml"><code>
+		exception Error
+	</code></pre>
+	<p>
+		we introduce into the environment the value
+		<span class="monoText">Error : exn</span>.<label
+			for="sml_exception"
+			class="margin-toggle"
+			><sup></sup
+		></label>
+		<input
+			type="checkbox"
+			id="sml_exception"
+			class="margin-toggle sidenote-number"
+		/>
+		<span class="marginnote"
+			>The keyword <span class="monoText">exn</span> is a clipping of
+			&#8220;exception name.&#8221;</span
+		>
+		To repeat, in the example above, the value
+		<span class="monoText">Error</span> is not itself the exception; it's the
+		constructor for an exception. Thus, to derive any use of exceptions, they
+		must be <span class="term">raised</span>.<label
+			for="throwing"
+			class="margin-toggle"
+			><sup></sup
+		></label>
+		<input
+			type="checkbox"
+			id="throwing"
+			class="margin-toggle sidenote-number"
+		/>
+		<span class="marginnote"
+			>In other languages, raising an exception is called
+			<span class="term">throwing</span> an exception.</span
+		>
+		Here is an example:
+	</p>
+	<pre class="language-sml"><code>
+			(* This function computes the factorial of a number. *)
+			fun factorial n =
+				let exception Negative
+				in
+					if n = 0
+						then 1
+					else
+						if n < 0 then raise Negative
+						else n * factorial(n - 1)
+				end
+
+			val x = factorial 4
+			val y = factorial ~2
+		</code></pre>
+	<pre class="language-bash"><code>
+			uncaught exception Negative
+				raised at: exceptions.sml:8.24-8.32
+		</code></pre>
+	<p>
+		In the example above, we created a new value,
+		<span class="monoText">Negative : exn</span>, and we raise it whenever a
+		negative number is passed as a value to the function
+		<span class="monoText">factorial()</span>. Fixing the error:
+	</p>
+	<pre class="language-sml"><code>
+		(* This function computes the factorial of a number. *)
+		fun factorial n =
+			let exception Negative
+			in
+				if n = 0
+					then 1
+				else
+					if n < 0 then raise Negative
+					else n * factorial(n - 1)
+			end
+
+		val x = factorial 4
+		val y = factorial 2
+	</code></pre>
+	<pre class="language-bash"><code>
+		val factorial = fn : int -> int
+		val x = 24 : int
+		val y = 2 : int
+	</code></pre>
+	<p>
+		In many situations, we want to <span class="term">handle</span> the
+		exception.<label for="handle" class="margin-toggle"><sup></sup></label>
+		<input type="checkbox" id="handle" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>In other languages, this is also called
+			<span class="term">catching</span> the exception.</span
+		>
+		For example, perhaps we might want, for whatever reason, to immediately
+		return <span class="monoText">0</span> whenever we pass a negative number to
+		the <span class="monoText">factorial()</span> function. To do so, we can use
+		a <span class="term">handle expression</span>:
+	</p>
+	<pre class="language-sml"><code>
+		(* This function computes the factorial of a number. *)
+		fun factorial n =
+			let 
+				exception Negative
+			in
+				if n = 0
+					then 1
+				else
+					if n < 0 then raise Negative
+					else n * factorial(n - 1)
+			end
+
+		val a = 5
+		val b = ~5
+		val x = factorial a
+		val y = factorial b handle Negative => 0
+	</code></pre>
+	<pre class="language-bash"><code>
+		val factorial = fn : int -> int
+		val a = 5 : int
+		val b = ~5 : int
+		val x = 120 : int
+		val y = 0 : int
+	</code></pre>
+	<p>
+		In the last line of the source code above, when the
+		<span class="monoText">factorial()</span> function raises the exception
+		<span class="monoText">Negative</span>, the value of
+		<span class="monoText">y</span> is immediately bound to
+		<span class="monoText">0</span>.
+	</p>
+</section>
+
+<section id="tail_recursion">
+	<h2>Tail Recursion</h2>
+	<p>
+		Most of the functions we've seen are recursive. This raises a fair question:
+		How efficient is recursion? To answer this question, we investigate the idea
+		of <span class="term">tail recursion</span>. To understand tail recursion,
+		let's talk about the <span class="term">call stack</span>.
+	</p>
+	<p>
+		The call stack is an abstract idea; think of it as this stack of papers,
+		each with a single task. Those tasks are functions, and each piece of paper
+		is called a <span class="term">stack frame</span>. The piece of paper, or
+		call stack, contains the value of local variables, and all the operations
+		the function must perform. Whenever we call a function ${f,}$ we push a
+		stack frame of ${f,}$ a new piece of paper, onto the stack. Once that call
+		to ${f}$ finishes (i.e., the task is complete), ${f}$ is removed from the
+		stack (in programming parlance, the stack frame is
+		<span class="italicsText">popped off</span> the stack).
+	</p>
+	<p>
+		Now, with recursion, we are calling functions that call themselves. Thus,
+		there is a situation where we have multiple stack-frames resulting from
+		calls to the same function. For example, with the
+		<span class="monoText">factorial()</span> function we wrote previously,
+		calling <span class="monoText">factorial(3)</span> results in four separate
+		stack frames: <span class="monoText">factorial(3)</span>,
+		<span class="monoText">factorial(2)</span>,
+		<span class="monoText">factorial(1)</span>, and
+		<span class="monoText">factorial(0)</span>.
+	</p>
+	<p>
+		Here is a more efficient version of
+		<span class="monoText">factorial()</span> (for simplicity, we've removed the
+		exception from the earlier section):
+	</p>
+	<pre class="language-cpp"><code>
+		(* This function computes the factorial of a number. *)
+		fun factorial n =
+			let fun factorial_helper(n, accumulator) =
+				if n = 0
+					then accumulator
+					else factorial_helper(n - 1, accumulator * n)
+			in
+				factorial_helper(n, 1)
+			end
+
+		val a = factorial(3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		val factorial = fn : int -> int
+		val a = 6 : int
+	</code></pre>
+	<p>
+		This looks more complicated, so let's walk through it. Inside
+		<span class="monoText">factorial()</span>, we have a locally-defined helper
+		function, <span class="monoText">factorial_helper()</span>. That function
+		takes two arguments: <span class="monoText">n</span>, the argument passed to
+		<span class="monoText">factorial()</span>, and
+		<span class="monoText">accumulator</span>.
+		<span class="monoText">factorial_helper()</span> works as such: If
+		<span class="monoText">n=0</span>, then return the
+		<span class="monoText">accumulator</span>; otherwise, return
+		<span class="monoText">factorial_helper(n-1, accumulator * n)</span>.
+	</p>
+	<p>
+		Thus, when we call <span class="monoText">factorial(3)</span>, we end up
+		creating the following stacks:
+		<span class="monoText">factorial_helper(3, 1)</span>,
+		<span class="monoText">factorial_helper(2, 3)</span>,
+		<span class="monoText">factorial_helper(1, 6)</span>, and
+		<span class="monoText">factorial(0, 6)</span>. This may not seem like an
+		improvement; we have a bigger stack than the previous implementation!
+	</p>
+	<p>
+		This is where tail recursion comes into play. In languages that implement
+		tail recursion &mdash; such as ML &mdash; calls like
+		<span class="monoText">factorial_helper()</span> are identified by the
+		language as tail calls. And when a call is identified as a tail call, the
+		language follows a specific rule: Do not keep a function's stack frame if
+		all the function performs is getting back a callee's result and return it
+		without any further evaluation. Following this rule, languages like ML
+		perform the following whenever it encounters a tail call like
+		<span class="monoText">factorial_helper()</span>:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<ol>
+				<li>
+					Remove the caller <span class="underlineText">before</span> the call.
+				</li>
+				<li>Let the callee use the resulting empty stack.</li>
+			</ol>
+		</div>
+	</figure>
+	<p>
+		Thus, when we call <span class="monoText">factorial(3)</span>, a tail call,
+		we create a stack frame for <span class="monoText">factorial(3)</span>.
+		However, because it's a tail call, the stack frame is &#8220;cleared&#8221;
+		of <span class="monoText">factorial(3)</span>'s machine code, and replaced
+		with <span class="monoText">factorial_helper(3, 1)</span>. This in turn
+		calls <span class="monoText">factorial_helper(n-1, accumulator * n)</span>,
+		and as such, <span class="monoText">factorial_helper(3, 1)</span> is itself
+		a tail call. Thus, <span class="monoText">factorial_helper(3, 1)</span> has
+		its stack frame cleared, and replaced with
+		<span class="monoText">factorial_helper(2, 3)</span>. This goes on until we
+		reach <span class="monoText">factorial_helper(0, 6)</span>. The end result:
+		We only used 1 stack frame.
+	</p>
+	<p>
+		To refactor recursive functions as tail-recursive, we can use the following
+		approach:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<ol>
+				<li>Create a helper function with an accumulator parameter.</li>
+				<ul>
+					<li>
+						Think of the accumulator as a variable that &#8220;holds&#8221; the
+						answer so far.
+					</li>
+				</ul>
+				<li>Think of the old base case as the initial accumulator.</li>
+				<li>Think of the new base case as the final accumulator.</li>
+			</ol>
+		</div>
+	</figure>
+	<p>For example, consider a function that sums all the elements in a list:</p>
+	<pre class="language-sml"><code>
+		(* linear recursion *)
+		fun summate1 xs =
+			case xs of
+				[] => 0
+				| x::xs' => x + summate1 xs'
+
+		(* tail recursion *)
+		fun summate xs =
+			let 
+				fun helper(xs, accumulator) =
+					case xs of
+						[] => accumulator
+						| x::xs' => helper(xs', x + accumulator)
+			in
+				helper(xs, 0)
+			end
+	</code></pre>
 </section>
 {% endblock %}

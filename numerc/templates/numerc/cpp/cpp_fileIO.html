@@ -1,0 +1,715 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="How to read and write files in C++" />
+{% endblock %} {% block title %}
+<title>C++ File I/O</title>
+{% endblock %} {% block content %}
+<h1>I/O & Streams</h1>
+<section id="forray">
+	<p>
+		In the code examples we've seen thus far, we've used
+		<span class="monoText">cout</span> and <span class="monoText">cin</span> for
+		user output and input through the console. We can also read and write files
+		in C++. File and user input/output are all examples of a
+		<span class="term">stream</span> &mdash; an object that represents data
+		flowing in and out of a source code program. With a stream, we can direct
+		data from one program to another, or more generally, from one source to a
+		different source. Mathematically, a stream is akin to an
+		<span class="italicsText">infinite sequence</span> &mdash; a sequence of 1s
+		and 0s that does not end unless user input or output is explicitly
+		terminated.
+	</p>
+	<p>
+		Streams are much more abstract than we might think. These are all examples
+		of streams: Typing on a keyboard and text is written to a file; text is
+		written to a file and we see it displayed on the monitor; text is outputted
+		from one file and saved in another; downloading data from a server (e.g.,
+		<span class="italicsText">streaming</span> a video); a program accessing
+		data from a web API; these are all streams.
+	</p>
+	<p>
+		The examples cited are all instances of
+		<span class="term">I/O streams</span> (input/output streams). In programming
+		parlance, the act of obtaining, or getting, data from a source is called
+		<span class="term">reading</span> (i.e., &#8220;reading
+		<span class="italicsText">from</span> a file&#8221;). This is the input part
+		of the acronym I/O. The act of sending data to a source is called
+		<span class="term">writing</span>. (i.e., &#8220;writing
+		<span class="italicsText">to</span> a file&#8221;). This is the output part
+		of I/O.
+	</p>
+	<p>
+		There are different kinds of I/O streams, depending on what the sources or
+		destinations are. For example, streams between files are called
+		<span class="term">file I/O streams</span>. Streams from the keyboard to a
+		program are called <span class="term">keyboard streams</span>. Streams from
+		a program to the monitor (or console), are called
+		<span class="term">console streams</span>.
+	</p>
+	<p>
+		C++ provides a built-in class for general I/O &mdash;
+		<span class="monoText">ios</span>. From <span class="monoText">ios</span>,
+		there are two classes: <span class="monoText">istream</span> (for input
+		streams) and <span class="monoText">ostream</span> (for output streams).
+	</p>
+	<p>
+		For file I/O, we have <span class="monoText">ifstream</span> (input file
+		stream) and <span class="monoText">ofstream</span> (output file stream). For
+		keyboard streams, we have <span class="monoText">cin</span> and for console
+		streams, there's <span class="monoText">cout</span>. Yes, the symbols we've
+		been using, <span class="monoText">cin</span> and
+		<span class="monoText">cout</span>, are actually streams. More specifically,
+		<span class="monoText">cin</span> and <span class="monoText">cout</span> are
+		objects of type <span class="monoText">istream</span> and
+		<span class="monoText">ostream</span> respectively. Putting this all
+		together:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+				ios
+				├── istream
+				│   ├── ifstream
+				│   └── cin
+				│
+				└── ostream
+						├── ofstream
+						└── cout
+		</code></pre>
+	</figure>
+	<p>
+		We've seen how to use <span class="monoText">cin</span> and
+		<span class="monoText">cout</span>, so let's now turn to files.
+	</p>
+</section>
+
+<section id="file_handling">
+	<h2>File Handling</h2>
+	<p>
+		<span class="topic">Writing to a File.</span> To begin, this is the
+		directory hierarchy we're working with:
+	</p>
+	<pre class="language-bash"><code>
+			.
+			└── StreamDemo
+					├── main.cpp
+					└── output.txt
+		</code></pre>
+	<p>
+		Per usual, <span class="monoText">main.cpp</span> is our main driver. The
+		file <span class="monoText">output.txt</span> is currently empty. Inside
+		<span class="monoText">main.cpp</span> we write the following:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ofstream outfile("output.txt");
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Several things to note: First, we wrote
+		<span class="monoText">#include &lt;fstream&gt;</span>. This tells C++ to
+		include <span class="monoText">fstream</span>, the class for file streams.
+		The <span class="monoText">fstream</span> class itself has two child
+		classes, <span class="monoText">ifstream</span> and
+		<span class="monoText">ostream</span>. When we write
+		<span class="monoText">ofstream outfile("output.txt")</span>, we are
+		creating an instance of <span class="monoText">ofstream</span> named
+		<span class="monoText">outfile</span>. By creating that instance, we can
+		<span class="underlineText">write</span> data into
+		<span class="monoText">output.txt</span>.
+	</p>
+	<p>
+		To write data to <span class="monoText">output.txt</span>, we simply use our
+		familiar <span class="monoText">cout</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ofstream outfile("output.txt");
+			outfile << "Hello!" << endl;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Let's compile and execute the program, and
+		<span class="monoText">cat</span> the contents of
+		<span class="monoText">output.txt</span> (<span class="monoText">cat</span>
+		is a bash command to display the contents of a file):
+	</p>
+	<pre class="language-bash"><code>
+		make main
+		./main
+		cat output.txt
+
+		Hello!
+	</code></pre>
+	<p>
+		We can confirm this by opening the <span class="monoText">output.txt</span>:
+		It contains the single line <span class="monoText">Hello!</span>.
+		Importantly, once we are done using
+		<span class="monoText">output.txt</span>, we
+		<span class="underlineText">must</span> close it:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ofstream outfile("output.txt");
+			outfile << "Hello!" << endl;
+			outfile.close();
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Why should we close the file? Because without closing the file, the
+		operating system concludes that a program is still using the file. If we
+		have that file saved on some drive, the operating system will not allow us
+		to eject the drive, since a program is still using a file inside the drive
+		(we've likely seen this when we click the eject button for a software
+		installer or a thumb drive and the computer won't allow us &mdash; there's a
+		file in there still in use; it follows then that we can fix that by
+		terminating whatever program is using that file).
+	</p>
+	<p>
+		A word of caution: If <span class="monoText">output.txt</span> already
+		contains content, using the code above will replace all of the content in
+		<span class="monoText">output.txt</span> with the content we write to it.
+		For example, suppose <span class="monoText">output.txt</span> contains the
+		following content:
+	</p>
+	<pre class="language-bash"><code>
+		cat output.txt
+
+		Hello, world!
+	</code></pre>
+	<p>
+		If we run the same program above and <span class="monoText">cat</span> the
+		contents of <span class="monoText">output.txt</span>:
+	</p>
+	<pre class="language-bash"><code>
+		make main
+		./main
+		cat output.txt
+
+		Hello!
+	</code></pre>
+	<p>
+		The original content, <span class="monoText">Hello, world!</span>, is no
+		longer there. It's been <span class="italicsText">overwritten</span> by the
+		output of executing <span class="monoText">main.o</span>. If we want the
+		output stream <span class="underlineText">not</span> to perform this default
+		behavior, we can include the <span class="term">flag</span>
+		<span class="monoText">ios::app</span> into
+		<span class="monoText">ofstream outfile()</span>. For example, suppose
+		<span class="monoText">output.txt</span> contains the string
+		<span class="monoText">Hello!</span>, and we want
+		<span class="monoText">main</span> to simply insert a new string,
+		<span class="monoText">Goodbye!</span>. To do so, we write:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ofstream outfile("output.txt", ios::app);
+			outfile << "Goodbye!" << endl;
+			outfile.close();
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		make main
+		./main
+		cat output.txt
+
+		Hello!
+		Goodbye!
+	</code></pre>
+
+	<p>
+		<span class="topic">Reading from a File.</span> Now let's consider how to
+		<span class="underlineText">read</span> data from a file. The procedure for
+		setting up a file input stream is the same as setting up a file output
+		stream; the difference being we use the class
+		<span class="monoText">ifstream</span> instead. Like
+		<span class="monoText">ofstream</span>,
+		<span class="monoText">ifstream</span> is a child of
+		<span class="monoText">fstream</span>, so we have to include
+		<span class="monoText">fstream</span>.
+	</p>
+	<p>
+		We'll rename our file <span class="monoText">output.txt</span> to
+		<span class="monoText">input.txt</span>, and write inside of it the
+		following:
+	</p>
+	<pre class="language-bash"><code>
+		cat input.txt
+
+		2.99
+		3.62
+		1.87
+	</code></pre>
+	<p>Inside <span class="monoText">main.cpp</span>, we have the following:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ifstream infile;
+			infile.open("input.txt");
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Notice that things look a little different for
+		<span class="monoText">ifstream</span> than
+		<span class="monoText">ofstream</span>. Here, we created an object called
+		<span class="monoText">infile</span>, of type
+		<span class="monoText">ifstream</span>. This is an instance of the
+		<span class="monoText">ifstream</span> class, with the identifier, or name,
+		<span class="monoText">infile</span>. Then, on the next line, we wrote
+		<span class="monoText">infile.open("input.txt")</span>. This is a call to a
+		member function of <span class="monoText">ifstream</span>, called
+		<span class="monoText">open()</span>, which performs the operation of
+		opening the file <span class="monoText">input.txt</span>. Note what this
+		means: The file <span class="monoText">input.txt</span> must already exist.
+		If it doesn't, then there's nothing for
+		<span class="monoText">open()</span> to open, and our program risks
+		crashing. Accordingly, it is always,
+		<span class="underlineText">always</span>, best practice to check if the
+		file exists:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ifstream infile;
+			infile.open("foo.txt");
+			if (!infile.is_open()) {
+				cout << "File does not exist" << endl;
+			}
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		File does not exist
+	</code></pre>
+	<p>
+		In the code above, we checked if <span class="monoText">infile</span> had a
+		stream associated with it (i.e., whether
+		<span class="monoText">open()</span> could in fact open a file). In this
+		case, we tried opening a file called <span class="monoText">foo.txt</span>,
+		a file that doesn't exist, resulting in the custom error message displayed.
+		If we instead used <span class="monoText">input.txt</span>, the file that
+		does exist:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ifstream infile;
+			infile.open("input.txt");
+			if (!infile.is_open()) {
+				cout << "File does not exist" << endl;
+			} else {
+				cout << "File successfully opened" << endl;
+			}
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		File successfully opened
+	</code></pre>
+	<p>
+		That in mind, we want to make sure that reading is done only if a file
+		exists:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ifstream infile;
+			infile.open("input.txt");
+			if (!infile.is_open()) {
+				cout << "File could not be opened" << endl;
+			} else {
+				// Code to execute if the file can be opened
+			}
+			return 0;
+		}
+	</code></pre>
+	<p>
+		With this guard in place, we can proceed to storing the values inside
+		<span class="monoText">input.txt</span> into variables in our
+		<span class="monoText">main</span> program, and average them:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ifstream infile;
+			infile.open("input.txt");
+			double price1, price2, price3;
+			if (!infile.is_open()) {
+				cout << "File could not be opened" << endl;
+			}
+			else {
+				infile >> price1;
+				infile >> price2;
+				infile >> price3;
+			}
+			double average = (price1 + price2 + price3) / 3.0;
+			cout << average << endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		2.82667
+	</code></pre>
+	<p>
+		Very cool. We can shorten our code a bit more, and we should close the file
+		once we're done:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		using namespace std;
+		
+		int main() {
+			ifstream infile("input.txt");
+			double price1, price2, price3;
+			if (!infile.is_open()) {
+				cout << "File could not be opened" << endl;
+			}
+			else {
+				infile >> price1 >> price2 >> price3;
+				infile.close();
+			}
+			double average = (price1 + price2 + price3) / 3.0;
+			cout << average << endl;
+			return 0;
+		}
+	</code></pre>
+</section>
+
+<section id="arguments_for_streams">
+	<h2>Arguments for <span class="monoText">fstream</span></h2>
+	<p>
+		In the examples above, notice that both
+		<span class="monoText">ifstream()</span> and
+		<span class="monoText">ofstream()</span> took strings as arguments.
+		Accordingly, we can store file names in variables, and pass such variables
+		into <span class="monoText">ifstream()</span> or
+		<span class="monoText">ofstream()</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		#include &lt;string&gt;
+		using namespace std;
+		
+		int main() {
+			string readFile = "input.txt";
+			ifstream infile(readFile);
+			double price1, price2, price3;
+			if (!infile.is_open()) {
+				cout << "File could not be opened" << endl;
+			}
+			else {
+				infile >> price1 >> price2 >> price3;
+				infile.close();
+			}
+			double average = (price1 + price2 + price3) / 3.0;
+			cout << average << endl;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		In older versions of C++, the <span class="monoText">fstream</span> classes
+		could only take traditional C-style strings as arguments (i.e.,
+		<span class="monoText">char</span> arrays). After C++11, however, this
+		limitation was removed, and we can now use the
+		<span class="monoText">string</span> class.
+	</p>
+	<p>
+		The ability to store file names in variables is particularly useful. With
+		this ability, we can ask the user what file to open on the directory, to be
+		read or written by the program.
+	</p>
+</section>
+
+<section id="reading_issues">
+	<h2>Challenges to Reading Files</h2>
+	<p>
+		There are several challenges and potential bug sources whenever we read
+		files. The first problem is determining how much data to read, or more
+		generally, when to stop reading data. There are common techniques for
+		handling this problem.
+	</p>
+	<p>
+		<span class="topic">Specifying the Number of Records.</span> By specifying
+		the number of records, we mean indicating how many data items should be read
+		in. With this technique, we essentially specify the number of data items
+		that should be read, say some integer ${n.}$ The program should read only
+		${n}$ data items; once ${n}$ is reached, the program should stop reading.
+	</p>
+	<p>
+		For example, suppose our <span class="monoText">input.txt</span> file
+		contained the following data:
+	</p>
+	<pre class="language-bash"><code>
+		2.99
+		3.62
+		1.87
+		3.59
+		4.22
+		2.11
+		3.84
+	</code></pre>
+	<p>
+		These are 7 data items. Let's say we wanted to only store the first 3 pieces
+		of data in a vector:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		#include &lt;string&gt;
+		#include &lt;vector&gt;
+		using namespace std;
+		
+		int main() {
+			vector&lt;double&gt; prices;
+		
+			string readFile = "input.txt";
+			ifstream infile(readFile);
+		
+			if (!infile.is_open()) {
+				cout << "File could not be opened" << endl;
+			}
+			else {
+				for (int i = 0; i < 3; i++) {
+					double price;
+					infile >> price;
+					prices.push_back(price);
+				}
+				infile.close();
+			}
+		
+			for (int i = 0; i < prices.size(); i++) {
+				cout << prices[i] << endl;
+			}
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		2.99
+		3.62
+		1.87
+	</code></pre>
+	<p>
+		In the code above, we wrote a for-loop that runs for a total of 3
+		iterations. At each iteration, we read each line into
+		<span class="monoText">price</span> (mutating
+		<span class="monoText">price</span> at each iteration), and appending that
+		value of <span class="monoText">price</span> to the vector
+		<span class="monoText">prices</span>. The output works as expected, where
+		only the first three prices are displayed.
+	</p>
+	<p>
+		<span class="topic">Sentinel Expression.</span> With this approach, we
+		specify a particular expression, or value, to trigger a stop to the reading.
+		For example, continuing with our original
+		<span class="monoText">input.txt</span>, suppose we wanted our program to
+		stop reading if it encounters the value
+		<span class="monoText">4.22</span> (the program should not read
+		<span class="monoText">4.22</span> and everything thereafter):
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		#include &lt;string&gt;
+		#include &lt;vector&gt;
+		using namespace std;
+		
+		int main() {
+			vector&lt;double&gt; prices;
+		
+			string readFile = "input.txt";
+			ifstream infile(readFile);
+		
+			if (!infile.is_open()) {
+				cout << "File could not be opened" << endl;
+			}
+			else {
+				while (!infile.eof()) {
+					double price;
+					infile >> price;
+					if (price == 4.22) {
+						break;
+					} else {
+						prices.push_back(price);
+					}
+				}
+				infile.close();
+			}
+		
+			for (int i = 0; i < prices.size(); i++) {
+				cout << prices[i] << endl;
+			}
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		2.99
+		3.62
+		1.87
+		3.59
+	</code></pre>
+	<p>
+		In the example above, we used a member function,
+		<span class="monoText">.eof()</span> (&#8220;end of file&#8221;). This
+		function returns true if the end of the file is reached, otherwise false.
+		Used in the while-loop, we effectively told C++, continue reading the lines
+		unless you encounter the value <span class="monoText">4.22</span>. In that
+		case, stop. Of course, if we wanted to also include
+		<span class="monoText">4.22</span>, we simply move
+		<span class="monoText">infile >> price</span> into the
+		<span class="monoText">else</span> block.
+	</p>
+	<p>
+		Needless to say, the sentinel value approach only works if we have some idea
+		of the data we're working with.
+	</p>
+	<p>
+		<span class="topic">Detect the End of the File.</span> The final approach is
+		hinted at by the previous. Here, we simply continue reading data until we
+		reach the end of the file. To do so, we merely test for the condition with
+		<span class="monoText">.eof()</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		#include &lt;string&gt;
+		#include &lt;vector&gt;
+		using namespace std;
+		
+		int main() {
+			vector&lt;double&gt; prices;
+		
+			string readFile = "input.txt";
+			ifstream infile(readFile);
+		
+			if (!infile.is_open()) {
+				cout << "File could not be opened" << endl;
+			}
+			else {
+				while (!infile.eof()) {
+					double price;
+					infile >> price;
+					prices.push_back(price);
+				}
+				infile.close();
+			}
+		
+			for (int i = 0; i < prices.size(); i++) {
+				cout << prices[i] << endl;
+			}
+		
+			return 0;
+		}
+	</code></pre>
+</section>
+
+<section id="stream_state">
+	<h2>Stream State</h2>
+	<p>
+		Using <span class="monoText">.eof()</span> is a good point to discuss
+		<span class="term">stream states</span>. Every stream has a state. Whenever
+		we read files, we can think of the stream as akin to pumping water from a
+		well. There are several things that might happen when draw that water: We
+		could be trying to (1) pump water when the well's gone dry, (2) pump
+		infected water; (3) not have any pipe to the well; or (4) pumping good,
+		clean water from a filled well. The same idea extends to stream states.
+	</p>
+	<p>
+		Every stream has four bits keeping track of the stream's state. The
+		<span class="term">eofbit</span>, represented by
+		<span class="monoText">eof()</span>, is true we're trying to read past the
+		end of the file. The <span class="term">badbit</span>, represented by
+		<span class="monoText">bad()</span>, is true when we read corrupted data
+		(e.g., trying to store a string into an
+		<span class="monoText">int</span> variable). The
+		<span class="term">failbit</span>, represented by
+		<span class="monoText">fail()</span>, is true when a file is not open (maybe
+		the file doesn't exist or we simply didn't open it). And the
+		<span class="term">goodbit</span>, represented by
+		<span class="monoText">good()</span>, is true when all of the previous bits
+		are false.
+	</p>
+	<p>
+		Knowing these facts, we can use <span class="monoText">good()</span> to
+		cover all of the possible problems that might occur when we're reading
+		files. This leads to more concise code (of course, at the cost of not
+		knowing what caused a problem):
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;fstream&gt;
+		#include &lt;string&gt;
+		#include &lt;vector&gt;
+		using namespace std;
+		
+		int main() {
+			vector&lt;double&gt; prices;
+		
+			string readFile = "input.txt";
+			ifstream infile(readFile);
+		
+			while (infile.good()) {
+				double price;
+				infile >> price;
+				prices.push_back(price);
+			}
+			
+			infile.close();
+		
+			for (int i = 0; i < prices.size(); i++) {
+				cout << prices[i] << endl;
+			}
+		
+			return 0;
+		}
+	</code></pre>
+</section>
+
+<section id="streams_low_level">
+	<h2>Streams at a Lower Level</h2>
+	<p>
+		To reduce complexity, we described streams as being akin to pipes from one
+		source to the next. This was inaccurate. For a slightly more accurate
+		description of what's really going on with streams, let's look at things at
+		a lower level. Consider <span class="monoText">cin</span>, the object for
+		keyboard streams.
+	</p>
+</section>
+{% endblock %}

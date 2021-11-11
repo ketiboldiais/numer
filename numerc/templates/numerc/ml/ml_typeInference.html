@@ -1,0 +1,131 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Type inference in ML" />
+{% endblock %} {% block title %}
+<title>Type Inference</title>
+{% endblock %} {% block content %}
+<h1>Type Inference</h1>
+<section id="forray">
+	<p>
+		In our investigation of programming languages, we've relied heavily on type
+		inference. But how exactly does type inference work? In this article, we
+		will explore varying approaches to type inference.
+	</p>
+</section>
+
+<section id="static_type_inference">
+	<h2>Static Typing</h2>
+	<p>
+		When we think about type inference, it's helpful to classify languages into
+		two camps: (1)
+		<span class="italicsText">statically-typed languages</span> and (2)
+		<span class="italicsText">dynamically-typed languages</span>. Within the
+		first camp, statically-typed languages, there are two subcamps: (a)
+		<span class="italicsText">implicitly-typed languages</span> and (b)
+		<span class="italicsText">explicitly-typed languages</span>. Let's focus on
+		ML's type-checking system.
+	</p>
+	<p>
+		ML is a statically-typed language &mdash; a language that checks for type
+		compliance before runtime. With static type checking, we can prevent
+		programs from ever running if our source code does not comply with the
+		language's type rules. This is in contrast to languages like JavaScript,
+		which are dynamically-typed: Type-checking is done during, not before,
+		runtime.
+	</p>
+	<p>
+		When we write ML programs, however, we don't always explicitly write types.
+		This is because ML is also an implicitly-typed language &mdash; types need
+		not be explicitly stated. ML isn't the only such language; Swift, the
+		language behind iOS development, is another implicitly-typed language. Like
+		ML, we don't have to explicitly state our data types. Contrast ML with
+		languages like Java and C++, which are explicitly-typed languages &mdash;
+		types <span class="underlineText">must</span> be explicitly stated. This
+		survey up a critical point about statitically typed languages: The fact that
+		we do not have to explicitly state types does not imply that the language is
+		statically- or dynamically-typed. The language could be
+		statically-implicitly-typed.
+	</p>
+	<p>In ML, type inference is done according to the following algorithm:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<ol>
+				<li>Determine the types of bindings in order.</li>
+				<ul>
+					<li>exception: mutual recursion (more on this later)</li>
+				</ul>
+				<li>
+					For each <span class="monoText">val</span> or
+					<span class="monoText">fun</span> binding:
+				</li>
+				<ol>
+					<li>
+						Assess the definition's constraints (e.g., if the definition is
+						<span class="monoText">x > 0</span>, then
+						<span class="monoText">x</span> must be an
+						<span class="monoText">int</span>.)
+					</li>
+					<li>Return a type error if the constraints cannot hold.</li>
+				</ol>
+				<li>
+					Use type variables (e.g., <span class="monoText">'a</span>) for any
+					unconstrained types (e.g., polymorphic functions, unused arguments,
+					etc.).
+				</li>
+				<li>Enforce value restriction (more on this later).</li>
+			</ol>
+		</div>
+	</figure>
+	<p>For example:</p>
+	<pre class="language-sml"><code>
+		val x = 1 (* val x : int *)
+		fun f (a, b, c) =
+			if a (* a must be bool *)
+				then (b + x) (* b must be int *)
+			else 0 (* both branches have the same type *)
+		(*
+			* f must return an int
+			* f must take a bool * int * anything
+			* therefore: val f : bool * int * 'a -> int
+		*)
+	</code></pre>
+	<p>
+		<span class="topic">Polymorphic Types.</span> Recall that when we view
+		certain function types, we see something like
+		<span class="monoText">'a</span> (read &#8220;alpha&#8221;). This is a
+		polymorphic type. From a type inference perspective, all of the rules we
+		mentioned above still apply, but with the added difference that we have so
+		few constraints that a particular value could be of any type.
+	</p>
+	<p>For example, consider the following function:</p>
+	<pre class="language-sml"><code>
+		fun length xs =
+			case xs of
+				[] => 0
+				| x::xs' => 1 + (length xs')
+ 	</code></pre>
+	<p>
+		The type inference: First, ML sees that this is a function, so it infers
+		<span class="monoText">length : T1 -> T2</span>. Next, it sees that there's
+		an argument passed, so it infers <span class="monoText">xs : T1</span>.
+		Next, ML sees that we're pattern matching
+		<span class="monoText">x::xs'</span>, so it infers
+		<span class="monoText">x : T3</span>, and
+		<span class="monoText">xs' : T3 list</span>. Since the pattern matching is
+		done with respect <span class="monoText">xs</span>, ML then infers that
+		<span class="monoText">T1 = T3 list</span>. ML also notices that the
+		function returns <span class="monoText">0</span>, so it infers
+		<span class="monoText">T2 = int</span>. Putting it all together, ML infers
+		that this function is of type <span class="monoText">T3 list -> int</span>.
+		That's all there is. There are no constraints indicating whether
+		<span class="monoText">T3 list</span> is a more specific data type. When
+		this happens, ML replaces all the <span class="monoText">T</span>s with an
+		alphabet and a tick (the <span class="monoText">a'</span>). Thus, what we
+		see outputted is actually <span class="monoText">a' list -> int</span>.
+	</p>
+</section>
+
+<section id="mutual_recursion">
+	<h2>Mutual Recursion</h2>
+	<p></p>
+</section>
+{% endblock %}

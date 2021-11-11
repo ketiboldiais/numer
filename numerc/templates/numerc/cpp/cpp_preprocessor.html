@@ -1,43 +1,298 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Preprocessing, #include, importing libraries in C++"
+/>
+{% endblock %} {% block title %}
+<title>Importing Libraries in C++</title>
+{% endblock %} {% block content %}
+<h1>Preprocessors & Libraries</h1>
 <section id="preprocessor">
 	<p>
-		<span class="topic">Preprocessor.</span>
-		<span class="monoText">C++</span> uses a
+		C++ uses a
 		<span class="term">preprocessor</span> to process source code before the
 		code goes to the compiler. The preprocessor performs several tasks. First,
 		it goes through the entire source code, and replaces every comment with a
 		single space. Then, it looks for
 		<span class="term">preprocessor directives</span> and executes them. These
 		directives always start with a hash sign, <span class="monoText">#</span>.
-		For example:
+		Some examples:
 	</p>
-
-	<figure class="math-display">
-		<div class="compare">
-			<ul class="syntax">
-				<li>#include &lt;iostream&gt;</li>
-				<li>#include "foo.h"</li>
-				<li>#if</li>
-				<li>#else</li>
-				<li>#endif</li>
-				<li>#ifdef</li>
-			</ul>
-			<ul class="syntax">
-				<li>#ifndef</li>
-				<li>#define</li>
-				<li>#undef</li>
-				<li>#line</li>
-				<li>#error</li>
-				<li>#pragma</li>
-			</ul>
-		</div>
-	</figure>
-
+	<ul class="syntax">
+		<li>#include &lt;iostream&gt;</li>
+		<li>#include "foo.h"</li>
+		<li>#if</li>
+		<li>#else</li>
+		<li>#endif</li>
+		<li>#ifdef</li>
+	</ul>
+	<ul class="syntax">
+		<li>#ifndef</li>
+		<li>#define</li>
+		<li>#undef</li>
+		<li>#line</li>
+		<li>#error</li>
+		<li>#pragma</li>
+	</ul>
 	<p>
 		The most commonly used directive is <span class="monoText">#include</span>.
 		When the preprocessor encounters this directive, it replaces the line with
 		the file referred to (the preprocessor processes that file as well). Once
 		the directive is processed, it is removed.
+	</p>
+	<p>
+		We can think of <span class="monoText">#include</span> as akin to importing
+		libraries or modules in other languages. When we write
+		<span class="monoText">#include ${\alpha}$</span> into a source code file
+		${\beta}$, C++ essentially dumps, or pastes, all of the contents of
+		${\alpha}$ into file ${\beta.}$
+	</p>
+</section>
+
+<section id="libraries">
+	<h2>Libraries</h2>
+	<p>
+		A <span class="term">library</span> is just a special word for a source code
+		file that groups, or gathers, related operations. We can think of it as a
+		package containing snippets of code that make our main driver (the source
+		code file containing the brunt of our program) easier to produce, test,
+		maintain, and ship.
+	</p>
+	<p>
+		A C++ library consists of two parts: (1) a
+		<span class="term">header file</span>, and (2) an
+		<span class="term">implementation file</span>. The header file &mdash;
+		denoted by the extension <span class="monoText">.h</span> &mdash; provides
+		all of the function prototypes (e.g., names and types) and usage comments.
+		The implementation file, denoted by the extension
+		<span class="monoText">.cpp</span> &mdash; implements everything in the
+		header file.
+	</p>
+	<p>
+		Libraries are a means of modularization &mdash; they break down and separate
+		source code into smaller pieces. For example, consider the following
+		program:
+	</p>
+	<p>For example, consider the following program:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		using namespace std;
+
+		double absolute_value(double n) {
+			if (n < 0.0) {
+				return -1.0 * n;
+			} else if (n > 0.0) {
+				return n;
+			} else {
+				return 0;
+			}
+		};
+		
+		double square(double n) {
+			return n * n;
+		};
+		
+		double sqrt(double n) {
+			const double EPSILON = 0.001;
+			double lower, upper, guess;
+			if (n < 1) {
+				lower = n;
+				upper = 1;
+			} else {
+				lower = 1;
+				upper = n;
+			}
+			while ((upper - lower) > EPSILON) {
+				guess = (lower + upper) / 2;
+				if (square(guess) > n) {
+					upper = guess;
+				} else {
+					lower = guess;
+				}
+			}
+			return (lower + upper) / 2;
+		};
+
+		int main() {
+			double a = 4.0;
+			double b = square(a);
+			double c = sqrt(a);
+			cout << "The number is: " << a << endl;
+			cout << "It's square is: " << b << endl;
+			cout << "It's square root is: " << c << endl;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		In the program above, we have three functions,
+		<span class="monoText">absolute_value()</span>,
+		<span class="monoText">square()</span>, and
+		<span class="monoText">square_root()</span>. The main driver, indicated by
+		the function <span class="monoText">main()</span>, is fairly simple. It just
+		computes and outputs the square and square root of
+		<span class="monoText">4.0</span>. But just look at the size of this thing.
+		It's huge, for a relatively simple computation. What we instead should do is
+		&#8220;package&#8221; the functions
+		<span class="monoText">absolute_value()</span>,
+		<span class="monoText">square()</span>, and
+		<span class="monoText">square_root()</span> into a library.
+	</p>
+	<p>
+		The first step is to write all of the function prototypes inside a header
+		file. Following best practice, that file should be the name of our library.
+		Let's call it <span class="monoText">maths.h</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		// maths.h
+		double absolute_value(double n);
+		double square(double n);
+		double sqrt(double n);
+	</code></pre>
+	<p>
+		Notice <span class="monoText">maths.h</span> only contains the function
+		protoypes. This is intentional. A header file represents the
+		<span class="term">interface</span>. It should only inform the user what the
+		function does; implementation details shouldn't be presented.
+	</p>
+	<p>
+		Second step: Implement the functions. All the details surrounding the
+		interface's implementation (i.e., how the functions in the header file are
+		implemented) are placed in a separate source code file. Again following best
+		practice, that source code file should have the same name as the header file
+		it implements. Thus, we'll call it <span class="monoText">maths.cpp</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		// maths.cpp
+		#include "maths.h"
+
+		double absolute_value(double n) {
+			if (n < 0.0) {
+				return -1.0 * n;
+			} else if (n > 0.0) {
+				return n;
+			} else {
+				return 0;
+			}
+		};
+
+		double square(double n) {
+			return n * n;
+		};
+
+		double sqrt(double n) {
+			const double EPSILON = 0.001;
+			double lower, upper, guess;
+			if (n < 1) {
+				lower = n;
+				upper = 1;
+			} else {
+				lower = 1;
+				upper = n;
+			}
+			while ((upper - lower) > EPSILON) {
+				guess = (lower + upper) / 2;
+				if (square(guess) > n) {
+					upper = guess;
+				} else {
+					lower = guess;
+				}
+			}
+			return (lower + upper) / 2;
+		};
+	</code></pre>
+	<p>
+		Notice the <span class="monoText">#include maths.h</span>. This is what
+		effectively tells C++ that
+		<span class="monoText">maths.cpp</span> implements
+		<span class="monoText">math.h</span>.
+	</p>
+	<p>
+		Third step: We include the header file,
+		<span class="monoText">maths.h</span>, inside the main driver (a file named
+		<span class="monoText">main.cpp</span>):
+	</p>
+	<pre class="language-cpp"><code>
+		// main.cpp
+		#include &lt;iostream&gt;
+		#include "maths.h"
+		using namespace std;
+		
+		int main() {
+			double a = 4.0;
+			double b = square(a);
+			double c = sqrt(a);
+			cout << "The number is: " << a << endl;
+			cout << "It's square is: " << b << endl;
+			cout << "It's square root is: " << c << endl;
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Notice the <span class="monoText">#include "maths.h"</span>. This
+		effectively dumps all of the contents of
+		<span class="monoText">maths.h</span> into the
+		<span class="monoText">main.cpp</span>. Our main driver is now much, much
+		shorter and cleaner.
+	</p>
+	<p>
+		Now, to run this code, we'll need to compile
+		<span class="monoText">main.cpp</span> and
+		<span class="monoText">maths.cpp</span>, then link their resulting
+		executables into a single executable.
+	</p>
+	<pre class="language-bash"><code>
+		g++ -c maths.cpp
+		g++ -c main.cpp
+		g++ -o mainProgram main.o maths.o
+		./mainProgram
+
+		The number is: 4
+		It's square is: 16
+		It's square root is: 2.00012
+	</code></pre>
+	<p>
+		We can make the entire compilation and linking process above easier by
+		writing a <span class="monoText">Makefile</span>. To do so, we simply create
+		a new file called <span class="monoText">Makefile</span
+		><label for="makefile" class="margin-toggle"><sup></sup></label>
+		<input
+			type="checkbox"
+			id="makefile"
+			class="margin-toggle sidenote-number"
+		/>
+		<span class="marginnote"
+			>For more information on Makefiles,
+			<a href="{% url 'numerc:cpp_oop' %}"><i>see</i> Classes: Make Files</a
+			>.</span
+		>
+		inside our directory, and write the following code inside:
+	</p>
+	<pre class="language-bash"><code>
+		CC = g++
+		CFLAGS = -Wall -g
+		objects = main.o maths.o
+		all: $(objects)
+		clean:
+			$(RM) *.o all
+		main: $(objects)
+			$(CC) $(CFLAGS) -o mainProgram $(objects)
+	</code></pre>
+	<p>This leads to a much faster and easier compilation and linking process:</p>
+	<pre class="language-bash"><code>
+		make
+		make main
+		./mainProgram
+
+		The number is: 4
+		It's square is: 16
+		It's square root is: 2.00012
+	</code></pre>
+	<p>
+		Whenever we write <span class="monoText">#include ${f}$</span>, where ${f}$
+		is some library, in our source code file, the underlying process is
+		essentially what's seen above. The contents of ${f}$ are dumped into the
+		source code file, where they are used and treated as if we wrote them
+		directly into the source code file.
 	</p>
 </section>
 {% endblock %}

@@ -12,8 +12,6 @@ def arch_logic(request):
 	return render(request, "numerc/arch/arch_logic.html")
 	
 # Python Views
-def py_arithmeticOperators(request):
-	return render(request, "numerc/py/py_arithmeticOperators.html")
 def py_preface(request):
 	return render(request, "numerc/py/py_preface.html")
 def py_computability(request):
@@ -22,24 +20,17 @@ def py_programs(request):
 	return render(request, "numerc/py/py_programs.html")
 def py_libraryImport(request):
 	return render(request, "numerc/py/py_libraryImport.html")
-def py_objects(request):
-	return render(request, "numerc/py/py_objects.html")
-def py_typeConvert(request):
-	return render(request, "numerc/py/py_typeConvert.html")
+
+
 def py_variables(request):
 	return render(request, "numerc/py/py_variables.html")
-def py_comparisonOperators(request):
-	return render(request, "numerc/py/py_comparisonOperators.html")
-def py_booleanOperators(request):
-	return render(request, "numerc/py/py_booleanOperators.html")
+
 def py_branchingPrograms(request):
 	return render(request, "numerc/py/py_branchingPrograms.html")
-def py_strings(request):
-	return render(request, "numerc/py/py_strings.html")
-def py_io(request):
-	return render(request, "numerc/py/py_io.html")
+
 def py_loops(request):
 	return render(request, "numerc/py/py_loops.html")
+
 def py_bisectionSearch(request):
 	return render(request, "numerc/py/py_bisectionSearch.html")
 def py_floatsFractions(request):
@@ -58,8 +49,7 @@ def py_specifications(request):
 	return render(request, "numerc/py/py_specifications.html")
 def py_recursion(request):
 	return render(request, "numerc/py/py_recursion.html")
-def py_files(request):
-	return render(request, "numerc/py/py_files.html")
+
 def py_structuredTypes(request):
 	return render(request, "numerc/py/py_structuredTypes.html")
 def py_tuples(request):
@@ -304,6 +294,8 @@ def ml_customDataTypes(request):
 		return render(request, "numerc/ml/ml_customDataTypes.html")
 def ml_functions(request):
 		return render(request, "numerc/ml/ml_functions.html")
+def ml_typeInference(request):
+		return render(request, "numerc/ml/ml_typeInference.html")
 
 #  C++ functions
 def cpp_preface(request):
@@ -365,6 +357,9 @@ def cpp_dynamicArrays(request):
 
 def cpp_oop(request):
 	return render(request, "numerc/cpp/cpp_oop.html")
+
+def cpp_fileIO(request):
+	return render(request, "numerc/cpp/cpp_fileIO.html")
 
 # C# funtions
 def csh_preface(request):

@@ -1,8 +1,506 @@
-{%extends "numerc/layout.html"%} 
+{%extends "numerc/layout.html"%} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Variables, types, and basic operations in Python"
+/>
+{% endblock %} {% block title %}
+<title>Python: Simple Data</title>
+{% endblock %} {% block content %}
+<h1>Simple Data</h1>
 
-{% block content %}
-<section id="variables_in_python" class="grid-item">
-	<h4>Variables in Python</h4>
+<section id="types">
+	<p>
+		Python uses duck typing, and has typed data objects but untyped variable
+		names. The idea behind duck typing is simple: If it walks like a duck and
+		quacks like a duck, then it must be a duck. I.e., if something looks and
+		behaves like an integer, then it's an integer. With duck typing, the
+		programmer leaves it to Python to determine a data object's type (which is
+		done by assessing the presence of certain methods and properties).
+	</p>
+	<p>In Python, there are several built-in types:</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Type</th>
+				<th>Represents</th>
+				<th>Comment/Examples</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">bool</span></td>
+					<td>Boolean values</td>
+					<td>
+						<span class="monoText">True</span>,
+						<span class="monoText">False</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">byte</span></td>
+					<td>A sequence of bytes</td>
+					<td>
+						<span class="monoText">b'Hello'</span>,
+						<span class="monoText">bytes([0, 1, 2, 3])</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">complex</span></td>
+					<td>Complex numbers with real and imaginary parts</td>
+					<td>
+						<span class="monoText">8 + 1.9j</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">dict</span></td>
+					<td>A dictionary of key-value pairs</td>
+					<td>
+						Can contain mixed types for keys and values, but keys must be a
+						hashable type; <span class="monoText">{'key1' : 1.0}</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">float</span></td>
+					<td>Double-precision floating point numbers</td>
+					<td><span class="monoText">3.14</span></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">int</span></td>
+					<td>integers</td>
+					<td><span class="monoText">127</span></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">list</span></td>
+					<td>Dynamic sequences</td>
+					<td>
+						Can contain mixed types;
+						<span class="monoText">[1, 2, 3, 4.2]</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">Nonetype</span></td>
+					<td>
+						The absence of value; equivalent to
+						<span class="monoText">null</span> in other languages
+					</td>
+					<td>
+						<span class="monoText">None</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">range</span></td>
+					<td>Static sequence of integers</td>
+					<td>
+						This is an immutable data type;
+						<span class="monoText">range(0, 5)</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">set</span></td>
+					<td>
+						unordered set, contains no duplicates, can contain mixed types as
+						long as they are hashable
+					</td>
+					<td>
+						This is an mutable data type;
+						<span class="monoText">{1, 'string', True}</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">str</span></td>
+					<td>
+						character strings
+					</td>
+					<td>Immutable data type; <span class="monoText">"String"</span></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">tuple</span></td>
+					<td>
+						tuple
+					</td>
+					<td>Immutable data type, can contain mixed types; <span class="monoText">(0, 1, 2)</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</section>
+
+<section id="arithmetic_operators">
+	<h2>Arithmetic Operators</h2>
+	<p>
+		With the scalar data types, we can begin constructing expressions.
+		Expressions in Python must follow a particular syntax:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>${obj}$ ${f}$ ${obj}$</li>
+			</ul>
+		</div>
+		<figcaption>
+			where ${obj}$ is a data object, and ${f}$ is some operator
+		</figcaption>
+	</figure>
+	<p>
+		Any expression of the above form has a value. That value itself is a data
+		object, so it has a type. Here are the general expressions of
+		<span class="italicsText">operators</span> on
+		<span class="monoText">int</span>s and <span class="monoText">float</span>s:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Expression</th>
+				<th>Meaning</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">i+j</span></td>
+					<td>
+						Return the sum; ${i + j;}$ if <span class="monoText">i</span> and
+						<span class="monoText">j</span> are
+						<span class="monoText">int</span>s, then the result is an
+						<span class="monoText">int</span>; if
+						<span class="monoText">i</span> or
+						<span class="monoText">j</span> is a
+						<span class="monoText">float</span>, then the result is a
+						<span class="monoText">float</span>.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i-j</span></td>
+					<td>
+						Return the difference; ${i - j}$; if
+						<span class="monoText">i</span> and
+						<span class="monoText">j</span> are
+						<span class="monoText">int</span>s, then the result is an
+						<span class="monoText">int</span>; if
+						<span class="monoText">i</span> or
+						<span class="monoText">j</span> is a
+						<span class="monoText">float</span>, then the result is a
+						<span class="monoText">float</span>.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i*j</span></td>
+					<td>
+						Return the product; ${i \times j}$; if
+						<span class="monoText">i</span> and
+						<span class="monoText">j</span> are
+						<span class="monoText">int</span>s, then the result is an
+						<span class="monoText">int</span>; if
+						<span class="monoText">i</span> or
+						<span class="monoText">j</span> is a
+						<span class="monoText">float</span>, then the result is a
+						<span class="monoText">float</span>.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i**j</span></td>
+					<td>
+						Return <span class="monoText">i</span> to the power to
+						<span class="monoText">j</span>; ${i^j.}$
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i/j</span></td>
+					<td>
+						Return the quotient; ${\dfrac{i}{j};}$ result is a
+						<span class="monoText">float</span>.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i//j</span></td>
+					<td>
+						Return the quotient; ${\dfrac{i}{j};}$ result is an
+						<span class="monoText">int</span>.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i%j</span></td>
+					<td>
+						Return the remainder from <span class="monoText">i</span> divided by
+						<span class="monoText">j</span>; ${i \mod j;}$ result is an
+						<span class="monoText">int</span>.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>For example:</p>
+	<pre class="language-bash"><code>
+		in [1]: 1+7
+		out[1]: 8 
+	</code></pre>
+	<p>
+		We can also output things in the shell with
+		<span class="monoText">print()</span>:
+	</p>
+	<pre class="language-bash"><code>
+		in [1]: print(1+7)
+		8
+	</code></pre>
+	<p>
+		Notice the difference in output. There's not "<span class="monoText"
+			>out[]</span
+		>" prompt. There's no <span class="monoText">out[]</span> because no value
+		is returned. When we use <span class="monoText">print()</span>, we get back
+		an object of type <span class="monoText">NoneType</span>.
+	</p>
+	<p>
+		Why do we use <span class="monoText">print()</span> then? We use
+		<span class="monoText">print()</span> when we want to show the
+		<span class="italicsText">output</span> of our code to a user. If we use
+		anything else, a value is returned. This increases the risk of the value
+		being used by other parts of program when we don't intend it to be used.
+	</p>
+
+	<h3>Operator Precedence</h3>
+	<p>
+		Like real world arithmetic, arithmetic expressions in Python are evaluated
+		according to operator precedence:
+	</p>
+	<ol>
+		<li>
+			Python will always first look at parentheses. E.g.,
+			<span class="monoText">3*5+1</span> evaluates to
+			<span class="monoText">16</span>, but
+			<span class="monoText">3*(5+1)</span> evaluates to
+			<span class="monoText">18</span>.
+		</li>
+		<li>
+			Within or after parentheses, exponentiation is evaluated first (<span
+				class="monoText"
+				>i**j</span
+			>)
+		</li>
+		<li>
+			Multiplication is evaluated second (<span class="monoText">i*j</span>)
+		</li>
+		<li>Division is evaluated third (<span class="monoText">i/j</span>)</li>
+		<li>
+			Addition and substraction are evaluated last (<span class="monoText"
+				>i-j</span
+			>, <span class="monoText">i+j</span>)
+		</li>
+		<li>
+			All of the steps above are done
+			<span class="italicsText">left to right</span>. E.g., the expression
+			<span class="monoText">6+12-3</span> evaluates to
+			<span class="monoText">15</span>.
+		</li>
+	</ol>
+	<p>Here are some example arithmetic evaluations:</p>
+	<pre class="language-bash"><code>
+		in [1]: 6+12-3
+		out[1]: 15
+		in [2]: 2*3.0
+		out[2]: 6.0
+		in [3]: --4
+		out[3]: 4
+		in [4]: 10/3
+		out[4]: 3.3333333333333335
+		in [5]: 10.0/3.0
+		out[5]: 3.3333333333333335
+		in [6]: (2+3)*4
+		out[6]: 20
+		in [7]: 2+3*4
+		out[7]: 14
+		in [8]: 2**3+1
+		out[8]: 9
+		in [9]: 2.1**2.0
+		out[9]: 4.41
+		in [10]: 2.2*3.0
+		out[10]: 6.6
+	</code></pre>
+</section>
+
+<section id="python_comparison_operators">
+	<h2>Comparison Operators</h2>
+	<p>
+		With just arithmetic operators and variables, we can only perform arithmetic
+		computations. But, there's more to computation than arithmetic. A
+		cornerstone to computation is the ability to address
+		<span class="italicsText">cases</span>. We don't perform the same
+		computation for every single thing. In fact, what computation we perform
+		depends on whether certain <span class="italicsText">conditions</span> are
+		met. To determine whether those conditions are met, we need the ability to
+		<span class="italicsText">compare</span> values. Below are the comparison
+		operators for the types <span class="monoText">int</span> and
+		<span class="monoText">float</span>:
+	</p>
+	<figure>
+		<table>
+			<thead>
+				<th>Comparison Operator</th>
+				<th>Meaning</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">i > j</span></td>
+					<td>
+						Tests whether <span class="monoText">i</span> is greater than
+						<span class="monoText">j</span>; ${i > j.}$
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i >= j</span></td>
+					<td>
+						Tests whether <span class="monoText">i</span> is greater than OR
+						equal to <span class="monoText">j</span>; ${i \geq j.}$
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i < j</span></td>
+					<td>
+						Tests whether <span class="monoText">i</span> is less than
+						<span class="monoText">j</span>; ${i < j.}$
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i <= j</span></td>
+					<td>
+						Tests whether <span class="monoText">i</span> is less than OR equal
+						to <span class="monoText">j</span>; ${i \leq j.}$
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i == j</span></td>
+					<td>
+						Tests whether <span class="monoText">i</span> is equal to
+						<span class="monoText">j</span>; ${i = j.}$
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i != j</span></td>
+					<td>
+						Tests whether <span class="monoText">i</span> is NOT equal to
+						<span class="monoText">j</span>; ${i \neq j.}$
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		The expressions using the operators above are called
+		<span class="boldItalics">logical expressions</span>. Logical expressions
+		return objects of type <span class="monoText">bool</span>: the values
+		<span class="monoText">True</span> or <span class="monoText">False</span>.
+		To use logical expressions, we need another set of operators called
+		<span class="italicsText">Boolean operators</span>.
+	</p>
+</section>
+
+<section id="python_boolean_operators">
+	<h2>Boolean Operators</h2>
+	<p>
+		The <span class="italicsText">Boolean operators</span> are what allow us to
+		connect, or link, particular conditions. These operators are the following:
+	</p>
+	<figure>
+		<table>
+			<thead>
+				<th>Boolean operator</th>
+				<th>Meaning</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<span class="monoText"><span class="redText">not</span> a</span>
+					</td>
+					<td>
+						If <span class="monoText">a</span> evaluates to
+						<span class="monoText">True</span>, then
+						<span class="monoText">not a</span> evaluates to
+						<span class="monoText">False</span>; if
+						<span class="monoText">a</span> evaluates to
+						<span class="monoText">False</span>, then
+						<span class="monoText">not a</span> evaluates to
+						<span class="monoText">True</span>.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText">a <span class="redText">and</span> b</span>
+					</td>
+					<td>
+						If, and only if, <span class="monoText">a</span> evaluates to
+						<span class="monoText">True</span>
+						<span class="italicsText">and</span>
+						<span class="monoText">b</span> evaluates to
+						<span class="monoText">True</span>, then
+						<span class="monoText">a and b</span> evaluates to
+						<span class="monoText">True</span>; otherwise,
+						<span class="monoText">a and b</span> evaluates to
+						<span class="monoText">False</span>.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText">a <span class="redText">or</span> b</span>
+					</td>
+					<td>
+						If <span class="monoText">a</span> evaluates to
+						<span class="monoText">True</span>,
+						<span class="monoText">b</span> evaluates to
+						<span class="monoText">True</span>,
+						<span class="italicsText">or</span> both
+						<span class="monoText">a</span> and
+						<span class="monoText">b</span> evaluate to
+						<span class="monoText">True</span>, then
+						<span class="monoText">a or b</span> evaluates to true; if, and only
+						if, <span class="monoText">a</span> evaluates to
+						<span class="monoText">False</span>
+						<span class="italicsText">and</span>
+						<span class="monoText">b</span> evaluates
+						<span class="monoText">False</span>, then
+						<span class="monoText">a or b</span> evaluates to
+						<span class="monoText">False</span>.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		Note that the <span class="italicsText">equality operator</span> (<span
+			class="monoText"
+			>==</span
+		>) and the <span class="italicsText">nonequality operator</span> (<span
+			class="monoText"
+			>!=</span
+		>) <span class="underlineText">do not</span> test for equality of type. They
+		only test for equality of value:
+	</p>
+	<pre class="language-bash"><code>
+		in [1]: 5/2 == 5/2.0
+		out[1]: True
+		in [2]: 5*2 == 5.0*2.0
+		out[2]: True
+	</code></pre>
+	<p>If we wanted to check for equality of type, we would write:</p>
+	<pre class="language-bash"><code>
+		in [1]: type(5*2) == type(5.0*2.0)
+		out[1]: False
+	</code></pre>
+</section>
+
+<section id="boolean_operator_precedence">
+	<h3>Boolean Operators: Order of Precedence</h3>
+	<p>
+		Like the arithmetic operators, Boolean operators in Java follow an order of
+		precedence:
+	</p>
+	<ol>
+		<li>Python always looks at expressions inside parentheses first.</li>
+		<li>
+			Inside the parentheses, or once the parentheses have been evaluated,
+			<span class="monoText">NOT</span> statements are evaluated first.
+		</li>
+		<li><span class="monoText">AND</span> statements evaluated second.</li>
+		<li><span class="monoText">OR</span> statements are evaluated last.</li>
+	</ol>
+</section>
+
+<section id="variables_in_python">
+	<h2>Variables</h2>
 	<p>
 		The way we've connected primitives and operators constitute Python's
 		<span class="italicsText">means of combination</span>. Now we cover Python's
@@ -53,7 +551,7 @@
 		<span class="italicsText">name</span>. In doing so, we store that value in
 		computer memory, which we can access by referencing that value's name:
 	</p>
-	<pre class="command-line language-bash" data-output=""><code>
+	<pre class="language-bash"><code>
 		in [1]: pi = 3.14159
 		out[1]: 3.14159
 		in [2]: pi
@@ -115,8 +613,33 @@
 	</code></pre>
 </section>
 
-<section id="changing_variable_bindings" class="grid-item">
-	<h5>Changing Variable Bindings</h5>
+<section id="casting">
+	<h2>Casting</h2>
+	<p>
+		We can convert an object of one type to another. This is called
+		<span class="boldItalics">casting</span>. For example, writing
+		<span class="monoText">float(2)</span> converts the integer
+		<span class="monoText">2</span> to the float
+		<span class="monoText">2.0</span>. Writing
+		<span class="monoText">int(7.2)</span> truncates the float
+		<span class="monoText">7.2</span> to the integer
+		<span class="monoText">7</span>.
+	</p>
+	<pre class="language-bash"><code>
+		In [1]: float(5)
+		Out[1]: 5.0
+		In [2]: int(4.9)
+		Out[2]: 4
+	</code></pre>
+	<p>
+		Notice that when Python converts a <span class="monoText">float</span> into
+		an <span class="monoText">int</span>, it performs no rounding. It simply
+		chops off the fractional part of the number.
+	</p>
+</section>
+
+<section id="changing_variable_bindings">
+	<h2>Changing Variable Bindings</h2>
 	<p>
 		Name-value bindings are not permanent. We can re-bind variable names using
 		new assignment statements. If we re-bind a variable name using a new
@@ -136,7 +659,7 @@
 		<span class="monoText">radius</span>. Here is a shell session encapsulating
 		these ideas:
 	</p>
-	<pre class="command-line language-bash" data-output=""><code>
+	<pre class="language-bash"><code>
 	in [1]: a = 3
 	in [2]: a+2.0
 	out[2]: 5.0
@@ -151,8 +674,8 @@
 	</code></pre>
 </section>
 
-<section>
-	<h5>Swapping Variables</h5>
+<section id="variable_swap">
+	<h2>Swapping Variables</h2>
 	<p>
 		We must be careful about assigning values to names already bound to values.
 		For example, suppose we wanted to swap certain variables:
@@ -222,6 +745,456 @@
 			<li><span class="monoText">y = x = 1</span></li>
 			<li><span class="monoText">x = temp = y = 2</span></li>
 		</ul>
+	</ol>
+</section>
+
+<section id="strings_in_python">
+	<h2>Strings in Python</h2>
+	<p>
+		In Python, letters, special characters, spaces, and digits
+		<span class="italicsText"
+			>enclosed in quotation marks or single quotes</span
+		>
+		are data objects of type <span class="monoText">str</span> (strings). The
+		data type <span class="monoText">char</span>, a type present in languages
+		like C and Java, does not exist in Python. All textual data fall under the
+		type <span class="monoText">str</span>. For example:
+	</p>
+	<pre class="language-python"><code>
+			hi = "hello world"
+			greeting = 'hello'
+		</code></pre>
+	<p>
+		We can combine strings in Python by
+		<span class="boldItalics">concatenating</span> them:
+	</p>
+	<pre class="language-python"><code>
+			hi = "hello"
+			name = "torvald"
+			greet = hi + name # returns "hitorvald" 
+			greeting = hi + " " + name # returns "hi torvald"
+		</code></pre>
+	<p>
+		Alternatively, we can <span class="boldItalics">format</span> strings in
+		Python with curly braces:
+	</p>
+	<pre class="language-python"><code>
+			name = "torvald"
+			greeting = f"hi {name}"
+			print(greeting)
+		</code></pre>
+	<pre class="language-bash"><code>
+			hi torvald
+		</code></pre>
+	<p>
+		In the code above, the string bound to
+		<span class="monoText">greeting</span> is called an
+		<span class="boldItalics">f-string</span> ("format string") &mdash; a string
+		containing initialized variables. When we create strings in this way
+		(embedding variables inside the string) we are
+		<span class="boldItalics">interpolating</span> a string. Variables in
+		formatted strings are enclosed in curly braces, and the string is preceded
+		by the character <span class="monoText">f</span>. By prefacing with
+		<span class="monoText">f</span>, we tell Python, "Hey, this is not just any
+		string, it's a formatted string, so treat it as such."
+	</p>
+	<p>
+		We can perform a number of operations on strings in addition to
+		concatenating them. We can
+		<span class="boldItalics">successively concatenate</span> strings:
+	</p>
+	<pre class="language-python"><code>
+			3* 'sam' # returns 'samsamsam'
+		</code></pre>
+	<p>
+		We can find obtain a string's <span class="boldItalics">length</span>. This
+		returns a data object of type <span class="monoText">int</span>.
+	</p>
+	<pre class="language-python"><code>
+			len('sam') # returns 3 (this includes spaces)
+		</code></pre>
+	<p>
+		Strings are our first example of a
+		<span class="boldItalics">non-scalar data object</span>. Strings have an
+		internal structure that we can access. As we saw in C, strings are arrays of
+		characters, so we can obtain a particular character in a string with its
+		index:
+	</p>
+	<pre class="language-python"><code>
+			'sam'[1] # returns 'a'
+			'sam'[0] # returns 's'
+		</code></pre>
+	<p>
+		Note, however, that strings are an
+		<span class="boldItalics">immutable type</span>. Data objects of immutable
+		type are objects that <span class="italicsText">cannot</span> be modified:
+	</p>
+	<pre class="language-python"><code>
+			s = "hello"
+			s[0] = 'y' # returns an error
+			s = 'y' + s[1:len(s)] # this is ok; s is a new data object
+		</code></pre>
+	<p>
+		Passing a negative number into the array brackets returns the character
+		starting from last to first, with the number
+		<span class="monoText">-1</span> indicating the last:
+	</p>
+	<pre class="language-python"><code>
+			'hello'[-1] # returns 'o'
+			'hello'[-2] # returns 'l'
+			'hello'[-3] # returns 'l'
+			'hello'[-4] # returns 'e'
+			'hello'[-5] # returns 'h'
+		</code></pre>
+	<p>
+		Note that since <span class="monoText">len()</span> returns a data object of
+		type <span class="monoText">int</span>, we can also pass
+		<span class="monoText">len()</span> into array brackets:
+	</p>
+	<pre class="language-python"><code>
+			str = 'hello'
+			str[len(str)-1] # returns o
+		</code></pre>
+	<p>We can <span class="boldItalics">slice</span> a string:</p>
+	<pre class="language-python"><code>
+			'eric'[1:3] # returns 'ri'
+		</code></pre>
+	<p>Thus, slicing a string takes the following form:</p>
+	<pre class="language-pseudo"><code>
+			string[i:j]
+	
+			returned string is: 
+				string[i]+string[j-1] 
+		</code></pre>
+	<p>
+		More explicitly, in the Python example above, the number
+		<span class="monoText">1</span> indicates the starting point for the slice,
+		and the number <span class="monoText">3</span> indicates the ending point
+		for the slice. The slice includes the character at the starting point, but
+		excludes the character at ending point. But, we do not have to include both
+		numbers for the slice.
+	</p>
+	<pre class="language-python"><code>
+			'eric'[:3] # returns 'eri'
+			'eric'[1:] # returns 'ric'
+		</code></pre>
+	<p>
+		If we omit the starting index, Python assumes our slice starts at index 0.
+		If we omit the ending index, Python assumes we want our slice to end at the
+		end of the string.
+	</p>
+	<p>We can also make a <span class="italicsText">copy</span> of the string:</p>
+	<pre class="language-python"><code>
+			'eric'[:] # returns 'eric'
+		</code></pre>
+	<p>We can also pass a third number:</p>
+	<pre class="language-pseudo"><code>
+			string[i:j:k]
+		</code></pre>
+	<p>
+		The <span class="monoText">k</span> represents the
+		<span class="boldItalics">step size</span> for the slice. For example:
+	</p>
+	<pre class="language-python"><code>
+			s = 'Python is fun!'
+			s[1:12:2] # returns 'yhni u'
+		</code></pre>
+	<p>
+		If we pass a negative number into the step parameter, we count backwards:
+	</p>
+	<pre class="language-python"><code>
+			str = 'helloworld'
+			str[::-1] # returns 'dlrowolleh'
+			palindrome = 'racecar'
+			palindrome[::-1] # returns 'racecar'
+		</code></pre>
+	<p>
+		Finally, we can also check whether a particular
+		<span class="boldItalics">substring</span> is inside a string with the
+		following syntax:
+	</p>
+	<pre class="language-pseudo"><code>
+			element <span class="redText">in</span> colctn
+			element <span class="monoText">not in</span> colctn
+		</code></pre>
+	<p>
+		The word <span class="monoText">in</span> asks, "Is this element inside this
+		collection?" The question returns either
+		<span class="monoText">True</span> or <span class="monoText">False</span>.
+		The same goes for the word <span class="monoText">not in</span>: "Is this
+		element NOT inside this collection?" The words
+		<span class="monoText">in</span> and
+		<span class="monoText">not in</span> are what we use to test whether a
+		particular data object is a member of a particular
+		<span class="italicsText">collection</span> of data objects. Strings are an
+		example of a collection of data objects.
+	</p>
+	<pre class="language-python"><code>
+			str = 'world'
+			'a' in str # returns False
+		</code></pre>
+	<p>
+		Building off of this idea, suppose we ask for a user to vote yes or no, and
+		output back confirmation. Suppose the user might input
+		<span class="monoText">'y'</span>, <span class="monoText">'Y'</span>,
+		<span class="monoText">'yes'</span>, <span class="monoText">'Yes'</span>, or
+		<span class="monoText">'YES'</span>. Assume that abstaining counts as a no
+		vote. One way to implement this would be to write:
+	</p>
+	<pre class="language-python"><code>
+			ans = input('Do you support this proposition: ')
+			if ans == 'y' or ans == 'Y' or ans == 'yes' or ans == 'Yes' or ans == 'YES':  
+				print('You voted yes')
+			else
+				print('You voted no')
+		</code></pre>
+	<p>
+		The above is unwiedly and long. We can use the previous idea of testing for
+		whether a data objection is in a particular collection:
+	</p>
+	<pre class="language-python"><code>
+		if ans in ['y', 'Y' 'yes', 'Yes', 'YES']:
+			print('You voted yes')
+		else
+			print('You voted no')
+	</code></pre>
+</section>
+
+<section id="input_and_output_in_python">
+	<h4>Input and Output in Python</h4>
+	<p>
+		The keyword <span class="monoText">print()</span> in Python
+		<span class="italicsText">outputs</span> data objects to the console. When
+		we use <span class="monoText">print()</span>, we can pass in multiple
+		arguments.
+	</p>
+	<pre class="language-python"><code>
+		x = 1
+		print(x) # output: 1
+		x_str = str(x) # cast x into a string
+		print("The loneliest number is", x, ".") 
+		# output: "The loneliest number is 1 ."
+		print("The loneliest number is" + x_str + ".")
+		# output: "The loneliest number is 1."
+	</code></pre>
+	<p>
+		Notice the spacing. When we used commas, we passed in multiple arguments, so
+		each output is separated by one space. When we used the addition operator
+		(<span class="monoText">+</span>), we
+		<span class="italicsText">concatenated</span> multiple strings to form a
+		single string to output.
+	</p>
+	<p>
+		To obtain user input in Python, we use the keyword
+		<span class="monoText">input()</span>. Once the user enters that input, we
+		can bind the input's value to a name (store it inside a variable) for later
+		reference. For example:
+	</p>
+	<pre class="language-python"><code>
+		user_hometown = input("Please enter your hometown: ")
+		print(user_hometown)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		Please enter your hometown: Palo Alto
+		Palo Alto
+	</code></pre>
+	<p>
+		The code above takes the user's input after being prompted
+		<span class="monoText">"Please enter your hometown: "</span>. On enter, that
+		input's value, say <span class="monoText">"Oconomowoc"</span> is stored in
+		the variable <span class="monoText">user_hometown</span>.
+	</p>
+	<p>
+		<span class="monoText">input()</span> will
+		<span class="underlineText">always return a string</span> value. This means
+		that if we ask for number inputs from a user and seek to use those inputs as
+		numbers, we must cast them:
+	</p>
+	<pre class="language-python"><code>
+		age = int(input("Please enter your age: "))
+		print(age)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		Please enter your age: 30
+		30
+	</code></pre>
+	<p>
+		Failing to cast when we want particular data types can lead to unusual
+		results:
+	</p>
+	<pre class="language-python"><code>
+		x = input("x: ")
+		y = input("y: ")
+		print(x + y)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		x: 8
+		y: 9
+		89
+	</code></pre>
+	<p>
+		Note, however, that we also do not want to cast strings when we actually
+		expect strings:
+	</p>
+	<pre class="language-python"><code>
+		x = int(input("x: "))
+		y = int(input("y: "))
+		print(x + y)
+	</code></pre>
+	<pre class="command-line language-bash" data-output=""><code>
+		x: hot
+		Traceback (most recent call last):
+			File "example.py", line 1, in &lt;module&gt;
+		ValueError: invalid literal for int() with base 10
+	</code></pre>
+	<p>
+		The error above tells us that we've attempted to cast a non-numeric data
+		object into a data object of type <span class="monoText">int</span>. We
+		cannot do so.
+	</p>
+</section>
+
+<section id="python_files">
+	<h3>Python Files</h3>
+	<p>
+		<span class="topic">Writing to Files.</span> As we proceed to the next
+		sections, we will begin writing our own modules. To do so, we need a way to
+		save our work for later use. In Python, this is done through a
+		<span class="term">file handle</span>. This appears as such:
+	</p>
+	<pre class="language-python"><code>
+		nameHandle = open('outputs', 'w')
+	</code></pre>
+	<p>
+		The code above tells Python to open a file named
+		<span class="monoText">outputs</span>. The second argument,
+		<span class="monoText">w</span>, tells Python we will write to that file. We
+		then bind that function's result to a name,
+		<span class="monoText">nameHandle</span>, so we can refer to that result and
+		use it:
+	</p>
+	<pre class="language-python"><code>
+		nameHandle = open('outputs', 'w')
+		for i in range(2):
+			name = input("Enter name: ")
+			nameHandle.write(name + '\')
+		nameHandle.close()
+	</code></pre>
+	<p>
+		This code will open a file named <span class="monoText">outputs</span>, and
+		write to that file the <span class="monoText">name</span> inputted by the
+		user, followed by a new line (a carrier return). Once that's done, close the
+		<span class="monoText">outputs</span> file (<span class="monoText"
+			>nameHandle.close()</span
+		>).
+	</p>
+	<p>
+		<span class="topic">Reading Files.</span> With data stored in a separate
+		file, we can read the data by replacing the argument
+		<span class="monoText">w</span> with <span class="monoText">r</span>:
+	</p>
+	<pre class="language-python"><code>
+		nameHandle = open('outputs', 'r')
+		for line in nameHandle:
+			print(line)
+		nameHandle.close()
+	</code></pre>
+	<p>
+		<span class="exh">Exercise.</span> Below are two files,
+		<span class="monoText">foo.py</span> and
+		<span class="monoText">bar.py</span>. The file
+		<span class="monoText">bar.py</span> is executed. What is the result printed
+		to the console?
+	</p>
+	<ol>
+		<li>
+			<div class="compare">
+				<pre class="language-python"><code>
+					# foo.py
+					aa = "AA"
+					aaa = "AAA"
+					c = "C"
+					d = "D"
+				</code></pre>
+				<pre class="language-python"><code>
+					# bar.py
+					aa = "aa"
+					tripleA = "aaa"
+					print(aa)
+				</code></pre>
+			</div>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>The string <span class="monoText">aa</span> is printed.</p>
+			</details>
+		</li>
+		<li>
+			<div class="compare">
+				<pre class="language-python"><code>
+					# foo.py
+					aa = "AA"
+					aaa = "AAA"
+					c = "C"
+					d = "D"
+				</code></pre>
+				<pre class="language-python"><code>
+					aa = "aa"
+					tripleA = "aaa"
+					print(foo.py)
+				</code></pre>
+			</div>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>An error is returned.</p>
+			</details>
+		</li>
+		<li>
+			<div class="compare">
+				<pre class="language-python"><code>
+					# foo.py
+					aa = "AA"
+					aaa = "AAA"
+					c = "C"
+					d = "D"
+				</code></pre>
+				<pre class="language-python"><code>
+					# bar.py
+					import foo
+					aa = "aa"
+					tripleA = "aaa"
+					print(batteries.aa)
+				</code></pre>
+			</div>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>The string <span class="monoText">AA</span> is printed.</p>
+			</details>
+		</li>
+		<li>
+			<div class="compare">
+				<pre class="language-python"><code>
+					# foo.py
+					aa = "AA"
+					aaa = "AAA"
+					c = "C"
+					d = "D"
+				</code></pre>
+				<pre class="language-python"><code>
+					# bar.py
+					from batteries import *
+					aa = "aa"
+					print(aa, aaa, c, d)
+				</code></pre>
+			</div>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					The strings <span class="monoText">aa</span>,
+					<span class="monoText">AAA</span>, <span class="monoText">C</span>,
+					and <span class="monoText">D</span> are printed.
+				</p>
+			</details>
+		</li>
 	</ol>
 </section>
 
