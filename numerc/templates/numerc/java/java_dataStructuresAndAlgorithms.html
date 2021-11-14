@@ -4,10 +4,96 @@
 <title>Data Structures and Algorithms in Java</title>
 {% endblock %} {% block content %}
 <h1>Data Structures & Algorithms in Java</h1>
-<section id="algorithms">
+<section id="java_algorithms">
 	<p>
-		An algorithm is a sequence of instructions towards completing a particular
-		objective. It is an answer to a
+		<span class="drop">A</span>n <span class="term">algorithm</span> is a
+		sequence of steps, or a set of rules, for solving a problem. Computer
+		scientist or otherwise, humans use algorithms daily. The child brushing her
+		teeth; the father preparing her sandwich for lunch; the traveler changing a
+		flat tire; the doctor deciding to order a biopsy; the lawyer filing an
+		appeal and the judge deciding the issue is moot &mdash; regardless of
+		complexity, these are all actions involving algorithms.
+	</p>
+	<p>
+		In computer science, however, we're concerned with a particular kind of
+		algorithm &mdash; those that can be implemented by a computer, called
+		<span class="italicsText">effective procedures</span>. More explicitly,
+		these are algorithms that can be completed by relying only on what computers
+		can do: Performing simple arithmetic, store results, make simple decisions,
+		and repeating the preceding actions as fast as possible, over and over.
+	</p>
+	<p>
+		A common misconception, often perpetuated by the media, is that algorithms
+		are code. No. Algorithms are abstractions. We can
+		<span class="italicsText">implement</span> that algorithm with code, in
+		which case the code becomes an <span class="term">implementation</span>. But
+		we can just as well implement the same algorithm with a checkbox and have a
+		human compute and store the results themselves. Regardless of
+		implementation, the algorithm is still there: ${\text{algorithm}
+		\nRightarrow \text{code} .}$
+	</p>
+	<div class="example">
+		<p>
+			<span class="exh">Problem</span>. Given three integers assigned to
+			separate variables, find the maximum value.
+		</p>
+		<p>
+			The first step to solving this problem is figuring out what we know. How
+			do we compare two numbers? Well, say we have $a$ and ${b,}$ $a$ being the
+			first number. To determine if $a$ is greater, we have to rule out the two
+			cases: ${a < b}$ and ${a = b.}$ If ${a < b,}$ then $a$ is not greater. If
+			${a = b,}$ then its irrelevant whether $a$ or $b$ is greater. This means
+			there are only two relevant cases ${a < b,}$ and ${a > b.}$ If ${a > b,}$
+			then $a$ is the greatest number. If ${a < b,}$ then $b$ is the greatest
+			number.
+		</p>
+		<p>
+			Great, now we have to implement. To do so, we have to remember that a
+			computer can only see values one at a time. That is a mindset we must
+			always have when thinking of implementations.
+		</p>
+		<pre class="language-java"><code>
+			int first = 12;
+			int second = 28;
+			int third = 9;
+			int biggest = first;
+
+			if (first < second) {
+				biggest = second;
+			}
+			if (biggest < third) {
+				biggest = third;
+			}
+			System.out.println(biggest);
+		</code></pre>
+		<pre class="language-bash"><code>
+			28
+		</code></pre>
+		<p>
+			Now, suppose we had instead an array of integers. How would we find the
+			maximum?
+		</p>
+		<pre class="language-java"><code>
+			int[] values = {3, 12, 27, 91, 2, 98, 14, 76};
+			int maxValue = values[0];
+			for (int i = 1; i < values.length; i++) {
+				if (values[i] > maxValue) {
+					maxValue = values[i];
+				}
+			}
+			System.out.println(maxValue);
+		</code></pre>
+		<pre class="language-bash"><code>
+			98
+		</code></pre>
+		<p>
+			Note that in the above implementation, we started the counter at
+			<span class="monoText">1</span> rather <span class="monoText">0</span>.
+			Why? Because we don't need to look at the first value.
+		</p>
+	</div>
+	<p>
+		The algorithm is an answer to a
 		<span class="italicsText">how-to</span> question. This is contrast to a
 		mathematical proof, which is an answer to a
 		<span class="italicsText">what-is</span> question. However, like
@@ -36,14 +122,301 @@
 		What happens for a typical input?
 	</p>
 	<p>
-		<span class="topic">Big-O Notation.</span> The way we measure efficiency in
-		computer science is with <span class="term">Big-O Notation</span> &mdash; a
-		mathematical notation describing a function's limiting behavior when its
-		argument tends towards either (a) zero, (b) some non-zero value, or (b)
-		towards infinity. We refer to the efficiency measurement as
-		<span class="term">runtime</span>.
+		<span class="topic">Demo: Greatest Common Denominator.</span> We can find
+		the greatest common denominator (GCD) of two or more integers with an
+		algorithm. To refresh your memory, the GCD of two or more integers is the
+		largest positive integer that divides each of the integers. For example, the
+		GCD of 8 and 18 is 2. There are several algorithms to finding the GCD, but
+		let's start with a simple approach: <span class="term">brute force</span>.
+	</p>
+	<p>
+		<span class="term">Brute force algorithms</span> are algorithms that
+		systematically enumerate all the possible candidates for the solution, then
+		check whether each candidate satisfies the problem's statement. These
+		algorithms are the programming analog of proof technique
+		<span class="term">method of exhaustion</span>, in mathematics. The idea is
+		we exhaust all of the possibilities before we exhaust ourselves (or, in the
+		context of programming, our hardware). Here's the brute force approach to
+		the GCD problem:
+	</p>
+	<pre class="language-java"><code>
+		import java.util.Scanner;
+		class Math {
+				/* Helper function: Tests if a mod n = 0 && b mod n = 0 */
+				private static boolean is_a_divisor(int a, int b, int n) {
+					return (a % n == 0) && (b % n == 0);
+				}
+				public static int GCD(int a, int b) {
+				int smallest = (a < b) ? a : b; // Find smaller of a and b
+				for (int n = smallest; n >= 1; n--) { // iterate from smaller down to 1
+					if (is_a_divisor(a, b, n)) {
+						return n; // if helper function returns true, return the index
+					}
+				}
+				return 0;
+			}
+		}
+		public class Demo {
+			public static void main(String args[]) {
+				Scanner scan = new Scanner(System.in); // create a scanner object
+				System.out.println("Enter first integer: "); // prompt for 1st int
+				int value1 = scan.nextInt(); // read and store input
+
+				System.out.println("Enter second integer: "); // prompt for 2nd int
+				int value2 = scan.nextInt(); // read and store input
+
+				int gcd = Math.GCD(value1, value2); // call GCD method
+
+				System.out.println("The GCD is: "+gcd); // display result
+			}
+		}
+	</code></pre>
+	<p>
+		The algorithm above is a brute force algorithm because we're checking each
+		case of <span class="monoText">n</span>. Given how much more powerful
+		computers are today (both in memory and processing power), the algorithm
+		above works for most cases. However, it starts breaking down once we're
+		dealing with large, large numbers. With 4 and 2, our algorithm just has to
+		check 2 and 1. But with 1,000,000 and 1,000,001, the same algorithm has to
+		check 1,000,000 cases. And it only gets worse from there.
+	</p>
+	<p>
+		Is there a better algorithm? Yes. We can use
+		<span class="italicsText">Euclid's algorithm</span>.
+	</p>
+	<p>
+		<span class="topic">Demo: Euclid's Algorithm.</span> The ancient Greek
+		mathematician described the algorithm in 300 B.C. To understand how the
+		algorithm works, we detour briefly into some number theory. Given two
+		integers, notice their GCD does not change if the larger number is replaced
+		by its difference with the smaller number. For example, 3 is the GCD of 9
+		and 6. 3 is also the GCD of ${9 - 6 = 3}$ and 6. 4 is the GCD of 8 and 20. 4
+		is also the GCD of ${8}$ and ${20 - 8 = 12.}$ And 4 is also the GCD of 8 and
+		${12 - 8 = 4.}$ 4 is also the GCD of ${8 - 4 = 4}$ and ${4.}$
+	</p>
+	<p>
+		The last example reveals some insight. We can compute the GCD of two numbers
+		by repeatedly reducing the larger of the numbers, all the way down to where
+		the two numbers are equal. Once we get to that point, we've found the GCD of
+		the two numbers.
+	</p>
+	<p>Here's one implementation, using the original algorithm:</p>
+	<pre class="language-java"><code>
+		import java.util.Scanner;
+		class Math {
+			public static int GCD(int a, int b) {
+				if (a == b) { return a; }
+				else if (a > b) { return GCD(a-b, b); } 
+				else { return GCD(a, b-a); }
+			}
+		}
+		public class Euclid {
+			public static void main(String args[]) {
+				Scanner scan = new Scanner(System.in); // create a scanner object
+				System.out.println("Enter first integer: "); // prompt for 1st int
+				int value1 = scan.nextInt(); // read and store input
+
+				System.out.println("Enter second integer: "); // prompt for 2nd int
+				int value2 = scan.nextInt(); // read and store input
+
+				int gcd = Math.GCD(value1, value2);
+
+				System.out.println("The GCD is: "+gcd);
+			}
+		}
+	</code></pre>
+	<p>
+		The modern approach is to employ the remainder operator. This based on two
+		key facts: (1) ${gcd(x, 0) = x,}$ and (2) ${gcd(a, b) = gcd(b, a \bmod b).}$
+		The iterative implementation:
+	</p>
+	<pre class="language-java"><code>
+		import java.util.Scanner;
+		class Math {
+			public static int GCD(int a, int b) {
+				while (b != 0) {
+					int temp = b;
+					b = a % b;
+					a = temp;
+				}
+				return a;
+			}
+		}
+		public class IterativeDemo {
+			public static void main(String args[]) {
+				Scanner scan = new Scanner(System.in); // create a scanner object
+				System.out.println("Enter first integer: "); // prompt for 1st int
+				int value1 = scan.nextInt(); // read and store input
+
+				System.out.println("Enter second integer: "); // prompt for 2nd int
+				int value2 = scan.nextInt(); // read and store input
+
+				int gcd = Math.GCD(value1, value2);
+
+				System.out.println("The GCD is: "+gcd);
+			}
+		}
+	</code></pre>
+	<p>And the recursive implementation:</p>
+	<pre class="language-java"><code>
+		import java.util.Scanner;
+		class Math {
+			public static int GCD(int a, int b) {
+				if (b == 0) { return a; }
+				else { return GCD(b, a % b); }
+			}
+		}
+		public class Demo {
+			public static void main(String args[]) {
+				Scanner scan = new Scanner(System.in); // create a scanner object
+				System.out.println("Enter first integer: "); // prompt for 1st int
+				int value1 = scan.nextInt(); // read and store input
+
+				System.out.println("Enter second integer: "); // prompt for 2nd int
+				int value2 = scan.nextInt(); // read and store input
+
+				int gcd = Math.GCD(value1, value2);
+
+				System.out.println("The GCD is: "+gcd);
+			}
+		}
+	</code></pre>
+	<p>
+		It turns out that the modern implementation of Euclid's algorithm is much
+		better than our brute force algorithm. To see how, we have to talk about
+		<span class="italicsText">big-O notation</span>.
+	</p>
+</section>
+
+<section id="big-o">
+	<h2>Big-O Notation</h2>
+	<p></p>
+	<p>
+		The way we measure efficiency in computer science is with
+		<span class="term">big-O Notation</span> &mdash; a mathematical notation
+		describing a function's limiting behavior when its argument tends towards
+		either (a) zero, (b) some non-zero value, or (b) towards infinity. We refer
+		to the efficiency measurement as <span class="term">runtime</span>.
+	</p>
+	<p>
+		Returning to our GCD example, let's consider the brute force algorithm. To
+		see how many steps the algorithm took, let's add a
+		<span class="monoText">step</span> variable that increments each time
+		<span class="monoText">is_a_divisor()</span> is called:
+	</p>
+	<pre class="language-java"><code>
+		import java.util.Scanner;
+		class Math {
+				/* Helper function: Tests if a mod n = 0 && b mod n = 0 */
+				public static int steps = 0;
+
+				private static boolean is_a_divisor(int a, int b, int n) {
+					steps++;
+					return (a % n == 0) && (b % n == 0);
+				}
+
+				public static int GCD(int a, int b) {
+				steps = 0;
+				int smallest = (a < b) ? a : b; // Find smaller of a and b
+				for (int n = smallest; n >= 1; n--) { // iterate from smaller down to 1
+					if (is_a_divisor(a, b, n)) {
+						return n; // if helper function returns true, return the index
+					}
+				}
+				return 0;
+			}
+		}
+		public class Demo {
+			public static void main(String args[]) {
+				Scanner scan = new Scanner(System.in); // create a scanner object
+				System.out.println("Enter first integer: "); // prompt for 1st int
+				int value1 = scan.nextInt(); // read and store input
+
+				System.out.println("Enter second integer: "); // prompt for 2nd int
+				int value2 = scan.nextInt(); // read and store input
+
+				int gcd = Math.GCD(value1, value2); // execute GCD method
+
+				System.out.println("The GCD is: "+gcd); // return result
+				System.out.println("Steps: "+Math.steps); // print steps
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Enter first integer: 
+		54
+		Enter second integer: 
+		24
+		The GCD is: 6
+		Steps: 19
+	</code></pre>
+	<p>
+		19 steps for ${gcd(54, 24).}$ Let's compare that to the modern
+		implementation of the Euclidean algorithm:
+	</p>
+	<pre class="language-java"><code>
+		import java.util.Scanner;
+		class Math {
+			public static int steps = 0;
+			public static int GCD(int a, int b) {
+				steps++;
+				if (b == 0) { return a; }
+				else { return GCD(b, a % b); }
+			}
+
+		}
+		public class Demo {
+			public static void main(String args[]) {
+				Scanner scan = new Scanner(System.in); // create a scanner object
+				System.out.println("Enter first integer: "); // prompt for 1st int
+				int value1 = scan.nextInt(); // read and store input
+
+				System.out.println("Enter second integer: "); // prompt for 2nd int
+				int value2 = scan.nextInt(); // read and store input
+
+				int gcd = Math.GCD(value1, value2);
+
+				System.out.println("The GCD is: "+gcd);
+				System.out.println("Steps: "+Math.steps);
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Enter first integer: 
+		54
+		Enter second integer: 
+		24
+		The GCD is: 6
+		Steps: 3
+	</code></pre>
+	<p>
+		3 steps for ${gcd(54,24).}$ That's a pretty big difference. How is the
+		Euclidean algorithm doing so much better than the brute-force approach?
+		Well, let's take a look at the brute-force approach. We are actually
+		manually checking each <span class="monoText">n</span> during iteration. It
+		follows that our algorithm takes ${n}$ steps. Now, it might get lucky and
+		reach a value of <span class="monoText">n</span> before it gets to 1, but if
+		there are no common denominators, it will still check all the values of
+		<span class="monoText">n</span>. For example, if we ran ${gcd(19, 7)}$ with
+		the brute force approach, we would see
+		<span class="monoText">Steps: 7</span>. (But with the Euclidean algorithm,
+		we'd get <span class="monoText">Steps: 5</span>).
+	</p>
+	<p>
+		The problem with the brute force approach: We're checking a lot of numbers
+		that really shouldn't be checked. In other words, we're performing
+		unnecessary computations. There are numerous numbers along the values of
+		<span class="monoText">n</span> that we know for a fact cannot be the GCD.
+	</p>
+	<p>
+		We say that the brute force algorithm takes ${n}$ steps to complete its
+		task, in the worst case scenario. To represent this statement, we write
+		${O(n),}$ and we say that ${O(n)}$ is the brute force algorithm's
+		<span class="term">runtime</span> in the
+		<span class="term">worst-case scenario</span>.
 	</p>
 	<p>Runtimes generally fall into a few categories:</p>
+
 	<ol>
 		<li>
 			${O(1)}$ &#8220;Big-O of 1.&#8221;. This is called
@@ -74,7 +447,7 @@
 	<p>The graphs for these runtimes:</p>
 	<figure>
 		<img
-			src="images/big_o_comparison.svg"
+			src="{% static 'images/big_o_comparison.svg' %}"
 			alt="compare big-o"
 			loading="lazy"
 			class="seventy-p"
@@ -91,19 +464,26 @@
 </section>
 
 <section id="data_structures">
-	<h3>Data Structures</h3>
+	<h2>Data Structures</h2>
 	<p>
 		A <span class="term">data structure</span> is a collection of data, the
 		relationships between such data, and the functions or operations that can be
-		applied to such data. Particulary in Java, data structures are created with
-		<span class="italicsText">primitive types</span> and
+		applied to such data. In Java, data structures are created with
+		<span class="italicsText">data types</span> and
 		<span class="italicsText">objects</span>, so as to store and organize data.
-		The simplest data structure we have seen is the array. We will now see a
+		The simplest data structure we're seen is the array. We will now see a
 		variety of other data structures.
 	</p>
 	<p>
-		<span class="topic">Lists.</span> After arrays, the next simplest data
-		structure is a <span class="term">list</span>.
+		Data structures and algorithms are complementary. We implement algorithms to
+		take advantage of a data structure's features. For example, the array is
+		used to model a list of items. Because the array has an inherent order, we
+		can obtain the first and last items in the list. More generally, we can
+		obtain some ${n^{\text{\scriptsize{th}}}}$ item in the list. If the list is
+		dynamic (we'll go over what this means soon), we can add and remove items to
+		the list. All of these are operations that take advantage of an array
+		feature: The elements of a list are ordered. To perform those operations, we
+		must implement algorithms.
 	</p>
 </section>
 {% endblock %}

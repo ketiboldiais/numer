@@ -1,0 +1,428 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="What are templates in C++? Function templates, class templates, and metaprogramming."
+/>
+{% endblock %} {% block title %}
+<title>C++ Templates</title>
+{% endblock %} {% block content %}
+<h1>Templates in C++</h1>
+<section id="forray">
+	<p>
+		<span class="drop">T</span>emplates are one of the most powerful features of
+		C++. They're similar to <a href="">generics in Java</a>, but they are much,
+		much more powerful. Understanding templates is critical to learning C++.
+		They are used throughout the standard library, and they make numerous tasks
+		previously tedious in C++ much easier. To begin, let's consider the
+		<span class="monoText">swap()</span> function:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		void swap(int &var1, int &var2) {
+			int temp = var1;
+			var1 = var2;
+			var2 = temp;
+		}
+		int main() {
+			int a = 0;
+			int b = 1;
+			std::cout << "a = " << a << std::endl;
+			std::cout << "b = " << b << std::endl;
+			swap(a, b);
+			std::cout << "a = " << a << std::endl;
+			std::cout << "b = " << b << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		a = 0
+		b = 1
+		a = 1
+		b = 0
+	</code></pre>
+	<p>
+		If we wanted to swap <span class="monoText">double</span> type values, we'd
+		have to write a separate function for that, since our
+		<span class="monoText">swap()</span> function takes
+		<span class="monoText">int</span> type arguments. More generally, we'd have
+		to write separate swapping functions for swapping values not of type
+		<span class="monoText">int</span>. We can give the functions the same name
+		<span class="monoText">print()</span> &mdash; overloading &mdash; to avoid
+		having to remember different function names. The problem, however, is that
+		this is pretty repetitive. We're copying and pasting code, and changing just
+		a few things. As we know, we generally despise repetitive tasks in
+		programming.
+	</p>
+	<p>This repetition is precisely what templates are intended to remedy:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		template&lt;typename T&gt;
+		void swap(T &var1, T &var2) {
+			T temp = var1;
+			var1 = var2;
+			var2 = temp;
+		}
+		
+		int main() {
+			int a = 0;
+			int b = 1;
+			std::cout << "a = " << a << std::endl;
+			std::cout << "b = " << b << std::endl;
+			swap(a, b);
+			std::cout << "a = " << a << std::endl;
+			std::cout << "b = " << b << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		a = 0
+		b = 1
+		a = 1
+		b = 0
+	</code></pre>
+	<p>
+		The new piece of syntax is the
+		<span class="monoText">template&lt;typename T&gt;</span>. This is called a
+		<span class="term">template</span>. The general syntax for the template:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>template&lt;typename ${t_0}$ ${\ldots}$ typename ${t_n}$&gt;</li>
+		</ul>
+		<figcaption>where ${t_0 \ldots t_n}$ are placeholder names</figcaption>
+	</figure>
+	<p>
+		Note that <span class="monoText">typename</span> can be replaced with
+		<span class="monoText">class</span>. We use
+		<span class="monoText">typename</span> for clarity. When we use a template
+		with a function, as is the case with <span class="monoText">swap()</span>,
+		the resulting function is called a
+		<span class="term">template function</span>.
+	</p>
+	<p>
+		When we write a template function and call that function, we are effectively
+		telling the compiler to write the function for us, then execute the
+		function. For example, let's say we wrote:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>template&lt;typename T1, typename T2&gt;</li>
+				<li>void foo(T1 a, T2 b) { ... };</li>
+				<li>${\vdots}$</li>
+				<li>int n = 1;</li>
+				<li>double m = 2;</li>
+				<li>foo(n, m);</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		When the compiler reaches <span class="monoText">foo(n, m)</span>, it
+		replaces <span class="monoText">T1</span> with
+		<span class="monoText">int</span>, the type for
+		<span class="monoText">n</span>, and it replaces
+		<span class="monoText">T2</span> with <span class="monoText">double</span>,
+		the type for <span class="monoText">m</span>. This results in the function:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>void foo(int a, double b) { ... };</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		The compiler effectively wrote the function for us, then executed it. We can
+		think of the template function as a blueprint for the function we want. For
+		example, returning to our swapping example, we have several lines for
+		printing out the results of the swap. We can write a template function,
+		<span class="monoText">print()</span>, for that task:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;string&gt;
+		
+		template&lt;typename T&gt;
+		void swap(T &var1, T &var2) {
+			T temp = var1;
+			var1 = var2;
+			var2 = temp;
+		}
+		
+		template&lt;typename T0, typename T1&gt;
+		void print(T0 message, T1 x) {
+			std::cout << message << x << std::endl;
+		}
+		
+		int main() {
+			int a = 0;
+			int b = 1;
+			print("a = ", a);
+			print("b = ", b);
+			swap(a, b);
+			print("a = ", a);
+			print("b = ", b);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		a = 0
+		b = 1
+		a = 1
+		b = 0
+	</code></pre>
+	<p>
+		Here, we see two template parameters, <span class="monoText">T0</span> and
+		<span class="monoText">T1</span>. When the compiler gets to
+		<span class="monoText">print()</span>, it replaces
+		<span class="monoText">T0</span> with whatever type is passed, in this case
+		<span class="monoText">string</span>, and it replaces
+		<span class="monoText">T1</span> with whatever type is passed. In this case,
+		<span class="monoText">int</span>.
+	</p>
+	<p>
+		Examining this process, we can see that template functions work only if C++
+		knows the function arguments' types. We can ensure this condition is met by
+		explicitly stating the type, or by relying on type inference. Of the two
+		options, templates are almost always used in reliance of type inference.
+	</p>
+	<p>
+		Importantly, template functions do not exist unless we call them. For
+		example, consider the following template function that outputs to the
+		console the elements of an array:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		template&lt;typename T&gt;
+		void print(T &arr) {
+			int arraySize = sizeof(arr) / sizeof(arr[0]);
+			std::cout << "[ ";
+			for (int i = 0; i < arraySize; i++) {
+				if (i > 0) {std::cout << ", ";}
+				std::cout << arr[i]; 
+			}
+			std::cout << " ]" << std::endl;
+		}
+		
+		int main() {
+			int arr[] = {1, 2, 3, 4};
+			print(arr);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		[ 1, 2, 3, 4 ]
+	</code></pre>
+	<p>
+		Let's deliberately place a bug in the template function by removing the
+		index's type <span class="monoText">int</span> from the for-loop, and remove
+		the call <span class="monoText">print()</span> in
+		<span class="monoText">main()</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		template&lt;typename T&gt;
+		void print(T &arr) {
+			int arraySize = sizeof(arr) / sizeof(arr[0]);
+			std::cout << "[ ";
+			for (i = 0; i < arraySize; i++) {
+				if (i > 0) {std::cout << ", ";}
+				std::cout << arr[i]; 
+			}
+			std::cout << " ]" << std::endl;
+		}
+		
+		int main() {
+			int arr[] = {1, 2, 3, 4};
+			return 0;
+		}
+	</code></pre>
+	<p>
+		For some compilers, the code above will compile just fine. Why? Because
+		there was no call <span class="monoText">print()</span>, so the compiler
+		didn't have construct and execute it.<label for="temp" class="margin-toggle"
+			><sup></sup
+		></label>
+		<input type="checkbox" id="temp" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>This phenomenon is entirely compiler dependent. Compilers like clang will
+			compile the template function, even if we do not call the function.</span
+		>
+		This evidences a crucial point about template functions: They do not exist
+		unless we call them. They're just blueprints. On the other hand, whenever we
+		call a template function, the compiler will write a function based on the
+		facts we provide. This in turn means that if we provide different facts, the
+		compiler will create different functions. For example, if we used our
+		<span class="monoText">print()</span> function for different arrays of
+		different types:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		template&lt;typename T&gt;
+		void print(T &arr) {
+			int arraySize = sizeof(arr) / sizeof(arr[0]);
+			std::cout << "[ ";
+			for (int i = 0; i < arraySize; i++) {
+				if (i > 0) {std::cout << ", ";}
+				std::cout << arr[i]; 
+			}
+			std::cout << " ]" << std::endl;
+		}
+		
+		int main() {
+			int arr1[] = {1, 2, 3, 4};
+			double arr2[] = {1.1, 1.2, 1.3, 1.4};
+			print(arr1);
+			print(arr2);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		[ 1, 2, 3, 4 ]
+		[ 1.1, 1.2, 1.3, 1.4 ]
+	</code></pre>
+	<p>the actual code would look like:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		void print(int &arr) {
+			int arraySize = sizeof(arr) / sizeof(arr[0]);
+			std::cout << "[ ";
+			for (int i = 0; i < arraySize; i++) {
+				if (i > 0) {std::cout << ", ";}
+				std::cout << arr[i]; 
+			}
+			std::cout << " ]" << std::endl;
+		}
+
+		void print(double &arr) {
+			int arraySize = sizeof(arr) / sizeof(arr[0]);
+			std::cout << "[ ";
+			for (int i = 0; i < arraySize; i++) {
+				if (i > 0) {std::cout << ", ";}
+				std::cout << arr[i]; 
+			}
+			std::cout << " ]" << std::endl;
+		}
+		
+		int main() {
+			int arr1[] = {1, 2, 3, 4};
+			double arr2[] = {1.1, 1.2, 1.3, 1.4};
+			print(arr1);
+			print(arr2);
+			return 0;
+		}
+	</code></pre>
+</section>
+
+<section id="class_templates">
+	<h2>Class Templates</h2>
+	<p>
+		The real power behind templates is when they're used with classes. Much of
+		the standard library's classes, like <span class="monoText">vector</span>,
+		are implemented with templates. To see this in action, let's create a simple
+		class called <span class="monoText">List</span>.
+	</p>
+	<p>
+		For <span class="monoText">List</span> class, we want to create a C-style
+		array in the stack. As we know, to create these arrays, we have to indicate
+		their size. Using a template:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		template&lt;int N&gt;
+		class List {
+			private: 
+				int m_list[N];
+			public:
+				int GetSize() const { return N; }
+		};
+
+		int main() {
+			List&lt;8&gt; arr;
+			std::cout << arr.GetSize() << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		8
+	</code></pre>
+	<p>
+		Here, we have a slight variance from the syntax we used with functions.
+		Instead of writing <span class="monoText">typename</span>, we instead passed
+		an explicit type, <span class="monoText">int</span>, followed by an
+		identifier <span class="monoText">N</span>. When we write
+		<span class="monoText">List&lt;8&gt;</span> in
+		<span class="monoText">main()</span>, we create an instance of
+		<span class="monoText">List</span>: an array of size
+		<span class="monoText">N == 8</span>.
+	</p>
+	<p>
+		As evidence of the standard library's extensive use of templates, notice
+		that <span class="monoText">List&lt;8&gt;</span> looks the same as the
+		syntax <span class="monoText">vector&lt;int&gt;</span>. This is no
+		coincidence; vectors are implemented via templates.
+	</p>
+	<p>
+		Returning to our example, we can go a step further and make our
+		<span class="monoText">List</span> type's array be of any type. Let's also
+		add a function for inserting and retrieving a value at a given index:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		template&lt;typename T, int N&gt;
+		class List {
+			private: 
+				T m_list[N];
+			public:
+				int GetSize() const { return N; }
+				int ValueAt(int i) {
+					return m_list[i];
+				}
+				void Insert(int i, T val) {
+					m_list[i] = val;
+				}
+		};
+		
+		int main() {
+			List&lt;int, 8&gt; arr;
+			arr.Insert(0, 22);
+			std::cout << arr.ValueAt(0) << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		22
+	</code></pre>
+	<p>
+		Think carefully about what we're doing here. We're essentially writing code
+		instructing the compiler to write code. This is a form of
+		<span class="term">metaprogramming</span> &mdash; the programming technique
+		of writing programs that take other programs as their data.
+	</p>
+	<p>
+		As we can probably tell, the idea of writing programs that output programs
+		can get very, very crazy. In fact, it's so easy to go overboard with
+		metaprogramming that some software companies outright prohibit their
+		employees from using the technique. This is not because metaprogramming is
+		some &#8220;dark art.&#8221; It's more so because metaprograms can be
+		enormously difficult to prove. Reasoning through a metaprogram is
+		essentially reasoning through two different systems and their interactions:
+		(1) the program the human writes, and (2) the program the compiler writes.
+		Human-written programs can be difficult as it is; bad or non-existent
+		comments, poor naming, unhygienic practices, among other sins. With
+		metaprogramming, we're adding another layer of difficulty: the
+		compiler-written program. With a large enough program, we need a strong
+		understanding of the type-inference system to reason through the code
+		&mdash; something even the most accomplished programmers may not have.
+	</p>
+</section>
+
+
+{% endblock %}

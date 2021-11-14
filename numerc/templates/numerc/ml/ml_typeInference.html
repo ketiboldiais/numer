@@ -122,10 +122,62 @@
 		alphabet and a tick (the <span class="monoText">a'</span>). Thus, what we
 		see outputted is actually <span class="monoText">a' list -> int</span>.
 	</p>
+	<p>
+		This story, however, is incomplete. With the system we've presented, how
+		does ML prevent us from doing strange things like adding an
+		<span class="monoText">int</span> to a <span class="monoText">string</span>?
+		The gravamen of this issue is best seen through an example. Consider the
+		following:
+	</p>
+	<pre class="language-sml"><code>
+		val x = ref NONE
+		val _ = x := SOME "foo"
+		val y = 1 + valOf (!x)
+	</code></pre>
+	<p>
+		In the code above, we create a reference called
+		<span class="monoText">x</span>; <span class="monoText">x</span> is a
+		reference to an option, with a value of <span class="monoText">NONE</span>.
+		Now, that option could hold anything. And because
+		<span class="monoText">x</span> is a reference, it can be mutated.
+	</p>
+	<p>
+		In the next line, we do just that. <span class="monoText">x</span> is
+		mutated by assigning to it a some-value of
+		<span class="monoText">"foo"</span>. This is a string. Then, on the final
+		line, we dereference <span class="monoText">x</span> (access the string
+		<span class="monoText">"foo"</span>) and add it to
+		<span class="monoText">int 1</span>. Under the type checking rules we've
+		presented above, there's nothing to stop this from actually type checking.
+		Instantiating <span class="monoText">x</span> type-checks because the
+		<span class="monoText">:=</span> operator has the type
+		<span class="monoText">'a ref * 'a -> unit</span>. The dereference operator
+		type-checks because <span class="monoText">!x</span> has the type
+		<span class="monoText">'a ref * 'a -> unit</span>, so we instantiate those
+		<span class="monoText">'a</span> with <span class="monoText">int</span>.
+		Under our rules, ML will infer that <span class="monoText">!x</span> is an
+		<span class="monoText">int</span>, when it is actually a string. This is not
+		good.
+	</p>
+	<p>
+		So how does ML get around this problem? Through a technique called
+		<span class="term">value restriction</span>. Under the value restriction
+		rule, variable bindings can be of polymorphic type
+		<span class="underlineText">only if</span> the expression is a variable or
+		value. Function calls like <span class="monoText">ref None</span> are
+		neither variables nor values; such calls are expressions that compute
+		results.
+	</p>
 </section>
 
 <section id="mutual_recursion">
 	<h2>Mutual Recursion</h2>
-	<p></p>
+	<p>
+		Mutual recursion is the phenomenon of a function ${f}$ calling some function
+		${g,}$ and ${g}$ calling ${f.}$ In essence, a function calling a function
+		that calls the function. Mutual recursion is tremendously useful for
+		constructing idioms like <span class="term">state machines</span>.
+		Recognizing this utility, ML provides built-in support for mutual recursion.
+	</p>
 </section>
 {% endblock %}
