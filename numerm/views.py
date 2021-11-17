@@ -42,6 +42,9 @@ def balg_absoluteValue(request):
 def balg_complexNumbers(request):
 	return render(request,"numerm/balg/balg_complexNumbers.html")
 
+def balg_matrices(request):
+	return render(request,"numerm/balg/balg_matrices.html")
+
 # geometry functions
 def geo_preface(request):
 	return render(request,"numerm/geo/geo_preface.html")
@@ -55,10 +58,13 @@ def geo_trig(request):
 # Logic functions
 def log_preface(request):
 	return render(request,"numerm/log/log_preface.html")
+
 def log_propositional(request):
 	return render(request, "numerm/log/log_propositional.html")
+
 def log_arguments(request):
 	return render(request, "numerm/log/log_arguments.html")
+
 def log_predicateCalculus(request):
 	return render(request, "numerm/log/log_predicateCalculus.html")
 

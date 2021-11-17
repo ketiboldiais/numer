@@ -90,7 +90,10 @@
 		<span class="monoText">p</span>, however, is
 		<span class="monoText">0x7ffee3fc118c</span>, the address where
 		<span class="monoText">1</span> is stored (i.e., the address we've named
-		<span class="monoText">x</span>).
+		<span class="monoText">x</span>). We can confirm this by comparing
+		<span class="monoText">&x</span>, which reveals the address named
+		<span class="monoText">x</span>, and <span class="monoText">p</span>, the
+		pointer to the address named <span class="monoText">x</span>.
 	</p>
 	<p>
 		Question: What about would the output of
@@ -129,7 +132,7 @@
 		<span class="monoText">x</span>. And <span class="monoText">&p</span> looks
 		like it stores an address. This output logically follows from our definition
 		of a poiner. The pointer <span class="monoText">p</span> is just another
-		variable. And because it is a variable, it is really just a name for an
+		variable. And because it is a variable, it really is just a name for an
 		address in memory. In this case,
 		<span class="monoText">0x7ffee97c6180</span>. That address, however, stores
 		an address in memory, the address behind <span class="monoText">x</span>. So
@@ -140,12 +143,15 @@
 		<span class="monoText">*p</span> is called a
 		<span class="term">dereference</span>. In other words,
 		<span class="monoText">*p</span> tells the compiler to retrieve the value
-		stored in the address stored in <span class="monoText">p</span>. When we
-		first use <span class="monoText">*p</span>, we are declaring the pointer.
-		When we use <span class="monoText">*p</span> in subsequent code, we are
-		<span class="italicsText">dereferencing</span> that pointer.
+		stored in the address stored in <span class="monoText">p</span>. In sum:
+		When we first use <span class="monoText">*p</span>, we are declaring the
+		pointer. When we use <span class="monoText">*p</span> in subsequent code, we
+		are <span class="italicsText">dereferencing</span> that pointer.
 	</p>
-	<p>In sum, there are three checkboxes to tick whenever we use pointers:</p>
+	<p>
+		Following this discussion, there are three checkboxes to tick whenever we
+		use pointers:
+	</p>
 	<figure class="math-display">
 		<ol>
 			<li>Declaration</li>
@@ -153,6 +159,25 @@
 			<li>Dereferencing</li>
 		</ol>
 	</figure>
+	<p>
+		An important thing to note about pointers is that they are just integers.
+		Specifically, they are integers for a specific address that stores an
+		address. On modern compiles, the pointer must have a type that
+		&#8220;agrees&#8221; or &#8220;conforms&#8221; with the type of the value
+		stored in the address the pointer stores. For example, if we write
+		<span class="monoText">double var = 1.23941,</span> then a subsequent
+		pointer <span class="monoText">ptr</span> must have the type
+		<span class="monoText">double*</span>. This is intended more as a safeguard
+		than anything else. Many features in C++ respond to the dangers of
+		programming in C. In C, we could very well declare the pointer to have the
+		type <span class="monoText">int*</span>. The response to doing so in C is a
+		<span class="italicsText">warning</span> rather than an
+		<span class="italicsText">error</span> (what a modern C++ compiler would
+		return). The problem with doing so, however, is that it's often the case
+		that an <span class="monoText">int</span> pointer simply isn't large enough
+		to accomodate a <span class="monoText">double</span> value. The result:
+		Losing parts of the <span class="monoText">double</span> value.
+	</p>
 </section>
 
 <section id="why_pointers">
@@ -875,7 +900,7 @@
 	<p>
 		This discussion on pointers presents an ideal segway to
 		<span class="term">references</span> &mdash; aliases to variables. To
-		consider how this works, examine the output of the following code:
+		understanding how this works, examine the output of the following code:
 	</p>
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
@@ -883,7 +908,7 @@
 		
 		int main() {
 			int x = 10;
-			int &y = x;
+			int& y = x;
 			cout << "x = " << x << endl;
 			cout << "y = " << y << endl;
 		
@@ -911,5 +936,88 @@
 		<span class="monoText">y</span>, is another name for the address identified
 		as <span class="monoText">x</span>.
 	</p>
+	<p>
+		To understand why C++ provides references, recall the distinction between
+		pass-by-value and pass-by-reference. Suppose we had a variable
+		<span class="monoText">int x = 5</span> in
+		<span class="monoText">main()</span>. We want to square
+		<span class="monoText">x</span> with a function. If we tried to do so:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		int square(int n) {
+			return n = n * n;
+		}
+		
+		int main() {
+			int x = 5;
+			square(x);
+			std::cout << "x = " << x << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 5
+	</code></pre>
+	<p>
+		We get <span class="monoText">x = 5</span> because functions, by default,
+		are pass-by-value. This means that
+		<span class="monoText">square()</span> receives a copy of
+		<span class="monoText">x</span>, not the original. Accordingly, whatever
+		<span class="monoText">square()</span> computes, it remains inside the
+		<span class="monoText">square()</span>'s frame in memory. And as we know,
+		once <span class="monoText">square()</span> finishes executing, it's frame
+		is popped off the stack.
+	</p>
+	<p>
+		How can we pass the original value of <span class="monoText">x</span> to
+		<span class="monoText">square()</span>? With a pointer. So, instead of
+		passing <span class="monoText">x</span> to the function, we'll pass the
+		<span class="italicsText">address</span> of <span class="monoText">x</span>,
+		and instead of storing of the parameter storing that address, we'll have the
+		parameter be a <span class="italicsText">pointer</span> to that address.
+		That pointer can then be passed into the function's body, and
+		<span class="italicsText">dereferenced</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		int square(int* n) {
+			return *n = (*n) * (*n);
+		}
+		
+		int main() {
+			int x = 5;
+			square(&x);
+			std::cout << "x = " << x << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 25
+	</code></pre>
+	<p>
+		The value of <span class="monoText">x</span> has changed, as expected. The
+		reference operator, <span class="monoText">&</span>, makes this whole
+		process much easier and cleaner:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		int square(int& n) {
+			return n = n * n;
+		}
+		
+		int main() {
+			int x = 5;
+			square(x);
+			std::cout << "x = " << x << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 25
+	</code></pre>
 </section>
 {% endblock %}

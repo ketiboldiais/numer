@@ -406,6 +406,9 @@ def lisp_onRecursion(request):
 def ml_preface(request):
 		return render(request, "numerc/ml/ml_preface.html")
 
+def pl_briefHistory(request):
+		return render(request, "numerc/ml/pl_briefHistory.html")
+
 def pl_overview(request):
 		return render(request, "numerc/ml/pl_overview.html")
 
@@ -500,12 +503,15 @@ def prolog_preface(request):
 def prolog_atoms(request):
 	return render(request, "numerc/prolog/prolog_atoms.html")
 
-#!  Haskell Views (haskv)
+#!  Haskell Views (haskellv)
 def haskell_intro(request):
 	return render(request, "numerc/haskell/haskell_intro.html")
 
 def haskell_lambdaCalculus(request):
 	return render(request, "numerc/haskell/haskell_lambdaCalculus.html")
+
+def haskell_gettingStarted(request):
+	return render(request, "numerc/haskell/haskell_gettingStarted.html")
 
 def haskell_variables(request):
 	return render(request, "numerc/haskell/haskell_variables.html")
@@ -520,6 +526,12 @@ def sys_index(request):
 
 def sys_cIntro(request):
 	return render(request, "numerc/sys/sys_cIntro.html")
+
+def sys_hardware(request):
+	return render(request, "numerc/sys/sys_hardware.html")
+
+def sys_pointers(request):
+	return render(request, "numerc/sys/sys_pointers.html")
 
 #! Software Design Views (desv)
 def des_index(request):

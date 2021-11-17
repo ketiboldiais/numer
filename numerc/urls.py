@@ -162,36 +162,63 @@ urlpatterns = [
 
 	path("js_dsalg", views.js_dsalg, name="js_dsalg"),
 
-	# Lisp paths
+	#! Lisp paths (lisp-paths)
 	path("lisp_preface", views.lisp_preface, name="lisp_preface"),
+
 	path("lisp_expressions", views.lisp_expressions, name="lisp_expressions"),
+
 	path("lisp_naming", views.lisp_naming, name="lisp_naming"),
+
 	path("lisp_environment", views.lisp_environment, name="lisp_environment"),
+
 	path("lisp_evaluatingCombinations", views.lisp_evaluatingCombinations, name="lisp_evaluatingCombinations"),
+
 	path("lisp_strings", views.lisp_strings, name="lisp_strings"),
+	
 	path("lisp_images", views.lisp_images, name="lisp_images"),
+
 	path("lisp_constants", views.lisp_constants, name="lisp_constants"),
+
 	path("lisp_compoundProcedures", views.lisp_compoundProcedures, name="lisp_compoundProcedures"),
+
 	path("lisp_substitutionModel", views.lisp_substitutionModel, name="lisp_substitutionModel"),
+
 	path("lisp_applicativeNormal", views.lisp_applicativeNormal, name="lisp_applicativeNormal"),
+
 	path("lisp_conditionals", views.lisp_conditionals, name="lisp_conditionals"),
+
 	path("lisp_compoundPredicates", views.lisp_compoundPredicates, name="lisp_compoundPredicates"),
+
 	path("lisp_lists", views.lisp_lists, name="lisp_lists"),
+
 	path("lisp_listDataDefinitions", views.lisp_listDataDefinitions, name="lisp_listDataDefinitions"),
+
 	path("lisp_newtonsMethod", views.lisp_newtonsMethod, name="lisp_newtonsMethod"),
+
 	path("lisp_blockStructuring", views.lisp_blockStructuring, name="lisp_blockStructuring"),
+
 	path("lisp_iteration", views.lisp_iteration, name="lisp_iteration"),
+
 	path("lisp_treeRecursion", views.lisp_treeRecursion, name="lisp_treeRecursion"),
+
 	path("lisp_ordersOfGrowth", views.lisp_ordersOfGrowth, name="lisp_ordersOfGrowth"),
+
 	path("lisp_higherOrderFunctions", views.lisp_higherOrderFunctions, name="lisp_higherOrderFunctions"),
+
 	path("lisp_designingFunctions", views.lisp_designingFunctions, name="lisp_designingFunctions"),
+
 	path("lisp_designingData", views.lisp_designingData, name="lisp_designingData"),
+
 	path("lisp_selfReference", views.lisp_selfReference, name="lisp_selfReference"),
+
 	path("lisp_designingLargePrograms", views.lisp_designingLargePrograms, name="lisp_designingLargePrograms"),
+
 	path("lisp_onRecursion", views.lisp_onRecursion, name="lisp_onRecursion"),
 
-	#! ML paths (MLP)
+	#! ML paths (ml-paths)
 	path("ml_preface", views.ml_preface, name="ml_preface"),
+
+	path("pl_briefHistory", views.pl_briefHistory, name="pl_briefHistory"),
 
 	path("pl_overview", views.pl_overview, name="pl_overview"),
 
@@ -261,6 +288,8 @@ urlpatterns = [
 
 	path("haskell_lambdaCalculus", views.haskell_lambdaCalculus, name="haskell_lambdaCalculus"),
 
+	path("haskell_gettingStarted", views.haskell_gettingStarted, name="haskell_gettingStarted"),
+
 	path("haskell_variables", views.haskell_variables, name="haskell_variables"),
 
 	# Compilers Paths
@@ -268,7 +297,12 @@ urlpatterns = [
 
 	# Computer Systems Paths
 	path("sys_index", views.sys_index, name="sys_index"),
+
 	path("sys_cIntro", views.sys_cIntro, name="sys_cIntro"),
+
+	path("sys_hardware", views.sys_hardware, name="sys_hardware"),
+
+	path("sys_pointers", views.sys_pointers, name="sys_pointers"),
 
 	# Software Design
 	path("des_index", views.des_index, name="des_index"),

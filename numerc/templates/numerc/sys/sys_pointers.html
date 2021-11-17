@@ -7,13 +7,290 @@
 <title>Pointers</title>
 {% endblock %} {% block content %}
 <h1>Pointers</h1>
-<section id="intro">
+
+<section id="pointer_basics">
 	<p>
 		Let's talk pointers. Pointers are often a point of confusion among new
 		programmers, but their underlying concepts are fairly simple. Applying those
 		concepts, however, can be challenging, as we'll see. The trick to getting
 		over these challenges: Establishing a very strong understanding of the
 		underlying concepts, and practicing using pointers as much as possible.
+	</p>
+	<p>
+		Programming in C, it's pretty much inevitable that we use pointers in some
+		way. The language is too substantially limited without using pointers.
+		Because much of exploration into computer systems relies heavily on C, it is
+		imperative that we are as comfortable with pointers as possible.
+	</p>
+	<p>Consider the following code:</p>
+	<pre class="language-cpp"><code>
+		int main() {
+			int i = 17;
+			int j = 32;
+			int *p = &amp;i;
+			int *q = &amp;j;
+			return 0;
+		}
+	</code></pre>
+	<p>In RAM, the code above appears as such:</p>
+	<figure>
+		<img
+			src="{% static 'images/pointer_address_C.svg' %}"
+			alt="Pointer in memory"
+			loading="lazy"
+			class="eighty-p"
+		/>
+		<figcaption>
+			A section of RAM. The ellipses represent some other section of RAM
+			preceding the section we're concerned with.
+		</figcaption>
+	</figure>
+	<p>
+		The variables <span class="monoText">i</span> and
+		<span class="monoText">j</span> are variables storing
+		<span class="monoText">17</span> and
+		<span class="monoText">32</span> respectively. The variables
+		<span class="monoText">*p</span> and <span class="monoText">*q</span>,
+		however, are pointers. They store the addresses of
+		<span class="monoText">i</span> and
+		<span class="monoText">j</span> respectively. The start symbol,
+		<span class="monoText">*</span>, is what we use to tell the compiler that a
+		variable is a pointer. Thus, whenever the compiler comes across a variable
+		prepended with <span class="monoText">*</span>, it goes, &#8220;Oh, this is
+		a pointer. There's going to be an address in here.&#8221; The ampersand
+		symbol, <span class="monoText">&</span>, is what we use to obtain the
+		address of a variable. Thus, when the compiler sees a variable prepended
+		with <span class="monoText">&</span>, it goes, &#8220;Ah, they're asking for
+		what address is named with this variable name. Let me go and get
+		it.&#8221;<label for="variableName" class="margin-toggle"
+			><sup></sup
+		></label>
+		<input
+			type="checkbox"
+			id="variableName"
+			class="margin-toggle sidenote-number"
+		/>
+		<span class="marginnote"
+			>Remember, variables are just names for addresses. We could imagine a
+			world where we didn't have variables, where we'd manually write memory
+			addresses and assign them values; a frightening thought to say the
+			least.</span
+		>
+	</p>
+	<p>
+		Notice the memory addresses in the diagram above. They go by increment by 4,
+		but after the first pointer, <span class="monoText">p</span>, it increments
+		by 8. This is intentional. Notice further that the pointers occupy a space
+		slightly larger than the others. This too is intentional.
+	</p>
+	<p>
+		Each of the addresses above is the address of a particular
+		<span class="term">byte</span> in memory. An
+		<span class="monoText">int</span>, however, cannot fit in one byte of
+		memory. For this particular architecture, a 64-bit system, the
+		<span class="monoText">int</span> requires 4 bytes of memory. Thus, the
+		value <span class="monoText">17</span>, assigned to
+		<span class="monoText">i</span>, occupies the addresses
+		<span class="monoText">0x1000</span>, <span class="monoText">0x1001</span>,
+		<span class="monoText">0x1002</span>, and
+		<span class="monoText">0x1003</span>. Then, for
+		<span class="monoText">32</span>, assigned to
+		<span class="monoText">j</span>, occupies the addresses
+		<span class="monoText">0x1004</span>, <span class="monoText">0x1005</span>,
+		<span class="monoText">0x1006</span>, and
+		<span class="monoText">0x1007</span>.
+	</p>
+	<p>
+		Pointers, again for this machine, occupy 8 bytes of memory. Thus, the
+		pointer <span class="monoText">p</span> occupies the addresses from
+		<span class="monoText">0x1008</span> through
+		<span class="monoText">0x1015</span>. And the pointer
+		<span class="monoText">q</span> occupies the addresses
+		<span class="monoText">0x1016</span> through
+		<span class="monoText">0x1023</span>.
+	</p>
+	<p>Let's add a bit more code:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;stdio.h&gt;
+
+		int main() {
+			int i = 17;
+			int j = 32;
+			int *p = &amp;i;
+			int *q = &amp;j;
+			printf("Content of *p : %i\n", *p);
+			printf("Content of p : %p\n", p);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Content of *p : 17
+		Content of p : 0x7ffeed37e158
+	</code></pre>
+	<p>
+		Examine the output closely. When we ask for the value
+		<span class="monoText">*p</span>, we are
+		<span class="term">dereferencing</span> the pointer
+		<span class="monoText">p</span>. This is often a point of confusion among
+		newcomers. The <span class="monoText">*</span> symbol is used for both
+		creating pointers <span class="underlineText">and</span> dereferencing.
+		Thus, if we want to access the value stored in the address a pointer points
+		to, we must use the dereference operator <span class="monoText">*</span>.
+		Without using that operator, i.e., just writing
+		<span class="monoText">p</span>, we are asking for the address the pointer
+		points to. These are two very different things.
+	</p>
+	<ol class="ex grid" data-colcade="columns: .grid-col, items: .grid-item">
+		<div class="grid-col grid-col--1"></div>
+		<div class="grid-col grid-col--2"></div>
+		<div class="grid-col grid-col--3"></div>
+		<div class="grid-col grid-col--4"></div>
+		<li class="grid-item">
+			<p>Given the code below,</p>
+			<pre class="language-c"><code>
+				int main() {
+					int i = 0;
+					int j = 1;
+					int *p = &amp;i;
+					int *q = &amp;j;
+				}
+			 </code></pre>
+			<p>
+				What do the following lines do? Assume the lines are separate (i.e.,
+				they are not executed one after another).
+			</p>
+			<ol>
+				<li>
+					<span class="monoText">p = q</span>
+					<details class="answer">
+						<summary>Solution</summary>
+						<p>
+							The line <span class="monoText">p = q</span> assigns to the
+							pointer <span class="monoText">p</span> the address stored in
+							<span class="monoText">q</span>. Thus,
+							<span class="monoText">p</span> now stores the address
+							<span class="monoText">&j</span>, as opposed to
+							<span class="monoText">&i</span>. The result:
+							<span class="monoText">p</span> and
+							<span class="monoText">q</span> are now aliases for the address
+							<span class="monoText">&j</span>.
+						</p>
+					</details>
+				</li>
+				<li>
+					<span class="monoText">*p = *q</span>
+					<details class="answer">
+						<summary>Solution</summary>
+						<p>
+							We always evaluate the right-hand part of the expression first.
+							Here, we dereference <span class="monoText">q</span>, so we get
+							the value <span class="monoText">1</span>. Then, we dereference
+							<span class="monoText">p</span> &mdash; accessing what's inside
+							the address stored by <span class="monoText">p</span> &mdash; and
+							we place inside it the value <span class="monoText">1</span>.
+							Thus, <span class="monoText">i</span> is now
+							<span class="monoText">1</span>.
+						</p>
+					</details>
+				</li>
+				<li>
+					<span class="monoText">*p = q</span>
+					<details class="answer">
+						<summary>Solution</summary>
+						<p>
+							Again, evaluate the right-hand part of the expression. Here, it's
+							a lone <span class="monoText">q</span>, meaning we're going to get
+							an address. Then, we dereference
+							<span class="monoText">p</span> &mdash; accessing what's inside
+							the address stored by <span class="monoText">p</span> &mdash; and
+							we place inside it the address stored by
+							<span class="monoText">q</span>. This will likely return a
+							warning, given that addresses are fairly large numbers. The
+							<span class="monoText">int</span> variable is likely not large
+							enough to fit the address; if the compiler allows us to do this,
+							it's like that parts of the data are lost, since the compiler
+							can't fit everything into the allocated space.
+						</p>
+					</details>
+				</li>
+				<li>
+					<span class="monoText">p = *q</span>
+					<details class="answer">
+						<summary>Solution</summary>
+						<p>
+							Here, we are dereferencing <span class="monoText">q</span>. The
+							value stored in the address pointed at by
+							<span class="monoText">q</span> is then stored as the address
+							stored by <span class="monoText">p</span>. This essentially means
+							that the address stored by <span class="monoText">p</span> is the
+							<span class="monoText">1</span>. This is not a valid address. This
+							will not itself cause a crash. However, if we try to dereference
+							<span class="monoText">p</span>, we will get a
+							<span class="term">segmentation fault</span>.
+						</p>
+					</details>
+				</li>
+			</ol>
+		</li>
+	</ol>
+
+	<p>
+		<span class="topic">Failing to Initialize.</span> Failing to initialize
+		variables before using them is asking for trouble. For example, consider the
+		output of the following code:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		int main() {
+			int i;
+			printf("i = %i\n", i);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		i = 358010917
+	</code></pre>
+	<p>
+		The value above is called a <span class="term">garbage value</span>. It's
+		the value in the memory address at time of compilation, and it's pretty much
+		random. This won't cause a crash, but it will lead to strange results.
+	</p>
+	<p>
+		The same danger applies to uninitialized pointers, only worse. Uninitialized
+		pointers effectively point to anywhere in memory, and that memory could be
+		in use by another program. This will more than likely lead to segmentation
+		fault, causing our program to crash.
+	</p>
+	<p>
+		<span class="topic">The Null Pointer.</span> We can assign the value
+		<span class="monoText">NULL</span> to a pointer. When we do so, we are
+		essentially assigning the integer <span class="monoText">0</span> as the
+		pointer's address, and <span class="monoText">0</span> is not a valid
+		address. Attempting to dereference the null pointer will return a
+		segmentation fault.
+	</p>
+	<p>
+		This danger, however, is precisely what makes the null pointer so useful.
+		Many data structures rely on the null pointer, particularly where we have to
+		ensure the pointer we're working with is or is not the null pointer.
+	</p>
+	<pre class="language-c"><code>
+		if (p == NULL) {
+			// do something
+		}
+	</code></pre>
+</section>
+
+<section id="memory_allocation">
+	<h2>Memory Allocation</h2>
+	<p>
+		In the examples above, we allocated memory strictly in the stack. When we
+		allocate memory in the stack, the memory is automatically cleaned when the
+		function returns. In the preceding examples, the function was
+		<span class="monoText">main()</span>. Once
+		<span class="monoText">main()</span> returns &mdash; i.e., the line
+		<span class="monoText">return 0</span> &mdash; all of the memory we asked to
+		be allocated for our program is cleaned.
 	</p>
 </section>
 {% endblock %}

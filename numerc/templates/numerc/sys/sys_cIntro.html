@@ -3,15 +3,21 @@
 {% endblock %} {% block title %}
 <title>C Introduction</title>
 {% endblock %} {% block content %}
-<h1>C the Low Level</h1>
+<h1>C Basics</h1>
 <section>
 	<p>Nodding to tradition, here is our introductory C program:</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
 		int main() {
+			// Prints hello world
 			printf("Hello, world\n");
 			return 0;
 		}
+
+		/*
+		 * The program above
+		 * outputs "Hello, world" to the console
+		*/
 	</code></pre>
 	<p>
 		The program we've written above is called a
@@ -29,7 +35,12 @@
 		UNICODE). For example, the character <span class="monoText">#</span> is
 		represented by the integer 35, <span class="monoText">i</span> by 105,
 		<span class="monoText">\n</span> by 10, and whitespace (denoted
-		<span class="monoText">SP</span>) by 32.
+		<span class="monoText">SP</span>) by 32. The program also contains a
+		<span class="italicsText">comment</span>, the text preceded by two forward
+		slashes, <span class="monoText">//</span>. By appending
+		<span class="monoText">//</span> to a line of text, we instruct the compiler
+		to ignore the text. For comments spanning multiple lines, we use
+		<span class="monoText">/* */</span>.
 	</p>
 	<p>
 		Files like <span class="monoText">Hello.c</span> are called
@@ -39,40 +50,376 @@
 		later, this is a helpful distinction to keep in mind.
 	</p>
 </section>
-<section id="hardware">
-	<h2>The Hardware</h2>
+
+<section id="arithmetic_operators">
+	<h2>Arithmetic Operators</h2>
 	<p>
-		If we drew a rough sketch of how a computer is organized, it would look
-		something like this:
+		C provides the typical primitive operators we would expect from a
+		programming language: Addition, subtraction, multiplication, division, and
+		the remainder operation.
 	</p>
-	<figure>
-		<img
-			src="{% static 'images/hardware.svg' %}"
-			alt="hardware"
-			loading="lazy"
-		/>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+
+		int main() {
+			// addition
+			int sum = 12 + 10;
+			printf("12 + 10 = %i\n", sum);
+		
+			// subtraction
+			int difference = 12 - 10;
+			printf("12 - 10 = %i\n", difference);
+		
+			// multiplication
+			int product = 12 * 12;
+			printf("12 * 12 = %i\n", product);
+		
+			// division
+			int quotient = 20 / 10;
+			printf("20 / 10 = %i\n", quotient);
+		
+			// remainder operation
+			int remainder = 15 % 2;
+			printf("15 %% 2 = %i\n", remainder);
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		12 + 10 = 22
+		12 - 10 = 2
+		12 * 10 = 144
+		20 / 10 = 2
+		15 % 2 = 1
+	</code></pre>
+</section>
+
+<section id="variables">
+	<h2>Variables</h2>
+	<p>
+		In the ancient Greek saga
+		<i>The Twelve Labors</i>, the Greek demigod Hercules travels throught the
+		far reaches of the Greco-Roman world, completing various tasks. As
+		remarkable and brave Hercules is, he does not complete these tasks alone.
+		Throught the saga, he obtains information and assistance from various
+		persons. In the first task, killing the Nemean lion, a boy provides Hercules
+		some data: If he slew the Nemean lion and returned alive within 30 days, the
+		town would sacrifice a lion to Zeus, but if he did not, the boy would
+		sacrifice himself. In the eleventh task, when Hercules must steal three
+		golden apples from the Garden of the Hesperides, Hercules abducts the Old
+		Man of the Sea and compels him to reveal the location of the garden.
+	</p>
+	<p>
+		Variables in C are akin to the minor characters of the Herculean saga. They
+		hold information, and that information can be one of two things: (1) A
+		literal value, or (2) an address. The C programmer, however, is much more
+		powerful than Hercules &mdash; she can create these lesser characters at her
+		bidding. This is done through
+		<span class="term">variable declaration</span> and
+		<span class="term">assignment</span>, which can both be done simultaneously
+		in a process called <span class="term">variable initialization</span>:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		int main() {
+			int x; // variable declaration
+			x = 2; // variable assignment
+			int y = 3; // variable initialization
+			return 0;
+		}
+	</code></pre>
+	<p>To initialize a variable in C, we employ the following syntax:</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${t}$ ${n}$ = ${val}$</li>
+		</ul>
+		<figcaption>
+			where ${t}$ is a data type, ${n}$ is the variable's name, and ${val}$ is
+			the data we assign to ${n}$
+		</figcaption>
 	</figure>
 	<p>
-		If this picture looks fairly complex, don't worry. One of our goals is to
-		fill in the details. To get started, let's just go over a few key parts.
+		<span class="topic">Data Types.</span> C is a statically- and
+		explicitly-typed language. In the context of variables, this means we must
+		explicitly state what type of data a particular variable will hold. In C,
+		there several primitive data types (data types built in to the language). We
+		provide an explicit data type in C to instruct the compiler how much memory
+		should be allocated in memory for the data. How much memory a data type
+		takes, however, depends on the compiler, or more generally, on the system
+		architecture (i.e., 32-bit compiler vs. 64-bit compiler).
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Type</th>
+				<th>Data</th>
+				<th>Memory Consumption</th>
+				<th>Comment</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">char</span></td>
+					<td>Single textual characters</td>
+					<td>1B</td>
+					<td>Has a value range of ${[-128, 127]}$ or ${[0, 255]}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">unsigned char</span></td>
+					<td>Single textual characters</td>
+					<td>1B</td>
+					<td>Has a value range of ${[0, 255]}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">signed char</span></td>
+					<td>Single textual characters</td>
+					<td>1B</td>
+					<td>Has a value range of ${[-128, 127]}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">int</span></td>
+					<td>Integers</td>
+					<td>
+						<table>
+							<thead>
+								<th>32-bit</th>
+								<th>64-bit</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2B</td>
+									<td>4B</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+					<td>
+						<table>
+							<thead>
+								<th>32-bit</th>
+								<th>64-bit</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td>${[-32768, \space 32767]}$</td>
+									<td>${[-2147483648, \space 2147483647]}$</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">unsigned int</span></td>
+					<td>Positive integers</td>
+					<td>
+						<table>
+							<thead>
+								<th>32-bit</th>
+								<th>64-bit</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2B</td>
+									<td>4B</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+					<td>
+						<table>
+							<thead>
+								<th>32-bit</th>
+								<th>64-bit</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td>${[0, \space 65535]}$</td>
+									<td>${[0, \space 4294967295]}$</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">short</span></td>
+					<td>Short integers</td>
+					<td>2B</td>
+					<td>${[-32768, 32767]}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">unsigned short</span></td>
+					<td>Short positive integers</td>
+					<td>2B</td>
+					<td>${[0, 65535]}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">long</span></td>
+					<td>long integers</td>
+					<td>
+						<table>
+							<thead>
+								<th>32-bit</th>
+								<th>64-bit</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td>4B</td>
+									<td>8B</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+					<td>${[-9223372036854775808, 9223372036854775807]}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">unsigned long</span></td>
+					<td>long positve integers</td>
+					<td>8B</td>
+					<td>${[0, 18446744073709551615]}$</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">float</span></td>
+					<td>floating-point numbers (numbers with a decimal point)</td>
+					<td>4B</td>
+					<td>
+						${[1.2 \times 10^{-38}, 3.4 \times 10^{38}]}$ (6 decimal places)
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">float</span></td>
+					<td>double-precision floating point numbers</td>
+					<td>8B</td>
+					<td>
+						${[2.3 \times 10^{-308}, 1.7 \times 10^{308}]}$ (15 decimal places)
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">long double</span></td>
+					<td>floating point numbers</td>
+					<td>10B</td>
+					<td>
+						${[3.4 \times 10^{-4932}, 1.1 \times 10^{4932}]}$ (19 decimal
+						places)
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		<span class="topic">Boolean Values.</span> C does not have a built-in data
+		type for Boolean values. Instead, any nonzero value is equivalent to
+		<span class="monoText">true</span>, and 0 is equivalent to
+		<span class="monoText">false</span>. We can, however, include the header
+		file <span class="monoText">&lt;stdboo.h&gt;</span>, in which case the data
+		type <span class="monoText">bool</span> is provided.
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdbool.h&gt;
+		int main() {
+			bool x = true;
+			bool y = false;
+		}
+	</code></pre>
+</section>
+
+<section id="loops">
+	<h2>Loops</h2>
+	<p>Loops in C are very much like other languages. Here is the for-loop:</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		int main() {
+			int SUM = 0;
+			for (int i = 0; i < 5; i++) {
+				SUM += i;
+			}
+			printf("Sum from 0 to 5 = %i\n", SUM);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Sum from 0 to 5 = 10
+	</code></pre>
+	<p>And here is the while-loop:</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		int main() {
+			int SUM = 0;
+			int count = 0;
+			while (count < 5) {
+				SUM += count;
+				count++;
+			} 
+			printf("Sum from 0 to 5 = %i\n", SUM);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Sum from 0 to 5 = 10
+	</code></pre>
+</section>
+
+<section id="symbolic_constants">
+	<h2>Symbolic Constants</h2>
+	<p>
+		When writing programs, we want to avoid writing magic numbers. This is
+		particularly true for C programs, since we aren't afforded the same level of
+		safety as we would in languages like Java. Remember, C is a low-level
+		language. Magic numbers reduce readability, and readability is paramount in
+		C programming &mdash; we don't have nearly as much syntactic sugar or idioms
+		as other languages, so C programs tend to be verbose and longer. And the
+		longer the program, the more valuable is readability.
 	</p>
 	<p>
-		When we study computer hardware, it's often helpful to think of the whole
-		system as a busy metropolis, where different places rely on one another. The
-		whole city is powered by electricity, and its inhabitants are the bits, tiny
-		creatures that are either 1 or 0. The bits usually work in groups of 8,
-		forming a byte. The city's ultimate goal is facilitating the movement of
-		these bits, and more broadly, bytes.
+		Suppose we want to sum the ages 12 through 30. We could use the same summing
+		procedure above:
 	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		int main() {
+			int sum = 0;
+			for (int i = 12; i <= 30; i++) {
+				sum += i;
+			}
+			printf("age sum = %i\n", sum);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		age sum = 399
+	</code></pre>
 	<p>
-		<span class="topic">Buses.</span> In the diagram above, there are blue lines
-		connecting each of the hardware pieces. These are called
-		<span class="term">buses</span>. Despite their name, buses are better
-		thought of as lanes, or roads, where bytes travel from one location in
-		hardware to the next. The buses are typically designed to transfer one group
-		of bytes at a time. That group is called a <span class="term">word</span>.
-		On most systems, a word consists of either 4 bytes (32 bits) or 8 bytes (64
-		bits).
+		The problem, however, is that the code isn't very readable. Why 12? Why 30?
+		To make it more readable, we want to use
+		<span class="term">symbolic constants</span>:
 	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+
+		#define YOUNGEST_AGE 12
+		#define OLDEST_AGE 30
+		
+		int main() {
+			int sum_of_ages = 0;
+			for (int age = YOUNGEST_AGE; age <= OLDEST_AGE; age++) {
+				sum_of_ages += age;
+			}
+			printf("age sum = %i\n", sum_of_ages);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		age sum = 399
+	</code></pre>
+	<p>
+		Symbolic constants are essentially symbols for specified values. Wherever
+		the C compiler encounters a symbolic constant, it will replace it with the
+		value we've specified. In this case,
+		<span class="monoText">YOUNGEST_AGE</span> is replaced with
+		<span class="monoText">12</span>, and
+		<span class="monoText">OLDEST_AGE</span> is replaced with 30.
+	</p>
+</section>
+
+<section id="streams">
+	<h2>Streams</h2>
 </section>
 {% endblock %}

@@ -59,6 +59,127 @@
 		Explorer, it's Chakra. The way these engines are implemented determines what
 		they do in the path from source code to bits.
 	</p>
-	<p>Let's look at V8, by far the most widely-used engine.</p>
+	<p>
+		Let's look at V8, by far the most widely-used engine. First, suppose we have
+		the following HTML file:
+	</p>
+	<pre class="language-html"><code>
+		&lt;html&gt;
+			&lt;head&gt;
+				...
+				&lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;
+			&lt;/head&gt;
+			&lt;body&gt;
+				...
+			&lt;/body&gt;
+		&lt;/html&gt;
+	</code></pre>
+	<p>
+		When we loading this HTML page, the
+		<span class="term">HTML parser</span> (roughly, the program that translates
+		HTML code to machine-readable code) works from top to bottom, eventually
+		reaching the line
+		<span class="monoText"
+			>&lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;</span
+		>. Encountering this line, the HTML parser requests the contents of
+		<span class="monoText">app.js</span>. That request is sent to wherever
+		<span class="monoText">app.js</span> is located; it could be stored locally
+		on our computer, or on a server somewhere. Either or, the request is sent,
+		and in response, a <span class="italicsText">stream</span> of bytes are
+		returned to a program called the
+		<span class="term">byte stream decoder</span>, or
+		<span class="term">lexer</span>. Let's say
+		<span class="monoText">app.js</span> contains the following code:
+	</p>
+	<pre class="language-javascript"><code>
+		function giveMe5() {
+			return 5;
+		}
+	</code></pre>
+	<p>
+		The bytes streaming to the lexer are hexadecimal numbers. For example, based
+		on the source code above, the lexer receives
+		<span class="monoText">65</span>, <span class="monoText">75</span>,
+		<span class="monoText">6e</span>, <span class="monoText">63</span>,
+		<span class="monoText">74</span>, <span class="monoText">69</span>,
+		<span class="monoText">6f</span>, and <span class="monoText">6e</span>,
+		which translates to the word <span class="monoText">function</span>.
+		Recognizing this as a keyword, the lexer generates a
+		<span class="term">token</span> for the word
+		<span class="monoText">function</span>. A token is akin to a word &mdash;
+		it's a sequence of characters that has a particular meaning in the language.
+		What constitutes a token is determined by what the language defines as a
+		token; i.e., a <i>keyword</i>. This is why we are prohibited from using
+		keywords, or reserved words, in a given language. The lexer will perform the
+		same process for the rest of the stream. It tokenizes and labels
+		<span class="monoText">giveme5</span> as an <i>identifier</i>,
+		<span class="monoText">(</span> and <span class="monoText">)</span> as
+		<i>punctuators</i>, etc.
+	</p>
+	<p>
+		As the lexer does its work generating tokens, the tokens are sent to the
+		<span class="term">parser</span>, a program that organizes these tokens. The
+		parser essentially takes the tokens, and places them into a
+		<span class="term">parse tree</span> or an
+		<span class="term">abstract syntax tree</span> (AST). How does the parser do
+		this? By taking a token in, and checking which
+		<span class="term">syntax rule</span> applies. These are the rules, or
+		idioms, we first encounter when learning a new language: Variable
+		declarations, function declarations, arithmetic operations, return
+		statements, and so on. We can think of the AST as a tree representation of
+		our program.
+	</p>
+	<p>
+		The parser, however, does a bit more than other parsers. It also checks that
+		our program is following the syntax rules. If it encounters a violation,
+		we'll get a syntax error.
+	</p>
+	<p>
+		Once the parser is done, the AST is sent to the V8 engine. More
+		specifically, it's sent to the V8 engine's
+		<span class="term">ignition interpreter</span>. More broadly, the ignition
+		interpreter is an example of a
+		<span class="term">register machine</span> (this just some fancy naming;
+		it's just another program).
+	</p>
+	<p>
+		The ignition interpreter is itself a collection of programs. One of those
+		programs is the <span class="term">bytecode generator</span>, the first main
+		point the AST is sent to. The bytcode generator takes the AST and translates
+		it into <span class="term">bytecode</span>. The resulting bytecode is then
+		sent to <span class="term">bytecode optimizers</span>, which make small
+		optimizations. These optimizations pertain to cache issues, as well as
+		optimizations-related to our machine. For example, if we're on an
+		Intel-based machine like a Mac, the translation is done according to the
+		constraints for Intel-based machines. If we're on an ARM-based machine, the
+		translation is done according to those constraints.
+	</p>
+	<p>
+		The ignition interpreter is called a register machine because much of the
+		bytecode it produces instructions &mdash; bytecode &mdash; for our machine's
+		registers. For example, if we examined the bytecode for our function above,
+		we'd see a lot of what appears to be very cryptic code. We won't reproduce
+		that bytecode here because of how large it is, but somewhere in there are
+		the lines:
+	</p>
+	<pre class="language-bash"><code>
+		24 S> 0x32a24d2319fa6 @   0 : 0c 05   LdaSmi[5]
+		33 S> 0x32a24d2319fa8 @   2 : ab      Return[5]
+	</code></pre>
+	<p>
+		The expression <span class="monoText">LdaSmi[5]</span> is the instruction
+		&#8220;Load into the accumulator the small integer 5.&#8221; The next
+		expression, <span class="monoText">Return[5]</span> is what we expect
+		&mdash; return <span class="monoText">5</span>.
+	</p>
+	<p>
+		Once the bytcode is generated and optimized, it's sent to the V8 engine's
+		compiler, called <i>TurboFan</i>. Assuming there are no compiler time
+		errors, the compiler translates all of the bytecode into machine code, the
+		language understood by our computer. Our machine executes those machine
+		langage instructions, resulting in what we see from running our JavaScript
+		source code &mdash; maybe it's an animation, a pop-up, or some other dynamic
+		change to the HTML page.
+	</p>
 </section>
 {% endblock %}

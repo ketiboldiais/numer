@@ -9,10 +9,10 @@
 <h1>Programming Languages: An Overview</h1>
 <section id="intro">
 	<p>
-		In this section, we go over some basic terminology and the big picture
-		concepts in programming languages. Given how complex programming language
-		design and implementation can be, it's helpful to examine the landscape from
-		a high vantage point.
+		<span class="drop">I</span>n this section, we go over some basic terminology
+		and the big picture concepts in programming languages. Given how complex
+		programming language design and implementation can be, it's helpful to
+		examine the landscape from a high vantage point.
 	</p>
 	<p>
 		First, we should try and identify the contours of what exactly a programming
@@ -35,5 +35,127 @@
 		JSON is a language for data-interchange. Make is a language for
 		build-automation.
 	</p>
+	<p>
+		For our purposes, however, we'll be focusing on those languages we
+		instinctively think of when we hear &#8220;programming language&#8221;:
+		languages like C++, Java, Python, Lisp, etc. As we continue our study, we'll
+		sooner realize there isn't a bright-line rule for what constitutes a
+		programming language.
+	</p>
+</section>
+
+<section id="implementation">
+	<h2>Implementing a Programming Language.</h2>
+	<p>
+		Historically, there were two ways to implement a programming language: (1)
+		Through an <span class="term">interpreter</span>, or (2) through a
+		<span class="term">compiler</span>. These days, many languages take a hybrid
+		approach.
+	</p>
+	<p>
+		With the interpreter strategy, we write a separate program that runs our
+		source code, as written in the implemented language. With the compiler
+		strategy, we write a program that translates the source code into machine
+		code, to be interpreted by the machine. The hybrid strategy draws from both
+		historic approaches. For example, the language might have a compiler that
+		compiles the source code into virtual machine code, which is then
+		interpreted by some interpreter. Or the language might have a compiler that
+		both compiles and interprets parts of the program, leaving the rest to a
+		virtual machine, then to an interpeter. There are many variations of the
+		hybrid approach, but the overarching goal is the same: Getting our symbols
+		of choice to be understood by the computer.
+	</p>
+</section>
+
+<section id="language_process">
+	<h2>From Source Code to Machine Code</h2>
+	<p>
+		From our vantage point, let's outline the path from source code to machine
+		code. There are numerous paths we can take, but again, the idea is the same.
+		We want to get to a place where our symbols are understood by the computer.
+		Let's say we have a program called <span class="monoText">main.t</span>,
+		written in a hypothetical language called
+		<span class="monoText">tung</span>.
+	</p>
+
+	<section id="lexing">
+		<p>
+			<span class="topic">Lexing.</span> When we tell the computer to run
+			<span class="monoText">main.t</span>, the source code is sent to a program
+			called the <span class="term">lexer</span> or
+			<span class="term">scanner</span>, as a linear stream of characters. The
+			lexer takes this stream, and groups them together into
+			<span class="term">tokens</span>. To be more formal, the lexer produces
+			<span class="term">lexemes</span>, according to the matching pattern of a
+			<span class="term">token</span>. The token itself is a sequence of
+			characters, as defined by the language, that qualifies as a unit of
+			information. In other words, a lexeme is just an instance of a token; the
+			token is the pattern the lexer matches a sequence against. This
+			distinction isn't particularly important at the moment (it will be in
+			later sections), so we'll just use the word
+			<span class="term">token</span>.
+		</p>
+		<p>
+			We can think of tokens as the words
+			<span class="monoText">tung</span> recognizes. These aren't necessarily
+			words as we would understand them in English. The words, or tokens, could
+			be single characters. For example, the lexer might identify
+			<span class="monoText">(</span> as a word, just as it would identify
+			<span class="monoText">function</span> or
+			<span class="monoText">class</span>.
+		</p>
+		<p>
+			Inversely, there may be other characters, or sequences of characters, that
+			the lexer doesn't identify as tokens. For example, in many languages
+			(other than languages like Python), whitespace wouldn't qualify as a
+			token. The same goes for comments. The lexer simply ignores these
+			characters or sequences of characters when it generates tokens.
+		</p>
+		<p>
+			The lexer identifies takens by comparing characters, or sequences of
+			characters, to a <span class="term">symbol table</span>. We can think of
+			this table as a special reference the lexer uses to identify what is and
+			isn't a token. If the token sees something that it cannot scan into a
+			valid token, then it returns a <span class="term">lexical error</span>.
+			Note that these aren't syntax errors. Lexical errors aren't all that
+			common. They generally occur when we use some illegal character or some
+			other mistake that causes the lexer to halt (i.e., lexer can't continue).
+		</p>
+		<p>
+			This entire process of generating tokens and detecting lexical errors is
+			called <span class="term">lexical analysis</span>.
+		</p>
+	</section>
+
+	<section id="parsing">
+		<p>
+			<span class="topic">Parsing.</span> As the lexer generates tokens, it
+			sends tokens, as a linear stream, to the <span class="term">parser</span>.
+			The parser's job is to apply <span class="term">grammar</span> &mdash; the
+			rules defining how smaller pieces of syntax can be arranged to form larger
+			expressions and statements. In applying grammar, the the parser generates
+			a <span class="term">parse tree</span>, also known as an
+			<span class="term">abstract syntax tree</span> (&#8220;AST&#8221;). The
+			tree's leaves consist of the tokens, connected to one another according to
+			the grammar's rules.
+		</p>
+		<p>
+			To construct the tree, the parser checks whether a given sequence of
+			tokens is valid according to the language's grammar. If there's a
+			violation, the parser returns a <span class="term">syntax error</span>.
+			Usually, these are those small errors we make when we code too quickly.
+			Forgetting to close our brackets, missing a semicolon, or using
+			<span class="monoText">=</span> when we meant
+			<span class="monoText">==</span>.
+		</p>
+	</section>
+
+	<section id="static_analysis">
+		<p>
+			<span class="topic">Static Analysis.</span> It is after parsing where
+			language implementations diverge. Language designers make difference
+			choices about what to do with the AST. In some 
+		</p>
+	</section>
 </section>
 {% endblock %}
