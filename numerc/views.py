@@ -492,6 +492,9 @@ def cpp_oop(request):
 def cpp_fileIO(request):
 	return render(request, "numerc/cpp/cpp_fileIO.html")
 
+def cpp_overloading(request):
+	return render(request, "numerc/cpp/cpp_overloading.html")
+
 #! C# Views (cshv)
 def csh_preface(request):
 	return render(request, "numerc/csh/csh_index.html")

@@ -565,364 +565,410 @@
 		<span class="term">pass-by-address</span>.
 	</p>
 
-	<h3>Pass-by-value</h3>
-	<p>
-		To illustrate these differences, let's consider a canonical function in
-		programming, <span class="monoText">swap()</span>. Before we write the
-		function, let's recall how the function works. Say we have an
-		<span class="monoText">int a = 0</span> and an
-		<span class="monoText">int b = 1</span>. To swap the values assigned to the
-		variables, we create a temporary variable, called
-		<span class="monoText">temp</span>. Then, we assign to
-		<span class="monoText">temp</span> the variable
-		<span class="monoText">a.</span> Thus,
-		<span class="monoText">temp = a = 0.</span> Then, we assign to
-		<span class="monoText">a</span> the variable
-		<span class="monoText">b.</span> Thus,
-		<span class="monoText">a = b = 1.</span> Finally, we assign to
-		<span class="monoText">b</span> the variable
-		<span class="monoText">temp</span>:
-		<span class="monoText">b = temp = 0</span>. The end result:
-		<span class="monoText">a = 1</span> and <span class="monoText">b = 0</span>.
-		Putting it all together:
-	</p>
+	<section id="pass_by_value">
+		<h3>Pass-by-value</h3>
+		<p>
+			To illustrate these differences, let's consider a canonical function in
+			programming, <span class="monoText">swap()</span>. Before we write the
+			function, let's recall how the function works. Say we have an
+			<span class="monoText">int a = 0</span> and an
+			<span class="monoText">int b = 1</span>. To swap the values assigned to
+			the variables, we create a temporary variable, called
+			<span class="monoText">temp</span>. Then, we assign to
+			<span class="monoText">temp</span> the variable
+			<span class="monoText">a.</span> Thus,
+			<span class="monoText">temp = a = 0.</span> Then, we assign to
+			<span class="monoText">a</span> the variable
+			<span class="monoText">b.</span> Thus,
+			<span class="monoText">a = b = 1.</span> Finally, we assign to
+			<span class="monoText">b</span> the variable
+			<span class="monoText">temp</span>:
+			<span class="monoText">b = temp = 0</span>. The end result:
+			<span class="monoText">a = 1</span> and
+			<span class="monoText">b = 0</span>. Putting it all together:
+		</p>
 
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		int main() {
-			int a = 0;
-			int b = 1;
-		
-			cout << "Before the swap: " << endl;
-			cout << "x = " << a << endl;
-			cout << "y = " << b << endl;
-		
-			// The swap
-			int temp;
-			temp = a;
-			a = b;
-			b = temp;
-		
-			cout << "After the swap: " << endl;
-			cout << "x = " << a << endl;
-			cout << "y = " << b << endl;
-		
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		Before the swap: 
-		x = 0
-		y = 1
-		After the swap: 
-		x = 1
-		y = 0
-	</code></pre>
-	<p>
-		Great, it works. Swapping variables, however, is a very common operation.
-		Accordingly, we want to place this computation in a function, to be used
-		whenever we'd like:
-	</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		void swap(int a, int b) {
-			int temp;
-			temp = a;
-			a = b;
-			b = temp;
-		}
-		
-		int main() {
-			int a = 0;
-			int b = 1;
-		
-			cout << "Before the swap: " << endl;
-			cout << "x = " << a << endl;
-			cout << "y = " << b << endl;
-		
-			swap(a, b);
-		
-			cout << "After the swap: " << endl;
-			cout << "x = " << a << endl;
-			cout << "y = " << b << endl;
-		
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		Before the swap: 
-		x = 0
-		y = 1
-		After the swap: 
-		x = 0
-		y = 1
-	</code></pre>
-	<p>
-		Strange. It didn't perform the swap. Why? Because calling functions the way
-		we did above, <span class="monoText">swap(a, b)</span>, is by default
-		<span class="term">pass-by-value</span>. In pass-by-value, the function only
-		receives a <span class="underlineText">copy</span> of the values passed.
-		They are not pass an original. To understand what this implies, recall what
-		happens in main memory when we execute a function.
-	</p>
-	<p>
-		When <span class="monoText">main()</span> is loaded, a stack in main memory
-		is allocated for it. Let's call it
-		<span class="italicsText">stack main</span>. Inside
-		<span class="italicsText">stack main</span>, memory is allocated for
-		<span class="monoText">int a = 0</span> and
-		<span class="monoText">int b = 1</span>. Going down the code, we encounter
-		<span class="monoText">swap(a, b)</span>. This is a new function, so a new
-		stack is created to accomodate its variables. Call it
-		<span class="italicsText">stack swap</span>. Inside
-		<span class="italicsText">stack swap</span>, memory is allocated for
-		<span class="monoText">int a</span>, <span class="monoText">int b</span>,
-		and <span class="monoText">temp</span>. Now, arguments were passed into
-		<span class="monoText">swap()</span>, so the memory allocated is for
-		<span class="monoText">int a = 0</span>,
-		<span class="monoText">int b = 1</span>, and
-		<span class="monoText">temp</span>.
-	</p>
-	<p>
-		Inside <span class="italicsText">swap stack</span>, the body of
-		<span class="monoText">swap()</span> works as expected. The variables do in
-		fact swap. We can see that's true by running the function without arguments:
-	</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		void swap(int a = 0, int b = 1) {
-			cout << "Before swap: " << endl;
-			cout << "\t a = " << a << endl;
-			cout << "\t b = " << b << endl;
-		
-			// The swap
-			int temp;
-			temp = a;
-			a = b;
-			b = temp;
-		
-			cout << "After swap: " << endl;
-			cout << "\t a = " << a << endl;
-			cout << "\t b = " << b << endl;
-		}
-		
-		int main() {
-			swap();
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		Before swap: 
-				a = 0
-				b = 1
-		After swap: 
-				a = 1
-				b = 0
-	</code></pre>
-	<p>
-		So what does this all mean? It means that the swap never actually occurs in
-		the <span class="monoText">main()</span> function. It only occurs in
-		<span class="monoText">swap()</span>, and once
-		<span class="monoText">swap()</span> is done,
-		<span class="italicsText">stack swap</span> is destroyed. There was no
-		effect whatsoever on the <span class="monoText">int a = 0</span> and
-		<span class="monoText">int b = 1</span> in
-		<span class="italicsText">stack main</span>.
-	</p>
-	<p>
-		This embodies the concept of pass-by-value. When we simply pass regular
-		variables into a function, we only pass copies of the values into the
-		function. We never pass the originals.
-	</p>
-	<p>
-		Call-by-value is what we use when we want the function to simply return a
-		result based on the arguments passed. In fact, most of the functions we
-		write are computations based on arguments. We generally do not want the
-		original values changed &mdash; we want a new result. For example, suppose
-		we had a function that computes acceleration:
-	</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		double acceleration(double velocity1, double velocity2, double time) {
-			return (velocity2 - velocity1) / time;
-		}
-		
-		int main() {
-			double v1 = 12.4;
-			double v2 = 14.6;
-			double t = 3.48;
-		
-			cout << "Before function call:" << endl;
-			cout << "v1 = " << v1 << endl;
-			cout << "v2 = " << v2 << endl;
-			cout << "t = " << t << endl;
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
 			
-			double a = acceleration(v1, v2, t);
-		
-			cout << "After function call:" << endl;
-			cout << "v1 = " << v1 << endl;
-			cout << "v2 = " << v2 << endl;
-			cout << "t = " << t << endl;
-			cout << "a = " << a << endl;
-		
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		Before function call:
-		v1 = 12.4
-		v2 = 14.6
-		t = 3.48
-		After function call:
-		v1 = 12.4
-		v2 = 14.6
-		t = 3.48
-		a = 0.632184
-	</code></pre>
-	<p>
-		We obtained a value, but we did not modify the actual arguments,
-		<span class="monoText">v1</span>, <span class="monoText">v2</span>, and
-		<span class="monoText">t</span>. In programming, we want to minimize
-		mutation as much as possible. Pass-by-value is one means of ensuring that.
-		But what if we do want mutation? I.e., what if we truly want to modify the
-		actual arguments, like how we intended in
-		<span class="monoText">swap()</span>?
-	</p>
+			int main() {
+				int a = 0;
+				int b = 1;
+			
+				cout << "Before the swap: " << endl;
+				cout << "x = " << a << endl;
+				cout << "y = " << b << endl;
+			
+				// The swap
+				int temp;
+				temp = a;
+				a = b;
+				b = temp;
+			
+				cout << "After the swap: " << endl;
+				cout << "x = " << a << endl;
+				cout << "y = " << b << endl;
+			
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Before the swap: 
+			x = 0
+			y = 1
+			After the swap: 
+			x = 1
+			y = 0
+		</code></pre>
+		<p>
+			Great, it works. Swapping variables, however, is a very common operation.
+			Accordingly, we want to place this computation in a function, to be used
+			whenever we'd like:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
+			
+			void swap(int a, int b) {
+				int temp;
+				temp = a;
+				a = b;
+				b = temp;
+			}
+			
+			int main() {
+				int a = 0;
+				int b = 1;
+			
+				cout << "Before the swap: " << endl;
+				cout << "x = " << a << endl;
+				cout << "y = " << b << endl;
+			
+				swap(a, b);
+			
+				cout << "After the swap: " << endl;
+				cout << "x = " << a << endl;
+				cout << "y = " << b << endl;
+			
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Before the swap: 
+			x = 0
+			y = 1
+			After the swap: 
+			x = 0
+			y = 1
+		</code></pre>
+		<p>
+			Strange. It didn't perform the swap. Why? Because calling functions the
+			way we did above, <span class="monoText">swap(a, b)</span>, is by default
+			<span class="term">pass-by-value</span>. In pass-by-value, the function
+			only receives a <span class="underlineText">copy</span> of the values
+			passed. They are not pass an original. To understand what this implies,
+			recall what happens in main memory when we execute a function.
+		</p>
+		<p>
+			When <span class="monoText">main()</span> is loaded, a stack in main
+			memory is allocated for it. Let's call it
+			<span class="italicsText">stack main</span>. Inside
+			<span class="italicsText">stack main</span>, memory is allocated for
+			<span class="monoText">int a = 0</span> and
+			<span class="monoText">int b = 1</span>. Going down the code, we encounter
+			<span class="monoText">swap(a, b)</span>. This is a new function, so a new
+			stack is created to accomodate its variables. Call it
+			<span class="italicsText">stack swap</span>. Inside
+			<span class="italicsText">stack swap</span>, memory is allocated for
+			<span class="monoText">int a</span>, <span class="monoText">int b</span>,
+			and <span class="monoText">temp</span>. Now, arguments were passed into
+			<span class="monoText">swap()</span>, so the memory allocated is for
+			<span class="monoText">int a = 0</span>,
+			<span class="monoText">int b = 1</span>, and
+			<span class="monoText">temp</span>.
+		</p>
+		<p>
+			Inside <span class="italicsText">swap stack</span>, the body of
+			<span class="monoText">swap()</span> works as expected. The variables do
+			in fact swap. We can see that's true by running the function without
+			arguments:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
+			
+			void swap(int a = 0, int b = 1) {
+				cout << "Before swap: " << endl;
+				cout << "\t a = " << a << endl;
+				cout << "\t b = " << b << endl;
+			
+				// The swap
+				int temp;
+				temp = a;
+				a = b;
+				b = temp;
+			
+				cout << "After swap: " << endl;
+				cout << "\t a = " << a << endl;
+				cout << "\t b = " << b << endl;
+			}
+			
+			int main() {
+				swap();
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Before swap: 
+					a = 0
+					b = 1
+			After swap: 
+					a = 1
+					b = 0
+		</code></pre>
+		<p>
+			So what does this all mean? It means that the swap never actually occurs
+			in the <span class="monoText">main()</span> function. It only occurs in
+			<span class="monoText">swap()</span>, and once
+			<span class="monoText">swap()</span> is done,
+			<span class="italicsText">stack swap</span> is destroyed. There was no
+			effect whatsoever on the <span class="monoText">int a = 0</span> and
+			<span class="monoText">int b = 1</span> in
+			<span class="italicsText">stack main</span>.
+		</p>
+		<p>
+			This embodies the concept of pass-by-value. When we simply pass regular
+			variables into a function, we only pass copies of the values into the
+			function. We never pass the originals.
+		</p>
+		<p>
+			Call-by-value is what we use when we want the function to simply return a
+			result based on the arguments passed. In fact, most of the functions we
+			write are computations based on arguments. We generally do not want the
+			original values changed &mdash; we want a new result. For example, suppose
+			we had a function that computes acceleration:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
+			
+			double acceleration(double velocity1, double velocity2, double time) {
+				return (velocity2 - velocity1) / time;
+			}
+			
+			int main() {
+				double v1 = 12.4;
+				double v2 = 14.6;
+				double t = 3.48;
+			
+				cout << "Before function call:" << endl;
+				cout << "v1 = " << v1 << endl;
+				cout << "v2 = " << v2 << endl;
+				cout << "t = " << t << endl;
+				
+				double a = acceleration(v1, v2, t);
+			
+				cout << "After function call:" << endl;
+				cout << "v1 = " << v1 << endl;
+				cout << "v2 = " << v2 << endl;
+				cout << "t = " << t << endl;
+				cout << "a = " << a << endl;
+			
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Before function call:
+			v1 = 12.4
+			v2 = 14.6
+			t = 3.48
+			After function call:
+			v1 = 12.4
+			v2 = 14.6
+			t = 3.48
+			a = 0.632184
+		</code></pre>
+		<p>
+			We obtained a value, but we did not modify the actual arguments,
+			<span class="monoText">v1</span>, <span class="monoText">v2</span>, and
+			<span class="monoText">t</span>. In programming, we want to minimize
+			mutation as much as possible. Pass-by-value is one means of ensuring that.
+			But what if we do want mutation? I.e., what if we truly want to modify the
+			actual arguments, like how we intended in
+			<span class="monoText">swap()</span>?
+		</p>
+	</section>
 
-	<h3>Pass-by-address</h3>
-	<p>
-		One way to do so is with <span class="term">pass-by-address</span>.
-		Pass-by-address is exactly what it sounds like. Instead of sending copies of
-		the values to a function, we send the address of the values:
-	</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		void swap(int *a, int *b) {
-			int temp;
-			temp = *a;
-			*a = *b;
-			*b = temp;
-		}
-		
-		int main() {
-			int a = 0;
-			int b = 1;
-		
-			cout << "Before the swap: " << endl;
-			cout << "x = " << a << endl;
-			cout << "y = " << b << endl;
-		
-			swap(&a, &b);
-		
-			cout << "After the swap: " << endl;
-			cout << "x = " << a << endl;
-			cout << "y = " << b << endl;
-		
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		Before the swap: 
-		x = 0
-		y = 1
-		After the swap: 
-		x = 1
-		y = 0
-	</code></pre>
-	<p>
-		Now it works. But how? Notice that with the function call
-		<span class="monoText">swap()</span>, we passed as arguments
-		<span class="monoText">&a</span> and <span class="monoText">&b</span>. These
-		are the addresses of <span class="monoText">a</span> and
-		<span class="monoText">b</span> in <span class="monoText">main()</span>.
-		Then, inside <span class="monoText">swap()</span>, the parameters are
-		<span class="monoText">*a</span> and <span class="monoText">*b</span>. These
-		are pointers. Why are they pointers? Because if we want to store memory
-		addresses, we must use pointers. Accordingly, inside the body of
-		<span class="monoText">swap()</span>, we use pointers to perform the swap.
-		Those pointers always refer to the addresses of
-		<span class="monoText">a</span> and <span class="monoText">b</span> in
-		<span class="monoText">main()</span>.
-	</p>
+	<section id="pass_by_address">
+		<h3>Pass-by-address</h3>
+		<p>
+			One way to do so is with <span class="term">pass-by-address</span>.
+			Pass-by-address is exactly what it sounds like. Instead of sending copies
+			of the values to a function, we send the address of the values:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
+			
+			void swap(int *a, int *b) {
+				int temp;
+				temp = *a;
+				*a = *b;
+				*b = temp;
+			}
+			
+			int main() {
+				int a = 0;
+				int b = 1;
+			
+				cout << "Before the swap: " << endl;
+				cout << "x = " << a << endl;
+				cout << "y = " << b << endl;
+			
+				swap(&a, &b);
+			
+				cout << "After the swap: " << endl;
+				cout << "x = " << a << endl;
+				cout << "y = " << b << endl;
+			
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Before the swap: 
+			x = 0
+			y = 1
+			After the swap: 
+			x = 1
+			y = 0
+		</code></pre>
+		<p>
+			Now it works. But how? Notice that with the function call
+			<span class="monoText">swap()</span>, we passed as arguments
+			<span class="monoText">&a</span> and <span class="monoText">&b</span>.
+			These are the addresses of <span class="monoText">a</span> and
+			<span class="monoText">b</span> in <span class="monoText">main()</span>.
+			Then, inside <span class="monoText">swap()</span>, the parameters are
+			<span class="monoText">*a</span> and <span class="monoText">*b</span>.
+			These are pointers. Why are they pointers? Because if we want to store
+			memory addresses, we must use pointers. Accordingly, inside the body of
+			<span class="monoText">swap()</span>, we use pointers to perform the swap.
+			Those pointers always refer to the addresses of
+			<span class="monoText">a</span> and <span class="monoText">b</span> in
+			<span class="monoText">main()</span>.
+		</p>
+	</section>
 
-	<h3>Pass-by-reference</h3>
-	<p>
-		Recall that we can think of a <span class="italicsText">reference</span> as
-		a nickname, or pseudonym, for a variable. That nickname, or pseudonym, can
-		be passed as an argument to a function. Passing references as arguments to a
-		function is called <span class="term">pass-by-reference</span>. For example,
-		using our code above:
-	</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		void swap(int &a, int &b) {
-			int temp;
-			temp = a;
-			a = b;
-			b = temp;
-		}
-		
-		int main() {
-			int a = 0;
-			int b = 1;
-		
-			cout << "Before the swap: " << endl;
-			cout << "x = " << a << endl;
-			cout << "y = " << b << endl;
-		
-			swap(a, b);
-		
-			cout << "After the swap: " << endl;
-			cout << "x = " << a << endl;
-			cout << "y = " << b << endl;
-		
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		Before the swap: 
-		x = 0
-		y = 1
-		After the swap: 
-		x = 1
-		y = 0
-	</code></pre>
-	<p>
-		The same result from passing by address is obtained. This is because we
-		employed <span class="term">pass-by-reference</span>. When
-		<span class="monoText">main()</span> is memory is allocated for its
-		variables, as usual. However, the distinction is when the loader encounters
-		<span class="monoText">swap(a, b)</span>. The formal parameters of
-		<span class="monoText">a</span> and <span class="monoText">b</span> are
-		<span class="monoText">&a</span> and <span class="monoText">&b</span>.
-	</p>
-	<p>
-		What happens when these parameters are used? The entire definition for
-		<span class="monoText">swap()</span> is &#8220;copied-and-pasted&#8221; into
-		the body of <span class="monoText">main()</span>. In other words,
-		<span class="monoText">swap()</span> isn't loaded separately from
-		<span class="monoText">main()</span>. It is loaded as a part of
-		<span class="monoText">main()</span>. And because
-		<span class="monoText">swap()</span> is a part of
-		<span class="monoText">main()</span>,
-		<span class="monoText">swap()</span> can effectively &#8220;see&#8221;, or
-		has access, to the preceding variables inside
-		<span class="monoText">main()</span>. In practice, pass-by-reference is used
-		far more often than pass-by-address. Why? Because it's simpler to write and
-		easier to read.
-	</p>
+	<section id="pass_by_reference">
+		<h3>Pass-by-reference</h3>
+		<p>
+			Recall that we can think of a
+			<span class="italicsText">reference</span> as a nickname, or pseudonym,
+			for a variable. That nickname, or pseudonym, can be passed as an argument
+			to a function. Passing references as arguments to a function is called
+			<span class="term">pass-by-reference</span>. For example, using our code
+			above:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
+			
+			void swap(int &a, int &b) {
+				int temp;
+				temp = a;
+				a = b;
+				b = temp;
+			}
+			
+			int main() {
+				int a = 0;
+				int b = 1;
+			
+				cout << "Before the swap: " << endl;
+				cout << "x = " << a << endl;
+				cout << "y = " << b << endl;
+			
+				swap(a, b);
+			
+				cout << "After the swap: " << endl;
+				cout << "x = " << a << endl;
+				cout << "y = " << b << endl;
+			
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Before the swap: 
+			x = 0
+			y = 1
+			After the swap: 
+			x = 1
+			y = 0
+		</code></pre>
+		<p>
+			The same result from passing by address is obtained. This is because we
+			employed <span class="term">pass-by-reference</span>. When
+			<span class="monoText">main()</span> is memory is allocated for its
+			variables, as usual. However, the distinction is when the loader
+			encounters <span class="monoText">swap(a, b)</span>. The formal parameters
+			of <span class="monoText">a</span> and <span class="monoText">b</span> are
+			<span class="monoText">&a</span> and <span class="monoText">&b</span>.
+		</p>
+		<p>
+			What happens when these parameters are used? The entire definition for
+			<span class="monoText">swap()</span> is &#8220;copied-and-pasted&#8221;
+			into the body of <span class="monoText">main()</span>. In other words,
+			<span class="monoText">swap()</span> isn't loaded separately from
+			<span class="monoText">main()</span>. It is loaded as a part of
+			<span class="monoText">main()</span>. And because
+			<span class="monoText">swap()</span> is a part of
+			<span class="monoText">main()</span>,
+			<span class="monoText">swap()</span> can effectively &#8220;see&#8221;, or
+			has access, to the preceding variables inside
+			<span class="monoText">main()</span>. In practice, pass-by-reference is
+			used far more often than pass-by-address. Why? Because it's simpler to
+			write and easier to read.
+		</p>
+	</section>
+
+	<section id="comparison_reference_v_value">
+		<h3>Pass-by-reference v. Pass-by-value</h3>
+		<p>
+			To repeat, the default approach for passing arguments into functions in
+			C++ is pass-by-value. A fair question is when should we avoid the default
+			approach; i.e., pass-by-reference. Answer: It depends.
+		</p>
+		<p>
+			When we pass-by-value, we pass a copy of the value. This has the benefit
+			of avoiding inadvertent mutability. It also leads to code that's easier to
+			prove or reason about. The cost, however, is inefficiency. If a function
+			takes a large data structure as an argument, it's worth considering
+			whether we actually want to pass that argument by value. With
+			pass-by-value, an entire copy of that data structure must be made, and
+			this takes up both memory and processing power.
+		</p>
+		<p>
+			If the data structure is particularly large, then it's like that case that
+			we want to pass-by-reference. This avoids the computational expense of
+			generating a copy of that data structure.
+		</p>
+		<p>
+			Of course, we should also consider whether we should be passing the entire
+			data structure in the first place. If only a part of that data structure
+			is needed by a function, we should be passing only part of that data
+			structure as an argument. If that part is particularly small, then we
+			should err on the side of passing by value.
+		</p>
+		<p>
+			In general, pass-by-reference is a convenient feature in C++, but it can
+			be easily abused. From a big-picture perspective, references should only
+			be used when there's some value in the program that every other module in
+			the program depends on. Because of that dependancy, it's necessary to
+			change that value for everyone else, because those changes impact what
+			everyone else does.
+		</p>
+	</section>
 </section>
 
 <section id="returns">

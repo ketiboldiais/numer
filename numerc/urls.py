@@ -263,7 +263,6 @@ urlpatterns = [
 
 	path("cpp_hashing", views.cpp_hashing, name="cpp_hashing"),
 
-
 	path("cpp_pointers", views.cpp_pointers, name="cpp_pointers"),
 
 	path("cpp_sorting", views.cpp_sorting, name="cpp_sorting"),
@@ -275,6 +274,8 @@ urlpatterns = [
 	path("cpp_fileIO", views.cpp_fileIO, name="cpp_fileIO"),
 
 	path("cpp_templates", views.cpp_templates, name="cpp_templates"),
+
+	path("cpp_overloading", views.cpp_overloading, name="cpp_overloading"),
 
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),

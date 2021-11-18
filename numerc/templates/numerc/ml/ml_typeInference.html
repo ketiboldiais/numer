@@ -3,7 +3,7 @@
 {% endblock %} {% block title %}
 <title>Type Inference</title>
 {% endblock %} {% block content %}
-<h1>Type Inference</h1>
+<h1>Type Inference: Typing Without Typing</h1>
 <section id="forray">
 	<p>
 		In our investigation of programming languages, we've relied heavily on type
@@ -25,53 +25,90 @@
 		ML's type-checking system.
 	</p>
 	<p>
-		ML is a statically-typed language &mdash; a language that checks for type
-		compliance before runtime. With static type checking, we can prevent
-		programs from ever running if our source code does not comply with the
-		language's type rules. This is in contrast to languages like JavaScript,
-		which are dynamically-typed: Type-checking is done during, not before,
-		runtime.
+		ML, alongside other languages like Java, C, C++, and many others, is a
+		statically-typed language &mdash; a language that checks for type compliance
+		before runtime. In other words, in a statically-typed language, the
+		language's type-checker will ensure that every binding has a valid type
+		during compile-time. The <span class="term">type-checker</span> is a
+		procedure that either accepts or rejects the program. If any binding in our
+		program has an invalid type, our program will be rejected. Otherwise, it is
+		permitted to proceed towards runtime.
 	</p>
 	<p>
-		When we write ML programs, however, we don't always explicitly write types.
-		This is because ML is also an implicitly-typed language &mdash; types need
-		not be explicitly stated. ML isn't the only such language; Swift, the
-		language behind iOS development, is another implicitly-typed language. Like
-		ML, we don't have to explicitly state our data types. Contrast ML with
+		With static type checking, we can prevent programs from ever running if our
+		source code does not comply with the language's type rules. This is in
+		contrast to languages like JavaScript, Racket, Ruby, and Python, which are
+		dynamically-typed. With a dynamically-typed language, binding types are
+		<span class="underlineText">not</span> determined ahead of time; type errors
+		are instead revealed at runtime.
+	</p>
+	<p>
+		Unlike Java and C, we don't always explicitly write types when we write ML
+		programs. This is because ML is also an implicitly-typed language &mdash;
+		types need not be explicitly stated. ML isn't the only such language; Swift,
+		the language behind iOS development, is another implicitly-typed language.
+		Like ML, we don't have to explicitly state our data types. Contrast ML with
 		languages like Java and C++, which are explicitly-typed languages &mdash;
-		types <span class="underlineText">must</span> be explicitly stated. This
-		survey up a critical point about statitically typed languages: The fact that
-		we do not have to explicitly state types does not imply that the language is
-		statically- or dynamically-typed. The language could be
+		types
+		<span class="underlineText">must</span> be explicitly stated.<label
+			for="explicit_v_implicit"
+			class="margin-toggle"
+			><sup></sup
+		></label>
+		<input
+			type="checkbox"
+			id="explicit_v_implicit"
+			class="margin-toggle sidenote-number"
+		/>
+		<span class="marginnote"
+			>Implicitly-typed languages typically have more sophisticated
+			type-checkers than explicitly-typed languages. With implicit-typing, the
+			language designer must design a system that the language can use to infer
+			what <span class="italicsText">type annotations</span> the programmer
+			would have written. This is, however, a broad generalization. Some
+			languages separate the rules for type-inference (the
+			<span class="italicsText">type-inferencer</span>) from the type-checking
+			(i.e., the type-inferencer inferences the types, and the type-checker
+			ensures the types are valid).</span
+		>
+		This comparison raises a critical point about statitically typed languages:
+		The fact that we do not have to explicitly state types does not imply that
+		the language is statically- or dynamically-typed. The language could be
 		statically-implicitly-typed.
 	</p>
 	<p>In ML, type inference is done according to the following algorithm:</p>
 	<figure class="math-display">
 		<div class="rule">
 			<ol>
-				<li>Determine the types of bindings in order.</li>
-				<ul>
-					<li>exception: mutual recursion (more on this later)</li>
-				</ul>
+				<li>
+					Determine the types of bindings in order. This is why we cannot use
+					later bindings earlier in a file. But, we can get around this
+					requirement with <a href="#mutual_recursion">mutual recursion</a>.
+				</li>
 				<li>
 					For each <span class="monoText">val</span> or
 					<span class="monoText">fun</span> binding:
 				</li>
 				<ol>
 					<li>
-						Assess the definition's constraints (e.g., if the definition is
-						<span class="monoText">x > 0</span>, then
+						Assess the definition's constraints (This is where ML looks to the
+						available and necessary facts to determine the binding's types. For
+						example, if the definition is
+						<span class="monoText">x + 3</span>, then
 						<span class="monoText">x</span> must be an
 						<span class="monoText">int</span>.)
 					</li>
-					<li>Return a type error if the constraints cannot hold.</li>
+					<li>
+						Return a type error if the constraints cannot hold; else, proceed to
+						the next step.
+					</li>
 				</ol>
 				<li>
 					Use type variables (e.g., <span class="monoText">'a</span>) for any
 					unconstrained types (e.g., polymorphic functions, unused arguments,
 					etc.).
 				</li>
-				<li>Enforce value restriction (more on this later).</li>
+				<li><a href="#polymorphic_types">Enforce value restriction</a>.</li>
 			</ol>
 		</div>
 	</figure>
@@ -88,6 +125,8 @@
 			* therefore: val f : bool * int * 'a -> int
 		*)
 	</code></pre>
+</section>
+<section id="polymorphic_types">
 	<p>
 		<span class="topic">Polymorphic Types.</span> Recall that when we view
 		certain function types, we see something like
@@ -174,10 +213,160 @@
 	<h2>Mutual Recursion</h2>
 	<p>
 		Mutual recursion is the phenomenon of a function ${f}$ calling some function
-		${g,}$ and ${g}$ calling ${f.}$ In essence, a function calling a function
-		that calls the function. Mutual recursion is tremendously useful for
-		constructing idioms like <span class="term">state machines</span>.
+		${g,}$ and ${g}$ calling ${f.}$ In essence: a function calling a function
+		that calls the function. More formally, two functions are said to be
+		<span class="italicsText">mutually recursive</span> if the first calls the
+		second, and the second calls the first.
+	</p>
+	<p>
+		Mutual recusion is often used for operating over recursive data. For
+		example, the operation of navigating a filesystem can be done through mutual
+		recursion. For example, in pseudocode:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				visit_node(File file):
+					if (file == folder):
+						visit_Children(file)
+				
+				visit_Children(File[] files):
+					for file in files:
+						visit_node(file)
+			</code></pre>
+		</div>
+	</figure>
+	<p></p>
+	<p>
 		Recognizing this utility, ML provides built-in support for mutual recursion.
+	</p>
+
+	<pre class="language-sml"><code>
+		fun isEven n =	
+			let fun is_even n = 
+				if n = 0 then true
+					else is_odd(n - 1)
+				and is_odd n =
+					if n = 0 then false
+					else is_even(n - 1)
+			in
+				is_even n
+			end
+
+		val x = isEven 4
+		val y = isEven 5
+		val z = isEven 6
+	</code></pre>
+	<pre class="language-bash"><code>
+		val isEven = fn : int -> bool
+		val x = true : bool
+		val y = false : bool
+		val z = true : bool
+	</code></pre>
+	<p>
+		The only new piece of syntax here is using the keyword
+		<span class="monoText">and</span>. Notice that the mutually recursive
+		functions are placed next to one another. In this case, the function
+		<span class="monoText">isEven</span> consists of two helper functions,
+		<span class="monoText">is_even</span> and
+		<span class="monoText">is_odd</span>. The first helper,
+		<span class="monoText">is_even</span>, is defined with
+		<span class="monoText">fun</span>, but the second,
+		<span class="monoText">is_odd</span>, is defined with the keyword
+		<span class="monoText">and</span>. Such is the syntax for mutual recursion
+		in ML. We define the first function with <span class="monoText">fun</span>,
+		but define the rest with <span class="monoText">and</span>.
+	</p>
+	<p>
+		Mutual recursion is tremendously useful for constructing idioms like state
+		machines. Here is a mutually recursive function verifies that list follows
+		the pattern ${\lang 1, 0, 1, 0, 1, 0, \ldots \rang:}$
+	</p>
+	<pre class="language-sml"><code>
+		(* 
+			* Type: list => bool
+			* This function takes a list, and returns:
+			* TRUE -- if the list has the pattern [1, 0, 1, 0, 1]
+			* FALSE -- otherwise
+			* Operation:
+			*  1. If the list is empty, return true. e.g. []
+			*  2. If the current element is 1, return state_is_zero(list') e.g. [1]
+			*    state_is_zero():
+			*     a. If the list is empty, return false. e.g. [1]
+			*     b. If the next element is 0, return state_is_one(list') e.g. [0, 1]
+			*     c. Otherwise, false. e.g. [1, 1]
+			*  3. Otherwise, false. e.g. [2, 1]
+		*)
+
+		fun list_is_alternating list =
+			let fun state_is_one(list) = 
+					case list of
+						[] => true
+						| 1::list' => state_is_zero(list') 
+						| _ => false
+				and state_is_zero(list) =
+					case list of
+						[] => false
+						| 0::list' => state_is_one(list')
+						| _ => false
+			in
+				state_is_one list
+			end
+	</code></pre>
+	<pre class="language-bash"><code>
+		val list_is_alternating = fn : int list -> bool
+	</code></pre>
+	<p>
+		The alternative to mutual recursion is to define one of the functions
+		earlier, then parameterizing the other function to take a function as an
+		argument. This way, the earlier function can be passed to the other as an
+		argument.
+	</p>
+</section>
+
+<section id="namespace">
+	<h2>Namespaces</h2>
+	<p>
+		ML provides support for <span class="term">namespaces</span>. Namespacing is
+		the means a language employs to ensure name conflicts do not occur.
+		Namespaces are invaluable to organizing large, complex projects.
+	</p>
+	<p>
+		With ML, large programs can be modularized into
+		<span class="term">structures</span>. Essentially, we can place related
+		bindings into a structure, then refer to those bindings via dot notation.
+		The general syntax:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>${Name}$ = struct</li>
+			<ul>
+				<li>${b_0}$</li>
+				<li>${\vdots}$</li>
+				<li>${b_n}$</li>
+			</ul>
+			<li>end</li>
+		</ul>
+		<figcaption>
+			where ${Name}$ is the name of the <span class="monoText">struct</span> (by
+			convention, <span class="monoText">struct</span> identifiers are
+			capitalized); and ${b_0 \ldots b_n}$ are the related bindings.
+		</figcaption>
+	</figure>
+	<p>
+		If a structure named <span class="monoText">Kinematics</span> contained some
+		variable <span class="monoText">g</span>, we can refer to that variable when
+		we're outside the structure by writing
+		<span class="monoText">Kinematics.g</span>. If it contained some function
+		<span class="monoText">average_acceleration()</span>, we can refer to that
+		function with
+		<span class="monoText">Kinematics.average_accerlation()</span>.
+	</p>
+	<p>
+		We are free to nest structures as much as we would like. Note, however, that
+		structures are <span class="underlineText">not</span> expressions. They
+		cannot be defined inside functions, stored in tuples, passed as arguments,
+		returned as values &mdash; all the usual things we can do with expressions.
 	</p>
 </section>
 {% endblock %}
