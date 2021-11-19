@@ -277,6 +277,8 @@ urlpatterns = [
 
 	path("cpp_overloading", views.cpp_overloading, name="cpp_overloading"),
 
+	path("cpp_inheritance", views.cpp_inheritance, name="cpp_inheritance"),
+
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),
 

@@ -1,12 +1,19 @@
 {% extends '../layout.html' %} {% load static %} {% block description %}
-<meta name="description" content="How to write console programs in Java" />
+<meta name="description" content="How to read user input in Java: The Java util package, scanner class, and next methods." />
 {% endblock %} {% block title %}
-<title>Console Programs in Java</title>
+<title>Java Streams</title>
 {% endblock %} {% block content %}
 <h1>Console Programming in Java</h1>
 <section id="java_console_programming">
 	<p>
-		<span class="term">Console programs</span> are programs that run on a
+		<span class="drop">O</span>ften, we want our programs to process arbitrary
+		input. This is especially the case for code testing. One way to do so is to
+		implement our program to read input. Reading input comes in two forms:
+		Reading from the keyboard, or reading from a file.
+	</p>
+	<p>
+		Reading user inputs is also useful for
+		<span class="term">console programs</span> &mdash; programs that run on a
 		console (the window displayed by a terminal). Console programs go all the
 		way back to the early days of modern computing, before word processors and
 		GUI applications grew popular. The basic idea of a console program is that
@@ -14,8 +21,8 @@
 		supply data. A program then executes on the basis of that data.
 	</p>
 	<p>
-		While console programs have largely been replaced by applications with GUIs,
-		they remain a useful way of studying programming in the context of user
+		While console programs have been largely replaced by GUI applications, they
+		remain a useful way of studying programming in the context of user
 		interaction without having to deal with the complexities of graphic
 		implementation (an entire field on to itself). As an aside, there is a
 		difference between a terminal and a console. A &#8220;terminal&#8221; is a
@@ -23,42 +30,24 @@
 		<span class="italicsText">shell</span>. A console is simply a rectangle that
 		displays program behavior.
 	</p>
+</section>
+<section id="keyboard_input">
+	<h2>Reading from the Keyboard</h2>
 	<p>
-		<span class="topic">Using <span class="monoText">acm</span> Packages.</span>
-		For some of the applications below, we will use the
-		<span class="monoText">acm</span> packages provided by the ACM Java Task
-		Force. To do so, ensure that you have the
-		<span class="monoText">acm.jar</span> file in the same working directory as
-		the <span class="monoText">.java</span> file containing our program. All
-		code should be written inside the
-		<span class="monoText">public void run() {}</span> method:
-	</p>
-	<pre class="language-java"><code>
-		import acm.program.*;
-
-		public class zing extends ConsoleProgram {
-			public void run() {
-				println("Hello world!");
-			}
-		}
-	</code></pre>
-	<p>To compile and execute the program above, we write:</p>
-	<pre class="language-bash"><code>
-		java -cp .:acm.jar zing
-	</code></pre>
-	<p>
-		Alternatively, we will also use the
-		<span class="monoText">Scanner</span> object to create console programs for
-		certain examples. To create a new console program with a
-		<span class="monoText">Scanner</span> object, we use the following:
+		In Java, we can read from the keyboard using the
+		<span class="monoText">Scanner</span> class. This is a class provided by
+		Java's <span class="monoText">util</span> (clipping of
+		&#8220;utility&#8221;) package. Because
+		<span class="monoText">util</span> is a package, we must import the package
+		into our program to use it.
 	</p>
 	<figure class="math-display">
 		<pre class="language-java"><code>
-			import java.util.scanner;
+			import java.util.scanner; // import package, but only scanner
 
-			public class foo {
+			class ScannerDemo {
 				public static void main(String[] args) {
-					Scanner namePrompt = new Scanner(System.in); // create new scanner object
+					Scanner namePrompt = new Scanner(System.in); // create scanner object
 					System.out.println("Name: "); // prompt for user input
 					String name = namePrompt.nextLine(); // read user input
 					System.out.println("Hello " + name); // use user input
@@ -67,59 +56,63 @@
 		</code></pre>
 	</figure>
 	<p>
-		There is a fair amount of new keywords in the code, and we will explore them
-		in due course. For now, all we need to do is follow the template above,
-		replacing <span class="monoText">⟨file_name⟩</span> with the name of the
-		<span class="monoText">.java</span> file containing our code, and
-		<span class="monoText">⟨statements⟩</span> with the code we actually want to
-		run. Console programs have two key components: (1)
-		<span class="term">user inputs</span> &mdash; the data read by the program
-		that the user types; and (2)
-		<span class="monoText">console outputs</span> &mdash; the messages displayed
-		by the program.
-	</p>
-	<p>
-		The <span class="monoText">nextLine()</span> method is used to read Strings.
-		To read other types:
+		In the code above, we imported the
+		<span class="monoText">util</span> package, but specified that we only want
+		to import the <span class="monoText">Scanner</span> class. Our program is
+		contained in a file called <span class="monoText">ScannerDemo.java</span>,
+		so our main driver class is named accordingly.
+		<span class="monoText">System.in</span> is essentially a connection to the
+		keyboard, and we pass it as an argument to the
+		<span class="monoText">Scanner()</span> constructor so our
+		<span class="monoText">Scanner</span> object can use it. The
+		<span class="monoText">nextLine()</span> method is used to read Strings.
+		Here's an API of some other methods:
 	</p>
 	<figure class="table">
-		<table class="loop_table">
+		<table class="api">
 			<thead>
 				<th>Method</th>
 				<th>Description</th>
 			</thead>
 			<tbody>
 				<tr>
-					<td><span class="monoText">nextBoolean</span></td>
-					<td>Reads a <span class="monoText">boolean</span> user input</td>
+					<td>nextInt()</td>
+					<td>Reads an <span class="monoText">int</span></td>
 				</tr>
 				<tr>
-					<td><span class="monoText">nextByte()</span></td>
-					<td>Reads a <span class="monoText">byte</span> user input</td>
+					<td>nextFloat()</td>
+					<td>Reads a <span class="monoText">float</span></td>
 				</tr>
 				<tr>
-					<td><span class="monoText">nextDouble()</span></td>
-					<td>Reads a <span class="monoText">double</span> user input</td>
+					<td>nextDouble()</td>
+					<td>Reads a <span class="monoText">double</span></td>
 				</tr>
 				<tr>
-					<td><span class="monoText">nextFloat()</span></td>
-					<td>Reads a <span class="monoText">float</span> user input</td>
+					<td>next()</td>
+					<td>
+						Reads a single <span class="monoText">string</span> (i.e., read one
+						word)
+					</td>
 				</tr>
 				<tr>
-					<td><span class="monoText">nextInt()</span></td>
-					<td>Reads a <span class="monoText">int</span> user input</td>
+					<td>nextLine()</td>
+					<td>Reads a sequence of strings (i.e., read multiple words)</td>
 				</tr>
 				<tr>
-					<td><span class="monoText">nextLine()</span></td>
-					<td>Reads a <span class="monoText">String</span> user input</td>
+					<td>nextByte()</td>
+					<td>Reads a <span class="monoText">byte</span></td>
 				</tr>
 				<tr>
-					<td><span class="monoText">nextLong()</span></td>
-					<td>Reads a <span class="monoText">long</span> user input</td>
+					<td>nextShort()</td>
+					<td>Reads a <span class="monoText">short</span></td>
 				</tr>
 				<tr>
-					<td><span class="monoText">nextShort()</span></td>
-					<td>Reads a <span class="monoText">short</span> user input</td>
+					<td>nextLong()</td>
+					<td>Reads a <span class="monoText">long</span></td>
+				</tr>
+				<tr>
+					<td>nextBoolean()</td>
+					<td>Reads a <span class="monoText">boolean</span></td>
 				</tr>
 			</tbody>
 		</table>

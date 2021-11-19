@@ -244,6 +244,19 @@
 			</tbody>
 		</table>
 	</figure>
+	<p>
+		A word of caution on overloading: It's very easy to get carried away
+		creating new meanings for the symbols above. Overloading is more a matter of
+		aesthetic and style than anything else. Done poorly, overloading can lead to
+		poor readability. If we ever catch ourselves overloading an operator and
+		following it with a comment defining what the operator means, stop.
+		Operators should be overloaded only if they are intuitive. And by intuitive,
+		we mean immediately deducible. The example above is intuitive because it
+		follows the laws of mathematics. It would not be intuitive to use
+		<span class="monoText">++</span> on a string. What happens when you
+		increment a string? If we ever find ourselves asking that question, we've
+		ventured into the land of bad heuristics.
+	</p>
 </section>
 
 <section id="friends">
@@ -273,6 +286,168 @@
 		some class ${x,}$ but can access ${x}$'s private and protected data inside
 		that class, provided our permission.
 	</p>
-	<p></p>
+	<p>
+		Why would we need a function defined outside the class but have access to
+		the class's private data? The most common reasons: (1) It can lead to more
+		readable and intuitive code. For example, with a friend function, we could
+		write <span class="monoText">move(player)</span> instead of
+		<span class="monoText">player.move()</span>. (2) It allows us to overload
+		operators for similar classes.
+	</p>
+	<p>
+		For example, let's create a class called
+		<span class="monoText">2dCoordinate</span>:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		class Coordinate2d {
+			double x, y;
+			Coordinate2d(double val1=0.0, double val2=0.0) {
+				x = val1;
+				y = val2;
+			}
+		};
+	</code></pre>
+	<p>Let's add to the class a print method:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		class Coordinate2d {
+			double x, y;
+			public:
+				Coordinate2d(double val1=0.0, double val2=0.0) {
+					x = val1;
+					y = val2;
+				}
+				void print() {
+					std::cout << "(" << x << ", " << y << ")" << std::endl;
+				}
+		};
+		
+		int main() {
+			Coordinate2d p1 = Coordinate2d(0, 1);
+			p1.print();
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		(0, 1)
+	</code></pre>
+	<p>
+		If we defined <span class="monoText">void print()</span> outside the class
+		<span class="monoText">Coordinate2d</span>, our program won't compile
+		&mdash; the properties <span class="monoText">x</span> and
+		<span class="monoText">y</span> are private. This is where
+		<span class="monoText">friend</span> comes in:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		class Coordinate2d {
+			double x, y;
+			public:
+				Coordinate2d(double val1=0.0, double val2=0.0) {
+					x = val1;
+					y = val2;
+				}
+				friend void print(Coordinate2d &point);
+		};
+		
+		void print(Coordinate2d &point) {
+			std::cout << "(" << point.x << ", " << point.y << ")" << std::endl;
+		}
+		
+		int main() {
+			Coordinate2d p1 = Coordinate2d(0, 1);
+			print(p1);
+			return 0;
+		}
+	</code></pre>
+	<p>
+		Notice the syntax and structure. In the
+		<span class="monoText">Coordinate2d</span> class definition, we included a
+		prototype for the <span class="monoText">print()</span> function, prepended
+		with the <span class="monoText">friend</span> keyword. We've also modified
+		the function to take a <span class="monoText">Coordinate2d</span> object by
+		reference. Then, we defined the friend function
+		<span class="monoText">print()</span> outside the class definition, using
+		the same prototype. Note that although a friend function's prototype appears
+		in the class definition, it is <span class="underlineText">not</span> a
+		member function.In doing so, we can now use the
+		<span class="monoText">print()</span> function as seen in
+		<span class="monoText">main()</span>.
+	</p>
+	<p>
+		Now what if we just wanted to use the regular
+		<span class="monoText">std::cout << ... << std::endl</span> syntax? I.e., we
+		don't want to write a separate <span class="monoText">print()</span> method?
+		This is where the use for friends is most apparent. To overload the
+		insertion operator for streams, we would have to include as a parameter a
+		reference to the <span class="monoText">ostream</span> object (an instance
+		of an output stream). Because this is an entirely different object from
+		<span class="monoText">Coordinate2d</span>, the overloaded insertion
+		operator <span class="underlineText">cannot</span> belong to the class
+		<span class="monoText">Coordinate2d</span>. As such, it the overloading must
+		be done as a friend function:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		class Coordinate2d {
+			double x, y;
+			public:
+				Coordinate2d(double val1=0.0, double val2=0.0) {
+					x = val1;
+					y = val2;
+				}
+				friend std::ostream& operator<<(std::ostream &stream, Coordinate2d &point);
+		};
+		
+		std::ostream& operator<<(std::ostream &stream, Coordinate2d &point) {
+			stream << "(" << point.x << ", " << point.y << ")";
+			return stream;
+		}
+		
+		int main() {
+			Coordinate2d p1 = Coordinate2d(3.3, 8.2);
+			std::cout << p1 << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		(3.3, 8.2)
+	</code></pre>
+</section>
+
+<section id="overloaded_operators_v_overloaded_functions">
+	<h2>Overloaded Operators v. Overloaded Functions</h2>
+	<p>
+		Overloaded operators are really just overloaded functions. This is because
+		operators, are, in fact, functions. In the previous example, we overloaded
+		the insertion operator, <span class="monoText"><<</span>. When we write:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				std::cout << p1 << std::endl;
+			</code></pre>
+		</div>
+	</figure>
+	<p>We are really just writing:</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				operator<<(std::cout, p1)
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		This observation further evidences how operator overloading is really more
+		of a convenience than anything else. It's just syntactic sugar. C++ could
+		very well have declined allowing operator overloading, just as Java did.
+		But, the sugar is there for us to savor &mdash; succumb to gluttony, and we
+		incur the risks.
+	</p>
 </section>
 {% endblock %}

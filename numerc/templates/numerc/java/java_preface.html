@@ -1,7 +1,485 @@
 {% extends '../layout.html' %} {% load static %} {% block content %}
 <h1>Foundations I: Java</h1>
 
+<section id="intro">
+	<p>
+		<span class="drop">C</span>omputer science. What is it? To answer this
+		question, let's think about what a computer does. We might imagine a
+		computer to be a sort of <span class="italicsText">black box</span> that
+		takes inputs and gives back outputs:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/blackbox.svg' %}"
+			alt="blackbox"
+			loading="lazy"
+			class="sixty-p"
+		/>
+	</figure>
+	<p>
+		Inside the black box is code and hardware, taking the inputs we provide,
+		processing them, and giving back a particular output. To use the black box,
+		we need to give it inputs. But what should those inputs look like? This
+		question strikes at the core of the topic of
+		<span class="italicsText">representation</span>.
+	</p>
+</section>
+<section id="representation">
+	<h2>Representation</h2>
+	<p>
+		<span class="topic">Representing Numbers.</span> Consider the concept of
+		numbers. How do we represent numbers? As children (and as adults), we often
+		represent numbers with our fingers, using five fingers to represent the
+		first five numbers, and simply using our other hand to include the remaining
+		five, for a total of 10 digits.
+	</p>
+
+	<p>
+		For more formal settings, however, we use the
+		<span class="termlics">decimal system</span>, where we represent numbers in
+		<span class="italicsText">base 10</span>, where Arabic numerals are uniquely
+		assigned to represent the numbers 0 through 9: $\{ 0, 1, 2, 3, 4, 5, 6, 7,
+		8, 9 \}$. We call it a base 10 system because with the above digits, we can
+		represent numbers with powers of 10. The number 256, for example, is really
+		just:
+	</p>
+
+	<figure>
+		<p>
+			$(2 \times 10^2) + (5 \times 10^1) + (6 \times 10^0) = 200 + 50 + 6 = 256$
+		</p>
+	</figure>
+
+	<p>
+		Our black box (the computer), however, needs a much simpler system to
+		represent numbers, in order to work efficiently. That simpler system is
+		<span class="italicsText">binary</span>.
+	</p>
+
+	<p>
+		In <span class="italicsText">binary</span>, the numbers are represented
+		entirely by two numerals: $\{ 0, 1 \}$. 0s and 1s are represented in by
+		computers as <span class="term">bits</span> (a shortening of "Binary
+		digITS"). 0s and 1s are preferable because computers, at the end of the day,
+		work by through switches: electricity flowing (when the switch is on,
+		represented by 0) and electricity not flowing (the switch is off,
+		represented by 1). Thus, with 1 lightbulb, we can count from 0 to 1:
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/lightbulbs.svg' %}"
+			alt="lightbulbs"
+			loading="lazy"
+			class="twenty-p"
+		/>
+		<figcaption>Light bulb on, light bulb off.</figcaption>
+	</figure>
+
+	<p>Can we count higher than 0 and 1? Sure. We just need more light bulbs:</p>
+
+	<figure>
+		<img
+			src="{% static 'images/threeOffLights.svg' %}"
+			alt="lightbulbs"
+			loading="lazy"
+			class="thirty-p"
+		/>
+		<figcaption>Three light bulbs.</figcaption>
+	</figure>
+
+	<p>
+		With 3 light bulbs, there are 8 different arrangements of the light bulbs
+		being on or off:
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/lightbulbpossibilites.svg' %}"
+			alt="light bulb possibilities"
+			loading="lazy"
+			class="thirty-p"
+		/>
+		<figcaption>Light bulb on/off permutations.</figcaption>
+	</figure>
+
+	<p>
+		The above consists of 8
+		<span class="italicsText">unique</span> arrangements. Because they are
+		unique arrangements, we can assign them to numbers:
+	</p>
+
+	<figure>
+		<table>
+			<thead>
+				<th>Arrangement</th>
+				<th>Number</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>0 0 0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>0 0 1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>0 1 0</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>0 1 1</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>1 0 0</td>
+					<td>4</td>
+				</tr>
+				<tr>
+					<td>1 0 1</td>
+					<td>5</td>
+				</tr>
+				<tr>
+					<td>1 1 0</td>
+					<td>6</td>
+				</tr>
+				<tr>
+					<td>1 1 1</td>
+					<td>7</td>
+				</tr>
+			</tbody>
+		</table>
+		<figcaption>Figure. Possible arrangements of light bulbs.</figcaption>
+	</figure>
+
+	<p>
+		By assigning arrangements of 1s and 0s to represent numbers, we have
+		constructed the
+		<span class="term">binary system</span>. The system works exactly like the
+		decimal system, with one crucial difference: rather than having 10 unique
+		digits to work with, we only have 2; this means that our numbers are written
+		with powers of 2. 12 for example, is:
+	</p>
+
+	<figure>
+		<p>
+			$(1 \times 2^3) + (1 \times 2^2) + (0 \times 2^1) + (0 \times 2^0) = 8 + 4
+			+ 0 + 0 = 12$
+		</p>
+	</figure>
+
+	<p>The binary equivalent of 12 then is 1100.</p>
+
+	<p>
+		In the light bulbs above, we might have used a switch to turn on and off the
+		light bulbs. In computers, the same concept applies, but the switches are
+		<span class="term">transistors</span> &mdash; millions of them.
+	</p>
+
+	<p>
+		If we can represent numbers in binary, how do we represent letters? Well,
+		since we can represent many numbers in binary, we can assign unique
+		sequences of numbers to letters. The letter A, for example, is represented
+		by the sequence 65.
+	</p>
+
+	<p>
+		But how does the computer know that we're referring to the letter A rather
+		than the number 65? It simply remains "mindful" of what program we're using.
+		In other words, it will interpret 65 as a number only if certain conditions
+		are true, and interpret 65 as a letter only if other conditions are true.
+	</p>
+
+	<p>
+		Every letter in the English alphabet (as well as all the punctuation symbols
+		we're familiar with) were assigned unique numbers. The system of these
+		assignments is called ASCII ("American Standard Code for Information
+		Interchange"). As an aside, there really is no rhyme or reason to these
+		assignments &mdash; a group of computer scientists simply sat down, and
+		said, "Let's use this number for this."
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/asciiexample.svg' %}"
+			alt="ASCII representation"
+			loading="lazy"
+			class="thirty-p"
+		/>
+		<figcaption>Character to ASCII to binary.</figcaption>
+	</figure>
+
+	<p>
+		The ASCII codes are typically represented by 8 bits. Thus, when we send a
+		Snapchat message "HI!", we're actually sending 24 bits of data. With 8 bits,
+		we can represent 256 different characters, since each bit can either be a 0
+		or a 1 ($2^8 = 256$). Bits, however, are not a very useful unit of
+		measurement, since they can very rapidly grow into large numbers (the
+		characters H, i, and ! took up 24 bits alone &mdash; imagine how many bits a
+		paragraph or a Wikipedia article takes). Because of this problem, we measure
+		bits in
+		<span class="boldItalics">bytes</span>. A
+		<span class="italicsText">byte</span> is simply 8 bits.
+	</p>
+
+	<p>
+		ASCII, however, is extremely limiting &mdash; it only represents 256
+		characters, but human language consists of many many more characters:
+		accents over English characters, characters from different languages,
+		mathematical and logical symbols, scientific symbols, emojis, etc. Because
+		of ASCII's limitations, Unicode was created to assign numbers to characters,
+		now used by most, if not all, modern computers.
+	</p>
+
+	<p>
+		Not only are numbers assigned to characters, they can also be assigned to
+		represent colors. There are a variety of different systems of assigning
+		numbers to colors.
+	</p>
+
+	<p>
+		<span class="topic">Representing Colors.</span> In the
+		<span class="boldItalics">RGB color model</span>, colors are represented in
+		the form <span class="monoText">rgb(value, value, value)</span>, where each
+		channel (indicated by "value") represents the color's red, green, and blue
+		values respectively. This system works because every color can be made by
+		mixing the colors red, green, and blue. The values in each of the channels
+		essentially indicates the amount of each color to be "mixed." The values
+		themselves are most commonly expressed as numbers. In an
+		<span class="italicsText">8-bit per channel</span> system, for example, each
+		of the channels can take a value ranging from 0 (no value) to 255 (highest
+		value). For example, the color
+		<span class="monoText">rgb(0, 0, 0)</span> represents the color white (the
+		absence of color), while
+		<span class="monoText">rgb(255, 255, 255)</span>
+		represents black (all of the channels at maximum value).
+	</p>
+
+	<p>
+		<span class="topic">Representing Motion.</span> On a computer, videos are
+		really just images changing rapidly, which, by implication, are just colors
+		changing rapidly. By changing a pixel's color once per unit of time, when
+		all of the changes (to hundreds of thousands of pixels) are viewed all at
+		once, we, as the viewer, see changes in shapes and swaths of colors, which
+		in turn is perceived as motion.
+	</p>
+
+	<p>
+		<span class="topic">Representing Sound.</span>
+		In terms of physics, what we perceive as sound is actually an
+		<span class="italicsText">acoustic wave</span> propagating through space,
+		reaching our eardrums and perceived by the brain. The greater a sound wave's
+		<span class="italicsText">amplitude</span> is, the louder the perceived
+		sound is, and the larger its <span class="italicsText">frequency</span>, the
+		higher its pitch. Moreover, the longer a sound wave's
+		<span class="italicsText">duration</span> is, the longer we perceive the
+		sound. These scalars (amplitude, <span class="italicsText">frequency</span>,
+		and <span class="italicsText">duration</span>), are present in all "notes,"
+		and are readily measurable. Unsurprisingly, sound can be represented by
+		assigning numbers to these values.
+	</p>
+
+	<p>
+		Now that we have a general idea of how to represent information (the inputs
+		and outputs problem), we turn our attention to the black box. What exactly
+		is going on inside?
+	</p>
+
+	<p>
+		The black box processes all of the inputs we pass through to it with
+		<span class="italicsText">algorithms</span>. An
+		<span class="boldItalics">algorithm</span> is a sequence of steps to solving
+		a problem.
+	</p>
+
+	<p>
+		Algorithms are not unique to computers. Assembling furniture from Ikea;
+		calculating a tip; completing an assignment; composing an email; changing a
+		flat tire &mdash; these are all problems and tasks that have an algorithm:
+		steps to an outcome.
+	</p>
+
+	<p>
+		The difference for algorithms in computers, however, is that there are no
+		ambiguities. A recipe might say, "add a pinch of salt," but a computer has
+		no way of understanding what a "pinch" is, unless we define it. This is
+		because all of the information we provide a computer, and all of the
+		information a computer gives back, is entirely 0s and 1s. That is all a
+		computer knows &mdash; numbers.
+	</p>
+
+	<p>
+		For example, consider the way we wanted to look up the word "rapscallion" in
+		a dictionary. There are several ways to find the word:
+	</p>
+
+	<ol>
+		<li>
+			Examine each page, one at a time, until we reach "rapscallion." This
+			method would obviously work, but it would take us a great deal of time.
+		</li>
+		<li>
+			Examine every other page, going back a page if we go too far, until we
+			reach "rapscallion." This would also work, but it would still take time,
+			albeit less than the first approach.
+		</li>
+		<li>
+			Split the dictionary in half; look at the first page of the two halves;
+			toss the half further from the word; split the remaining half again; look
+			at the first page of the two halves; toss the half further from the word;
+			split; over and over until we reach "rapscallion." This is, in fact, how
+			most of us would search for the word.
+		</li>
+	</ol>
+
+	<p>
+		The three ways above are all
+		<span class="italicsText">algorithms</span>. More importantly, we can write
+		them in a language the computer can understand. Here, we use
+		<span class="italicsText">pseudocode</span>, a language that is code-like,
+		but not a programming language:
+	</p>
+
+	<pre class="language-pseudo"><code>
+			pick up dictionary;
+			open to middle;
+			look at page;
+			if word is on page 
+			{
+				quit;
+			}
+			else if word is earlier in dictionary 
+			{
+				open to middle of left half;
+				go back to line 3;
+			}
+			else if word is later in dictionary 
+			{
+				open to middle of right half;
+				go back to line 3;
+			}
+			else 
+			{
+				quit
+			}
+	</code></pre>
+
+	<p>
+		Algorithms, however, are just one aspect of computer science. As a whole,
+		computer science is an amalgamation of subjects related to computation.
+		Programming &mdash; the study and practice of creating, implementing, and
+		improving algorithms under software engineering principles &mdash; is just
+		one such subject.
+	</p>
+
+	<p>
+		Computer science is also focused on
+		<span class="boldItalics">theory</span>. Here, we ask questions about
+		<span class="italicsText">computational complexity</span>, computability,
+		and cryptography. How much time does it actually take for an algorithm to
+		complete? Is a problem solvable via programming? How do we encrypt? These
+		are all questions relating to
+		<span class="italicsText">computer science theory</span>.
+	</p>
+
+	<p>
+		Another field is
+		<span class="italicsText">programming languages</span>. In this field, we
+		ask questions about the semantics of a language; formal verification;
+		compilation. And there are even more fields &mdash; graphics, data
+		representation, artificial intelligence, systems.
+	</p>
+</section>
+
+<section id="from_source_to_zero">
+	<h2>From English to Bits</h2>
+	<p>
+		So, now we know that computers only understand 0s and 1s. However, for us to
+		get the computer to actually do what we want it to do, we need to feed it
+		instructions. Unfortunately, we aren't very good at reading, or writing,
+		large sequences of 0s and 1s. Because of this diffculty, some very smart
+		folks at companies like Intel and AMD come up with ways to define unique
+		sequences of 0s and 1s in words, letters, and characters. All of these words
+		and letters, put together, form a
+		<span class="term">machine language</span>. Additionally, machine languages
+		vary by machine (or more precisely, by
+		<span class="italicsText">machine architecture</span>).
+	</p>
+
+	<p>
+		Once we tell the computer what color we want, the computer takes that value,
+		and displays the color on a
+		<span class="italicsText">pixel</span> of the screen. Each pixel uses
+		approximately 24 bits (8 bits per channel, since it takes 8 bits to
+		represent numbers up to 255), or 3 bytes. This should give us a hunch for
+		why high resolution images are generally large files on a computer.
+	</p>
+
+	<p>
+		This discussion on representation reveals why there are so many different
+		file extensions. Anyone who has worked with computers can easily note that
+		there are hordes of different file extensions: .zip, .pdf, .jpeg, .mp4,
+		.txt, .doc, .ppt, .html, .rtf, .py, .js, .java,
+		<span class="italicsText">ad nauseam</span>. These file extensions indicate
+		a <span class="italicsText">file format</span>, which is a set of rules that
+		humans have come to agree with as to how information should be represented
+		and organized.
+	</p>
+
+	<p>
+		Machine languages, however, are just as diffcult to write. They're filled
+		with cryptic symbols and numbers like <span class="monoText">JMP</span> and
+		<span class="monoText">LDY</span>. Programs in machine language look like a
+		smorgasbord of acronyms, numbers, and special characters:
+	</p>
+	<pre class="language-bash"><code>
+		6      5     5     5     5      6 bits
+		[  op  |  rs |  rt |  rd |shamt| funct]  R-type
+		[  op  |  rs |  rt | address/immediate]  I-type
+		[  op  |        target address        ]  J-type
+	</code></pre>
+	<p>
+		Because of this difficulty, we instead write programs in
+		<span class="term">high-level languages</span> such as Java &mdash; the
+		language used in this volume. With high-level languages, programs are much
+		more readable. For example, a computer program in some high-level language
+		might look like:
+	</p>
+	<pre class="language-bash"><code>
+		if (todayIsMyBirthday == true) {
+			print("Happy birthday!")
+		} else {
+			print("Sorry, not your birthday yet.")
+		}
+	</code></pre>
+	<p>
+		But how do these words and symbols in a high-level language &mdash; called
+		<span class="term">source code</span> &mdash; transform, or translate, into
+		1s and 0s? Through a process called <span class="term">compilation</span>.
+		Essentially, the instructions we wrote in the hypothetical high-level
+		language above are sent to another program, called the
+		<span class="term">compiler</span>, and the compiler translates the
+		instructions into something called <span class="term">object code</span>.
+		Roughly, object code consists of the low-level instructions the machine
+		understands. This object code is contained in something called an
+		<span class="term">object file</span>.
+	</p>
+	<p>
+		Now, our high-level language program might rely on source code from another
+		file. That other file will also yield an object file. All these separate
+		object files are then <span class="term">linked</span> by a
+		<span class="term">linker</span>. The linker then returns a single file,
+		called an <span class="term">executable file</span> &mdash; containing all
+		of the program's object code. This executable contains all the instructions
+		the computer understands. When we double click a Word file on our computer,
+		or open Safari, we are <span class="italicsText">running</span> or
+		<span class="italicsText">executing</span> an executable file.
+	</p>
+</section>
+
 <section id="java_preface">
+	<h2>What is a computer program?</h2>
 	<p>
 		A <span class="term">program</span> is a set of instructions to be carried
 		out by a computer. When the computer carries out the instructions, the
@@ -119,20 +597,14 @@
 		system, Android OS. Moreover, along with Python, Java is a common language
 		for introductory computer scince courses.
 	</p>
-	<p>Here is a basic program in Java:</p>
+	<p>
+		For next few sections, we will place all of our Java source code inside the
+		space indicated:
+	</p>
 	<pre class="language-java"><code>
-		public class Intro {
-			public static void main(String[] args) {
-				System.out.println("Hello, world!");
-			}
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		Hello, world!
-	</code></pre>
-	<p>All of the code that follows is placed inside the space here:</p>
-	<pre class="language-java"><code>
-		public class Intro {
+		import java.lang.*
+
+		class Intro {
 			public static void main(String[] args) {
 
 			/* 
@@ -145,19 +617,108 @@
 		}
 	</code></pre>
 	<p>
-		We will be explaining in more detail what the other words and symbols mean
-		shortly. But for now, just pretend all of the sample code is inside a file
-		called <span class="monoText">Intro.java</span>, and all of the relevant
-		source code is enclosed by the curly braces following
-		<span class="monoText">public static void main(String[] args)</span>.
+		The above is the skeleton of a Java program. In
+		<span class="monoText">class Intro</span>, the word
+		<span class="monoText">Intro</span> is the name of a
+		<span class="italicsText">class</span> (we will discuss this in more detail
+		later), and it is also the name of the file containing our source code
+		&mdash; <span class="monoText">Intro.java</span>. A class name does not
+		always have to be the same name as our file, but for now, pretend that such
+		is the rule.
 	</p>
-	<p>Having made that assumption, consider the following code:</p>
+	<p>
+		Inside the class <span class="monoText">Intro</span>, we have a
+		<span class="italicsText">method</span> called
+		<span class="monoText">main()</span>. We will revisit methods more
+		rigorously in later sections, but for now, think of it as containing a
+		sequence of instructions. We call these instructions
+		<span class="term">statements</span>. All of our source code for the next
+		few sections is placed inside the curly braces following
+		<span class="monoText">main()</span>. We call this method the
+		<span class="term">main driver</span> &mdash; it's the method that directs
+		the entirety of our program.
+	</p>
+	<p>
+		For those who have never seen programming at all, explaining the rest of the
+		symbols will likely not mean much. Nevertheless, we present some exposition
+		now if only for a glimpse of what lies ahead.
+	</p>
+	<p>
+		The keywords <span class="monoText">String args[]</span> indicate that
+		<span class="monoText">main()</span> takes a list of
+		<span class="italicsText">strings</span> as input. Essentially, we can pass
+		command-line arguments to the program as input. We will see an example of
+		doing so shortly.
+	</p>
+	<p>
+		The keyword <span class="monoText">void</span> indicates that
+		<span class="monoText">main()</span> does not return anything.
+	</p>
+	<p>
+		The keyword
+		<span class="monoText">public</span> is prepended to
+		<span class="monoText">main()</span> because
+		<span class="monoText">main()</span> must be seen by the
+		<span class="italicsText">Java Virtual Machine</span>.
+	</p>
+	<p>
+		The word <span class="monoText">static</span> is included because the
+		general rule for methods is that we must create an instance of the class to
+		call the method. However, we can get around this general rule by prepending
+		the keyword <span class="monoText">static</span>. This allows JVM to call
+		<span class="monoText">main()</span> without an instance of
+		<span class="monoText">Intro</span>.
+	</p>
+	<p>
+		We will explore what the rest of the words mean as we continue. For now,
+		let's run a simple program:
+	</p>
 	<pre class="language-java"><code>
-		int x = 5;
-		int y = 6;
-		System.out.println(x + y);
-		int z = x + y + 1;
-		System.out.println(z);
+		import java.lang.*
+
+		class Intro {
+			public static void main(String[] args) {
+				System.out.println("Hello, world!");
+			}
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		<span class="blueText">$</span> javac Intro.java
+		<span class="blueText">$</span> java Intro
+
+		Hello, world!
+	</code></pre>
+	<p>
+		In the demo above, the source code is indicated by the first code example,
+		color coded. The dark block below the code example is the
+		<span class="italicsText">console</span>. The console can be viewed and used
+		through various programs. For example, on a Mac, it's called the
+		<span class="italicsText">Terminal</span>. Lines indicated with a
+		<span class="monoText">$</span> sign communicate a command. Thus, to run our
+		simple <span class="monoText">Intro.java</span> program, we must first type
+		<span class="monoText">javac Intro.java</span>, hit enter, then type
+		<span class="monoText">java Intro</span> and hit enter. The resulting line,
+		with no <span class="monoText">$</span>, is the program
+		<span class="italicsText">output</span>.
+	</p>
+	<p>
+		For those with some experience in programming, the line
+		<span class="monoText">System.out.println()</span> indicates that there is a
+		class called <span class="monoText">System</span>, with an object called
+		<span class="monoText">out</span>, that has a method called
+		<span class="monoText">println()</span>.
+	</p>
+	<p>Here is another example:</p>
+	<pre class="language-java"><code>
+		class Demo {
+			public static void main(String[] args) {
+				int x = 5;
+				int y = 6;
+				System.out.println(x + y);
+				int z = x + y + 1;
+				System.out.println(z);
+			}
+		}
 	</code></pre>
 	<pre class="language-bash"><code>
 		11
@@ -168,11 +729,15 @@
 		can do simple math. Another example:
 	</p>
 	<pre class="language-java"><code>
-		int temperature = 
-		if (temperature < 0) {
-			System.out.println("Ok this is cold")
-		} else {
-			System.out.println("Meh, typical winter")
+		class Demo {
+			public static void main(String[] args) {
+				int temperature = 
+				if (temperature < 0) {
+					System.out.println("Ok this is cold")
+				} else {
+					System.out.println("Meh, typical winter")
+				}
+			}
 		}
 	</code></pre>
 	<pre class="language-bash"><code>
@@ -254,22 +819,70 @@
 		The conjecture: If a computer can do $x$, where $x$ is some activity, then
 		$x$ is <span class="underlineText">not</span> a uniquely human activity.
 	</p>
+
+	<section id="programming_conventions" class="grid-item">
+		<h3>Writing Programs <span class="italicsText">Well</span></h3>
+		<p>
+			Programming involves writing statements in a language. Because these
+			statements are written, they inevitably are read, whether by others or our
+			future selves. And where there are statements to be read, there are
+			distinctions between
+			<span class="italicsText">well-written programs</span> and
+			<span class="italicsText">poorly-written programs</span>.
+		</p>
+		<p>Generally, a program's writing quality depends on a few factors:</p>
+		<ol>
+			<li>
+				<span class="boldItalics">Correctness</span>. Does the program work as
+				intended?
+			</li>
+			<li>
+				<span class="boldItalics">Clarity</span>. Is the program clearly
+				written? I.e., can an unfamiliar reader read and understand the program?
+			</li>
+			<li>
+				<span class="boldItalics">Conciseness</span>. Is the program concise?
+				I.e., does it accomplish its intent with the minimum amount of
+				statements necessary, without sacrificing clarity?
+			</li>
+			<li>
+				<span class="boldItalics">Style</span>. Does the program follow the
+				prevailing conventions for writing statements? I.e., capitalization,
+				punctuation, proper use of words, etc.
+			</li>
+		</ol>
+		<p>
+			Considering these factors, computer science is perhaps the ultimate
+			embodiment of mathematics, science, engineering, linguistics, and
+			philosophy. We approach problems like mathematicians, design our solutions
+			like engineers, test hypotheses and evaluate results like scientists, all
+			while bearing in mind that what we write is meant to be conveyed and
+			understood by both humans and non-humans, a highly linguistic issue. Later
+			in these materials, when we discuss how programming languages are made and
+			how our programs affect others, we quickly discover that philosophy plays
+			an enormous role as well.
+		</p>
+	</section>
 </section>
 
 <section id="classes_and_objects">
 	<h2>Object-Orientation</h2>
 	<p>
-		As its name suggests, object-oriented programming is all about objects. OOP
-		was borne out of the need to implement large, complex solutions in a simple
-		ways. The OOP approach is to model real-world entities and ideas in the most
-		natural way possible. This is accomplished by adopting the following axiom:
-		Everything in the world has (1)
+		As its name suggests, object-oriented programming (OOP) is all about
+		objects. We won't go into the details of what OOP is, but we'll provide a
+		brief description.
+	</p>
+	<p>
+		OOP was borne out of the need to implement large, complex solutions in a
+		simple ways. The OOP approach is to model real-world entities and ideas in
+		the most natural way possible. This is accomplished by adopting the
+		following axiom: Everything in the world has (1)
 		<span class="italicsText">properties</span> and (2)
 		<span class="italicsText">behavior</span>. For example, a person is a
-		real-world entity. It has properties like a name, an age, likes, dislikes,
-		they might be single or with a partner, they might have a job, a political
-		subscription, etc. These are all properties. But the person also has
-		behavior: They can eat, drink, for some, talk, walk, run, and many more.
+		real-world entity. The person has properties like a name, an age, likes,
+		dislikes, they might be single or with a partner, they might have a job, a
+		political subscription, etc. These are all properties. But the person also
+		has behavior: They can eat, drink, for some, talk, walk, run, and many more.
 	</p>
 	<p>
 		Now, there are different <span class="italicsText">kinds</span> of persons.
@@ -277,37 +890,24 @@
 		persons. A person might be a student, in which case they have additional
 		properties: The school they attend, their student ID number, the courses
 		they're registered for. They also have additional behavior: Studying, going
-		to the gym, socializing, emailing their instructors, and many more. Another
-		person might be a voter: Where they are registered and the act of voting.
+		to the gym, socializing, running to lecture, etc. Another person might be a
+		voter: They have the property of where they are registered to vote and the
+		act of voting.
 	</p>
 	<p>
 		Where OOP shines is through the notion of
 		<span class="italicsText">classes</span>. We can think of a class as a
-		mathematical set, containing two things: properties and behavior. The set
-		<span class="italicsText">person</span> might also consist of subsets like
-		<span class="italicsText">student</span>,
-		<span class="italicsText">teacher</span>,
-		<span class="italicsText">engineer</span>,
-		<span class="italicsText">doctor</span>,
-		<span class="italicsText">plumber</span>, and many more. OOP allows us to be
-		model more complex entities: The student who is a voter and a bartender by
-		night. In such a situation, we might have a class called person, in which
-		there is a subclass called voter, in which there is a subclass called
-		student, in which there is a subclass called bartender. Arranging it in this
-		way, if the object is a student, then it is also a voter, and also a person.
-	</p>
-	<p>
-		Historically, if we wanted to model something like the
-		person-voter-student-bartender, we'd have to create a structure that
-		contained all of the different properties for voter, student, and bartender.
-		With OOP, we just need to write these classes separately, and rely on
-		<span class="italicsText">inheritance</span>. By creating a particular
-		object ${x}$ as a member of the set bartender, and that set is a member of
-		student, and that set is a member of voter, and that set is a member of
-		person, it logically follows that ${x}$ is a person-voter-student-bartender.
-		Even better, ${x}$ has all the properties of its parent classes, and all of
-		its behaviors: ${x}$ sometimes studies, sometimes mixes tequila sunrises,
-		and sometimes waits at the polling places.
+		mathematical set, containing two things: properties and behavior. And as we
+		know from mathematics, a set can contain subsets. If a set ${student}$ is a
+		subset of ${person,}$ and we're told that someone named Jane is a
+		${student,}$ we can deduce that Jane is a ${person.}$ This idea of sets and
+		subsets is a cornerstone of object-oriented programming. If Jane is a
+		student, then she has all the properties and behaviors of a person, as well
+		as all the properties and behaviors of a student. She eats, sleeps, goes to
+		the gym, and runs to lecture. If this all seems a bit mysterious and blurry,
+		don't worry. We'll get a clearer picture once we get to discussing classes
+		and inheritance. For now, just know that OOP is just a style of programming,
+		and Java follows it strictly.
 	</p>
 </section>
 {% endblock %}
