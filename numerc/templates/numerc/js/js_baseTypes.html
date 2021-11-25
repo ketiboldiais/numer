@@ -1,5 +1,10 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="JavaScript basics" />
+{% endblock %} {% block title %}
+<title>JavaScript Basics</title>
+{% endblock %} {% block content %}
 <h1>Types, Values, & Operators</h1>
+
 <section id="javascript_values">
 	<p>
 		Values in JavaScript (and many other programming languages), are classified
@@ -7,23 +12,11 @@
 		with the value. There are two categories of types:
 		<span class="term">primitive types</span> and
 		<span class="term">object types</span>. These primitive types are:
+		<span class="monoText">Number</span>, <span class="monoText">String</span>,
+		<span class="monoText">Boolean</span>, <span class="monoText">Null</span>,
+		<span class="monoText">Undefined</span>, and
+		<span class="monoText">Symbol</span>.
 	</p>
-	<figure class="math-display">
-		<div class="compare">
-			<ul>
-				<li><span class="monoText">Number</span></li>
-				<li><span class="monoText">BigInt</span></li>
-				<li><span class="monoText">String</span></li>
-			</ul>
-			<ul>
-				<li><span class="monoText">Boolean</span></li>
-				<li><span class="monoText">Null</span></li>
-				<li><span class="monoText">Undefined</span></li>
-				<li><span class="monoText">Symbol</span></li>
-			</ul>
-		</div>
-	</figure>
-
 	<p>
 		Any value that is not a <span class="italicsText">number</span>,
 		<span class="italicsText">string</span>,
@@ -64,8 +57,932 @@
 	</code></pre>
 </section>
 
+<section id="primitive_type_number">
+	<h2>Number Type</h2>
+	<p>
+		Unlike some programming languages (e.g., Java), JavaScript only has 1 number
+		type. Moreover, JavaScript uses 64 bits to represent single number values.
+		With 64 bits, we can represent up to 2^{64} different numbers in JavaScript
+		(roughly a quintillion). However, because must also represent negative
+		numbers and floating point numbers, the actual maximum number we can store
+		is roughly 9 quadrillion.
+	</p>
+	<p>
+		The primitive type <span class="monoText">number</span> stores integers,
+		floats (decimal numbers), and approximations of real numbers. In other
+		words, <span class="term">immutable numeric data</span>. And when a number
+		appears directly in a JavaScript program is called a
+		<span class="term">numeric literal</span>. Negative integers can be stored
+		by appending a minus sign directly to the number (e.g.,
+		<span class="monoText">-17</span>).
+	</p>
+	<p>
+		JavaScript's number type is not limited to the base-10 system or to decimal
+		decimal notation:
+	</p>
+	<pre class="language-javascript"><code>
+		// 12648430 in hex is C0FFEE
+		0xC0FFEE
+
+		// 17 in binary is 0011
+		0b0011
+
+		// 3.8 * 10^8:
+		3.8e8
+	</code></pre>
+	<p>
+		We can also ensure large numbers are more readable with underscores as
+		separators:
+	</p>
+	<pre class="language-javascript"><code>
+		// The number 10,000,000
+		10_000_000
+	</code></pre>
+
+	<section id="special_number_NaN">
+		<p>
+			<span class="topic">NaN.</span>
+			The value
+			<span class="monoText">NaN</span> ("Not a Number") represents a numeric
+			value that is not a number, but is a value of type
+			<span class="monoText">number</span>. <span class="monoText">NaN</span> is
+			the value returned from undefined operations:
+		</p>
+		<pre class="language-javascript"><code>
+			// This evaluates to NaN
+			0/0
+	
+			// This also evaluates to NaN
+			NaN+1
+		</code></pre>
+		<pre class="language-bash"><code>
+			NaN
+			NaN
+		</code></pre>
+		<p>
+			<span class="monoText">NaN</span> has an unusual feature in JavaScript: it
+			does not equal itself or any other value. This leads to some unusual
+			results:
+		</p>
+		<pre class="language-javascript"><code>
+			const x = NaN;
+			console.log(x === NaN);
+		</code></pre>
+		<pre class="language-bash"><code>
+			false
+		</code></pre>
+		<p>
+			Thus, to check whether a variable is equal to
+			<span class="monoText">NaN</span>, we need to test for nonequality. The
+			expression will return true if, and only if, the variable has the same
+			value as <span class="monoText">NaN</span>. If it does not, then the
+			variable does not have the value <span class="monoText">NaN</span>.
+		</p>
+		<pre class="language-javascript"><code>
+			const x = NaN;
+			console.log(x != NaN);
+		</code></pre>
+		<pre class="language-bash"><code>
+			true
+		</code></pre>
+	</section>
+
+	<section id="special_number_infinity">
+		<p>
+			<span class="topic">Infinity.</span> The value
+			<span class="monoText">infinity</span> is the value returned from perform
+			indeterminate operations. More specifically, JavaScript stores infinity in
+			two different ways, $\infty^+$ (positive infinity) and $\infty^-$
+			(negative infinity).
+		</p>
+		<pre class="language-javascript"><code>
+			// this evaluates to positive infinity
+			1/0
+			// this evaluates to negative infinity
+			-1/0
+		</code></pre>
+	</section>
+
+	<section id="special_number_0">
+		<p>
+			<span class="topic">Zero.</span>
+			Perhaps to the mathematician's disgust, JavaScript has two values for 0:
+		</p>
+		<pre class="language-javascript"><code>
+			0 	// positive 0
+			-0 // negative 0
+		</code></pre>
+	</section>
+
+	<section id="special_number_BigInt">
+		<p>
+			<span class="topic">BigInt.</span>
+			The data type <span class="monoText">BigInt</span> is a separate primitive
+			type for numeric data. <span class="monoText">BigInt</span> is the
+			primitive type for extraordinarily large numbers (e.g., numbers with
+			thousands or millions of digits):
+		</p>
+		<pre class="language-javascript"><code>
+			// the number 11,395,430,243,259,821:
+			11395430243259821n
+		</code></pre>
+		<p>
+			The distinguishing syntax for <span class="monoText">BigInt</span> is the
+			symbol <span class="monoText">n</span> appended to the end of the literal.
+		</p>
+	</section>
+
+	<section id="math_object_introduction">
+		<h3>Math Object</h3>
+		<p>
+			JavaScript has a built in math object, which provides values and
+			operations (more accurately "<span class="italicsText">methods</span>").
+			These built-in values and methods allow programs to perform somewhat
+			complex operations without having to write code from scratch. Below are
+			static properties:
+		</p>
+		<figure class="table">
+			<table class="api">
+				<thead>
+					<th>Property</th>
+					<th>Evaluates to</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Math.PI</td>
+						<td>${\pi}$</td>
+					</tr>
+					<tr>
+						<td>Math.E</td>
+						<td>${e}$ (Euler's constant)</td>
+					</tr>
+					<tr>
+						<td>Math.SQRT2</td>
+						<td>${\sqrt{2}}$</td>
+					</tr>
+					<tr>
+						<td>Math.LN2</td>
+						<td>${\ln 2}$</td>
+					</tr>
+					<tr>
+						<td>Math.LN10</td>
+						<td>${\ln 10}$</td>
+					</tr>
+					<tr>
+						<td>Math.LOG2E</td>
+						<td>${\log_{2}e}$</td>
+					</tr>
+					<tr>
+						<td>Math.LOG10E</td>
+						<td>${\log_{10}e}$</td>
+					</tr>
+					<tr>
+						<td>Math.SQRT1_2</td>
+						<td>${\dfrac{1}{\sqrt{2}}}$</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>And the static methods:</p>
+		<figure class="table">
+			<table class="api">
+				<thead>
+					<th>Method</th>
+					<th>Returns</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Math.sin(x)</td>
+						<td>${\sin x}$</td>
+					</tr>
+					<tr>
+						<td>Math.cos(x)</td>
+						<td>${\cos x}$</td>
+					</tr>
+					<tr>
+						<td>Math.tan(x)</td>
+						<td>${\tan x}$</td>
+					</tr>
+					<tr>
+						<td>Math.hypot(x, y)</td>
+						<td>${\sqrt{x^2 + y^2}}$</td>
+					</tr>
+					<tr>
+						<td>Math.abs(x)</td>
+						<td>${\lvert x \rvert }$</td>
+					</tr>
+					<tr>
+						<td>Math.ceil(x)</td>
+						<td>${\lceil x \rceil}$ (next largest integer)</td>
+					</tr>
+					<tr>
+						<td>Math.floor(x)</td>
+						<td>${\lfloor x \rfloor }$ (next smallest integer)</td>
+					</tr>
+					<tr>
+						<td>Math.round(x)</td>
+						<td>${ \lfloor x \rceil }$ (nearest integer function)</td>
+					</tr>
+					<tr>
+						<td>Math.max(x,y,z)</td>
+						<td>Given numbers ${x, y, z,}$ returns largest number</td>
+					</tr>
+					<tr>
+						<td>Math.min(x,y,z)</td>
+						<td>Given numbers ${x, y, z,}$ returns smallest number</td>
+					</tr>
+					<tr>
+						<td>Math.cbrt(x)</td>
+						<td>${x^3}$</td>
+					</tr>
+					<tr>
+						<td>Math.pow(x,y)</td>
+						<td>${x^y}$</td>
+					</tr>
+					<tr>
+						<td>Math.random()</td>
+						<td>pseudorandom float ${n,}$ where ${0 < n < 1.}$</td>
+					</tr>
+					<tr>
+						<td>Math.sign()</td>
+						<td>number's signage</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			In addition to the math object methods, we have the basic arithmetic
+			operators and the unary operators:
+		</p>
+		<figure class="table">
+			<table class="api">
+				<thead>
+					<th>Operator</th>
+					<th>Returns</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>a + b</td>
+						<td>${a + b}$</td>
+					</tr>
+					<tr>
+						<td>a - b</td>
+						<td>${a - b}$</td>
+					</tr>
+					<tr>
+						<td>a * b</td>
+						<td>${(a)(b)}$</td>
+					</tr>
+					<tr>
+						<td>a ** b</td>
+						<td>${a^b}$</td>
+					</tr>
+					<tr>
+						<td>a / b</td>
+						<td>${\dfrac{a}{b}}$</td>
+					</tr>
+					<tr>
+						<td>a % b</td>
+						<td>${a \bmod b}$</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>And the unary operators:</p>
+		<figure class="table">
+			<table class="api">
+				<thead>
+					<th>Unary Operator</th>
+					<th>Returns</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>x += n</td>
+						<td>x = x + n</td>
+					</tr>
+					<tr>
+						<td>x++</td>
+						<td>x = x + 1</td>
+					</tr>
+					<tr>
+						<td>x -= n</td>
+						<td>x = x - n</td>
+					</tr>
+					<tr>
+						<td>x--</td>
+						<td>x = x - 1</td>
+					</tr>
+					<tr>
+						<td>x *= n</td>
+						<td>x = x * n</td>
+					</tr>
+					<tr>
+						<td>x /= n</td>
+						<td>${x = x / n}$</td>
+					</tr>
+					<tr>
+						<td>x %= n</td>
+						<td>${x = x \bmod n}$</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+	</section>
+</section>
+
+<section id="variables_introduction">
+	<h2>Variables</h2>
+	<p>
+		Like other languages, values in JavaScript can be stored in a
+		<span class="term">variable</span>. Variables themselves are a kind of
+		<span class="italicsText">binding</span>. They consist of two attributes: A
+		<span class="italicsText">name</span>, which allows us (and JavaScript) to
+		tell variables apart. And a <span class="italicsText">value</span>, which
+		represents the current contents of the variable. The name of a variable is
+		fixed. But, the value can (but not always) change whenever we assign a new
+		value to the variable.
+	</p>
+	<p>
+		Unlike many other programming languages (e.g., Java), JavaScript variables
+		and constants are <span class="term">untyped</span>&mdash;we do not specify
+		the type of the value to be assigned in a declaration.
+		<span class="term">Variables</span> are essentially boxes with labels, that
+		we can then use to store data. By storing data in a variable, we can recall
+		the data later on, use it, or change it.
+	</p>
+	<p>
+		Before we can use a variable in JavaScript, they must be
+		<span class="italicsText">declared</span>. There are three ways to declare
+		variables in JavaScript: <span class="monoText">let</span>,
+		<span class="monoText">const</span>, or <span class="monoText">var</span>.
+		We cover each of their uses below. To do so, however, we need to give the
+		variable a <span class="term">name</span>. The general template:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>let ${n}$ = ${val}$;</li>
+			<li>const ${n}$ = ${val}$;</li>
+			<li>var ${n}$ = ${val}$;</li>
+		</ul>
+		<figcaption>
+			Where ${n}$ is the name we give to the variable (an
+			<span class="italicsText">identifier</span>) and ${val}$ is an expression
+			specifying the initial value.
+		</figcaption>
+	</figure>
+	<p>
+		When we declare a variable and assign it a value, the expression to the
+		right side of the equal asign is evaluated and assigned to the variable name
+		on the left side of the equal sign. This is called an
+		<span class="term">assignment statement</span>. Because of this procedure,
+		we should always read assignment statements from left to right when
+		determining what value the variable is assigned. That said, let's consider
+		the differences between each of the keywords. First, once a variable is
+		declared with <span class="monoText">let</span>, it cannot then be
+		<span class="italicsText">redeclared</span> later down the program:
+	</p>
+	<pre class="language-javascript"><code>
+		let x = 0;
+
+		// This returns an uncaught syntax error
+		let x = 1;
+	</code></pre>
+	<p>
+		However, a variable declared with <span class="monoText">let</span> can be
+		<span class="italicsText">reassigned</span> a value. When reassign a value
+		to some variable ${x,}$ the old value assigned to ${x}$ is lost:
+	</p>
+	<pre class="language-javascript"><code>
+		let x = 0;
+		x = x + 1;
+		console.log(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+	</code></pre>
+	<p>
+		From these rules, we can see that <span class="monoText">let</span> is
+		JavaScript's way of providing <span class="term">mutable variables</span>.
+	</p>
+	<p>
+		Alternatively, we can declare a variable with
+		<span class="monoText">const</span>:
+	</p>
+	<pre class="language-javascript">
+		<code>
+			const acceleration = 9.807;
+		</code>
+	</pre>
+	<p>
+		As the name suggests, a variable declared with
+		<span class="monoText">const</span> is a constant &mdash; it cannot be
+		redeclared, nor can we reassign it values. Thus,
+		<span class="monoText">const</span> is JavaScript's way of providing
+		<span class="term">mutable variables</span>. Moreover, a variable declared
+		with <span class="monoText">const</span> must always be
+		<span class="italicsText">initialized</span>. In other words, we
+		<span class="underlineText">cannot</span> simply declare a
+		<span class="monoText">const</span>; it must always be assigned an initial
+		value.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			const acceleration = 9.807;
+			
+			acceleration += 1; // returns an error
+
+			const velocity; // returns an error
+		</code>
+	</pre>
+	<p>
+		We can assign a constant to a variable with declared with
+		<span class="monoText">let</span> or <span class="monoText">const</span>.
+		When this is done, a copy of the value stored in the constant is passed to
+		the variable. Thus, any mutation done to the variable will only affect
+		changed to the variable, not the constant:
+	</p>
+	<pre class="language-javascript"><code>
+		const x = 1;
+		let y = x;
+		y++;
+		console.log(y);
+		console.log(x);
+	</code></pre>
+	<pre class="language-bash"><code>
+		2
+		1
+	</code></pre>
+	<p>
+		When should we use <span class="monoText">const</span> or
+		<span class="monoText">let</span>? It depends on what the value is being
+		used for. If we know a particular value will be reused extensively
+		throughout the code or we want an immutable value,
+		<span class="monoText">const</span> should always be used. Otherwise, we can
+		use <span class="monoText">let</span>. In general, mutability should be
+		minimized whenever possible, as it reduces the number of values we have to
+		keep track of.<label for="const_v_let" class="margin-toggle"
+			><sup></sup
+		></label>
+		<input
+			type="checkbox"
+			id="const_v_let"
+			class="margin-toggle sidenote-number"
+		/>
+		<span class="marginnote"
+			>We will see in later sections why mutability can become very tedious and
+			confusing. Simply put, allowing code elsewhere to modify a variable's
+			assigned value can affect code relying on the variable's previous value. A
+			hallmark of object-oriented programming is meticulously keeping track of
+			mutable values.</span
+		>
+	</p>
+	<p>
+		As an aside and warning, note that <span class="monoText">const</span> and
+		<span class="monoText">let</span> do not somehow allow us to use the same
+		identifiers in a single namespace. For example,
+		<span class="monoText">let x = term;</span> does not allow us to write
+		<span class="monoText">const x = term;</span>.
+	</p>
+	<p>
+		<span class="monoText">var</span> was JavaScript's original way of declaring
+		variables. Like <span class="monoText">let</span>, variables declared with
+		<span class="monoText">var</span> are mutable variables.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			var mass = 4.5;
+			mass += 1;
+			console.log(mass);
+		</code>
+	</pre>
+	<pre class="language-bash"><code>
+		5.5
+	</code></pre>
+	<p>
+		Using <span class="monoText">var</span> is generally discouraged. We will
+		refrain from delving into the details for now, but
+		<span class="monoText">var</span> is
+		<span class="term">function-scoped</span>, and
+		<span class="monoText">let</span> is <span class="term">block-scoped</span>.
+		The issues this distinction causes will be explored in subsequent materials
+		on functions.
+	</p>
+
+	<section id="naming_variables">
+		<h3>Naming Variables and Other Conventions</h3>
+		<p>
+			There are a few rules that should always be followed when naming
+			variables: (1) Variable names should be concise, descriptive, and balanced
+			between being concise and descriptive. (2) The first character in a
+			variable name should be a letter. (3) Do not use reserved words. (4)
+			<span class="italicsText">camelCasing</span> should be used for variables
+			of multiple words (camelCasing is the most widely-used and preferred
+			approach; <span class="italicsText">snake_casing</span> is consider bad
+			practice). In particular: (a) Functions and methods generally follow
+			camelCasing. (b) Classes and components generally follow PascalCasing. (c)
+			Private variables, functions, and methods are generally prefixed with an
+			underscore. (d) Constants, class names, and program names are in all
+			uppercase or <span class="italicsText">PascalCased</span> (every word
+			capitalized). (e) Variables <span class="underlineText">cannot</span> be
+			named with
+			<span class="italicsText">kebab-casing</span>
+			(dashes-for-spaces), but JavaScript files can. For Boolean variables or
+			functions with Boolean return values, use of quantifiers
+			(&#8220;is&#8221;, &#8220;are&#8221;, &#8220;were&#8221;, etc.) helpful:
+		</p>
+		<pre class="language-javascript"><code>
+			let isVisible = true;
+			let isSubmitted = true;
+			const IsEncrypted = true;
+		</code></pre>
+	</section>
+
+	<section id="environment">
+		<h3>Environment</h3>
+		<p>
+			The collection of bindings and their values at any given time is called
+			the <span class="term">environment</span>. The moment we run a JavaScript
+			program, an environment is created. That environment, however, is not
+			limited to the bindings we've created. It also contains bindings provided
+			by JavaScript natively.
+		</p>
+	</section>
+</section>
+
+<section id="primitive_type_null_and_undefined">
+	<h2>Null & Undefined</h2>
+	<p>
+		The primitive type <span class="term">null</span> is a primitive type
+		consisting of only one value: <span class="italicsText">null</span>. The
+		value <span class="italicsText">null</span> represents the absence of a
+		meaningful value. This can be useful, in that it allows us to declare a
+		variable without assigning it a value, then use it later on.
+	</p>
+	<pre class="language-javascript"><code>
+		let x = null;
+		console.log(x);
+	</code></pre>
+	<pre class="language-bash"><code>
+		null
+	</code></pre>
+	<p>
+		Like <span class="monoText">null</span>, the type
+		<span class="monoText">undefined</span> consists of only one value,
+		<span class="italicsText">undefined</span>. It too represents the absence of
+		value. However, it's meaning is slighly different from
+		<span class="monoText">null</span>. In JavaScript,
+		<span class="monoText">undefined</span> is a value JavaScript returns to us.
+		It informs us that we have declared a variable, but have not yet assigned it
+		a value. Because of this fact, we do not typically programmer declare
+		variables and assign them the value
+		<span class="italicsText">undefined</span>. We would instead us
+		<span class="monoText">null</span> for such a case.
+	</p>
+	<pre class="language-javascript"><code>
+		let x;
+		console.log(x);
+	</code></pre>
+	<pre class="language-bash"><code>
+		undefined
+	</code></pre>
+	<p>
+		One way to think about this is a toilet tissue holder. When a variable is
+		assigned a non-zero value, the toilet tissue holder has a roll of tissue.
+		When the variable is assigned a zero value, the toilet tissue holder only
+		holds the roll's cardboard cylinder. When the variable is assigned
+		<span class="monoText">null</span>, the toilet tissue holder is there, but
+		there is no cardboard cylinder; only the holder. When the variable is
+		<span class="monoText">undefined</span>, there's no holder at all.
+	</p>
+</section>
+
+<section id="primitive_type_string">
+	<h2>String</h2>
+	<p>
+		A <span class="term">string</span> is a sequence of characters. In
+		JavaScript, strings are an
+		<span class="italicsText">immutable</span> ordered sequence of 16-bit
+		values, where each value represents a Unicode character. Strings are
+		inherently <span class="italicsText">arrays</span> (since they are an
+		<span class="italicsText">ordered</span> sequence). Thus, each character in
+		a string has an <span class="italicsText">index</span>, starting at 0. While
+		the type number represents <span class="italicsText">numeric data</span>,
+		and the type boolean represents
+		<span class="italicsText">logical data</span>, the type
+		<span class="italicsText">string</span> represents
+		<span class="italicsText">textual data</span>.
+	</p>
+	<p>
+		Strings can be represented in JS with double quotes (""), single quotes
+		(''), or backticks (``), as long as they are used consistently.
+	</p>
+	<pre class="language-javascript"><code>
+		firstName = "David";
+		lastName = 'Hilbert';
+		occupation = `Mathematician`;
+		nickName = 'Hilby" // Error here
+	</code></pre>
+	<p>
+		Backticks are used for
+		<span class="italicsText">string interpolation</span>:
+	</p>
+	<pre class="language-javascript"><code>
+		let a = 9;
+		let b = 8;
+		let sum = a + b;
+		let result = `The result of ${a} + ${b} is ${sum}`;
+		console.log(result);
+	</code></pre>
+	<pre class="language-bash"><code>
+		The result of 9 + 8 is 17
+	</code></pre>
+	<p>
+		JavaScript provides many built in methods for manipulating strings. A few of
+		the most often used methods are provided below.
+	</p>
+
+	<section id="finding_a_strings_length">
+		<p>
+			<span class="topic">String Length.</span> The number of characters in a
+			string is called its <span class="term">length</span>, and JS can return
+			that number by using the syntax
+			<span class="monoText">${a}$.length</span>, where ${a}$ is a string:
+		</p>
+		<pre class="language-javascript"><code>
+			"hello".length; // returns 5
+			let greeting = "howdy";
+			greeting.length; // returns 5
+		</code></pre>
+	</section>
+
+	<section id="concatenating_strings">
+		<p>
+			<span class="topic">Concatenating Strings.</span> The arithmetic symbols
+			do not operate on strings, except for <span class="monoText">+</span>.
+			Writing <span class="monoText">${a}$ + ${b}$</span>, where ${a}$ and ${b}$
+			are strings will <span class="term">concatenate</span> ${a}$ and ${b}$.
+			Concatenation is simply appending, or combing different strings. Strings
+			can be concatenated with a <span class="monoText">+</span> character.
+		</p>
+		<pre class="language-javascript"><code>
+			let firstName = "Sherlock";
+			let lastName = "Holmes";
+			let fullName = firstName + " " + lastName;
+			console.log(fullName);
+			// JS returns "Sherlock Holmes"
+		</code></pre>
+	</section>
+
+	<section id="comparison_operators_on_strings">
+		<p>
+			<span class="topic">Using Comparison Operators on Strings.</span> The
+			comparison operators, <span class="monoText"> > </span>,
+			<span class="monoText"> < </span>, <span class="monoText"> >= </span>,
+			<span class="monoText"> <= </span>, <span class="monoText"> == </span>,
+			and <span class="monoText"> != </span> can be used with strings. When this
+			is done, JavaScript compares Unicode's numeric representation of each
+			character from left to right. For example,
+			<span class="monoText">"apple"</span> is &#8220;less than&#8221;
+			<span class="monoText">"banana"</span> because the character
+			<span class="monoText">"a"</span> is 97 in Unicode, and the character
+			<span class="monoText">"b"</span> is 98. Along the same lines,
+			<span class="monoText">"annatto"</span> is less than
+			<span class="monoText">"apple"</span>, because
+			<span class="monoText">"n"</span> is 110 in Unicode, and
+			<span class="monoText">"p"</span> is 112.
+		</p>
+	</section>
+
+	<section id="string_indices">
+		<p>
+			<span class="topic">String Indices.</span> Strings are an array of
+			characters (i.e., they are an ordered list of characters). Thus, every
+			character in a string has an <span class="italicsText">index</span>—the
+			number of its position.
+		</p>
+		<p>
+			Recall that in computer science, we always count from 0. Thus, the first
+			character in a string has index 0, the second character index 1, the third
+			index 4, etc. Furthermore, because strings are
+			<span class="italicsText">indexed</span>, JavaScript can search for parts
+			of a string. A string's indices also allow JavaScript to copy parts of the
+			string, and store those copies into a new variable. For example:
+		</p>
+		<pre class="language-javascript"><code>
+			let word = "quadratic";
+			// Return first character in word, q:
+			word[0];
+		</code></pre>
+	</section>
+
+	<section id="other_useful_string_methods">
+		<p>
+			<span class="topic">Common String Methods.</span> JavaScript provides
+			numerous methods for use with strings. Below are examples of some of the
+			most common methods:
+		</p>
+		<pre class="language-javascript"><code>
+			let word = "hello";
+			// capitalize all characters in string
+			word.toUpperCase
+	
+			// lowercase all characters in string
+			word.toLowerCase
+	
+			let phrase = " excuse me ";
+			// remove white spaces before the string
+			phrase.trimStart()
+	
+			// remove white spaces after the string 
+			phrase.trimEnd()
+			
+			let greet = "Hello world!"
+			// determine if string contains a substring
+			greet.includes("World!") // returns false
+			greet.includes("world!") // returns true
+	
+			let sport = "basketball";
+			let law = "contracts law";
+			// take a slice of the string
+			sport.slice(6) // returns 'ball'
+			law.slice(0, 9) // returns 'contracts'
+	
+			let quote = 'Call me Bond';
+			// replace a substring
+			quote.replace('Bond', 'Ishmael') // return 'Call me Ishmael'
+	
+			let food = 'hotdog'
+			// find starting index of a substring or character
+			food.indexOf('hot') // returns 0
+			food.indexOf('dog') // returns 3
+		</code></pre>
+	</section>
+</section>
+
+<section id="primitive_type_boolean">
+	<h2>Primitive Type: Boolean</h2>
+	<p>
+		The primitive type <span class="term">boolean</span> covers only 2 values:
+		<span class="monoText">true</span> or <span class="monoText">false</span>.
+		Because the boolean type has only two values, they are an effective way of
+		representing strictly binary values:
+	</p>
+	<ul>
+		<li>true or false</li>
+		<li>yes or no</li>
+		<li>1 or 0</li>
+	</ul>
+	<section id="boolean_operators">
+		<p>
+			<span class="topic">Boolean Operators</span>
+			Like most languages, JavaScript provides
+			<span class="term">Boolean operators</span> corresponding to the logical
+			connectives:
+		</p>
+		<figure class="table">
+			<table class="api">
+				<thead>
+					<th>Operator</th>
+					<th>Meaning</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>a && b</td>
+						<td>${a \land b}$</td>
+					</tr>
+					<tr>
+						<td>a || b</td>
+						<td>${a \lor b}$</td>
+					</tr>
+					<tr>
+						<td>!a</td>
+						<td>${\neg a}$</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+	</section>
+</section>
+
+<section id="comparison_operators">
+	<h4>Comparison Operators</h4>
+	<p>
+		Being able to compare values is critical to making simple decisions. The
+		<span class="term">comparison operators</span>
+		are what allow us to compare numbers.
+	</p>
+	<p>
+		The comparison operator
+		<span class="monoText">></span> determines whether the first value is
+		<span class="italicsText">greater than</span> the second value.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			10 > 9 // returns true
+			5 > 7 // returns false
+			-1 > 0 // returns false
+			-3 > -12 // returns true
+		</code>
+	</pre>
+	<p>
+		The comparison operator
+		<span class="monoText"><</span> determines whether the first value is
+		<span class="italicsText">less than</span> the second value.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			5 < 8 // returns true
+			2 < 1 // returns false
+			1 < 1 // returns false
+		</code>
+	</pre>
+	<p>
+		The boolean operator
+		<span class="monoText">>=</span> determines whether or not the first value
+		is <span class="italicsText">greater than or equal to</span> the second
+		value.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			7 >= 8 // returns false--7 is neither greater than nor equal to 8
+			8 >= 8 // returns true--8 is not greater than 8, but it is equal to 8
+			10 >= 7 // returns true--10 is not equal to 7, but it is greater than 8
+		</code>
+	</pre>
+	<p>
+		The boolean operator
+		<span class="monoText"><=</span> determines whether or not the first value
+		is <span class="italicsText">less than or equal to</span> the second value.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			9 <= 10 // returns true; 9 is not equal to 10, but it is less than 10.
+			10 <= 10 // returns true; 10 is not less than 10, but it is equal to 10. 
+			11 <= 10 // returns false; 11 is neither less than nor equal to 10. 
+		</code>
+	</pre>
+	<p>
+		The equality operator
+		<span class="monoText">==</span> determines whether two values are
+		<span class="italicsText">equal in value</span>, but it does not check
+		whether the values are <span class="italicsText">equal in type</span>.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			7 == "7" // returns true; JavaScript forces the values into a common type
+			0 == "s" // returns false
+			0 == "" // returns true
+			0 == false // returns true
+			null == undefined // returns true
+		</code>
+	</pre>
+	<p>
+		The strict equality operator
+		<span class="monoText">===</span> determines whether two values
+		<span class="italicsText">equal in value</span> AND
+		<span class="italicsText">equal in type</span>.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			5 === 5 // returns true
+			1 === 2 // returns false
+			2 === "2" // returns false
+			0 === false // returns false
+			null === undefined // returns false
+		</code>
+	</pre>
+	<p>
+		The nonequality operator
+		<span class="monoText">!=</span> determines whether two values are
+		<span class="italicsText">nonequal in value</span>, but it does not
+		determine whether the values are
+		<span class="italicsText">nonequal in type</span>; this is the analog of the
+		equality operator, <span class="monoText">==</span>.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			null != undefined; // returns false
+			2 != "2"; // returns false
+			2 != 3; // returns true
+		</code>
+	</pre>
+	<p>
+		The strict nonequality operator
+		<span class="monoText">!==</span> determines whether two values are
+		<span class="italicsText">nonequal in value</span> and
+		<span class="italicsText">nonequal in type</span>.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			null !== undefined; // returns true
+			2 !== "2"; // returns true
+			2 !== 3; // returns true
+		</code>
+	</pre>
+</section>
+
 <section id="converting_values">
-	<h2>Casting</h2>
+	<h2>Conversions</h2>
 	<p>
 		JavaScript has no problem converting values from one type to another. This
 		is a double-edged sword. For example, if we give JavaScript a value of type
@@ -82,671 +999,24 @@
 	</code></pre>
 </section>
 
-<section id="primitive_type_number">
-	<h2>Number Type</h2>
+<section id="typeof_operator">
 	<p>
-		Unlike some programming languages (e.g., Java), JavaScript only has 1 number
-		type. The primitive type <span class="monoText">number</span> stores
-		integers, floats (decimal numbers), and approximations of real numbers. In
-		other words, <span class="term">immutable numeric data</span>. And when a
-		number appears directly in a JavaScript program is called a
-		<span class="term">numeric literal</span>. Negative integers can be stored
-		by appending a minus sign directly to the number (e.g.,
-		<span class="monoText">-17</span>).
-	</p>
-	<p>
-		JavaScript's number type is not limited to the base-10 system or to decimal
-		decimal notation:
+		<span class="topic"><span class="monoText">typeof</span></span> Given
+		JavaScript's automatic type conversion feature, a useful operator to know is
+		the <span class="monoText">typeof</span> operator. With
+		<span class="monoText">typeof</span>, we can determine what the type of a
+		given value or variable is. For example:
 	</p>
 	<pre class="language-javascript"><code>
-		// 12648430 in hex is C0FFEE
-		0xC0FFEE
-
-		// 17 in binary is 0011
-		0b0011
-
-		// 3.8 * 10^8 in exponential:
-		3.8E8
+		typeof "hi" // returns "string"
+		typeof 1 // returns "number"
 	</code></pre>
 	<p>
-		We can also ensure large numbers are more readable with underscores as
-		separators:
+		Notice that in the comments we used double quotes.
+		<span class="monoText">typeof</span> returns an actual value of type string.
+		This is particularly useful for checking whether an inputted or outputted
+		value is of a particular type.
 	</p>
-	<pre class="language-javascript"><code>
-		// The number 10,000,000
-		10_000_000
-	</code></pre>
-</section>
-
-<section id="special_number_NaN">
-	<h3>NaN</h3>
-	<p>
-		The value
-		<span class="monoText">NaN</span> ("Not a Number") represents a numeric
-		value that is not a number, but is a value of type
-		<span class="monoText">number</span>. <span class="monoText">NaN</span> is
-		the value returned from undefined operations:
-	</p>
-	<pre class="language-javascript"><code>
-		// This evaluates to NaN
-		0/0
-
-		// This also evaluates to NaN
-		NaN+1
-	</code></pre>
-	<pre class="language-bash"><code>
-		NaN
-		NaN
-	</code></pre>
-	<p>
-		<span class="monoText">NaN</span> has an unusual feature in JavaScript: it
-		does not equal itself or any other value. This leads to some unusual
-		results:
-	</p>
-	<pre class="language-javascript"><code>
-		const x = NaN;
-		console.log(x === NaN);
-	</code></pre>
-	<pre class="language-bash"><code>
-		false
-	</code></pre>
-	<p>
-		Thus, to check whether a variable is equal to
-		<span class="monoText">NaN</span>, we need to test for nonequality. The
-		expression will return true if, and only if, the variable has the same value
-		as <span class="monoText">NaN</span>. If it does not, then the variable does
-		not have the value <span class="monoText">NaN</span>.
-	</p>
-	<pre class="language-javascript"><code>
-		const x = NaN;
-		console.log(x != NaN);
-	</code></pre>
-	<pre class="language-bash"><code>
-		true
-	</code></pre>
-</section>
-
-<section id="special_number_infinity">
-	<h3>Infinity</h3>
-	<p>
-		The value
-		<span class="monoText">infinity</span> is the value returned from perform
-		indeterminate operations. More specifically, JavaScript stores infinity in
-		two different ways, $\infty^+$ (positive infinity) and $\infty^-$ (negative
-		infinity).
-	</p>
-	<pre class="language-javascript"><code>
-		// this evaluates to positive infinity
-		1/0
-		// this evaluates to negative infinity
-		-1/0
-	</code></pre>
-</section>
-
-<section id="special_number_0">
-	<h3>Zero</h3>
-	<p>
-		Perhaps to the mathematician's disgust, JavaScript has two values for 0:
-	</p>
-	<pre class="language-javascript"><code>
-		0 	// positive 0
-		-0 // negative 0
-	</code></pre>
-</section>
-
-<section id="special_number_BigInt">
-	<h2>BigInt</h2>
-	<p>
-		The data type <span class="monoText">BigInt</span> is a separate primitive
-		type for numeric data. <span class="monoText">BigInt</span> is the primitive
-		type for extraordinarily large numbers (e.g., numbers with thousands or
-		millions of digits):
-	</p>
-	<pre class="language-javascript"><code>
-		// the number 11,395,430,243,259,821:
-		11395430243259821n
-	</code></pre>
-	<p>
-		The distinguishing syntax for <span class="monoText">BigInt</span> is the
-		symbol <span class="monoText">n</span> appended to the end of the literal.
-	</p>
-</section>
-
-<section id="primitive_type_null">
-	<h2>Null</h2>
-	<p>
-		The primitive type <b>null</b> is a primitive type consisting of only one
-		value: <em>null</em>. The value <em>null</em> allows the programmer to
-		declare a variable without assigning it a value, so that it may be used
-		later on.
-	</p>
-	<pre class="language-javascript"><code>
-		let x = null;
-		console.log(x);
-	</code></pre>
-	<pre class="language-bash"><code>
-		null
-	</code></pre>
-</section>
-
-<section id="primitive_type_undefined">
-	<h2>Undefined</h2>
-	<p>
-		<span class="topic"
-			>Primitive Type: <span class="monoText">undefined</span>.</span
-		>
-		The type <b>undefined</b> consists of only one value, <em>undefined</em>.
-		Normally, the programmer does not declare a variable and assign the value
-		<em>undefined</em>. Instead, <em>undefined</em> is a value JavaScript
-		returns. For example:
-	</p>
-	<pre class="language-javascript"><code>
-		let x;
-		console.log(x);
-	</code></pre>
-	<pre class="language-bash"><code>
-		undefined
-	</code></pre>
-</section>
-
-<section id="math_object_introduction">
-	<h2>Math Object</h2>
-	<p>
-		JavaScript has a built in math object, which provides values and operations
-		(more accurately "<em>methods</em>"). These built-in values and methods
-		allow programs to perform somewhat complex operations without having to
-		write code from scratch. Below are static properties:
-	</p>
-	<figure class="table">
-		<table class="truth_table">
-			<thead>
-				<th>Property</th>
-				<th>Evaluates to</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td>Math.PI</td>
-					<td>${\pi}$</td>
-				</tr>
-				<tr>
-					<td>Math.E</td>
-					<td>${e}$ (Euler's constant)</td>
-				</tr>
-				<tr>
-					<td>Math.SQRT2</td>
-					<td>${\sqrt{2}}$</td>
-				</tr>
-				<tr>
-					<td>Math.LN2</td>
-					<td>${\ln 2}$</td>
-				</tr>
-				<tr>
-					<td>Math.LN10</td>
-					<td>${\ln 10}$</td>
-				</tr>
-				<tr>
-					<td>Math.LOG2E</td>
-					<td>${\log_{2}e}$</td>
-				</tr>
-				<tr>
-					<td>Math.LOG10E</td>
-					<td>${\log_{10}e}$</td>
-				</tr>
-				<tr>
-					<td>Math.SQRT1_2</td>
-					<td>${\dfrac{1}{\sqrt{2}}}$</td>
-				</tr>
-			</tbody>
-		</table>
-	</figure>
-	<p>And the static methods:</p>
-	<figure class="table">
-		<table class="truth_table">
-			<thead>
-				<th>Method</th>
-				<th>Returns</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td>Math.sin(x)</td>
-					<td>${\sin x}$</td>
-				</tr>
-				<tr>
-					<td>Math.cos(x)</td>
-					<td>${\cos x}$</td>
-				</tr>
-				<tr>
-					<td>Math.tan(x)</td>
-					<td>${\tan x}$</td>
-				</tr>
-				<tr>
-					<td>Math.hypot(x, y)</td>
-					<td>${\sqrt{x^2 + y^2}}$</td>
-				</tr>
-				<tr>
-					<td>Math.abs(x)</td>
-					<td>${\lvert x \rvert }$</td>
-				</tr>
-				<tr>
-					<td>Math.ceil(x)</td>
-					<td>${\lceil x \rceil}$ (next largest integer)</td>
-				</tr>
-				<tr>
-					<td>Math.floor(x)</td>
-					<td>${\lfloor x \rfloor }$ (next smallest integer)</td>
-				</tr>
-				<tr>
-					<td>Math.round(x)</td>
-					<td>${ \lfloor x \rceil }$ (nearest integer function)</td>
-				</tr>
-				<tr>
-					<td>Math.max(x,y,z)</td>
-					<td>Given numbers ${x, y, z,}$ returns largest number</td>
-				</tr>
-				<tr>
-					<td>Math.min(x,y,z)</td>
-					<td>Given numbers ${x, y, z,}$ returns smallest number</td>
-				</tr>
-				<tr>
-					<td>Math.cbrt(x)</td>
-					<td>${x^3}$</td>
-				</tr>
-				<tr>
-					<td>Math.pow(x,y)</td>
-					<td>${x^y}$</td>
-				</tr>
-				<tr>
-					<td>Math.random()</td>
-					<td>pseudorandom float ${n,}$ where ${0 < n < 1.}$</td>
-				</tr>
-				<tr>
-					<td>Math.sign()</td>
-					<td>number's signage</td>
-				</tr>
-			</tbody>
-		</table>
-	</figure>
-	<p>
-		In addition to the math object methods, we have the basic arithmetic
-		operators and the unary operators:
-	</p>
-	<figure class="table">
-		<table class="truth_table">
-			<thead>
-				<th>Operator</th>
-				<th>Returns</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td>a + b</td>
-					<td>${a + b}$</td>
-				</tr>
-				<tr>
-					<td>a - b</td>
-					<td>${a - b}$</td>
-				</tr>
-				<tr>
-					<td>a * b</td>
-					<td>${(a)(b)}$</td>
-				</tr>
-				<tr>
-					<td>a / b</td>
-					<td>${\dfrac{a}{b}}$</td>
-				</tr>
-				<tr>
-					<td>a % b</td>
-					<td>${a \bmod b}$</td>
-				</tr>
-			</tbody>
-		</table>
-	</figure>
-	<p>And the unary operators:</p>
-	<figure class="table">
-		<table class="truth_table">
-			<thead>
-				<th>Unary Operator</th>
-				<th>Returns</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td>x += n</td>
-					<td>x = x + n</td>
-				</tr>
-				<tr>
-					<td>x++</td>
-					<td>x = x + 1</td>
-				</tr>
-				<tr>
-					<td>x -= n</td>
-					<td>x = x - n</td>
-				</tr>
-				<tr>
-					<td>x--</td>
-					<td>x = x - 1</td>
-				</tr>
-				<tr>
-					<td>x *= n</td>
-					<td>x = x * n</td>
-				</tr>
-				<tr>
-					<td>x /= n</td>
-					<td>${x = x / n}$</td>
-				</tr>
-				<tr>
-					<td>x %= n</td>
-					<td>${x = x \bmod n}$</td>
-				</tr>
-			</tbody>
-		</table>
-	</figure>
-</section>
-
-<section id="primitive_type_string">
-	<h2>String</h2>
-	<p>
-		A <b>string</b> is a sequence of characters. More specifically, it is an
-		<span class="italicsText">immutable</span> ordered sequence of 16-bit
-		values, where each value represents a Unicode character. Strings are
-		inherently <span class="italicsText">arrays</span> (since they are an
-		<span class="italicsText">ordered</span> sequence). Thus, each character in
-		a string has an <span class="italicsText">index</span>, starting at 0. While
-		the type number represents <em>numeric data</em>, and the type boolean
-		represents <em>logical data</em>, the type <em>string</em> represents
-		<em>textual data</em>.
-	</p>
-	<p>
-		Strings can be represented in JS with double quotes (""), single quotes
-		(''), or backticks (``), as long as they are used consistently.
-	</p>
-	<pre class="language-javascript"><code>
-		firstName = "David";
-		lastName = 'Hilbert';
-		occupation = `Mathematician`;
-		nickName = 'Hilby" // Error here
-	</code></pre>
-	<p>
-		JavaScript provides many built in methods for manipulating strings. A few of
-		the most often used methods are provided below.
-	</p>
-</section>
-
-<section id="finding_a_strings_length">
-	<p>
-		<span class="topic">String Length.</span> The number of characters in a
-		string is called its <em>length</em>, and JS can return that number with the
-		following:
-	</p>
-	<pre class="language-javascript"><code>
-		"hello".length; // returns 5
-		let greeting = "howdy";
-		greeting.length; // returns 5
-	</code></pre>
-</section>
-
-<section id="concatenating_strings">
-	<p>
-		<span class="topic">Concatenating Strings.</span> To <em>concatenate</em> a
-		string is simply to append, or combing different strings. Strings can be
-		concatenated with a <span class="monoText">+</span> character.
-	</p>
-	<pre class="language-javascript"><code>
-		let firstName = "Sherlock";
-		let lastName = "Holmes";
-		let fullName = firstName + " " + lastName;
-		console.log(fullName);
-		// JS returns "Sherlock Holmes"
-	</code></pre>
-</section>
-
-<section id="string_indices">
-	<p>
-		<span class="topic">String Indices.</span> Strings are an array of
-		characters (i.e., they are an ordered list of characters). Thus, every
-		character in a string has an <em>index</em>—the number of its position.
-	</p>
-	<p>
-		Recall that in computer science, we always count from 0. Thus, the first
-		character in a string has index 0, the second character index 1, the third
-		index 4, etc. Furthermore, because strings are <em>indexed</em>, JavaScript
-		can search for parts of a string. A string's indices also allow JavaScript
-		to copy parts of the string, and store those copies into a new variable. For
-		example:
-	</p>
-	<pre class="language-javascript"><code>
-		let word = "quadratic";
-		// Return first character in word, q:
-		word[0];
-	</code></pre>
-</section>
-
-<section id="other_useful_string_methods">
-	<p>
-		<span class="topic">Common String Methods.</span> JavaScript provides
-		numerous methods for use with strings. Below are examples of some of the
-		most common methods:
-	</p>
-	<pre class="language-javascript"><code>
-		let word = "hello";
-		// capitalize all characters in string
-		word.toUpperCase
-		// lowercase all characters in string
-		word.toLowerCase
-
-		let phrase = " excuse me ";
-		// remove white spaces before the string
-		phrase.trimStart()
-		// remove white spaces after the string 
-		phrase.trimEnd()
-		
-		let greet = "Hello world!"
-		// determine if string contains a substring
-		greet.includes("World!") // returns false
-		greet.includes("world!") // returns true
-
-		let sport = "basketball";
-		let law = "contracts law";
-		// take a slice of the string
-		sport.slice(6) // returns 'ball'
-		law.slice(0, 9) // returns 'contracts'
-
-		let quote = 'Call me Bond';
-		// replace a substring
-		quote.replace('Bond', 'Ishmael') // return 'Call me Ishmael'
-
-		let food = 'hotdog'
-		// find starting index of a substring or character
-		food.indexOf('hot') // returns 0
-		food.indexOf('dog') // returns 3
-	</code></pre>
-</section>
-
-<section id="primitive_type_boolean">
-	<h3>Primitive Type: Boolean</h3>
-	<p>
-		The primitive type <b>boolean</b> covers only 2 values:
-		<span class="monoText">true</span> or <span class="monoText">false</span>.
-	</p>
-	<p>
-		Because the boolean type has only two values, they are an effective way of
-		representing strictly binary values:
-	</p>
-	<ul>
-		<li>true or false</li>
-		<li>yes or no</li>
-		<li>1 or 0</li>
-	</ul>
-</section>
-
-<section id="boolean_operators">
-	<h3>Boolean Operators</h3>
-	<p>
-		<span class="term">Boolean operators</span> allow us to make simple
-		decisions in JavaScript.
-	</p>
-</section>
-
-<section id="comparison_operators">
-	<h4>Comparison Operators</h4>
-	<p>
-		Being able to compare values is critical to making simple decisions. The
-		<span class="term">comparison operators</span>
-		are what allow us to compare numbers.
-	</p>
-</section>
-
-<section id="greater_than_operator">
-	<h5>
-		The greater than operator
-		<span class="monoText">></span>
-	</h5>
-	<p>
-		The boolean operator
-		<span class="monoText">></span> determines whether the first value is
-		<em>greater than</em> the second value.
-	</p>
-	<pre class="language-javascript">
-				<code>
-					10 > 9 // returns true
-					5 > 7 // returns false
-					-1 > 0 // returns false
-					-3 > -12 // returns true
-				</code>
-			</pre>
-</section>
-
-<section id="less_than_operator">
-	<h5>The less than operator <span class="monoText"><</span></h5>
-	<p>
-		The boolean operator
-		<span class="monoText"><</span> determines whether the first value is
-		<em>less than</em> the second value.
-	</p>
-	<pre class="language-javascript">
-				<code>
-					5 < 8 // returns true
-					2 < 1 // returns false
-					1 < 1 // returns false
-				</code>
-			</pre>
-</section>
-
-<section id="greater_than_or_equal_to_operator">
-	<h5>
-		The greater than or equal to operator
-		<span class="monoText">>=</span>
-	</h5>
-	<p>
-		The boolean operator
-		<span class="monoText">>=</span> determines whether or not the first value
-		is <em>greater than or equal to</em> the second value.
-	</p>
-	<pre class="language-javascript">
-				<code>
-					7 >= 8 // returns false--7 is neither greater than nor equal to 8
-					8 >= 8 // returns true--8 is not greater than 8, but it is equal to 8
-					10 >= 7 // returns true--10 is not equal to 7, but it is greater than 8
-				</code>
-			</pre>
-</section>
-
-<section id="less_than_or_equal_to_operator">
-	<h5>
-		The less than or equal to operator
-		<span class="monoText"><=</span>
-	</h5>
-	<p>
-		The boolean operator
-		<span class="monoText"><=</span> determines whether or not the first value
-		is <em>less than or equal to</em> the second value.
-	</p>
-	<pre class="language-javascript">
-				<code>
-					9 <= 10 // returns true; 9 is not equal to 10, but it is less than 10.
-					10 <= 10 // returns true; 10 is not less than 10, but it is equal to 10. 
-					11 <= 10 // returns false; 11 is neither less than nor equal to 10. 
-				</code>
-			</pre>
-</section>
-
-<section id="equality_operator">
-	<h5>The equality operator <span class="monoText">==</span></h5>
-	<p>
-		The equality operator
-		<span class="monoText">==</span> determines whether two values are
-		<em>equal in value</em>, but it does not check whether the values are
-		<em>equal in type</em>.
-	</p>
-	<pre class="language-javascript">
-				<code>
-					7 == "7" // returns true; JavaScript forces the values into a common type
-					0 == "s" // returns false
-					0 == "" // returns true
-					0 == false // returns true
-					null == undefined // returns true
-				</code>
-			</pre>
-</section>
-
-<section id="strict_equality_operator">
-	<h5>
-		The strict equality operator
-		<span class="monoText">===</span>
-	</h5>
-	<p>
-		The strict equality operator
-		<span class="monoText">===</span> determines whether two values
-		<em>equal in value</em> AND <em>equal in type</em>.
-	</p>
-	<pre class="language-javascript">
-				<code>
-					5 === 5 // returns true
-					1 === 2 // returns false
-					2 === "2" // returns false
-					0 === false // returns false
-					null === undefined // returns false
-				</code>
-			</pre>
-</section>
-
-<section id="nonequality_operator">
-	<h5>
-		The Nonequality Operator
-		<span class="monoText">!=</span>
-	</h5>
-	<p>
-		The nonequality operator
-		<span class="monoText">!=</span> determines whether two values are
-		<em>nonequal in value</em>, but it does not determine whether the values are
-		<em>nonequal in type</em>; this is the analog of the equality operator,
-		<span class="monoText">==</span>.
-	</p>
-	<pre class="language-javascript">
-				<code>
-					null != undefined; // returns false
-					2 != "2"; // returns false
-					2 != 3; // returns true
-					
-				</code>
-			</pre>
-</section>
-
-<section id="strict_nonequality_operator">
-	<h5>
-		The Strict Nonequality Operator
-		<span class="monoText">!==</span>
-	</h5>
-	<p>
-		The strict nonequality operator
-		<span class="monoText">!==</span> determines whether two values are
-		<em>nonequal in value</em> and <em>nonequal in type</em>.
-	</p>
-	<pre class="language-javascript">
-		<code>
-			null !== undefined; // returns true
-			2 !== "2"; // returns true
-			2 !== 3; // returns true
-		</code>
-	</pre>
 </section>
 
 {% endblock %}

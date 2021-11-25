@@ -237,23 +237,8 @@ def java_compilation(request):
 def java_objects(request):
 		return render(request, "numerc/java/java_objects.html")
 
-def java_constructors(request):
-		return render(request, "numerc/java/java_constructors.html")
-
-def java_gettersSetters(request):
-		return render(request, "numerc/java/java_gettersSetters.html")
-
-def java_inheritance(request):
-		return render(request, "numerc/java/java_inheritance.html")
-
 def java_fileProcessing(request):
 		return render(request, "numerc/java/java_fileProcessing.html")
-
-def java_polymorphism(request):
-		return render(request, "numerc/java/java_polymorphism.html")
-
-def java_objectReferences(request):
-		return render(request, "numerc/java/java_objectReferences.html")
 
 def java_interfaces(request):
 		return render(request, "numerc/java/java_interfaces.html")
@@ -268,23 +253,8 @@ def js_preface(request):
 def js_howJSWorks(request):
 		return render(request, "numerc/js/js_howJSWorks.html")
 
-def js_syntaxParsers(request):
-		return render(request, "numerc/js/js_syntaxParsers.html")
-
-def js_lexicalEnvironments(request):
-		return render(request, "numerc/js/js_lexicalEnvironments.html")
-
-def js_executionContexts(request):
-		return render(request, "numerc/js/js_executionContexts.html")
-
-def js_variables(request):
-		return render(request, "numerc/js/js_variables.html")
-
 def js_baseTypes(request):
 		return render(request, "numerc/js/js_baseTypes.html")
-
-def js_mathObject(request):
-		return render(request, "numerc/js/js_mathObject.html")
 
 def js_regex(request):
 		return render(request, "numerc/js/js_regex.html")
@@ -292,17 +262,8 @@ def js_regex(request):
 def js_booleanOperators(request):
 		return render(request, "numerc/js/js_booleanOperators.html")
 
-def js_conditionalControl(request):
-		return render(request, "numerc/js/js_conditionalControl.html")
-
-def js_loops(request):
-		return render(request, "numerc/js/js_loops.html")
-
 def js_arrays(request):
 		return render(request, "numerc/js/js_arrays.html")
-
-def js_objects(request):
-		return render(request, "numerc/js/js_objects.html")
 
 def js_functions(request):
 		return render(request, "numerc/js/js_functions.html")
@@ -313,6 +274,12 @@ def js_methods(request):
 def js_this(request):
 		return render(request, "numerc/js/js_this.html")
 
+def js_jsLowerLevel(request):
+		return render(request, "numerc/js/js_jsLowerLevel.html")
+
+def js_dom(request):
+		return render(request, "numerc/js/js_dom.html")
+
 def js_scope(request):
 		return render(request, "numerc/js/js_scope.html")
 
@@ -321,6 +288,9 @@ def js_angular(request):
 
 def js_dsalg(request):
 		return render(request, "numerc/js/js_dsalg.html")
+
+def js_controlFlow(request):
+		return render(request, "numerc/js/js_controlFlow.html")
 
 #! Lisp Views (lispv)
 def lisp_preface(request):
@@ -402,9 +372,9 @@ def lisp_onRecursion(request):
 		return render(request, "numerc/lisp/lisp_onRecursion.html")
 
 
-#! ML Views (mlv)
-def ml_preface(request):
-		return render(request, "numerc/ml/ml_preface.html")
+#! PL Views (plv)
+def pl_preface(request):
+		return render(request, "numerc/ml/pl_preface.html")
 
 def pl_briefHistory(request):
 		return render(request, "numerc/ml/pl_briefHistory.html")
@@ -412,17 +382,21 @@ def pl_briefHistory(request):
 def pl_overview(request):
 		return render(request, "numerc/ml/pl_overview.html")
 
+#! ML View (mlv)
+def ml_preface(request):
+		return render(request, "numerc/sml/ml_preface.html")
+
 def ml_simpleData(request):
-		return render(request, "numerc/ml/ml_simpleData.html")
+		return render(request, "numerc/sml/ml_simpleData.html")
 
 def ml_customDataTypes(request):
-		return render(request, "numerc/ml/ml_customDataTypes.html")
+		return render(request, "numerc/sml/ml_customDataTypes.html")
 
 def ml_functions(request):
-		return render(request, "numerc/ml/ml_functions.html")
+		return render(request, "numerc/sml/ml_functions.html")
 
 def ml_typeInference(request):
-		return render(request, "numerc/ml/ml_typeInference.html")
+		return render(request, "numerc/sml/ml_typeInference.html")
 
 
 #!  C++ Views (cppv)
@@ -511,7 +485,7 @@ def prolog_preface(request):
 def prolog_atoms(request):
 	return render(request, "numerc/prolog/prolog_atoms.html")
 
-#!  Haskell Views (haskellv)
+#! Haskell Views (haskellv)
 def haskell_intro(request):
 	return render(request, "numerc/haskell/haskell_intro.html")
 
@@ -523,6 +497,10 @@ def haskell_gettingStarted(request):
 
 def haskell_variables(request):
 	return render(request, "numerc/haskell/haskell_variables.html")
+
+#! Ruby Views (haskellv)
+def ruby_intro(request):
+	return render(request, "numerc/ruby/ruby_preface.html")
 
 #! Compiler Views (cmpv)
 def cmp_index(request):
@@ -553,3 +531,12 @@ def des_functions(request):
 
 def des_classes(request):
 	return render(request, "numerc/des/des_classes.html")
+
+def des_git(request):
+	return render(request, "numerc/des/des_git.html")
+
+def des_shell(request):
+	return render(request, "numerc/des/des_shell.html")
+
+def des_regex(request):
+	return render(request, "numerc/des/des_regex.html")

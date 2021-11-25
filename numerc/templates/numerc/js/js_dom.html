@@ -1,0 +1,174 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="What is the DOM in JavaScript? An overview of the Document Object Model."
+/>
+{% endblock %} {% block title %}
+<title>The DOM</title>
+{% endblock %} {% block content %}
+<h1>The Document Object Model (DOM)</h1>
+<section id="intro">
+	<p>
+		<span class="drop">J</span>avaScript is synonymous with web development. But
+		how exactly does it generate dynamic web pages? The answer is through the
+		<span class="term">Document Object Model</span> (&#8220;DOM&#8221;). In this
+		section, we explore how the DOM works, as well as the various ways we link
+		JavaScript, HTML, and CSS.
+	</p>
+	<p>
+		To begin, the examples below are based on three separate files:
+		<span class="monoText">lab.html</span>,
+		<span class="monoText">app.js</span>, and
+		<span class="monoText">styles.css</span>. These files are all within the
+		same directory:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				.
+				├── lab.html
+				├── app.js
+				└── styles.css
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		The <span class="monoText">styles.css</span> and
+		<span class="monoText">app.js</span> files do not contain anything for now.
+		The <span class="monoText">lab.html</span> file, however, contains the
+		following code:
+	</p>
+	<pre class="language-html"><code>
+		&lt;!DOCTYPE html&gt;
+		&lt;html lang=&quot;en&quot;&gt;
+		&lt;head&gt;
+		&#x9;&lt;meta charset=&quot;UTF-8&quot;&gt;
+		&#x9;&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+		&#x9;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+		&#x9;&lt;title&gt;Lab&lt;/title&gt;
+		&#x9;&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot;&gt;
+		&lt;/head&gt;
+		&lt;body&gt;
+		&#x9;&lt;main&gt;
+		&#x9;&#x9;&lt;h1&gt;H1 Tag&lt;/h1&gt;
+		&#x9;&#x9;&lt;p&gt;Paragraph tag&lt;/p&gt;
+		&#x9;&#x9;&lt;ul&gt;
+		&#x9;&#x9;&#x9;&lt;li&gt;List item 1&lt;/li&gt;
+		&#x9;&#x9;&#x9;&lt;li&gt;List item 2&lt;/li&gt;
+		&#x9;&#x9;&#x9;&lt;li&gt;List item 3&lt;/li&gt;
+		&#x9;&#x9;&lt;/ul&gt;
+		&#x9;&lt;/main&gt;
+		&#x9;&lt;script src=&quot;./app.js&quot;&gt;&lt;/script&gt;
+		&lt;/body&gt;
+		&lt;/html&gt;
+	</code></pre>
+	<p>
+		Note that the following discussion assumes basic knowledge of HTML and CSS.
+		If the syntax above or CSS is entirely foreign, we recommend looking up a
+		few basic tutorials on HTML and CSS.
+	</p>
+</section>
+
+<section id="what_is_the_dom">
+	<h2>What is the DOM?</h2>
+	<p>
+		The DOM is JavaScript's representation of an HTML document. From a very
+		high-level overview, when the browser loads an HTML document, the browser
+		takes all of the HTML elements and returns JavaScript objects. And because
+		they are objects, we can interact with them via JavaScript. For example,
+		given the following HTML code:
+	</p>
+	<pre class="language-html"><code>
+		&lt;html&gt;
+			&lt;head&gt;
+				&lt;title&gt;My Webpage&lt;/title&gt;
+			&lt;/head&gt;
+			&lt;body&gt;
+			&#x9;&lt;h1&gt;Heading&lt;/h1&gt;
+			&#x9;&lt;ul&gt;
+			&#x9;&#x9;&lt;li&gt;List Item 1&lt;/li&gt;
+			&#x9;&#x9;&lt;li&gt;List Item 2&lt;/li&gt;
+			&#x9;&lt;/ul&gt;
+			&lt;/body&gt;
+		&lt;/html&gt;
+	</code></pre>
+	<p>
+		The browser generates a node tree whose nodes are the HTML elements
+		represented as objects:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				document{}
+								└── html{}
+												├── head{}
+												│       └── title{}
+												└── body{}
+																├── h1{}
+																└── ul{}
+																			├── li{}
+																			└── li{}
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		The root node is the <span class="monoText">html</span> element. It is from
+		this node that we have all the other nodes:
+		<span class="monoText">body</span>, <span class="monoText">h1</span>,
+		<span class="monoText">ul</span>, <span class="monoText">li</span>, etc.
+		These nodes are all objects. Each node has either a
+		<span class="term">parent</span>, <span class="term">children</span>, or
+		both. For example, the <span class="monoText">html</span> element has two
+		children, <span class="monoText">head</span> and
+		<span class="monoText">body</span>. <span class="monoText">head</span> has
+		one child, the <span class="monoText">title</span> element.
+	</p>
+	<p>
+		Again, all of these are objects, and the entire node tree is an object.
+		Roughly, the tree above looks something like:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				Window: {
+					document: {
+						html: {
+							head: {
+								title: { innerText: "My Webpage" }
+							},
+							body: {
+								h1: { innerText: "Heading" },
+								ul: {
+									li: { innerText: "List Item 1" },
+									li: { innerText: "List Item 1" }
+								}
+							}
+						}
+					}
+				}
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		The above gives us a better sense of what the DOM is. If we wanted to see
+		what it actually looks like, open a console on a webpage, and run
+		<span class="monoText">console.log(this)</span>. The rough outline above
+		omits most of what's actually contained in the tree &mdash; the DOM contains
+		numerous properties and methods.
+	</p>
+	<p>
+		Each of the objects have properties. In the example above, the
+		<span class="monoText">h1</span> object has a property called
+		<span class="monoText">innerText</span>. Here, that property is bound to the
+		value <span class="monoText">"Heading"</span>, a string. These objects all
+		contain numerous properties: Styles, content, children, parents, etc. With
+		JavaScript, we can modify these properties. We can also create and delete
+		nodes on the tree, effectively adding new elements and removing existing
+		ones from the HTML document. This discussion reveals a key insight to
+		developing web pages with JavaScript: Whenever we use JavaScript to affect
+		changes on a webpage, we are really manipulating the leaves and branches in
+		a tree.
+	</p>
+</section>
+
+{% endblock %}

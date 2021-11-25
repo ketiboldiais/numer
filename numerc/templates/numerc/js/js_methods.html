@@ -1,26 +1,29 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Object methods and properties" />
+{% endblock %} {% block title %}
+<title>Methods & Properties</title>
+{% endblock %} {% block content %}
+<h1>Object Methods & Properties</h1>
 <section id="objectmethods_introduction">
-	<h2>object methods and properties</h2>
-	<p class="subheading-1">preface</p>
 	<p>
-		this section covers shorthand properties and methods for objects. in
-		previous sections, we restricted the discussion to
-		<span class="italicstext"
-			><a href="#javascript_data_structures_objects">object literals</a></span
-		>. object literals, however, are just one kind of object. there are many
-		other aspects to objects that must be considered.
+		<span class="drop">O</span>bjects in JavaScript are akin to structures in
+		other languages. They essentially allow us to group related data and
+		functions together. In this section we'll cover properties and methods for
+		objects. In previous sections, we restricted the discussion to
+		<span class="italicstext">object literals</span>. Object literals, however,
+		are just one kind of object. There are many other aspects to objects that
+		must be considered.
 	</p>
 </section>
 
 <section id="object_shorthand_properties">
-	<h3>shorthand properties of objects</h3>
-
+	<h2>Shorthand Properties of Objects</h2>
 	<p>
-		suppose we have variables declared and initialized with values. in many
+		Suppose we have variables declared and initialized with values. In many
 		situations, we might want to create an object where the key name is the name
 		of the variable, and the key's assigned property is the value assigned to
-		the variable.<span class="italicstext">shorthand properties</span>
-		provide a concise way of creating such an object. for example, if we wanted
+		the variable. <span class="italicstext">Shorthand properties</span>
+		provide a concise way of creating such an object. For example, if we wanted
 		to collect all of the results from a function in an object, the usual way
 		would be:
 	</p>
@@ -55,7 +58,7 @@
 			*/	
 			</code></pre>
 	<p>
-		but, with
+		But, with
 		<span class="italicstext">shorthand properties</span>, we can shorten the
 		return statement in the example above:
 	</p>
@@ -95,18 +98,18 @@
 				*/							
 			</code></pre>
 	<p>
-		the catch, of course, is that we cannot use unique variable names (of
+		The catch, of course, is that we cannot use unique variable names (of
 		course, we can get around that by assigning those names as keys in the first
 		place).
 	</p>
 </section>
 
 <section id="computed_properties">
-	<h3>computed properties</h3>
+	<h2>Computed Properties</h2>
 	<p>
-		<span class="italicstext">computed properties</span> allow us to write
+		<span class="italicstext">Computed properties</span> allow us to write
 		properties of an object literal with a
-		<span class="italicstext">dynamic key</span>. recall that when use a
+		<span class="italicstext">dynamic key</span>. Recall that when use a
 		variable name as a property name in an object, javascript does not check
 		whether the name is actually a variable&mdash;it simply treats it as a
 		string:
@@ -122,7 +125,7 @@
 				// javascript is not checking if 'negparticle' is a variable; it's a string.			
 			</code></pre>
 	<p>
-		to use a variable name as a property name while making sure that javascript
+		To use a variable name as a property name while making sure that javascript
 		evaluates it, we need to use the
 		<span class="monotext">object[key]</span> syntax
 		<span class="italicstext">after</span> we initialize the object:
@@ -138,270 +141,278 @@
 				// output: { electron: -1 }
 			</code></pre>
 	<p>
-		but, the
+		But, the
 		<span class="italicstext">computed properties syntax</span>
 		provides a more a concise way of accomplishing the same task:
 	</p>
 	<pre class="language-javascript"><code>
-				const negativecharge = -1;
-				const negparticle = 'electron';
-				const particledetails = { [negparticle]: negativecharge };
-				// test:
-				console.log(particledetails); // output: { electron: -1 }
-			</code></pre>
+		const negativecharge = -1;
+		const negparticle = 'electron';
+		const particledetails = { [negparticle]: negativecharge };
+		// test:
+		console.log(particledetails); // output: { electron: -1 }
+	</code></pre>
 	<p>
-		notice the syntax we used,
+		Notice the syntax we used,
 		<span class="monotext">[]</span>:
 	</p>
 	<pre class="language-javascript"><code>
-				const variablea = 'value1';
-				const variableb = 'value2';
-				const objectc = { [variablea]: variableb }
-				// we used the value of variablea as the key name for the value of variableb
-			</code></pre>
+		const variablea = 'value1';
+		const variableb = 'value2';
+		const objectc = { [variablea]: variableb }
+		// we used the value of variablea as the key name for the value of variableb
+	</code></pre>
 	<p>
-		we can use the
+		We can use the
 		<span class="italicstext">computed properties syntax</span> to more
-		concisely write a function that adds a property. without using the
+		concisely write a function that adds a property. Without using the
 		<span class="italicstext">computed properties syntax</span>, the function
 		looks like:
 	</p>
 	<pre class="language-javascript"><code>
-				// this function accepts an object, and returns a copy of that object with a new property inserted:
-				function propadder(obj, ky, val) {
-					const objcopy = { ...obj };
-					objcopy[ky] = val;
-					return objcopy
-				};
-				// let's test it on an object:
-				const objsample = { str: 'val', num: 2 };
-				let objsamplenew = propadder(objsample, 'bool', true);
+		// this function accepts an object, and returns a copy of that object with a new property inserted:
+		function propadder(obj, ky, val) {
+			const objcopy = { ...obj };
+			objcopy[ky] = val;
+			return objcopy
+		};
+		// let's test it on an object:
+		const objsample = { str: 'val', num: 2 };
+		let objsamplenew = propadder(objsample, 'bool', true);
 
-				console.log(objsamplenew); // output: { str: 'val', num: 2, bool: true }
-			</code></pre>
+		console.log(objsamplenew); // output: { str: 'val', num: 2, bool: true }
+	</code></pre>
 	<p>
-		above, we used the <span class="monotext">object[key]</span> syntax to add
-		the new property. we can write the same statements with less characters with
+		Above, we used the <span class="monotext">object[key]</span> syntax to add
+		the new property. We can write the same statements with less characters with
 		the <span class="italicstext">computed properties syntax</span>:
 	</p>
 	<pre class="language-javascript"><code>
-				const propadder = (obj, ky, val) => { return { ...obj, [ky]: val }; };
-				// test:
-				const objsample = { str: "val", num: 2 };
-				let objsamplenew = propadder(objsample, "bool", true);
+		const propadder = (obj, ky, val) => { return { ...obj, [ky]: val }; };
+		// test:
+		const objsample = { str: "val", num: 2 };
+		let objsamplenew = propadder(objsample, "bool", true);
 
-				console.log(objsamplenew); // output: { str: 'val', num: 2, bool: true }
-			</code></pre>
-	<p>or, even shorter with an implicit return:</p>
+		console.log(objsamplenew); // output: { str: 'val', num: 2, bool: true }
+	</code></pre>
+	<p>Or, even shorter with an implicit return:</p>
 	<pre class="language-javascript"><code>
-			const propadder = (obj, ky, val) => ({ ...obj, [ky]: val });
-			// test:
-			const objsample = { str: "val", num: 2 };
-			let objsamplenew = propadder(objsample, "bool", true);
+		const propadder = (obj, ky, val) => ({ ...obj, [ky]: val });
+		// test:
+		const objsample = { str: "val", num: 2 };
+		let objsamplenew = propadder(objsample, "bool", true);
 
-			console.log(objsamplenew); // output: { str: 'val', num: 2, bool: true }	
-			</code></pre>
+		console.log(objsamplenew); // output: { str: 'val', num: 2, bool: true }	
+		</code></pre>
 </section>
 
 <section id="methods_and_objects">
-	<h3>adding methods to objects</h3>
+	<h2>Methods: Functions in Objects</h2>
 	<p>
-		we can add functions as properties on objects. once we add a function to an
+		We can add functions as properties on objects. Once we add a function to an
 		object, it becomes a
-		<span class="term">method</span>. the simplest reason for why we would want
+		<span class="term">method</span>. The simplest reason for why we would want
 		to put functions into objects is that doing so is conducive to better
 		organized programs, which in turn leads to more efficient and elegant code.
-		recall that a function, at it is core, is just data, so it can be assigned
-		to variables. likewise, it can be assigned to a key:
+		Recall that a function, at it is core, is just data, so it can be assigned
+		to variables. Likewise, it can be assigned to a key:
 	</p>
 	<pre class="language-javascript"><code>
-				// here's a function that computes the circumference of a circle:
-				const circumference = (r) => 2 * r * math.pi;
-				// we can place this in an object:
-				const mathfuncs = {
-					circumference: circumference
-				};
-				// once placed inside an object, we can call it with the method syntax:
-				console.log(mathfuncs.circumference(3)); // output: 18.84955592153876
-			</code></pre>
+		// here's a function that computes the circumference of a circle:
+		const circumference = (r) => 2 * r * math.pi;
+		// we can place this in an object:
+		const mathfuncs = {
+			circumference: circumference
+		};
+		// once placed inside an object, we can call it with the method syntax:
+		console.log(mathfuncs.circumference(3)); // output: 18.84955592153876
+	</code></pre>
 	<p>
-		in the example above, the function is written outside the object, then later
-		placed in the object. this is not how methods are typically written.
+		In the example above, the function is written outside the object, then later
+		placed in the object. This is not how methods are typically written.
 		instead, we usually write the functions directly inside the object:
 	</p>
 	<pre class="language-javascript"><code>
-				// we can place this in an object:
-				const mathfuncs = {
-					circumference: circumference = (r) => (2 * r * math.pi),
-					circlearea: circlearea = (r) => (math.pi * r * r)
-				};
-				// once placed inside an object, we can call it with the method syntax:
-				console.log(mathfuncs.circumference(4)); // output: 25.132741228718345
-				console.log(mathfuncs.circlearea(4)); // output: 50.26548245743669
-			</code></pre>
+		// we can place this in an object:
+		const mathfuncs = {
+			circumference: circumference = (r) => (2 * r * math.pi),
+			circlearea: circlearea = (r) => (math.pi * r * r)
+		};
+		// once placed inside an object, we can call it with the method syntax:
+		console.log(mathfuncs.circumference(4)); // output: 25.132741228718345
+		console.log(mathfuncs.circlearea(4)); // output: 50.26548245743669
+	</code></pre>
 	<p>
-		note that in the examples, we used the
-		<span class="italicstext">arrow function</span> syntax. this is not a common
+		Note that in the examples, we used the
+		<span class="italicstext">arrow function</span> syntax. This is not a common
 		way of writing functions inside objects.
 	</p>
-</section>
 
-<section id="shorthand_methods">
-	<h3>shorthand methods syntax</h3>
-	<p>
-		instead of using the key value pairs syntax, we can use the
-		<span class="italicstext">shorthand method syntax</span>:
-	</p>
-	<pre class="language-javascript"><code>
-				// we can place this in an object:
-				const mathfuncs = {
-					circumference(r) {
-						return 2 * r * math.pi;
-					},
-					circlearea(r) {
-						return math.pi * r * r;
+	<section id="shorthand_methods">
+		<p>
+			<span class="topic">Shorthand Methods Syntax</span>
+			Instead of using the key value pairs syntax, we can use the
+			<span class="italicstext">shorthand method syntax</span>:
+		</p>
+		<pre class="language-javascript"><code>
+			// we can place this in an object:
+			const mathfuncs = {
+				circumference(r) {
+					return 2 * r * math.pi;
+				},
+				circlearea(r) {
+					return math.pi * r * r;
+				}
+			};
+			// once placed inside an object, we can call it with the method syntax:
+			console.log(mathfuncs.circumference(4)); // output: 25.132741228718345
+			console.log(mathfuncs.circlearea(4)); // output: 50.26548245743669
+		</code></pre>
+	</section>
+
+	<section id="why_use_methods">
+		<p>
+			<span class="topic">Why Should We Use Methods?</span> The best way to see
+			why methods are extremely useful is by example:
+		</p>
+
+		<pre class="language-javascript"><code>
+			/*
+			I want a function that draws a card out of the deck (and makes sure that the deck is 1 card fewer for each draw)
+			*/
+			// first, let's make the deck
+			function makeDeck() {
+				const deck = []; // Make an empty deck
+				const suits = ['hearts', 'diamonds', 'spades', 'clubs']; // The array of suits
+				const values = '2,3,4,5,6,7,8,9,10,J,Q,K,A'; // A string of values
+				// Turn the string of values into an array
+				for (let value of values.split(',')) {
+					// For each array element, do this:
+					for (let suit of suits) {
+						// For each suit, do this: 
+						deck.push({value, suit})
 					}
-				};
-				// once placed inside an object, we can call it with the method syntax:
-				console.log(mathfuncs.circumference(4)); // output: 25.132741228718345
-				console.log(mathfuncs.circlearea(4)); // output: 50.26548245743669
-			</code></pre>
-</section>
+				}
+				return deck;
+			};
 
-<section id="why_use_methods">
-	<h3>Why Should We Use Methods?</h3>
-	<p>The best way to see why methods are extremely useful is by example:</p>
-	<pre class="language-javascript"><code>
-				/*
-				I want a function that draws a card out of the deck (and makes sure that the deck is 1 card fewer for each draw)
-				*/
-				// first, let's make the deck
-				function makeDeck() {
-					const deck = []; // Make an empty deck
-					const suits = ['hearts', 'diamonds', 'spades', 'clubs']; // The array of suits
-					const values = '2,3,4,5,6,7,8,9,10,J,Q,K,A'; // A string of values
-					// Turn the string of values into an array
-					for (let value of values.split(',')) {
-						// For each array element, do this:
+			// Suppose I want to draw a card from the deck
+			// We need to write a function that draws the card:
+			function drawCard(deck) {
+				return deck.pop() // Take a card out of the deck
+			};
+			// Set the deck to a variable:
+			const deck = makeDeck();
+			console.log(drawCard(deck)); // Output: { value: 'A', suit: 'clubs' }
+
+			// To draw another card, we need to pass the argument again:
+			console.log(drawCard(deck)); // Output: { value: 'A', suit: 'spades }
+			// The problem with writing the program this way is that we have to keep passing an argument over and over again.
+			// And what if we need to shuffle the deck? (The pop method is just taking a card from the deck in order)							
+		</code></pre>
+
+		<p>
+			The above example shows a common phenomenon in programming: repetitious
+			code. Where there is repetitious code, there are methods laying in ambush.
+			The above code written inside an object:
+		</p>
+
+		<pre class="language-javascript"><code>
+			const deck = {
+				deck: [],
+				suits: ["hearts", "diamonds", "spades", "clubs"],
+				values: "2,3,4,5,6,7,8,9,10,J,Q,K,A",
+
+				makeDeck() {
+					const { suits, values, deck} = this;
+					for (let value of values.split(",")) {
 						for (let suit of suits) {
-							// For each suit, do this: 
-							deck.push({value, suit})
+							deck.push({ value, suit });
 						}
 					}
-					return deck;
-				};
+				},
+				
+				drawCard() {
+					return this.deck.pop()
+				}
+			};
+			deck.makeDeck(); // Make the deck
+			// Then draw a card:
+			console.log(deck.drawCard()); // Output: { value: 'A', suit: 'clubs' }							
+		</code></pre>
 
-				// Suppose I want to draw a card from the deck
-				// We need to write a function that draws the card:
-				function drawCard(deck) {
-					return deck.pop() // Take a card out of the deck
-				};
-				// Set the deck to a variable:
-				const deck = makeDeck();
-				console.log(drawCard(deck)); // Output: { value: 'A', suit: 'clubs' }
+		<p>
+			By storing the functions in an object, we've created methods, which can be
+			called upon over and over without having to pass repeatedly pass
+			arguments. By using methods, we can do even more things:
+		</p>
 
-				// To draw another card, we need to pass the argument again:
-				console.log(drawCard(deck)); // Output: { value: 'A', suit: 'spades }
-				// The problem with writing the program this way is that we have to keep passing an argument over and over again.
-				// And what if we need to shuffle the deck? (The pop method is just taking a card from the deck in order)							
-			</code></pre>
-	<p>
-		The above example shows a common phenomenon in programming: repetitious
-		code. Where there is repetitious code, there are methods laying in ambush.
-		The above code written inside an object:
-	</p>
-	<pre class="language-javascript"><code>
-				const deck = {
-					deck: [],
-					suits: ["hearts", "diamonds", "spades", "clubs"],
-					values: "2,3,4,5,6,7,8,9,10,J,Q,K,A",
-
-					makeDeck() {
-						const { suits, values, deck} = this;
-						for (let value of values.split(",")) {
-							for (let suit of suits) {
-								deck.push({ value, suit });
-							}
-						}
-					},
-					
-					drawCard() {
-						return this.deck.pop()
-					}
-				};
-				deck.makeDeck(); // Make the deck
-				// Then draw a card:
-				console.log(deck.drawCard()); // Output: { value: 'A', suit: 'clubs' }							
-			</code></pre>
-	<p>
-		By storing the functions in an object, we've created methods, which can be
-		called upon over and over without having to pass repeatedly pass arguments.
-		By using methods, we can do even more things:
-	</p>
-	<pre class="language-javascript"><code>
-				const theDeck = { // create the object
-					deck: [], // Variable stores deck
-					drawnCards: [], // Variable stores drawn cards
-					suits: ["hearts", "diamonds", "spades", "clubs"], // the suits
-					values: "2,3,4,5,6,7,8,9,10,J,Q,K,A", // the ranks
-					// Method: make deck
-					makeDeck() {
-						const { suits, values, deck} = this; // stop writing 'this' repeatedly
-						// loop through 'values' string turned into array
-						for (let value of values.split(",")) {
-							// for each element in 'values', loop through 'suits'
-							for (let suit of suits) {
-								// for each suit, push this object into 'deck'
-								deck.push({ value, suit });
-							}
-						}
-					},
-					// Method: draw card
-					drawCard() {
-						const card = this.deck.pop(); // Store drawn card in variable
-						this.drawnCards.push(card); // Store drawn card in the drawnCards array
-						return card; // Output card
-					},
-					// Method: draw multiple cards
-					drawCards(numCards) {
-						const cards = []; // Store drawn cards in variable
-						// run drawCard this many times
-						for (let i = 0; i < numCards; i++) {
-							cards.push(this.drawCard()); // Put drawn cards in cards variable
-						}
-						return cards; // Output cards
-					},
-					// Method: shuffle cards
-					shuffle() {
-						const { deck } = this;
-						// Loop through the array backwards
-						for (let i = deck.length - 1; i > 0; i--) {
-							// Pick a random index before the current element
-							let j = Math.floor(Math.random() * [i + 1]);
-							// Swap elements with destructuring
-							[deck[i], deck[j] = deck[j], deck[i]];
+		<pre class="language-javascript"><code>
+			const theDeck = { // create the object
+				deck: [], // Variable stores deck
+				drawnCards: [], // Variable stores drawn cards
+				suits: ["hearts", "diamonds", "spades", "clubs"], // the suits
+				values: "2,3,4,5,6,7,8,9,10,J,Q,K,A", // the ranks
+				// Method: make deck
+				makeDeck() {
+					const { suits, values, deck} = this; // stop writing 'this' repeatedly
+					// loop through 'values' string turned into array
+					for (let value of values.split(",")) {
+						// for each element in 'values', loop through 'suits'
+						for (let suit of suits) {
+							// for each suit, push this object into 'deck'
+							deck.push({ value, suit });
 						}
 					}
-				};
+				},
+				// Method: draw card
+				drawCard() {
+					const card = this.deck.pop(); // Store drawn card in variable
+					this.drawnCards.push(card); // Store drawn card in the drawnCards array
+					return card; // Output card
+				},
+				// Method: draw multiple cards
+				drawCards(numCards) {
+					const cards = []; // Store drawn cards in variable
+					// run drawCard this many times
+					for (let i = 0; i < numCards; i++) {
+						cards.push(this.drawCard()); // Put drawn cards in cards variable
+					}
+					return cards; // Output cards
+				},
+				// Method: shuffle cards
+				shuffle() {
+					const { deck } = this;
+					// Loop through the array backwards
+					for (let i = deck.length - 1; i > 0; i--) {
+						// Pick a random index before the current element
+						let j = Math.floor(Math.random() * [i + 1]);
+						// Swap elements with destructuring
+						[deck[i], deck[j] = deck[j], deck[i]];
+					}
+				}
+			};
 
-				// Let's test.
-				theDeck.makeDeck(); // Make the deck. 
-				console.log(theDeck.drawCard()); // Draw card:
-				// Output: { value: 'A', suit: 'clubs' } 
-				console.log(theDeck.drawnCards); // Check drawn cards array:
-				// Output: [ { value: 'A', suit: 'clubs' } ]
-				console.log(theDeck.drawCards(3)); // Draw multiple cards
-				/*
-				Output: 
-				[
-				{ value: 'A', suit: 'spades' },
-				{ value: 'A', suit: 'diamonds' },
-				{ value: 'A', suit: 'hearts' }
-				]
-				*/
-				theDeck.shuffle(); // Shuffle the deck
-				console.log(theDeck.drawCard()); // Draw card
-				// Output: { value: 'K', suit: 'clubs' }							
-			</code></pre>
+			// Let's test.
+			theDeck.makeDeck(); // Make the deck. 
+			console.log(theDeck.drawCard()); // Draw card:
+			// Output: { value: 'A', suit: 'clubs' } 
+			console.log(theDeck.drawnCards); // Check drawn cards array:
+			// Output: [ { value: 'A', suit: 'clubs' } ]
+			console.log(theDeck.drawCards(3)); // Draw multiple cards
+			/*
+			Output: 
+			[
+			{ value: 'A', suit: 'spades' },
+			{ value: 'A', suit: 'diamonds' },
+			{ value: 'A', suit: 'hearts' }
+			]
+			*/
+			theDeck.shuffle(); // Shuffle the deck
+			console.log(theDeck.drawCard()); // Draw card
+			// Output: { value: 'K', suit: 'clubs' }							
+		</code></pre>
+	</section>
 </section>
+
 {% endblock %}

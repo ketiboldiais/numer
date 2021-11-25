@@ -104,17 +104,7 @@ urlpatterns = [
 
 	path("java_objects", views.java_objects, name="java_objects"),
 
-	path("java_constructors", views.java_constructors, name="java_constructors"),
-
-	path("java_gettersSetters", views.java_gettersSetters, name="java_gettersSetters"),
-
-	path("java_inheritance", views.java_inheritance, name="java_inheritance"),
-
 	path("java_fileProcessing", views.java_fileProcessing, name="java_fileProcessing"),
-
-	path("java_polymorphism", views.java_polymorphism, name="java_polymorphism"),
-
-	path("java_objectReferences", views.java_objectReferences, name="java_objectReferences"),
 
 	path("java_interfaces", views.java_interfaces, name="java_interfaces"),
 
@@ -123,32 +113,15 @@ urlpatterns = [
 	# js paths 
 	path("js_preface", views.js_preface, name="js_preface"),
 
-	path("js_syntaxParsers", views.js_syntaxParsers, name="js_syntaxParsers"),
-
-	path("js_lexicalEnvironments", views.js_lexicalEnvironments, name="js_lexicalEnvironments"),
-
 	path("js_howJSWorks", views.js_howJSWorks, name="js_howJSWorks"),
-
-
-	path("js_executionContexts", views.js_executionContexts, name="js_executionContexts"),
-
-	path("js_variables", views.js_variables, name="js_variables"),
-
-	path("js_mathObject", views.js_mathObject, name="js_mathObject"),
 
 	path("js_regex", views.js_regex, name="js_regex"),
 
 	path("js_baseTypes", views.js_baseTypes, name="js_baseTypes"),
 
-	path("js_booleanOperators", views.js_booleanOperators, name="js_booleanOperators"),
-
-	path("js_conditionalControl", views.js_conditionalControl, name="js_conditionalControl"),
-
-	path("js_loops", views.js_loops, name="js_loops"),
+	path("js_controlFlow", views.js_controlFlow, name="js_controlFlow"),
 
 	path("js_arrays", views.js_arrays, name="js_arrays"),
-
-	path("js_objects", views.js_objects, name="js_objects"),
 
 	path("js_functions", views.js_functions, name="js_functions"),
 
@@ -156,7 +129,9 @@ urlpatterns = [
 
 	path("js_this", views.js_this, name="js_this"),
 
-	path("js_scope", views.js_scope, name="js_scope"),
+	path("js_jsLowerLevel", views.js_jsLowerLevel, name="js_jsLowerLevel"),
+
+	path("js_dom", views.js_dom, name="js_dom"),
 
 	path("js_angular", views.js_angular, name="js_angular"),
 
@@ -215,12 +190,15 @@ urlpatterns = [
 
 	path("lisp_onRecursion", views.lisp_onRecursion, name="lisp_onRecursion"),
 
-	#! ML paths (ml-paths)
-	path("ml_preface", views.ml_preface, name="ml_preface"),
+	#! PL paths (pl-paths)
+	path("pl_preface", views.pl_preface, name="pl_preface"),
 
 	path("pl_briefHistory", views.pl_briefHistory, name="pl_briefHistory"),
 
 	path("pl_overview", views.pl_overview, name="pl_overview"),
+
+	#! ML Paths (ml-paths)
+	path("ml_preface", views.ml_preface, name="ml_preface"),
 
 	path("ml_simpleData", views.ml_simpleData, name="ml_simpleData"),
 
@@ -295,6 +273,9 @@ urlpatterns = [
 
 	path("haskell_variables", views.haskell_variables, name="haskell_variables"),
 
+	# Ruby paths
+	path("ruby_intro", views.ruby_intro, name="ruby_intro"),
+
 	# Compilers Paths
 	path("cmp_index", views.cmp_index, name="cmp_index"),
 
@@ -315,6 +296,12 @@ urlpatterns = [
 	path("des_functions", views.des_functions, name="des_functions"),
 
 	path("des_classes", views.des_classes, name="des_classes"),
+
+	path("des_git", views.des_git, name="des_git"),
+
+	path("des_shell", views.des_shell, name="des_shell"),
+
+	path("des_regex", views.des_regex, name="des_regex"),
 
 ]
 

@@ -1,0 +1,660 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Control flow in JavaScript: Conditional statements, for loops, while loops, switch statements."
+/>
+{% endblock %} {% block title %}
+<title>Control Flow in JavaScript</title>
+{% endblock %} {% block content %}
+<h1>Control Flow</h1>
+<section id="conditional_statements">
+	<p>
+		<span class="drop">A</span>s we saw in the section on variables, the
+		initialization of variables is called an
+		<span class="italicsText">assigment statement</span>. The assignment
+		statement is just one instance of a statement. In JavaScript, there are
+		three types of statements: (1) <span class="term">simple statements</span>,
+		(2) <span class="term">compound statements</span>, and (3)
+		<span class="term">control statements</span>. The assignment statement is
+		one kind of simple statement. Sequences of statements, like those found in a
+		function or the entirety of a program, are compound statements. Control
+		statements consist of two subtypes categories: (1)
+		<span class="term">conditional statements</span> and (2)
+		<span class="term">iterative statements</span>. In this section, we focus on
+		the former.
+	</p>
+	<p>
+		Conditional statements are the backbone of simple decisions in a program. A
+		conditional statement is a statement that specifies a test. If the test is
+		satisfied, other statements are executed. Otherwise, JavaScript proceeds to
+		the next statement. In JavaScript, we have several conditional statements:
+		the if-statement, if-else-estatement, else-statement, ternary operators, and
+		switch statements. Later, we will consider iterative statements, which
+		specify repetition of statements.
+	</p>
+</section>
+
+<section id="if_statement">
+	<h2>The if-statement</h2>
+	<p>
+		The if-statement tells JavaScript to run a given block of code
+		<span class="term">if</span> a given condition is true. If the condition is
+		false, then the code block is never run. The if-statement takes the
+		following format:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>if (${c}$) {</li>
+				<ul>
+					<li>${s_0}$</li>
+					<li>${\vdots}$</li>
+					<li>${s_n}$</li>
+				</ul>
+				<li>}</li>
+			</ul>
+		</div>
+		<figcaption>
+			where ${c}$ is a Boolean expression, and ${s_0 \ldots s_n}$ are the
+			statements to execute
+		</figcaption>
+	</figure>
+	<p>For example:</p>
+	<pre class="language-javascript">
+		<code>
+			if (2 > 1) {
+				console.log("True");
+			}
+			// This code says, "If 2 is greater than 1, display in the console 'True.'"
+
+			if (1 !== 1) {
+				console.log("True");
+			}
+			// This code says, "If 1 is not equal to 1 in value or type, then display in the console 'True.'" Because the condition is false, the code block never runs.
+		</code>
+	</pre>
+	<p>
+		Another example: Check if a number is odd or even, we can use the following
+		code:
+	</p>
+	<pre class="language-javascript">
+		<code>
+			let num = 39;
+			if (num % 2 != 0) {
+				console.log("Odd number");
+			}
+			// This returns "Odd number" in the console
+		</code>
+	</pre>
+</section>
+
+<section id="else_if_statement">
+	<h2>The else-if-statement</h2>
+	<p>
+		The else-if-statement tells JavaScript: If the first condition (to the
+		if-statement) is true, run the if-statement's block of code. If the first
+		condition (to the if-statement) is false, check this second condition (to
+		the else-statement), and if it is true, run the else-statement's block of
+		code. The else-if-statement takes the following form:
+	</p>
+	<pre class="language-javascript">
+		<code>
+			if ("condition-is-true") {
+				"run-this-block-of-code";
+			}
+			else if ("this-condition-is-true") {
+				"run-this-block-of-code";
+			}
+		</code>
+	</pre>
+	<section id="limitations_else_if">
+		<p>
+			<span class="topic">Warning: Limitation of else-if-statements</span>
+			JavaScript will only look at the else-if-statement's condition if the
+			first condition, from the if-statement, is false. This means that an
+			else-if-statement must always accompany an if-statement.
+		</p>
+	</section>
+	<section id="multiple_else_ifs">
+		<p>
+			<span class="topic"> Multiple else-if-statements:</span>
+			An if-statement can be accompanied by multiple else-if-statements:
+		</p>
+		<pre class="language-javascript">
+			<code>
+				if ("condition1-is-true") {
+					"run-this-code-block";
+				}
+				// Condition 1 is false? Check condition 2.
+				else if ("condition2-is-true") {
+					"run-this-code-block";
+				}
+				// Condition 2 is false? Check condition 3.
+				else if ("condition3-is-true") {
+					"run-this-code-block";
+				}
+			</code>
+		</pre>
+	</section>
+</section>
+
+<section id="else_statement">
+	<h2>The else-statement</h2>
+	<p>
+		The else-statement acts like an "otherwise." I.e., the else-statement
+		effectively tells JavaScript that this is the code that should be run if all
+		the conditions before it fail. In a way, it sort of sets the "default"
+		instruction to a set of conditionals. The else-statement takes the following
+		form:
+	</p>
+	<pre class="language-javascript">
+		<code>
+			if ("condition1-is-true") {
+				"run-this-block-of-code";
+			}
+			else {
+				"run-this-block-of-code";
+			}
+		</code>
+	</pre>
+	<section id="limitation_of_else">
+		<p>
+			<span class="topic">Limitation of else-statements</span>
+			Because JavaScript only executes an else-statement after checking an
+			if-statement, the else-statement must always be preceded by an
+			if-statement or an else-if-statement. Thus, an else-statement can never
+			stand on its own. Furthermore, because an else-statement effectively
+			provides the default, or fallback, instruction to JavaScript in a set of
+			conditionals, there can only be
+			<span class="term">one</span> else-statement in a given block of
+			conditionals.
+		</p>
+	</section>
+</section>
+
+<section id="nesting_conditional_statements">
+	<h2>Branching: Nesting Conditional Statements</h2>
+	<p>
+		Conditional statements can be nested within conditional statements. For
+		example, below is some code that attempts to verify a password.
+	</p>
+	<pre class="language-javascript">
+		<code>
+			let password;
+			// First condition: Check if the password has at least 6 characters:
+			if (password.length >= 6) {
+			/* 
+			If it meets this condition, run this code below.
+			First condition: Check if the password contains spaces. We can do this by using indexOf. If it does not contain spaces, it will return -1. If it does contain spaces, it will return a number other than -1. 
+			*/
+				if (password.indexOf(' ') === -1) {
+					console.log("Valid password!");
+				}
+			/* 
+			If the password contains a space (i.e., the first condition is not strictly equal to 1, run this code below.)
+			*/
+				else {
+					console.log("Password cannot contain a space.")
+				}
+			}
+			/*
+			If the password is not at least 6 characters (i.e., the first condition is not satisfied), run this code.
+			*/
+			else {
+				console.log("Password must be longer.");
+			}
+		</code>
+	</pre>
+</section>
+
+<section id="inherent_boolean_values">
+	<p>
+		<span class="topic">Inherent Boolean Values</span>
+		In JavaScript, all values have an inherently true or false value. Values
+		that are inherently false:
+	</p>
+	<ul>
+		<li><span class="monoText">false</span></li>
+		<li><span class="monoText">0</span></li>
+		<li><span class="monoText">""</span> (an empty string)</li>
+		<li><span class="monoText">null</span></li>
+		<li><span class="monoText">undefined</span></li>
+		<li><span class="monoText">NaN</span></li>
+	</ul>
+	<p>Every value other than the above has an inherently true value. Example:</p>
+	<pre class="language-javascript">
+		<code>
+			let x = 3;
+			if (x) {
+				console.log("true");
+			}
+			/*
+			The console displays "true" because 3 is inherently true, the if-statement's condition is satisfied, and so JavaScript executes its code block.
+			*/
+
+			let y = NaN;
+			if (y) {
+				console.log("true");
+			}
+			else {
+				console.log("false");
+			}
+			/* The console displays "false" because NaN is inherently false---because the condition is not satisfied (the if-statement's condition is false), the else-statement's code block is run.
+			*/
+		</code>
+	</pre>
+</section>
+
+<section id="logical_operators">
+	<h2>JavaScript Logical Operators</h2>
+	<p>
+		The logical operators provide a way to arrange, or connect, conditional
+		statements. With the ability to connect and arrange conditional statements,
+		we can write programs with more complex conditional statements. This in turn
+		allows us to write more concise and efficient code.
+	</p>
+
+	<section id="and_operator">
+		<p>
+			<span class="topic">AND Operator.</span>
+			The <span class="monoText">&&</span> operator allows us to streamline
+			nested if-statements:
+		</p>
+		<pre class="language-javascript">
+			<code>
+				// Here is code that attempts to verify a password.
+				let password = "masterProgrammer";
+	
+				/*
+				First condition: Check if these two sub-expressions are true:
+	
+				(1) The password has at least 6 characters.
+	
+				(2) The password contains no spaces.
+				*/
+	
+				if( password.length >= 6 && 
+					password.indexOf(' ') === -1
+				) {
+					console.log("Valid password");
+				}
+				else {
+					console.log("Invalid password");
+				}
+			</code>
+		</pre>
+		<p>
+			<span class="monoText">&&</span> allows us to connect conditional
+			statements into a single conditional expression, called a
+			<span class="term">conditional AND expression</span>. We can connect as
+			many conditional expressions (i.e., conditions) as we want with
+			<span class="monoText">&&</span>. For the conditional AND expression to be
+			true, all of its <span class="term">sub-expressions</span> (the connected
+			conditions) must all be true. Thus, if a single sub-expression is false,
+			the entire conditional AND expression is false. Example:
+		</p>
+		<pre class="language-javascript">
+			<code>
+				/*
+				Condition 1: Check if these two sub-expressions are true:
+					(1) Is 1 <= 4?
+					(2) Is 'a' strictly equal to 'a'?
+				*/
+				if (1 <= 4 && 'a' === 'a') {
+					console.log("true");
+				}
+				/*
+				Default code: If Condition 1 is false, run this code block.
+				*/
+				else {
+					console.log("false");
+				}
+				/*
+				Running this code, the console returns true. Why is that? Because 1 <= 4 is true, and 'a' is strictly equal to 'a'.
+				*/
+			</code>
+		</pre>
+		<section id="limitation_of_and">
+			<p>
+				<span class="topic">Limitation of Conditional AND-Expressions</span>
+				Remember, if just <span class="underlineText">one</span> of the
+				sub-expressions is false, then the entire conditional AND statement is
+				false. Example:
+			</p>
+			<pre class="language-javascript">
+				<code>
+					/*
+					Condition 1: Check if these two sub-expressions are true:
+						(1) Is 9 <= 10?
+						(2) Is 'a' strictly equal to 'a'?
+					*/
+					if (9 > 10 && 'a' === 'a') {
+						console.log("true");
+					}
+					/*
+					If Condition 1 is false, run this code block.
+					*/
+					else {
+						console.log("false");
+					}
+					/*
+					Here, the console returns "false". Why? Because even though sub-expression (2) is true, sub-expression (1) is false, so the entire condition (1), a conditional AND statement, is false. Because condition (1) is false, the else-statement's code block is run.
+					*/
+				</code>
+			</pre>
+		</section>
+	</section>
+
+	<section id="or_operator">
+		<p>
+			<span class="topic">OR Operator.</span>
+			The <span class="monoText">||</span> operator allows us to connect
+			sub-expressions into a single conditional expression, called a
+			<span class="term">conditional OR expression</span>. If just
+			<span class="underlineText">one</span> of the sub-expressions is true,
+			then the entire OR expression is true. Example:
+		</p>
+		<pre class="language-javascript">
+			<code>
+				1 !== 1 || 10 === 10;
+				// Returns true, since one of the sub-expressions, 10 === 10, is true.
+				10 / 2 === 5 || null;
+				// Returns true, because one of the sub-expressions, 10 /2 === 5, is true.
+				0 || undefined;
+				// Returns false, because both 0 and undefined are inherently false (i.e., none of the sub-expressions are true.)
+			</code>
+		</pre>
+		<p>
+			Below is a code example using the
+			<span class="monoText">||</span> operator.
+		</p>
+		<pre class="language-javascript">
+			<code>
+				/*
+				Suppose we provide a service that gives users under 6 or over 60 a discount. We want to let the user know, after inputting their age, that they get a discount.
+				*/
+				let age = 64;
+				/*
+				First condition: Check if <span class="underlineText">at least one</span> of these sub-expressions is true:
+					(1) The person's age is less than or equal to 6. 
+					(2) The person's age is greater than or equal to 60.
+				*/
+				if (
+					age <= 6 ||
+					age >= 60
+				) {
+					console.log("You get a discount!");
+				}
+				// If none of the above sub-expressions is true, run this code block.
+				else {
+					console.log("Proceeding to checkout")
+				}
+			</code>
+		</pre>
+	</section>
+
+	<p>
+		As an aside, note that JavaScript evaluates the
+		<span class="monoText">&&</span> and
+		<span class="monoText">||</span> operators using an evaluation model called
+		<span class="term">short-circuit mode</span>. Under this evaluation model,
+		JavaScript evaluates the right operand only if it needs to. For example,
+		given the expression <span class="monoText">a && b</span>, if JavaScript
+		evaluates <span class="monoText">a</span> to be
+		<span class="monoText">false</span>, it will immediately return
+		<span class="monoText">false</span> for the entire expression; it will not
+		evaluate <span class="monoText">b</span>. It will, however, evaluate
+		<span class="monoText">b</span> if <span class="monoText">a</span> evaluates
+		to <span class="monoText">true</span>. Similarly, given the expression
+		<span class="monoText">x || y</span>, if
+		<span class="monoText">x</span> evaluates to
+		<span class="monoText">true</span>, JavaScript will immediately evaluate the
+		entire expression as <span class="monoText">true</span>. It will not
+		evaluate <span class="monoText">y</span>. But again, if
+		<span class="monoText">x</span> evaluates to
+		<span class="monoText">false</span>, JavaScript will evaluate
+		<span class="monoText">y</span>.
+	</p>
+
+	<section id="not_operator">
+		<p>
+			<span class="topic">NOT Operator.</span>
+			The NOT operator reverses the values for a conditional expression. Thus,
+			if a conditional expression is true, if the NOT operator
+			<span class="monoText">!</span> is attached to the expression, then the
+			conditional expression returns the opposite—<span class="redText"
+				>false</span
+			>. Illustration:
+		</p>
+		<pre class="language-javascript">
+			<code>
+				!null; // Returns true; null is an inherently false value, and so its opposite is true.
+				!0; // Returns true
+				!'' // Returns true
+				!45 // Returns false
+			</code>
+		</pre>
+		<p>
+			We can attach the NOT operator to AND conditionals or OR conditionals :
+		</p>
+		<pre class="language-javascript">
+			<code>
+				/*
+				Suppose we are running a bubble tea stand. We only have two flavors: taro or tea.
+				*/
+				let flavor = "blueberry";
+				// Condition 1: If the flavor inputted by the user is NOT "taro" or "tea", then run this code block.
+				if (
+					!(flavor === "taro" || flavor === "tea")
+				) {
+					console.log("Sorry, we only have taro and tea at the moment.");
+				}
+				// Default: Otherwise, run this code block.
+				else {
+					console.log(`One ${flavor} bubble tea, coming right up!`);
+				}
+			</code>
+		</pre>
+	</section>
+
+	<section id="operator_precedence">
+		<p>
+			<span class="topic">Logical Operator Precedence</span>
+			JavaScript follows a strict rule, called
+			<span class="term">operator precedence</span>, when evaluating complex
+			conditional statements. For example, what does JavaScript return for the
+			following:
+		</p>
+		<pre class="language-javascript">
+			<code>
+				let x = 7;
+				x == 7 || x === 3 && x > 10;
+			</code>
+		</pre>
+		<p>Operator precedence applies:</p>
+		<ul>
+			<li>
+				Conditional expressions contained inside parantheses are always
+				evaluated first.
+			</li>
+			<li>The NOT operator is evaluated before the AND operator.</li>
+			<li>The AND operator is evaluated before the OR operator.</li>
+		</ul>
+		<p>Thus, in the above code, JavaScript evaluates the above code as:</p>
+		<pre class="language-javascript">
+			<code>
+				let x = 7;
+				(x == 7 || x === 3) && (x > 10);
+			</code>
+		</pre>
+		<p>If we want to change this behavior, we need to use parentheses:</p>
+		<pre class="language-javascript">
+			<code>
+				let x = 7;
+				(x == 7) || (x === 3 && x > 10);
+			</code>
+		</pre>
+	</section>
+</section>
+
+<section id="switch_statement">
+	<h2>Switch Statements</h2>
+	<p>
+		The switch statement allows us to perform different actions based on
+		different conditions. The switch statement takes the following form:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>switch (${v}$) {</li>
+				<ul>
+					<li>case ${exv_0}$:</li>
+					<ul>
+						<li>${s_0}$</li>
+					</ul>
+				</ul>
+				<ul>
+					<li>case ${exv_1}$:</li>
+					<ul>
+						<li>${s_1}$</li>
+					</ul>
+					<li>${\vdots}$</li>
+				</ul>
+				<ul>
+					<li>case ${exv_n}$:</li>
+					<ul>
+						<li>${s_n}$</li>
+					</ul>
+				</ul>
+				<li>}</li>
+			</ul>
+		</div>
+		<figcaption>
+			where ${v}$ is the variable to switch on; ${exv}$ is an expression or
+			value to match, and ${s}$ is a statement or block of statements to
+			execute.
+		</figcaption>
+	</figure>
+	<p>
+		Note that if a single case value matches the variable, JavaScript will
+		execute all of the statements thereafter except the statements in the first
+		match. To ensure JavaScript stops at the first match, each case must include
+		a
+		<span class="monoText">break</span> statement. This essentially tells
+		JavaScript to stop and return the first match the moment it's encountered.
+	</p>
+	<p>For example, consider the following code:</p>
+	<pre class="language-javascript">
+		<code>
+			/*
+			Suppose we have a program where the user enters a number from 1 to 7, and gets back out a day of the wee. We could do the following:
+			*/
+
+			let day = 8;
+			if (day === 1) {
+				console.log("Monday");
+			}
+			else if (day === 2) {
+				console.log("Tuesday");
+			}
+			else if (day === 3) {
+				console.log("Wednesday");
+			}
+			else if (day === 4) {
+				console.log("Thursday");
+			}
+			else if (day === 5) {
+				console.log("Friday");
+			}
+			else if (day === 6) {
+				console.log("Saturday");
+			}
+			else if (day === 7) {
+				console.log("Sunday");
+			}
+			else {
+				console.log("Invalid---enter a number from 1 to 7.");
+			}
+		</code>
+	</pre>
+	<p>
+		The above code accomplishes the task, but it can be written much more
+		compactly with a switch statement:
+	</p>
+	<pre class="language-javascript">
+		<code>
+			let day = 1;
+			switch (day) {
+				case 1:
+					console.log("Monday");
+					break;
+				case 2:
+					console.log("Tuesday");
+					break; 
+				case 3:
+					console.log("Wednesday");
+					break; 
+				case 4:
+					console.log("Thursday");
+					break; 
+				case 5:
+					console.log("Friday");
+					break;
+				case 6:
+					console.log("Saturday");
+					break; 
+				case 7:
+					console.log("Sunday");
+					break;
+				default:
+					console.log("Please enter a number from 1 to 7.")
+			}
+
+			/* 
+			Note how each of the cases contains a "break" statement. This is because without the break statement, the moment JavaScript arrives at a matching case, it will run the code block for everything thereafter. This default behavior is prevented by using the break statement.
+			*/
+		</code>
+	</pre>
+</section>
+
+<section id="ternary_operator">
+	<h2>The Ternary Operator</h2>
+	<p>
+		If we have a single if-statement accompanied with an else-statement, we can
+		write the statements as a single line of code with the
+		<span class="term">ternary operator</span>. The template for the ternary
+		operator:
+	</p>
+	<figure class="math-display">
+		<div>
+			<ul class="syntax">
+				<li>${c}$ ? ${v}$ : ${w}$</li>
+			</ul>
+		</div>
+		<figcaption>
+			where ${c}$ is a Boolean expression, ${v}$ is some expression, and ${w}$
+			is some expression
+		</figcaption>
+	</figure>
+	<p>For example:</p>
+	<pre class="language-javascript">
+		<code>
+			/*
+			Here is a program that displays in the console "Lucky Number 7" if the user picks 7. 
+			*/
+			let num = 7;
+			if (num === 7) {
+				console.log("Lucky Number 7!");
+			}
+			else {
+				console.log("Sorry, no lucky number.");
+			}
+
+			// We can write the above with a switch statement:
+			let num = 7;
+			num === 7 ? console.log("Lucky Number 7!") : console.log("Sorry, no lucky number.");
+		</code>
+	</pre>
+</section>
+
+{% endblock %}

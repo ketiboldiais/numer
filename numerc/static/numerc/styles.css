@@ -35,35 +35,38 @@
 		src: url("./numerc_fonts/cmu_serif/linux-biolinum.regular.ttf");
 		font-weight: normal;
 		font-style: normal;
-		-webkit-font-smoothing: antialiased;
 	}
 	@font-face {
 		font-family: "Linux Biolinum";
 		src: url("./numerc_fonts/cmu_serif/linux-biolinum.bold.ttf");
 		font-weight: bold;
 		font-style: normal;
-		-webkit-font-smoothing: antialiased;
 	}
 	@font-face {
 		font-family: "Fira";
-		src: url("./numerc_fonts/inconsolata/FiraCode-Regular.woff");
+		src: url("./numerc_fonts/inconsolata/FiraCode-VariableFont_wght.ttf");
+		font-weight: bold;
+		font-style: normal;
 	}
-	/* @supports (font-size-adjust: 1) {
-    article {
-        font-size-adjust: 0.5;
-    }
-	} */
+	@font-face {
+		font-family: "Fira";
+		src: url("./numerc_fonts/inconsolata/FiraCode-VariableFont_wght.ttf");
+		font-weight: normal;
+		font-style: normal;
+	}
 /* Colors & Fonts */
 	:root {
 	--page: #ffffff;
 	--darkRed: #ea3c4dbc; 
 	--scarlet: #a00000; 
 	--lightRed: #ff949f; 
-	--darkGreen: #679436;
+	--orange: rgb(168, 99, 2);
+	--darkGreen: #447d08;
 	--darkBlue: #0077B6;
+	--linkBlue: #024c9f;
 	--lightBlue: #ffffff;
 	--mediumBlue: #9eddf4;
-	--indigo: #7d60c8ed;
+	--indigo: #551686ed;
 	--lightGrey: rgb(190, 190, 190);
 	--textColor: rgb(42, 42, 42);
 	--blackBG: #EFF2EF;
@@ -72,7 +75,10 @@
 	--wheat: #fffcf1;
 	/* "CMU",  */
 
-	--serif: "Baskerville", "Iowan Old Style", "Apple Garamond", "Hoefler Text", "Palatino", "New York", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
+	--serif: "CMU", "Garamond", "Apple Garamond", "Athelas", "Iowan Old Style", "Hoefler Text", "Palatino", "New York", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
+
+	--serifTitle: "Athelas", "Georgia", serif;
+	--sansSerifTitle: "Avenir", sans-serif;
 
 	--mono: "Inconsolata", "Menlo", "Monaco", "Consolas", "monospace",  "Liberation Mono", "Lucida Console"; 
 
@@ -142,11 +148,11 @@
 	ul.toc {
 		list-style: none;
 		counter-reset: volume-number;
-		font-family: "Linux Biolinum";
 		padding: 2em;
-		margin: 0 1.5em;
+		margin: 0 0.2em;
 	}
 	ul.toc li {
+		margin: 0 1.5em;
 		counter-increment: volume-number; 
 	}
 	ul.toc li::marker {
@@ -154,16 +160,27 @@
 	}
 	ul.toc ul {
 		list-style-type: none;
-		counter-reset: section-number;
 		margin: 0;
 		padding: 0;
+	}
+	ul.toc>ul {
+		counter-reset: section-number;
+	}
+	ul.toc>ul>li>ul {
+		counter-reset: chapter-number;
 	}
 	ul.toc ul li {
 		font-size: 0.85rem;
 		counter-increment: section-number;
 	}
+	ul.toc ul li ul li {
+		counter-increment: chapter-number;
+	}
 	ul.toc ul li::marker {
-		content: "§" counter(volume-number) "." counter(section-number);
+		content: counter(volume-number) "." counter(section-number);
+	}
+	ul.toc ul li ul li::marker {
+		content: counter(volume-number) "." counter(section-number) "." counter(chapter-number);
 	}
 /* Nav Bar */
 	html {
@@ -208,7 +225,7 @@
 	}
 	.section-nav a {
 		text-decoration: none;
-		padding: 0.2em 0.5em;
+		padding: 0.1em;
 		display: block;
 		color: rgb(56, 56, 56);
 	}
@@ -292,11 +309,11 @@
     width: 80%;
     margin-top: 0.3rem;
     margin-bottom: 0;
-		font-size: 0.85rem;
+		font-size: 0.88rem;
 		line-height: 1.2;
 		vertical-align: baseline;
 		position: relative;
-		color: rgb(45, 146, 185);
+		color: rgb(33, 119, 153);
 	}
 	.sidenote-number {
 		counter-increment: sidenote-counter;
@@ -349,7 +366,7 @@
 	}
 	div.compare figure {display: block;}
 	figcaption {
-		font-size: 0.8rem;
+		font-size: 0.75rem;
 		width: 50%;
 		margin-top: 2%;
 		font-family: var(--serif);
@@ -402,7 +419,7 @@
 		}
 /* Heading styles */
 	h1,h2,h3,h4,h5,h6,p.h7,p.h8,p.h9,p.h10,p.subheading,p.warning-heading {
-		font-family: "Linux Biolinum";
+		font-family: var(--serifTitle);
 		display: block;
 		padding-bottom: 0.2em;
 	}
@@ -419,14 +436,13 @@
 		margin: calc(1ex / 0.42) 0;
 		margin-bottom: -0.4em;
 		text-align: left;
-		border-bottom: thin solid var(--darkBlue);
-		color: var(--darkBlue);
+		border-bottom: thin solid;
 	}
 	h3 {
 		font-size: 1.4em;
 		line-height: calc(1ex / 0.38);
 		margin: calc(1ex / 0.38) 0;
-		margin-bottom: -0.4em;
+		margin-bottom: -0.8em;
 	}
 	h4 {
 		font-size: 1.2em;
@@ -462,7 +478,7 @@
 		display: inline-block;
 		margin-top: 1em;
 		margin-right: 0.7em;
-		font-family: "Linux Biolinum";
+		font-family: var(--serifTitle);
 		font-weight: bold;
 		font-size: 1rem;
 	}
@@ -477,9 +493,21 @@
 	span.title {
 		font-variant: small-caps;
 	}
+	span.header {
+		display: block;
+		font-family: var(--serifTitle);
+		padding: 0.3em;
+		text-align: center;
+		font-weight: bold;
+	}
 /* Links */
 	section a {
 		padding:0;
+		text-decoration: none;
+		color: var(--linkBlue);
+	}
+	section a:visited {
+		color: var(--indigo);
 	}
 	section a:hover {
 		color: rgb(0, 122, 0);
@@ -614,6 +642,13 @@
 		content: "where  "; 
 		font-size: 1em;
 	}
+	ul.smallBullets li {
+		margin: 0;
+		padding: 0;
+	}
+	ul.smallBullets li::marker {
+		font-size: 0.8em;
+	}
 	
 	/* Special list for code general syntax */
 		ul.syntax {
@@ -672,9 +707,10 @@
 		font-style: normal;
 		font-variant: small-caps;
 	}
-	.redText {color: var(--darkRed);}
+	.redText {color: var(--scarlet);}
 	.greenText {color: var(--darkGreen);}
 	.blueText {color: var(--darkBlue);}
+	.orangeText {color: var(--orange);}
 	.purpleText {color: var(--indigo);}
 	.greyText {color: var(--lightGrey);}
 	.underlineText {text-decoration: underline;}
@@ -722,6 +758,10 @@
 		border: solid thin rgb(175, 175, 175);
 		border-collapse: collapse;
 		width: fit-content;		
+	}
+	th {
+		font-family: var(--sansSerifTitle);
+		font-size: 0.7rem;
 	}
 	table.computation {border: none;}
 	table.computation * {font-size: 0.98em;}
@@ -892,7 +932,7 @@
 	div.summary ul {
 		padding: 0 0.8em;
 	}
-/* Exercise Counter */
+/* Split Column Layout */
 	div.compare {
 		counter-reset: exnum;
 	}
@@ -900,35 +940,13 @@
 		counter-increment: exnum;
 		content: counter(exnum);
 	}
-/* Details Styles */
-	details {padding: 0; margin: 1%;}
-	details > p {padding: 0 0 1% 0;}
-	details>summary {
-		list-style: none; 
-		padding: 2% 0; 
-		padding-bottom: 0;
-		font-size: 0.8rem;
-		font-style: italic;
-		color: rgb(159, 159, 159);
-	}
-	details>ol {margin: 0 0 0 0.9em;}
-	details>ol>ol{margin: 0 0 0 0.9em;}
-	details.answer {margin: 0; margin-top: -1%;}
-	details p {font-size: 0.95rem;}
-	details:hover {cursor: pointer;}
-	details.answer p {padding: 0; margin: 0 0 0.4em 0}
-	details pre, details pre * {
-		font-size: 0.7rem !important;
-		width: 100%;
-		margin: 0;
-	}
-/* Global Code Styles */
+/*? Global Code Styles */
 	code, pre {
 		width: auto;
 		height: auto;
 		font-family: var(--mono);
 		text-align: left;
-		font-size: 0.8rem;
+		font-size: 0.75rem;
 		white-space: pre-wrap;
 		font-weight: normal;
 		word-spacing: normal;
@@ -944,8 +962,8 @@
 		hyphens: none;
 	}
 	pre {
-		margin: 1px 0;
-		padding: 0.5rem 0.5rem;
+		margin: 1px;
+		padding: 0.5rem 0.6rem;
 		overflow: auto;
 		border-radius: 0.2em;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -953,22 +971,20 @@
 	}
 	pre:hover {
 		box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-		/* cursor: pointer; */
 	}
 	div.compare > div > pre.language-pseudo {width: fit-content; border: none;}
 	code[class*="language-"]>.token.comment {
 		font-family: "Fira";
 		font-size: 0.7rem;
 	}
-/* Language - Pseudo */
+/*? Language - Pseudo */
 	pre[class*="language-pseudo"] {
-		padding: 0.2em 0.4em;
+		padding: 0.5em;
+		border: solid thin var(--lightGrey);
 		width: fit-content;
-		border: none;
 		margin: 1% 0;
 		text-align: left;
 		height: fit-content;
-		box-shadow: none;
 		white-space: pre-wrap;
 		word-spacing: normal;
 		word-break: normal;
@@ -985,13 +1001,14 @@
 		hyphens: none;
 	}
 	code[class*="language-pseudo"] {
-		font-size: 0.82rem;
+		font-size: 0.65rem;
+		font-family: 'Fira';
 		color: #424242; /* base00 */
 	}
 	div.compare pre.language-pseudo {
 		width: 100%;
 	}
-/* Language - Java */
+/*? Language - Java */
 	code[class*="language-java"], 
 	pre[class*="language-java"] {
 		color: rgb(255, 247, 228); /* base00 */
@@ -1081,7 +1098,7 @@
 		height: 120%;
 		width: 120%;
 	}
-/* Language - Bash */
+/*? Language - Bash */
 	code[class*="language-bash"],
 	pre[class*="language-bash"] {
 		color: white;
@@ -1127,7 +1144,7 @@
   }
 
 
-/* Language - Lisp */
+/*? Language - Lisp */
 	code[class*="language-scheme"],
 	pre[class*="language-scheme"] {
 		color: rgb(216, 255, 255); /* base00 */
@@ -1231,7 +1248,7 @@
 		box-shadow: none;
 	}
 
-/* Language - JavaScript */
+/*? Language - JavaScript */
 	code[class*="language-javascript"],
 	pre[class*="language-javascript"] {
 		color: rgb(221, 221, 221);
@@ -1332,14 +1349,14 @@
 
 
 
-/* Language - C */
+/*? Language - C */
 	code[class*="language-c"],
 	pre[class*="language-c"] {
 		color: #b6d0d9; /* base00 */
 	}
 	:not(pre) > code[class*="language-c"],
 	pre[class*="language-c"] {
-		background-color: rgb(39, 57, 65); /* base3 */
+		background-color: rgb(47, 57, 61); /* base3 */
 	}
 	code[class*="language-c"]>.token.comment { color: rgb(166, 166, 166); }
 	code[class*="language-c"]>.token.prolog,
@@ -1347,15 +1364,15 @@
 	code[class*="language-c"]>.token.cdata {
 		color: #aad9d9; /* base1 */
 	}
-	code[class*="language-c"]>.token.punctuation { color: #ffffff; }
-	code[class*="language-c"]>.token.operator { color: rgb(255, 255, 255); }
+	code[class*="language-c"]>.token.punctuation { color: #d9d9d9; }
+	code[class*="language-c"]>.token.operator { color: rgb(123, 248, 255); }
 	code[class*="language-c"]>.token.property,
 	code[class*="language-c"]>.token.tag,
 	code[class*="language-c"]>.token.boolean,
 	code[class*="language-c"]>.token.number,
 	code[class*="language-c"]>.token.constant,
 	code[class*="language-c"]>.token.symbol {
-		color: #74b5ff; /* blue */
+		color: #91b5de; /* blue */
 	}
 	code[class*="language-c"] .token.selector,
 	code[class*="language-c"] .token.attr-name,
@@ -1363,10 +1380,10 @@
 	code[class*="language-c"] .token.builtin,
 	code[class*="language-c"] .token.url,
 	code[class*="language-c"] .token.inserted {
-		color: #ffffff; /* cyan */
+		color: #f3f3f3; /* cyan */
 	}
 	code[class*="language-c"] .token.string {
-		color: rgb(253, 206, 97);
+		color: rgb(255, 255, 255);
 	}
 	code[class*="language-c"] .token.entity {
 		color: #657b83; /* base00 */
@@ -1376,10 +1393,10 @@
 	code[class*="language-c"] .token.attr-value {
 		color: #8fe787; /* green */
 	}
-	code[class*="language-c"] .token.keyword {color: rgb(255, 124, 124);}
+	code[class*="language-c"] .token.keyword {color: rgb(255, 161, 246);}
 	code[class*="language-c"] .token.function,
 	code[class*="language-c"] .token.class-name {
-		color: rgb(129, 211, 231); /* yellow */
+		color: rgb(168, 207, 217); /* yellow */
 	}
 	code[class*="language-c"] .token.regex,
 	code[class*="language-c"] .token.important,
@@ -1413,14 +1430,14 @@
 		height: 120%;
 		width: 120%;
 	}
-/* Language - C++ */
+/*? Language - C++ */
 	code[class*="language-cpp"],
 	pre[class*="language-cpp"] {
-		color: rgb(245, 207, 178);
+		color: white;
 	}
 	:not(pre) > code[class*="language-cpp"],
 	pre[class*="language-cpp"] {
-		background-color: rgb(57, 56, 55);
+		background-color: rgb(0, 7, 37);
 	}
 	code[class*="language-cpp"] >.token.comment,
 	code[class*="language-cpp"] >.token.prolog,
@@ -1429,24 +1446,24 @@
 		color: hsl(0, 0%, 47%); /* #777777 */
 	}
 	code[class*="language-cpp"] >.token.punctuation {
-		color: rgb(185, 143, 150);
+		color: rgb(255, 255, 255);
 	}
 	code[class*="language-cpp"] >.token.namespace {
 		opacity: .7;
 	}
 	code[class*="language-cpp"] >.token.function {
-		color: rgb(255, 95, 95);
+		color: rgb(99, 225, 230);
 	}
 	code[class*="language-c"]>.token.class-name {
 		color: rgb(255, 127, 67);
 	}
-	code[class*="language-cpp"] >.token.string {color: rgb(252, 143, 41)}
+	code[class*="language-cpp"] >.token.string {color: rgb(238, 240, 68);}
 	code[class*="language-cpp"] >.token.tag,
 	code[class*="language-cpp"] >.token.boolean,
 	code[class*="language-cpp"] >.token.char,
 	code[class*="language-cpp"] >.token.number,
 	code[class*="language-cpp"] >.token.deleted {
-		color: hsl(313, 100%, 74%); /* #CF6A4C */
+		color: rgb(252, 143, 41)
 	}
 	code[class*="language-cpp"] >.token.keyword,
 	code[class*="language-cpp"] >.token.property,
@@ -1454,7 +1471,7 @@
 	code[class*="language-cpp"] >.token.constant,
 	code[class*="language-cpp"] >.token.symbol,
 	code[class*="language-cpp"] >.token.builtin {
-		color: hsl(44, 100%, 63%); /* #F9EE98 */
+		color: rgb(228, 61, 98);
 	}
 	code[class*="language-cpp"] >.token.attr-name,
 	code[class*="language-cpp"] >.token.attr-value,
@@ -1466,7 +1483,7 @@
 	code[class*="language-cpp"] >.token.inserted {
 		color: hsl(103, 100%, 72%); /* #8F9D6A */
 	}
-	code[class*="language-cpp"] >.token.operator {color: rgb(207, 134, 129)}
+	code[class*="language-cpp"] >.token.operator {color: rgb(228, 61, 98);}
 	code[class*="language-cpp"] >.token.atrule {
 		color: hsl(218, 22%, 55%); /* #7587A6 */
 	}
@@ -1494,7 +1511,7 @@
 	code[class*="language-cpp"] >.language-markup .token.punctuation {
 		color: hsl(33, 33%, 52%); /* #AC885B */
 	}
-/* Language Prolog */
+/*? Language Prolog */
 	code[class*="language-prolog"]>.token.comment,
 	code[class*="language-prolog"]>.token.prolog,
 	code[class*="language-prolog"]>.token.doctype,
@@ -1572,7 +1589,7 @@
 	code[class*="language-prolog"]>.language-markup .token.punctuation {
 		color: hsl(33, 33%, 52%); /* #AC885B */
 	}
-/* Language - Swift */
+/*? Language - Swift */
 	code[class*="language-swift"],
 	pre[class*="language-swift"] {
 		color: rgb(39, 39, 39); /* base00 */
@@ -1665,7 +1682,7 @@
 	code[class*="language-swift"] > .token.namespace {
 		opacity: .7;
 	}
-/* Language - Python */
+/*? Language - Python */
 	code[class*="language-python"],
 	pre[class*="language-python"] {
 		color: rgb(255, 255, 255);
@@ -1753,7 +1770,7 @@
 	code[class*="language-python"] > .token.inserted {
 		color: green;
 	}
-/* Language - SML */
+/*? Language - SML */
 	code[class*="language-sml"],
 	pre[class*="language-sml"] {
 		color: rgb(247, 247, 247);
@@ -1845,7 +1862,7 @@
 	code[class*="language-sml"] > .token.inserted {
 		color: green;
 	}
-/* Language - Haskell */
+/*? Language - Haskell */
 	code[class*="language-haskell"],
 	pre[class*="language-haskell"] {
 		color: rgb(220,238,255);
@@ -1932,15 +1949,15 @@
 	code[class*="language-haskell"] > .token.inserted {
 		color: green;
 	}
-/* HTML */
+/*? HTML */
 	code[class*="language-html"],
 	pre[class*="language-html"] {
-		color: rgb(220,238,255);
+		color: rgb(1, 130, 134);
 	}
 
 	:not(pre) > code[class*="language-html"],
 	pre[class*="language-html"] {
-		background: rgb(47, 49, 50);
+		background: rgb(245, 245, 245);
 	}
 	code[class*="language-html"]>.token.comment,
 	code[class*="language-html"]>.token.prolog,
@@ -1961,7 +1978,7 @@
 	code[class*="language-html"]>.token.boolean,
 	code[class*="language-html"]>.token.number,
 	code[class*="language-html"]>.token.deleted {
-		color: hsl(0, 0%, 96%); /* #CF6A4C */
+		color: hsl(0, 0%, 29%); /* #CF6A4C */
 	}
 
 	code[class*="language-html"]>.token.keyword,
@@ -2021,7 +2038,7 @@
 	}
 
 
-/* Code annotation styling */
+/*? Code annotation styling */
 	span.code-annotation {
 		font-size: 0.8rem;
 		padding: 0;
@@ -2034,28 +2051,43 @@
 		content: "\3009"
 	}
 
-/* Katex Styles */
+/*? Katex Styles */
 	.katex {font-size: 1em !important;}
 	.mord.texttt {font-family: var(--mono) !important;}	
 	.katex-display {
 		margin: 0 !important;
 		font-size: 0.9em !important;
 	}
-/* ! Question Sets Styling */
+/** Question Sets / <details> Styling */
 	/* Question sets are styled with masonry */
-	/* with flexbox */
-	ol.ex * {
-		font-size: 0.85rem;
+	details {padding: 0; margin: 1%;}
+	details > p {padding: 0 0 1% 0;}
+	details>summary {
+		list-style: none; 
+		padding: 2% 0; 
+		padding-bottom: 0;
+		font-size: 0.75rem;
+		font-family: var(--sansSerif);
+		color: rgb(159, 159, 159);
 	}
+	details>ol {margin: 0 0 0 0.9em;}
+	details>ol>ol{margin: 0 0 0 0.9em;}
+	details.answer {margin: 0; margin-top: -1%;}
+	details p {font-size: 0.85rem;}
+	details:hover {cursor: pointer;}
+	details.answer p {padding: 0; margin: 0 0 0.4em 0}
+	details pre, details pre * {
+		font-size: 0.7rem !important;
+		width: 100%;
+		margin: 0;
+	}
+	ol.ex li { font-size: 0.85rem; }
 	ol.ex span.monoText {font-size: 0.83em;}
 	ol.ex {
 		margin: 0.5em 0;
 		padding: 0;
 	}
-	ol.ex ol {
-		padding: 0 0.9em;
-	}
-	
+	ol.ex ol { padding: 0 0.9em; }
 	ol.ex li {
 		padding: 0.2em 0;
 		padding-left: 0.1em;
@@ -2066,9 +2098,7 @@
 		padding: 0;
 		color: rgb(0, 161, 161);
 	}
-	ol.ex li.grid-item {
-		margin: 0 0.8em;
-	}
+	ol.ex li.grid-item { margin: 0 0.8em; }
 	.grid {
 		display: -webkit-box;
 		display: -webkit-flex;
@@ -2082,19 +2112,15 @@
 		-ms-flex-positive: 1;
 		flex-grow: 1;
 	}
-
 	/* 1 columns by default, hide columns 2 & 3 */
 	.grid-col--2, .grid-col--3, .grid-col--4 { display: none }
-
 	@media (min-width: 500px) {
 		.grid-col--2 { display: block; }
 	}
-
 	/* 3 columns at medium size */
 	@media ( min-width: 768px ) {
 		.grid-col--3 { display: block; } /* show column 2 */
 	}
-
 /* ! Media Queries */
 
 	@media (max-width: 600px) { html {font-size: 10px;} }
@@ -2156,7 +2182,8 @@
 	@media (max-width: 600px) {
 		div.compare {display: block;}
 		div.content {padding: 0;}
+		section {padding: 1vw 3vw;}
 	}
 	@media (max-width: 500px) {
-		section {padding: 1em 5vw}
+		section {padding: 1em 2vw}
 	}

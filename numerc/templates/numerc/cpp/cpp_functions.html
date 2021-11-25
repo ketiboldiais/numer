@@ -1316,4 +1316,1066 @@
 	</p>
 </section>
 
+<section id="cpp_recursion">
+	<h2>Recursion</h2>
+	<p>Many problems can be solved with repetition by self-reference:</p>
+	<div class="rule">
+		<span class="header">Baize</span>
+		<p>
+			In the Republic of Palau, there's a semi-government agency called PPUC
+			(Palau Public Utilities Corporation). This monolithic entity is the single
+			electricity, water, and sewage provider for the entire nation. Our friend
+			Brak recently bought a house and wants to open a utilities account. He
+			fills the application and submits it to a representative.
+		</p>
+		<p>
+			The representative says, &#8220;Oh, this is a new account. I can't sign
+			off on it unless the clerk signs it.&#8221; The representative hands it to
+			the clerk.
+		</p>
+		<p>
+			The clerk says &#8220;Oh, this is a new account. I can't sight off on it
+			unless the manager signs it.&#8221; The clerk hands it to the manager.
+		</p>
+		<p>
+			The manager says, &#8220;Oh, this is a new account. I can't sign off on it
+			unless the director signs it.&#8221; The manager hands it to the director.
+		</p>
+		<p>
+			The director says, &#8220;Oh, a new account. Looks good. Signed.&#8221;
+		</p>
+		<p>
+			The signed form goes back to the manager. &#8220;Director signed off.
+			Sign.&#8221;
+		</p>
+		<p>
+			The signed form goes back to the clerk. &#8220;Manager signed off.
+			Signed.&#8221;
+		</p>
+		<p>
+			The signed form goes back to the representative. &#8220;Clerk signed off.
+			Signed. You'll have utilities by end of day.&#8221;
+		</p>
+	</div>
+	<div class="rule">
+		<span class="header">Cleaver</span>
+		<p>
+			Our friend Brak has a daughter, Kukau. After finishing her homework, Kukau
+			wants to know if all her answers are correct before she submits her
+			assignment.
+		</p>
+		<p>
+			She goes to her teacher, Dort, and asks her, &#8220;Sensei, I want to know
+			if all my answers on this list are correct. The list is ${[1, 4, 9,
+			3].}$&#8221;
+		</p>
+		<p>
+			Dort replies, &#8220;I can only check if the first answer in the list is
+			incorrect.&#8221;
+		</p>
+		<p>
+			Kukau thinks for a moment, then asks, &#8220;Ok. How about this list ${[1,
+			4, 9, 3]?}$&#8221;
+		</p>
+		<p>
+			Dort replies, &#8220;The first answer in that list is not
+			incorrect.&#8221;
+		</p>
+		<p>Kukau then asks, &#8220;Now how about this list ${[4, 9, 3]?}$&#8221;</p>
+		<p>
+			Dort again replies, &#8220;The first answer in that list is not
+			incorrect.&#8221;
+		</p>
+		<p>Now excited, &#8220;And how about this one ${[9, 3]?}$&#8221;</p>
+		<p>
+			Once more, &#8220;The first answer in that list is not incorrect.&#8221;
+		</p>
+		<p>Smirking, &#8220;And this one ${[3]?}$&#8221;</p>
+		<p>&#8220;The first answer in that list is not incorrect.&#8221;</p>
+		<p>Amused, Kukau asks, &#8220;[]?&#8221;</p>
+		<p>
+			&#8220;That is the empty list. There can be no incorrect answer because
+			there's nothing there.&#8221;
+		</p>
+		<p>
+			Gleefully, Kukau exlaims, &#8220;Aha, so my answers are all
+			correct!&#8221;
+		</p>
+	</div>
+	<p>
+		<span class="term">Recursion</span> is the programming technique of solving
+		a problem whose solution depends on solutions to smaller instances of the
+		same problem. This is done by calling a function that calls itself from
+		within itself. To understand how this works, it's worth recalling the
+		control flow with function calls. Say we executed this code:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		void func(int n) {
+			int x = n * n;
+			std::cout << x << std::endl;
+		}
+		
+		int main() {
+			int a = 2;
+			int b = 3;
+			std::cout << a << std::endl;
+			func(a);
+			std::cout << b << std::endl;
+			return 0;
+		}
+	</code></pre>
+	<p>In the code above, we can trace control in the program as such:</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				main()				
+				|
+				int a = 2;
+				|
+				int b = 3;
+				|
+				std::cout << a << std::endl;
+				|
+				func(a);--------+
+												|
+											int n = a;
+											int x = n * n;
+											std::cout << x << std::endl;
+												|
+				main()----------+
+				|
+				std::cout << a << std::endl;
+				|
+				return 0;
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		In the diagram above, <span class="monoText">main()</span> executes as
+		expected, but once it encounters <span class="monoText">func(a)</span>,
+		control transfers to <span class="monoText">func(a)</span>. Then, once
+		<span class="monoText">func(a)</span> has finished its computation, control
+		returns to <span class="monoText">main()</span>.
+	</p>
+	<p>
+		Writing recursive functions is essentially writing instructions for the
+		journey from (a) the call to the recursive function to (b) a known fact
+		about the problem. Keeping this perspective in mind, whenever we write
+		recursive functions, there are three key rules to follow: (1) We must state
+		when to stop the journey. (2) We must state how to take one step in the
+		journey. (3) We must know how to break the journey down into a single step
+		plus a smaller journey.
+	</p>
+	<p>
+		The point where we stop (i.e., a known fact about the problem), is called
+		the <span class="term">base case</span>. We must always have this base case,
+		lest we embark on an infinite journey. When we state how to take one step in
+		the journey, we are simply moving along the journey. When we break the
+		journey down into a single step plus a smaller journey, we are performing
+		<span class="term">induction</span>.
+	</p>
+	<p>All this said, let's consider an example:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		void f(int n, int& count) {
+			if (n > 0) {
+				std::cout<<"run before f(n: "<< n <<", count: "<< count <<")\n";
+				count++;
+				f(n - 1, count);
+			} else {
+				std::cout << "end\n";
+			}
+		}
+		
+		int main() {
+			int i = 0;
+			f(4, i);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		run before f(n: 4, count: 0)
+		run before f(n: 3, count: 1)
+		run before f(n: 2, count: 2)
+		run before f(n: 1, count: 3)
+		end
+	</code></pre>
+	<p>
+		Inside <span class="monoText">main()</span>, we called
+		<span class="monoText">f(4, i)</span>, where
+		<span class="monoText">i = 0</span>. This transfers control to
+		<span class="monoText">f()</span>. In <span class="monoText">f()</span>, we
+		have a condition, <span class="monoText">n > 0</span>. If this condition is
+		<span class="monoText">true</span>, we execute the following statements: (1)
+		output a statement, (2) increment <span class="monoText">count</span> (which
+		is initially <span class="monoText">0</span>); and (3) call
+		<span class="monoText">f(n-1, count)</span>. If the condition is false,
+		output <span class="monoText">end</span>. Reasoning through this process,
+		the program's output is as expected. We can visualize the flow as such
+		(assume we just printed the value of <span class="monoText">n</span>):
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				func(4, 0)
+					/  \
+				4   func(3, 1)
+							/  \
+						3   func(2, 2)
+									/  \
+								2   func(1, 3)
+											/  \
+										1   func(0, 4)
+													|
+													end
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		Let's see what happens when we move the console output line to
+		<span class="underlineText">after</span> the recursive call:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		void f(int n, int& count) {
+			if (n > 0) {
+				count++;
+				f(n - 1, count);
+				std::cout<<"run after f(n: " << n <<", count: " << count << ")\n";
+			} else {
+				std::cout << "end\n";
+			}
+		}
+		
+		int main() {
+			int i = 0;
+			f(4, i);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		end
+		run after f(n: 1, count: 4)
+		run after f(n: 2, count: 4)
+		run after f(n: 3, count: 4)
+		run after f(n: 4, count: 4)
+	</code></pre>
+	<p>
+		Interesting, notice how it outputs <span class="monoText">end</span> first.
+		Why is this output different? Well, notice that the output value of
+		<span class="monoText">count</span> is
+		<span class="monoText">4</span> rather than the incrementing we saw earlier.
+		This is because when we run <span class="monoText">f()</span>, it never
+		actually finishes executing until we get to
+		<span class="monoText">f(0, 4)</span>. At that point, we run the else-block,
+		<span class="monoText">"end"</span>. Additionally at that point,
+		<span class="monoText">count</span> has incremented to
+		<span class="monoText">4</span>. As such, when
+		<span class="monoText">f(0, 4)</span> has finished executing,
+		<span class="monoText">f(1, 4)</span> is exeuted, then
+		<span class="monoText">f(2, 4)</span>, and so on, all way back up to
+		<span class="monoText">f(4, 4)</span>. Visually:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				f(4, 0)
+				    \
+						f(3, 1)
+						  \
+							f(2, 2)
+							  \
+								f(1, 3)
+								  \
+									f(0, 4)
+									 |
+									 print end
+								  /
+							f(1,3) &rarr; print f(1,4)
+							  /
+						f(2,2) &rarr; print f(2,4)
+						  /
+					f(3,1) &rarr; print f(3,4)
+					 /
+				f(4,0) &rarr; print f(4,4)
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		The above is an example of a
+		<span class="term">classical recursion</span> or
+		<span class="term">simple recursion</span>. It's the kind of recursion most
+		commonly used in programming. There are, however, other types of recursion:
+		tail recursion, head recursion, tree recursion, mutual recursion, and nested
+		recursion. We will explore each type in turn.
+	</p>
+
+	<section id="recursion_and_memory">
+		<p>
+			<span class="topic">Recursion & Memory.</span> Unlike loops, the system
+			stack will provide separate areas of memory for each recursive call. For
+			example, consider this recursive function for summing the elements of an
+			array:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int summate(int array[], int arrayLength) {
+				if (arrayLength == 1) {
+					return array[0];
+				} else {
+					int sum = summate(array, arrayLength - 1);
+					return sum + array[arrayLength - 1];
+				}
+			}
+			
+			int main() {
+				int list[4] = {1, 0, 3, 2};
+				int listSum = summate(list, 4);
+				std::cout << listSum << std::endl;
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			6
+		</code></pre>
+		<p>
+			Each time we call <span class="monoText">summate()</span>, we create a new
+			stack, where each local variable and argument of the recursive call is
+			isolated from the other recursive call stacks. In this case, there four
+			stacks total: <span class="monoText">summate(list, 4)</span>,
+			<span class="monoText">summate(list, 3)</span>,
+			<span class="monoText">summate(list, 2)</span>, and
+			<span class="monoText">summate(list, 1)</span>.
+		</p>
+
+		<pre class="language-pseudo"><code style="font-size: 0.62rem;">
+				main()
+				===================================
+				[ int list = {1, 0, 3, 2};        ]
+				[ int listSum = summate(list, 4); ]
+				===================================
+												|
+												|
+												summate(list, 4)
+												===============================
+												[ int array = {1, 0, 3, 2};   ]
+												[ int arrayLength = 4;        ]
+												[ int sum = summate(list, 3); ]
+												===============================
+																		|
+																		|
+																		summate(list, 3)
+																		===============================
+																		[ int array = {1, 0, 3, 2};   ]
+																		[ int arrayLength = 3;        ]
+																		[ int sum = summate(list, 2); ]
+																		===============================
+																								|
+																								|
+																								summate(list, 2)
+																								==============================
+																								[ int array = {1, 0, 3, 2};  ]
+																								[ int arrayLength = 2;       ]
+																								[ int sum = summate(list, 1);]
+																								==============================
+																														|
+																														|
+																														summate(list, 1)
+																														==============================
+																														[ int array = {1, 0, 3, 2};  ]
+																														[ int arrayLength = 1;       ]
+																														{ return 1                   }
+																														==============================
+																														|
+																														|
+																							summate(list, 2)
+																							~~~~~~~~~~~~~~~~
+																							{ return 1 + 0 }
+																							~~~~~~~~~~~~~~~~
+																							|
+																							|
+																summate(list, 3)
+																~~~~~~~~~~~~~~~~
+																{ return 1 + 3 }
+																~~~~~~~~~~~~~~~~
+																|
+																|
+									summate(list, 4)
+									~~~~~~~~~~~~~~~~
+									{ return 4 + 2 }
+									~~~~~~~~~~~~~~~~
+									|
+									|
+						 main()
+						 ~~~~~~~~~~~~~~~~~~~~
+						 [ int list sum = 6 ]
+						 ~~~~~~~~~~~~~~~~~~~~
+			</code></pre>
+	</section>
+
+	<section id="time_complexity_linear_recursion">
+		<p>
+			<span class="topic">Time Complexity of Classical Recursion</span> Consider
+			this linear-recursive approach to the factorial function:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int factorial(int n) {
+				if (n == 0) {
+					return 1;
+				} else {
+					return n * factorial(n - 1);
+				}
+			}
+			
+			int main() {
+				int a = 4;
+				int b = factorial(a);
+				std::cout << a << "! = " << b << std::endl;
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			4! = 24
+		</code></pre>
+		<p>
+			What is the time complexity for this function? Well, each call to
+			<span class="monoText">factorial()</span> results in several computational
+			steps: (1) Checking whether <span class="monoText">n == 0</span>, (2) If
+			<span class="monoText">n != 0</span>, executing
+			<span class="monoText">n</span> times the result of
+			<span class="monoText">factorial(n - 1)</span>; (3) the evaluation of
+			<span class="monoText">n - 1</span>. We can think of this roughly as
+			${3n,}$ where ${n}$ is the number of calls to
+			<span class="monoText">factorial()</span> (which corresponds to argument
+			for <span class="monoText">n</span>). Accordingly, we say that the linear
+			recursion function above has a time complexity of
+			<span class="monoText">O(n)</span>. This is linear time.
+		</p>
+		<p>
+			Alternatively, we can determine the time complexity of
+			<span class="monoText">factorial()</span> with a
+			<span class="italicsText">recurrence relation</span>. To do so, we first
+			recognize that there are two discrete cases for
+			<span class="monoText">factorial()</span>'s evaluation. If
+			<span class="monoText">n == 0</span>, we perform a single step,
+			<span class="monoText">return 1</span>. If
+			<span class="monoText">n != 0</span> (i.e.,
+			<span class="monoText">n > 0</span>), we perform the computational step
+			<span class="monoText">n * factorial(n - 1)</span>. Next, whenever we call
+			<span class="monoText">factorial()</span>, we have roughly 3 separate
+			computations: Checking if <span class="monoText">n == 0</span>,
+			multiplying <span class="monoText">n</span>, and evaluating
+			<span class="monoText">n - 1</span>. Thus, we can express
+			<span class="monoText">factorial(n - 1)</span> as the relation ${T(n -
+			1).}$ Accordingly, we can express
+			<span class="monoText">factorial(n)</span> as the relation ${T(n) = T(n -
+			1) + 3.}$ It follows then that:
+		</p>
+		<figure class="math-display">
+			<div>
+				$$ T(n) = \begin{cases} 1 &n = 0 \\ T(n-1) + 3 &n > 0 \end{cases} $$
+			</div>
+		</figure>
+		<p>
+			From this recurrence relation, we can then compute the time complexity.
+			Since ${T(n) = T(n - 1) + 3,}$ it follows that ${T(n - 1) = T(n - 2) +
+			3.}$ As such, ${T(n) = T(n - 2) + 3 + 3 = T(n) = T(n - 2) + 6.}$ If we
+			continued this substitution ${k}$ times, we would have ${T(n) = T(n - k) +
+			2k.}$ Now, if we assume that ${n - k = 0,}$ we can infer that ${n = k.}$
+			And given that ${n = k,}$ we have ${T(n) = T(n - n) + 2n;}$ i.e., ${T(n) =
+			T(0) + 2n.}$ But we that ${T(0)}$ is ${1,}$ so ${T(n) = 1 + 2n.}$ Applying
+			complexity analysis, we have the time complexity of ${O(n).}$
+		</p>
+	</section>
+
+	<section id="tail_recursion">
+		<h3>Tail Recursion</h3>
+		<p>
+			The first example in the previous section was an example of
+			<span class="term">tail recursion</span> &mdash; a recursive function
+			where the recursive call is the
+			<span class="underlineText">last</span> expression to be evaluated. We
+			call this a <span class="term">tail call</span>. Roughly, a tail recursive
+			function takes the form:
+		</p>
+		<figure class="math-display">
+			<ul class="syntax">
+				<li>${f(n)}$ {</li>
+				<ul>
+					<li>${\vdots}$</li>
+					<li>${f(\Delta n)}$</li>
+				</ul>
+				<li>}</li>
+			</ul>
+		</figure>
+		<p>
+			For example, the previous
+			<span class="monoText">factorial()</span> function is not a tail
+			recursive. This is because <span class="monoText">factorial()</span> is
+			not the last computation to perform. It's multiplication. To rewrite
+			<span class="monoText">factorial()</span> as a tail recursive function,
+			the multiplication must occur
+			<span class="underlineText">before</span> the tail call. We can do so by
+			passing the result of the multiplication as a parameter:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int factorial(int n, int m = 1) {
+				if (n == 0) {
+					return m;
+				}
+				return factorial(n - 1, m * n);
+			}
+			
+			int main() {
+				int x = 5;
+				int y = factorial(x);
+				std::cout << "5! = " << y << std::endl;
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			5! = 120
+		</code></pre>
+		<p>
+			Notice that with this implementation, the last line to execute is a call
+			to <span class="monoText">factorial()</span>.
+		</p>
+		<p>
+			Note that every tail recursive function can be written as a loop, and
+			every loop can be written as a tail recursive function. For example, we
+			could have written the same function above as such:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int factorial(int n) {
+				int product = 1;
+				if (n == 0) {
+					return product;
+				} else {
+					for (int i = 1; i <= n; i++) {
+						product *= i;
+					}
+				}
+				return product;
+			}
+			
+			int main() {
+				int x = 7;
+				int y = factorial(x);
+				std::cout << "7! = " << y << std::endl;
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			7! = 5040
+		</code></pre>
+		<p>
+			Both these implementations work the same way. There is no difference
+			between these two implementations, at least in terms of time complexity.
+			Both have a time complexity of ${O(n).}$ Where they may differ is in terms
+			of space complexity. With each call to
+			<span class="monoText">factorial()</span>, we generate a new stack frame.
+			And with enough tail calls, we can run into
+			<span class="italicsText">stack overflow</span>. Fortunately, most modern
+			C++ compilers have implemented
+			<span class="term">tail call optimization</span> (TCO). With TCO, the
+			compiler recognizes tail calls, and optimizes space allocation.
+		</p>
+	</section>
+
+	<section id="head_recursion">
+		<h2>Head Recursion</h2>
+		<p>
+			The opposite of tail recursion is
+			<span class="term">head recursion</span>. With head recursion, the
+			recursive call <span class="underlineText">before</span> other statements
+			are executed. Visually:
+		</p>
+		<figure class="math-display">
+			<ul class="syntax">
+				<li>${f(n)}$ {</li>
+				<ul>
+					<li>${f(\Delta n)}$;</li>
+					<li>${\vdots}$</li>
+					<li>${\textit{return }\ldots}$</li>
+				</ul>
+				<li>}</li>
+			</ul>
+		</figure>
+		<p>
+			Using the <span class="monoText">factorial()</span> example again, here is
+			a head-recursive implementation:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int factorial(int n, int m = 1) {
+				if (n > 0) {
+					return factorial(n - 1, n * m);
+				} else {
+					return m;
+				}
+			}
+			
+			int main() {
+				int x = 7;
+				int y = factorial(x);
+				std::cout << "7! = " << y << std::endl;
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			7! = 5040
+		</code></pre>
+		<p>
+			As can be seen, both tail and head recursion have a time complexity of
+			${O(n)}$ and a space complexity of ${O(n).}$ The difference, however, is
+			that head recursion tends to be much more difficult to implement as a
+			loop.
+		</p>
+	</section>
+
+	<section id="tree_recursion">
+		<h2>Tree Recursion</h2>
+		<p>
+			All of the examples we've used above are instances of
+			<span class="term">linear recursion</span>. In linear recursion, the
+			recursive function is defined with only one call to itself. If the
+			recursive function is defined with either multiple calls to itself, then
+			we have an instance of <span class="term">tree recursion</span>. Roughly,
+			this looks like the following:
+		</p>
+		<figure class="math-display">
+			<ul class="syntax">
+				<li>${f(n)}$ {</li>
+				<ul>
+					<li>${f(\Delta n)}$</li>
+					<li>${f(\Delta n)}$</li>
+				</ul>
+				<li>}</li>
+			</ul>
+		</figure>
+		<p>
+			Many problems are best solved with tree recursion. Consider a few examples
+			below.
+		</p>
+		<section id="fibonacci">
+			<p>
+				<span class="topic"
+					>Compute the ${n^{\text{\scriptsize{th}}}}$ Fibonnaci Number.</span
+				>
+				In the Fibonacci sequence, each element of the sequence is the sum of
+				the preceding two elements: ${\lang 0, 1, 1, 2, 3, 5, 8, \ldots \rang.}$
+				Mathematically, this sequence is defined with the recurrence relation:
+			</p>
+			<figure class="math-display">
+				<div>
+					$$ Fib(n) = \begin{cases} 0 &\textit{if } \space n = 0 \\ 1
+					&\textit{if } \space n = 1 \\ Fib(n - 1) + Fib(n - 2) &\textit{else}
+					\end{cases} $$
+				</div>
+			</figure>
+			<p>This definition lends itself to tree recursion:</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				int fib(int n) {
+					int result = 0;
+					if (n == 0) { return 0; } 
+					else if (n == 1) { return 1; } 
+					else {
+						result = fib(n - 1) + fib(n - 2);
+					}
+					return result;
+				}
+				
+				int main() {
+					int index = 6;
+					int fib6 = fib(6);
+					std::cout << fib6 << std::endl;
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				8
+			</code></pre>
+			<p>Visualizing the tree:</p>
+			<figure>
+				<img
+					src="{% static 'images/fibonacciTreeRecursion1.svg' %}"
+					alt="Fibonacci tree"
+					loading="lazy"
+				/>
+			</figure>
+		</section>
+		<section id="number_of_permutations">
+			<p>
+				<span class="topic">Number of Permutations.</span> Suppose we played a
+				game where we could score either a 1 point or 2 points. Given ${n}$
+				number of maximum points, how many possible arrangements of 1 point and
+				2 points are there to reach ${n?}$ Again, this problem lends itself to
+				tree recursion. What we're really being asked to do is: How many
+				different ways can you add 1 and 2 such that you get ${n?}$
+			</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				int permute(int n) {
+					int permutations;
+					if (n == 1) { return 1; }
+					else if (n == 2) { return 2; }
+					else {
+						permutations = permute(n - 1) + permute(n - 2);
+					}
+					return permutations;
+				}
+				
+				int main() {
+					int maxPoints = 35;
+					int numberOfPossibleArrangements = permute(maxPoints);
+					std::cout << numberOfPossibleArrangements << std::endl;
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				14930352
+			</code></pre>
+		</section>
+
+		<section id="tree_recursion_memory">
+			<p>
+				<span class="topic">Complexity of Tree Recursion.</span> Tree recursion
+				alone does not lend itself well to time complexity. To understand the
+				tree recursion complexity, let's consider a simple example:
+			</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				void fun(int n) {
+					if (n > 0) {
+						std::cout << "fun(" << n << ")" << std::endl;
+						fun(n - 1);
+						fun(n - 1);
+					}
+				}
+				
+				int main() {
+					int n = 3;
+					fun(3);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				fun(3)
+				fun(2)
+				fun(1)
+				fun(1)
+				fun(2)
+				fun(1)
+				fun(1)
+			</code></pre>
+			<p>
+				Let's parse how <span class="monoText">fun(3)</span> is executed. First,
+				<span class="monoText">fun(3)</span> results in the console output
+				<span class="monoText">fun(3)</span>, as expected. Then, there is the
+				call to <span class="monoText">fun(n - 1)</span>, which is
+				<span class="monoText">fun(2)</span>. Then, when
+				<span class="monoText">fun(2)</span> is executed, we output to the
+				console, and call <span class="monoText">fun(1)</span> and
+				<span class="monoText">fun(1)</span> again. Only after
+				<span class="monoText">fun(2)</span> has finished executing do we get to
+				the <span class="monoText">fun(1)</span> from
+				<span class="monoText">fun(3)</span>. Visualizing these calls, we see a
+				tree:
+			</p>
+
+			<figure style="margin: 0">
+				<img
+					src="{% static 'images/treeRecursion1.svg' %}"
+					alt="A diagram of the tree call"
+					loading="lazy"
+				/>
+			</figure>
+
+			<p>
+				For each call, once we reach <span class="monoText">fun(0)</span>, the
+				call has finished, so the stack allocated to
+				<span class="monoText">fun(0)</span> is removed. But because there's
+				another call <span class="monoText">fun(n - 1)</span>, another
+				activation record <span class="monoText">fun(0)</span> is created. This
+				is why see the output pattern above. Counting the number of calls in the
+				diagram, we get 15. Thus, activation records are created and destroyed
+				15 times.
+			</p>
+			<p>
+				Thus, where ${n = 3,}$ ${fun(n)}$ is called 15 times. Examining the tree
+				above, there are 4 levels. On the first level, there is only one call
+				&mdash; <span class="monoText">fun(3)</span>. On the second level, there
+				are 2 calls &mdash; <span class="monoText">fun(2)</span> and
+				<span class="monoText">fun(2)</span>. On the third level, there are 4
+				calls, and on the fourth level, there are 8 calls. This corresponds to a
+				<span class="italicsText">geometric sequence</span>:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\lang 1, 2, 4, 8, 16, 32, 64, 128, 256, \ldots \rang}$</p>
+				</div>
+			</figure>
+			<p>
+				Accordingly, the sum of this sequence is the geometric series ${\sum_{i
+				= 0}^{n} 2^n = 2^{n + 1} - 1.}$ It follows then that the tree recursive
+				function ${f(n)}$ will result in ${2^{n + 1} - 1}$ total calls. Applying
+				complexity analysis, this means the ${f(n)}$ has a time complexity of
+				${O(2^n).}$
+			</p>
+			<p>
+				Now, what is the space complexity? To determine space complexity, we ask
+				ourselves, &#8220;What is the maximum height of the stack?&#8221; Well,
+				we can just look at the tree above. With tree recursive functions, each
+				stack generated is destroyed because once a call has finished it is
+				destroyed. This in turn means that number of levels in the recursive
+				tree corresponds to the height of the stack. For
+				<span class="monoText">fun(0)</span> the number of levels is 1. For
+				<span class="monoText">fun(1)</span>, the number of levels is 2. For
+				<span class="monoText">fun(2)</span>, the number of levels is 3, and so
+				on. As such, the height of the tree is given by ${n + 1.}$ Applying
+				complexity analysis, we have a space complexity of ${O(n).}$
+			</p>
+			<p>
+				From this discussion, we can see that tree recursion doesn't perform
+				very well in terms of time &mdash; it runs on exponential time. Tree
+				recursion, however, has its place. Some problems are just too difficult
+				to solve with loops. Other problems are so difficult that exponential
+				time is the best we can do. We will see some of these problems in later
+				sections.
+			</p>
+		</section>
+	</section>
+
+	<section id="mutual_recursion">
+		<h2>Mutual Recursion</h2>
+		<p>
+			In <span class="term">mutual recursion</span>, the recursive function
+			${f}$ calls a recursive function ${g,}$ and the recursive function ${g}$
+			calls the recursive function ${f.}$ Generally:
+		</p>
+		<figure class="math-display">
+			<ul class="syntax">
+				<li>${f(n)}$ { ${g(\Delta n)}$ }</li>
+				<li>${g(n)}$ { ${f(\Delta n)}$ }</li>
+			</ul>
+		</figure>
+		<p>For example:</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			void g(int n);
+			
+			void f(int n) {
+				if (n > 0) {
+					std::cout << "f(" << n << ")" << std::endl;
+					g(n - 1);
+				}
+			}
+			
+			void g(int n) {
+				if (n > 1) {
+					std::cout << "g(" << n << ")" << std::endl;
+					f(n - 1);
+				}
+			}
+			
+			int main() {
+				int x = 5;
+				f(x);
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			f(5)
+			g(4)
+			f(3)
+			g(2)
+			f(1)
+		</code></pre>
+		<p>
+			Observe the output. When we call <span class="monoText">f()</span>, we
+			call <span class="monoText">g()</span>, and when we cal
+			<span class="monoText">g()</span>, we call
+			<span class="monoText">f()</span>. Under normal circumstances, such a
+			circular control flow immediately alerts us to an infinite process. But,
+			as with all recursive functions, the approach works because each call is
+			given a smaller and smaller input, and each call has a base case.
+			Visualizing the call as a tree:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/mutualRecursion1.svg' %}"
+				alt="A mutual recursion tree"
+				loading="lazy"
+				class="forty-p"
+			/>
+		</figure>
+	</section>
+
+	<section id="nested_recursion">
+		<h2>Nested Recursion</h2>
+		<p>
+			Because functions are expressions, they can be passed as arguments to
+			functions. Accordingly, given a recursive function ${f,}$ we can pass a
+			call to ${f}$ as an argument for ${f.}$ This is an example of
+			<span class="term">nested recursion</span>.
+		</p>
+		<figure class="math-display">
+			<div>
+				<ul class="syntax">
+					<li>${f(f(\Delta n))}$ { }</li>
+				</ul>
+			</div>
+		</figure>
+		<p>For example:</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int n(int x) {
+				if (x > 20) {
+					return x - 5;
+				} 
+				else { 
+					return n(n(x + 6)); 
+				}
+			}
+			
+			int main() {
+				int x = 17;
+				n(x); // returns 21
+				return 0;
+			}
+		</code></pre>
+		<p>
+			In the function above, the call to
+			<span class="monoText">n(x)</span> results in a call to
+			<span class="monoText">n(n(x + 6))</span>. This is a nested-recursive
+			function. We can visualized the evaluation as such:
+		</p>
+		<figure class="math-display">
+			<ul class="syntax">
+				<li>${n(x)}$</li>
+				<li>${n(17)}$</li>
+				<li>${n(n(x + 6))}$</li>
+				<li>${n(n(17 + 6))}$</li>
+				<li>${n(n(23))}$</li>
+				<li>${n(x - 5)}$</li>
+				<li>${n(23 - 5)}$</li>
+				<li>${n(18)}$</li>
+				<li>${n(n(x + 6))}$</li>
+				<li>${n(n(18 + 6))}$</li>
+				<li>${n(n(24))}$</li>
+				<li>${n(x - 5)}$</li>
+				<li>${n(24 - 5)}$</li>
+				<li>${n(19)}$</li>
+				<li>${n(n(x + 6))}$</li>
+				<li>${n(n(19 + 6))}$</li>
+				<li>${n(n(25))}$</li>
+				<li>${n(x - 5)}$</li>
+				<li>${n(25 - 5)}$</li>
+				<li>${n(20)}$</li>
+				<li>${n(n(x + 6))}$</li>
+				<li>${n(n(20 + 6))}$</li>
+				<li>${n(n(26))}$</li>
+				<li>${n(x - 5)}$</li>
+				<li>${n(26 - 5)}$</li>
+				<li>${n(21 - 5)}$</li>
+				<li>${21 - 5}$</li>
+				<li>${16}$</li>
+			</ul>
+		</figure>
+	</section>
+	<p>To confirm:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		int n(int x) {
+			if (x > 20) {
+				std::cout << "x > 20 " << std::endl;
+				std::cout << "n(" << x << ")" << std::endl;
+				std::cout << "return " << x << " - 5\n" << std::endl;
+				return x - 5;
+			} 
+			else { 
+				std::cout << "x = " << x << "\n" << std::endl;
+				std::cout << "x <= 20" << std::endl;
+				std::cout << "n(n(" << x << " + 6))\n" << std::endl;
+				std::cout << "x = " << x + 6 << "\n" << std::endl;
+				return n(n(x + 6)); 
+			}
+		}
+		
+		int main() {
+			int x = 17;
+			n(x);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 17
+
+		x <= 20
+		n(n(17 + 6))
+		
+		x = 23
+		
+		x > 20 
+		n(23)
+		return 23 - 5
+		
+		x = 18
+		
+		x <= 20
+		n(n(18 + 6))
+		
+		x = 24
+		
+		x > 20 
+		n(24)
+		return 24 - 5
+		
+		x = 19
+		
+		x <= 20
+		n(n(19 + 6))
+		
+		x = 25
+		
+		x > 20 
+		n(25)
+		return 25 - 5
+		
+		x = 20
+		
+		x <= 20
+		n(n(20 + 6))
+		
+		x = 26
+		
+		x > 20 
+		n(26)
+		return 26 - 5
+		
+		x > 20 
+		n(21)
+		return 21 - 5
+	</code></pre>
+</section>
 {% endblock %}

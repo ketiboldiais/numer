@@ -1,14 +1,18 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="What does 'this' mean in JavaScript?" />
+{% endblock %} {% block title %}
+<title>this in JavaScript</title>
+{% endblock %} {% block content %}
+<h1>The Keyword <span class="monoText">this</span></h1>
 <section id="keyword_this">
-	<h3>The Keyword <span class="monoText">this</span></h3>
 	<p>
-		A variable declared with <span class="monoText">var</span> in the global
-		scope will be included in the <span class="monoText">window</span> object as
-		a property. But, variables declared with
-		<span class="monoText">let</span> and
+		<span class="drop">A</span> variable declared with
+		<span class="monoText">var</span> in the global scope will be included in
+		the <span class="monoText">window</span> object as a property. But,
+		variables declared with <span class="monoText">let</span> and
 		<span class="monoText">const</span> will not be included. The
 		<span class="monoText">this</span> keyword is a keyword that references the
-		current execution's <span class="italicsText">scope</span>, and gives an
+		current <span class="italicsText">execution scope</span>, and gives an
 		<span class="italicsText">object</span> back as its output. Thus, the
 		returned object changes depending on the current execution's scope. The
 		execution might have a global scope, or it might have some other
@@ -16,16 +20,16 @@
 		consider the code below:
 	</p>
 	<pre class="language-javascript"><code>
-			function helloWorld() {
-				console.log("Hi")
-				console.log(this);
-			};
-			helloWorld();	
-			/*
-			Output:
-			Window {window: Window, self: Window, document: document, name: "", location: Location, …}
-			*/
-			</code></pre>
+		function helloWorld() {
+			console.log("Hi")
+			console.log(this);
+		};
+		helloWorld();	
+		/*
+		Output:
+		Window {window: Window, self: Window, document: document, name: "", location: Location, …}
+		*/
+	</code></pre>
 	<p>
 		In the code above, our function contains the statement,
 		<span class="monoText">console.log(this);</span>. This statement says,
@@ -44,8 +48,8 @@
 		the program (not inside any other block scope).
 	</p>
 	<pre class="language-javascript"><code>
-				var vector = 3;
-			</code></pre>
+		var vector = 3;
+	</code></pre>
 	<p>
 		By declaring the variable <span class="monoText">vector</span> with the
 		keyword <span class="monoText">var</span> above, the name
@@ -59,41 +63,42 @@
 </section>
 
 <section id="using_this_">
-	<h3>Why <span class="monoText">this</span> Is So Useful</h3>
-
 	<p>
+		<span class="topic"
+			>Why is <span class="monoText">this</span> so useful?</span
+		>
 		Consider the code below, where we write a function using the
 		<span class="monoText">this</span> keyword inside an object:
 	</p>
 	<pre class="language-javascript"><code>
-				// An object containing the properties of tree ferns
-				const treeFern = {
-					scientificName: 'Dicksonia antarctica',
-					genus: 'Dicksonia',
-					family: 'Dicksoniaceae',
-					Order: 'Cyatheales',
-					Class: 'Polypodiopsida',
-					Division: 'Polypodiophyta',
-					Kingdom: 'Plantae',
-					allDetails() {
-						console.log(this);
-					}
-				};
-				treeFern.allDetails();
-				/*
-				Output:
-				{
-					scientificName: 'Dicksonia antarctica',
-					genus: 'Dicksonia',
-					family: 'Dicksoniaceae',
-					Order: 'Cyatheales',
-					Class: 'Polypodiopsida',
-					Division: 'Polypodiophyta',
-					Kingdom: 'Plantae',
-					allDetails: [Function: allDetails]
-				}
-				*/
-			</code></pre>
+		// An object containing the properties of tree ferns
+		const treeFern = {
+			scientificName: 'Dicksonia antarctica',
+			genus: 'Dicksonia',
+			family: 'Dicksoniaceae',
+			Order: 'Cyatheales',
+			Class: 'Polypodiopsida',
+			Division: 'Polypodiophyta',
+			Kingdom: 'Plantae',
+			allDetails() {
+				console.log(this);
+			}
+		};
+		treeFern.allDetails();
+		/*
+		Output:
+		{
+			scientificName: 'Dicksonia antarctica',
+			genus: 'Dicksonia',
+			family: 'Dicksoniaceae',
+			Order: 'Cyatheales',
+			Class: 'Polypodiopsida',
+			Division: 'Polypodiophyta',
+			Kingdom: 'Plantae',
+			allDetails: [Function: allDetails]
+		}
+		*/
+	</code></pre>
 	<p>
 		In the example above, we wrote the function
 		<span class="monoText">allDetails()</span> inside the object
@@ -110,56 +115,56 @@
 		properties inside an object while writing statements inside said object.
 	</p>
 	<pre class="language-javascript"><code>
-				// Here is an object of some mathematical functions:
-				const mathematician = {
-					firstName: 'Renee',
-					lastName: 'Descartes',
-					firstNameDisplay() {
-						console.log(this.firstName);
-					}
-				};
-				mathematician.firstNameDisplay(); // Output: Renee
-			</code></pre>
+		// Here is an object of some mathematical functions:
+		const mathematician = {
+			firstName: 'Renee',
+			lastName: 'Descartes',
+			firstNameDisplay() {
+				console.log(this.firstName);
+			}
+		};
+		mathematician.firstNameDisplay(); // Output: Renee
+	</code></pre>
 	<p>A more elaborate example:</p>
 	<pre class="language-javascript"><code>
-				const RD = {
-					firstName: 'Renee',
-					lastName: 'Descartes',
-					notable: 'Cartesian plane',
-					details() {
-						console.log(`${this.firstName} ${this.lastName}, notable for the ${this.notable}.`);
-					}
-				};
-				RD.details(); // Output: Renee Descartes, notable for the Cartesian plane.
-			</code></pre>
+		const RD = {
+			firstName: 'Renee',
+			lastName: 'Descartes',
+			notable: 'Cartesian plane',
+			details() {
+				console.log(`${this.firstName} ${this.lastName}, notable for the ${this.notable}.`);
+			}
+		};
+		RD.details(); // Output: Renee Descartes, notable for the Cartesian plane.
+	</code></pre>
 </section>
 
 <section id="destructuring_and_this">
-	<h4>
-		Using Destructuring Syntax with
-		<span class="monoText">this</span>
-	</h4>
 	<p>
+		<span class="topic">
+			Using Destructuring Syntax with
+			<span class="monoText">this</span>
+		</span>
 		In the example above, we constantly had to write the
 		<span class="monoText">this</span> keyword. We can cut all of that out with
 		the <span class="italicsText">destructuring syntax</span>:
 	</p>
 	<pre class="language-javascript"><code>
-			const rD = {
-				firstName: 'Renee',
-				lastName: 'Descartes',
-				notable: 'Cartesian plane',
-				details() {
-					const {
-						firstName,
-						lastName,
-						notable
-					} = this;
-					console.log(`${firstName} ${lastName}, notable for the ${notable}.`);
-				}
-			};
-			rD.details(); // Output: Renee Descartes, notable for the Cartesian plane.	
-			</code></pre>
+		const rD = {
+			firstName: 'Renee',
+			lastName: 'Descartes',
+			notable: 'Cartesian plane',
+			details() {
+				const {
+					firstName,
+					lastName,
+					notable
+				} = this;
+				console.log(`${firstName} ${lastName}, notable for the ${notable}.`);
+			}
+		};
+		rD.details(); // Output: Renee Descartes, notable for the Cartesian plane.	
+	</code></pre>
 	<p>
 		The <span class="monoText">this</span> keyword allows us to write methods
 		that can "see" the other properties inside the object.
@@ -167,32 +172,32 @@
 </section>
 
 <section id="using_this_to_reference_methods">
-	<h4>
-		Using the <span class="monoText">this</span> Keyword to Reference Methods
-	</h4>
 	<p>
+		<span class="topic">
+			Using the <span class="monoText">this</span> Keyword to Reference Methods
+		</span>
 		We can use <span class="monoText">this</span> to reference other methods
 		inside an object:
 	</p>
 	<pre class="language-javascript"><code>
-				const sR = {
-					first: "Srinivasa",
-					last: "Ramanujan",
-					country: "India",
-					fullName() {
-						return `${this.first} ${this.last}`
-					},
-					summary() {
-						const fullName = this.fullName();
-						return `${fullName} is a mathematician from ${this.country}.`
-					}
-				};
-				console.log(sR.summary()); // Output: Srinivasa Ramanujan is a mathematician from India.								
-			</code></pre>
+		const sR = {
+			first: "Srinivasa",
+			last: "Ramanujan",
+			country: "India",
+			fullName() {
+				return `${this.first} ${this.last}`
+			},
+			summary() {
+				const fullName = this.fullName();
+				return `${fullName} is a mathematician from ${this.country}.`
+			}
+		};
+		console.log(sR.summary()); // Output: Srinivasa Ramanujan is a mathematician from India.								
+	</code></pre>
 </section>
 
 <section id="value_of_this">
-	<h4>The Value of <span class="monoText">this</span></h4>
+	<h2>The Value of <span class="monoText">this</span></h2>
 	<p>
 		The value of the <span class="monoText">this</span> keyword depends on how
 		we invoke the function that uses it. Put simply, the value of the
@@ -202,52 +207,52 @@
 		consider the code below:
 	</p>
 	<pre class="language-javascript"><code>
-				// Same object from the preceding example.
-				const sR = {
-					first: "Srinivasa",
-					last: "Ramanujan",
-					country: "India",
-					fullName() {
-						return `${this.first} ${this.last}`
-					},
-					summary() {
-						const fullName = this.fullName();
-						return `${fullName} is mathematician from ${this.country}.`
-					}
-				};
-				// Suppose we assign the method SR.summary() to a variable: 
-				const summary = sR.summary;
-				// Now suppose we call that function:
-				console.log(summary());
-				/*
-				Output: 
-				TypeError: this.fullName is not a function
-				*/								
-			</code></pre>
+		// Same object from the preceding example.
+		const sR = {
+			first: "Srinivasa",
+			last: "Ramanujan",
+			country: "India",
+			fullName() {
+				return `${this.first} ${this.last}`
+			},
+			summary() {
+				const fullName = this.fullName();
+				return `${fullName} is mathematician from ${this.country}.`
+			}
+		};
+		// Suppose we assign the method SR.summary() to a variable: 
+		const summary = sR.summary;
+		// Now suppose we call that function:
+		console.log(summary());
+		/*
+		Output: 
+		TypeError: this.fullName is not a function
+		*/								
+	</code></pre>
 	<p>Compare the error above with the following code:</p>
 	<pre class="language-javascript"><code>
-				// Same object from the preceding example.
-				const sR = {
-					first: "Srinivasa",
-					last: "Ramanujan",
-					country: "India",
-					fullName() {
-						return `${this.first} ${this.last}`
-					},
-					summary() {
-						console.log(this); // Let's see what the object is
-						const fullName = this.fullName();
-						return `${fullName} is mathematician from ${this.country}.`
-					}
-				};
-				const summary = sR.summary;
-				console.log(summary());
-				/*
-				Output: 
-				Window {window: Window, self: Window, document: document, name: "", location: Location, …}
-				Uncaught TypeError: this.fullName is not a function at summary
-				*/								
-			</code></pre>
+		// Same object from the preceding example.
+		const sR = {
+			first: "Srinivasa",
+			last: "Ramanujan",
+			country: "India",
+			fullName() {
+				return `${this.first} ${this.last}`
+			},
+			summary() {
+				console.log(this); // Let's see what the object is
+				const fullName = this.fullName();
+				return `${fullName} is mathematician from ${this.country}.`
+			}
+		};
+		const summary = sR.summary;
+		console.log(summary());
+		/*
+		Output: 
+		Window {window: Window, self: Window, document: document, name: "", location: Location, …}
+		Uncaught TypeError: this.fullName is not a function at summary
+		*/								
+	</code></pre>
 	<p>
 		In the second example, we see that
 		<span class="monoText">this</span> is referencing the object
@@ -255,27 +260,27 @@
 		instead just used the typical object key syntax rather than the variable:
 	</p>
 	<pre class="language-javascript"><code>
-				// Same object from the preceding example.
-				const sR = {
-					first: "Srinivasa",
-					last: "Ramanujan",
-					country: "India",
-					fullName() {
-						return `${this.first} ${this.last}`
-					},
-					summary() {
-						console.log(this); // Let's see what the object is
-						const fullName = this.fullName();
-						return `${fullName} is mathematician from ${this.country}.`
-					}
-				};
-				console.log(sR.summary());
-				/*
-				Output: 
-				{first: "Srinivasa", last: "Ramanujan", country: "India", fullName: ƒ, summary: ƒ}
-				Srinivasa Ramanujan is mathematician from India.
-				*/								
-			</code></pre>
+		// Same object from the preceding example.
+		const sR = {
+			first: "Srinivasa",
+			last: "Ramanujan",
+			country: "India",
+			fullName() {
+				return `${this.first} ${this.last}`
+			},
+			summary() {
+				console.log(this); // Let's see what the object is
+				const fullName = this.fullName();
+				return `${fullName} is mathematician from ${this.country}.`
+			}
+		};
+		console.log(sR.summary());
+		/*
+		Output: 
+		{first: "Srinivasa", last: "Ramanujan", country: "India", fullName: ƒ, summary: ƒ}
+		Srinivasa Ramanujan is mathematician from India.
+		*/								
+	</code></pre>
 	<p>
 		Now we see that the value of <span class="monoText">this</span> is the
 		object it's contained in, <span class="monoText">sR</span>, rather than the
@@ -293,7 +298,7 @@
 </section>
 
 <section id="arrow_functions_and_this">
-	<h4>Arrow Functions and <span class="monoText">this</span></h4>
+	<h3>Arrow Functions and <span class="monoText">this</span></h3>
 	<p>
 		One of the key differences between regular function expressions and arrow
 		functions is how they behave with the keyword
@@ -304,23 +309,23 @@
 		<span class="underlineText">does not change</span>.
 	</p>
 	<pre class="language-javascript"><code>
-				// The full name function as an arrow function:
-				const sR = {
-					first: "Srinivasa",
-					last: "Ramanujan",
-					country: "India",
-					fullName: () => {
-						console.log(this);
-						console.log(`${this.first} ${this.last}`);
-					}
-				};
-				sR.fullName();
-				/*
-				Output:
-				Window {window: Window, self: Window, document: document, name: "", location: Location, …}
-				undefined undefined
-				*/								
-			</code></pre>
+		// The full name function as an arrow function:
+		const sR = {
+			first: "Srinivasa",
+			last: "Ramanujan",
+			country: "India",
+			fullName: () => {
+				console.log(this);
+				console.log(`${this.first} ${this.last}`);
+			}
+		};
+		sR.fullName();
+		/*
+		Output:
+		Window {window: Window, self: Window, document: document, name: "", location: Location, …}
+		undefined undefined
+		*/								
+	</code></pre>
 	<p>
 		Notice that when we display the value of
 		<span class="monoText">this</span> for the function
@@ -335,64 +340,64 @@
 		utility, consider the code below:
 	</p>
 	<pre class="language-javascript"><code>
-				/*
-				Here is method that repeatedly and randomly prints out prime numbers forever.
-				We want to start the method with the function start().
-				To do this, we need to use the built in method, set.interval(), which takes two parameters, a function, and time value (3000, which equals three seconds)
-				*/
-				const randPrime = {
-					primes: [1, 3, 5, 7, 11, 13, 17],
+		/*
+		Here is method that repeatedly and randomly prints out prime numbers forever.
+		We want to start the method with the function start().
+		To do this, we need to use the built in method, set.interval(), which takes two parameters, a function, and time value (3000, which equals three seconds)
+		*/
+		const randPrime = {
+			primes: [1, 3, 5, 7, 11, 13, 17],
 
-					pickPrime() {
-						const { primes } = this; // Set the value of this to be the primes property
-						const idx = Math.floor(Math.random() * primes.length); // Generate a random index
-						return primes[idx]; // Output the random index
-					},
+			pickPrime() {
+				const { primes } = this; // Set the value of this to be the primes property
+				const idx = Math.floor(Math.random() * primes.length); // Generate a random index
+				return primes[idx]; // Output the random index
+			},
 
-					// Now we want to call pickPrime with the set interval method:
-					start() {
-						console.log(this.pickPrime());
-						setInterval(function() { console.log(this.pickPrime()) }, 2000)
-					}
-				};
-				// Let's test briefly:
-				randPrime.start();
-				/*
-				Output:
-				13
-				Uncaught TypeError: this.pickPrime is not a function
-				*/
-			</code></pre>
+			// Now we want to call pickPrime with the set interval method:
+			start() {
+				console.log(this.pickPrime());
+				setInterval(function() { console.log(this.pickPrime()) }, 2000)
+			}
+		};
+		// Let's test briefly:
+		randPrime.start();
+		/*
+		Output:
+		13
+		Uncaught TypeError: this.pickPrime is not a function
+		*/
+	</code></pre>
 	<p>
 		Why did we get the error above? Let's see what the vlaue of
 		<span class="monoText">this</span> is in the function function
 		<span class="monoText">start()</span>:
 	</p>
 	<pre class="language-javascript"><code>
-				const randPrime = {
-					primes: [1, 3, 5, 7, 11, 13, 17],
+		const randPrime = {
+			primes: [1, 3, 5, 7, 11, 13, 17],
 
-					pickPrime() {
-						const { primes } = this;
-						const idx = Math.floor(Math.random() * primes.length);
-						return primes[idx];
-					},
+			pickPrime() {
+				const { primes } = this;
+				const idx = Math.floor(Math.random() * primes.length);
+				return primes[idx];
+			},
 
-					start() {
-						console.log(this.pickPrime());
-						setInterval(function () {
-							console.log(this);
-							console.log(this.pickPrime())
-						}, 2000)
-					}
-				};
-				randPrime.start();
-				/*
-				Output:
-				13
-				Window {0: global, window: Window, self: Window, document: document, name: "", location: Location, …}
-				*/								
-			</code></pre>
+			start() {
+				console.log(this.pickPrime());
+				setInterval(function () {
+					console.log(this);
+					console.log(this.pickPrime())
+				}, 2000)
+			}
+		};
+		randPrime.start();
+		/*
+		Output:
+		13
+		Window {0: global, window: Window, self: Window, document: document, name: "", location: Location, …}
+		*/								
+	</code></pre>
 	<p>
 		Why is the value of <span class="monoText">this</span> set to the
 		<span class="monoText">window</span> object? Because in the
@@ -405,37 +410,37 @@
 		variable before we get to using the built-in method:
 	</p>
 	<pre class="language-javascript"><code>
-				const randPrime = {
-					primes: [1, 3, 5, 7, 11, 13, 17],
+		const randPrime = {
+			primes: [1, 3, 5, 7, 11, 13, 17],
 
-					pickPrime() {
-						const { primes } = this;
-						const idx = Math.floor(Math.random() * primes.length);
-						return primes[idx];
-					},
+			pickPrime() {
+				const { primes } = this;
+				const idx = Math.floor(Math.random() * primes.length);
+				return primes[idx];
+			},
 
-					start() {
-						console.log(this.pickPrime());
+			start() {
+				console.log(this.pickPrime());
 
-						const that = this;
+				const that = this;
 
-						setInterval(function () {
-							console.log(that);
-							console.log(that.pickPrime())
-						}, 2000)
-					}
-				};
-				randPrime.start();
-				/*
-				Output:
-				7
-				{primes: Array(7), pickPrime: ƒ, start: ƒ}
-				13
-				9
-				1
-				5
-				*/								
-			</code></pre>
+				setInterval(function () {
+					console.log(that);
+					console.log(that.pickPrime())
+				}, 2000)
+			}
+		};
+		randPrime.start();
+		/*
+		Output:
+		7
+		{primes: Array(7), pickPrime: ƒ, start: ƒ}
+		13
+		9
+		1
+		5
+		*/								
+	</code></pre>
 	<p>
 		By storing <span class="monoText">this</span> in the variable
 		<span class="monoText">that</span>, we can now use the previous value of
@@ -447,30 +452,30 @@
 		have taken the mantle and provide a much cleaner way of solving the problem:
 	</p>
 	<pre class="language-javascript"><code>
-				const randPrime = {
-					primes: [1, 3, 5, 7, 11, 13, 17],
+		const randPrime = {
+			primes: [1, 3, 5, 7, 11, 13, 17],
 
-					pickPrime() {
-						const { primes } = this;
-						const idx = Math.floor(Math.random() * primes.length);
-						return primes[idx];
-					},
+			pickPrime() {
+				const { primes } = this;
+				const idx = Math.floor(Math.random() * primes.length);
+				return primes[idx];
+			},
 
-					start() {
-						setInterval(() => {
-							console.log(this.pickPrime())
-						}, 2000)
-					}
-				};
-				randPrime.start();
-				/*
-				Output:
-				7
-				11
-				1
-				9
-				*/								
-			</code></pre>
+			start() {
+				setInterval(() => {
+					console.log(this.pickPrime())
+				}, 2000)
+			}
+		};
+		randPrime.start();
+		/*
+		Output:
+		7
+		11
+		1
+		9
+		*/								
+	</code></pre>
 	<p>
 		The above works because with arrow functions, the value of
 		<span class="monoText">this</span> is always the value
