@@ -1,4 +1,3 @@
-
 /* Font Imports */
 	@font-face {
 		font-family: "CMU";
@@ -75,7 +74,7 @@
 	--wheat: #fffcf1;
 	/* "CMU",  */
 
-	--serif: "CMU", "Garamond", "Apple Garamond", "Athelas", "Iowan Old Style", "Hoefler Text", "Palatino", "New York", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
+	--serif: "Garamond", "Apple Garamond", "Athelas", "Iowan Old Style", "Hoefler Text", "Palatino", "New York", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
 
 	--serifTitle: "Athelas", "Georgia", serif;
 	--sansSerifTitle: "Avenir", sans-serif;
@@ -152,6 +151,7 @@
 		margin: 0 0.2em;
 	}
 	ul.toc li {
+		font-size: 0.93rem;
 		margin: 0 1.5em;
 		counter-increment: volume-number; 
 	}
@@ -169,18 +169,26 @@
 	ul.toc>ul>li>ul {
 		counter-reset: chapter-number;
 	}
+	ul.toc>ul>li>ul>li>ul {
+		counter-reset: part-number;
+	}
 	ul.toc ul li {
-		font-size: 0.85rem;
 		counter-increment: section-number;
 	}
 	ul.toc ul li ul li {
 		counter-increment: chapter-number;
+	}
+	ul.toc ul li ul li ul li {
+		counter-increment: part-number;
 	}
 	ul.toc ul li::marker {
 		content: counter(volume-number) "." counter(section-number);
 	}
 	ul.toc ul li ul li::marker {
 		content: counter(volume-number) "." counter(section-number) "." counter(chapter-number);
+	}
+	ul.toc ul li ul li ul li::marker {
+		content: counter(volume-number) "." counter(section-number) "." counter(chapter-number) "." counter(part-number);
 	}
 /* Nav Bar */
 	html {
@@ -204,19 +212,18 @@
 		font-family: var(--sansSerif);
 		font-size: 1.4rem;
 	}
-	main > nav ul {
+	main nav ul {
 		margin: 0 0.7rem;
 		padding: 0 0.3em;
 		list-style-type: none;
 	}
 	main > nav ul li {
-		font-size: 0.75rem;
 		padding: 0;
+		font-size: 0.8rem;
 		font-family: var(--sansSerif);
 		font-weight: bold;
 	}
 	main > nav ul li ul li {
-		font-size: 0.75rem;
 		font-weight: normal;
 	}
 	.section-nav {
@@ -296,8 +303,7 @@
 	}
 	sup::after {
 		content: counter(fn);
-		color: blue;
-		font-family: var(--mono);
+		color: var(--darkBlue);
 	}
 /* Margin Notes */
 	.sidenote,
@@ -514,12 +520,13 @@
 	}
 /* Paragraph styles */
 	p {
+		font-size: 1rem;
+		font-family: "Garamond", "CMU";
 		text-align: left;
 	}
 	section > p {
 		line-height: calc(1ex / 0.32);
 		margin: calc(0.7ex / 0.32) 0;
-		font-size: 0.95rem;
 
 		/* 60 to 70 characters per line */
 		width: 70ch;
@@ -715,7 +722,9 @@
 	.greyText {color: var(--lightGrey);}
 	.underlineText {text-decoration: underline;}
 	.italicsText {
+		font-family: "CMU";
 		font-style: italic; 
+		font-size: 0.9em;
 	}
 	.boldText {font-weight: bold;}
 	.boldItalics {
@@ -1251,20 +1260,18 @@
 /*? Language - JavaScript */
 	code[class*="language-javascript"],
 	pre[class*="language-javascript"] {
-		color: rgb(221, 221, 221);
+		color: rgb(80, 80, 80);
 	}
-
-
 	:not(pre) > code[class*="language-javascript"],
 	pre[class*="language-javascript"] {
-		background-color: rgb(36, 39, 45);
+		background-color: rgb(255, 255, 255);
 	}
 
-
+	code[class*="language-javascript"]>.token.dom {color: rgb(195, 115, 3);}
 
 	code[class*="language-javascript"]>.token.comment,
 	code[class*="language-javascript"]>.token.block-comment {
-		color: rgb(133, 133, 133);
+		color: rgb(127, 127, 127);
 	}
 
 	code[class*="language-javascript"]>.token.prolog,
@@ -1274,7 +1281,7 @@
 	}
 
 	code[class*="language-javascript"]>.token.punctuation {
-		color: rgb(160, 168, 182); /* base00 */
+		color: rgb(61, 61, 61); /* base00 */
 	}
 
 	code[class*="language-javascript"]>.token.tag,
@@ -1285,17 +1292,17 @@
 	}
 
 	code[class*="language-javascript"]>.token.function-name {
-		color: rgb(82, 189, 202);
+		color: rgb(34, 113, 124);
 	}
 
 	code[class*="language-javascript"]>.token.string,
 	code[class*="language-javascript"]>.token.char,
 	code[class*="language-javascript"]>.token.boolean,
 	code[class*="language-javascript"]>.token.number {
-		color: rgb(247, 195, 113);
+		color: rgb(26, 124, 2);
 	}
 	code[class*="language-javascript"]>.token.operator {
-		color: rgb(152, 229, 255);
+		color: rgb(8, 99, 129);
 	}
 
 	
@@ -1304,13 +1311,14 @@
 	code[class*="language-javascript"]>.token.regex,
 	code[class*="language-javascript"]>.token.variable
 	code[class*="language-javascript"]>.token.function,
+	code[class*="language-javascript"]>.token.function.function,
 	code[class*="language-javascript"]>.token.property,
 	code[class*="language-javascript"]>.token.class-name,
 	code[class*="language-javascript"]>.token.entity,
 	code[class*="language-javascript"]>.token.url,
 	code[class*="language-javascript"]>.token.constant,
 	code[class*="language-javascript"]>.token.symbol {
-		color: rgb(250, 125, 125);
+		color: rgb(173, 0, 0);
 	}
 
 	code[class*="language-javascript"]>.token.selector,
@@ -1318,11 +1326,11 @@
 	code[class*="language-javascript"]>.token.atrule,
 	code[class*="language-javascript"]>.token.keyword,
 	code[class*="language-javascript"]>.token.builtin {
-		color: rgb(210, 118, 234);
+		color: rgb(145, 24, 175);
 	}
 
 	code[class*="language-javascript"]>.token.keyword-this {
-		color: rgb(255, 59, 59);
+		color: rgb(26, 166, 143);
 		font-style: italic;
 	}
 
@@ -2136,7 +2144,7 @@
 	@media (max-width: 1100px) {
 		nav {display: none;}
 		main { display: block; }
-		section {padding: 1em 15vw;}
+		section {padding: 1em 12vw;}
 		pre {margin: 1px 0;}
     .sidenote,
     .marginnote {

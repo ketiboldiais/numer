@@ -96,20 +96,13 @@
 		The browser generates a node tree whose nodes are the HTML elements
 		represented as objects:
 	</p>
-	<figure class="math-display">
-		<div>
-			<pre class="language-pseudo"><code>
-				document{}
-								└── html{}
-												├── head{}
-												│       └── title{}
-												└── body{}
-																├── h1{}
-																└── ul{}
-																			├── li{}
-																			└── li{}
-			</code></pre>
-		</div>
+	<figure>
+		<img
+			src="{% static 'images/domTree.svg' %}"
+			alt="The DOM Tree Object"
+			loading="lazy"
+			class="thirty-p"
+		/>
 	</figure>
 	<p>
 		The root node is the <span class="monoText">html</span> element. It is from
@@ -150,6 +143,13 @@
 		</div>
 	</figure>
 	<p>
+		The root of the tree is the <span class="term">document object</span>. We
+		can think of the document object as the entry point to the rest of the tree.
+		If we run <span class="monoText">console.dir(document)</span> on an HTML
+		page, we can see an entire representation of the document (the output is
+		omitted here because of its length, but do try it).
+	</p>
+	<p>
 		The above gives us a better sense of what the DOM is. If we wanted to see
 		what it actually looks like, open a console on a webpage, and run
 		<span class="monoText">console.log(this)</span>. The rough outline above
@@ -169,6 +169,450 @@
 		changes on a webpage, we are really manipulating the leaves and branches in
 		a tree.
 	</p>
+</section>
+
+<section id="targeting_elements">
+	<h2>DOM Getters</h2>
+	<p>
+		From the JavaScript perspective, an HTML page is just one giant object. More
+		specifically, a giant tree. Accordingly, to manipulate HTML pages, we
+		manipulate the DOM tree's nodes. The first step to doing so is to select, or
+		target, nodes in the tree. We can think of these as being akin to
+		<span class="term">getters</span> in other OOP languages. This is done by
+		using methods provided by the DOM. To get started, the HTML and CSS files
+		we're working with look like this:
+	</p>
+	<div class="compare">
+		<pre class="language-html"><code>
+			&lt;!DOCTYPE html&gt;
+			&lt;html lang=&quot;en&quot;&gt;
+			&lt;head&gt;
+			&#x9;&lt;title&gt;Lab&lt;/title&gt;
+			&#x9;&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot;&gt;
+			&lt;/head&gt;
+			&lt;body&gt;
+			&#x9;&lt;main&gt;
+			&#x9;&#x9;&lt;h1 class=&quot;redText&quot;&gt;H1 Tag&lt;/h1&gt;
+			&#x9;&#x9;&lt;p id=&quot;firstP&quot;&gt;Paragraph tag&lt;/p&gt;
+			&#x9;&#x9;&lt;ul class=&quot;firstList&quot;&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;List item 1&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;List item 2&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;List item 3&lt;/li&gt;
+			&#x9;&#x9;&lt;/ul&gt;
+			&#x9;&lt;/main&gt;
+			&#x9;&lt;script src=&quot;./app.js&quot;&gt;&lt;/script&gt;
+			&lt;/body&gt;
+			&lt;/html&gt;
+		</code></pre>
+		<pre class="language-css"><code>
+			main { 
+				font-family: sans-serif; 
+			}
+			.redText { 
+				color: red; 
+			}
+		</code></pre>
+	</div>
+	<p>Here is an API for targetting the various nodes in the tree:</p>
+	<figure class="table">
+		<table class="api">
+			<thead>
+				<th>Method</th>
+				<th>Meaning</th>
+				<th>Comments</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="3" style="font-family: var(--serif)">
+						Where ${obj}$ is some object in the DOM (e.g.,
+						<span class="monoText">document</span>,
+						<span class="monoText">ul</span>,
+						<span class="monoText">section</span>,
+						<span class="monoText">div</span>, etc.):
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.getElementById(${s}$)</span></td>
+					<td>
+						Where ${v}$ is a string, returns the HTML element with the matching
+						<span class="monoText">id</span> attribute with value ${s.}$ If no
+						match is found, the return value is
+						<span class="monoText">null</span>.
+					</td>
+					<td>By &#8220;HTML element&#8221;, we mean an object.</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText">${obj}$.getElementsByTagName(${s}$)</span>
+					</td>
+					<td>
+						Where ${s}$ is a string, returns an
+						<a href="#html_collection"
+							><span class="monoText">HTMLCollection</span></a
+						>
+						of all the elements with the tag name ${s.}$
+					</td>
+					<td>
+						The <span class="monoText">HTMLCollection</span> looks like an
+						array, but it is not an array.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText">${obj}$.getElementsByClassName(${s}$)</span>
+					</td>
+					<td>
+						Where ${s}$ is a string, returns an
+						<span class="monoText">HTMLCollection</span>
+						of all the elements with the class name ${s.}$ If no match is found,
+						an empty
+						<span class="monoText">HTMLCollection</span>
+						is returned.
+					</td>
+					<td><span class="italicsText">Supra above cell.</span></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.querySelector(${s}$)</span></td>
+					<td>
+						Where ${s}$ is a string, returns the
+						<span class="underlineText">first</span> element with the attribute,
+						class, or element name with the string. If ${s}$ is written as a CSS
+						selector, then the method will evalute according to the selector.
+						For example,
+						<span class="monoText">document.querySelector('#red')</span> will
+						select the first element with the
+						<span class="monoText">id</span> attribute of value
+						<span class="monoText">'red'</span>.
+						<span class="monoText">document.querySelector('.green')</span> will
+						select the first element swith the
+						<span class="monoText">class</span> attribute set to
+						<span class="monoText">'green'</span>.
+					</td>
+					<td>
+						Essentially an all-in-one method for the other methods above. Note
+						that only the <span class="underlineText">first</span> match is
+						returned. Other matches will not be returned. We can get very
+						creative with this method.
+						<span class="monoText">querySelector('div li.big')</span>
+						will return the first <span class="monoText">li</span> element in
+						main a <span class="monoText">div</span> element with the class
+						<span class="monoText">big</span>. Some useful CSS combinators to be
+						aware of:
+						<span class="blueText monoText">'${a}$ ${b}$'</span> targets the
+						<span class="italicsText">descendants</span> of ${a}$ that are
+						${b.}$ <span class="blueText monoText">${a}$ > ${b}$</span> targets
+						the <span class="italicsText">children</span> of ${a}$ that are
+						${b.}$ <span class="blueText monoText">${a}$ + ${b}$</span> targets
+						the adjacent siblings of ${a}$ that are ${b}$ (i.e., select the
+						element ${b,}$ which is right after the element ${a}$ on the same
+						level). <span class="blueText monoText">${a}$ ~ ${b}$</span> targets
+						all the siblings after ${a}$ that are ${b.}$
+						<span class="monoText">${a}$[${r}$=${s}$]</span> targets the element
+						${a}$ with the attribute ${r}$ set to the value ${s.}$
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.querySelectorAll(${s}$)</span></td>
+					<td>
+						Similar operation as <span class="monoText">querySelector()</span>,
+						but returns a
+						<span class="monoText"><a href="">nodeList</a></span> containing
+						<span class="underlineText">all</span> the elements matching ${s.}$
+					</td>
+					<td>
+						<i>Supra above cell.</i> CSS selectors, as string values, can be
+						passed as arguments.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<section id="html_collection">
+		<h2>HTML Collections</h2>
+		<p>Consider the return value for each of the methods above:</p>
+		<pre class="language-javascript"><code>
+			let firstP = document.getElementById("firstP");
+			let listItems = document.getElementsByTagName("li");
+			let redText = document.getElementsByClassName("redText");
+
+			console.dir(firstP);
+			console.dir(listItems);
+			console.dir(redText);
+		</code></pre>
+		<pre class="language-bash"><code>
+			p#firstP
+			HTMLCollection(1)
+			HTMLCollection(2)
+		</code></pre>
+		<p>
+			The HTMLCollection is a list of nodes. As a list of nodes, they look and
+			often behave like arrays. They are iterable, we can index into an HTML
+			collection with square bracket syntax, and we can retrieve its length:
+		</p>
+		<pre class="language-javascript"><code>
+			let listItems = document.getElementsByTagName("li");
+			let firstItem = listItems[0];
+			let listItemsLength = listItems.length;
+			console.dir(firstItem);
+			console.dir(listItemsLength);
+		</code></pre>
+		<pre class="language-bash"><code>
+			> li
+			3
+		</code></pre>
+		<p>
+			Now, while this evidences an array-like data structure, the HTMLCollection
+			is <span class="underlineText">not</span> an array. They are in fact
+			objects, which, as we know, is a type of record. Accordingly, methods like
+			<span class="monoText">.pop()</span> and
+			<span class="monoText">.push()</span> will not work with HTML collections.
+		</p>
+		<p>
+			First, the HTMLCollection can only contain
+			<span class="italicsText">element nodes</span>. Second, the HTMLCollection
+			is <span class="term">live</span> &mdash; whenever a new element node is
+			append to the DOM, the corresponding HTMLCollection that would contain
+			that node is updated.
+		</p>
+	</section>
+
+	<section id="node_list">
+		<h2>Node Lists</h2>
+		<p>
+			With the <span class="monoText">.querySelectorAll()</span> method, we see
+			the following return value:
+		</p>
+		<pre class="language-javascript"><code>
+			let list = document.querySelectorAll('li');
+			console.dir(list);
+			typeof list
+		</code></pre>
+		<pre class="language-bash"><code>
+			> NodeList(3)
+			'object'
+		</code></pre>
+		<p>
+			We see <span class="monoText">NodeList</span>. This is somewhat similar to
+			the HTMLCollection, in that it looks and behaves like an array. We can
+			iterate over the node list with the
+			<span class="monoText">forEach</span> method.<label
+				for="forEach"
+				class="margin-toggle"
+				><sup></sup
+			></label>
+			<input
+				type="checkbox"
+				id="forEach"
+				class="margin-toggle sidenote-number"
+			/>
+			<span class="marginnote"
+				>A fair warning: The <span class="monoText">forEach</span> method can be
+				inefficient for iterating over a NodeList.</span
+			>
+			But again, it is <span class="underlineText">not</span> an array. Where
+			the HTML collection is a list of nodes, the NodeList is an
+			<span class="italicsText">aggregate</span> of nodes. And as we might
+			expect, the NodeList too is an object, a record type.
+		</p>
+	</section>
+</section>
+
+<section id="manipulating_elements">
+	<h2>DOM Manipulation</h2>
+	<p>
+		Once we have selected an element, we can begin manipulating the element. The
+		DOM provides numerous properties and methods we can use for manipulation.
+		Below is an API of various properties and methods:
+	</p>
+	<figure class="table">
+		<table class="api">
+			<thead>
+				<th>Identifier</th>
+				<th>Meaning</th>
+				<th>Comments</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td
+						colspan="3"
+						style="
+							font-family: var(--serif);
+							background-color: rgb(255, 243, 209);
+						"
+					>
+						Methods
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.getAttribute(${a}$)</span></td>
+					<td>
+						Returns the value assigned to the attribute ${a}$ of ${obj.}$
+						Argument passed, ${a,}$ is of type
+						<span class="monoText">string</span>.
+					</td>
+					<td>
+						Examples: <span class="monoText">href</span>,
+						<span class="monoText">src</span>,
+						<span class="monoText">class</span>,
+						<span class="monoText">type</span>,
+						<span class="monoText">id</span>, etc.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText">${obj}$.setAttribute(${a}$, ${v}$)</span>
+					</td>
+					<td>
+						Assign to the attribute ${a}$ of ${obj}$ the value ${v.}$ Both ${a}$
+						and ${v}$ are arguments of type
+						<span class="monoText">string</span>.
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.appendChild()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.append()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.prepend()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.removeChild()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.remove()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.createElement()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td
+						colspan="3"
+						style="
+							font-family: var(--serif);
+							background-color: rgb(255, 243, 209);
+						"
+					>
+						Properties
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.classList</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.innerText</span></td>
+					<td>
+						Where ${obj}$ is an HTML element object, returns the text (type
+						<span class="monoText">string</span>) in between the tags. When
+						using <span class="monoText">querySelector()</span> on an object
+						with children, the returned value is the inner text of all the
+						children in a single string (escape sequences used).
+					</td>
+					<td>
+						Changing the value assigned to
+						<span class="monoText">innerText</span> will result in changes the
+						text on the page. String returned does not include parts of text
+						hidden via CSS, text between script tags, or tags.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}.$textContent</span></td>
+					<td>
+						Similar to <span class="monoText">innerText</span>, in that it
+						returns the contents between the HTML tags. However, the string
+						returned will include <span class="underlineText">all</span> the
+						text displayed on the page, except for tags.
+					</td>
+					<td>
+						<span class="italicsText">Supra above cell.</span>
+						<span class="monoText">textContent</span> is slightly faster, since
+						it does not have to perform additional computations to ignore
+						certain text.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.innerHTML</span></td>
+					<td>
+						Returns a string of all the HTML elements (include the tags) in
+						${obj.}$
+					</td>
+					<td>
+						<span class="monoText">innerHTML</span> can be used to add tags, but
+						values assigned must be of type
+						<span class="monoText">string.</span>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.value</span></td>
+					<td>
+						Returns the value of ${obj.}$ Most commonly used with the
+						<span class="monoText">input</span> tag.
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.checked</span></td>
+					<td>
+						Returns the value of an <span class="monoText">input</span> element
+						with type attribute of <span class="monoText">checkbox</span>. If
+						checked, return value is <span class="monoText">true</span>,
+						otherwise <span class="monoText">false</span>.
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.parentElement</span></td>
+					<td>Returns the parent element of ${obj.}$</td>
+					<td>
+						E.g., assuming proper style,
+						<span class="monoText">li.parentElement</span> would return
+						<span class="monoText">ul</span> or
+						<span class="monoText">ol</span> object. To target the
+						&#8220;grandparent&#8221; element, we can write
+						<span class="monoText">${obj}$.parentElement.parentElement</span>.
+						We can think of this method as climbing &#8220;up&#8221; the tree.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.children</span></td>
+					<td>Returns an HTMLCollection of all the children of ${obj.}$</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.nextSibling</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.previousSibling</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj}$.style</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
 </section>
 
 {% endblock %}
