@@ -12,22 +12,23 @@
 		a specific order. Those things could be strings, integers, floating point
 		values, or even other abstract data type objects.
 	</p>
+	<p>
+		The list data type consists of two subtypes: (a) the
+		<span class="term">static list</span> and (b) the
+		<span class="term">dynamic list</span>. The static list type is a sequence
+		with a fixed size. I.e., the number of elements in the sequence does not
+		change. The dynamic list type is a sequence with a dynamic size; the
+		sequence can grow or shrink by inserting or removing elmeents in the
+		sequence.
+	</p>
 </section>
-
-<p>
-	The sequence data type consists of two subtypes: (a) the
-	<span class="term">static list</span> and (b) the
-	<span class="term">dynamic list</span>. The static sequence type is a sequence
-	with a fixed size. I.e., the number of elements in the sequence does not
-	change. The dynamic sequence type is a sequence with a dynamic size; the
-	sequence can grow or shrink by inserting or removing elmeents in the sequence.
-</p>
 
 <section id="static_lists">
 	<h2>Static Lists</h2>
 	<p>
-		Focusing on just the static sequence, what are some operations we might want
-		to include with the interface? We have several:
+		Focusing on just the static list, what are some operations we might want to
+		include with the interface? Bearing in mind that the static list has a fixed
+		size, we have several:
 		<span class="monoText">.build(x)</span> operator, which creates the sequence
 		<span class="monoText">x</span>;
 		<span class="monoText">.length()</span> operator, which returns the length
@@ -45,8 +46,36 @@
 			<span class="topic">Static Arrays.</span>
 			We can implement the static sequence described with a
 			<span class="term">static array</span>. A static array is a data structure
-			that occupies a contiguous and consecutive chunk of memory. Because the
-			static array is a consecutive block of memory, the operations
+			that occupies a contiguous and consecutive chunk of memory. In C++, the
+			static array is implemented as such:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int A[5];
+			}
+		</code></pre>
+		<p>
+			The above creates an array of with a
+			<span class="monoText">length</span> of 5. This array is created in the
+			<span class="italicsText">stack</span>. In C, the static array's size is
+			determined at compile time. However, in C++, the size can be determined at
+			runtime with the following:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int main() {
+				int n;
+				std::cin >> n;
+				int A[n];
+			}
+		</code></pre>
+		<p>
+			We can access an element inside the static array with square bracket
+			syntax. E.g., <span class="monoText">A[0]</span>.
+		</p>
+		<p>
+			Because the static array is a consecutive block of memory, the operations
 			<span class="monoText">.get(i)</span>,
 			<span class="monoText">.set(i, x)</span>, and
 			<span class="monoText">.length()</span> take ${O(1),}$ constant time, to
@@ -66,6 +95,63 @@
 			element in the sequence with the element <span class="monoText">x</span>;
 			and <span class="monoText">.setLast(x)</span>, which replaces the last
 			element in the sequence with the element <span class="monoText">x</span>.
+		</p>
+	</section>
+
+	<section id="dynamic_arrays">
+		<p>
+			<span class="topic">Dynamic Arrays.</span> The alternative implementation
+			of a static list is with a <span class="term">dynamic array</span>. In
+			other words, an array created in the
+			<span class="italicsText">heap</span>. In C++, the implementation appears
+			as such:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int *p;
+				p = new int[5];
+				return 0;
+			}
+		</code></pre>
+		<p>Alternatively, in C:</p>
+		<pre class="language-c"><code>
+			#include &lt;stdlib.h&gt;
+
+			int main() {
+				int *p;
+				p = (int*)malloc(5 * sizeof(int));
+				return 0;
+			}
+		</code></pre>
+		<p>
+			Note that whenever we work with the heap, we
+			<span class="underlineText">must</span> deallocate the memory we requested
+			once we're done using it. Otherwise, we're subject to memory leaks. In
+			C++, this is done with the following:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int *p;
+				p = new int[5];
+				delete []p; // deallocation
+			}
+		</code></pre>
+		<p>In C:</p>
+		<pre class="language-c"><code>
+			#include &lt;stdlib.h&gt;
+
+			int main() {
+				int *p;
+				p = (int*)malloc(5 * sizeof(int));
+				free(p); // deallocation
+			}
+		</code></pre>
+		<p>
+			Importantly, for both the static array and dynamic array, the array's size
+			cannot be resized. Hence its representation of a
+			<span class="italicsText">static list</span>. However, we will see shortly
+			how a dynamic array can be used to implement a non-fixed size list, i.e.,
+			a dynamic list.
 		</p>
 	</section>
 </section>
@@ -96,6 +182,119 @@
 		<span class="monoText">deleteLast()</span>, which deletes the last element
 		in the sequence.
 	</p>
+
+	<section id="dynamic_lists_as_dynamic_arrays">
+		<p>
+			<span class="topic">Dynamic Arrays as Dynamic Lists.</span> Earlier, we
+			mentioned that dynamic arrays have a fixed size. This is true, but we can
+			use pointers to &#8220;increase&#8221; the list's size. We say
+			&#8220;increase&#8221; because we aren't changing the array's size
+			necessarily. Instead, we are merely changing which array a given pointer,
+			identifying a list, points to. This change is done with the following
+			code. First, we declare initialize a pointer with the value of some array
+			created in the heap:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int main() {
+				int *p = new int[5];
+				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
+				return 0;
+			}
+		</code></pre>
+		<p>Next, we create a new array of a larger size:</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int main() {
+				int *p = new int[5];
+				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
+				int *q = new int[10];
+				return 0;
+			}
+		</code></pre>
+		<p>
+			Next, we want to transfer all of the elements in the
+			<span class="monoText">p</span> array to the
+			<span class="monoText">q</span> array. We can do so with a for-loop:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int main() {
+				int *p = new int[5];
+				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
+				int *q = new int[10];
+				for (int i = 0; i < 5; i++) {
+					q[i] = p[i];
+				}
+				return 0;
+			}
+		</code></pre>
+		<p>
+			Now we want <span class="monoText">p</span> to point to the
+			<span class="monoText">q</span> array. But, before doing so, we ought to
+			deallocate the memory allocated for the
+			<span class="monoText">p</span> array to avoid memory leaks.
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int main() {
+				int *p = new int[5];
+				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
+				int *q = new int[10];
+				for (int i = 0; i < 5; i++) {
+					q[i] = p[i];
+				}
+				delete []p;
+				return 0;
+			}
+		</code></pre>
+		<p>
+			Finally, we make <span class="monoText">p</span> point to the
+			<span class="monoText">q</span> array:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int main() {
+				int *p = new int[5];
+				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
+				int *q = new int[10];
+				for (int i = 0; i < 5; i++) {
+					q[i] = p[i];
+				}
+				delete []p;
+				p = q;
+				return 0;
+			}
+		</code></pre>
+		<p>
+			And the very last step: We now have two pointers
+			<span class="monoText">p</span> and <span class="monoText">q</span>,
+			pointing to the same array. We do not need this feature, so we assign to
+			<span class="monoText">q</span> the value
+			<span class="monoText">NULL</span>:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+
+			int main() {
+				int *p = new int[5];
+				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
+				int *q = new int[10];
+				for (int i = 0; i < 5; i++) {
+					q[i] = p[i];
+				}
+				delete []p;
+				p = q;
+				q = NULL;
+				return 0;
+			}
+		</code></pre>
+	</section>
 
 	<section id="linked_lists">
 		<p>

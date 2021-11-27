@@ -72,11 +72,21 @@
 <section id="what_is_the_dom">
 	<h2>What is the DOM?</h2>
 	<p>
-		The DOM is JavaScript's representation of an HTML document. From a very
-		high-level overview, when the browser loads an HTML document, the browser
-		takes all of the HTML elements and returns JavaScript objects. And because
-		they are objects, we can interact with them via JavaScript. For example,
-		given the following HTML code:
+		The DOM is JavaScript's representation of an HTML document. It is a
+		<span class="term">tree</span> data structure, and more specifically, a
+		<span class="term">node tree</span>. From a very high-level overview, when
+		the browser loads an HTML document, the browser takes all of the HTML
+		elements and returns JavaScript objects. Each of these objects is a
+		<span class="term">node</span> on the tree. Some of the nodes have children.
+		These nodes are called <span class="term">branch nodes</span>, because they
+		have <span class="term">branches</span> to other nodes. Other nodes do not
+		have children, in which case they are called
+		<span class="term">leaves</span>.
+	</p>
+	<p>
+		Because each node in the tree is represented as a JavaScript object, we can
+		interact with them via JavaScript. Hence, the DOM is simply an interface for
+		interacting with HTML documents. For example, given the following HTML code:
 	</p>
 	<pre class="language-html"><code>
 		&lt;html&gt;
@@ -416,6 +426,17 @@
 			expect, the NodeList too is an object, a record type.
 		</p>
 	</section>
+
+	<section id="dom_token_list">
+		<h2>DOMTokenList</h2>
+		<p>
+			When using properties like <span class="monoText">.classList</span>, we
+			see that the returned value is a <span class="term">DOMTokenList</span>.
+			This is an <span class="term">ordered set</span> data structure. The
+			DOMTokenList is effectively a <span class="italicsText">set</span> (a very
+			lightweight data structure), wherein there are no duplicates.
+		</p>
+	</section>
 </section>
 
 <section id="manipulating_elements">
@@ -471,34 +492,112 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td><span class="monoText">${obj}$.appendChild()</span></td>
-					<td></td>
-					<td></td>
+					<td><span class="monoText">${obj}$.appendChild(${s}$)</span></td>
+					<td>Appends the element ${s}$ as a child of ${obj.}$</td>
+					<td>If ${obj}$ has children, ${s}$ is appended as the last child.</td>
 				</tr>
 				<tr>
-					<td><span class="monoText">${obj}$.append()</span></td>
-					<td></td>
+					<td>
+						<span class="monoText">${obj}$.append(${s_0, \ldots, s_n}$)</span>
+					</td>
+					<td>
+						Inserts the element objects ${s_0, \ldots, s_n}$ as children of
+						${obj}$ in sequence. If ${obj}$ has existing children, the objects
+						${s_0, \ldots, s_n}$ are inserted at
+						<span class="underlineText">after</span> the last child.
+					</td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><span class="monoText">${obj}$.prepend()</span></td>
-					<td></td>
+					<td>
+						Inserts the element objects ${s_0, \ldots, s_n}$ as children of
+						${obj}$ in sequence. If ${obj}$ has existing children, the objects
+						${s_0, \ldots, s_n}$ are inserted at
+						<span class="underlineText">before</span> the first child.
+					</td>
 					<td></td>
 				</tr>
 				<tr>
-					<td><span class="monoText">${obj}$.removeChild()</span></td>
+					<td>
+						<span class="monoText"
+							>${obj_p}$.insertBefore(${obj_0}$, ${obj_1}$)</span
+						>
+					</td>
+					<td>
+						Where ${obj_p}$ is a branch node object (i.e., an object with
+						children), inserts the element ${obj_0}$ before the element
+						${obj_1}$ as children of ${obj_p.}$
+					</td>
 					<td></td>
+				</tr>
+				<tr>
+					<td>
+						<span class="monoText"
+							>${obj_p}$.insertAdjacentElement(${i}$, ${s}$).</span
+						>
+					</td>
+					<td>
+						Where ${obj_p}$ is a branch node object, inserts the element object
+						${s}$ at position ${p.}$ Both arguments are strings.
+					</td>
+					<td>
+						${i}$ takes 1 of 4 string values:
+						<span class="monoText">'beforebegin'</span> (before ${obj_p}$
+						itself), <span class="monoText">'afterbegin'</span> (inside
+						${obj_p}$ and before its first child),
+						<span class="monoText">'beforeend'</span> (inside ${obj_p}$ and
+						after its last child),
+						<span class="monoText">'afterend'</span> (after ${obj_p}$ itself).
+					</td>
+				</tr>
+
+				<tr>
+					<td><span class="monoText">${obj}$.removeChild(${s}$)</span></td>
+					<td>
+						Where ${obj}$ is a branch node and ${s}$ is a child of ${obj,}$
+						destroys the child ${s.}$
+					</td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><span class="monoText">${obj}$.remove()</span></td>
-					<td></td>
-					<td></td>
+					<td>Destroys the object ${obj.}$</td>
+					<td>No arguments passed to this method.</td>
 				</tr>
 				<tr>
-					<td><span class="monoText">${obj}$.createElement()</span></td>
-					<td></td>
-					<td></td>
+					<td><span class="monoText">document.createElement(${s}$)</span></td>
+					<td>
+						Creates a new element and returns the new element ${s,}$ where ${s}$
+						is the element's type as a string. E.g.,
+						<span class="monoText">document.createElement(p)</span> creates a
+						new paragraph element.
+					</td>
+					<td>
+						This only creates an element and returns the element's object
+						representation. It does not append the element to the page, or set
+						its properties like <span class="monoText">innerText</span>. To do
+						so, we must provide additional statements. E.g., use one of the
+						append methods to insert the element into the page.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">getComputedStyle(${obj}$)</span></td>
+					<td>
+						Returns an object containing all the CSS properties of ${obj}$.
+					</td>
+					<td>
+						Notice that this method is not called with an object. Instead, an
+						object is passed into the method. This is because the
+						<span class="monoText">getComputedStyle()</span> method is provided
+						by the <span class="monoText">Window</span>, the global object on
+						the browser. Thus, the full call looks like
+						<span class="monoText">Window.getComputedStyle(${obj}$)</span>. The
+						object returned contains <span class="underlineText">all</span> of
+						the applicable style properties. Many of these properties have
+						values, even if we didn't set them, because the browser sets many
+						properties by default.
+					</td>
 				</tr>
 				<tr>
 					<td
@@ -513,8 +612,23 @@
 				</tr>
 				<tr>
 					<td><span class="monoText">${obj}$.classList</span></td>
-					<td></td>
-					<td></td>
+					<td>
+						Returns a <span class="monoText">DOMTokenList</span> of all the
+						values assigned to the element's
+						<span class="monoText">class</span> attribute.
+					</td>
+					<td>
+						This is a useful property for modifying multiple styles on an
+						${obj.}$ With <span class="monoText">.classList</span>, we can call
+						the methods
+						<span class="monoText">${obj}$.classList.add(${s}$)</span> to add a
+						new value to ${obj}$'s class attribute,
+						<span class="monoText">${obj}$.classList.remove(${s}$)</span> to
+						remove a value in ${obj}$'s class attribute, and
+						<span class="monoText">${obj}$.toggle(${s}$)</span>, which removes
+						the value ${s}$ to the class attribute if it's present, and adds the
+						value ${s}$ if it is absent.
+					</td>
 				</tr>
 				<tr>
 					<td><span class="monoText">${obj}$.innerText</span></td>
@@ -596,23 +710,248 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td><span class="monoText">${obj}$.nextSibling</span></td>
-					<td></td>
+					<td><span class="monoText">${obj}$.nextElementSibling</span></td>
+					<td>
+						Returns the element <span class="underlineText">after</span> ${obj}$
+						on the same level in the tree.
+					</td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><span class="monoText">${obj}$.previousSibling</span></td>
-					<td></td>
+					<td>
+						Returns the element
+						<span class="underlineText">before</span> ${obj}$ on the same level
+						in the DOM tree.
+					</td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><span class="monoText">${obj}$.style</span></td>
-					<td></td>
-					<td></td>
+					<td>
+						Returns an object containing all of the style properties of ${obj.}$
+					</td>
+					<td>
+						Assuming the page follows standard practices, the properties in the
+						returned object are displayed with empty string values. This is
+						because the values set in the returned object are values provided
+						via <span class="underlineText">inline styling</span>. Because
+						inline styles are generally considered poor practice, the properties
+						will usually have empty string values. To read existing values,
+						<span class="italicsText">see</span>
+						<span class="monoText">.getComputedStyle()</span> above. We can,
+						however, use the <span class="monoText">.style</span> property to
+						mutate the ${obj}$'s styles. For examle,
+						<span class="monoText">${obj}$.style.color = 'blue'</span> will
+						change the text color to blue. Additionally, property names are
+						written in JavaScript syntax. E.g., because JavaScript doesn't allow
+						dashes in names, the CSS property
+						<span class="monoText">background-color</span> is identified in the
+						object in camelCase: <span class="monoText">backgroundColor</span>.
+						Finally, note that mutating this property effectively adds inline
+						styles to the ${obj.}$ As such, this will overwrite any existing
+						styles we've applied via CSS.
+					</td>
 				</tr>
 			</tbody>
 		</table>
 	</figure>
+
+	<section id="common_idoms">
+		<h3>Common Idioms</h3>
+		<p>
+			Because the DOM provides the means for manipulating HTML pages, there are
+			several common idioms for DOM manipulation. We present these idioms below.
+		</p>
+		<section id="changing_multiple_elements">
+			<p>
+				<span class="topic">Changing Multiple Elements.</span> To change
+				multiple elements, one common pattern is to store a NodeList, or
+				HTMLCollection, in a variable, then iterate over it:
+			</p>
+			<pre class="language-javascript"><code>
+				const list = document.querySelectorAll('li');
+				for (let i = 0; i < list.length; i++) {
+					list[i].innerText = "Mutated";
+				}
+			</code></pre>
+			<p>
+				The code above changes all the list items inner text to the string
+				<span class="monoText">"Mutated"</span>. This idiom is particularly
+				powerful, in that it allows us to change many properties, such as
+				<span class="monoText">.innerHTML</span> and
+				<span class="monoText">.style</span>.
+			</p>
+		</section>
+
+		<section id="changing_multiple_styles">
+			<p>
+				<span class="topic">Applying Multiple Styles.</span> Another common
+				idiom is applying multiple styles to an element. This is done by
+				appending, removing, or modifying the element's styles applied via CSS
+				throuh the element's <span class="monoText">class</span> attribute. For
+				example, say we had the following HTML code:
+			</p>
+			<pre class="language-html"><code>
+				&lt;!DOCTYPE html&gt;
+				&lt;html lang=&quot;en&quot;&gt;
+				&lt;head&gt;
+				&#x9;&lt;title&gt;Lab&lt;/title&gt;
+				&#x9;&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot;&gt;
+				&lt;/head&gt;
+				&lt;body&gt;
+				&#x9;&lt;main&gt;
+				&#x9;&#x9;&lt;h1&gt;H1 Tag&lt;/h1&gt;
+				&#x9;&#x9;&lt;p&gt;Paragraph tag&lt;/p&gt;
+				&#x9;&#x9;&lt;ul id=&quot;todo&quot;&gt;
+				&#x9;&#x9;&#x9;&lt;li class=&quot;incomplete&quot;&gt;List item 1&lt;/li&gt;
+				&#x9;&#x9;&#x9;&lt;li class=&quot;incomplete&quot;&gt;List item 2&lt;/li&gt;
+				&#x9;&#x9;&#x9;&lt;li class=&quot;incomplete&quot;&gt;List item 3&lt;/li&gt;
+				&#x9;&#x9;&lt;/ul&gt;
+				&#x9;&lt;/main&gt;
+				&#x9;&lt;script src=&quot;./app.js&quot;&gt;&lt;/script&gt;
+				&lt;/body&gt;
+				&lt;/html&gt;&#x9;
+			</code></pre>
+			<p>The CSS appears as such:</p>
+			<pre class="language-css"><code>
+				main {
+					font-family: sans-serif;
+				}
+				.redText {
+					color: red;
+				}
+				.incomplete {
+					color: green;
+				}
+			</code></pre>
+			<p>
+				Suppose that we wanted to have a list item once its marked complete. To
+				do so, we write write a new class in the CSS file:
+			</p>
+			<pre class="language-css"><code>
+				main {
+					font-family: sans-serif;
+				}
+				.redText {
+					color: red;
+				}
+				.incomplete {
+					color: green;
+				}
+				.complete {
+					color: grey;
+					text-decoration: line-through;
+				}
+			</code></pre>
+			<p>
+				We can then apply the <span class="monoText">.complete</span> class to
+				the respective <span class="monoText">li</span> object:
+			</p>
+			<pre class="language-javascript"><code>
+				const todoList = document.querySelectorAll('li');
+				let firstTodo = todoList[0];
+				firstTodo.setAttribute('class', 'complete')
+			</code></pre>
+			<p>
+				Alternatively, we could have used a method from the
+				<span class="monoText">.classList</span> property.
+			</p>
+		</section>
+	</section>
+</section>
+
+<section id="dom_events">
+	<h2>Event-driven Programming</h2>
+	<p>
+		Once we know how to target and manipulate the DOM tree and its nodes, we can
+		begin investigating <span class="italicsText">events</span>. To understand
+		what events are, it's helpful to think about the different kinds of programs
+		we can write.
+	</p>
+	<p>
+		In much of the preceding sections and volumes, we've been writing
+		<span class="term">console programs</span> &mdash; programs that run
+		primarily on the console. We can, however, also write
+		<span class="term">interactive programs</span> &mdash; programs that allow
+		the user to control a program's actions by using
+		<span class="italicsText">peripherals</span>. Such peripherals include a
+		keyboard, joystick, mouse, trackpad, microphone, etc. When a user performs
+		some action with a peripheral, we call that action an
+		<span class="term">event</span>. For example: Clicking on a mouse, hitting
+		the enter or arrow keys, touching a particular part of a screen, saying a
+		particular word into a microphone, these are all events. Programs that are
+		designed to respond to these events are called
+		<span class="term">event-driven programs</span>. In their simplest forms,
+		such programs take events as input, and return some output.
+	</p>
+	<p>
+		In modern interactive programs, user input does not occur at predictable
+		times. For example, think about clicking on the &#8220;Agree&#8221; button
+		for a software usage license. Most users click the button immediately.
+		Others (however few), will take the time to read the license before
+		clicking. The program behind the license doesn't tell us when we should
+		click the button (it would be poor choice, both business-wise and legally,
+		to require a user to agree to a license in less than five seconds). All this
+		is to say that modern interactive programs leave it up to the user
+		<span class="italicsText">when</span> to trigger an event. And because
+		events are not controlled by the program, we say that such programs are
+		<span class="term">asynchronous</span>.
+	</p>
+	<p>
+		In the JavaScript context, we implement such programs through functions that
+		anticipate these events. By &#8220;anticipate&#8221; we mean that the
+		functions are called <span class="underlineText">only if</span> an event
+		occurs. These functions are more generally called
+		<span class="term">listeners</span>. We can think of a listener as akin to
+		the string telephones we played with in our days of youth:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/listener.svg' %}"
+			alt="A string telephone"
+			loading="lazy"
+			class="sixty-p"
+		/>
+	</figure>
+	<p>
+		The listener &#8220;listens&#8221; to whatever the user sends as input,
+		which in turn keeps a particular module in the program informed. That module
+		then executes whatever statements we provide.
+	</p>
+	<p>
+		Listeners are based on a foundational principle of functional programming:
+		Functions are data values, just as an integer or a string is a data value.
+		JavaScript abides by this principle in treating functions as
+		<span class="italicsText">first-class</span>: We can assign them to
+		variables, pass them as arguments, express them as arguments, and return
+		them as results. Just to confirm that this is the case, recall our
+		discussion on
+		<a href="{% url 'numerc:js_functions' %}#javascript_function_expressions"
+			>function expressions</a
+		>. We could write the following function as such:
+	</p>
+	<pre class="language-javascript"><code>
+		function fahrenheitToCelsius(f) {
+			return 5 / 9 * (f - 32);
+		}
+	</code></pre>
+	<p>
+		But, we could also assign the function to a variable (a
+		<span class="italicsText">closure</span>):
+	</p>
+	<pre class="language-javascript"><code>
+		let fahrenheitToCelsius = function(f) { return 5 / 9 * (f - 32); };
+	</code></pre>
+	<p>
+		When first discussed these different syntactical forms, we didn't expound to
+		deeply on the advantages of using closures over formal function definitions.
+		With listeners, however, there's a signficant benefit to using closures: We
+		can declare the function as a local variable inside another function (e.g.,
+		what we represented as a module in the diagram above). In that case, the
+		inner function (the listener) includes all of the code in its body, which in
+		turn has access to all the local variable in the outer function.
+	</p>
 </section>
 
 {% endblock %}

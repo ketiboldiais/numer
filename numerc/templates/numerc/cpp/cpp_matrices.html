@@ -1,0 +1,123 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Matrices or grids in C++" />
+{% endblock %} {% block title %}
+<title>Matrices</title>
+{% endblock %} {% block content %}
+<h1>Matrices</h1>
+<section id="intro">
+	<p>
+		<span class="drop">F</span>ollowing lists, the next simplest data structure
+		we explore is the <span class="term">matrix</span> or
+		<span class="term">grid</span>. In the simplest case, the matrix is a data
+		structure that consists of <span class="italicsText">rows</span> and
+		<span class="italicsText">columns</span>. Each row in the matrix is a list,
+		and each column is itself a list. This corresponds to the fact the simplest
+		matrix is a 2-dimensional array. Like lists, there are both
+		<span class="term">static matrices</span> and
+		<span class="term">dynamic matrices</span>.
+	</p>
+</section>
+
+<section id="static_matrices">
+	<h2>Static Matrices</h2>
+	<p>
+		The <span class="italicsText">static matrix</span> is a matrix of fixed
+		size. We can implement the static matrix with a 2-dimensional array:
+	</p>
+	<pre class="language-cpp"><code>
+		int main() {
+			int M[3][4];
+
+			return 0;
+		}
+	</code></pre>
+	<p>
+		The implementation above represents a matrix of 3 rows and 4 columns. In
+		other words, a ${3 \times 4}$ matrix. Visually:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/matrix1.svg' %}"
+			alt="A 3 by 4 matrix"
+			loading="lazy"
+			class="twenty-p"
+		/>
+	</figure>
+	<p>
+		Note, however, that in memory, this is really an array where each element
+		contains an array. However, because of indices, we can treat the square
+		bracket indexing as ${M[r][c],}$ where ${M}$ is an array, ${r}$ is a row
+		number (an integer and the index of an element in the array), and ${c}$ is a
+		column number (an integer and the index of the element inside an element in
+		the array).
+	</p>
+	<p>Suppose we initialized the array:</p>
+	<pre class="language-cpp"><code>
+		int main() {
+			int M[3][4] = {{1, 2, 3}, {4, 5, 6&rcub;, {7, 8, 9&rcub;&rcub;;
+
+			return 0;
+		}
+	</code></pre>
+	<p>This generates the following matrix in mathematical notation:</p>
+	<figure class="math-display">
+		<div>
+			$$ M = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}
+			$$
+		</div>
+	</figure>
+</section>
+
+<section id="dynamic_matrices">
+	<h2>Dynamic Matrices</h2>
+	<p>
+		A <span class="term">dynamic matrix</span> is a matrix whose size can be
+		changed. We can implement the dynamic matrix with 2-dimensional
+		<span class="italicsText">dynamic arrays</span>. This is done by first
+		creating an array of pointers, then having each pointer element point to an
+		array created in the heap. For example, we can visualize a dynamic ${3
+		\times 3}$ matrix as such:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/heapMatrix.svg' %}"
+			alt="A matrix in the heap"
+			loading="lazy"
+			class="sixty-p"
+		/>
+	</figure>
+	<p>The implementation is straightforward:</p>
+	<pre class="language-cpp"><code>
+		int main() {
+			int *A[3];
+			A[0] = new int[3];
+			A[1] = new int[3];
+			A[2] = new int[3];
+
+			return 0;
+		}
+	</code></pre>
+	<p>
+		With the implementation above, however, only the array's columns are
+		dynamic. We can, however, make the entire matrix dynamic (i.e., both the
+		rows and columns are dynamic), by having both the rows and the columns in
+		the heap. This is done with
+		<span class="italicsText">double pointers</span>.
+	</p>
+	<pre class="language-cpp"><code>
+		int main() {
+			int **M = new int*[3];
+			M[0] = new int[3];
+			M[1] = new int[3];
+			M[2] = new int[3];
+
+			return 0;
+		}
+	</code></pre>
+	<p>
+		As we can likely tell, accessing each of the elements in a matrix can be
+		done through nested loops. The outter loop iterates through the rows, whilst
+		the inner loop iterates through the columns.
+	</p>
+</section>
+{% endblock %}

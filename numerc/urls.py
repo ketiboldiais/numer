@@ -257,6 +257,8 @@ urlpatterns = [
 
 	path("cpp_inheritance", views.cpp_inheritance, name="cpp_inheritance"),
 
+	path("cpp_matrices", views.cpp_matrices, name="cpp_matrices"),
+
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),
 

@@ -472,6 +472,9 @@ def cpp_fileIO(request):
 def cpp_overloading(request):
 	return render(request, "numerc/cpp/cpp_overloading.html")
 
+def cpp_matrices(request):
+	return render(request, "numerc/cpp/cpp_matrices.html")
+
 
 
 #! C# Views (cshv)

@@ -49,31 +49,10 @@
 		the language behind iOS development, is another implicitly-typed language.
 		Like ML, we don't have to explicitly state our data types. Contrast ML with
 		languages like Java and C++, which are explicitly-typed languages &mdash;
-		types
-		<span class="underlineText">must</span> be explicitly stated.<label
-			for="explicit_v_implicit"
-			class="margin-toggle"
-			><sup></sup
-		></label>
-		<input
-			type="checkbox"
-			id="explicit_v_implicit"
-			class="margin-toggle sidenote-number"
-		/>
-		<span class="marginnote"
-			>Implicitly-typed languages typically have more sophisticated
-			type-checkers than explicitly-typed languages. With implicit-typing, the
-			language designer must design a system that the language can use to infer
-			what <span class="italicsText">type annotations</span> the programmer
-			would have written. This is, however, a broad generalization. Some
-			languages separate the rules for type-inference (the
-			<span class="italicsText">type-inferencer</span>) from the type-checking
-			(i.e., the type-inferencer inferences the types, and the type-checker
-			ensures the types are valid).</span
-		>
-		This comparison raises a critical point about statitically typed languages:
-		The fact that we do not have to explicitly state types does not imply that
-		the language is statically- or dynamically-typed. The language could be
+		types <span class="underlineText">must</span> be explicitly stated. This
+		comparison raises a critical point about statitically typed languages: The
+		fact that we do not have to explicitly state types does not imply that the
+		language is statically- or dynamically-typed. The language could be
 		statically-implicitly-typed.
 	</p>
 	<p>In ML, type inference is done according to the following algorithm:</p>
@@ -125,6 +104,17 @@
 			* therefore: val f : bool * int * 'a -> int
 		*)
 	</code></pre>
+	<p>
+		Implicitly-typed languages typically have more sophisticated type-checkers
+		than explicitly-typed languages. With implicit-typing, the language designer
+		must design a system that the language can use to infer what
+		<span class="italicsText">type annotations</span> the programmer would have
+		written. This is, however, a broad generalization. Some languages separate
+		the rules for type-inference (the
+		<span class="italicsText">type-inferencer</span>) from the type-checking
+		(i.e., the type-inferencer inferences the types, and the type-checker
+		ensures the types are valid).
+	</p>
 </section>
 <section id="polymorphic_types">
 	<p>
@@ -367,6 +357,250 @@
 		structures are <span class="underlineText">not</span> expressions. They
 		cannot be defined inside functions, stored in tuples, passed as arguments,
 		returned as values &mdash; all the usual things we can do with expressions.
+	</p>
+
+	<section id="signature">
+		<p>
+			<span class="topic">Signatures.</span> Once we've defined a structure, we
+			can give the structure a type. This type is called a
+			<span class="term">signature</span>. By using signatures, we can hide
+			everything inside the structure; anything outside the structure cannot
+			see, let alone access, code inside the structure.
+		</p>
+		<p>
+			To repeat, a signature is just the type for a module; i.e., a structure.
+			It communicates what bindings the module has, and what the types of those
+			bindings are. The bindings can include type definitions, variable
+			bindings, datatypes, and exceptions. For example, here is a sample
+			signature:
+		</p>
+
+		<pre class="language-sml"><code>
+			signature MATH =
+			sig
+				val factorial : int -> int
+				val termial : int -> int
+				val half_pi : real
+			end
+			
+			structure MATH_LIBRARY :> MATH =
+			struct
+				fun factorial n =
+					if n <= 1
+						then 1
+					else n * factorial(n - 1)
+				fun termial n =
+					if n = 0
+						then 0
+					else n + termial(n - 1)
+				val half_pi = Math.pi / 2.0
+			end
+		</code></pre>
+		<pre class="language-bash"><code>
+			signature MATH =
+				sig
+				val factorial : int -> int
+				val termial : int -> int
+				val half_pi : real
+			end
+			structure MATH_LIBRARY : MATH
+		</code></pre>
+		<p>
+			Notice the syntax. By writing <span class="monoText">:></span> (called
+			<span class="italicsText">ascribing</span> the signature to the
+			structure), we are stating that the
+			<span class="monoText">Maths</span> structure will
+			<span class="underlineText">not</span> typecheck unless we implement all
+			of the bindings, with the correct types, as indicated in the signature. Of
+			course, we are free to include bindings beyond what the signature
+			includes. As long as we implement all of the bindings indicated in the
+			signature, the module will typecheck.
+		</p>
+		<p>
+			When we (or a user) loads the file above in the REPL, all that's seen is
+			the signature. Everything else is hidden. Signatures are particularly
+			useful in that they allow us to write one signature, then apply it to
+			multiple modules. This has the effect of providing us control over how
+			modules should type check.
+		</p>
+		<p>
+			The most valuable aspect of signatures: They allow us to hide bindings and
+			type definitions &mdash; implementation details. Hiding implemention is
+			the most important tactic for writing correct and reusable software. Think
+			about all of the libraries we use in other languages. In Java, we use the
+			<span class="monoText">length</span> of an array or string as if it were
+			something that just comes naturally. The same goes for strings in a
+			language like C++. We treat them as if they were a primitive data type.
+			Very rarely do we concern ourselves with how these data types and methods
+			work, and that's largely because their implementations are
+			<span class="underlineText">hidden</span>. If they were readily viewable
+			(i.e., imagine the code implementing such methods pasted right at the
+			beginning of a source code file), we would be tempted to snoop into these
+			implementations and changing them to fix a problem that does not implicate
+			their implementations.
+		</p>
+		<p>
+			We already do some level of data hiding with let-expressions and helper
+			functions. We create these implementations solely to implement a larger
+			function; we do not create them for use outside the function. Signatures
+			achieve the same objective, only at a much larger scale &mdash;
+			privatizing not just top-level functions, but entire modules of code. This
+			privatization is achieved by a simple rule:
+		</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					If a binding ${b}$ is (1) not included in the signature ${S}$, (2) the
+					module ${M}$ has the signature ${S,}$ and (3) the module ${M}$
+					contains the binding ${b,}$ then the binding ${b}$ cannot be used
+					outside the module ${M,}$ but it can be used inside the module ${M.}$
+				</p>
+			</div>
+		</figure>
+	</section>
+</section>
+
+<section id="modules_and_abstract_data_types">
+	<h2>Modules & Abstract Data Types</h2>
+	<p>
+		Modules in ML are what allow us to implement
+		<span class="term">abstract data types</span> (ADTs). In object-oriented
+		languages, ADTs are often implemented with the
+		<span class="monoText">class</span>. In ML, and many other languages, they
+		are implemented with the <span class="monoText">struct</span>.
+	</p>
+	<p>
+		For example, here's an implementation for an abstract data type representing
+		the rational numbers:
+	</p>
+	<pre class="language-sml"><code>
+		signature MATH_LIBRARY =
+		sig
+			datatype rational = Fraction of int * int | Whole of int
+			exception BadFraction
+			val gcd : int * int -> int
+			val reduce : rational -> rational
+			val make_fraction : int * int -> rational
+			val add : rational * rational -> rational
+			val toString : rational -> string
+		end
+
+		structure Rational :> MATH_LIBRARY =
+		struct
+			datatype rational = Whole of int | Fraction of int * int
+			exception BadFraction
+
+			fun gcd(x, y) =
+				if x = y then x
+				else if x < y then gcd(x, y-x)
+				else gcd(y, x)
+
+			fun reduce r =
+				case r of
+					Whole _ => r
+					| Fraction(x, y) =>
+						if x = 0 then Whole 0
+						else
+							let
+								val d = gcd(abs x,y)
+							in
+								if d = y then Whole(x div d)
+								else Fraction(x div d, y div d)
+							end
+					
+			fun make_fraction(x, y) =
+				if y = 0 then raise BadFraction
+				else if y < 0 then reduce(Fraction(~x, ~y))
+				else reduce(Fraction(x, y))
+			fun add(r1, r2) = 
+				case (r1, r2) of
+					(Whole(i), Whole(j)) => Whole(i + j)
+					| (Whole(i), Fraction(j, k)) => Fraction(j + k * i, k)
+					| (Fraction(j, k), Whole(i)) => Fraction(j + k * i, k)
+					| (Fraction(a, b), Fraction(c, d)) => reduce(Fraction(a*d + b*c, b*d))
+			fun toString r = 
+				case r of 
+					Whole i => Int.toString i
+					| Fraction(a, b) => (Int.toString a) ^ "/" ^ (Int.toString b)
+		end
+	</code></pre>
+	<pre class="language-bash"><code>
+		signature MATH_LIBRARY =
+			sig
+			datatype rational = Fraction of int * int | Whole of int
+			exception BadFraction
+			val gcd : int * int -> int
+			val reduce : rational -> rational
+			val make_fraction : int * int -> rational
+			val add : rational * rational -> rational
+			val toString : rational -> string
+		end
+		structure Rational : MATH_LIBRARY
+	</code></pre>
+	<p>
+		If we look closely at the implementation above, the ADT has
+		<span class="term">properties</span> that do not change. Such properties are
+		called <span class="term">invarients</span>. For example, one invariant is
+		that we cannot have fractions with a zero denominator. Another invariant is
+		that we will always return fractions in reduced form. We also ensure that
+		fractions are always positive. Invariants are particularly important in
+		writing ADTs because the ADT's functions will rely heavily on the
+		invariants. For example, if we allowed fractions to have zero denominators,
+		then our <span class="monoText">add()</span> and
+		<span class="monoText">reduce()</span> functions would have very different
+		implementations. So too would the
+		<span class="monoText">gcd()</span> function.
+	</p>
+	<p>
+		But, there's a problem with the type signature above. We're revealing the
+		<span class="monoText">datatype</span> binding for
+		<span class="monoText">rational</span>. Moreover, we're revealing some
+		functions &mdash; <span class="monoText">gcd()</span> and
+		<span class="monoText">reduc()</span> &mdash; that we do not want the users
+		to know about or use. This is bad. When users see these bindings, they
+		almost certainly will try to write something like
+		<span class="monoText">Rational.Fraction(1,0)</span>. These calls would lead
+		to exceptions, wrong results, or infinite loops.
+	</p>
+	<p>
+		To prevent these outcomes, we have to
+		<span class="underlineText">hide more</span>. The core rule behind ADT
+		implementations: An ADT <span class="underlineText">must</span> hide every
+		single concrete type definition. By following this rule, we ensure clients
+		do not violate the ADT's invariants. Unfortunately, we cannot just remove
+		the type name from the signature. What we can do, however, is simply state
+		the type's name, without anything further, alongside removing the
+		<span class="monoText">val</span> bindings for
+		<span class="monoText">gcd()</span> and
+		<span class="monoText">reduce()</span>:
+	</p>
+	<pre class="language-sml"><code>
+		signature MATH =
+		sig
+			type rational
+			exception BadFraction
+			val make_fraction : int * int -> rational
+			val add : rational * rational -> rational
+			val toString : rational -> string
+		end
+	</code></pre>
+	<p>Doing so will hide the type's implementation:</p>
+	<pre class="language-bash"><code>
+		signature MATH =
+			sig
+			type rational
+			exception BadFraction
+			val make_fraction : int * int -> rational
+			val add : rational * rational -> rational
+			val toString : rational -> string
+		end
+		structure Rational : MATH
+	</code></pre>
+	<p>
+		Now, when a user sees the signature, they are forced into relying only on
+		the information provided above. In this case, before they can use any of the
+		functions provided, they must first create an instance of a
+		<span class="monoText">rational</span>.
 	</p>
 </section>
 {% endblock %}
