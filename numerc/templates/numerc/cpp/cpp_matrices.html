@@ -3,7 +3,7 @@
 {% endblock %} {% block title %}
 <title>Matrices</title>
 {% endblock %} {% block content %}
-<h1>Matrices</h1>
+<h1>Matrices & Tensors</h1>
 <section id="intro">
 	<p>
 		<span class="drop">F</span>ollowing lists, the next simplest data structure
@@ -120,4 +120,773 @@
 		the inner loop iterates through the columns.
 	</p>
 </section>
+
+<section id="row_major_formula">
+	<h2>Addressing Matrices</h2>
+	<p>
+		As with any array, an initialized multidimensional array must be stored
+		somehow in memory. This in turn requires a method for storage and
+		addressing. On modern computers, there are two storage methods:
+		<span class="term">row-major ordering</span> and
+		<span class="term">column-major ordering</span>. We analyze both approaches
+		in turn.
+	</p>
+	<section id="row_major_order">
+		<h3>Row-major Ordering</h3>
+		<p>
+			First, let's consider row-major ordering (also called
+			<span class="italicsText">row-major mapping</span>). This storage method
+			is used by C, C++, Objective-C, Pascal, and many other high-level
+			languages. Under row-major ordering, arrays are stored row by row. This
+			idea is best clarified by example. Suppose we initialized the following
+			matrix:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int A[2][3] = {{3, 6, 9}, {12, 15, 18 &rcub;};
+			}
+		</code></pre>
+		<p>With row-major mapping, the matrix is represented as such:</p>
+		<figure>
+			<img
+				src="{% static 'images/matrix2.svg' %}"
+				alt="2 by 3 matrix"
+				loading="lazy"
+				class="twenty-p"
+			/>
+		</figure>
+		<p>
+			Notice that the column number represents the index of each element in the
+			array, while the row number represents the index of each element within an
+			element in the array. Notice further the transparent red line displaying
+			the actual sequence. This is where the name &#8220;row-major
+			ordering&#8221; comes from. Array elements are assigned to successive
+			memory locations by moving across the rows first and then down the
+			columns:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/matrix2Memory.svg' %}"
+				alt="2 by 3 matrix"
+				loading="lazy"
+				class="fifty-p"
+			/>
+		</figure>
+		<p>
+			We can interpret the matrix declaration as a declaration of the following:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${A[\textit{number of rows}][\textit{number of columns}]}$</p>
+			</div>
+		</figure>
+		<p>Accordingly, when we write:</p>
+		<figure class="math-display">
+			<div>
+				<p>${A[i][j]}$</p>
+			</div>
+		</figure>
+		<p>${i}$ is the row index, and ${j}$ is the column index.</p>
+		<p>
+			Say the matrix's index starts at 100. How does the compiler transform the
+			expression <span class="monoText">A[1][2]</span> to an address? The
+			compiler achieves this transformation by rewriting the expression as a
+			formula computing the address. The question then, is, what is this
+			formula? From the above diagram, the first element's address is 100. Thus,
+			the address of ${\alpha(\texttt{A[0][0]})}$ is 100, where ${\alpha(n)}$ is
+			some function returning the address of the element ${n.}$ The base address
+			serves as the first term in the formula. Thus:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p><span class="monoText">${\alpha}$(A[1][2]) = ${100}$</span></p>
+			</div>
+		</figure>
+		<p>
+			Next, given the value <span class="monoText">3</span> in the array's
+			declaration <span class="monoText">A[2][3]</span>, the compiler knows the
+			array <span class="monoText">A</span> contains 3 columns. This is called
+			the <span class="term">row size</span> &mdash; the number of elements in
+			each row. Accordingly, when it encounters the expression
+			<span class="monoText">A[1][2]</span>, it sees the value
+			<span class="monoText">1</span> (the row index), so it multiplies this
+			number by the row size, 3. This yields the number of elements it must move
+			<span class="italicsText">from</span> the base address: ${1 \times 3 =
+			3.}$
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					<span class="monoText"
+						>${\alpha}$(A[1][2]) = ${100 + (1 \cdot 3)}$</span
+					>
+				</p>
+			</div>
+		</figure>
+		<p>
+			Next, it sees in <span class="monoText">A[1][2]</span> the value
+			<span class="monoText">2</span> (the column index), so it includes the
+			operation <span class="monoText">+ 2</span> (i.e., &#8220;move an
+			additional 2 elements&#8221;):
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					<span class="monoText"
+						>${\alpha}$(A[1][2]) = ${100 + ((1 \cdot 3) + 2)}$</span
+					>
+				</p>
+			</div>
+		</figure>
+		<p>
+			It then multiples the sum by 4 bytes, the size of an
+			<span class="monoText">int</span>:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					<span class="monoText"
+						>${\alpha}$(A[1][2]) = ${100 + 4((1 \cdot 3) + 2)}$</span
+					>
+				</p>
+			</div>
+		</figure>
+		<p>
+			Simplifying the right-hand side, we have ${100 + 20 = 120,}$ the address
+			of <span class="monoText">A[1][2]</span>. Generalizing this analysis, the
+			row-major order approach employs the following formula for communicating
+			addresses:
+		</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					<span class="topic"
+						>Formula: Row-major Ordering (${0}$-based Indexing).</span
+					>
+					Given a matrix of order ${n \times m,}$ where ${n}$ is the number of
+					rows and ${m}$ is the number of columns (i.e., ${A[n][m]}$),
+				</p>
+				<figure class="math-display">
+					<div>
+						<p>
+							${\alpha(A[i][j]) = \alpha(A[0][0]) + \omega((i \cdot m) + j)}$
+						</p>
+					</div>
+				</figure>
+				<p>
+					Where ${\alpha(A[i][j])}$ is the address of the element ${A[i][j],}$
+					${\alpha(A[0][0])}$ is the base address, ${\omega}$ is the size of the
+					array's type, ${i}$ is the row index, ${m}$ is the row size, and ${j}$
+					is the column index.
+				</p>
+			</div>
+		</figure>
+		<p>
+			Note that this formula changes when the language uses 1-based indexing:
+		</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					<span class="topic"
+						>Formula: Row-major Ordering (${1}$-based Indexing).</span
+					>
+					Given a matrix of order ${n \times m,}$ where ${n}$ is the number of
+					rows and ${m}$ is the number of columns (i.e., ${A[n][m]}$),
+				</p>
+				<figure class="math-display">
+					<div>
+						<p>
+							${\alpha(A[i][j]) = \alpha(A[0][0]) + \omega(((i - 1) \cdot m) +
+							(j - 1))}$
+						</p>
+					</div>
+				</figure>
+				<p>
+					Where ${\alpha(A[i][j])}$ is the address of the element ${A[i][j],}$
+					${\alpha(A[0][0])}$ is the base address, ${\omega}$ is the size of the
+					array's type, ${i}$ is the row index, ${m}$ is the row size, and ${j}$
+					is the column index.
+				</p>
+			</div>
+		</figure>
+		<p>
+			The difference is that we must subtract 1 from the row index ${i,}$ and 1
+			from the column index ${j.}$ This is because if we start from 1, we're no
+			longer offsetting from 0, but rather offsetting from 1. In other words, if
+			we used the previous formula, we would be off by 1, since the index starts
+			at 1. We can see that with 1-based indexing, there are 2 additional
+			decrementing operations to be performed, totalling 6 distinct operations.
+			This is in contrast to 0-based indexing, where there are only 4 distinct
+			operations.
+		</p>
+	</section>
+
+	<section id="column_major_ordering">
+		<h3>Column-major Ordering</h3>
+		<p>
+			The alternative to row-major ordering is
+			<span class="italicsText">column-major ordering</span> (also called
+			<span class="italicsText">column-major mapping</span>). In column-major
+			ordering, array elements are stored column by column. This method is used
+			by languages like Fortran, MATLAB, Octave, S-Plus, R, Julia, Scilab, and a
+			few others. Suppose we initialized the following matrix:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int A[3][4] = {{2, 4, 6, 8}, {10, 12, 14, 16}, {18, 20, 22, 24&rcub;};
+			}
+		</code></pre>
+		<p>
+			In column-major ordering, this matrix is visually interpreted as such:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/column_major.svg' %}"
+				alt="A column major matrix"
+				loading="lazy"
+				class="thirty-p"
+			/>
+		</figure>
+		<p>And in memory, the elements are stored column by column:</p>
+		<figure>
+			<img
+				src="{% static 'images/column_major_memory.svg' %}"
+				alt="Column major in memory"
+				loading="lazy"
+				class="eighty-p"
+			/>
+		</figure>
+		<p>
+			Suppose we wrote the expression <span class="monoText">A[1][2]</span>. To
+			return the address for this element, we use the same form ${A[r][s],}$
+			where ${r}$ is the row index and ${s}$ is the column index. Again, the
+			compiler uses a formula, the first term being the base address:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p><span class="monoText">${\alpha}$(A[1][2]) = ${100}$</span></p>
+			</div>
+		</figure>
+		<p>
+			Next, the compiler sees the value <span class="monoText">2</span> in the
+			expression <span class="monoText">A[1][2]</span> (the number of columns),
+			and multiplies this by the number of elements in each column (the number
+			of rows): ${2 \cdot 3 = 6.}$ This yields the number of elements offset
+			from the first element. Thus:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					<span class="monoText"
+						>${\alpha}$(A[1][2]) = ${100 + (2 \cdot 3)}$</span
+					>
+				</p>
+			</div>
+		</figure>
+		<p>
+			Next, the compiler sees the value <span class="monoText">1</span> in the
+			expression <span class="monoText">A[1][2]</span>, so it includes the
+			operation <span class="monoText">+ 1</span> (move 1 more element):
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					<span class="monoText"
+						>${\alpha}$(A[1][2]) = ${100 + ((2 \cdot 3) + 1)}$</span
+					>
+				</p>
+			</div>
+		</figure>
+		<p>Finally, it multiplies the size of the array's type:</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					<span class="monoText"
+						>${\alpha}$(A[1][2]) = ${100 + 4((2 \cdot 3) + 1)}$</span
+					>
+				</p>
+			</div>
+		</figure>
+		<p>
+			Simplifying the right-hand expression, we have ${100 + 28 = 128,}$ which
+			is in fact the address of <span class="monoText">A[1][2]</span>.
+			Generalizing this formula:
+		</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					<span class="topic"
+						>Formula: Column-major Ordering (${0}$-based Indexing).</span
+					>
+					Given a matrix of order ${n \times m,}$ where ${n}$ is the number of
+					rows and ${m}$ is the number of columns (i.e., ${A[n][m]}$),
+				</p>
+				<figure class="math-display">
+					<div>
+						<p>
+							${\alpha(A[i][j]) = \alpha(A[0][0]) + \omega((j \cdot n) + i)}$
+						</p>
+					</div>
+				</figure>
+				<p>
+					Where ${\alpha(A[i][j])}$ is the address of the element ${A[i][j],}$
+					${\alpha(A[0][0])}$ is the base address, ${\omega}$ is the size of the
+					array's type, ${i}$ is the row index, ${m}$ is the row size, and ${j}$
+					is the column index.
+				</p>
+			</div>
+		</figure>
+		<p>
+			Like row-major ordering with 1-based indexing, we must decrement when
+			considering languages that use 1-based indexing (e.g., Fortran):
+		</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					<span class="topic"
+						>Formula: Column-major Ordering (${1}$-based Indexing).</span
+					>
+					Given a matrix of order ${n \times m,}$ where ${n}$ is the number of
+					rows and ${m}$ is the number of columns (i.e., ${A[n][m]}$),
+				</p>
+				<figure class="math-display">
+					<div>
+						<p>
+							${\alpha(A[i][j]) = \alpha(A[0][0]) + \omega(((j - 1) \cdot n) +
+							(i - 1))}$
+						</p>
+					</div>
+				</figure>
+				<p>
+					Where ${\alpha(A[i][j])}$ is the address of the element ${A[i][j],}$
+					${\alpha(A[0][0])}$ is the base address, ${\omega}$ is the size of the
+					array's type, ${i}$ is the row index, ${m}$ is the row size, and ${j}$
+					is the column index.
+				</p>
+			</div>
+		</figure>
+		<p>
+			Note that the only difference between column-major ordering and
+			row-majoring order is that the ${i}$ and the ${j}$ are swapped in the
+			formula. In essence, this means that with row-major ordering, we go from
+			left to right, but with column-major ordering, we go from right to left.
+			Both formulas have the same number of operations, 4, so in terms of time
+			complexity, both formulas are equally efficient.
+		</p>
+		<p>
+			Why are there two different approaches? Largely because of what earlier
+			languages were designed for. And given that earlier languages play a
+			significant role in inspiring future languages, these earlier approaches
+			tend to stick. Fortran, for example, was designed primarily to solve
+			scientific and engineering problems. In these fields, it is much more
+			natural to think of matrices from a column-major perspective, since the
+			general linear algebra convention is to treat matrices as concatenations
+			of column-vectors. This makes it much easier to think about computations
+			like matrix-vector multiplication. We can see some evidence of this by the
+			fact that most languages employing column-major ordering are geared at
+			scientific or statistical computing: MATLAB, Octave, R, Julia, etc.
+		</p>
+		<p>
+			In contrast, in later languages like COBOL (which grew out of the finance
+			world), it made much more sense to treat matrices as row-records.
+			Accordingly, row-major ordering feels more natural. The notion of records,
+			in general, made its way to languages like C (and later to C++ and
+			Python).
+		</p>
+	</section>
+</section>
+
+<section id="tensors">
+	<h2>Tensors</h2>
+	<p>
+		In the previous example, we saw instances of a 2-dimensional matrix. We can,
+		of course, insert another dimension, leading to some data structure with the
+		dimensions ${a \times b \times c.}$ This data structure represents the
+		abstract data type of a <span class="term">tensor</span>. In the case of ${a
+		\times b \times c,}$ the data structure represents a
+		<span class="italicsText">rank-3 tensor</span>.
+	</p>
+	<section id="multidimensional_arrays">
+		<p>
+			To implement tensors, we use
+			<span class="term">multidimensional arrays</span>. Let's consider a rank-3
+			tensor, a tensor with the dimensions ${a \times b \times c.}$ We can
+			initialize this data structure as such:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int T[3][3][3];
+	
+				return 0;
+			}
+		</code></pre>
+		<p>Visually, this data structure resembles a cube:</p>
+		<figure>
+			<img
+				src="{% static 'images/tensor_rank3.svg' %}"
+				alt="Tensor of rank-3"
+				loading="lazy"
+				class="twenty-p"
+			/>
+		</figure>
+		<p>
+			A rank-4 tensor with the order ${3 \times 3 \times 3 \times 3,}$ is
+			implemented as such:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int T[3][3][3][3];
+	
+				return 0;
+			}
+		</code></pre>
+		<p>Visually, this looks like a sequence of cubes:</p>
+		<figure>
+			<img
+				src="{% static 'images/tensor_rank4.svg' %}"
+				alt="Tensor of rank-4"
+				loading="lazy"
+				class="fifty-p"
+			/>
+		</figure>
+		<p>
+			A rank-5 tensor with the order ${3 \times 3 \times 3 \times 3 \times 3}$
+			would be implemented as such:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int T[3][3][3][3][3];
+	
+				return 0;
+			}
+		</code></pre>
+		<p>
+			Once we add the additional dimension, we have what looks like a matrix of
+			cubes:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/tensor_rank5.svg' %}"
+				alt="Tensor of rank 5"
+				loading="lazy"
+				class="forty-p"
+			/>
+		</figure>
+	</section>
+	<section id="tensor_addressing">
+		<h3>Tensor Addressing</h3>
+		<p>
+			As we saw with sequences and matrices, it's helpful to ask how the
+			compiler translates an expressing indexing into a tensor. As is the case
+			with matrices, there are two approaches: row-major ordering and
+			column-major ordering. Let's first start by considering a sufficiently
+			complex tensor, the rank-4 tensor.
+		</p>
+		<p>
+			Suppose we wrote the expression
+			<span class="monoText">T[0][2][3][0]</span>. Interpreting this from the
+			array perspective, we're asking for: The first element in the fourth
+			element of the third element in the first element of the array
+			<span class="monoText">A</span>. Abstracting this expression, we're asking
+			for the element
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${T[i][j][k][l]}$</p>
+			</div>
+		</figure>
+		<p>To keep things clean, we denote this in tensor notation:</p>
+		<figure class="math-display">
+			<div>
+				<p>${T[i][j][k][l] \equiv T_{ijkl}}$</p>
+			</div>
+		</figure>
+		<p>
+			<span class="topic">Row-major Ordering.</span>
+			In row-major, we go from left to right in offsetting, starting from the
+			base address. Suppose ${L_0}$ is the base address, and the array is
+			initialized as ${A[d_1][d_2][d_3][d_4].}$ With row-major ordering, we
+			start with the first index, ${i:}$
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\alpha(T_{ijkl}) = L_0 + (i d_1 d_2 d_3 d_4)}$</p>
+			</div>
+		</figure>
+		<p>Next, we include the offsets from the second index, ${j:}$</p>
+		<figure class="math-display">
+			<div>
+				<p>${\alpha(T_{ijkl}) = L_0 + (i d_2 d_3 d_4 + j d_3 d_4)}$</p>
+			</div>
+		</figure>
+		<p>Then include the offsets from the third index, ${k:}$</p>
+		<figure class="math-display">
+			<div>
+				<p>${\alpha(T_{ijkl}) = L_0 + (i d_2 d_3 d_4 + j d_3 d_4 + k d_4)}$</p>
+			</div>
+		</figure>
+		<p>And then include the offsets from the fourth index:</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${\alpha(T_{ijkl}) = L_0 + (i d_2 d_3 d_4 + j d_3 d_4 + k d_4 + l)}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			Finally, we multiply the resulting sum by the tensor's type, ${\omega:}$
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${\alpha(T_{ijkl}) = L_0 + \omega(i d_2 d_3 d_4 + j d_3 d_4 + k d_4 +
+					l)}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			<span class="topic">Column-major Ordering.</span> With column-major
+			ordering, we go from right to left in offsetting. Once more, suppose
+			${L_0}$ is the base address, and the array is initialized as
+			${A[d_1][d_2][d_3][d_4],}$ and we are asking for the element ${A_{ijkl}.}$
+		</p>
+		<p>We start with the base address:</p>
+		<figure class="math-display">
+			<div>
+				<p>${A_{ijkl} = L_0}$</p>
+			</div>
+		</figure>
+		<p>Then we include the offsets from the last index, ${l:}$</p>
+		<figure class="math-display">
+			<div>
+				<p>${A_{ijkl} = L_0 + (l d_1 d_2 d_3)}$</p>
+			</div>
+		</figure>
+		<p>Next we include the offsets from the second-to-last index, ${k:}$</p>
+		<figure class="math-display">
+			<div>
+				<p>${A_{ijkl} = L_0 + (l d_1 d_2 d_3 + k d_1 d_2)}$</p>
+			</div>
+		</figure>
+		<p>Then we include the offsets from the third-to-last index, ${j:}$</p>
+		<figure class="math-display">
+			<div>
+				<p>${A_{ijkl} = L_0 + (l d_1 d_2 d_3 + k d_1 d_2 + j d_1)}$</p>
+			</div>
+		</figure>
+		<p>And then include the offsets from the last index, ${i:}$</p>
+		<figure class="math-display">
+			<div>
+				<p>${A_{ijkl} = L_0 + (l d_1 d_2 d_3 + k d_1 d_2 + j d_1 + i)}$</p>
+			</div>
+		</figure>
+		<p>Finally, multiply the tensor's type, ${\omega:}$</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${A_{ijkl} = L_0 + \omega(l d_1 d_2 d_3 + k d_1 d_2 + j d_1 + i)}$
+				</p>
+			</div>
+		</figure>
+	</section>
+
+	<section id="general_formula">
+		<h3>General Formula for Addressing</h3>
+		<p>
+			After the above analysis, we've likely observed a pattern from addressing.
+			Indeed, this pattern evidences the fact that all numbers are tensors (a
+			tensor of rank-0), all sequences are tensors (a tensor of rank-1), and all
+			matrices are tensors (a tensor of rank-2). Accordingly, we can construct a
+			general formula for determining the address of a tensor. First, let's look
+			back at the 4-rank tensor's formula:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${\alpha(T_{ijkl}) = L_0 + \omega(i d_2 d_3 d_4 + j d_3 d_4 + k d_4 +
+					l)}$
+				</p>
+			</div>
+		</figure>
+		<p>We will rewrite this formula as such:</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${\alpha(T[i_1][i_2][i_3][i_4]) = L_0 + \omega(i_1 d_2 d_3 d_4 + i_2
+					d_3 d_4 + i_3 d_4 + i_4)}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			There's no magic going on here. We're just changing the variable names and
+			reverting back to the array notation we're familiar with in programming.
+			Writing the formula in this way, we can more readily see that a summation
+			and a product lurks beneath the surface. Applying the distributive
+			property, we have:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${\alpha(T[i_1][i_2][i_3][i_4]) = L_0 + \omega(i_1(d_2 d_3 d_4) + i_2
+					(d_3 d_4) + i_3(d_4) + i_4(1))}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			Grouping the terms in this manner, we see that we can express the
+			computation more generally with summation and product notation:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${\alpha(T[i_1][i_2][i_3][i_4]) = L_0 + \omega \sum\limits_{j = 1}^{n}
+					\left( i_j \cdot \prod_{k = n + 1}^{n} d_k\right)}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			With this general formula, we can quickly determine the row-major ordering
+			formula for rank-3 tensor (a 3-dimensional array):
+		</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					Given a tensor ${A[l][m][n],}$ the address of element ${T_{ijk}}$ is
+					given by:
+				</p>
+				<figure class="math-display">
+					<div>
+						<p>${\alpha(T_{ijk}) = L_0 + \omega(i m n + j n + k)}$</p>
+					</div>
+				</figure>
+			</div>
+		</figure>
+		<p>And for column-major ordering:</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					Given a tensor ${A[l][m][n],}$ the address of element ${T_{ijk}}$ is
+					given by:
+				</p>
+				<figure class="math-display">
+					<div>
+						<p>${T_{ijk} = L_0 + \omega(k l m + j l + i)}$</p>
+					</div>
+				</figure>
+			</div>
+		</figure>
+	</section>
+</section>
+
+<section id="time_complexity">
+	<h2>Time Complexity for Translation</h2>
+	<p>
+		Once we move beyond the sequence data type into matrices and tensors, we
+		begin seeing the costs of accessing. Revisiting the 4-rank tensor, let's
+		look at how many operations there (we'll ignore the addition operations):
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\alpha(T[i_1][i_2][i_3][i_4]) = L_0 + \omega(i_1(d_2 d_3 d_4) + i_2
+				(d_3 d_4) + i_3(d_4) + i_4(1))}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		We see that there 3 multiplication operations for the first offset, 2
+		multiplication operations for the second offset, and 1 multiplication
+		operation for the third offset. Summing these:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${3 + 2 + 1 = 6}$</p>
+		</div>
+	</figure>
+	<p>For a 5-rank tensor:</p>
+	<figure class="math-display">
+		<div>
+			<p>${4 + 3 + 2 + 1}$</p>
+		</div>
+	</figure>
+	<p>For a 6-rank tensor:</p>
+	<figure class="math-display">
+		<div>
+			<p>${5 + 4 + 3 + 2 + 1}$</p>
+		</div>
+	</figure>
+	<p>And so on and so forth. This expresses the sequence:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\lang n-1, n-2, n-3, n-4, \ldots 3, 2, 1 \rang}$</p>
+		</div>
+	</figure>
+	<p>
+		Examining this sequence, this is just the arithmetic sequence of the
+		positive integers. And as we know, the sum of this sequence is given by the
+		equation:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\dfrac{n(n - 1)}{2} = \dfrac{n^2}{2} - \dfrac{1}{2} = \dfrac{1}{2} n^2
+				- \dfrac{1}{2}}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Applying complexity analysis, we drop the constants, ${\dfrac{1}{2},}$ and
+		focus only on the leading term &mdash; ${n^2.}$ Hence, accessing the
+		${n}$-rank tensor has a time complexity of ${O(n^2).}$ This is bad &mdash;
+		we're working in quadratic time. However, it turns out that we can rewrite
+		our expression above to return a different time complexity.
+	</p>
+	<section id="horners_method">
+		<h3>Horner's Method</h3>
+		<p>
+			The trick is to use an algorithm over a century old, called
+			<span class="term">Horner's method</span> (also called
+			<span class="italicsText">Horner's scheme</span>). Named after the British
+			mathematician William George Horner, the algorithm allows us to quickly
+			compute polynomials. The method is clearest through some simple algebraic
+			manipulation. We focus on the just the offsetting terms for the row-major
+			formula:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${i_1 d_2 d_3 d_4 + i_2 d_3 d_4 + i_3 d_4 + i_4}$</p>
+			</div>
+		</figure>
+		<p>Applying the commutative property:</p>
+		<figure class="math-display">
+			<div>
+				<p>${i_4 + i_3 d_4 + i_2 d_3 d_4 + i_1 d_2 d_3 d_4}$</p>
+			</div>
+		</figure>
+		<p>
+			If we look closely, we see that there's a common term, ${d_4,}$ for some
+			of the terms. Applying the distributive property:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${i_4 + d_4 (i_3 + i_2 d_3 + i_1 d_2 d_3 )}$</p>
+			</div>
+		</figure>
+		<p>Then, we see that ${d_3}$ is common:</p>
+		<figure class="math-display">
+			<div>
+				<p>${i_4 + d_4 (i_3 + d_3 (i_2 + i_1 d_2))}$</p>
+			</div>
+		</figure>
+		<p>
+			It is this pattern that underlies
+			<span class="italicsText">Horner's method</span>. Using this approach, we
+			see that for a rank-4 tensor, there are 3 multiplication operations. For a
+			rank-5 tensor, there are 4, for rank-6 there are 5, and so on. Hence, more
+			generally, given a rank-n tensor, there are are ${n - 1}$ operations.
+			Applying complexity analysis, we have a time complexity of order ${O(n).}$
+		</p>
+	</section>
+</section>
+
 {% endblock %}

@@ -288,6 +288,8 @@ urlpatterns = [
 
 	path("sys_hardware", views.sys_hardware, name="sys_hardware"),
 
+	path("sys_os", views.sys_os, name="sys_os"),
+
 	path("sys_pointers", views.sys_pointers, name="sys_pointers"),
 
 	# Software Design

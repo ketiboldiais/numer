@@ -72,16 +72,30 @@
 <section id="what_is_the_dom">
 	<h2>What is the DOM?</h2>
 	<p>
-		The DOM is JavaScript's representation of an HTML document. It is a
-		<span class="term">tree</span> data structure, and more specifically, a
-		<span class="term">node tree</span>. From a very high-level overview, when
-		the browser loads an HTML document, the browser takes all of the HTML
-		elements and returns JavaScript objects. Each of these objects is a
-		<span class="term">node</span> on the tree. Some of the nodes have children.
-		These nodes are called <span class="term">branch nodes</span>, because they
-		have <span class="term">branches</span> to other nodes. Other nodes do not
-		have children, in which case they are called
-		<span class="term">leaves</span>.
+		The DOM is a a representation of a document's structure.<label
+			for="domSpec"
+			class="margin-toggle"
+			><sup></sup
+		></label>
+		<input type="checkbox" id="domSpec" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>For the specification,
+			<a href="https://dom.spec.whatwg.org/" target="_blank"
+				><span class="italicsText">see</span> <em>DOM Living Standard</em>.</a
+			></span
+		>
+		While the DOM has grown synonymous with JavaScript, it's not exclusive to
+		browsers. Server side programs may also utilize the program.
+	</p>
+	<p>
+		The DOM is implemented as a <span class="term">node tree</span>. From a very
+		high-level overview, when the browser loads an HTML document, the browser
+		takes all of the HTML elements and returns JavaScript objects. Each of these
+		objects is a <span class="term">node</span> on the tree. Some of the nodes
+		have children. These nodes are called
+		<span class="term">branch nodes</span>, because they have
+		<span class="term">branches</span> to other nodes. Other nodes do not have
+		children, in which case they are called <span class="term">leaves</span>.
 	</p>
 	<p>
 		Because each node in the tree is represented as a JavaScript object, we can
@@ -950,8 +964,494 @@
 		can declare the function as a local variable inside another function (e.g.,
 		what we represented as a module in the diagram above). In that case, the
 		inner function (the listener) includes all of the code in its body, which in
-		turn has access to all the local variable in the outer function.
+		turn has access to all the local variable in the outer function. To
+		understand how this is so useful, we turn to JavaScript's
+		<span class="italicsText">event listeners</span>.
 	</p>
+
+	<section id="event_listeners">
+		<h3>Event Listeners</h3>
+		<p>
+			In JavaScript, the most common listeners used are
+			<span class="term">event listeners</span>. The control flow appears as
+			such:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/eventListener.svg' %}"
+				alt="The control flow of an event listener"
+				loading="lazy"
+				class="sixty-p"
+			/>
+		</figure>
+		<p>
+			In the diagram above, the <span class="italicsText">target</span> is
+			whatever element, or object, on the page (or in the Browser window) we
+			expect the user the interact with, and the listener to listen to. We can
+			think of the target as where on a wall we place a cup to listen to an
+			adjacent room. The <span class="italicsText">event</span> is the event the
+			function should listen to. And the
+			<span class="italicsText">callback</span> is the function containing
+			whatever statements we would like to run based on the event listeners
+			output. For example, suppose a user clicks a button. The
+			<span class="italicsText">target</span> is a
+			<span class="monoText">button</span>, the
+			<span class="italicsText">event</span> is a
+			<span class="monoText">click</span>, and the
+			<span class="italicsText">code to run</span> is whatever we'd like to do
+			if the user clicks the button: E.g., change the position of an element,
+			change text color, open a pop-up, etc.
+		</p>
+		<p>For example, suppose we had the following HTML code:</p>
+		<pre class="language-html"><code>
+			&lt;!DOCTYPE html&gt;
+			&lt;html lang=&quot;en&quot;&gt;
+			&lt;head&gt;
+			&#x9;&lt;title&gt;Lab&lt;/title&gt;
+			&#x9;&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot;&gt;
+			&lt;/head&gt;
+			&lt;body&gt;
+			&#x9;&lt;main&gt;
+			&#x9;&#x9;&lt;h1&gt;Some Buttons&lt;/h1&gt;
+			&#x9;&#x9;&lt;ul&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;&lt;button&gt;Button 1&lt;/button&gt;&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;&lt;button&gt;Button 2&lt;/button&gt;&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;&lt;button&gt;Button 3&lt;/button&gt;&lt;/li&gt;
+			&#x9;&#x9;&lt;/ul&gt;
+			&#x9;&lt;/main&gt;
+			&#x9;&lt;script src=&quot;./app.js&quot;&gt;&lt;/script&gt;
+			&lt;/body&gt;
+			&lt;/html&gt;&#x9;&#x9;&#x9;
+		</code></pre>
+		<p>
+			Let's consider a very simple example: When the user clicks the first
+			button, the console outputs a message:
+		</p>
+		<pre class="language-javascript"><code>
+			const buttonList = document.querySelectorAll('button');
+			const firstButton = buttonList[0];
+
+			firstButton.addEventListener('click', () => {
+				console.log("First button clicked.");
+			});
+		</code></pre>
+		<p>When we click the button, the console displays:</p>
+		<pre class="language-bash"><code>
+			First button clicked.
+		</code></pre>
+		<p>
+			In the code above, we used the
+			<span class="monoText">addEventListener()</span> method. This is a method
+			provided by the DOM, and it is what we use &#8220;attach&#8221; an event
+			listener to a particular target. The template:
+		</p>
+		<figure class="math-display">
+			<ul class="syntax">
+				<li>${obj}$.addEventListener(${e_t}$, ${f_c}$);</li>
+			</ul>
+		</figure>
+		<p>
+			In the template above, ${obj}$ is some DOM object (e.g., an HTML element
+			like a button, paragraph, list item, slider, etc.) The first parameter,
+			${e_t,}$ is the event itself. This is a string value specified by the DOM,
+			and there are numerous event values: <span class="monoText">click</span>,
+			<span class="monoText">mousedown</span>,
+			<span class="monoText">drag</span>, etc. We will explore some of the most
+			common events as we continue. The second parameter, ${f_c,}$ is the
+			function that should execute when the event occurs. This is called the
+			<span class="term">callback function</span>. It contains all of the
+			statements we want to execute in response to the event occuring. Putting
+			all this together with respect to the above example: The target is the
+			first button element, the event is a
+			<span class="monoText">'click'</span>, and the function is an anonymous
+			function that displays to the console a message.
+		</p>
+		<p>
+			This is where we see why having first-class in JavaScript is so useful. We
+			can assign the callback function to a variable, and pass that variable as
+			an argument to the event listener:
+		</p>
+		<pre class="language-javascript"><code>
+			const buttonList = document.querySelectorAll('button');
+			const firstButton = buttonList[0];
+			const buttonMesage = () => { console.log("First button clicked.") };
+
+			firstButton.addEventListener('click', buttonMesage);
+		</code></pre>
+		<p>Clicking the button once more:</p>
+		<pre class="language-bash"><code>
+			First button clicked.
+		</code></pre>
+
+		<section id="listen_to_multiple_objects">
+			<p>
+				<span class="topic">Attaching Listeners to Multiple Objects.</span> A
+				common idiom in JavaScript is to attach listeners to multiple objects.
+				For example, think of the upvote button on a Reddit page. It would
+				tedious and unwieldy to attach listeners to each of the objects &mdash;
+				there are thousands of them. Instead, what we want to do is use a loop.
+				For example, suppose we had the following HTML code:
+			</p>
+			<pre class="language-html"><code>
+				&lt;!DOCTYPE html&gt;
+				&lt;html lang=&quot;en&quot;&gt;
+				&#x9;&lt;head&gt;
+				&#x9;&#x9;&lt;title&gt;Lab&lt;/title&gt;
+				&#x9;&#x9;&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot; /&gt;
+				&#x9;&lt;/head&gt;
+				&#x9;&lt;body&gt;
+				&#x9;&#x9;&lt;main&gt;
+				&#x9;&#x9;&#x9;&lt;div id=&quot;container&quot;&gt;
+				&#x9;&#x9;&#x9;&#x9;&lt;div&gt;&lt;/div&gt;
+				&#x9;&#x9;&#x9;&#x9;&lt;div&gt;&lt;/div&gt;
+				&#x9;&#x9;&#x9;&#x9;&lt;div&gt;&lt;/div&gt;
+				&#x9;&#x9;&#x9;&lt;/div&gt;
+				&#x9;&#x9;&lt;/main&gt;
+				&#x9;&#x9;&lt;script src=&quot;./app.js&quot;&gt;&lt;/script&gt;
+				&#x9;&lt;/body&gt;
+				&lt;/html&gt;
+			</code></pre>
+			<p>Then, in our CSS, we have:</p>
+			<pre class="language-css"><code>
+				#container {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+				div div {
+					border: solid thin grey;
+					padding: 3em;
+					margin: 5em;
+				}
+			</code></pre>
+			<p>
+				This displays three square boxes. Now, we want each of the boxes to
+				change color when we hover over them. We can do so with the following
+				JavaScript code:
+			</p>
+			<pre class="language-javascript"><code>
+				const colors = ['red', 'green', 'blue'];
+				const container = document.querySelectorAll('#container div');
+
+				for (let i = 0; i < colors.length; i++) {
+					container[i].addEventListener('mouseover', function () {
+						this.style.backgroundColor = colors[i];
+					})
+				}
+			</code></pre>
+			<p>
+				Note that the <span class="monoText">this</span> keyword refers to the
+				object we're attaching the event listener to. In this case,
+				<span class="monoText">container[i]</span>.
+			</p>
+		</section>
+	</section>
+
+	<section id="the_event_object">
+		<h3>The Event Object</h3>
+		<p>
+			With event listeners, we, as the programmers, never actually call the
+			callback functions. Instead, the event listener is what calls the
+			callback, in response to an event. Moreover, the even listener passes an
+			<span class="term">event object</span> to the callback. In fact, we can
+			see that the event is passed by explicitly naming the argument. Suppose
+			the HTML page contains a single button element:
+		</p>
+		<pre class="language-javascript"><code>
+			const button = document.querySelector('button');
+			button.addEventListener('click', function (evt) { 
+				console.log(evt); 
+			});
+		</code></pre>
+		<pre class="language-bash"><code>
+			PointerEvent {isTrusted: true, pointerId: 1, width: 1, height: 1, pressure: 0, …}
+		</code></pre>
+		<p>
+			We see that we get back an object with numerous properties. Notice the
+			identifier <span class="monoText">PointerEvent</span>. This informs us
+			what type of event object this is. There are numerous different types of
+			event objects: <span class="monoText">MouseEvent</span>,
+			<span class="monoText">KeyboardEvent</span>,
+			<span class="monoText">DragEvent</span>,
+			<span class="monoText">AnimationEvent</span>, and so on. More generally,
+			the event objects are classified according to the kind of interaction by
+			the user, as well as other forms of interactivity. Structurally, the event
+			objects are records, or structs, containing various properties pertaining
+			to the particular event. For example, the
+			<span class="monoText">KeyboardEvent</span> has a property called
+			<span class="monoText">key</span>, which returns the key value of the key
+			pressed. The <span class="monoText">MouseEvent</span> has a property
+			called <span class="monoText">button</span>, which returns which button on
+			the mouse was pressed when the mouse event was triggered.
+		</p>
+		<p>
+			Event objects are particularly useful because they allow us to be more
+			specific with what kinds of inputs we want to trigger callback functions.
+			For example, we can use the <span class="monoText">key</span> property to
+			specify that a block of code in the callback function executes only if the
+			<span class="monoText">enter</span> key is pressed. Or we can specify that
+			another block executes only if a certain area around the target is hovered
+			over with the mouse. In sum, event objects provide us with greater control
+			over how events handled.
+		</p>
+	</section>
+</section>
+
+<section id="async_js">
+	<h2>Asynchronous Programming</h2>
+	<p>
+		When we execute JavaScript code, the JavaScript interpreter uses a
+		<span class="term">call stack</span> to keep track of its place during
+		execution. The call stack is <span class="italicsText">stack</span> data
+		structure. This is a very simple data structure that looks, and behaves,
+		exactly as it sounds: The last thing we place on the stack is the first
+		thing we get from the stack, and the first thing we place in the stack is
+		the last thing we get from the stack. For example, a stack of dishes to be
+		washed. The dish from yesterday is beneath the dish from today, and the dish
+		from ereyesterday is beneath the dish from yesterday. When we wash them, we
+		wash the dish from today, then the dish from yesterday, then the dish from
+		ereyesterday.
+	</p>
+	<p>
+		In JavaScript, the call stack operates like the dish washing example.
+		Suppose the following functions are called sequentially:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\lang f(x), g(x), h(x) \rang}$</p>
+		</div>
+	</figure>
+	<p>
+		When JavaScript executes the first function, ${f(x),}$ it generates a
+		<span class="italicsText">stack frame</span> for ${f(x)}$ and pushes that
+		frame <span class="italicsText">pushes</span> ${f(x)}$ to the call stack:
+	</p>
+	<figure class="math-display">$$ \begin{aligned} f(x) \end{aligned} $$</figure>
+	<p>
+		When it encounters ${g(x),}$ it generates another stack frame for ${g(x)}$
+		pushes that to the call stack:
+	</p>
+	<figure class="math-display">
+		$$ \begin{align*} g(x) \\ \uparrow \\ f(x) \end{align*} $$
+	</figure>
+	<p>And when it counters ${h(x),}$ the same process occurs:</p>
+	<figure class="math-display">
+		$$ \begin{aligned} h(x) \\ \uparrow \\ g(x) \\ \uparrow \\ f(x)
+		\end{aligned} $$
+	</figure>
+	<p>
+		Once ${h(x)}$ finishes executing, its stack frame is
+		<span class="italicsText">popped off</span> the stack:
+	</p>
+	<figure class="math-display">
+		$$ \begin{aligned} g(x) \\ \uparrow \\ f(x) \end{aligned} $$
+	</figure>
+	<p>When ${g(x)}$ finishes executing, it too is popped off the stack:</p>
+	<figure class="math-display">$$ \begin{aligned} f(x) \end{aligned} $$</figure>
+	<p>
+		This leaves ${f(x),}$ and once ${f(x)}$ finishes executing, it's popped off
+		the stack. This control flow applies whether ${g(x)}$ and ${h(x)}$ are
+		inside ${f(x),}$ or whether they are all separate functions in the program.
+		Nesting, however, impacts the order the call stacks are generated, pushed,
+		and popped. In general, when want to determine the order a function's stack
+		frames are generated, pushed, and popped, we want to read the program top to
+		bottom, right to left.
+	</p>
+	<p>
+		This phenomenon of pushing and popping stack frames stems from a fundamental
+		trait of JavaScript: JavaScript is a
+		<span class="term">single-threaded language</span>. A single-threaded
+		language is a language with a single call stack and a single memory heap. In
+		effect, this means that within the language, we can only run one statement
+		at a time. Because of this trait, JavaScript programs live in a
+		<span class="term">synchronous environment</span> &mdash; an environment
+		where functions return (i.e., are popped off) only after they have finished
+		executing. Think carefully about what this means. Necessarily, when we call
+		a function ${f,}$ nothing else in the program can run. All other functions
+		must wait until ${f}$ finishes. This is the defining characteristic of the
+		<span class="term">synchronous programming</span>. Tasks are done one at a
+		time; there's no such thing as &#8220;multitasking.&#8221;
+	</p>
+	<p>
+		The opposite of a single-threaded language is a
+		<span class="term">multithreaded language</span>. With a multithreaded
+		language, we can perform simultaneous executions of two or more parts of the
+		program (e.g., functions). Multithreading is a defining characteristic of
+		<span class="term">parallel programming</span> &mdash; programming where
+		functions need not wait for another function to return before executing. Not
+		very many languages have built-in support for multithreading. Languages like
+		C++ and Java provide multithreading only if the operating system permits it.
+		We will see in a moment why multithreading is a relatively rare feature.
+	</p>
+	<p>
+		The opposite of the synchronous environment is an
+		<span class="term">asynchronous environment</span> &mdash; an environment
+		where multiple functions run and return at various points in time. With an
+		asynchronous environment, we can perform
+		<span class="term">asynchronous programming</span>: When we call a function
+		${f,}$ the program continues to run, calling other functions like ${g}$ and
+		${h.}$ When ${f}$ finishes, great, we can use ${f}$'s return value. If not,
+		we can continue working on other things.
+	</p>
+	<p>
+		We can compare asynchronous programming and synchronous programming with the
+		following analogy: We have to make a caramel glaze and bake a cake. Under
+		the synchronous programming model, we must do one or the other, not both,
+		before proceeding to the next. In other words, we have to finish making the
+		glaze before baking the cake, or we have to finish baking the cake before
+		making the glaze. In the asynchronous programming model, we can start baking
+		the pie, then while it's in the oven, we move on to the glaze, waiting for
+		the pie to finish.
+	</p>
+	<p>
+		We might be thinking, why don't all languages just default to multithreaded
+		implementations? If they did so, we would be able to perform asynchronous
+		programming as needed. It is, after all, much more efficient to work on the
+		glaze while the cake bakes. The answer lies in thinking a little more
+		carefully on the analogy. Preparing a glaze alongside baking a cake is
+		actually much more complex than it seems. If we start the glaze too early,
+		it can harden, decreasing its viscosity. Start too late, and we can burn the
+		cake.
+	</p>
+	<p>
+		This same difficulty extends to multithreaded programs. It can be much more
+		difficult to reason about what a multithreaded program does at any given
+		point in time. We have to keep track of different functions executing at
+		once. Moreover, if we reflect a little more deeply, we'd realize that we
+		aren't very good at multitasking ourselves. Sure, we can tie our shoelaces
+		while talking to someone, but if the conversation was on the mechanics of
+		the proof for &#8220;This statement is a theorem,&#8221; no doubt we would
+		pause. In fact, some tasks are so involved that we have laws ensuring we
+		don't multitask: &#8220;No person may drive ... any motor vehicle while
+		composing or sending an electronic text message or an electronic mail
+		message.&#8221; Wis. Stat. §346.89(3)(a).
+	</p>
+	<p>
+		Nevertheless, there are some tasks that we can reason about easily. And
+		there are some tasks that we <span class="italicsText">want</span> to
+		perform while performing another. The fact that these tasks exist is partly
+		why we have Bluetooth headsets and speech-to-text software. This extends to
+		JavaScript programs. In fact, many websites rely on asynchronous
+		programming. When we click the &#8220;Watch&#8221; button on Netflix, a
+		request is sent to a server to retrieve the relevant video file. This is
+		done with a function, and that function can take time. The page, however,
+		doesn't just freeze while the program waits for the function to finish.
+		Instead, we're greeted with some animations indicating some loading is going
+		on in the background. These animations are performed with functions. How
+		does JavaScript achieve something like this?
+	</p>
+
+	<section id="asynchronous_callbacks">
+		<h3>Asychronous Callbacks</h3>
+		<p>
+			The more general question is, how do we implement asynchronous programs in
+			a synchronous environment? The answer is through
+			<span class="term">asynchronous callbacks</span> (also called
+			<span class="italicsText">call-after functions</span>). The callback
+			functions we saw in the previous examples are instances of
+			<span class="term">synchronous callbacks</span> &mdash; callbacks that
+			execute immediately. With asynchronous callbacks, the callback is executed
+			only after some delay; i.e., at a later point in time. These asynchronous
+			callbacks are done with two methods: a
+			<span class="term">one-shot timer</span> implemented with the
+			<span class="monoText">setTime()</span> method, and an
+			<span class="term">interval timer</span>, implemented with the
+			<span class="monoText">setInterval()</span> method.
+		</p>
+		<p>The template for the <span class="monoText">setTime()</span> method:</p>
+		<figure class="math-display">
+			<ul class="syntax">
+				<li>setTimeout(${f}$, ${t}$)</li>
+			</ul>
+		</figure>
+		<p>
+			In the template above, ${f}$ is some function, and ${t}$ is an integer
+			value of time, measured in milliseconds. And the template for the
+			<span class="monoText">setInterval()</span> method:
+		</p>
+		<figure class="math-display">
+			<ul class="syntax">
+				<li>setInterval(${f}$, ${I}$)</li>
+			</ul>
+		</figure>
+		<p>
+			Here, ${f}$ is some function, and ${I}$ is an integer value of time,
+			measured in milliseconds. With
+			<span class="monoText">setInterval()</span>, the function ${f}$ is called
+			every ${I}$ milliseconds (hence an
+			<span class="italicsText">interval time</span>). Furthermore,
+			<span class="monoText">setInterval()</span> returns a numeric value ${v}$
+			that can be used to stop the timer. This is done by calling the method
+			<span class="monoText">clearTimeout()</span>, passing ${v}$ as an argument
+			&mdash; <span class="monoText">clearTimeout(${v}$)</span>.
+		</p>
+		<p>
+			Question: But isn't JavaScript itself executing these functions? In other
+			words, itsn't JavaScript running another process (keeping track of time)
+			while it continues executing the next function? This is an astute
+			observation, but the answer is no. These methods are called by JavaScript,
+			but executed by the <span class="italicsText">browser</span>. This is
+			JavaScript's secret to asynchrony (well, not quite; it's public knowledge,
+			just not widely-known). Because JavaScript only has one thread to rely on,
+			it sends the tasks of keeping tracking of the delay's time and reminding
+			to execute to another program's thread &mdash; the browser's.
+		</p>
+		<p>
+			So now the question is how does this work? Recall that JavaScript lives
+			only in a hosted environment. One of these environments is the browser, a
+			program more than likely written in C++. Browsers provide numerous
+			interfaces, one of which provides methods like
+			<span class="monoText">setTimeout()</span> and
+			<span class="monoText">setInterval()</span>. When the JavaScript engine
+			encounters a call like <span class="monoText">setTimeout()</span>, it
+			generates a stack frame for the function, and pushes it onto the call
+			stack as it would any other. Once at the call stack, however, the call
+			stack itself recognizes <span class="monoText">setTimeout()</span> as one
+			of the browser's web API functions and hands them over to the browser. The
+			browser then starts a timer, per our argument. Once the time passes, the
+			browser inserts a <span class="term">timeout event</span> to a data
+			structure called the <span class="term">event queue</span>.
+		</p>
+		<p>
+			The event queue is exactly what it sounds like: A line of entities in
+			waiting. The queue exhibits a behavior we're all familiar with &mdash; if
+			you're the first in line, you're the first one out (assuming an orderly
+			society). In this case, the timeout event inserted into the queue includes
+			the function we want executed after the delay. Once the timer is over, the
+			JavaScript engine processes the call as usual.
+		</p>
+		<p>
+			With callbacks, we can <span class="italicsText">simulate</span> what
+			looks like multithreaded programming, but is not. To understand this
+			simulation, we have to be clear about the distinction between
+			single-threaded programs, multi-threaded programs, synchronous programs,
+			and asynchronous programs.
+		</p>
+		<p>
+			In a <span class="term">single-threaded program</span>, only one command
+			is executed in a single process. As we know, JavaScript is a
+			single-threaded language. All JavaScript programs are single-threaded. In
+			a <span class="term">multi-threaded program</span>, multiple commands are
+			executed within a single process. Multi-threaded programs are possible
+			only if the operating system supports it. For example, on a Windows system
+			with the ThreadFiber package, we can write multi-threaded C programs. In a
+			<span class="term">synchronous program</span>, commands are executed one
+			by one, immediately after one another. Before we encountered the
+			asynchronous callback functions we saw above, our JavaScript programs have
+			been synchronous. In an <span class="term">asynchronous program</span>,
+			commands are executed one by one, but some commands are delayed (i.e.,
+			executed later). We can compare these different approaches via diagram.
+			Each of the colored boxes below represents a function:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/approachComparisons.svg' %}"
+				alt="Comparing the different approaches, multi-threaded takes the least amoung of time."
+				loading="lazy"
+				class="seventy-p"
+			/>
+		</figure>
+	</section>
 </section>
 
 {% endblock %}

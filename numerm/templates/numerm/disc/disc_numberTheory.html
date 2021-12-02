@@ -347,33 +347,33 @@
 		integer ${2,}$ return the same remainder, ${1.}$ In number theory, we have a
 		special definition for this phenomenon:
 	</p>
-	
-		<div class="rule">
-			<p>
-				<span class="topic">Definition.</span> Let ${a}$ and ${b}$ be integers
-				and ${m}$ a positive integer. If ${m \space\vert\space a - b,}$ then
-				${a}$ <span class="underlineText">is congruent</span> to
-				<span class="underlineText">${b}$ modulo ${m.}$</span> We denote this
-				expression with:
-			</p>
-			<figure class="math-display">
-				<div>
-					<p>${a \equiv b (\bmod \space m)}$</p>
-				</div>
-			</figure>
-			<p>
-				The expression ${a \equiv b (\bmod \space m)}$ is a
-				<span class="term">congruence</span> and ${m}$ is its
-				<span class="term">modulus</span>. If ${a}$ and ${b}$ are not modulo
-				${m,}$ then we write:
-			</p>
-			<figure class="math-display">
-				<div>
-					<p>${a \not\equiv b (\bmod \space m)}$</p>
-				</div>
-			</figure>
-		</div>
-	
+
+	<div class="rule">
+		<p>
+			<span class="topic">Definition.</span> Let ${a}$ and ${b}$ be integers and
+			${m}$ a positive integer. If ${m \space\vert\space a - b,}$ then ${a}$
+			<span class="underlineText">is congruent</span> to
+			<span class="underlineText">${b}$ modulo ${m.}$</span> We denote this
+			expression with:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${a \equiv b (\bmod \space m)}$</p>
+			</div>
+		</figure>
+		<p>
+			The expression ${a \equiv b (\bmod \space m)}$ is a
+			<span class="term">congruence</span> and ${m}$ is its
+			<span class="term">modulus</span>. If ${a}$ and ${b}$ are not modulo
+			${m,}$ then we write:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${a \not\equiv b (\bmod \space m)}$</p>
+			</div>
+		</figure>
+	</div>
+
 	<p>
 		To better see what the proposition above communicates, consider our previous
 		examples, ${9}$ and ${5.}$ Suppose ${a = 9,}$ ${b = 5,}$ and ${m = 2.}$
@@ -391,19 +391,18 @@
 		closely related. Because ${9 \bmod 2 = 1,}$ and ${5 \bmod 2 = 1,}$ we
 		conclude that ${9 \equiv 5(\bmod \space 2).}$ More formally:
 	</p>
-	
-		<div class="rule">
-			<p>
-				<span class="topic">Theorem.</span> Suppose ${a, b \in \Z}$ and ${m \in
-				\Z^{+}.}$ Then:
-			</p>
-			<figure class="math-display">
-				<div>
-					<p>${[a \equiv b(\bmod \space m)] \iff (a \bmod m = b \bmod m)}$</p>
-				</div>
-			</figure>
-		</div>
-	
+
+	<div class="rule">
+		<p>
+			<span class="topic">Theorem.</span> Suppose ${a, b \in \Z}$ and ${m \in
+			\Z^{+}.}$ Then:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${[a \equiv b(\bmod \space m)] \iff (a \bmod m = b \bmod m)}$</p>
+			</div>
+		</figure>
+	</div>
 </section>
 
 <section id="jug">
@@ -921,22 +920,72 @@
 		To understand <span class="italicsText">Euclid's algorithm</span>, we begin
 		with the following proposition:
 	</p>
-	
-		<div class="rule">
-			<p>
-				<span class="topic">Theorem.</span> Suppose that ${a,b \in \Z,}$ and ${b
-				\in \Z^{+}.}$ Then there exists a unique quotient ${q,}$ and a remainder
-				${r}$ of ${a}$ divided by ${b}$ such that ${b = qa + r}$ and ${0 \leq r
-				< b.}$
-			</p>
-		</div>
-	
+
+	<div class="rule">
+		<p>
+			<span class="topic">Theorem.</span> Suppose that ${a,b \in \Z,}$ and ${b
+			\in \Z^{+}.}$ Then there exists a unique quotient ${q,}$ and a remainder
+			${r}$ of ${a}$ divided by ${b}$ such that ${b = qa + r}$ and ${0 \leq r <
+			b.}$
+		</p>
+	</div>
+
 	<p>
 		A fairly long theorem, but the key point is that ${r,}$ the remainder, is
 		always smaller than the divisor. This the foundational premise for why
 		Euclid's algorithm works. Because the remainder is always smaller than the
 		divisor, in our algorithm, ${b}$ gets smaller and smaller (since ${b}$ is
 		assigned the remainder).
+	</p>
+	<p>
+		We will denote ${r,}$ the remainder, with ${rem(b, a).}$ With this theorem,
+		we can prove the following lemma:
+	</p>
+
+	<div class="rule">
+		<p>
+			<span class="topic">Lemma.</span> The greatest common denominator of ${a}$
+			and ${b}$ is the greatest common denominator of the remainder of ${b}$ and
+			${a}$ and ${a.}$ I.e.,
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${gcd(a, b) = gcd(rem(b, a), a)}$</p>
+			</div>
+		</figure>
+	</div>
+
+	<p>For example, consider the integers 105 and 224. Following the lemma:</p>
+	<figure class="math-display">
+		$$ \begin{aligned} gcd(105, 224) &= gcd(rem(224, 105), 105) \\ &= gcd(14,
+		105) \\ &= gcd(rem(105, 14), 14) \\ &= gcd(7, 14) \\ &= gcd(rem(14, 7), 7)
+		\\ &= gcd(0, 7) \\ &= 7 \end{aligned} $$
+	</figure>
+	<p>
+		Applying the lemma repeatedly, as we did above, is called Euclid's
+		algorithm. To prove the lemma, we want to show that if ${m \space\vert\space
+		a}$ and ${m \space\vert\space b,}$ then ${m \space\vert\space rem(b,a)}$ and
+		${m \space\vert\space a.}$
+	</p>
+	<p>
+		Suppose ${m \space\vert\space a}$ and ${m \space\vert\space b.}$ Then it
+		must be true that ${m \space\vert\space b - qa}$ and ${m \space\vert\space
+		a.}$ Now we know that ${b - qa = rem(b, a),}$ so it must be the case that
+		${m \space\vert\space rem(b, a).}$ This proves that ${gcd(a, b)
+		\space\vert\space gcd(rem(b,a), a).}$ In turn, this implies that ${gcd(a, b)
+		\leq gcd(rem(b,a), a).}$
+	</p>
+	<p>
+		Let's now consider the cases. First case: If ${rem(b, a) \neq 0,}$ then ${[m
+		\space\vert\space rem(b - a) = b - qa \land m \space\vert\space a] \implies
+		[m \space\vert\space a \land m \space\vert\space b.]}$ This is because if
+		${m \space\vert\space a}$ and ${m \space\vert\space b,}$ then ${m}$ divides
+		any linear combination of ${a}$ and ${b.}$
+	</p>
+	<p>
+		Second case: If ${rem(b, a) = 0,}$ then ${b - qa = 0.}$ We can rewrite ${b -
+		qa = 0}$ as ${b = qa.}$ Thus, if ${rem(b, a) = 0,}$ then ${b = qa.}$ Hence,
+		if ${m \space\vert\space a,}$ then ${m \space\vert\space b.}$
 	</p>
 	<p>
 		Now, with every algorithm, we must prove that the algorithm is correct. To
@@ -994,11 +1043,12 @@
 		some integer. Therefore, ${k \space\vert\space r.}$ <b>qed.</b>
 	</p>
 	<p>
-		Finally, the third point: The return value at the definition's end is
-		correct (i.e., ${gcd(a, 0) = a}$). <b>Proof</b>: Every integer ${p}$ divides
-		0 (i.e., ${0 = (p)(n).}$) When we write ${gcd(a, 0),}$ we are asking for the
-		largest integer that divides ${a}$ and 0. Because every integer ${p}$
-		divides 0, the largest integer is ${a.}$ Thus, ${gcd(a, 0) = a.}$<label
+		Having proved the second point, we know the algorithm is correct because of
+		the third point: The return value at the definition's end is correct (i.e.,
+		${gcd(a, 0) = a}$). <b>Proof</b>: Every integer ${p}$ divides 0 (i.e., ${0 =
+		(p)(n).}$) When we write ${gcd(a, 0),}$ we are asking for the largest
+		integer that divides ${a}$ and 0. Because every integer ${p}$ divides 0, the
+		largest integer is ${a.}$ Thus, ${gcd(a, 0) = a.}$<label
 			for="gcdzero"
 			class="margin-toggle"
 			><sup></sup
@@ -1008,56 +1058,6 @@
 			>Note that ${gcd(0,0)}$ is undefined. There are many divisors for 0 and 0,
 			but there is no maximum.</span
 		>
-	</p>
-	<p>
-		We will denote ${r,}$ the remainder, with ${rem(b, a).}$ With this theorem,
-		we can prove the following lemma:
-	</p>
-	
-		<div class="rule">
-			<p>
-				<span class="topic">Lemma.</span> The greatest common denominator of
-				${a}$ and ${b}$ is the greatest common denominator of the remainder of
-				${b}$ and ${a}$ and ${a.}$ I.e.,
-			</p>
-			<figure class="math-display">
-				<div>
-					<p>${gcd(a, b) = gcd(rem(b, a), a)}$</p>
-				</div>
-			</figure>
-		</div>
-	
-	<p>For example, consider the integers 105 and 224. Following the lemma:</p>
-	<figure class="math-display">
-		$$ \begin{aligned} gcd(105, 224) &= gcd(rem(224, 105), 105) \\ &= gcd(14,
-		105) \\ &= gcd(rem(105, 14), 14) \\ &= gcd(7, 14) \\ &= gcd(rem(14, 7), 7)
-		\\ &= gcd(0, 7) \\ &= 7 \end{aligned} $$
-	</figure>
-	<p>
-		Applying the lemma repeatedly, as we did above, is called Euclid's
-		algorithm. To prove the lemma, we want to show that if ${m \space\vert\space
-		a}$ and ${m \space\vert\space b,}$ then ${m \space\vert\space rem(b,a)}$ and
-		${m \space\vert\space a.}$
-	</p>
-	<p>
-		Suppose ${m \space\vert\space a}$ and ${m \space\vert\space b.}$ Then it
-		must be true that ${m \space\vert\space b - qa}$ and ${m \space\vert\space
-		a.}$ Now we know that ${b - qa = rem(b, a),}$ so it must be the case that
-		${m \space\vert\space rem(b, a).}$ This proves that ${gcd(a, b)
-		\space\vert\space gcd(rem(b,a), a).}$ In turn, this implies that ${gcd(a, b)
-		\leq gcd(rem(b,a), a).}$
-	</p>
-	<p>
-		Let's now consider the cases. First case: If ${rem(b, a) \neq 0,}$ then ${[m
-		\space\vert\space rem(b - a) = b - qa \land m \space\vert\space a] \implies
-		[m \space\vert\space a \land m \space\vert\space b.]}$ This is because if
-		${m \space\vert\space a}$ and ${m \space\vert\space b,}$ then ${m}$ divides
-		any linear combination of ${a}$ and ${b.}$
-	</p>
-	<p>
-		Second case: If ${rem(b, a) = 0,}$ then ${b - qa = 0.}$ We can rewrite ${b -
-		qa = 0}$ as ${b = qa.}$ Thus, if ${rem(b, a) = 0,}$ then ${b = qa.}$ Hence,
-		if ${m \space\vert\space a,}$ then ${m \space\vert\space b.}$
 	</p>
 </section>
 

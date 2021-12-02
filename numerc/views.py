@@ -519,6 +519,9 @@ def sys_cIntro(request):
 def sys_hardware(request):
 	return render(request, "numerc/sys/sys_hardware.html")
 
+def sys_os(request):
+	return render(request, "numerc/sys/sys_OS.html")
+
 def sys_pointers(request):
 	return render(request, "numerc/sys/sys_pointers.html")
 

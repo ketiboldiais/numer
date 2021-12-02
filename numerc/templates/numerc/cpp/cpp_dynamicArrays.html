@@ -1,318 +1,982 @@
 {% extends '../layout.html' %} {% load static %} {% block description %}
 <meta name="description" content="Dynamic arrays, sets, and sequences." />
 {% endblock %} {% block title %}
-<title>Dynamic Arrays</title>
+<title>Sequences</title>
 {% endblock %} {% block content %}
 
-<h1>Lists</h1>
+<h1>Sequence</h1>
 <section id="intro">
 	<p>
 		<span class="drop">T</span>he first set of abstract data types we explore is
-		the <span class="term">list</span>. Lists allow us to store ${n}$ things in
-		a specific order. Those things could be strings, integers, floating point
-		values, or even other abstract data type objects.
+		the <span class="term">sequence</span>. Sequences allow us to store ${n}$
+		things in a specific order. Those things could be strings, integers,
+		floating point values, or even other abstract data type objects.
 	</p>
 	<p>
-		The list data type consists of two subtypes: (a) the
-		<span class="term">static list</span> and (b) the
-		<span class="term">dynamic list</span>. The static list type is a sequence
-		with a fixed size. I.e., the number of elements in the sequence does not
-		change. The dynamic list type is a sequence with a dynamic size; the
-		sequence can grow or shrink by inserting or removing elmeents in the
-		sequence.
+		The sequence data type consists of two subtypes: (a) the
+		<span class="term">tuple</span
+		><label for="tuple" class="margin-toggle"><sup></sup></label>
+		<input type="checkbox" id="tuple" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>The tuple is also called a
+			<span class="italicsText">static sequence</span>.</span
+		>
+		and (b) the <span class="term">list</span>.<label
+			for="list"
+			class="margin-toggle"
+			><sup></sup
+		></label>
+		<input type="checkbox" id="list" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>The list data type is also called a
+			<span class="italicsText">vector</span> or
+			<span class="italicsText">dynamic sequence</span>.</span
+		>
+		The tuple type is a sequence with a fixed size. I.e., the number of elements
+		in the sequence does not change. The list type is a sequence with a dynamic
+		size; the sequence can grow or shrink through the insertion, shifting, or
+		removing of elements in the sequence.
 	</p>
+	<p>
+		Sequences have several useful properties and operations. Below is an API:
+	</p>
+	<figure class="table">
+		<table class="api">
+			<thead>
+				<th>Identifier</th>
+				<th>Description</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="2" style="font-family: var(--serif)">Properties</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">arraySpace</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">size</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">length</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="2" style="font-family: var(--serif)">Operations</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">display()</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">append()</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">insert(${i}$, ${x}$)</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">remove(${i}$)</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">search(${x}$)</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">get(${i}$)</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">set(${i}$, ${x}$)</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">max()</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">min()</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">reverse()</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">iterSeq()</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">shift()</span></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">rotate()</span></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
 </section>
 
 <section id="static_lists">
-	<h2>Static Lists</h2>
+	<h2>Tuples</h2>
 	<p>
-		Focusing on just the static list, what are some operations we might want to
-		include with the interface? Bearing in mind that the static list has a fixed
-		size, we have several:
-		<span class="monoText">.build(x)</span> operator, which creates the sequence
-		<span class="monoText">x</span>;
-		<span class="monoText">.length()</span> operator, which returns the length
-		of the sequence; <span class="monoText">.iterSeq()</span> operator, which
-		iterates through the elements in the sequence;
-		<span class="monoText">.get(i)</span> operator, which returns the element at
-		index <span class="monoText">i.</span> And a
-		<span class="monoText">.set(i, x)</span> operator, which replaces the
-		element at index <span class="monoText">i</span> with the element
-		<span class="monoText">x</span>.
+		We turn our attention first to the tuple. Because tuples are of fixed size,
+		whenever we talk about tuples, we talk about some ${n-}$tuple. For example,
+		2-tuple is could a <span class="italicsText">double</span>. A 3-tuple is
+		called a <span class="italicsText">triple</span>. A 4-tuple is a
+		<span class="italicsText">quadruple</span>, and so on. Because tuples are of
+		fixed size, they necessarily have a smaller API.
+	</p>
+	<figure class="table">
+		<table class="api">
+			<thead>
+				<th>Identifier</th>
+				<th>Description</th>
+				<th>Comments</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="3" style="font-family: var(--serif)">Properties</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">size</span></td>
+					<td>Returns how many elements the sequence can hold</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">length</span></td>
+					<td>Returns how many elements are in the sequence</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="3" style="font-family: var(--serif)">Operations</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">build(${x_0, \ldots, x_n}$)</span></td>
+					<td>
+						Given the arguments ${x_0, \ldots x_n,}$ build a sequence ${\lang
+						x_0, \ldots, x_n \rang}$
+					</td>
+					<td>Two approaches to building: At compile-time, and at runtime.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">print()</span></td>
+					<td></td>
+					<td>${O(n)}$ &mdash; linear time</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">search(${x}$)</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">get(${i}$)</span></td>
+					<td></td>
+					<td>${O(1)}$ &mdash; constant time</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">set(${i}$, ${x}$)</span></td>
+					<td></td>
+					<td>${O(1)}$ &mdash; constant time</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">max()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">min()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">reverse()</span></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><span class="monoText">iterSeq()</span></td>
+					<td></td>
+					<td>${O(n)}$ &mdash; linear time</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		Examining these data and properties, we proceed to examining implementation
+		approaches. The first implementation approach we consider is the
+		<span class="italicsText">static array</span>. We'll first write this
+		program in C, then proceed to implementing it in C++.
 	</p>
 
-	<section id="static_arrays">
-		<p>
-			<span class="topic">Static Arrays.</span>
-			We can implement the static sequence described with a
-			<span class="term">static array</span>. A static array is a data structure
-			that occupies a contiguous and consecutive chunk of memory. In C++, the
-			static array is implemented as such:
-		</p>
-		<pre class="language-cpp"><code>
-			int main() {
-				int A[5];
-			}
-		</code></pre>
-		<p>
-			The above creates an array of with a
-			<span class="monoText">length</span> of 5. This array is created in the
-			<span class="italicsText">stack</span>. In C, the static array's size is
-			determined at compile time. However, in C++, the size can be determined at
-			runtime with the following:
-		</p>
-		<pre class="language-cpp"><code>
-			#include &lt;iostream&gt;
+	<p>
+		<span class="topic">Printing a Tuple.</span>
+		First, the <span class="monoText">print()</span> operation. To print a
+		tuple, we must iterate over each of the tuple's element, displaying each
+		element to the console (i.e., with something lik
+		<span class="monoText">cout</span> or <span class="monoText">printf</span>).
+		Because we're iterating over each element, the
+		<span class="monoText">print()</span> operation has a time complexity of
+		${O(n)}$ given the ${n-}$tuple. This is linear time.
+	</p>
+	<p>
+		<span class="topic">Appending an Element to a Tuple.</span> Second, the
+		<span class="monoText">append(${x}$)</span> operation, where ${x}$ is an
+		element. To append an element ${x,}$ we insert the element ${x}$ at the very
+		end of the tuple. In other words, &#8220;Insert this element ${x}$ at the
+		first instance of free space.&#8221; Thus, given an array of length 10 and
+		size 5, <span class="monoText">append(${x}$)</span> inserts the element
+		${x}$ at ${i = 6.}$ For <span class="monoText">append(${x}$)</span>, we can
+		think of this as performing three distinct operations &mdash; accessing the
+		array at ${i = \textit{length},}$ assigning the element ${x}$ to that
+		particular index, and updating the ${\textit{length}}$ property. Hence,
+		${O(3).}$ Applying complexity analysis, this is really ${f(n) = 3.}$
+		Rewriting this as ${f(n) = 3n^0,}$ we have ${O(n^0),}$ which reduces to
+		${O(1).}$ I.e., constant time.
+	</p>
+	<p>
+		<span class="topic">Inserting an Element to a Tuple.</span> With the
+		<span class="monoText">insert(${i}$, ${x}$)</span> operation, we're
+		inserting an element ${x}$ at the index ${i.}$ For example, suppose we have
+		the tuple ${(0, 1, 2, 3, 4, \_, \_, \_).}$ This is a tuple of size 8, with
+		length 5. If we write <span class="monoText">insert(${2}$, ${9}$)</span>, we
+		would have the tuple ${(0, 9, 1, 2, 3, 4, \_, \_).}$ Notice that this causes
+		a shift. To perform this shift, have to use a loop. In pseudocode:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				insert(index, x) {
+					for (i = length; i > index, i--) {
+						A[i] = A[i - 1];
+					}
+					A[index] = x;
+					length++;
+				}
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		The operation of inserting an element into a tuple provides an opportunity
+		to examine the different forms of complexity analysis. If we insert the
+		element at the very end of the tuple &mdash;
+		<span class="monoText">insert(${length}$, ${x}$)</span> &mdash; no shifting
+		occurs. Accordingly, this operation has a time complexity of order ${O(1),}$
+		constant time. However, if we insert the element at the very beginning
+		&mdash; <span class="monoText">insert(${0}$, ${x}$)</span> &mdash; then we
+		must shift <span class="underlineText">all</span> the elements. Given a
+		tuple of length ${n,}$ this operation would require iterating over all ${n}$
+		elements. This operation's time complexity is of order ${O(n).}$
+	</p>
+	<p>
+		Examining these possibilities, we have a best-case scenario and a worst-case
+		scenario. The best-case scenario is ${\Omega(1),}$ constant time, which
+		occurs only if we insert at the very end. The worst-case scenario is
+		${O(n),}$ linear time, which occurs if we insert at the origin, ${i = 0.}$
+	</p>
+	<p>
+		<span class="topic">Deleting an Element from a Tuple.</span> The operation
+		<span class="monoText">deleteElementAt(${i}$)</span> deletes, or removes, an
+		element at the index ${i.}$ Suppose we have the tuple ${(1, 5, 8, 3, 2, \_,
+		\_, \_).}$ In this example, there are three cases for deletion:
+		<span class="monoText">deleteElementAt(${0}$)</span>,
+		<span class="monoText">deleteElementAt(${\textit{length}}$)</span>, and
+		<span class="monoText">deleteElementAt(${n}$)</span>, where ${0 < n <
+		\textit{length}.}$ The two problematic cases are the first and the third.
+		They are problematic because if we delete an element other than the last,
+		then we would have gaps in the tuple:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				<span class="monoText">deleteElementAt(0)</span> ${ \implies (\_, 5, 8,
+				3, 2, \_, \_, \_)}$
+			</p>
+			<p>
+				<span class="monoText">deleteElementAt(3)</span> ${ \implies (0, 5, 8,
+				\_, 2, \_, \_, \_)}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		These gaps lead to all sorts of problems, particularly with respect to
+		iteration. One way to avoid these problems is to manually check if a given
+		index has an element. This is not a good approach. The better approach is to
+		get right to the root of the problem &mdash; &#8220;holes&#8221; in the
+		tuple. We can prevent these holes by shifting elements to the right whenever
+		one of the two cases above occurs. Thus:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				<span class="monoText">deleteElementAt(3)</span> ${ \implies (0, 5, 8,
+				\_, 2, \_, \_, \_) \implies (0, 5, 8, 2, \_, \_, \_, \_)}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		To understand how to perform this shifting, we consider the example
+		<span class="monoText">deleteElementAt(3)</span>. Here, ${i = 3.}$ So, we
+		start by removing the element at ${i = 3,}$ then shift the element at ${i +
+		1}$ to ${i = 3.}$ This creates a hole at ${i = 4,}$ so we set ${i = 4,}$
+		then shift the element at ${i + 1}$ to ${i = 4.}$ This creates a hole at ${i
+		= 5,}$ so we shift the element at ${i + 1}$ to ${i = 6,}$ and so on, up
+		until we reach the value of ${i = \textit{length} - 1}$ (the second to last
+		element). In pseudocode:
+	</p>
+	<figure class="math-display">
+		<div>
+			<pre class="language-pseudo"><code>
+				deleteElementAt(index):
+					element = A[index];
+					for (i = index; i < tuple.length - 1; i++):
+						A[i] = A[i + 1];
+					length--;
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		The time complexity for this algorithm depends on the value of
+		<span class="monoText">index</span>. If
+		<span class="monoText">index = length</span>, then no shifting occurs, in
+		which case we only have to perform two operations: Initializing
+		<span class="monoText">element</span> and decrementing
+		<span class="monoText">length</span>. This yields a complexity of ${O(2),}$
+		or simply ${O(1)}$ &mdash; constant time.
+	</p>
+	<p>
+		If, however, <span class="monoText">index = 0</span>, then we have to
+		perform ${n}$ shifts. This yields ${O(n + 2),}$ or ${O(n).}$ This is linear
+		time. Accordingly, deleting an element from a tuple, in the best case
+		scenario, is ${\Omega(1),}$ and in the worst case scenario, ${O(n).}$
+	</p>
 
-			int main() {
-				int n;
-				std::cin >> n;
-				int A[n];
-			}
-		</code></pre>
+	<h3>Searching a Tuple</h3>
+	<p>
+		Searching for a particular element ${x}$ in a tuple depends on the search
+		algorithm employed. There are two algorithms available: (1)
+		<span class="italicsText">linear search</span> and (2)
+		<span class="italicsText">binary search</span>. We consider linear search
+		first.
+	</p>
+
+	<section id="linear_search">
+		<h4>Linear Search</h4>
 		<p>
-			We can access an element inside the static array with square bracket
-			syntax. E.g., <span class="monoText">A[0]</span>.
+			Under
+			<span class="term">linear search</span>, we iterate over each of the
+			tuple's elements, checking if the element matches our query. Say we had
+			the following tuple:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${A = (8, 9, 4, 7, 6, 5, 10, 2, 11)}$</p>
+			</div>
+		</figure>
+		<p>
+			With the linear search approach, we go through each of the elements of
+			${A,}$ checking if the element matches the key. Suppose the key is the
+			integer ${5.}$ We start with ${A[0],}$ and ask, &#8220;${A[0] =
+			5?}$&#8221; False. So we continue to ${A[1].}$ Again we ask, &#8220;${A[1]
+			= 5?}$&#8221; False again. So we go to ${A[2].}$ We continue all the way
+			up to ${A[5],}$ wherein ${A[5] = 5}$ is true. Because our key was found,
+			we say that the search was <span class="italicsText">successful.</span>
 		</p>
 		<p>
-			Because the static array is a consecutive block of memory, the operations
-			<span class="monoText">.get(i)</span>,
-			<span class="monoText">.set(i, x)</span>, and
-			<span class="monoText">.length()</span> take ${O(1),}$ constant time, to
-			execute.
+			Now, what if the key was the integer ${22?}$ In that case, we go all the
+			way up to ${A[\textit{length}],}$ or ${A[8],}$ to determine that ${22}$ is
+			not in the tuple. This is an example of an
+			<span class="italicsText">unsuccessful search</span>.
 		</p>
 		<p>
-			In contrast, <span class="monoText">.build(x)</span> and
-			<span class="monoText">.iterSeq()</span> will take ${O(n),}$ linear time,
-			to execute, since they require processing ${n}$ elements.
+			Implementing linear search is straightforward. We are simply traversing
+			the tuple. We start with ${A[0],}$ then continue to the last element of
+			the list, ${A[\textit{length}].}$
+		</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+				tupleLinearSearch(x) {
+					for (i = 0; i < length; i++) {
+						if (key == A[i]){
+							return i;
+						}
+					}
+					return -1;
+				}
+			</code></pre>
+			</div>
+		</figure>
+		<p>
+			What is the time complexity for linear search? Well, in the worst-case
+			scenario, the tuple does not contain our key. In which case we would have
+			to perform the comparison operation
+			<span class="monoText">key == A[i]</span> on all the tuple's elements.
+			Thus, given an ${n-}$tuple not containing our key, we have time complexity
+			of order ${O(n).}$ This is linear time.
 		</p>
 		<p>
-			Additionally, we might also want the operations:
-			<span class="monoText">.getFirst()</span> for returning the first element
-			in the sequence; <span class="monoText">.getLast()</span> for returning
-			the last element in the sequence;
-			<span class="monoText">.setFirst(x)</span> which replaces the first
-			element in the sequence with the element <span class="monoText">x</span>;
-			and <span class="monoText">.setLast(x)</span>, which replaces the last
-			element in the sequence with the element <span class="monoText">x</span>.
+			In the best-case scenario, ${A[0]}$ is our key, in which case only one
+			comparision operation is performed. Accordingly, in the best-case
+			scenario, linear search has a time complexity of order ${\Omega(1)}$
+			&mdash; constant time.
 		</p>
+		<p>
+			What about the average-case scenario? To determine the average-case
+			scenario, we ask, how many comparisons are needed to determine whether ${i
+			= 1}$ matches our key? We must perform 1 comparison. We again ask, how
+			many comparisons are needed to determine whether the element at ${i = 2}$
+			matches our key? We must perform 2 comparisons. We ask the same question
+			for ${i = 3,}$ ${i = 4,}$ ${i = 5,}$ and so on. The sum of comparisons is
+			the sum of arithmetic sequence of the positive integers:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${1 + 2 + 3 + \ldots + n = \dfrac{n(n + 1)}{2}}$</p>
+			</div>
+		</figure>
+		<p>
+			Thus, the total amount of time for all possible cases is
+			${\dfrac{n(n+1)}{2}.}$ Dividing this by the total number of cases, ${n,}$
+			provides us with the average case:
+		</p>
+		<figure class="math-display">
+			<div>
+				$$ \begin{aligned} \dfrac{ \dfrac{n(n + 1)}{2} }{n} &= \dfrac{
+				\dfrac{\cancel{n}(n + 1)}{2} }{\cancel{n}} \\[1.2em] &= \dfrac{n + 1}{2}
+				\end{aligned} $$
+			</div>
+		</figure>
+		<p>
+			Hence, in the average-case scenario, linear search has a complexity of
+			${\Theta\left(\dfrac{n+1}{2}\right).}$ Or, asymptotically, ${\Theta(n).}$
+			Notice that both the average-case runtime and the worst-case runtime are
+			the same. With linear search, we're almost always running on linear time.
+			We can, however, optimize the linear search algorithm.
+		</p>
+		<p>
+			<span class="topic">Transposition.</span> The first method to improving
+			linear search is with <span class="term">transposition</span>. The idea
+			behind transposition is best understood via analogy. Suppose you're
+			conducting research, and you know there's a particular book relevant to a
+			topic. You proceed to the shelf and retrieve the book. Instead of
+			returning the book to the original place, you might leave the book on a
+			particular table, or place it somewhere closer to your work space. Why?
+			Because there's a high likelihood of you needing to use the same book
+			again.
+		</p>
+		<p>
+			This same idea extends to linear search. In search for some key ${k,}$
+			there's a likelihood of searching for ${k}$ again, so we bring it closer
+			to ${i = 0.}$ For example, say we have the tuple:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${T = (8, 9, 4, 6, 7, 3, 2, 11)}$</p>
+			</div>
+		</figure>
+		<p>
+			and our key is ${6.}$ A linear search for 6 returns a successful search,
+			so we swap 6 and 4 (swap ${T[3]}$ and ${T[2]}$):
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${T = (8, 9, 6, 4, 7, 3, 2, 11)}$</p>
+			</div>
+		</figure>
+		<p>Search for 3 again, and we swap ${T[1]}$ and ${T[2]}$:</p>
+		<figure class="math-display">
+			<div>
+				<p>${T = (8, 6, 9, 4, 7, 3, 2, 11)}$</p>
+			</div>
+		</figure>
+		<p>Search 3 one more time, and we swap ${T[1]}$ and ${T[0]}$:</p>
+		<figure class="math-display">
+			<div>
+				<p>${T = (6, 8, 9, 4, 7, 3, 2, 11)}$</p>
+			</div>
+		</figure>
+		<p>
+			Notice that 6 is now at the head of the tuple. Now whenever we search for
+			${6,}$ we have a runtime of ${O(1)}$ &mdash; constant time. Of course, 6
+			will only get to the tuple's head if we search for it enough times.
+		</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+				tupleLinearSearch(x) {
+					for (i = 0; i < length; i++) {
+						if (key == T[i]){
+							swap(T[i], T[i-1])
+							return i - 1;
+						}
+					}
+					return -1;
+				}
+			</code></pre>
+			</div>
+		</figure>
+		<p>
+			<span class="topic">Move-to-head.</span> With transposition, we do not
+			reach ${O(1)}$ unless we search for the key ${k}$ ${n}$ times, where ${n}$
+			is the index of ${k.}$ This means that the key ${k}$ can take a fair
+			amount of time to get to the list's head. Moreover, if ${k}$ is not
+			searched, it slowly moves towards the tail-end. To get to the head faster,
+			we can use the <span class="term">move-to-head</span> approach. With
+			move-to-head, after a successful search, we immediately place the key at
+			${i = 0.}$
+		</p>
+		<figure class="math-display">
+			<div>
+				<ol class="numd">
+					<li>${T = (8, 9, 4, 6, 7, 3, 2, 11)}$</li>
+					<li><span class="monoText">tupleLinearSearch${(6)}$</span></li>
+					<li>${T = (6, 9, 4, 8, 7, 3, 2, 11)}$</li>
+				</ol>
+			</div>
+		</figure>
+		<p>In pseudocode:</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+					tupleLinearSearch(x) {
+						for (i = 0; i < length; i++) {
+							if (key == T[i]){
+								swap(T[i], T[0])
+								return 0;
+							}
+						}
+						return -1;
+					}
+				</code></pre>
+			</div>
+		</figure>
 	</section>
 
-	<section id="dynamic_arrays">
+	<section id="binary_search">
+		<h4>Binary Search</h4>
 		<p>
-			<span class="topic">Dynamic Arrays.</span> The alternative implementation
-			of a static list is with a <span class="term">dynamic array</span>. In
-			other words, an array created in the
-			<span class="italicsText">heap</span>. In C++, the implementation appears
-			as such:
+			The <span class="term">binary search</span> algorithm is correct only if
+			the tuple is <span class="underlineText">sorted</span>. There are a whole
+			host of sorting algorithms, so we will cover them in a separate section.
+			For now, suppose we have the following sorted tuple:
 		</p>
-		<pre class="language-cpp"><code>
-			int main() {
-				int *p;
-				p = new int[5];
-				return 0;
-			}
-		</code></pre>
-		<p>Alternatively, in C:</p>
-		<pre class="language-c"><code>
-			#include &lt;stdlib.h&gt;
-
-			int main() {
-				int *p;
-				p = (int*)malloc(5 * sizeof(int));
-				return 0;
-			}
-		</code></pre>
+		<figure class="math-display">
+			<div>
+				$$ \begin{matrix} T = [& 4 & 8 & 10 & 15 & 18 & 21 & 24 & 27 & 29 & 33 &
+				34 & 37 & 39 & 41 & 43 &] \\ i = & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
+				& 10 & 11 & 12 & 13 & 14 & \end{matrix} $$
+			</div>
+		</figure>
 		<p>
-			Note that whenever we work with the heap, we
-			<span class="underlineText">must</span> deallocate the memory we requested
-			once we're done using it. Otherwise, we're subject to memory leaks. In
-			C++, this is done with the following:
+			Suppose our key is ${k = 18.}$ We see that 18 is at index ${i = 4.}$ With
+			linear search, we must perform 5 comparisions before ${k}$ is found. Let's
+			see how binary search compares.
 		</p>
-		<pre class="language-cpp"><code>
-			int main() {
-				int *p;
-				p = new int[5];
-				delete []p; // deallocation
-			}
-		</code></pre>
-		<p>In C:</p>
-		<pre class="language-c"><code>
-			#include &lt;stdlib.h&gt;
-
-			int main() {
-				int *p;
-				p = (int*)malloc(5 * sizeof(int));
-				free(p); // deallocation
-			}
-		</code></pre>
 		<p>
-			Importantly, for both the static array and dynamic array, the array's size
-			cannot be resized. Hence its representation of a
-			<span class="italicsText">static list</span>. However, we will see shortly
-			how a dynamic array can be used to implement a non-fixed size list, i.e.,
-			a dynamic list.
+			First, with binary search, we need three variables: ${\ell,}$ ${h,}$ and
+			${M.}$ These variables represent three variants: ${\ell}$ represents the
+			lower bound (an index), ${h}$ represents the upper bound (also an index),
+			and ${M}$ represents the index exactly between ${\ell}$ and ${h.}$
+			Accordingly, the value of ${M}$ is given by:
 		</p>
+		<figure class="math-display">
+			<div>
+				<p>${M = \lfloor \dfrac{\ell + h}{2} \rfloor}$</p>
+			</div>
+		</figure>
+		<p>
+			This simply the arithmetic mean, but we will floor the result to account
+			for the possibility of an odd number of elements in the tuple. For
+			example, if the tuple has 5 elements, then ${\ell = 0,}$ and ${h = 5.}$
+			Calculating ${M:}$ ${(0 + 5) / 2 = 2.5.}$ Obviously an index cannot be
+			${2.5,}$ so we floor the result: ${M \equiv i = 2.}$
+		</p>
+		<p>
+			That said, let's trace our program. We know ${k = 18.}$ So, we first
+			initialize ${\ell}$ and ${h:}$
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\ell = 0}$</p>
+				<p>${h = 14}$</p>
+			</div>
+		</figure>
+		<p>Then we compute ${M:}$</p>
+		<figure class="math-display">
+			<div>
+				<p>${M = \dfrac{0 + 14}{2} = 7}$</p>
+			</div>
+		</figure>
+		<p>
+			Thus, ${M}$ is ${i = 7.}$ We then ask, is ${T[7] = k?}$ If yes, the search
+			is successful, and we return the index 7. Otherwise, we ask, is ${T[7] <
+			k}$ or is ${T[7] > k?}$ Here, ${T[7] < k.}$ Because ${T[7] < k,}$ ${k}$
+			must be on the left-hand side of the tuple. I.e., ${\ell \leq k < M.}$ Why
+			can we conclude this? Because the tuple ${T}$ is sorted. If ${T[7] > k,}$
+			then ${k}$ must be on the right-hand side (${M < k \leq h}$).
+		</p>
+		<p>
+			In this case, since ${T[7] < k,}$ ${\ell}$ remains as ${i = 0,}$ but we
+			change ${h}$ to ${i = 6.}$ Now we're working the left-hand side, which is
+			${T[0] < k \leq T[6].}$ Now we have a new mean: ${(0 + 6) / 2 = 3.}$ Thus,
+			now the middle element is ${T[3] = 15.}$ We again ask, is ${k = T[3]?}$
+			No. Is ${k < T[3]}$ or is ${k > T[3]?}$ Here, ${18 > 15,}$ so we're
+			looking at the right-hand side of the tuple.
+		</p>
+		<p>
+			Because ${T[M] > k,}$ we again change the lower bounds and upper bounds.
+			${\ell = 4,}$ and ${h = 4.}$ The mean is now ${M = (4 + 4) / 2 = 4.}$
+			Thus, the middle element is now ${T[4] = 18.}$ We now ask, is ${k =
+			T[4]?}$ Yes. We have found our key. Notice that we found our key in a
+			total of 4 comparisons, compared to 5 comparisons with linear search.
+		</p>
+		<p>
+			Let's try another key. ${k = 34.}$ We set the upper bounds and lower
+			bounds. ${\ell = 0}$ and ${h = 14.}$ Then we compute the mean index. ${(0
+			+ 14) / 2 = 7.}$ Again we have ${T[7] = 27.}$ Is ${T[M] = k?}$ No. Is
+			${T[M] > k}$ or is ${T[M] < k?}$ ${27 < 34.}$ Thus, we're now restricting
+			our search to the right-hand side.
+		</p>
+		<p>
+			We change the upper and lower bounds. ${\ell = M + 1 = 7 + 1 = 8.}$ And
+			${h = 14.}$ Then compute the mean index: ${(8 + 14) / 2 = 11.}$ Thus, the
+			middle element is ${T[M] = T[11] = 37.}$ Is ${T[M] = k?}$ No. Is ${T[M] >
+			k}$ or ${T[M] < k?}$ ${37 > 34,}$ so we're looking at the left-hand side.
+		</p>
+		<p>
+			We again change the upper and lower bounds. ${\ell = 8}$ and ${h = 11 - 1
+			= 10.}$ Computing the mean: ${(10 + 8) / 2 = 9.}$ Is ${(T[9] = 33) = 34?}$
+			No. Is ${33 > 34}$ or is ${33 < 34?}$ ${34}$ is less than ${33.}$ So, the
+			number is on the right-hand side. Once more we modify the upper and lower
+			bounds.
+		</p>
+		<p>
+			${\ell = M + 1 = 9 + 1 = 10,}$ and ${h = 10.}$ We compute the mean: ${(10
+			+ 10) / 2 = 10.}$ Is ${T[10] = 34?}$ Yes. We've found our key in 4
+			comparisons. Compare that with linear search, which would have taken 10
+			comparisions.
+		</p>
+		<p>
+			Let's try another key, ${k = 25.}$ Set the upper and lower bounds: ${\ell
+			= 0}$ and ${h = 14.}$ Compute the mean: ${M = (0 + 14) = 7.}$ Compare
+			${T[7]}$ to ${k.}$ ${k}$ is not equal to ${T[7].}$ ${k < T[M],}$ so we're
+			looking at the left-hand side.
+		</p>
+		<p>
+			Change the upper and lower bounds. ${\ell = 0,}$ and ${h = 7 - 1 = 6.}$
+			Compute the mean: ${M = (0 + 6)/2 = 3.}$ ${T[3]}$ is not equal to ${k.}$
+			Because ${k > T[M],}$ we're looking at the right-hand side. So we change
+			the upper and lower bounds.
+		</p>
+		<p>
+			${\ell = 3 + 1 = 4,}$ and ${h = 6.}$ We compute the mean: ${(4 + 6) / 2 =
+			5.}$ The middle element is ${T[5].}$ ${T[5]}$ is not equal to ${25,}$ ${k
+			> T[5].}$ So again we're looking at the left-hand side. Once more we
+			modify the lower and upper bounds.
+		</p>
+		<p>
+			${\ell = 5 + 1 = 6,}$ and ${h = 6.}$ The mean: ${(6 + 6) / 2 = 6.}$
+			${T[6]}$ is not equal to ${25.}$ ${25 > T[6],}$ so we modify the upper and
+			lower bounds.
+		</p>
+		<p>
+			${\ell = 6 + 1 = 7,}$ and ${h = 6.}$ This is where we stop. The moment
+			${\ell > h,}$ we've arrived at an unsuccessful search, so we return
+			${-1.}$ Notice that it took 4 comparisons to reach an unsuccessful search,
+			compared to the 15 comparisions it would've taken with linear search.
+		</p>
+		<p>Implementing binay search in pseudocode:</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+					BinarySearch(k, low, high) {
+						while (low <= high) {
+							middle = floor((low + high) / 2);
+							if (k == T[mean]) {
+								return mean;
+							}
+							else if (k < T[mean]) {
+								high = mean - 1;
+							}
+							else {
+								low = mean + 1;
+							}
+						}
+						return -1;
+					}
+				</code></pre>
+			</div>
+		</figure>
+		<p>
+			Alternatively, we can implement the binary search algorithm with tail
+			recursion:
+		</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+					BinarySearch(k, low, high) {
+						if (low <= high) {
+							mean = floor((low + high) / 2);
+							if (k == T[mean]) {
+								return mean;
+							}
+							else if (key < T[mean]) {
+								return BinarySearch(low, mean - 1, key);
+							}
+							else {
+								return BinarySearch(mean + 1, high, key);
+							}
+						}
+						return -1;
+					}
+				</code></pre>
+			</div>
+		</figure>
+		<p>
+			To understand the time complexity for binary search, the crucial point is
+			that we're cutting the tuple in half each time. However, before any of
+			that splitting, we checked if the middle element is in fact the key.
+			Accordingly, in the best-case scenario, binary search has a time
+			complexity of ${\Omega(1)}$ &mdash; constant time.
+		</p>
+		<p>
+			However, if the middle element was not the key, then we proceed to
+			checking if the left- or right-hand side contained the key. Suppose it's
+			the left-hand side. If it's the left-hand side, then ${\ell = 0}$ and ${h
+			= 6,}$ yielding ${M = 3.}$ If it's on the right-hand side, then ${\ell =
+			8}$ and ${h = 14,}$ yielding ${M = 11.}$ This is halving the tuple and
+			restricting our search to just the relevant half. If the middle element in
+			either half is the key, then we've found our key in 2 comparisons.
+		</p>
+		<p>
+			If neither of the halves contains the middle element, then we again
+			perform the split. For the left-hand side of the left-hand side, ${\ell =
+			0}$ and ${h = 2,}$ yielding ${M = 1.}$ If it's the right-hand side of the
+			left-hand side, then ${\ell = 4}$ and ${h = 6,}$ yielding ${M = 5.}$ For
+			the left-hand side of the right-hand side, we have ${\ell = 8}$ and ${h =
+			10,}$ yielding ${M = 9.}$ For the right-hand side of the right-hand side,
+			we have ${\ell = 12}$ and ${h = 14,}$ yielding ${M = 13.}$ In this case,
+			the key can be found in 3 comparisons. Visualizing the tree:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/binary_search_tree.svg' %}"
+				alt="The binary search tree's middle element computations"
+				loading="lazy"
+			/>
+		</figure>
+		<p>
+			Splitting further, the key can be found in 4 comparisions, then 5, then 6,
+			and so on. Modelling binary search as a tree, the height of the tree is
+			${\lceil\log_{2}(n + 1)\rceil,}$ where ${n}$ is the number of elements in
+			the tuple. Why ${\log_{2}(n + 1)?}$ Because the tree's height is directly
+			proportional to the number of times we divide ${n}$ by 2 such that we only
+			have a remainder of 1. And as we know from mathematics, the answer to
+			&#8220;How many times can I divide ${n}$ by 2 to reach a remainder of
+			1?&#8221; is a logarithm of base 2. Successive multiplication yields a
+			power, and successive division yields a logarithm. Thus, in terms of
+			asymptotic analysis, the binary search algorithm has a runtime of order
+			${O(\lg n)}$ &mdash; logarithmic time.
+		</p>
+		<p>
+			What about the average-case? For the average-case, we're asking for the
+			total time for all the possible cases, divided by the number of cases.
+			Revisiting the tree diagram above, we see that at the first level, there
+			is only 1 case, with only 1 comparison. Let ${c}$ be the number of cases:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${c = 1}$</p>
+			</div>
+		</figure>
+		<p>On the second level, there are 2 cases, each requiring 1 comparison:</p>
+		<figure class="math-display">
+			<div>
+				<p>${c = 1 + (1 \cdot 2)}$</p>
+			</div>
+		</figure>
+		<p>On the third level, there are 4 cases, each requiring 2 comparisons:</p>
+		<figure class="math-display">
+			<div>
+				<p>${c = 1 + (1 \cdot 2) + (2 \cdot 4)}$</p>
+			</div>
+		</figure>
+		<p>On the fourth level, there are 8 cases, each requiring 3 comparisons:</p>
+		<figure class="math-display">
+			<div>
+				<p>${c = 1 + (1 \cdot 2) + (2 \cdot 4) + (3 \cdot 8)}$</p>
+			</div>
+		</figure>
+		<p>We can see pattern in this series:</p>
+		<figure class="math-display">
+			<div>
+				<p>${c = 1 + (1 \cdot 2^1) + (2 \cdot 2^2) + (3 \cdot 2^3)}$</p>
+			</div>
+		</figure>
+		<p>We can then express this pattern as:</p>
+		<figure class="math-display">
+			<div>
+				<p>${\sum\limits_{i = 1}^{3} i \cdot 2^i}$</p>
+			</div>
+		</figure>
+		<p>
+			That 3 is intresting &mdash; it's the tree's height. Accordingly, our
+			series can be generalized as:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${\sum\limits_{i = 1}^{\log n} i \cdot 2^i = \log n \cdot n^{\log n}}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			But, we must divide this sum by ${n,}$ the number of elements (and by
+			implication, the number of possible cases):
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\dfrac{\log n \cdot 2^{\log n}}{n} = \log n}$</p>
+			</div>
+		</figure>
+		<p>Hence, the average-case running time is ${\Theta(\log n)}$</p>
 	</section>
 </section>
 
-<section id="dynamic_lists">
-	<h2>Dynamic Lists</h2>
+<section id="list">
+	<h2>Lists</h2>
 	<p>
-		Now let's consider the dynamic sequence. For the dynamic sequence, we want
-		all of the operations available to static sequences, a few more: (1)
-		<span class="monoText">insertAt(i, x)</span>, which inserts at index
-		<span class="monoText">i</span> the element <span class="monoText">x</span>;
-		and (2) <span class="monoText">deleteAt(i)</span>, which removes the element
-		at index <span class="monoText">i</span>. Both of these operations change
-		the size of the sequence. In the case of
-		<span class="monoText">.insertAt()</span>, we shift all of the elements
-		after <span class="monoText">i</span> to the right by one. And for
-		<span class="monoText">.deleteAt()</span>, we shift all the elements after
-		<span class="monoText">i</span> to the left by one.
+		The <span class="term">list</span> data type is sequence of variable size.
+		The data type may also be called a
+		<span class="term">dynamic sequence</span> or
+		<span class="term">vector</span>. With variable size, we suddenly have a
+		much larger API. This shouldn't be all that surprising &mdash; the more
+		properties we can mutate, the more operations we can implement.
 	</p>
-	<p>
-		We also want a few more operations pertaining to the sequence's endpoints:
-		(1)
-		<span class="monoText">insertFirst(x)</span>, which inserts at index ${i =
-		0}$ the element <span class="monoText">x</span>;
-		<span class="monoText">deleteFirst()</span> which removes the first element
-		in the sequence; <span class="monoText">insertLast(x)</span> which inserts
-		at the last index the element <span class="monoText">x</span>; and
-		<span class="monoText">deleteLast()</span>, which deletes the last element
-		in the sequence.
-	</p>
-
-	<section id="dynamic_lists_as_dynamic_arrays">
-		<p>
-			<span class="topic">Dynamic Arrays as Dynamic Lists.</span> Earlier, we
-			mentioned that dynamic arrays have a fixed size. This is true, but we can
-			use pointers to &#8220;increase&#8221; the list's size. We say
-			&#8220;increase&#8221; because we aren't changing the array's size
-			necessarily. Instead, we are merely changing which array a given pointer,
-			identifying a list, points to. This change is done with the following
-			code. First, we declare initialize a pointer with the value of some array
-			created in the heap:
-		</p>
-		<pre class="language-cpp"><code>
-			#include &lt;iostream&gt;
-
-			int main() {
-				int *p = new int[5];
-				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
-				return 0;
-			}
-		</code></pre>
-		<p>Next, we create a new array of a larger size:</p>
-		<pre class="language-cpp"><code>
-			#include &lt;iostream&gt;
-
-			int main() {
-				int *p = new int[5];
-				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
-				int *q = new int[10];
-				return 0;
-			}
-		</code></pre>
-		<p>
-			Next, we want to transfer all of the elements in the
-			<span class="monoText">p</span> array to the
-			<span class="monoText">q</span> array. We can do so with a for-loop:
-		</p>
-		<pre class="language-cpp"><code>
-			#include &lt;iostream&gt;
-
-			int main() {
-				int *p = new int[5];
-				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
-				int *q = new int[10];
-				for (int i = 0; i < 5; i++) {
-					q[i] = p[i];
-				}
-				return 0;
-			}
-		</code></pre>
-		<p>
-			Now we want <span class="monoText">p</span> to point to the
-			<span class="monoText">q</span> array. But, before doing so, we ought to
-			deallocate the memory allocated for the
-			<span class="monoText">p</span> array to avoid memory leaks.
-		</p>
-		<pre class="language-cpp"><code>
-			#include &lt;iostream&gt;
-
-			int main() {
-				int *p = new int[5];
-				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
-				int *q = new int[10];
-				for (int i = 0; i < 5; i++) {
-					q[i] = p[i];
-				}
-				delete []p;
-				return 0;
-			}
-		</code></pre>
-		<p>
-			Finally, we make <span class="monoText">p</span> point to the
-			<span class="monoText">q</span> array:
-		</p>
-		<pre class="language-cpp"><code>
-			#include &lt;iostream&gt;
-
-			int main() {
-				int *p = new int[5];
-				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
-				int *q = new int[10];
-				for (int i = 0; i < 5; i++) {
-					q[i] = p[i];
-				}
-				delete []p;
-				p = q;
-				return 0;
-			}
-		</code></pre>
-		<p>
-			And the very last step: We now have two pointers
-			<span class="monoText">p</span> and <span class="monoText">q</span>,
-			pointing to the same array. We do not need this feature, so we assign to
-			<span class="monoText">q</span> the value
-			<span class="monoText">NULL</span>:
-		</p>
-		<pre class="language-cpp"><code>
-			#include &lt;iostream&gt;
-
-			int main() {
-				int *p = new int[5];
-				p[0] = 1, p[1] = 2, p[2] = 3, p[3] = 4, p[4] = 5; 
-				int *q = new int[10];
-				for (int i = 0; i < 5; i++) {
-					q[i] = p[i];
-				}
-				delete []p;
-				p = q;
-				q = NULL;
-				return 0;
-			}
-		</code></pre>
-	</section>
-
-	<section id="linked_lists">
-		<p>
-			<span class="topic">Linked Lists.</span> We can implement the dynamic
-			sequence type above with a <span class="term">linked list</span>. In a
-			linked list, elements in the sequence are stored in
-			<span class="italicsText">nodes</span>. Each node consists of: (1) the
-			sequence element and (2) a pointer to the next node.
-		</p>
-		<p>
-			With linked lists, there are two points of particular interest: the
-			<span class="italicsText">head</span> of the linked list (the first node
-			in the linked list) and the <span class="italicsText">tail</span> of the
-			list (the last node in the linked list). Importantly, the tail consists of
-			a node whose pointer points to nothing (i.e., a
-			<span class="italicsText">null pointer</span>).
-		</p>
-	</section>
 </section>
 
-{% endblock %}
+<section id="linked_lists">
+	<p>
+		<span class="topic">Linked Lists.</span> We can implement the dynamic
+		sequence type above with a <span class="term">linked list</span>. In a
+		linked list, elements in the sequence are stored in
+		<span class="italicsText">nodes</span>. Each node consists of: (1) the
+		sequence element and (2) a pointer to the next node.
+	</p>
+	<p>
+		With linked lists, there are two points of particular interest: the
+		<span class="italicsText">head</span> of the linked list (the first node in
+		the linked list) and the <span class="italicsText">tail</span> of the list
+		(the last node in the linked list). Importantly, the tail consists of a node
+		whose pointer points to nothing (i.e., a
+		<span class="italicsText">null pointer</span>).
+	</p>
+</section>
+
+<section id="array_addressing">
+	<h2>Array Addressing</h2>
+	<p>
+		Whenever we write expressions that index into an array, e.g.,
+		<span class="monoText">A[2] = 4</span>, the compiler must translate the
+		expression into an address. Because arrays are a fundamental data structure,
+		it's worth knowing how this translation is done. Put simply, the compiler
+		makes performs this translation by applying a particular formula. For
+		example, suppose we initialized the following array:
+	</p>
+	<pre class="language-c"><code>
+		int main() {
+			int A[3] = {8, 3, 5};
+			return 0;
+		}
+	</code></pre>
+	<p>
+		As we know, the identifier <span class="monoText">A</span> is an identifier
+		for array's base address &mdash; the address of
+		<span class="monoText">A[0]</span>. Suppose the address of
+		<span class="monoText">A[0]</span> is <span class="monoText">200</span>.
+		This means that the address of <span class="monoText">A[1]</span> is
+		<span class="monoText">204</span> (since an
+		<span class="monoText">int</span> takes 4 bytes), an the address of
+		<span class="monoText">A[2]</span> is <span class="monoText">208</span>.
+		Abstracting this computation, we can think of the compiler performing the
+		following when it encounters <span class="monoText">A[2]</span>:
+	</p>
+	<figure class="math-display">
+		<div>
+			$$ \begin{aligned} \textit{address-of}(A[2])&= \textit{address-of}(A[0]) +
+			(2)(4) \\ &= 200 + 8 \\ &= 209 \end{aligned} $$
+		</div>
+	</figure>
+	<p>We can abstract this computation into a formula:</p>
+	<figure class="math-display">
+		<div>
+			<p>${\alpha(a_i) = \alpha(a_0) + i \omega}$</p>
+		</div>
+	</figure>
+	<p>
+		In the formula above, ${\alpha(n)}$ is a function that returns the memory
+		address of some data ${n}$. Thus, ${\alpha(a_i)}$ returns the address of the
+		${i^{\text{\scriptsize{th}}}}$ element of the array, and ${\alpha(a_0)}$
+		returns the address of the first element. The variable ${i}$ represents the
+		index of the element, and the variable ${\omega}$ represents the size of the
+		data type (e.g., the size of the data type
+		<span class="monoText">int</span> is 4 bytes).
+	</p>
+	<p>
+		As an aside, many older languages like Fortran use 1-based indexing. C came
+		after Fortran, so why do so many languages use 0-based indexing? One reason
+		is because of the hardware limitations at the time languages like C, BCPL,
+		and Fortran were implemented. With 1-based indexing, we would have to use a
+		different formula in determining the address of a given element:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\alpha(a_i) = \alpha(a_1) + (i-1)\omega}$</p>
+		</div>
+	</figure>
+	<p>
+		There's an additional computation with this formula &mdash; a decrement.
+		This additional operation proves to be costly on older machines &mdash;
+		there are 3 separate computations. Compare that with the previous formula,
+		which calls for only 2 computations. Given that a core goal of C's design
+		was efficiency, it made sense to opt for the more efficient implementation.
+	</p>
+	<p>
+		Of course, modern computers have surpassed many of these limitations. The
+		additional decrementing operation doesn't make much of a difference for most
+		applications. So why then do recent languages go with zero-based indexing?
+		Because zero-based indexing has become the norm. C inspired a whole host of
+		languages (e.g., C++ and Objective-C), which in turn inspired many others
+		(e.g., C to C++ to Java to Kotlin, C to Objective-C to Swift). Given that
+		language designers are programmers first and foremost, it isn't all that
+		surprising to see a designer sticking with what they're familiar with.
+	</p>
+	<p>
+		Moreover, if often makes more sense to use zero-based indexing over
+		one-based indexing. We can appreciate this idea by recognizing that
+		<span class="italicsText">indexing</span> is
+		<span class="underlineText">not</span> the same as
+		<span class="italicsText">counting</span>. Instead, indexing is much more
+		akin to <span class="italicsText">offsetting</span> from a given point. For
+		example, given the array <span class="monoText">int A[3] = {1, 2, 3}</span>,
+		the starting point is <span class="monoText">1</span>. If we designate that
+		as the element with index 0 (<span class="monoText">A[0]</span>, the first
+		element), then the second element, <span class="monoText">A[1]</span>, is
+		the element 1-off the first element. The third element,
+		<span class="monoText">A[2]</span>, is 2-off the first element. And so on
+		and so forth.
+	</p>
+</section>
+
+{% endblock %} [\textit{M = 7, T[7] = 27} [\textit{M = 3, T[3] = 15} [\textit{M
+= 1, T[1] = 8} [\textit{M = 0, T[0] = 4}] [\textit{M = 2, T[2] = 10}] ]
+[\textit{M = 5, T[5] = 21} [\textit{M = 4, T[4] = 18}] [\textit{M = 6, T[6] =
+24}] ] ] [\textit{M = 11, T[11] = 15} [\textit{M = 9, T[9] = 33} [\textit{M = 8,
+T[8] = 29}] [\textit{M = 10, T[10] = 34}] ] [\textit{M = 13, T[13] = 41}
+[\textit{M = 12, T[12] = 39}] [\textit{M = 14, T[14] = 43}] ] ] ]
