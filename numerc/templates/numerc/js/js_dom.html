@@ -1451,7 +1451,85 @@
 				class="seventy-p"
 			/>
 		</figure>
+		<p>
+			Once again, with the asynchronous callbacks above, JavaScript is not
+			setting a timer and keeping track of it. It hands that work to the browser
+			for handling. Once the timer has finished, the function we delayed is
+			placed on the callstack.
+		</p>
 	</section>
+
+	<section id="callback_hell">
+		<h4>Callback Hell</h4>
+		<p>
+			When using callbacks, it's easy to succumb to a pattern where callbacks
+			are nested within callbacks. This in turn can lead even deeper nesting,
+			resulting in what JavaScript developers call
+			<span class="term">callback hell</span>. To understand why these patterns
+			occur, it's helpful to think of a procedure that requires outputs from
+			other procedures. For example, the procedure for making a hotdog:
+		</p>
+		<figure class="math-display">
+			<div>
+				<ol>
+					<li>Get hotdog.</li>
+					<li>Cook hotdog.</li>
+					<li>Get bun.</li>
+					<li>Place hotdog on bun.</li>
+				</ol>
+			</div>
+		</figure>
+		<p>A synchronous program would appear as such:</p>
+		<pre class="language-javascript"><code>
+			const makeHotdog = () => {
+				const rawHotdog = getHotDog();
+				const cookedHotdog = cookHotdog(rawHotdog);
+				const bun = getBun();
+				const hotdog = placeHotdogOnBun(cookedHotdog, bun);
+				return hotdog;
+			}
+
+			const hotdog = makeHotdog();
+		</code></pre>
+		<p>
+			An asynchronous program &mdash; one that more closely resembles reality
+			&mdash; would appear as such:
+		</p>
+		<pre class="language-javascript"><code>
+			const makeHotdog = () => {
+				getHotdog(function(hotdog) {
+					cookHotdog(hotdog, function(cookedHotdog) {
+						getBun(function(bun) {
+							placeHotDogOnBun(bun, hotdog, function(finishedHotdog) {
+								nextStep();
+							})
+						})
+					})
+				})
+			};
+
+			makeHotDog(function (hotdog) => {
+				serve(hotdog);
+			});
+		</code></pre>
+		<p>
+			For those coming from functional programming backgrounds, the code above
+			is likely perfectly readable. For others, however, such deeply nested
+			functions can easily lead to confusion. Moreover, this is a relatively
+			simple example of a deeply nested callback pattern. These patterns can
+			easily nest multiple levels deep.
+		</p>
+		<p>
+			To alleviate and prevent suffering under these patterns, JavaScript
+			provides the construct of <span class="term">promises</span>. We examine
+			them in the next section.
+		</p>
+	</section>
+
+	<secton id="promises">
+		<h4>Promises</h4>
+		<p></p>
+	</secton>
 </section>
 
 {% endblock %}

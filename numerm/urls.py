@@ -157,6 +157,8 @@ urlpatterns = [
 
 	path("calc_generalRules", views.calc_generalRules, name="calc_generalRules"),
 
+	path("calc_implicit", views.calc_implicit, name="calc_implicit"),
+
 	# sequences & series paths 
 	path("sqs_index", views.sqs_index, name="sqs_index"),
 

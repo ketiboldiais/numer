@@ -222,6 +222,9 @@ def calc_trigDerivatives(request):
 def calc_generalRules(request):
 	return render(request, "numerm/calc1/calc_generalRules.html")
 
+def calc_implicit(request):
+	return render(request, "numerm/calc1/calc_implicit.html")
+
 # Sequences & Series
 def sqs_index(request):
 	return render(request, "numerm/sqs/sqs_index.html")

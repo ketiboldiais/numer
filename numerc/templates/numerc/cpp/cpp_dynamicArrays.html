@@ -4,7 +4,7 @@
 <title>Sequences</title>
 {% endblock %} {% block content %}
 
-<h1>Sequence</h1>
+<h1>Arrays</h1>
 <section id="intro">
 	<p>
 		<span class="drop">T</span>he first set of abstract data types we explore is
@@ -832,7 +832,7 @@
 		<figure class="math-display">
 			<div>
 				<p>
-					${\sum\limits_{i = 1}^{\log n} i \cdot 2^i = \log n \cdot n^{\log n}}$
+					${\sum\limits_{i = 1}^{\log n} i \cdot 2^i = \log n \cdot 2^{\log n}}$
 				</p>
 			</div>
 		</figure>
@@ -845,7 +845,927 @@
 				<p>${\dfrac{\log n \cdot 2^{\log n}}{n} = \log n}$</p>
 			</div>
 		</figure>
-		<p>Hence, the average-case running time is ${\Theta(\log n)}$</p>
+		<p>
+			Hence, the average-case running time is ${\Theta(\log n)}$ An algorithm's
+			average-case, however, may be different depending on the conditions. For
+			example, with respect to binary search, there's an average-case running
+			time for a successful search, and an average-case running time for an
+			unsuccessful search.
+		</p>
+		<p>
+			A successful search occurs if the element is found. In the tree diagram
+			above, the number of possible cases for a successful search is equivalent
+			to the number of internal nodes (i.e., all of the nodes other than the
+			nodes on the fifth level). If we examine the tree closely, the number of
+			edges from the root to a given node represents the number of comparisons
+			needed to reach the given node. For example, to find the ${k = 8,}$
+			binary-search requires 3 comparisons. Accordingly, the number of
+			comparisons to reach a given node containing ${k}$ is ${e + 1,}$ where
+			${e}$ is the number of edges leading to the node from the root (we add
+			${1}$ because a comparison must be performed for the root).
+		</p>
+		<p>
+			The number of possible cases for an unsuccesful search, in contrast, is
+			found from the number of nodes on the fifth level. These are called
+			<span class="term">external nodes</span>. It is on these external nodes
+			that binary search terminates. Like the successful search, the number of
+			comparisons needed to reach an unsuccessful search is the number of edges
+			leading to an external node plus 1.
+		</p>
+		<p>
+			With these basic facts, suppose that ${I}$ represents the sum of all the
+			paths leading to internal nodes and ${E}$ represents the sum of the paths
+			leading to external nodes. It follows then that:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${E = I + 2n,}$ where ${n}$ is the number of internal nodes</p>
+			</div>
+		</figure>
+		<p>
+			Why ${+ 2n?}$ Because each of the internal nodes have 2 children (since
+			the binary search algorithm works by successively dividing the problem by
+			2). For example, here's a simple binary tree:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/internal_v_external_nodes.svg' %}"
+				alt="Internal versus external nodes"
+				loading="lazy"
+				class="sixty-p"
+			/>
+		</figure>
+		<p>
+			Notice that ${n = 3.}$ Thus, ${2n = 6.}$ Then, notice that ${I = 2.}$
+			Hence, ${E = 2 + 6 = 8.}$ Indeed, there are 8 paths from the root to the
+			external nodes.
+		</p>
+		<p>
+			Alongside the facts above, we also know that the number of external nodes
+			is the number of internal does plus 1: ${e = n + 1,}$ where ${e}$ is the
+			number of external nodes, and ${n}$ is the number of internal nodes.
+			Knowing all of this, the average-case runtime for a successful search on
+			an ${n}$ element tuple is the sum of the paths to internal nodes divided
+			by the number of nodes (the sum of all possible cases divided by the
+			number of cases) plus 1 (including the comparison for the root node):
+		</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					${\Omega\left(1 + \dfrac{I}{n}\right)}$, where ${I}$ is the sum of all
+					paths to internal nodes and ${n}$ is the number of nodes.
+				</p>
+			</div>
+		</figure>
+		<p>Similarly, the average-case runtime for an unsuccesful search is:</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>
+					${\Omega\left( \dfrac{E}{n + 1} \right),}$ where ${E}$ is the sum of
+					all paths to external nodes and ${n}$ is the number of nodes
+				</p>
+			</div>
+		</figure>
+		<p>
+			Note that the sum of all paths to external nodes is roughly the height of
+			the tree &mdash; ${n \log n.}$ Accordingly we can generalize the
+			average-case runtime for an unsuccessful search as:
+		</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>${\Omega\left( \dfrac{n \log n}{n + 1} \right)}$</p>
+			</div>
+		</figure>
+		<p>Generalizing even further:</p>
+		<figure class="math-display">
+			<div class="rule">
+				<p>${\Omega(\log n)}$</p>
+			</div>
+		</figure>
+		<p>
+			Using what we know about ${E,}$ we can use substitution to find a more
+			generalized version of the average-case runtime for a successful search.
+			Where ${A_s(n)}$ is the average-case runtime for a successful search:
+		</p>
+		<figure class="math-display">
+			<div>
+				$$ \begin{aligned} A_s(n) &= 1 + \dfrac{I}{n} \\[1em] &= 1 + \dfrac{E -
+				2n}{n} \\[1em] &= 1 + \dfrac{E}{n} - 2 \\[1em] &= 1 + \dfrac{n \log
+				n}{n} - 2 \\[1em] &= 1 + \log n + 2 \end{aligned} $$
+			</div>
+		</figure>
+		<p>
+			Applying asymptotic analysis, the average-case runtime for a successful
+			search is:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\Omega (\log n)}$</p>
+			</div>
+		</figure>
+	</section>
+
+	<section id="getting">
+		<p>
+			<span class="topic">Accessing an Array Element.</span> In the API above,
+			we specified an operation called <span class="monoText">get(${i}$)</span>,
+			where ${i}$ is an index. This operation returns the tuple's element at
+			index ${i.}$
+		</p>
+		<p>
+			Really, there are only two operations we must perform for
+			<span class="monoText">get(${i}$)</span>: First, we must ensure the index
+			argument ${i}$ is an integer not less than 0. It wouldn't make sense to
+			pass an ${i}$ of 2.178 or an ${i}$ of -1. Second, we must ensure the index
+			is less than <span class="monoText">length</span>. If the ${i >
+			\texttt{length},}$ then we risk (a) getting some garbage value or (b)
+			receiving an out-of-bounds error. The implementation:
+		</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+					get(int index) {
+						if ( (index >= 0) ∧ (index < length) ) {
+							⟹ return A[index];
+						} 
+					}
+				</code></pre>
+			</div>
+		</figure>
+		<p>
+			Because only two operations are required for
+			<span class="monoText">get(${i}$)</span>, the
+			<span class="monoText">get(${i}$)</span> operator has a time complexity of
+			${O(1)}$ &mdash; constant time.
+		</p>
+	</section>
+
+	<section id="setting">
+		<p>
+			<span class="topic">Replacing an Array Element.</span> The
+			<span class="monoText">set(${x}$, ${i}$)</span> operation will set the
+			element ${x}$ and the index ${i.}$ Effectively, this will replace the
+			element ${y}$ occupying the index ${i.}$ Like the
+			<span class="monoText">get(${i}$)</span> operator, we must ensure that the
+			index passed is an integer and that ${i < \texttt{length}.}$ In
+			pseudocode:
+		</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+					get(int x, int index) {
+						if ( (index >= 0) ∧ (index < length) ) {
+							⟹ A[index] = x;
+						} 
+					}
+				</code></pre>
+			</div>
+		</figure>
+		<p>
+			Once more, because there are really only two operations performed
+			(ensuring the requirements are met and assignment), replacing an element
+			in an array has running time of ${O(1)}$ &mdash; constant time.
+		</p>
+	</section>
+
+	<section id="maximum">
+		<p>
+			<span class="topic">Finding the Maximum in an Array.</span> Finding the
+			maximum element in a given array is an instance of a
+			<span class="term">peak finding</span> problem. For example, suppose we
+			had the following array:
+		</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${u = }$</td>
+						<td>8</td>
+						<td>3</td>
+						<td>9</td>
+						<td>15</td>
+						<td>6</td>
+						<td>10</td>
+						<td>7</td>
+						<td>2</td>
+						<td>12</td>
+						<td>4</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			The <span class="italicsText">peak</span>, or
+			<span class="italicsText">maximum</span>, in the array above is the
+			element ${15.}$ We will see in later sections that peak finding extends to
+			many other problem domains. For now, we focus on the array data structure.
+		</p>
+		<p>
+			How do we find the maximum element? It depends on whether the array's
+			elements are sorted. Yet another example of why sorting algorithms are so
+			important. For unsorted lists, we have no recourse other than to check
+			each of the elements one by one. To do so, we first suppose that the
+			maximum is the first element in the array &mdash; ${max = u_0 = 8.}$ We
+			then compare ${u_0}$ with ${u_1.}$ If ${u_1 > u_0,}$ then ${max = u_1.}$
+			Otherwise, we compare ${u_0}$ with ${u_2.}$ If ${max = u_1,}$ then we
+			compare ${u_1}$ with ${u_2.}$ If ${u_2 > u_1,}$ then ${max = u_2.}$
+			Otherwise, we compare ${u_2}$ with ${u_3.}$ We keep doing so until we
+			reach the very last element. In pseudocode:
+		</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+					max() {
+						max = u[0];
+						for (int i = 1; i < length; i++) {
+							if (u[i] > max) {
+								max = u[i];
+							}
+						}
+						return max;
+					}
+				</code></pre>
+			</div>
+		</figure>
+		<p>
+			With this approach, we're effectively performing an instance of a linear
+			search. We must traverse the entire array, checking each element (starting
+			with the second element) all the way up to the last. Counting the number
+			of operations, we have:
+		</p>
+		<figure class="math-display">
+			<div>
+				<pre class="language-pseudo"><code>
+					max() {
+						max = u[0]; <span class="redText">&larr; 1 operation</span>
+						for (int i = 1; i < length; i++) { <span class="redText">&larr; n operations</span>
+							if (u[i] > max) { <span class="redText">&larr; n - 1 operations</span>
+								max = u[i];
+							}
+						}
+						return max; <span class="redText">&larr; 1 operation</span>
+					}
+				</code></pre>
+			</div>
+		</figure>
+		<p>
+			Thus, there are a total of ${1 + 1 + n + (n - 1)}$ operations, or ${2n +
+			1.}$ Accordingly, because the time function is ${f(n) = 2n + 1,}$ the
+			above approach has a time complexity of ${O(n)}$ &mdash; linear time.
+		</p>
+		<p>
+			On the other hand, if the list is sorted, then the last element is the
+			maximum.
+		</p>
+	</section>
+
+	<section id="finding_minimum">
+		<p>
+			<span class="topic">Finding a Minimum.</span> The
+			<span class="monoText">min()</span> operator returns the minimum element
+			in the array. Finding a minimum is an instance of a
+			<span class="term">valley-finding problem</span>. We can think of it as
+			the inverse of finding a maximum. Like peak-finding, how efficiently we
+			can find a minimum depends on whether the array's elements are sorted. If
+			the elements are unsorted, then we have no recourse other than to use a
+			linear search approach.
+		</p>
+		<p>Supppose we had the same array from the previous section:</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${u = }$</td>
+						<td>8</td>
+						<td>3</td>
+						<td>9</td>
+						<td>15</td>
+						<td>6</td>
+						<td>10</td>
+						<td>7</td>
+						<td>2</td>
+						<td>12</td>
+						<td>4</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			The valley here is the element ${u_7 = 2.}$ To find this element, we start
+			by assuming the first element, ${u_0,}$ is the minimum. We then check if
+			${u_1 < u_0.}$ If it is, then the minimum is ${u_1,}$ and we compare that
+			to ${u_2.}$ If it isn't, then the minimum remains ${u_0,}$ and we compare
+			it against ${u_2.}$ We repeat this process all the way up to the last
+			element. In pseudocode:
+		</p>
+		<figure class="math-display">
+			<ol class="alg">
+				<li>min():</li>
+				<ol>
+					<li>
+						min = u[0] <span class="greyText">${\text{1 operation}}$</span>
+					</li>
+					<li>
+						for (i = 1; i < length; i++):
+						<span class="greyText">${n \text{ operations} }$</span>
+					</li>
+					<ol>
+						<li>
+							if (u[i] < min):
+							<span class="greyText">${n - 1 \text{ operations}}$</span>
+						</li>
+						<ol>
+							<li>min = u[i]</li>
+						</ol>
+					</ol>
+					<li>
+						return min <span class="greyText">${\text{1 operation}}$</span>
+					</li>
+				</ol>
+			</ol>
+		</figure>
+		<p>
+			Examining the operation count above, we again see that the running time
+			function is ${f(n) = 1 + n + (n - 1) + 1 = 2n + 1.}$ Accordingly, this
+			approach also has a time complexity of ${O(n)}$ &mdash; linear time.
+		</p>
+	</section>
+
+	<section id="summing_elements">
+		<p>
+			<span class="topic">Summing Elements.</span> The
+			<span class="monoText">sum()</span> operator will return the sum of all
+			the elements in the array. Summing the elements of an array requires
+			traversing the entire element, adding each element to some variable ${t}$
+			representing the sum. In pseudocode:
+		</p>
+		<figure class="math-display">
+			<ol class="alg">
+				<li>sum():</li>
+				<ol>
+					<li>
+						total = 0; <span class="greyText">${\text{1 operation}}$</span>
+					</li>
+					<li>
+						for (i = 0; i < length; i++):
+						<span class="greyText">${n + 1 \text{ operations}}$</span>
+					</li>
+					<ol>
+						<li>
+							total += array[i]
+							<span class="greyText">${n \text{ operations}}$</span>
+						</li>
+					</ol>
+				</ol>
+				<li>
+					return total <span class="greyText">${\text{1 operation}}$</span>
+				</li>
+			</ol>
+		</figure>
+		<p>
+			From the operation count above, we see that this approach has a running
+			time function of ${f(n) = 2n + 3.}$ Accordingly, this algorithm has a time
+			complexity of ${O(n),}$ which is linear time.
+		</p>
+		<p>Alternatively, we can apply a recursive implementation:</p>
+		<figure class="math-display">
+			<ol class="alg">
+				<li>sum(array):</li>
+				<ol>
+					<li>if (array.length - 1 > 0):</li>
+					<ol>
+						<li>return 0;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>return sum(A, array.length - 1) + A[array.length]</li>
+					</ol>
+				</ol>
+			</ol>
+		</figure>
+		<p>
+			The recursive implementation also has a time complexity of ${O(n).}$ The
+			difference, however, is that each recursive call will result in a new
+			stack generation, leading to a space complexity of ${O(n).}$ This is in
+			contrast to the iterative approach, which has a space complexity of
+			${O(1).}$
+		</p>
+	</section>
+
+	<section id="averaging">
+		<p>
+			<span class="topic">Computing the Arithmetic Mean.</span> A useful
+			operator to have when working with arrays is returning the
+			<span class="italicsText">arithmetic mean</span>. This is done with the
+			<span class="monoText">ArithmeticMean()</span> operator. The
+			implementation is straightforward. We simply compute the sum of all the
+			elements, and divide it by the number of elements.
+		</p>
+		<figure class="math-display">
+			<ol class="alg">
+				<li>average():</li>
+				<ol>
+					<li>
+						total = 0; <span class="greyText">${\text{1 operation}}$</span>
+					</li>
+					<li>
+						for (i = 0; i < length; i++):
+						<span class="greyText">${n + 1 \text{ operations}}$</span>
+					</li>
+					<ol>
+						<li>
+							total += array[i]
+							<span class="greyText">${n \text{ operations}}$</span>
+						</li>
+					</ol>
+				</ol>
+				<li>
+					return total / length
+					<span class="greyText">${\text{2 operations}}$</span>
+				</li>
+			</ol>
+		</figure>
+		<p>
+			As we can see, the time complexity is no different, save for the extra
+			operation in the last line of dividing by the length. Accordingly, this
+			approach has a time complexity of ${O(n)}$ &mdash; linear time.
+		</p>
+	</section>
+
+	<section id="reversing">
+		<h4>Reversing the Elements of an Array</h4>
+		<p>
+			The
+			<span class="monoText">reverse()</span> operator performs exactly what it
+			sounds like: It reverses all the original elements of the array. For
+			example, given the array:
+		</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>8</td>
+						<td>3</td>
+						<td>9</td>
+						<td>15</td>
+						<td>6</td>
+						<td>10</td>
+						<td>7</td>
+						<td>2</td>
+						<td>12</td>
+						<td>14</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p><span class="monoText">reverse()</span> returns the array:</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>14</td>
+						<td>12</td>
+						<td>2</td>
+						<td>7</td>
+						<td>10</td>
+						<td>6</td>
+						<td>15</td>
+						<td>9</td>
+						<td>3</td>
+						<td>8</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			To reverse an array, there are two methods we can use: (1)
+			<span class="italicsText">reversing in place</span> and (2) using an
+			<span class="italicsText">auxiliary array</span>. We first consider the
+			latter.
+		</p>
+
+		<section id="auxiliary_array">
+			<p>
+				<span class="topic">Reversing with an Auxiliary Array.</span> With the
+				auxiliary array approach, we use an additional array to place the
+				reversed elements. The idea is straightforward: We start at the last
+				element of the array and traverse to the first element, copying each
+				element to the auxiliary array. After copying all of the elements into
+				the auxiliary array, we then replace the corresponding elements in the
+				original array with the elements in the auxiliary array.
+			</p>
+			<p>Implementing this approach in pseudocode:</p>
+			<figure class="math-display">
+				<ol class="alg">
+					<li>reverse():</li>
+					<ol>
+						<li>for (i = length - 1, j = 0; i >= 0; i--, j++):</li>
+						<ol>
+							<li>auxiliaryArr[j] = originalArr[i];</li>
+						</ol>
+						<li>for (i = 0; i < lenght; i++):</li>
+						<ol>
+							<li>originalArr[i] = auxiliaryArr[j];</li>
+						</ol>
+					</ol>
+				</ol>
+			</figure>
+			<p>
+				What is this approach's time complexity? Copying the elements from the
+				original array to the auxiliary array takes ${n}$ operations, since we
+				must traverse through ${n}$ elements. Then, copying the elements from
+				the auxiliary array back to the original array takes ${n}$ operations,
+				again because we must traverse through ${n}$ elements. Accordingly, this
+				approach has a time function of roughly ${f(n) = 2n.}$ Asymptotically,
+				the approach has a time complexity of order ${O(n)}$ &mdash; linear
+				time.
+			</p>
+		</section>
+
+		<section id="reversing_in_place">
+			<p>
+				<span class="topic">Reversing in Place.</span> With the reverse-in-place
+				approach, we swap the first and the last elements, then the second and
+				the second to last, then the third and the third to last, and so on.
+				This is done by assigning two indexing variables: ${i}$ to track indices
+				offsetting from and including the first element, and ${j}$ to track
+				indices offsetting from and including the last element. We continue the
+				process until either ${i}$ and ${j}$ have arrived at the same index, or
+				when ${i > j.}$ The implementation:
+			</p>
+			<figure class="math-display">
+				<ol class="alg">
+					<li>reverse():</li>
+					<ol>
+						<li>for (i = 0, j = length - 1; i < j; i++, j--):</li>
+						<ol>
+							<li>temp = A[i];</li>
+							<li>A[i] = A[j];</li>
+							<li>A[j] = temp;</li>
+						</ol>
+					</ol>
+				</ol>
+			</figure>
+			<p>
+				With the implementation above, we can see that this approach also
+				requires traversing through the array's ${n}$ elements. Accordingly,
+				this approach, too, has a running time of ${O(n);}$ linear time.
+			</p>
+		</section>
+	</section>
+
+	<section id="left_shift">
+		<h4>Shifting & Rotating</h4>
+		<p>
+			The next operations we consider are
+			<span class="monoText">leftShift()</span>,
+			<span class="monoText">rightShift()</span>,
+			<span class="monoText">leftRotate()</span>, and
+			<span class="monoText">rightRotate()</span>. Each of these operations
+			involves moving elements to the left or right &mdash; particularly useful
+			actions when implementing other algorithms (e.g., filling in holes in the
+			array).
+		</p>
+		<p>
+			<span class="topic">Shifting an Element.</span> Suppose we had the
+			following array:
+		</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>6</td>
+						<td>3</td>
+						<td>8</td>
+						<td>5</td>
+						<td>9</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			The operation of left-shifting is to shift all of the elements in the
+			array to the left:
+		</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>3</td>
+						<td>8</td>
+						<td>5</td>
+						<td>9</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			Notice that in doing so, we lose the element 6. This is the natural
+			consequence of left-shifting. We're shifting everything to the left,
+			losing whichever element is at index ${i = 0}$ before the left-shift.
+		</p>
+		<p>
+			The same idea extends to right-shifting. The difference, however, is that
+			we're shifting elements to the right. Starting with the same previous
+			array:
+		</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>6</td>
+						<td>3</td>
+						<td>8</td>
+						<td>5</td>
+						<td>9</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p><span class="monoText">rightShift()</span> results in:</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td></td>
+						<td>6</td>
+						<td>3</td>
+						<td>8</td>
+						<td>5</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+
+		<p>
+			<span class="topic">Rotating an Array.</span> Suppose performed a
+			left-shift, pushing the element ${6}$ out of the array. What if we wanted
+			to keep the ${6}$ somehow? To do so, we use the
+			<span class="monoText">leftRotate()</span> operator. Starting with this
+			array:
+		</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>6</td>
+						<td>3</td>
+						<td>8</td>
+						<td>5</td>
+						<td>9</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p><span class="monoText">leftRotate()</span> yields:</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>3</td>
+						<td>8</td>
+						<td>5</td>
+						<td>9</td>
+						<td>6</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			Notice that the element ${6}$ moves to ${i = length}$ when the left-shift
+			pushes it out of the array. The same operation extends to rotating to the
+			right &mdash; <span class="monoText">rightRotate()</span>. Starting with:
+		</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>6</td>
+						<td>3</td>
+						<td>8</td>
+						<td>5</td>
+						<td>9</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p><span class="monoText">rightRotate()</span> yields:</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>9</td>
+						<td>6</td>
+						<td>3</td>
+						<td>8</td>
+						<td>5</td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			Because shifting and rotating an unsorted array requires traversing
+			through all the array's elements, both shifting and rotating has a time
+			complexity of ${O(n).}$
+		</p>
+	</section>
+
+	<section id="inserting_into_a_sorted_array">
+		<p>
+			<span class="topic">Inserting into a Sorted Array.</span> Suppose we had
+			the following <span class="underlineText">sorted</span> array:
+		</p>
+		<figure class="table">
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A = }$</td>
+						<td>4</td>
+						<td>8</td>
+						<td>13</td>
+						<td>16</td>
+						<td>20</td>
+						<td>25</td>
+						<td>28</td>
+						<td>33</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>${i = }$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			When inserting into a sorted array like the one above, we often want to
+			keep array's sorted property. In other words, we want to insert the
+			element in a sorted position. In this case,
+			<span class="monoText">insert(18)</span> should place the element ${18}$
+			after ${A_{3} = 16.}$ This requires placing ${18}$ at ${i = 4,}$ which is
+			presently occupied by ${A_{4} = 20.}$ Accordingly, we must make space for
+			the element. This is done by shifting the element at 7, then 6, then 5,
+			then 4.
+		</p>
+		<p>
+			How might this shifting be implemented? Well, let's consider a simpler
+			case. If we instead wrote <span class="monoText">insert(34)</span>, then
+			no shifting would occur, since 34 would be the largest element. If,
+			however, we wrote <span class="monoText">insert(32)</span>, then 33 would
+			have to be shifted, since ${32 > 33.}$ Accordingly, when we shift
+			elements, we keep right-shifting, starting from the last element, until we
+			reach the <span class="underlineText">first</span> element less than the
+			argument passed to <span class="monoText">insert()</span> (i.e., the
+			element we want to insert).<label for="insert" class="margin-toggle"
+				><sup></sup
+			></label>
+			<input
+				type="checkbox"
+				id="insert"
+				class="margin-toggle sidenote-number"
+			/>
+			<span class="marginnote"
+				>This algorithm only works because the array's elements are
+				sorted.</span
+			>
+		</p>
 	</section>
 </section>
 
@@ -974,9 +1894,4 @@
 	</p>
 </section>
 
-{% endblock %} [\textit{M = 7, T[7] = 27} [\textit{M = 3, T[3] = 15} [\textit{M
-= 1, T[1] = 8} [\textit{M = 0, T[0] = 4}] [\textit{M = 2, T[2] = 10}] ]
-[\textit{M = 5, T[5] = 21} [\textit{M = 4, T[4] = 18}] [\textit{M = 6, T[6] =
-24}] ] ] [\textit{M = 11, T[11] = 15} [\textit{M = 9, T[9] = 33} [\textit{M = 8,
-T[8] = 29}] [\textit{M = 10, T[10] = 34}] ] [\textit{M = 13, T[13] = 41}
-[\textit{M = 12, T[12] = 39}] [\textit{M = 14, T[14] = 43}] ] ] ]
+{% endblock %}
