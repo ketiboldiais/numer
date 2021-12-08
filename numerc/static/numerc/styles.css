@@ -24,6 +24,30 @@
 		font-style: italic;
 	}
 	@font-face {
+		font-family: "serifMain";
+		src: url("./numerc_fonts/cmu_serif/serifMain.woff");
+		font-weight: normal;
+		font-style: normal;
+	}
+	@font-face {
+		font-family: "serifMain";
+		src: url("./numerc_fonts/cmu_serif/serifMainBold.woff");
+		font-weight: bold;
+		font-style: normal;
+	}
+	@font-face {
+		font-family: "sansSerifMain";
+		src: url("./numerc_fonts/cmu_serif/sansSerif.woff");
+		font-weight: normal;
+		font-style: normal;
+	}
+	@font-face {
+		font-family: "sansSerifMain";
+		src: url("./numerc_fonts/cmu_serif/serifMainItl.woff");
+		font-weight: normal;
+		font-style: italic;
+	}
+	@font-face {
 		font-family: "Inconsolata";
 		src: url("./numerc_fonts/inconsolata/inconsolata_regular.ttf");
 		font-weight: normal;
@@ -67,19 +91,19 @@
 	--mediumBlue: #9eddf4;
 	--indigo: #551686ed;
 	--lightGrey: rgb(190, 190, 190);
-	--textColor: rgb(42, 42, 42);
+	--textColor: #333;
 	--blackBG: #EFF2EF;
 	--sky: rgb(246, 250, 252);
 	--gold: #D4AF37;
 	--wheat: #fffcf1;
 	/* "CMU",  */
 
-	--serif: "Garamond", "Apple Garamond", "Athelas", "Iowan Old Style", "Hoefler Text", "Palatino", "New York", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
+	--serif: "serifMain", "Garamond", "Apple Garamond", "Athelas", "Iowan Old Style", "Hoefler Text", "Palatino", "New York", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
 
-	--serifTitle: "Athelas", "Georgia", serif;
-	--sansSerifTitle: "Avenir", sans-serif;
+	--serifTitle: "sansSerifMain", "Athelas", "Georgia", serif;
+	--sansSerifTitle: "sansSerifMain", "Avenir", sans-serif;
 
-	--mono: "Inconsolata", "Menlo", "Monaco", "Consolas", "monospace",  "Liberation Mono", "Lucida Console"; 
+	--mono: "Menlo", "Monaco", "Consolas", "monospace",  "Liberation Mono", "Lucida Console"; 
 
 	--sansSerif: "avenir", "-apple-system", "BlinkMacSystemFont", "avenir next",  "segoe ui", "helvetica neue", "helvetica", "Ubuntu", "roboto", "noto", "arial", "sans-serif"; 
 	}
@@ -151,7 +175,6 @@
 		margin: 0 0.2em;
 	}
 	ul.toc li {
-		font-size: 0.93rem;
 		margin: 0 1.5em;
 		counter-increment: volume-number; 
 	}
@@ -202,14 +225,15 @@
 		align-self: start;
 		height: 99.9vh;
 		overflow-y: auto;
+		font-family: var(--serif);
 		background: var(--sky);
 	}
 	nav.section-nav > h6 {
-		margin: 0; 
+		margin: 0.4em; 
 		padding: 0.3em;
+		font-family: var(--sansSerifTitle);
 	}
 	nav.section-nav > h6 > a {
-		font-family: var(--sansSerif);
 		font-size: 1.4rem;
 	}
 	main nav ul {
@@ -220,10 +244,6 @@
 	main > nav ul li {
 		padding: 0;
 		font-size: 0.8rem;
-		font-family: var(--sansSerif);
-	}
-	main > nav ul li ul li {
-		font-weight: normal;
 	}
 	.section-nav {
 		padding: 0;
@@ -234,6 +254,10 @@
 		padding: 0.1em;
 		display: block;
 		color: rgb(56, 56, 56);
+	}
+	.section-nav li a {
+		width: fit-content;
+		border-bottom: dotted thin grey;
 	}
 	.section-nav a:hover,
 	.section-nav a:focus {
@@ -311,10 +335,10 @@
 		float: right;
 		clear: right;
     margin-right: -75%;
-    width: 80%;
+    width: 60%;
     margin-top: 0.3rem;
     margin-bottom: 0;
-		font-size: 0.93rem;
+		font-size: 0.8rem;
 		line-height: 1.2;
 		vertical-align: baseline;
 		position: relative;
@@ -480,7 +504,7 @@
 		margin-right: 0.7em;
 		font-family: var(--serifTitle);
 		font-weight: bold;
-		font-size: 1rem;
+		font-size: 0.95rem;
 	}
 	div.rule span.topic{
 		font-variant: small-caps; 
@@ -502,20 +526,37 @@
 	}
 /* Links */
 	section a {
+		position: relative;
 		padding:0;
 		text-decoration: none;
-		color: var(--linkBlue);
+		border-bottom: 1px solid #ccc;
+		color: #000;
 	}
 	section a:visited {
-		color: var(--indigo);
+		color: none;
+		outline: 0;
 	}
 	section a:hover {
-		color: rgb(0, 122, 0);
+		cursor: pointer;
+	}
+	section a::before {
+		content: "";
+		position: absolute;
+		display: block;
+		width: 100%;
+		height: 1px;
+		bottom: 0;
+		left: 0;
+		background-color: #000;
+		transform: scaleX(0);
+		transition: transform 0.3s ease;
+	}
+	section a:hover::before {
+		transform: scaleX(1);
 	}
 /* Paragraph styles */
 	p {
-		font-size: 1rem;
-		font-family: "Garamond", "CMU";
+		font-size: 0.85rem;
 		text-align: left;
 	}
 	section > p {
@@ -612,7 +653,7 @@
 	
 /* List styles */
 	li {
-		font-size: 0.97rem; 
+		font-size: 0.85rem; 
 		padding:0.1em 0.5em;
 		line-height: 1.4;
 	}
@@ -725,9 +766,7 @@
 	.greyText {color: var(--lightGrey);}
 	.underlineText {text-decoration: underline;}
 	.italicsText {
-		font-family: "CMU";
 		font-style: italic; 
-		font-size: 0.9em;
 	}
 	.boldText {font-weight: bold;}
 	.boldItalics {
@@ -735,8 +774,8 @@
 		font-style: italic;
 	}
 	.monoText {
-		font-family: "Fira"; 
-		font-size: 0.8em; 
+		font-family: var(--mono); 
+		font-size: 0.85em; 
 		margin: 0 2px;
 		font-style: normal; 
 		white-space: pre;
@@ -818,7 +857,7 @@
 	table.mono td {
 		padding: 0.2em;
 		text-align: center;
-		font-family: "Fira Code";
+		font-family: var(--mono);
 		font-size: 0.75rem;
 	}
 	table.array {
@@ -891,7 +930,7 @@
 	}
 /* Algorithms - Pseudocode */
 	ol.alg {
-		font-family: "Inconsolata";
+		font-family: var(--mono);
 		background-color: rgb(246, 248, 250);
 		border-radius: 0.3em;
 	}
@@ -899,7 +938,7 @@
 		list-style-type:decimal;
 		padding: 0;
 		margin-left: 0.1em;
-		font-size: 0.85rem;
+		font-size: 0.7rem;
 		color: rgb(82, 82, 82);
 	}
 	ol.alg li .katex {
@@ -1009,7 +1048,7 @@
 		height: auto;
 		font-family: var(--mono);
 		text-align: left;
-		font-size: 0.85rem;
+		font-size: 0.65rem;
 		white-space: pre-wrap;
 		font-weight: normal;
 		word-spacing: normal;
@@ -1037,7 +1076,6 @@
 	}
 	div.compare > div > pre.language-pseudo {width: fit-content; border: none;}
 	code[class*="language-"]>.token.comment {
-		font-family: "Fira";
 		font-size: 0.7rem;
 	}
 /*? Language - Pseudo */
@@ -1066,7 +1104,6 @@
 	}
 	code[class*="language-pseudo"] {
 		font-size: 0.75rem;
-		font-family: 'Fira';
 		color: #424242; /* base00 */
 	}
 	div.compare pre.language-pseudo {
@@ -2118,7 +2155,7 @@
 	}
 
 /*? Katex Styles */
-	.katex {font-size: 0.95em !important;}
+	.katex {font-size: 1em !important;}
 	.mord.texttt {font-family: var(--mono) !important;}	
 	.katex-display {
 		margin: 0 !important;
@@ -2189,14 +2226,14 @@
 	}
 /* ! Media Queries */
 
-	@media (max-width: 600px) { html {font-size: 12px;} }
-	@media (max-width: 800px) { html {font-size: 13px;} }
-	@media (max-width: 1180px) { html {font-size: 14px;} }
-	@media (max-width: 1300px) { html {font-size: 15px;} }
-	@media (max-width: 1750px) { html {font-size: 16px;} }
-	@media (max-width: 1900px) { html {font-size: 17px;} }
-	@media (max-width: 2100px) { html {font-size: 18px;} }
-	@media (max-width: 2400px) { html {font-size: 19px;} }
+	@media (max-width: 600px) { html {font-size: 11px;} }
+	@media (max-width: 800px) { html {font-size: 12px;} }
+	@media (max-width: 1180px) { html {font-size: 13px;} }
+	@media (max-width: 1300px) { html {font-size: 14px;} }
+	@media (max-width: 1750px) { html {font-size: 15px;} }
+	@media (max-width: 1900px) { html {font-size: 16px;} }
+	@media (max-width: 2100px) { html {font-size: 17px;} }
+	@media (max-width: 2400px) { html {font-size: 18px;} }
 
 
 	@media (max-width: 1100px) {

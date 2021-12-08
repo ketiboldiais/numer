@@ -1607,9 +1607,98 @@
 		<span class="monoText">--</span>, etc. These will return a compiler error.
 	</p>
 
-
 	<section id="arrays_as_function_arguments">
-		<p><span class="topic">Arrays as Function Arguments.</span></p>
+		<p>
+			<span class="topic">Arrays as Function Arguments.</span> Suppose we wrote
+			the following program that computes the average from an array of prices:
+		</p>
+		<pre class="language-c"><code>
+			#include &lt;stdio.h&gt;
+
+			double average(double array[]) {
+				int arrayLength = sizeof(array)/sizeof(double);
+				double sum = 0.0;
+				for (int i = 0; i < arrayLength; i++) {
+					sum += array[i];
+				}
+				return sum / arrayLength;
+			}
+			
+			int main() {
+				double prices[] = {53.55, 54.87, 55.08, 58.23};
+				double averagePrice = average(prices);
+				printf("Average price = %f", averagePrice);
+				return 0;
+			}
+		</code></pre>
+		<p>Compiling, we see a problem:</p>
+		<pre class="language-bash"><code>
+			arrayArgs.c:4:26: warning: sizeof on array function parameter will return size of 'double *' instead of 'double []' [-Wsizeof-array-argument]
+							int arrayLength = sizeof(array)/sizeof(double);
+																			^
+			arrayArgs.c:3:23: note: declared here
+							double average(double array[]) {
+														^
+			arrayArgs.c:4:33: warning: 'sizeof (array)' will return the size of the pointer, not the array itself [-Wsizeof-pointer-div]
+							int arrayLength = sizeof(array)/sizeof(double);
+																~~~~~~~~~~~~~^
+			arrayArgs.c:3:23: note: pointer 'array' declared here
+							double average(double array[]) {
+																	^
+			2 warnings generated.
+		</code></pre>
+		<p>
+			There are two warnings and a note. To understand why we're seeing this
+			output, we must understand what actually happens when we indicate an array
+			parameter for a function.
+		</p>
+		<p>
+			When we tell the compiler that a function takes an array as an argument,
+			the compiler <span class="underlineText">will not</span> make a copy of
+			the array for the function to use in its stack frame. Notice that this is
+			in contrast to non-composite data like
+			<span class="monoText">int</span> or
+			<span class="monoText">char</span> values. Those values will be passed by
+			value (i.e., the function gets its own copy of the value; not the
+			original). Composite data like arrays, on the other hand, are passed by
+			pointer. Why? Efficiency. Arrays are a staple in programming, but more
+			often than not, the functions we write do not need an entire copy of the
+			array for themselves. The array we have above is a small one. Imagine an
+			array with a million values being used by several thousand functions.
+			That's a fair amount of memory usage.
+		</p>
+		<p>
+			So what does pass by pointer imply? It implies that the parameter
+			<span class="monoText">array[]</span> in the function above is actually a
+			pointer to base type. In this case, <span class="monoText">double</span>.
+			This in turn means that all the compiler knows with respect to
+			<span class="monoText">array[]</span> is that it's a
+			<span class="monoText">double</span> pointer &mdash;
+			<span class="monoText">double*</span>. Nothing else. It doesn't know what
+			that pointer points to, or whether it points to anything at all. Accordingly, for this program to work, we must initialize the <span class="monoText">size</span> parameter <span class="underlineText">outside</span> the function:
+		</p>
+		<pre class="language-c"><code>
+			#include &lt;stdio.h&gt;
+
+			double average(double array[], int size) {
+				double sum = 0.0;
+				for (int i = 0; i < size; i++) {
+					sum += array[i];
+				}
+				return sum / size;
+			}
+			
+			int main() {
+				double prices[] = {53.55, 54.87, 55.08, 58.23};
+				int numPrices = sizeof(prices)/sizeof(double);
+				double averagePrice = average(prices, numPrices);
+				printf("Average price = %f\n", averagePrice);
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Average price = 55.432500
+		</code></pre>
 	</section>
 </section>
 {% endblock %}
