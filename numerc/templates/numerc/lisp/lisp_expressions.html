@@ -1,151 +1,163 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
-<section id="expressions">
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Introduction to Racket" />
+{% endblock %} {% block title %}
+<title>Racket Basics</title>
+{% endblock %} {% block content %}
+<h1>Racket Basics</h1>
+<section id="intro">
 	<p>
-		<span class="topic">Expressions.</span> Below is an
-		<span class="term">expression</span> in lisp:
-	</p>
-	<pre class="language-lisp"><code>
-		117
-	</code></pre>
-	<pre class="language-bash"><code>
-		117
-	</code></pre>
-	<p>
-		Numbers are expressions, and so too are arithmetic operations with numbers:
-	</p>
-	<pre class="language-scheme"><code>
-		(+ 200 75)
-		(+ 3.5 4.0)
-		(- 100 50)
-		(- 50 100)
-		(- 9.5 5.5)
-		(* 111 7)
-		(* 4 1.1)
-		(* 4 -1.1)
-		(/ 10 5)
-		(sqr 3)
-		(sqrt 16)
-	</code></pre>
-	<pre class="language-bash"><code>
-		275
-		7.5
-		50
-		-50
-		4
-		777
-		4.4
-		-4.4
-		2
-		9
-		4
-	</code></pre>
-	<p>
-		All of the expressions above are called
-		<span class="italicsText">combinations</span> &mdash; an expression enclosed
-		by parentheses to indicate procedure application. The leftmost element is
-		called the <span class="italicsText">operator</span>, and the elements
-		operated on are called the <span class="italicsText">operands</span>. The
-		operators used abvoe are called
-		<span class="term">primitive operators</span>; they are operatres predefined
-		by the language. Every expression evaluates to a
-		<span class="term">value</span>. The general form of an expression in Lisp:
-	</p>
-	<figure class="math-display">
-		<pre class="language-pseudo"><code>
-			<span class="blueText">(</span> <span class="redText">⟨primitive⟩</span> <span class="redText">⟨expression⟩</span> ... <span class="blueText">)</span>
-		</code></pre>
-		<figcaption>Note that numbers themselves are expressions.</figcaption>
-	</figure>
-	<p>
-		Note the difference between Lisp and numerous other languages:
-		<span class="italicsText">prefix notation</span>. In most of languages and
-		the mathematics we're familiar with, arithmetic operations are written in
-		<span class="italicsText">inflix notation</span> (e.g., ${1 + 1.}$ Prefix
-		notation, also known as Polish notation, places the operator farthest left
-		(e.g., ${+ 1 1.}$ The benefit to prefix notation is that it allows us to
-		write a single operator for numerous operands, thereby preventing any
-		possible ambiguity:
+		<span class="drop">R</span>acket is the modern successor to Scheme, and
+		further up, Common Lisp. It's a dialect of Lisp, preserving much of Scheme's
+		distinctive features while adding several twists of its own. In these
+		materials, we will use Racket for the most part, but will occassionally use
+		Scheme. This will be made apparent by the first line of our code demos. For
+		Racket programs, we begin every program with the line:
 	</p>
 	<pre class="language-scheme"><code>
-		(+ 1 2 3 4 5)
-		(* 1 2 3 4 5)
-	</code></pre>
-	<pre class="language-bash"><code>
-		15
-		120
+		#lang racket
 	</code></pre>
 	<p>
-		A further benefit, we can easily nest operations while maintaining
-		readability with <span class="italicsText">pretty printing</span> (indenting
-		the code such that the operands are aligned vertically). This is called
-		<span class="term">nested arithmetic</span>:
+		If that line isn't shown, it's assumed to be a Racket program. In contrast,
+		we will begin every Scheme program with the line:
 	</p>
 	<pre class="language-scheme"><code>
-		(+ (* 10 3) (- 10 5))
-
-		;; hard to read expression
-		(+ (* 3 (+ (* 5 10) (+ 5 10))) (+ (- 15 5) 10))
-
-		;; same expression, pretty printed
-		(+ (* 3 
-				(+ (* 5 10) 
-					(+ 5 10))) 
-			(+ (- 15 5) 
-				10))
-	</code></pre>
-	<pre class="language-bash"><code>
-		35
-		215
-		215
+		#lang scheme
 	</code></pre>
 	<p>
-		Above, we see our first example of a Lisp
-		<span class="italicsText">comment</span> &mdash; code ignored by the Lisp
-		interpreter. Notice that in Lisp, we do not need to use some function or
-		method like <span class="monoText">console.log()</span> to display results
-		to the console. This is because Lisp follows the principle that every
-		expression has <span class="italicsText">value</span>. Obedience to this
-		principle is so inherent in Lisp that the computer scientist Alan Perlis
-		&mdash; the first recipient of the Turing award, for his work on programming
-		techniques and compiler construction &mdash; commented: &#8220;Lisp
-		programmers know the value of everything but the cost of nothing.&#8221;
-	</p>
-	<p>
-		<span class="exh">Exercise.</span> Suppose a right triangle ${\triangle
-		ABC}$ has two legs of lengths 3 and 4. Write a Lisp expression that returns
-		the value of the hypotenuse of ${\triangle ABC.}$
-	</p>
-	<details class="answer">
-		<summary>Solution</summary>
-		<p>
-			Recall that the the length of a right triangle's hypotenuse is given by
-			the formula: ${a = \sqrt{b^2 + c^2},}$ where ${a}$ is the length of the
-			hypotenuse, and ${b}$ and ${c}$ are the lengths of the triangle's legs.
-			Thus, in Lisp:
-		</p>
-		<pre class="language-scheme"><code>
-			(sqrt (+ (sqr 3) (sqrt 4)))
-		</code></pre>
-		<pre class="language-bash"><code>
-			5
-		</code></pre>
-	</details>
-	<p>
-		<span class="topic">Non-terminating Real Numbers.</span> Computers have a
-		finite amount of memory and processing power. Because of this limitation,
-		computing irrational numbers like ${\sqrt{2}}$ results in what might appear
-		odd:
-	</p>
-	<pre class="language-scheme"><code>
-		(sqrt 2)
-	</code></pre>
-	<pre class="language-bash"><code>
-		#i1.4142135623730951
-	</code></pre>
-	<p>
-		The prefix <span class="monoText">#i</span> indicates that the value is an
-		<span class="italicsText">inexact number</span>; the value of the expression
-		is close to this number, but it not exactly.
+		Moreover, every Racket file &mdash; also called a Racket
+		<span class="italicsText">module</span> &mdash; ends with the extension
+		<span class="monoText">.rkt</span>, while every Scheme module ends with the
+		extension <span class="monoText">.scm</span>. With these basics out of the
+		way, we can proceed to the core constructs.
 	</p>
 </section>
+
+<section id="basics">
+	<h2>Foundations</h2>
+	<p>
+		In investigating Racket &mdash; and really any other language for that
+		matter &mdash; it's helpful to identify how the language forms the following
+		constructs: (1) <span class="term">primitive expressions</span>: the
+		language's simplest entities, (2)
+		<span class="term">compound expressions</span>: expressions formed by
+		combining other expressions, and (3) <span class="term">abstractions</span>:
+		how expressions, primitive or compound, can be named and manipulated as
+		units. As we've seen with other languages, each of these constructs are
+		named and implemented in various ways. We turn our attention to how Racket
+		approaches these constructs.
+	</p>
+	<section id="expressions">
+		<p>
+			<span class="topic">Expressions.</span> In Racket, the simplest data is
+			the <span class="term">primitive expression</span>. The following are all
+			examples:
+		</p>
+		<pre class="language-scheme"><code>
+			134        ; an integer
+			#b111      ; a binary number 
+			#o111      ; an octal number
+			#x111      ; a hexadecimal number
+			3.14       ; a real number
+			6.42e+10   ; a real number in scientific notation
+			1/2        ; a rational
+			1+4i       ; complex numbers
+		</code></pre>
+		<p>
+			Notice that in Racket, comments are denoted with a semicolon. Each of
+			these expressions have a <span class="term">type</span>. In Racket, there
+			are several built-in datatypes. We address each in turn.
+		</p>
+	</section>
+
+	<section id="number_type">
+		<p>
+			<span class="topic">Numbers.</span> As we saw above, Racket provides an
+			extensive and formidable number type system. Unlike many other languages,
+			Racket's number types resemble mathematics very closely. First, Racket
+			provides a broad type called <span class="monoText">number</span>. All
+			values of type <span class="monoText">number</span> are
+			<span class="term">complex</span>. Next, some values of type
+			<span class="monoText">complex</span> are values of type
+			<span class="monoText">real</span>. Among the reals, there are the types
+			<span class="monoText">zero</span>,
+			<span class="monoText">positive</span>, and
+			<span class="monoText">negative</span>. The one deviation from mathematics
+			is that all values of type <span class="monoText">real</span> can be
+			represented as type <span class="monoText">rational</span>, with a few key
+			exceptions:
+		</p>
+		<ol>
+			<li>
+				<span class="monoText">+inf.0</span>, representing ${\texttt{+} \infty}$
+			</li>
+			<li>
+				<span class="monoText">-inf.0</span>, representing ${\texttt{-} \infty}$
+			</li>
+			<li>
+				<span class="monoText">+nan.0</span>, representing not-a-number (i.e., a
+				value that is undefined or unrepresentable)
+			</li>
+		</ol>
+		<p>
+			We say &#8220;deviation&#8221; because Racket does have what might strike
+			some as pecularities. For example, Racket provides a default value of
+			<span class="monoText">pi</span>, which is considered a
+			<span class="monoText">rational</span> type. Obviously, the constant ${\pi
+			\notin \mathbb{Q}.}$ Just as well, however, we cannot represent all of an
+			irrational number's fractional components. Racket's designers went with
+			the more convenient approach, where everything that is not under one of
+			the exceptions above is considered <span class="monoText">rational</span>.
+			The other approach would be to have gone the Julia and Clojure routes,
+			where the <span class="monoText">rational</span> datatype much more
+			closely resembles mathematics (i.e., a subset of the reals).
+		</p>
+		<p>
+			Within the <span class="monoText">rational</span> type, some values can be
+			represented as values of type <span class="monoText">integer</span>. And
+			among the integers, there are the types
+			<span class="monoText">odd</span> and <span class="monoText">even</span>.
+			And within all of these types, or orthogonal to these types, each value of
+			a number type can be <span class="monoText">exact</span> or
+			<span class="monoText">inexact</span>. These types do exactly what they
+			sound like. <span class="monoText">inexact</span> number types are
+			implemented as flonums (the equivalent of a
+			<span class="monoText">double</span> in languages like Java) or as
+			single-flonums (the equivalent of a <span class="monoText">float</span>).
+			Everything else falls under <span class="monoText">exact</span> (except
+			for the NaN and infinity types listed earlier). Moreover, all
+			<span class="monoText">inexact</span> number values can be coerced to
+			<span class="monoText">exact</span> values.
+		</p>
+	</section>
+
+	<section id="boolean_type">
+		<p>
+			<span class="topic">Booleans.</span> Racket provides a
+			<span class="monoText">boolean</span> datatype. In Racket, values of type
+			<span class="monoText">boolean</span> are represented as
+			<span class="monoText">#t</span> (true) and
+			<span class="monoText">#f</span> (false). This syntax directly follows
+			from Scheme. Scheme itself deviates from Lisp. In Lisp, true is
+			represented with <span class="monoText">T</span> and false with
+			<span class="monoText">NIL</span>.
+		</p>
+	</section>
+</section>
+
+<section id="definitions">
+	<p>
+		<span class="topic">Definitions.</span> Every Racket file contains a
+		collection of <span class="term">definitions</span>. These are akin to
+		<span class="italicsText">bindings</span> in other languages. They are
+		essentially extensions of the top-level environment. For example:
+	</p>
+	<pre class="language-scheme"><code>
+		(define x 17)
+	</code></pre>
+	<p>
+		binds an identifier <span class="monoText">x</span> to the value
+		<span class="monoText">17</span>.
+	</p>
+</section>
+
 {% endblock %}
