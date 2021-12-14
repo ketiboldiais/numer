@@ -11,10 +11,6 @@ urlpatterns = [
 
 	path("balg_realProperties", views.balg_realProperties, name="balg_realProperties"),
 
-	path("balg_exponentsRadicals", views.balg_exponentsRadicals, name="balg_exponentsRadicals"),
-
-	path("balg_logarithms", views.balg_logarithms, name="balg_logarithms"),
-
 	path("balg_equations", views.balg_equations, name="balg_equations"),
 
 	path("balg_proportion", views.balg_proportion, name="balg_proportion"),
@@ -158,6 +154,8 @@ urlpatterns = [
 	path("calc_generalRules", views.calc_generalRules, name="calc_generalRules"),
 
 	path("calc_implicit", views.calc_implicit, name="calc_implicit"),
+
+	path("calc_exponentials", views.calc_exponentials, name="calc_exponentials"),
 
 	# sequences & series paths 
 	path("sqs_index", views.sqs_index, name="sqs_index"),

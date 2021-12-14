@@ -183,6 +183,202 @@
 	</p>
 </section>
 
+<section id="next_gen_js">
+	<h2>ES5 v. ES6</h2>
+	<p>
+		When reading JavaScript-related articles, we might encounter acronyms like
+		&#8220;ES5&#8221; and &#8220;ES6&#8221;. The &#8220;ES&#8221; in these
+		acronyms stands for &#8220;ECMAScript&#8221; &mdash; the standard behind
+		JavaScript. We can think of ECMAScript as a specification, and JavaScript as
+		an implementation of that specification. There are other languages that
+		implement ECMAScript, such as ActionScript (used for Flash), and JScript
+		(Microsoft's implementation of ECMAScript; now legacy).
+	</p>
+	<p>
+		ECMAScript began as a specification for a scripting language, created by the
+		software engineer Brendan Eich during his tenure at Netscape (the company
+		behind the Netscape browser, the dominant browser during the internet's
+		early years). Netscape asked Eich to create the language after noticing an
+		investment opportunity at the dawn of the internet era: a web-focused
+		language that resembled the most popular language at the time &mdash; Java.
+		This specification was initially called Mocha, then LiveScript. Netscape's
+		marketing team, observing Java's success, asked Sun Microsystems (the
+		company that created Java) for a license to use the name
+		&#8220;JavaScript&#8221;. License granted, the language was finally named
+		&#8220;JavaScript&#8221;, the name we know today.
+	</p>
+	<p>
+		Recognizing the potential in Eich's work, Microsoft began its own
+		implementation of the specification, JScript. By then, Netscape was losing
+		its hold on the browser market to Internet Explorer. Microsoft poured
+		substantial capital into its web products: Internet Explorer offered all the
+		features Netscape provided with greater stability across machines, and there
+		was a cherry on top: free web servers. Netscape couldn't compete. In swan
+		song, Netscape requested ECMA International (a non-profit that specializes
+		in creating technology standards) to establish JavaScript standards. After
+		negotations between Microsoft, Netscape, and Sun Microsystems, the standard
+		was named ECMAScript.
+	</p>
+	<p>
+		The ECMAScript committee released several versions of the ECMAScript
+		standard after its introduction, but halted in 1999. This decade-long
+		slumber, alongside Internet Explorer's domination in the browser market, led
+		to Microsoft neglecting much of its software development in the web
+		industry. And as with any product ceasing improvement, new products
+		appeared: Firefox (led by Brendan Eich); Google Chrome, Opera, Safari,
+		Midori, and a whole host of other browsers. Perhaps witnessing more users
+		dragging Internet Explorer to the trash, ECMAScript awoke and released a new
+		standard in 2009 &mdash; ES5. JavaScript only increased in popularity, and
+		this led to another release: ES6. The ECMAScript specification can be found
+		<a href="https://262.ecma-international.org/12.0/" target="_blank">here.</a>
+	</p>
+	<p>
+		Today, ECMAScript is the standard that determines what features, or proposed
+		features, are included, removed, or ignored in JavaScript. This is an
+		ongoing process. The committee continues to
+		<a href="https://github.com/tc39/proposals" target="_blank"
+			>take and consider proposals</a
+		>. Owing to the massive amount of websites and applications that rely on
+		JavaScript, ECMAScript is particularly stringent and careful about changing
+		existing standards or adding new features, with the largest leap occurring
+		between ES5 and ES6. ES6 contains many new features, and as such, not every
+		browser supports the specification. For example, ES5 only provided one way
+		to declare variables: using the keyword <span class="monoText">var</span>.
+		With ES6, two other ways were introduced:
+		<span class="monoText">let</span> and <span class="monoText">const</span>.
+		Implementing these changes is a slow process, and browsers are steadily
+		moving towards full support. ES6 support is excellent on Google Chrome, as
+		well as the other major browsers like Firefox and Safari. Older browsers
+		like Internet Explorer, however, have essentially no support.
+	</p>
+</section>
+
+<section id="var_let_const">
+	<h3>
+		<span class="monoText">var</span>, <span class="monoText">let</span>, &
+		<span class="monoText">const</span>
+	</h3>
+	<p>
+		JavaScript provides three different ways to declare variables: with
+		<span class="monoText">var</span>, <span class="monoText">let</span>, and
+		<span class="monoText">const</span>. As we learned earlier,
+		<span class="monoText">var</span> is the original approach to variable
+		declaration, and <span class="monoText">let</span> and
+		<span class="monoText">const</span> were introduced in ES6. But this isn't
+		the only differences. The additional difference concerns
+		<span class="italicsText">scope</span>. Two facts embody this difference:
+	</p>
+	<ol>
+		<li>
+			A variable declared with <span class="monoText">var</span> resides in
+			either a <span class="italicsText">function scope</span> or
+			<span class="italicsText">global scope</span>.
+		</li>
+		<li>
+			A variable declared with <span class="monoText">let</span> or
+			<span class="monoText">const</span> resides only in a
+			<span class="italicsText">block scope</span>.
+		</li>
+	</ol>
+	<p>To understand these differences, consider the following output:</p>
+	<pre class="language-javascript"><code>
+		let x = 1;
+		const y = 2;
+		function f() {
+			let z = 3;
+			console.log(`z = ${z}`)
+			console.log(`x = ${x}`);
+		}
+		function g() {
+			console.log(`y = ${y}`)
+		}
+		f();
+		g();
+		console.log(`z = ${z}`);
+	</code></pre>
+	<pre class="language-bash"><code>
+		z = 3
+		x = 1
+		y = 2
+		Uncaught ReferenceError: z is not defined
+	</code></pre>
+	<p>
+		This is the expected output. The functions
+		<span class="monoText">f()</span> and <span class="monoText">g()</span> have
+		access to the global variables <span class="monoText">x</span> and
+		<span class="monoText">y</span>, but within the global scope (i.e., outside
+		the block scopes of <span class="monoText">f()</span> and
+		<span class="monoText">g()</span>), we cannot access the variables therein.
+	</p>
+	<p>Now consider the following code:</p>
+	<pre class="language-javascript"><code>
+		let arr = ["a", "b", "c"];
+		for (var i = 0; i < 3; i++) {
+			console.log(arr[i]);
+		}
+		console.log(i);
+	</code></pre>
+	<pre class="language-bash"><code>
+		a
+		b
+		c
+		3
+	</code></pre>
+	<p>
+		Using <span class="monoText">var</span>, it looks like we can access the
+		variable <span class="monoText">i</span>, even though it's exclusively in
+		the for-loop's block. Trying this with <span class="monoText">let</span>:
+	</p>
+	<pre class="language-javascript"><code>
+		let arr = ["a", "b", "c"];
+		for (let i = 0; i < 3; i++) {
+			console.log(arr[i]);
+		}
+		console.log(i);
+	</code></pre>
+	<pre class="language-bash"><code>
+		a
+		b
+		c
+		Uncaught ReferenceError: i is not defined
+	</code></pre>
+	<p>It doesn't work. Let's try one more example:</p>
+	<pre class="language-javascript"><code>
+		let x = 1;
+		if (1 === x) {
+			var m = 0;
+			let n = 1;
+		} else {
+			var m = 5;
+			let n = 3;
+		}
+		console.log(m);
+		console.log(n);
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+		Uncaught ReferenceError: n is not defined
+	</code></pre>
+	<p>
+		Now things are more interesting. Because the condition was true, it
+		<span class="monoText">m</span> was assigned the value
+		<span class="monoText">0</span>. What looks odd is that we're able to access
+		<span class="monoText">m</span> outside the if-statement's truth block when
+		we use <span class="monoText">var</span> but not when we use
+		<span class="monoText">let</span>. This is results from the two facts
+		mentioned previously: Variables declared with
+		<span class="monoText">var</span> are scoped to either a global or function
+		scope, and variables declared with <span class="monoText">let</span> are
+		scoped to the block scope. In the example above, because
+		<span class="monoText">m</span> was declared with
+		<span class="monoText">var</span> within a block scope, the variable
+		<span class="monoText">m</span> essentially exists in the global scope. This
+		is why we can access it outside the if-statement's block and the for-loop's
+		header &mdash; both of these scopes are block scopes, and variables declared
+		with <span class="monoText">var</span> do not scope to them.
+	</p>
+</section>
+
 <section id="javascript_and_undefined">
 	<h3>JavaScript and <span class="monoText">undefined</span></h3>
 	<p>

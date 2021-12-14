@@ -1,0 +1,196 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="How to differentiate exponential and logarithmic functions."
+/>
+{% endblock %} {% block title %}
+<title>Derivatives of Exponential & Logarithmic Functions</title>
+{% endblock %} {% block content %}
+<h1>Differentiating Exponential & Logarithmic Functions</h1>
+<section id="intro">
+	<p>
+		<span class="drop">W</span>e now turn to differentiating exponential and
+		logarithmic functions. Knowing how to compute the derivatives for these
+		functions is especially useful in applied mathematics fields. For example,
+		we frequently see exponential functions with future value calculations in
+		finance, and logarithmic functions for discounting to present value. We also
+		see exponential functions in population growth models. In all of these
+		situations, knowing how to compute various rates of change is invaluabe. And
+		as we've seen, that knowledge is provided through the derivative.
+	</p>
+	<p>
+		We begin by recalling some of the basic rules of exponents. First, where
+		${a, b > 0,}$ the following rules hold:
+	</p>
+
+	<table>
+		<thead>
+			<th>Name</th>
+			<th>Rule</th>
+			<th>Remark</th>
+			<th>Constraints</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Exponent-product Rule</td>
+				<td class="center">${\large a^{x_1} \cdot a^{x_2} = a^{x_1 + x_2}}$</td>
+				<td>The exponential of the sum is the exponential of the product.</td>
+				<td>${a \in \Z^{+},}$ ${x_1, x_2 \in \Z}$</td>
+			</tr>
+			<tr>
+				<td>Exponent-quotient Rule</td>
+				<td class="center">
+					${\large \dfrac{a^{x_1}}{a^{x_2}} = a^{x_1 - x_2} = \dfrac{1}{a^{x_2 -
+					x_1}}}$
+				</td>
+				<td>
+					If the bases are the same, keep the base and subtract the exponent in
+					the denominator from the exponent in the numerator.
+				</td>
+				<td>${a \in \Z^{+},}$ ${x_1, x_2 \in \Z}$</td>
+			</tr>
+			<tr>
+				<td>Raising a Product to a Power</td>
+				<td class="center">${\large (ab)^{x} = a^xb^x}$</td>
+				<td>
+					To raise a product to the ${n^{\text{\scriptsize{th}}}}$ power, raise
+					each factor to the ${n^{\text{\scriptsize{th}}}}$ power.
+				</td>
+				<td>${a, b \in \Z^{+},}$ ${x \in \Z}$</td>
+			</tr>
+			<tr>
+				<td>Exponent-power Rule</td>
+				<td class="center">${\large (a^{x_1})^{x_2} = a^{x_1 \cdot x_2}}$</td>
+				<td>To raise a power to a power, multiply the exponents.</td>
+				<td>${a, x_1, x_2 \in \Z^{+}}$</td>
+			</tr>
+			<tr>
+				<td>Raising a Quotient to a Power</td>
+				<td class="center">
+					${\large \left(\dfrac{a}{b}\right)^{x} = \dfrac{a^x}{b^x}}$
+				</td>
+				<td>
+					To raise a quotient to the ${n^{\text{\scriptsize{th}}}}$ power, raise
+					both the numerator and the denominator to the
+					${n^{\text{\scriptsize{th}}}}$ power.
+				</td>
+				<td>${a, x \in \Z^{+}}$</td>
+			</tr>
+			<tr>
+				<td>Exponent of 1</td>
+				<td class="center">${\large a^1 = a}$</td>
+				<td>
+					Any number raised to the first power returns the original number.
+				</td>
+				<td>${a \in \R}$</td>
+			</tr>
+			<tr>
+				<td>Exponent of 0</td>
+				<td class="center">${\large a^0 = 1}$</td>
+				<td>Any number raised to the zero power returns 1.</td>
+				<td>${\{a \in \R : a \neq 0\};}$ ${0^0 = \text{undefined}}$</td>
+			</tr>
+			<tr>
+				<td>Negative Integer Exponent Rule</td>
+				<td class="center">${\large a^{-x} = \dfrac{1}{a^x}}$</td>
+				<td>
+					Negative exponents are equivalent to an exponent in the denominator.
+				</td>
+				<td>${a, x \in \Z^{+}}$</td>
+			</tr>
+			<tr>
+				<td>Fractional Exponent Rule</td>
+				<td class="center">
+					${\large a^{\frac{x_1}{x_2}} = \sqrt[x_2]{a^{x_1}}}$
+				</td>
+				<td>
+					Fractional exponents are equivalent to the
+					${\text{denom}^{\text{\scriptsize{th}}}}$ root of the
+					${\text{numer}^{\text{\scriptsize{th}}}}$ power.
+				</td>
+				<td>${a, x_1, x_2 \in \Z^{+}}$</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>
+		Keeping these rules in mind, let's see some functions. How about ${f(x) =
+		2^x:}$
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/exponential1.svg' %}"
+			alt="Graph of two raised to the x."
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		To find the derivative of this function, let's think about how Newton's
+		quotient applies. It would look something like this:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\large f'(x) = \lim\limits_{\Delta x \to 0} \dfrac{a^{x + \Delta x}
+				-a^x}{\Delta x}}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		What should we do next? Look at the term ${a^{x + \Delta x} -a^x.}$ We can
+		rewrite this term as ${(a^{x})(a^{\Delta x}).}$ Incorporation this rewrite:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\large f'(x) = \lim\limits_{\Delta x \to 0} \dfrac{(a^{x})(a^{\Delta
+				x})- a^x}{\Delta x}}$
+			</p>
+		</div>
+	</figure>
+	<p>Now we see a common factor we can factor out, ${a^x}$:</p>
+	<figure class="math-display">
+		<div>
+			$$ \begin{aligned} \large f'(x) &= \lim\limits_{\Delta x \to 0}
+			\dfrac{(a^{x})(a^{\Delta x})- a^x}{\Delta x} \\[1em] &=
+			\lim\limits_{\Delta x \to 0} (a^x) \left(\dfrac{a^{\Delta x} - 1}{\Delta
+			x}\right) \end{aligned} $$
+		</div>
+	</figure>
+	<p>
+		At this point, we have something to work with conceptually. Let's recall how
+		the limit ${\lim\limits_{\Delta x \to 0}}$ applies here. With this limit, we
+		know that: (1) ${a}$ is fixed, and (2) ${x}$ is fixed. These two facts, it
+		follows that ${a^x}$ is constant. And because ${a^x}$ is constant, we can
+		factor it out of the limit &mdash; it has no bearing on our analysis of the
+		limit:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\large f'(x) = a^x \lim\limits_{\Delta x \to 0} \dfrac{a^{\Delta x} -
+				1}{\Delta x}}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Thus, our analysis is really focused on what the limit term is. Because of
+		how important the term is, we'll write this expression as:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\large f'(x) = a^x \cdot L(a) }$</p>
+		</div>
+	</figure>
+	<p>where:</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\large L(a) = \lim\limits_{\Delta x \to 0} \dfrac{a^{\Delta x} - 1}{\Delta
+				x}}$
+			</p>
+		</div>
+	</figure>
+	<p>So, what exactly is ${L(a)?}$ </p>
+</section>
+{% endblock %}

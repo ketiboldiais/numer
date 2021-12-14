@@ -18,12 +18,6 @@ def balg_mathese(request):
 def balg_realProperties(request):
 	return render(request,"numerm/balg/balg_realProperties.html")
 
-def balg_exponentsRadicals(request):
-	return render(request,"numerm/balg/balg_exponentsRadicals.html")
-
-def balg_logarithms(request):
-	return render(request,"numerm/balg/balg_logarithms.html")
-
 def balg_equations(request):
 	return render(request,"numerm/balg/balg_equations.html")
 
@@ -224,6 +218,9 @@ def calc_generalRules(request):
 
 def calc_implicit(request):
 	return render(request, "numerm/calc1/calc_implicit.html")
+
+def calc_exponentials(request):
+	return render(request, "numerm/calc1/calc_exponentials.html")
 
 # Sequences & Series
 def sqs_index(request):

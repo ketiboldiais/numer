@@ -538,42 +538,47 @@
 	<p>
 		Note that if a single case value matches the variable, JavaScript will
 		execute all of the statements thereafter except the statements in the first
-		match. To ensure JavaScript stops at the first match, each case must include
-		a
+		match. This is called <span class="term">fall-through behavior</span>, and
+		is found in languages like C and C++. In some situations, this may be
+		desirable, and in others, it may not be.<label
+			for="swift"
+			class="margin-toggle"
+			><sup></sup
+		></label>
+		<input type="checkbox" id="swift" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>Notably, some languages (e.g., Swift) eschew fall-through behavior,
+			concluding that users are not likely to use the feature. Accordingly,
+			fall-through behavior is absent in Swift, unless the
+			<span class="monoText">fallthrough</span> keyword is used.</span
+		>
+		To ensure JavaScript stops at the first match, each case must include a
 		<span class="monoText">break</span> statement. This essentially tells
 		JavaScript to stop and return the first match the moment it's encountered.
 	</p>
-	<p>For example, consider the following code:</p>
+	<p>
+		For example, suppose we have a program where the user enters a number from 1
+		to 7, and gets back out a day of the wee. We could do the following:
+	</p>
 	<pre class="language-javascript">
 		<code>
-			/*
-			Suppose we have a program where the user enters a number from 1 to 7, and gets back out a day of the wee. We could do the following:
-			*/
-
 			let day = 8;
 			if (day === 1) {
 				console.log("Monday");
-			}
-			else if (day === 2) {
+			} else if (day === 2) {
 				console.log("Tuesday");
-			}
-			else if (day === 3) {
+			} else if (day === 3) {
 				console.log("Wednesday");
-			}
-			else if (day === 4) {
+			} else if (day === 4) {
 				console.log("Thursday");
-			}
-			else if (day === 5) {
+			} else if (day === 5) {
 				console.log("Friday");
-			}
-			else if (day === 6) {
+			} else if (day === 6) {
 				console.log("Saturday");
-			}
-			else if (day === 7) {
+			} else if (day === 7) {
 				console.log("Sunday");
-			}
-			else {
-				console.log("Invalid---enter a number from 1 to 7.");
+			} else {
+				console.log("Enter a number from 1 to 7.");
 			}
 		</code>
 	</pre>
@@ -607,14 +612,21 @@
 					console.log("Sunday");
 					break;
 				default:
-					console.log("Please enter a number from 1 to 7.")
+					console.log("Enter a number from 1 to 7.")
 			}
-
-			/* 
-			Note how each of the cases contains a "break" statement. This is because without the break statement, the moment JavaScript arrives at a matching case, it will run the code block for everything thereafter. This default behavior is prevented by using the break statement.
-			*/
 		</code>
 	</pre>
+	<p>
+		Note how each of the cases contains a "break" statement. This is because
+		without the break statement, the moment JavaScript arrives at a matching
+		case, it will run the code block for everything thereafter. This default
+		behavior is prevented by using the break statement.
+	</p>
+	<p>
+		A further note: Switch-case statements use the triple-equal operator
+		inherently. This means that a case will match if, and only if, the switched
+		value is both equal in value and type.
+	</p>
 </section>
 
 <section id="ternary_operator">
@@ -636,25 +648,136 @@
 			is some expression
 		</figcaption>
 	</figure>
-	<p>For example:</p>
+	<p>
+		For example, here is a program that displays in the console "Lucky Number 7"
+		if the user picks 7:
+	</p>
 	<pre class="language-javascript">
 		<code>
-			/*
-			Here is a program that displays in the console "Lucky Number 7" if the user picks 7. 
-			*/
 			let num = 7;
-			if (num === 7) {
-				console.log("Lucky Number 7!");
+			if (num === 7) {console.log("Lucky!");
+			} else {
+				console.log("No luck.");
 			}
-			else {
-				console.log("Sorry, no lucky number.");
-			}
-
-			// We can write the above with a switch statement:
-			let num = 7;
-			num === 7 ? console.log("Lucky Number 7!") : console.log("Sorry, no lucky number.");
 		</code>
 	</pre>
+	<p>We can refactor the program with a switch statement:</p>
+	<pre class="language-javascript"><code>
+		let num = 7;
+		num === 7 ? console.log("Lucky!") : console.log("No luck.");
+	</code></pre>
+</section>
+
+<section id="converting_to_boolean">
+	<h2>Converting to Booleans</h2>
+	<p>
+		Recall that every JavaScript literal has an inherently true or false value.
+		For example, the literal <span class="monoText">1</span> is inherently true,
+		and the literal <span class="monoText">""</span> (an empty string) is
+		inherently false. We can convert these values to actual Boolean values with
+		explicit type conversion:
+	</p>
+	<pre class="language-javascript"><code>
+		let x = 1;
+		let y = Boolean(x);
+		console.log(y);
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+	</code></pre>
+	<p>Alternatively, we can use implicit type conversion:</p>
+	<pre class="language-javascript"><code>
+		let x = 1;
+		let y = !!x;
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+	</code></pre>
+	<p>
+		Notice the <span class="monoText">!!</span> syntax. This handy trick negates
+		the inherent Boolean value (<span class="monoText">false</span>), and
+		negates it again (<span class="monoText">true</span>), which effectively
+		returns an actual Boolean value. This may not seem like much of an ability,
+		but it can lead to more concise code:
+	</p>
+	<pre class="language-javascript"><code>
+		let names = ["John", "Jane", "", "", "Lori"];
+		console.log(names);
+		let formattedNames = names.filter(Boolean);
+		console.log(formattedNames);
+	</code></pre>
+	<pre class="language-bash"><code>
+		['John', 'Jane', '', '', 'Lori']
+		['John', 'Jane', 'Lori']
+	</code></pre>
+	<p>
+		Another example: Returning <span class="monoText">false</span> for a
+		variable called <span class="monoText">isValidInput</span> if the user
+		enters an empty string:
+	</p>
+	<pre class="language-javascript"><code>
+		const userInput = '';
+		const isValidInput = !!userInput;
+	</code></pre>
+</section>
+
+<section id="sum_types">
+	<h2>Sum Types</h2>
+	<p>
+		In functional programming languages like ML, one of the most useful features
+		is the support for <span class="italicsText">sum type data</span>. This is
+		essentially a piece of data that can only be one of a discrete set of
+		values. For example, say we have the status of whether someone is dead. From
+		a purely logical standpoint, the person could be
+		<span class="monoText">"dead"</span>, <span class="monoText">"alive"</span>.
+		In the real world, however, we have a third option:
+		<span class="monoText">"unknown"</span>. We can accomplish this
+		representation with the OR operator in JavaScript:
+	</p>
+	<pre class="language-javascript"><code>
+		let lifeStatus = deadOrAlive || "unknown";
+	</code></pre>
+	<p>
+		In the code above, the value <span class="monoText">deadOrAlive</span> is
+		some input from another part of the program. If the value assigned to
+		<span class="monoText">deadOrAlive</span> is
+		<span class="monoText">"dead"</span>, then the variable
+		<span class="monoText">lifeStatus</span> is assigned the value
+		<span class="monoText">"dead"</span>. If
+		<span class="monoText">deadOrAlive</span> is assigned the value
+		<span class="monoText">"alive"</span>, then
+		<span class="monoText">lifeStatus</span> is assigned
+		<span class="monoText">"alive"</span>. If
+		<span class="monoText">deadOrAlive</span> is
+		<span class="monoText">undefined</span> (an inherently
+		<span class="monoText">false</span> value), then
+		<span class="monoText">lifeStatus</span> is assigned the value
+		<span class="monoText">"unknown"</span> (an inherently
+		<span class="monoText">true</span> value).
+	</p>
+	<p>
+		Why does this work in JavaScript? Because the AND and OR operators, at a low
+		level, operate on literals. Because they are commonly used with relational
+		or comparison operators, they return Boolean literals most often. However,
+		when used with non-Boolean literals (e.g., a
+		<span class="monoText">string</span> value), they will return the
+		appropriate literal. In this case, the operator OR returns
+		<span class="monoText">"unknown"</span> (a string), rather than
+		<span class="monoText">true</span>.
+	</p>
+	<p>This idea extends to the AND operator. For example:</p>
+	<pre class="language-javascript"><code>
+		let discountApplies = (validCouponEntered && 4.98) || 0;
+	</code></pre>
+	<p>
+		The code above assigns to the variable
+		<span class="monoText">discountApplies</span> the value
+		<span class="monoText">4.98</span>
+		<span class="underlineText">if and only if</span> the variable
+		<span class="monoText">validCouponEntered</span> is initialized (or, in this
+		case, has a <span class="monoText">true</span> value). Otherwise, the
+		assigned value defaults to <span class="monoText">0</span>.
+	</p>
 </section>
 
 {% endblock %}
