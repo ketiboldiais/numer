@@ -1,3 +1,18 @@
+
+// Pop Up
+function reveal() {
+  let popups = document.getElementsByClassName("pop");
+  let popupText = document.getElementsByClassName("popText");
+  for (let i = 0; i < popups.length; i++) {
+    popups[i].addEventListener('click', function () {
+      popupText[i].classList.toggle("show");
+    })
+  }
+}
+reveal();
+
+
+
 /*!
  * Colcade v0.2.0
  * Lightweight masonry layout
@@ -366,49 +381,3 @@ return Colcade;
 }));
 
 
-/*
-functionPlot({
-	target: "#linearAlgorithm",
-	data: [{ fn: "x" }],
-	width: 200,
-	height: 200,
-	xAxis: {
-		label: "Time to solve",
-		domain: [0, 8],
-	},
-	yAxis: {
-		label: "Problem size",
-		domain: [0, 8],
-	},
-});
-
-functionPlot({
-	target: "#halfTime",
-	data: [{ fn: "0.5x" }, { fn: "x" }],
-	width: 200,
-	height: 200,
-	xAxis: {
-		label: "Time to solve",
-		domain: [0, 8],
-	},
-	yAxis: {
-		label: "Problem size",
-		domain: [0, 8],
-	},
-});
-
-functionPlot({
-	target: "#logTime",
-	data: [{ fn: "0.5x" }, { fn: "x" }, { fn: "log2(x)" }],
-	width: 200,
-	height: 200,
-	xAxis: {
-		label: "Time to solve",
-		domain: [0, 8],
-	},
-	yAxis: {
-		label: "Problem size",
-		domain: [0, 8],
-	},
-});
-*/
