@@ -11,8 +11,6 @@ function reveal() {
 }
 reveal();
 
-
-
 /*!
  * Colcade v0.2.0
  * Lightweight masonry layout

@@ -1,3 +1,16 @@
+function mainIdeaHeader() { 
+  const header = document.createElement("p");
+  header.innerText = "Main Ideas";
+  header.classList.toggle("header");
+  const mainIdeas = document.getElementsByClassName("mainIdea");
+  for (let i = 0; i < mainIdeas.length; i++) { 
+    mainIdeas[i].prepend(header);
+  }
+}
+mainIdeaHeader();
+
+
+
 /*!
  * Colcade v0.2.0
  * Lightweight masonry layout

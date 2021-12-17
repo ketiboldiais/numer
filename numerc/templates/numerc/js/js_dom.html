@@ -125,7 +125,7 @@
 			src="{% static 'images/domTree.svg' %}"
 			alt="The DOM Tree Object"
 			loading="lazy"
-			class="fifty-p"
+			class="thirty-p"
 		/>
 	</figure>
 	<p>
@@ -377,10 +377,155 @@
 		<span class="monoText">document.body</span>.
 	</p>
 
-	
+	<section id="arrays_and_iterables">
+		<h2>DOM Data Structures: Arrays v. Iterables</h2>
+		<p>
+			Many of the DOM methods return data structures rather than simple data.
+			For example, <span class="monoText">HTMLCollection</span> and
+			<span class="monoText">NodeList</span>. To understand what these data
+			structures are, it's worth revisiting arrays and exploring the idea of an
+			<span class="italicsText">iterable</span>.
+		</p>
+		<p>
+			An <span class="term">iterable</span> is any object that implements the
+			<span class="monoText">iterable</span> protocol.<label
+				for="iterable"
+				class="margin-toggle"
+				><sup></sup
+			></label>
+			<input
+				type="checkbox"
+				id="iterable"
+				class="margin-toggle sidenote-number"
+			/>
+			<span class="marginnote"
+				>There is one additional requirement: The object has the
+				<span class="monoText">@@iterator</span> method. This is a
+				<span class="monoText">Symbol.iterator</span>, and we will revisit it in
+				later sections.</span
+			>
+			We haven't discussed protocols yet, but we can think of the
+			<span class="monoText">iterable</span> protocol as a set of requirements
+			that define what constitutes an iterable. Any object that satisfies those
+			requirements constitutes an iterable. If a single requirement is not met,
+			however, the object does not constitute an iterable. If the object is an
+			iterable, then we can iterate through the object with a for-of loop.
+		</p>
+		<p>
+			Recall that arrays are an
+			<span class="italicsText">ordered collection</span> data structure. In
+			terms of datatype, arrays are objects. Now we're adding another trait: As
+			objects, arrays behave like iterables &mdash; a particular kind of object.
+			But, not every iterable is an array. For example, NodeList, String, Map,
+			and Set are all iterables. Objects of these types are iterables, and we
+			can iterate through them with a for-of loop. But, objects of type NodeList
+			are <span class="underlineText">not</span> arrays. They are
+			<span class="italicsText">array-like objects</span>, in that they have a
+			length property, and use indices for accessing.
+		</p>
+		<p>
+			To better understand the differences between an array and an array-like
+			object, let's revisit arrays. Recall the method for creating arrays we're
+			familiar with:
+		</p>
+		<pre class="language-javascript"><code>
+			const arr = [1]
+		</code></pre>
+		<p>
+			No surprises here. This statement creates a singleton, an array with only
+			one element. It's also the most common way to create an array. But it
+			turns out the above statement isn't the only way:
+		</p>
+		<pre class="language-javascript"><code>
+			const arr = Array(1);
+			const arr = new Array(1);
+			const arr = Array.of(1);
+			const arr = Array.from(1);
+		</code></pre>
+		<p>
+			Although each of the statements above creates an array, they all do so
+			differently. To see these differences, we revisit the
+			<span class="monoText">length</span> property of an array. We know that
+			when we create an array in JavaScript the way we usually do (with square
+			brackets) we create an array whose length can grow and shrink:
+		</p>
+		<pre class="language-javascript"><code>
+			let arr = [1, 2, 3];
+			console.log(arr);
+			console.log(arr.length);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[1, 2, 3]
+			3
+		</code></pre>
+		<p>
+			When use the <span class="monoText">Array()</span> function, we get the
+			same result:
+		</p>
+		<pre class="language-javascript"><code>
+			let arr = Array(1, 2, 3);
+			console.log(arr);
+			console.log(arr.length);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[1, 2, 3]
+			3
+		</code></pre>
+		<p>The same goes for <span class="monoText">new Array()</span>:</p>
+		<pre class="language-javascript"><code>
+			let arr = new Array(1, 2, 3);
+			console.log(arr);
+			console.log(arr.length);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[1, 2, 3]
+			3
+		</code></pre>
+		<p>Now notice what happens when we pass a single argument:</p>
+		<pre class="language-javascript"><code>
+			let arr1 = [1];
+			let arr2 = Array(1);
+			let arr3 = new Array(1);
+			console.log(arr1);
+			console.log(arr1.length);
+			console.log(arr2);
+			console.log(arr2.length);
+			console.log(arr3);
+			console.log(arr3.length);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[1]
+			1
+			[empty]
+			1
+			[empty]
+			1
+		</code></pre>
+		<p>
+			When we use the square bracket syntax for initialization (<span
+				class="monoText"
+				>arr1</span
+			>), we get an array as expected. But, using
+			<span class="monoText">Array()</span> or
+			<span class="monoText">new Array()</span>, we get an empty array with a
+			length of <span class="monoText">1</span>. What's happening here?
+		</p>
+		<p>
+			We're seeing this behavior because
+			<span class="monoText">Array()</span> is a function that returns a static
+			array if only one argument is passed to it. Both
+			<span class="monoText">Array()</span> and
+			<span class="monoText">new Array()</span> are essentially the same. The
+			only difference is that <span class="monoText">Array()</span> is a
+			function, while <span class="monoText">new Array()</span> is a
+			constructor. Either or, passing only one argument is interpreted as the
+			resulting array's length. Passing multiple arguments, the values are
+			interpeted as the resulting array's elements.
+		</p>
+	</section>
 
 	<section id="html_collection">
-		<h2>HTML Collections</h2>
+		<h3>HTML Collections</h3>
 		<p>Consider the return value for each of the methods above:</p>
 		<pre class="language-javascript"><code>
 			let firstP = document.getElementById("firstP");
@@ -425,13 +570,13 @@
 			First, the HTMLCollection can only contain
 			<span class="italicsText">element nodes</span>. Second, the HTMLCollection
 			is <span class="term">live</span> &mdash; whenever a new element node is
-			append to the DOM, the corresponding HTMLCollection that would contain
+			appended to the DOM, the corresponding HTMLCollection that would contain
 			that node is updated.
 		</p>
 	</section>
 
 	<section id="node_list">
-		<h2>Node Lists</h2>
+		<h3>Node Lists</h3>
 		<p>
 			With the <span class="monoText">.querySelectorAll()</span> method, we see
 			the following return value:
@@ -471,7 +616,7 @@
 	</section>
 
 	<section id="dom_token_list">
-		<h2>DOM Token Lists</h2>
+		<h3>DOM Token Lists</h3>
 		<p>
 			When using properties like <span class="monoText">.classList</span>, we
 			see that the returned value is a <span class="term">DOMTokenList</span>.
@@ -485,14 +630,13 @@
 <section id="dom_traversal">
 	<h2>DOM Traversal</h2>
 	<p>
-		Many of the selection methods can be thought of as ways to traverse the
-		DOM. Given a node ${obj,}$ we can move in three directions: left
-		(selecting previous siblings), right (selecting later siblings), up
-		(selecting parents or ancestors), and down (selecting children or
-		descendants). Of course, we can always return a nodeList or an
-		HTMLCollection and iterate or index, but it can be much faster to simply
-		traverse the DOM directly. The diagram below provides a visual aid for
-		deciding which traversal method to use.
+		Many of the selection methods can be thought of as ways to traverse the DOM.
+		Given a node ${obj,}$ we can move in three directions: left (selecting
+		previous siblings), right (selecting later siblings), up (selecting parents
+		or ancestors), and down (selecting children or descendants). Of course, we
+		can always return a nodeList or an HTMLCollection and iterate or index, but
+		it can be much faster to simply traverse the DOM directly. The diagram below
+		provides a visual aid for deciding which traversal method to use.
 	</p>
 	<figure>
 		<img
@@ -661,6 +805,25 @@
 						the applicable style properties. Many of these properties have
 						values, even if we didn't set them, because the browser sets many
 						properties by default.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">${obj.}$cloneNode(${b}$)</span></td>
+					<td>
+						Returns a copy of ${obj,}$ where ${obj}$ is an existing element.
+					</td>
+					<td>
+						The boolean values <span class="monoText">true</span> and
+						<span class="monoText">false</span> can be passed as arguments to
+						the method. If the value <span class="monoText">true</span> is
+						passed, a <span class="italicsText">deep copy</span> of ${obj}$ is
+						made (i.e., ${obj}$ and all its descendants). If
+						<span class="monoText">false</span> is passed, a
+						<span class="italicsText">shallow copy</span> of ${obj}$ is made
+						(only ${obj}$ is copied, not its descendants). Note that the cloned
+						node has no parent and it is not part of the DOM. It must still be
+						appended. Further note that because this clones a node, it can lead
+						to duplicate <span class="monoText">id</span> attribute values.
 					</td>
 				</tr>
 				<tr>
