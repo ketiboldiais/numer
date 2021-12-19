@@ -233,6 +233,9 @@ def sqs_foundations(request):
 def phys_vectors(request):
 		return render(request, "numerm/phys/phys_vectors.html")
 
+def phys_1dmotion(request):
+		return render(request, "numerm/phys/phys_1dmotion.html")
+
 
 
 

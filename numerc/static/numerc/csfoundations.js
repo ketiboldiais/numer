@@ -11,6 +11,16 @@ function reveal() {
 }
 reveal();
 
+function showNav() { 
+  const tocButton = document.getElementById("tocButton");
+  const navBar = document.querySelector("nav"); 
+  tocButton.addEventListener('click', function () { 
+    navBar.classList.toggle("tocShow");
+    tocButton.classList.toggle("pressed");
+  })
+}
+showNav();
+
 /*!
  * Colcade v0.2.0
  * Lightweight masonry layout

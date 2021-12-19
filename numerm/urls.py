@@ -165,4 +165,6 @@ urlpatterns = [
 	# physics paths
 
 	path("phys_vectors", views.phys_vectors, name="phys_vectors"),
+
+	path("phys_1dmotion", views.phys_1dmotion, name="phys_1dmotion"),
 ]
