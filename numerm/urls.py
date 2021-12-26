@@ -7,6 +7,8 @@ urlpatterns = [
 	path("toc", views.toc, name="toc"),
 
 	# basic algebra paths
+	path("balg_cheatsheet", views.balg_cheatsheet, name="balg_cheatsheet"),
+
 	path("balg_preface", views.balg_preface, name="balg_preface"),
 
 	path("balg_realProperties", views.balg_realProperties, name="balg_realProperties"),

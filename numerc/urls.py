@@ -259,6 +259,8 @@ urlpatterns = [
 
 	path("cpp_matrices", views.cpp_matrices, name="cpp_matrices"),
 
+	path("cpp_algorithmicAnalysis", views.cpp_algorithmicAnalysis, name="cpp_algorithmicAnalysis"),
+
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),
 

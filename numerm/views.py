@@ -9,6 +9,9 @@ def toc(request):
 	return render(request, "numerm/toc.html")
 
 # basic algebra functions
+def balg_cheatsheet(request):
+	return render(request,"numerm/balg/cheatsheet.html")
+
 def balg_preface(request):
 	return render(request,"numerm/balg/balg_preface.html")
 

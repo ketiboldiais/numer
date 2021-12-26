@@ -475,6 +475,9 @@ def cpp_overloading(request):
 def cpp_matrices(request):
 	return render(request, "numerc/cpp/cpp_matrices.html")
 
+def cpp_algorithmicAnalysis(request):
+	return render(request, "numerc/cpp/cpp_algorithmicAnalysis.html")
+
 
 
 #! C# Views (cshv)

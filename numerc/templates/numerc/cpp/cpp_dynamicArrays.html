@@ -199,613 +199,632 @@
 		scenario, is ${\Omega(1),}$ and in the worst case scenario, ${O(n).}$
 	</p>
 
-	<h3>Searching a Array</h3>
-	<p>
-		Searching for a particular element ${x}$ in a array depends on the search
-		algorithm employed. There are two algorithms available: (1)
-		<span class="italicsText">linear search</span> and (2)
-		<span class="italicsText">binary search</span>. We consider linear search
-		first.
-	</p>
+	<section id="searching_an_array">
+		<h3>Searching an Array</h3>
+		<p>
+			Searching for a particular element ${x}$ in a array depends on the search
+			algorithm employed. There are two algorithms available: (1)
+			<span class="italicsText">linear search</span> and (2)
+			<span class="italicsText">binary search</span>. We consider linear search
+			first.
+		</p>
 
-	<section id="linear_search">
-		<h4>Linear Search</h4>
-		<p>
-			Under
-			<span class="term">linear search</span>, we iterate over each of the
-			array's elements, checking if the element matches our query. Say we had
-			the following array:
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${A = (8, 9, 4, 7, 6, 5, 10, 2, 11)}$</p>
-			</div>
-		</figure>
-		<p>
-			With the linear search approach, we go through each of the elements of
-			${A,}$ checking if the element matches the key. Suppose the key is the
-			integer ${5.}$ We start with ${A[0],}$ and ask, &#8220;${A[0] =
-			5?}$&#8221; False. So we continue to ${A[1].}$ Again we ask, &#8220;${A[1]
-			= 5?}$&#8221; False again. So we go to ${A[2].}$ We continue all the way
-			up to ${A[5],}$ wherein ${A[5] = 5}$ is true. Because our key was found,
-			we say that the search was <span class="italicsText">successful.</span>
-		</p>
-		<p>
-			Now, what if the key was the integer ${22?}$ In that case, we go all the
-			way up to ${A[\textit{length}],}$ or ${A[8],}$ to determine that ${22}$ is
-			not in the array. This is an example of an
-			<span class="italicsText">unsuccessful search</span>.
-		</p>
-		<p>
-			Implementing linear search is straightforward. We are simply traversing
-			the array. We start with ${A[0],}$ then continue to the last element of
-			the list, ${A[\textit{length}].}$
-		</p>
-		<figure class="math-display">
-			<div>
-				<pre class="language-pseudo"><code>
-				arrayLinearSearch(x) {
-					for (i = 0; i < length; i++) {
-						if (key == A[i]){
-							return i;
+		<section id="linear_search">
+			<h4>Linear Search</h4>
+			<p>
+				Under
+				<span class="term">linear search</span>, we iterate over each of the
+				array's elements, checking if the element matches our query. Say we had
+				the following array:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${A = (8, 9, 4, 7, 6, 5, 10, 2, 11)}$</p>
+				</div>
+			</figure>
+			<p>
+				With the linear search approach, we go through each of the elements of
+				${A,}$ checking if the element matches the key. Suppose the key is the
+				integer ${5.}$ We start with ${A[0],}$ and ask, &#8220;${A[0] =
+				5?}$&#8221; False. So we continue to ${A[1].}$ Again we ask,
+				&#8220;${A[1] = 5?}$&#8221; False again. So we go to ${A[2].}$ We
+				continue all the way up to ${A[5],}$ wherein ${A[5] = 5}$ is true.
+				Because our key was found, we say that the search was
+				<span class="italicsText">successful.</span>
+			</p>
+			<p>
+				Now, what if the key was the integer ${22?}$ In that case, we go all the
+				way up to ${A[\textit{length}],}$ or ${A[8],}$ to determine that ${22}$
+				is not in the array. This is an example of an
+				<span class="italicsText">unsuccessful search</span>.
+			</p>
+			<p>
+				Implementing linear search is straightforward. We are simply traversing
+				the array. We start with ${A[0],}$ then continue to the last element of
+				the list, ${A[\textit{length}].}$
+			</p>
+			<figure class="math-display">
+				<div>
+					<pre class="language-pseudo"><code>
+					arrayLinearSearch(x) {
+						for (i = 0; i < length; i++) {
+							if (key == A[i]){
+								return i;
+							}
 						}
+						return -1;
 					}
-					return -1;
-				}
-			</code></pre>
-			</div>
-		</figure>
-		<p>
-			What is the time complexity for linear search? Well, in the worst-case
-			scenario, the array does not contain our key. In which case we would have
-			to perform the comparison operation
-			<span class="monoText">key == A[i]</span> on all the array's elements.
-			Thus, given an ${n-}$array not containing our key, we have time complexity
-			of order ${O(n).}$ This is linear time.
-		</p>
-		<p>
-			In the best-case scenario, ${A[0]}$ is our key, in which case only one
-			comparision operation is performed. Accordingly, in the best-case
-			scenario, linear search has a time complexity of order ${\Omega(1)}$
-			&mdash; constant time.
-		</p>
-		<p>
-			What about the average-case scenario? To determine the average-case
-			scenario, we ask, how many comparisons are needed to determine whether ${i
-			= 1}$ matches our key? We must perform 1 comparison. We again ask, how
-			many comparisons are needed to determine whether the element at ${i = 2}$
-			matches our key? We must perform 2 comparisons. We ask the same question
-			for ${i = 3,}$ ${i = 4,}$ ${i = 5,}$ and so on. The sum of comparisons is
-			the sum of arithmetic sequence of the positive integers:
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${1 + 2 + 3 + \ldots + n = \dfrac{n(n + 1)}{2}}$</p>
-			</div>
-		</figure>
-		<p>
-			Thus, the total amount of time for all possible cases is
-			${\dfrac{n(n+1)}{2}.}$ Dividing this by the total number of cases, ${n,}$
-			provides us with the average case:
-		</p>
-		<figure class="math-display">
-			<div>
-				$$ \begin{aligned} \dfrac{ \dfrac{n(n + 1)}{2} }{n} &= \dfrac{
-				\dfrac{\cancel{n}(n + 1)}{2} }{\cancel{n}} \\[1.2em] &= \dfrac{n + 1}{2}
-				\end{aligned} $$
-			</div>
-		</figure>
-		<p>
-			Hence, in the average-case scenario, linear search has a complexity of
-			${\Theta\left(\dfrac{n+1}{2}\right).}$ Or, asymptotically, ${\Theta(n).}$
-			Notice that both the average-case runtime and the worst-case runtime are
-			the same. With linear search, we're almost always running on linear time.
-			We can, however, optimize the linear search algorithm.
-		</p>
-		<p>
-			<span class="topic">Transposition.</span> The first method to improving
-			linear search is with <span class="term">transposition</span>. The idea
-			behind transposition is best understood via analogy. Suppose you're
-			conducting research, and you know there's a particular book relevant to a
-			topic. You proceed to the shelf and retrieve the book. Instead of
-			returning the book to the original place, you might leave the book on a
-			particular table, or place it somewhere closer to your work space. Why?
-			Because there's a high likelihood of you needing to use the same book
-			again.
-		</p>
-		<p>
-			This same idea extends to linear search. In search for some key ${k,}$
-			there's a likelihood of searching for ${k}$ again, so we bring it closer
-			to ${i = 0.}$ For example, say we have the array:
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${T = (8, 9, 4, 6, 7, 3, 2, 11)}$</p>
-			</div>
-		</figure>
-		<p>
-			and our key is ${6.}$ A linear search for 6 returns a successful search,
-			so we swap 6 and 4 (swap ${T[3]}$ and ${T[2]}$):
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${T = (8, 9, 6, 4, 7, 3, 2, 11)}$</p>
-			</div>
-		</figure>
-		<p>Search for 3 again, and we swap ${T[1]}$ and ${T[2]}$:</p>
-		<figure class="math-display">
-			<div>
-				<p>${T = (8, 6, 9, 4, 7, 3, 2, 11)}$</p>
-			</div>
-		</figure>
-		<p>Search 3 one more time, and we swap ${T[1]}$ and ${T[0]}$:</p>
-		<figure class="math-display">
-			<div>
-				<p>${T = (6, 8, 9, 4, 7, 3, 2, 11)}$</p>
-			</div>
-		</figure>
-		<p>
-			Notice that 6 is now at the head of the array. Now whenever we search for
-			${6,}$ we have a runtime of ${O(1)}$ &mdash; constant time. Of course, 6
-			will only get to the array's head if we search for it enough times.
-		</p>
-		<figure class="math-display">
-			<div>
-				<pre class="language-pseudo"><code>
-				arrayLinearSearch(x) {
-					for (i = 0; i < length; i++) {
-						if (key == T[i]){
-							swap(T[i], T[i-1])
-							return i - 1;
-						}
-					}
-					return -1;
-				}
-			</code></pre>
-			</div>
-		</figure>
-		<p>
-			<span class="topic">Move-to-head.</span> With transposition, we do not
-			reach ${O(1)}$ unless we search for the key ${k}$ ${n}$ times, where ${n}$
-			is the index of ${k.}$ This means that the key ${k}$ can take a fair
-			amount of time to get to the list's head. Moreover, if ${k}$ is not
-			searched, it slowly moves towards the tail-end. To get to the head faster,
-			we can use the <span class="term">move-to-head</span> approach. With
-			move-to-head, after a successful search, we immediately place the key at
-			${i = 0.}$
-		</p>
-		<figure class="math-display">
-			<div>
-				<ol class="numd">
-					<li>${T = (8, 9, 4, 6, 7, 3, 2, 11)}$</li>
-					<li><span class="monoText">arrayLinearSearch${(6)}$</span></li>
-					<li>${T = (6, 9, 4, 8, 7, 3, 2, 11)}$</li>
-				</ol>
-			</div>
-		</figure>
-		<p>In pseudocode:</p>
-		<figure class="math-display">
-			<div>
-				<pre class="language-pseudo"><code>
+				</code></pre>
+				</div>
+			</figure>
+			<p>
+				What is the time complexity for linear search? Well, in the worst-case
+				scenario, the array does not contain our key. In which case we would
+				have to perform the comparison operation
+				<span class="monoText">key == A[i]</span> on all the array's elements.
+				Thus, given an ${n-}$array not containing our key, we have time
+				complexity of order ${O(n).}$ This is linear time.
+			</p>
+			<p>
+				In the best-case scenario, ${A[0]}$ is our key, in which case only one
+				comparision operation is performed. Accordingly, in the best-case
+				scenario, linear search has a time complexity of order ${\Omega(1)}$
+				&mdash; constant time.
+			</p>
+			<p>
+				What about the average-case scenario? To determine the average-case
+				scenario, we ask, how many comparisons are needed to determine whether
+				${i = 1}$ matches our key? We must perform 1 comparison. We again ask,
+				how many comparisons are needed to determine whether the element at ${i
+				= 2}$ matches our key? We must perform 2 comparisons. We ask the same
+				question for ${i = 3,}$ ${i = 4,}$ ${i = 5,}$ and so on. The sum of
+				comparisons is the sum of arithmetic sequence of the positive integers:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${1 + 2 + 3 + \ldots + n = \dfrac{n(n + 1)}{2}}$</p>
+				</div>
+			</figure>
+			<p>
+				Thus, the total amount of time for all possible cases is
+				${\dfrac{n(n+1)}{2}.}$ Dividing this by the total number of cases,
+				${n,}$ provides us with the average case:
+			</p>
+			<figure class="math-display">
+				<div>
+					$$ \begin{aligned} \dfrac{ \dfrac{n(n + 1)}{2} }{n} &= \dfrac{
+					\dfrac{\cancel{n}(n + 1)}{2} }{\cancel{n}} \\[1.2em] &= \dfrac{n +
+					1}{2} \end{aligned} $$
+				</div>
+			</figure>
+			<p>
+				Hence, in the average-case scenario, linear search has a complexity of
+				${\Theta\left(\dfrac{n+1}{2}\right).}$ Or, asymptotically,
+				${\Theta(n).}$ Notice that both the average-case runtime and the
+				worst-case runtime are the same. With linear search, we're almost always
+				running on linear time. We can, however, optimize the linear search
+				algorithm.
+			</p>
+			<p>
+				<span class="topic">Transposition.</span> The first method to improving
+				linear search is with <span class="term">transposition</span>. The idea
+				behind transposition is best understood via analogy. Suppose you're
+				conducting research, and you know there's a particular book relevant to
+				a topic. You proceed to the shelf and retrieve the book. Instead of
+				returning the book to the original place, you might leave the book on a
+				particular table, or place it somewhere closer to your work space. Why?
+				Because there's a high likelihood of you needing to use the same book
+				again.
+			</p>
+			<p>
+				This same idea extends to linear search. In search for some key ${k,}$
+				there's a likelihood of searching for ${k}$ again, so we bring it closer
+				to ${i = 0.}$ For example, say we have the array:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${T = (8, 9, 4, 6, 7, 3, 2, 11)}$</p>
+				</div>
+			</figure>
+			<p>
+				and our key is ${6.}$ A linear search for 6 returns a successful search,
+				so we swap 6 and 4 (swap ${T[3]}$ and ${T[2]}$):
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${T = (8, 9, 6, 4, 7, 3, 2, 11)}$</p>
+				</div>
+			</figure>
+			<p>Search for 3 again, and we swap ${T[1]}$ and ${T[2]}$:</p>
+			<figure class="math-display">
+				<div>
+					<p>${T = (8, 6, 9, 4, 7, 3, 2, 11)}$</p>
+				</div>
+			</figure>
+			<p>Search 3 one more time, and we swap ${T[1]}$ and ${T[0]}$:</p>
+			<figure class="math-display">
+				<div>
+					<p>${T = (6, 8, 9, 4, 7, 3, 2, 11)}$</p>
+				</div>
+			</figure>
+			<p>
+				Notice that 6 is now at the head of the array. Now whenever we search
+				for ${6,}$ we have a runtime of ${O(1)}$ &mdash; constant time. Of
+				course, 6 will only get to the array's head if we search for it enough
+				times.
+			</p>
+			<figure class="math-display">
+				<div>
+					<pre class="language-pseudo"><code>
 					arrayLinearSearch(x) {
 						for (i = 0; i < length; i++) {
 							if (key == T[i]){
-								swap(T[i], T[0])
-								return 0;
+								swap(T[i], T[i-1])
+								return i - 1;
 							}
 						}
 						return -1;
 					}
 				</code></pre>
-			</div>
-		</figure>
-	</section>
+				</div>
+			</figure>
+			<p>
+				<span class="topic">Move-to-head.</span> With transposition, we do not
+				reach ${O(1)}$ unless we search for the key ${k}$ ${n}$ times, where
+				${n}$ is the index of ${k.}$ This means that the key ${k}$ can take a
+				fair amount of time to get to the list's head. Moreover, if ${k}$ is not
+				searched, it slowly moves towards the tail-end. To get to the head
+				faster, we can use the <span class="term">move-to-head</span> approach.
+				With move-to-head, after a successful search, we immediately place the
+				key at ${i = 0.}$
+			</p>
+			<figure class="math-display">
+				<div>
+					<ol class="numd">
+						<li>${T = (8, 9, 4, 6, 7, 3, 2, 11)}$</li>
+						<li><span class="monoText">arrayLinearSearch${(6)}$</span></li>
+						<li>${T = (6, 9, 4, 8, 7, 3, 2, 11)}$</li>
+					</ol>
+				</div>
+			</figure>
+			<p>In pseudocode:</p>
+			<figure class="math-display">
+				<div>
+					<pre class="language-pseudo"><code>
+						arrayLinearSearch(x) {
+							for (i = 0; i < length; i++) {
+								if (key == T[i]){
+									swap(T[i], T[0])
+									return 0;
+								}
+							}
+							return -1;
+						}
+					</code></pre>
+				</div>
+			</figure>
+		</section>
 
-	<section id="binary_search">
-		<h4>Binary Search</h4>
-		<p>
-			The <span class="term">binary search</span> algorithm is correct only if
-			the array is <span class="underlineText">sorted</span>. There are a whole
-			host of sorting algorithms, so we will cover them in a separate section.
-			For now, suppose we have the following sorted array:
-		</p>
-		<figure class="math-display">
-			<div>
-				$$ \begin{matrix} T = [& 4 & 8 & 10 & 15 & 18 & 21 & 24 & 27 & 29 & 33 &
-				34 & 37 & 39 & 41 & 43 &] \\ i = & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9
-				& 10 & 11 & 12 & 13 & 14 & \end{matrix} $$
-			</div>
-		</figure>
-		<p>
-			Suppose our key is ${k = 18.}$ We see that 18 is at index ${i = 4.}$ With
-			linear search, we must perform 5 comparisions before ${k}$ is found. Let's
-			see how binary search compares.
-		</p>
-		<p>
-			First, with binary search, we need three variables: ${\ell,}$ ${h,}$ and
-			${M.}$ These variables represent three variants: ${\ell}$ represents the
-			lower bound (an index), ${h}$ represents the upper bound (also an index),
-			and ${M}$ represents the index exactly between ${\ell}$ and ${h.}$
-			Accordingly, the value of ${M}$ is given by:
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${M = \lfloor \dfrac{\ell + h}{2} \rfloor}$</p>
-			</div>
-		</figure>
-		<p>
-			This simply the arithmetic mean, but we will floor the result to account
-			for the possibility of an odd number of elements in the array. For
-			example, if the array has 5 elements, then ${\ell = 0,}$ and ${h = 5.}$
-			Calculating ${M:}$ ${(0 + 5) / 2 = 2.5.}$ Obviously an index cannot be
-			${2.5,}$ so we floor the result: ${M \equiv i = 2.}$
-		</p>
-		<p>
-			That said, let's trace our program. We know ${k = 18.}$ So, we first
-			initialize ${\ell}$ and ${h:}$
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${\ell = 0}$</p>
-				<p>${h = 14}$</p>
-			</div>
-		</figure>
-		<p>Then we compute ${M:}$</p>
-		<figure class="math-display">
-			<div>
-				<p>${M = \dfrac{0 + 14}{2} = 7}$</p>
-			</div>
-		</figure>
-		<p>
-			Thus, ${M}$ is ${i = 7.}$ We then ask, is ${T[7] = k?}$ If yes, the search
-			is successful, and we return the index 7. Otherwise, we ask, is ${T[7] <
-			k}$ or is ${T[7] > k?}$ Here, ${T[7] < k.}$ Because ${T[7] < k,}$ ${k}$
-			must be on the left-hand side of the array. I.e., ${\ell \leq k < M.}$ Why
-			can we conclude this? Because the array ${T}$ is sorted. If ${T[7] > k,}$
-			then ${k}$ must be on the right-hand side (${M < k \leq h}$).
-		</p>
-		<p>
-			In this case, since ${T[7] < k,}$ ${\ell}$ remains as ${i = 0,}$ but we
-			change ${h}$ to ${i = 6.}$ Now we're working the left-hand side, which is
-			${T[0] < k \leq T[6].}$ Now we have a new mean: ${(0 + 6) / 2 = 3.}$ Thus,
-			now the middle element is ${T[3] = 15.}$ We again ask, is ${k = T[3]?}$
-			No. Is ${k < T[3]}$ or is ${k > T[3]?}$ Here, ${18 > 15,}$ so we're
-			looking at the right-hand side of the array.
-		</p>
-		<p>
-			Because ${T[M] > k,}$ we again change the lower bounds and upper bounds.
-			${\ell = 4,}$ and ${h = 4.}$ The mean is now ${M = (4 + 4) / 2 = 4.}$
-			Thus, the middle element is now ${T[4] = 18.}$ We now ask, is ${k =
-			T[4]?}$ Yes. We have found our key. Notice that we found our key in a
-			total of 4 comparisons, compared to 5 comparisons with linear search.
-		</p>
-		<p>
-			Let's try another key. ${k = 34.}$ We set the upper bounds and lower
-			bounds. ${\ell = 0}$ and ${h = 14.}$ Then we compute the mean index. ${(0
-			+ 14) / 2 = 7.}$ Again we have ${T[7] = 27.}$ Is ${T[M] = k?}$ No. Is
-			${T[M] > k}$ or is ${T[M] < k?}$ ${27 < 34.}$ Thus, we're now restricting
-			our search to the right-hand side.
-		</p>
-		<p>
-			We change the upper and lower bounds. ${\ell = M + 1 = 7 + 1 = 8.}$ And
-			${h = 14.}$ Then compute the mean index: ${(8 + 14) / 2 = 11.}$ Thus, the
-			middle element is ${T[M] = T[11] = 37.}$ Is ${T[M] = k?}$ No. Is ${T[M] >
-			k}$ or ${T[M] < k?}$ ${37 > 34,}$ so we're looking at the left-hand side.
-		</p>
-		<p>
-			We again change the upper and lower bounds. ${\ell = 8}$ and ${h = 11 - 1
-			= 10.}$ Computing the mean: ${(10 + 8) / 2 = 9.}$ Is ${(T[9] = 33) = 34?}$
-			No. Is ${33 > 34}$ or is ${33 < 34?}$ ${34}$ is less than ${33.}$ So, the
-			number is on the right-hand side. Once more we modify the upper and lower
-			bounds.
-		</p>
-		<p>
-			${\ell = M + 1 = 9 + 1 = 10,}$ and ${h = 10.}$ We compute the mean: ${(10
-			+ 10) / 2 = 10.}$ Is ${T[10] = 34?}$ Yes. We've found our key in 4
-			comparisons. Compare that with linear search, which would have taken 10
-			comparisions.
-		</p>
-		<p>
-			Let's try another key, ${k = 25.}$ Set the upper and lower bounds: ${\ell
-			= 0}$ and ${h = 14.}$ Compute the mean: ${M = (0 + 14) = 7.}$ Compare
-			${T[7]}$ to ${k.}$ ${k}$ is not equal to ${T[7].}$ ${k < T[M],}$ so we're
-			looking at the left-hand side.
-		</p>
-		<p>
-			Change the upper and lower bounds. ${\ell = 0,}$ and ${h = 7 - 1 = 6.}$
-			Compute the mean: ${M = (0 + 6)/2 = 3.}$ ${T[3]}$ is not equal to ${k.}$
-			Because ${k > T[M],}$ we're looking at the right-hand side. So we change
-			the upper and lower bounds.
-		</p>
-		<p>
-			${\ell = 3 + 1 = 4,}$ and ${h = 6.}$ We compute the mean: ${(4 + 6) / 2 =
-			5.}$ The middle element is ${T[5].}$ ${T[5]}$ is not equal to ${25,}$ ${k
-			> T[5].}$ So again we're looking at the left-hand side. Once more we
-			modify the lower and upper bounds.
-		</p>
-		<p>
-			${\ell = 5 + 1 = 6,}$ and ${h = 6.}$ The mean: ${(6 + 6) / 2 = 6.}$
-			${T[6]}$ is not equal to ${25.}$ ${25 > T[6],}$ so we modify the upper and
-			lower bounds.
-		</p>
-		<p>
-			${\ell = 6 + 1 = 7,}$ and ${h = 6.}$ This is where we stop. The moment
-			${\ell > h,}$ we've arrived at an unsuccessful search, so we return
-			${-1.}$ Notice that it took 4 comparisons to reach an unsuccessful search,
-			compared to the 15 comparisions it would've taken with linear search.
-		</p>
-		<p>Implementing binay search in pseudocode:</p>
-		<figure class="math-display">
-			<div>
-				<pre class="language-pseudo"><code>
-					BinarySearch(k, low, high) {
-						while (low <= high) {
-							middle = floor((low + high) / 2);
-							if (k == T[mean]) {
-								return mean;
+		<section id="binary_search">
+			<h4>Binary Search</h4>
+			<p>
+				The <span class="term">binary search</span> algorithm is correct only if
+				the array is <span class="underlineText">sorted</span>. There are a
+				whole host of sorting algorithms, so we will cover them in a separate
+				section. For now, suppose we have the following sorted array:
+			</p>
+			<figure class="math-display">
+				<div>
+					$$ \begin{matrix} T = [& 4 & 8 & 10 & 15 & 18 & 21 & 24 & 27 & 29 & 33
+					& 34 & 37 & 39 & 41 & 43 &] \\ i = & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8
+					& 9 & 10 & 11 & 12 & 13 & 14 & \end{matrix} $$
+				</div>
+			</figure>
+			<p>
+				Suppose our key is ${k = 18.}$ We see that 18 is at index ${i = 4.}$
+				With linear search, we must perform 5 comparisions before ${k}$ is
+				found. Let's see how binary search compares.
+			</p>
+			<p>
+				First, with binary search, we need three variables: ${\ell,}$ ${h,}$ and
+				${M.}$ These variables represent three variants: ${\ell}$ represents the
+				lower bound (an index), ${h}$ represents the upper bound (also an
+				index), and ${M}$ represents the index exactly between ${\ell}$ and
+				${h.}$ Accordingly, the value of ${M}$ is given by:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${M = \lfloor \dfrac{\ell + h}{2} \rfloor}$</p>
+				</div>
+			</figure>
+			<p>
+				This simply the arithmetic mean, but we will floor the result to account
+				for the possibility of an odd number of elements in the array. For
+				example, if the array has 5 elements, then ${\ell = 0,}$ and ${h = 5.}$
+				Calculating ${M:}$ ${(0 + 5) / 2 = 2.5.}$ Obviously an index cannot be
+				${2.5,}$ so we floor the result: ${M \equiv i = 2.}$
+			</p>
+			<p>
+				That said, let's trace our program. We know ${k = 18.}$ So, we first
+				initialize ${\ell}$ and ${h:}$
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\ell = 0}$</p>
+					<p>${h = 14}$</p>
+				</div>
+			</figure>
+			<p>Then we compute ${M:}$</p>
+			<figure class="math-display">
+				<div>
+					<p>${M = \dfrac{0 + 14}{2} = 7}$</p>
+				</div>
+			</figure>
+			<p>
+				Thus, ${M}$ is ${i = 7.}$ We then ask, is ${T[7] = k?}$ If yes, the
+				search is successful, and we return the index 7. Otherwise, we ask, is
+				${T[7] < k}$ or is ${T[7] > k?}$ Here, ${T[7] < k.}$ Because ${T[7] <
+				k,}$ ${k}$ must be on the left-hand side of the array. I.e., ${\ell \leq
+				k < M.}$ Why can we conclude this? Because the array ${T}$ is sorted. If
+				${T[7] > k,}$ then ${k}$ must be on the right-hand side (${M < k \leq
+				h}$).
+			</p>
+			<p>
+				In this case, since ${T[7] < k,}$ ${\ell}$ remains as ${i = 0,}$ but we
+				change ${h}$ to ${i = 6.}$ Now we're working the left-hand side, which
+				is ${T[0] < k \leq T[6].}$ Now we have a new mean: ${(0 + 6) / 2 = 3.}$
+				Thus, now the middle element is ${T[3] = 15.}$ We again ask, is ${k =
+				T[3]?}$ No. Is ${k < T[3]}$ or is ${k > T[3]?}$ Here, ${18 > 15,}$ so
+				we're looking at the right-hand side of the array.
+			</p>
+			<p>
+				Because ${T[M] > k,}$ we again change the lower bounds and upper bounds.
+				${\ell = 4,}$ and ${h = 4.}$ The mean is now ${M = (4 + 4) / 2 = 4.}$
+				Thus, the middle element is now ${T[4] = 18.}$ We now ask, is ${k =
+				T[4]?}$ Yes. We have found our key. Notice that we found our key in a
+				total of 4 comparisons, compared to 5 comparisons with linear search.
+			</p>
+			<p>
+				Let's try another key. ${k = 34.}$ We set the upper bounds and lower
+				bounds. ${\ell = 0}$ and ${h = 14.}$ Then we compute the mean index.
+				${(0 + 14) / 2 = 7.}$ Again we have ${T[7] = 27.}$ Is ${T[M] = k?}$ No.
+				Is ${T[M] > k}$ or is ${T[M] < k?}$ ${27 < 34.}$ Thus, we're now
+				restricting our search to the right-hand side.
+			</p>
+			<p>
+				We change the upper and lower bounds. ${\ell = M + 1 = 7 + 1 = 8.}$ And
+				${h = 14.}$ Then compute the mean index: ${(8 + 14) / 2 = 11.}$ Thus,
+				the middle element is ${T[M] = T[11] = 37.}$ Is ${T[M] = k?}$ No. Is
+				${T[M] > k}$ or ${T[M] < k?}$ ${37 > 34,}$ so we're looking at the
+				left-hand side.
+			</p>
+			<p>
+				We again change the upper and lower bounds. ${\ell = 8}$ and ${h = 11 -
+				1 = 10.}$ Computing the mean: ${(10 + 8) / 2 = 9.}$ Is ${(T[9] = 33) =
+				34?}$ No. Is ${33 > 34}$ or is ${33 < 34?}$ ${34}$ is less than ${33.}$
+				So, the number is on the right-hand side. Once more we modify the upper
+				and lower bounds.
+			</p>
+			<p>
+				${\ell = M + 1 = 9 + 1 = 10,}$ and ${h = 10.}$ We compute the mean:
+				${(10 + 10) / 2 = 10.}$ Is ${T[10] = 34?}$ Yes. We've found our key in 4
+				comparisons. Compare that with linear search, which would have taken 10
+				comparisions.
+			</p>
+			<p>
+				Let's try another key, ${k = 25.}$ Set the upper and lower bounds:
+				${\ell = 0}$ and ${h = 14.}$ Compute the mean: ${M = (0 + 14) = 7.}$
+				Compare ${T[7]}$ to ${k.}$ ${k}$ is not equal to ${T[7].}$ ${k < T[M],}$
+				so we're looking at the left-hand side.
+			</p>
+			<p>
+				Change the upper and lower bounds. ${\ell = 0,}$ and ${h = 7 - 1 = 6.}$
+				Compute the mean: ${M = (0 + 6)/2 = 3.}$ ${T[3]}$ is not equal to ${k.}$
+				Because ${k > T[M],}$ we're looking at the right-hand side. So we change
+				the upper and lower bounds.
+			</p>
+			<p>
+				${\ell = 3 + 1 = 4,}$ and ${h = 6.}$ We compute the mean: ${(4 + 6) / 2
+				= 5.}$ The middle element is ${T[5].}$ ${T[5]}$ is not equal to ${25,}$
+				${k > T[5].}$ So again we're looking at the left-hand side. Once more we
+				modify the lower and upper bounds.
+			</p>
+			<p>
+				${\ell = 5 + 1 = 6,}$ and ${h = 6.}$ The mean: ${(6 + 6) / 2 = 6.}$
+				${T[6]}$ is not equal to ${25.}$ ${25 > T[6],}$ so we modify the upper
+				and lower bounds.
+			</p>
+			<p>
+				${\ell = 6 + 1 = 7,}$ and ${h = 6.}$ This is where we stop. The moment
+				${\ell > h,}$ we've arrived at an unsuccessful search, so we return
+				${-1.}$ Notice that it took 4 comparisons to reach an unsuccessful
+				search, compared to the 15 comparisions it would've taken with linear
+				search.
+			</p>
+			<p>Implementing binay search in pseudocode:</p>
+			<figure class="math-display">
+				<div>
+					<pre class="language-pseudo"><code>
+						BinarySearch(k, low, high) {
+							while (low <= high) {
+								middle = floor((low + high) / 2);
+								if (k == T[mean]) {
+									return mean;
+								}
+								else if (k < T[mean]) {
+									high = mean - 1;
+								}
+								else {
+									low = mean + 1;
+								}
 							}
-							else if (k < T[mean]) {
-								high = mean - 1;
-							}
-							else {
-								low = mean + 1;
-							}
+							return -1;
 						}
-						return -1;
-					}
-				</code></pre>
-			</div>
-		</figure>
-		<p>
-			Alternatively, we can implement the binary search algorithm with tail
-			recursion:
-		</p>
-		<figure class="math-display">
-			<div>
-				<pre class="language-pseudo"><code>
-					BinarySearch(k, low, high) {
-						if (low <= high) {
-							mean = floor((low + high) / 2);
-							if (k == T[mean]) {
-								return mean;
+					</code></pre>
+				</div>
+			</figure>
+			<p>
+				Alternatively, we can implement the binary search algorithm with tail
+				recursion:
+			</p>
+			<figure class="math-display">
+				<div>
+					<pre class="language-pseudo"><code>
+						BinarySearch(k, low, high) {
+							if (low <= high) {
+								mean = floor((low + high) / 2);
+								if (k == T[mean]) {
+									return mean;
+								}
+								else if (key < T[mean]) {
+									return BinarySearch(low, mean - 1, key);
+								}
+								else {
+									return BinarySearch(mean + 1, high, key);
+								}
 							}
-							else if (key < T[mean]) {
-								return BinarySearch(low, mean - 1, key);
-							}
-							else {
-								return BinarySearch(mean + 1, high, key);
-							}
+							return -1;
 						}
-						return -1;
-					}
-				</code></pre>
-			</div>
-		</figure>
-		<p>
-			To understand the time complexity for binary search, the crucial point is
-			that we're cutting the array in half each time. However, before any of
-			that splitting, we checked if the middle element is in fact the key.
-			Accordingly, in the best-case scenario, binary search has a time
-			complexity of ${\Omega(1)}$ &mdash; constant time.
-		</p>
-		<p>
-			However, if the middle element was not the key, then we proceed to
-			checking if the left- or right-hand side contained the key. Suppose it's
-			the left-hand side. If it's the left-hand side, then ${\ell = 0}$ and ${h
-			= 6,}$ yielding ${M = 3.}$ If it's on the right-hand side, then ${\ell =
-			8}$ and ${h = 14,}$ yielding ${M = 11.}$ This is halving the array and
-			restricting our search to just the relevant half. If the middle element in
-			either half is the key, then we've found our key in 2 comparisons.
-		</p>
-		<p>
-			If neither of the halves contains the middle element, then we again
-			perform the split. For the left-hand side of the left-hand side, ${\ell =
-			0}$ and ${h = 2,}$ yielding ${M = 1.}$ If it's the right-hand side of the
-			left-hand side, then ${\ell = 4}$ and ${h = 6,}$ yielding ${M = 5.}$ For
-			the left-hand side of the right-hand side, we have ${\ell = 8}$ and ${h =
-			10,}$ yielding ${M = 9.}$ For the right-hand side of the right-hand side,
-			we have ${\ell = 12}$ and ${h = 14,}$ yielding ${M = 13.}$ In this case,
-			the key can be found in 3 comparisons. Visualizing the tree:
-		</p>
-		<figure>
-			<img
-				src="{% static 'images/binary_search_tree.svg' %}"
-				alt="The binary search tree's middle element computations"
-				loading="lazy"
-			/>
-		</figure>
-		<p>
-			Splitting further, the key can be found in 4 comparisions, then 5, then 6,
-			and so on. Modelling binary search as a tree, the height of the tree is
-			${\lceil\log_{2}(n + 1)\rceil,}$ where ${n}$ is the number of elements in
-			the array. Why ${\log_{2}(n + 1)?}$ Because the tree's height is directly
-			proportional to the number of times we divide ${n}$ by 2 such that we only
-			have a remainder of 1. And as we know from mathematics, the answer to
-			&#8220;How many times can I divide ${n}$ by 2 to reach a remainder of
-			1?&#8221; is a logarithm of base 2. Successive multiplication yields a
-			power, and successive division yields a logarithm. Thus, in terms of
-			asymptotic analysis, the binary search algorithm has a runtime of order
-			${O(\lg n)}$ &mdash; logarithmic time.
-		</p>
-		<p>
-			What about the average-case? For the average-case, we're asking for the
-			total time for all the possible cases, divided by the number of cases.
-			Revisiting the tree diagram above, we see that at the first level, there
-			is only 1 case, with only 1 comparison. Let ${c}$ be the number of cases:
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${c = 1}$</p>
-			</div>
-		</figure>
-		<p>On the second level, there are 2 cases, each requiring 1 comparison:</p>
-		<figure class="math-display">
-			<div>
-				<p>${c = 1 + (1 \cdot 2)}$</p>
-			</div>
-		</figure>
-		<p>On the third level, there are 4 cases, each requiring 2 comparisons:</p>
-		<figure class="math-display">
-			<div>
-				<p>${c = 1 + (1 \cdot 2) + (2 \cdot 4)}$</p>
-			</div>
-		</figure>
-		<p>On the fourth level, there are 8 cases, each requiring 3 comparisons:</p>
-		<figure class="math-display">
-			<div>
-				<p>${c = 1 + (1 \cdot 2) + (2 \cdot 4) + (3 \cdot 8)}$</p>
-			</div>
-		</figure>
-		<p>We can see pattern in this series:</p>
-		<figure class="math-display">
-			<div>
-				<p>${c = 1 + (1 \cdot 2^1) + (2 \cdot 2^2) + (3 \cdot 2^3)}$</p>
-			</div>
-		</figure>
-		<p>We can then express this pattern as:</p>
-		<figure class="math-display">
-			<div>
-				<p>${\sum\limits_{i = 1}^{3} i \cdot 2^i}$</p>
-			</div>
-		</figure>
-		<p>
-			That 3 is intresting &mdash; it's the tree's height. Accordingly, our
-			series can be generalized as:
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>
-					${\sum\limits_{i = 1}^{\log n} i \cdot 2^i = \log n \cdot 2^{\log n}}$
-				</p>
-			</div>
-		</figure>
-		<p>
-			But, we must divide this sum by ${n,}$ the number of elements (and by
-			implication, the number of possible cases):
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${\dfrac{\log n \cdot 2^{\log n}}{n} = \log n}$</p>
-			</div>
-		</figure>
-		<p>
-			Hence, the average-case running time is ${\Theta(\log n)}$ An algorithm's
-			average-case, however, may be different depending on the conditions. For
-			example, with respect to binary search, there's an average-case running
-			time for a successful search, and an average-case running time for an
-			unsuccessful search.
-		</p>
-		<p>
-			A successful search occurs if the element is found. In the tree diagram
-			above, the number of possible cases for a successful search is equivalent
-			to the number of internal nodes (i.e., all of the nodes other than the
-			nodes on the fifth level). If we examine the tree closely, the number of
-			edges from the root to a given node represents the number of comparisons
-			needed to reach the given node. For example, to find the ${k = 8,}$
-			binary-search requires 3 comparisons. Accordingly, the number of
-			comparisons to reach a given node containing ${k}$ is ${e + 1,}$ where
-			${e}$ is the number of edges leading to the node from the root (we add
-			${1}$ because a comparison must be performed for the root).
-		</p>
-		<p>
-			The number of possible cases for an unsuccesful search, in contrast, is
-			found from the number of nodes on the fifth level. These are called
-			<span class="term">external nodes</span>. It is on these external nodes
-			that binary search terminates. Like the successful search, the number of
-			comparisons needed to reach an unsuccessful search is the number of edges
-			leading to an external node plus 1.
-		</p>
-		<p>
-			With these basic facts, suppose that ${I}$ represents the sum of all the
-			paths leading to internal nodes and ${E}$ represents the sum of the paths
-			leading to external nodes. It follows then that:
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${E = I + 2n,}$ where ${n}$ is the number of internal nodes</p>
-			</div>
-		</figure>
-		<p>
-			Why ${+ 2n?}$ Because each of the internal nodes have 2 children (since
-			the binary search algorithm works by successively dividing the problem by
-			2). For example, here's a simple binary tree:
-		</p>
-		<figure>
-			<img
-				src="{% static 'images/internal_v_external_nodes.svg' %}"
-				alt="Internal versus external nodes"
-				loading="lazy"
-				class="sixty-p"
-			/>
-		</figure>
-		<p>
-			Notice that ${n = 3.}$ Thus, ${2n = 6.}$ Then, notice that ${I = 2.}$
-			Hence, ${E = 2 + 6 = 8.}$ Indeed, there are 8 paths from the root to the
-			external nodes.
-		</p>
-		<p>
-			Alongside the facts above, we also know that the number of external nodes
-			is the number of internal does plus 1: ${e = n + 1,}$ where ${e}$ is the
-			number of external nodes, and ${n}$ is the number of internal nodes.
-			Knowing all of this, the average-case runtime for a successful search on
-			an ${n}$ element array is the sum of the paths to internal nodes divided
-			by the number of nodes (the sum of all possible cases divided by the
-			number of cases) plus 1 (including the comparison for the root node):
-		</p>
-		<figure class="math-display">
-			<div class="rule">
-				<p>
-					${\Omega\left(1 + \dfrac{I}{n}\right)}$, where ${I}$ is the sum of all
-					paths to internal nodes and ${n}$ is the number of nodes.
-				</p>
-			</div>
-		</figure>
-		<p>Similarly, the average-case runtime for an unsuccesful search is:</p>
-		<figure class="math-display">
-			<div class="rule">
-				<p>
-					${\Omega\left( \dfrac{E}{n + 1} \right),}$ where ${E}$ is the sum of
-					all paths to external nodes and ${n}$ is the number of nodes
-				</p>
-			</div>
-		</figure>
-		<p>
-			Note that the sum of all paths to external nodes is roughly the height of
-			the tree &mdash; ${n \log n.}$ Accordingly we can generalize the
-			average-case runtime for an unsuccessful search as:
-		</p>
-		<figure class="math-display">
-			<div class="rule">
-				<p>${\Omega\left( \dfrac{n \log n}{n + 1} \right)}$</p>
-			</div>
-		</figure>
-		<p>Generalizing even further:</p>
-		<figure class="math-display">
-			<div class="rule">
-				<p>${\Omega(\log n)}$</p>
-			</div>
-		</figure>
-		<p>
-			Using what we know about ${E,}$ we can use substitution to find a more
-			generalized version of the average-case runtime for a successful search.
-			Where ${A_s(n)}$ is the average-case runtime for a successful search:
-		</p>
-		<figure class="math-display">
-			<div>
-				$$ \begin{aligned} A_s(n) &= 1 + \dfrac{I}{n} \\[1em] &= 1 + \dfrac{E -
-				2n}{n} \\[1em] &= 1 + \dfrac{E}{n} - 2 \\[1em] &= 1 + \dfrac{n \log
-				n}{n} - 2 \\[1em] &= 1 + \log n + 2 \end{aligned} $$
-			</div>
-		</figure>
-		<p>
-			Applying asymptotic analysis, the average-case runtime for a successful
-			search is:
-		</p>
-		<figure class="math-display">
-			<div>
-				<p>${\Omega (\log n)}$</p>
-			</div>
-		</figure>
+					</code></pre>
+				</div>
+			</figure>
+			<p>
+				To understand the time complexity for binary search, the crucial point
+				is that we're cutting the array in half each time. However, before any
+				of that splitting, we checked if the middle element is in fact the key.
+				Accordingly, in the best-case scenario, binary search has a time
+				complexity of ${\Omega(1)}$ &mdash; constant time.
+			</p>
+			<p>
+				However, if the middle element was not the key, then we proceed to
+				checking if the left- or right-hand side contained the key. Suppose it's
+				the left-hand side. If it's the left-hand side, then ${\ell = 0}$ and
+				${h = 6,}$ yielding ${M = 3.}$ If it's on the right-hand side, then
+				${\ell = 8}$ and ${h = 14,}$ yielding ${M = 11.}$ This is halving the
+				array and restricting our search to just the relevant half. If the
+				middle element in either half is the key, then we've found our key in 2
+				comparisons.
+			</p>
+			<p>
+				If neither of the halves contains the middle element, then we again
+				perform the split. For the left-hand side of the left-hand side, ${\ell
+				= 0}$ and ${h = 2,}$ yielding ${M = 1.}$ If it's the right-hand side of
+				the left-hand side, then ${\ell = 4}$ and ${h = 6,}$ yielding ${M = 5.}$
+				For the left-hand side of the right-hand side, we have ${\ell = 8}$ and
+				${h = 10,}$ yielding ${M = 9.}$ For the right-hand side of the
+				right-hand side, we have ${\ell = 12}$ and ${h = 14,}$ yielding ${M =
+				13.}$ In this case, the key can be found in 3 comparisons. Visualizing
+				the tree:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/binary_search_tree.svg' %}"
+					alt="The binary search tree's middle element computations"
+					loading="lazy"
+				/>
+			</figure>
+			<p>
+				Splitting further, the key can be found in 4 comparisions, then 5, then
+				6, and so on. Modelling binary search as a tree, the height of the tree
+				is ${\lceil\log_{2}(n + 1)\rceil,}$ where ${n}$ is the number of
+				elements in the array. Why ${\log_{2}(n + 1)?}$ Because the tree's
+				height is directly proportional to the number of times we divide ${n}$
+				by 2 such that we only have a remainder of 1. And as we know from
+				mathematics, the answer to &#8220;How many times can I divide ${n}$ by 2
+				to reach a remainder of 1?&#8221; is a logarithm of base 2. Successive
+				multiplication yields a power, and successive division yields a
+				logarithm. Thus, in terms of asymptotic analysis, the binary search
+				algorithm has a runtime of order ${O(\lg n)}$ &mdash; logarithmic time.
+			</p>
+			<p>
+				What about the average-case? For the average-case, we're asking for the
+				total time for all the possible cases, divided by the number of cases.
+				Revisiting the tree diagram above, we see that at the first level, there
+				is only 1 case, with only 1 comparison. Let ${c}$ be the number of
+				cases:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${c = 1}$</p>
+				</div>
+			</figure>
+			<p>
+				On the second level, there are 2 cases, each requiring 1 comparison:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${c = 1 + (1 \cdot 2)}$</p>
+				</div>
+			</figure>
+			<p>
+				On the third level, there are 4 cases, each requiring 2 comparisons:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${c = 1 + (1 \cdot 2) + (2 \cdot 4)}$</p>
+				</div>
+			</figure>
+			<p>
+				On the fourth level, there are 8 cases, each requiring 3 comparisons:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${c = 1 + (1 \cdot 2) + (2 \cdot 4) + (3 \cdot 8)}$</p>
+				</div>
+			</figure>
+			<p>We can see pattern in this series:</p>
+			<figure class="math-display">
+				<div>
+					<p>${c = 1 + (1 \cdot 2^1) + (2 \cdot 2^2) + (3 \cdot 2^3)}$</p>
+				</div>
+			</figure>
+			<p>We can then express this pattern as:</p>
+			<figure class="math-display">
+				<div>
+					<p>${\sum\limits_{i = 1}^{3} i \cdot 2^i}$</p>
+				</div>
+			</figure>
+			<p>
+				That 3 is intresting &mdash; it's the tree's height. Accordingly, our
+				series can be generalized as:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>
+						${\sum\limits_{i = 1}^{\log n} i \cdot 2^i = \log n \cdot 2^{\log
+						n}}$
+					</p>
+				</div>
+			</figure>
+			<p>
+				But, we must divide this sum by ${n,}$ the number of elements (and by
+				implication, the number of possible cases):
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\dfrac{\log n \cdot 2^{\log n}}{n} = \log n}$</p>
+				</div>
+			</figure>
+			<p>
+				Hence, the average-case running time is ${\Theta(\log n)}$ An
+				algorithm's average-case, however, may be different depending on the
+				conditions. For example, with respect to binary search, there's an
+				average-case running time for a successful search, and an average-case
+				running time for an unsuccessful search.
+			</p>
+			<p>
+				A successful search occurs if the element is found. In the tree diagram
+				above, the number of possible cases for a successful search is
+				equivalent to the number of internal nodes (i.e., all of the nodes other
+				than the nodes on the fifth level). If we examine the tree closely, the
+				number of edges from the root to a given node represents the number of
+				comparisons needed to reach the given node. For example, to find the ${k
+				= 8,}$ binary-search requires 3 comparisons. Accordingly, the number of
+				comparisons to reach a given node containing ${k}$ is ${e + 1,}$ where
+				${e}$ is the number of edges leading to the node from the root (we add
+				${1}$ because a comparison must be performed for the root).
+			</p>
+			<p>
+				The number of possible cases for an unsuccesful search, in contrast, is
+				found from the number of nodes on the fifth level. These are called
+				<span class="term">external nodes</span>. It is on these external nodes
+				that binary search terminates. Like the successful search, the number of
+				comparisons needed to reach an unsuccessful search is the number of
+				edges leading to an external node plus 1.
+			</p>
+			<p>
+				With these basic facts, suppose that ${I}$ represents the sum of all the
+				paths leading to internal nodes and ${E}$ represents the sum of the
+				paths leading to external nodes. It follows then that:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${E = I + 2n,}$ where ${n}$ is the number of internal nodes</p>
+				</div>
+			</figure>
+			<p>
+				Why ${+ 2n?}$ Because each of the internal nodes have 2 children (since
+				the binary search algorithm works by successively dividing the problem
+				by 2). For example, here's a simple binary tree:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/internal_v_external_nodes.svg' %}"
+					alt="Internal versus external nodes"
+					loading="lazy"
+					class="sixty-p"
+				/>
+			</figure>
+			<p>
+				Notice that ${n = 3.}$ Thus, ${2n = 6.}$ Then, notice that ${I = 2.}$
+				Hence, ${E = 2 + 6 = 8.}$ Indeed, there are 8 paths from the root to the
+				external nodes.
+			</p>
+			<p>
+				Alongside the facts above, we also know that the number of external
+				nodes is the number of internal does plus 1: ${e = n + 1,}$ where ${e}$
+				is the number of external nodes, and ${n}$ is the number of internal
+				nodes. Knowing all of this, the average-case runtime for a successful
+				search on an ${n}$ element array is the sum of the paths to internal
+				nodes divided by the number of nodes (the sum of all possible cases
+				divided by the number of cases) plus 1 (including the comparison for the
+				root node):
+			</p>
+			<figure class="math-display">
+				<div class="rule">
+					<p>
+						${\Omega\left(1 + \dfrac{I}{n}\right)}$, where ${I}$ is the sum of
+						all paths to internal nodes and ${n}$ is the number of nodes.
+					</p>
+				</div>
+			</figure>
+			<p>Similarly, the average-case runtime for an unsuccesful search is:</p>
+			<figure class="math-display">
+				<div class="rule">
+					<p>
+						${\Omega\left( \dfrac{E}{n + 1} \right),}$ where ${E}$ is the sum of
+						all paths to external nodes and ${n}$ is the number of nodes
+					</p>
+				</div>
+			</figure>
+			<p>
+				Note that the sum of all paths to external nodes is roughly the height
+				of the tree &mdash; ${n \log n.}$ Accordingly we can generalize the
+				average-case runtime for an unsuccessful search as:
+			</p>
+			<figure class="math-display">
+				<div class="rule">
+					<p>${\Omega\left( \dfrac{n \log n}{n + 1} \right)}$</p>
+				</div>
+			</figure>
+			<p>Generalizing even further:</p>
+			<figure class="math-display">
+				<div class="rule">
+					<p>${\Omega(\log n)}$</p>
+				</div>
+			</figure>
+			<p>
+				Using what we know about ${E,}$ we can use substitution to find a more
+				generalized version of the average-case runtime for a successful search.
+				Where ${A_s(n)}$ is the average-case runtime for a successful search:
+			</p>
+			<figure class="math-display">
+				<div>
+					$$ \begin{aligned} A_s(n) &= 1 + \dfrac{I}{n} \\[1em] &= 1 + \dfrac{E
+					- 2n}{n} \\[1em] &= 1 + \dfrac{E}{n} - 2 \\[1em] &= 1 + \dfrac{n \log
+					n}{n} - 2 \\[1em] &= 1 + \log n + 2 \end{aligned} $$
+				</div>
+			</figure>
+			<p>
+				Applying asymptotic analysis, the average-case runtime for a successful
+				search is:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>${\Omega (\log n)}$</p>
+				</div>
+			</figure>
+		</section>
 	</section>
 
 	<section id="getting">
@@ -2289,20 +2308,23 @@
 				merging.
 			</p>
 		</section>
+	</section>
 
-		<section id="set_operations">
-			<h3>Set Operations on Arrays</h3>
-			<p>
-				With arrays, we can also perform the fundamental set operations of
-				<span class="italicsText">union</span>,
-				<span class="italicsText">intersetion</span>,
-				<span class="italicsText">difference</span>, and
-				<span class="italicsText">membership</span>. We will call these
-				operations as such: <span class="monoText">union(${A}$, ${B}$)</span>,
-				<span class="monoText">intersection(${A}$, ${B}$)</span>,
-				<span class="monoText">difference(${A}$, ${B}$)</span>, and
-				<span class="monoText">isMember(${x}$, ${A}$)</span>.
-			</p>
+	<section id="set_operations">
+		<h3>Set Operations on Arrays</h3>
+		<p>
+			With arrays, we can also perform the fundamental set operations of
+			<span class="italicsText">union</span>,
+			<span class="italicsText">intersetion</span>,
+			<span class="italicsText">difference</span>, and
+			<span class="italicsText">membership</span>. We will call these operations
+			as such: <span class="monoText">union(${A}$, ${B}$)</span>,
+			<span class="monoText">intersection(${A}$, ${B}$)</span>,
+			<span class="monoText">difference(${A}$, ${B}$)</span>, and
+			<span class="monoText">isMember(${x}$, ${A}$)</span>.
+		</p>
+
+		<section id="union_arrays">
 			<p>
 				<span class="topic">Union of Arrays.</span> Recall that in mathematics,
 				given a set ${A = \{ 3, 5, 10, 4, 6 \}}$ and a set ${B = \{ 12, 4, 7, 2,
@@ -2462,7 +2484,1219 @@
 					</tbody>
 				</table>
 			</figure>
+			<p>
+				With sorted arrays, all we have to do is merge while avoiding
+				duplicates. We compare ${A_i}$ against ${B_j.}$ The lesser element is
+				assigned, and the other element's index is incremented. If both elements
+				are equal, we assign either one, and increment both indices. Thus:
+			</p>
+			<ol>
+				<li>
+					Start: ${i = 0,}$ the index for ${A,}$ ${j = 0,}$ the index for ${B,}$
+					and ${k = 0,}$ the index for ${C.}$
+				</li>
+				<li>
+					Compare ${A_i \leq B_j.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="redText">3</span></td>
+									<td>4</td>
+									<td>5</td>
+									<td>6</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greenText">0</span></td>
+									<td>1</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="redText">2</span></td>
+									<td>4</td>
+									<td>5</td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greenText">0</span></td>
+									<td>1</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					${3}$ is not less than or equal to ${2,}$ so assign ${2}$ to the array
+					${C,}$ which is ${B_j.}$ Increment ${j}$ and ${k.}$ ${j}$ is now ${1}$
+					and ${k}$ is now ${1.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="redText">3</span></td>
+									<td>4</td>
+									<td>5</td>
+									<td>6</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greenText">0</span></td>
+									<td>1</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td>4</td>
+									<td>5</td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greenText">1</span></td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${C =}$</td>
+									<td>2</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>${k =}$</td>
+									<td>0</td>
+									<td><span class="greenText">1</span></td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+									<td>5</td>
+									<td>6</td>
+									<td>7</td>
+									<td>8</td>
+									<td>9</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					Compare ${A_i \leq B_j.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="redText">3</span></td>
+									<td>4</td>
+									<td>5</td>
+									<td>6</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greenText">0</span></td>
+									<td>1</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="redText">4</span></td>
+									<td>5</td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greenText">1</span></td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					${3}$ is less than ${4,}$ so assign ${3}$ to the array ${C,}$ which is
+					${A_j.}$ Increment ${i}$ and ${k.}$ ${i}$ is now ${1}$ and ${k}$ is
+					now ${2.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="greyText">3</span></td>
+									<td>4</td>
+									<td>5</td>
+									<td>6</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greenText">1</span></td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td>4</td>
+									<td>5</td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greenText">1</span></td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${C =}$</td>
+									<td>2</td>
+									<td>3</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>${k =}$</td>
+									<td>0</td>
+									<td>1</td>
+									<td><span class="greenText">2</span></td>
+									<td>3</td>
+									<td>4</td>
+									<td>5</td>
+									<td>6</td>
+									<td>7</td>
+									<td>8</td>
+									<td>9</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					Compare ${A_i \leq B_j.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td>3</td>
+									<td><span class="redText">4</span></td>
+									<td>5</td>
+									<td>6</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td>0</td>
+									<td><span class="greenText">1</span></td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="redText">4</span></td>
+									<td>5</td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greenText">1</span></td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					${4}$ is equal to ${4,}$ so assign ${4}$ to the array ${C,}$ which is
+					${A_j.}$ Increment ${i,}$ ${j,}$ and ${k.}$ ${i}$ is now ${2,}$ ${j}$
+					is now ${2,}$ and ${k}$ is now ${3.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="greyText">3</span></td>
+									<td><span class="greyText">4</span></td>
+									<td>5</td>
+									<td>6</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greenText">2</span></td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greyText">4</span></td>
+									<td>5</td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greenText">2</span></td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${C =}$</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>${k =}$</td>
+									<td>0</td>
+									<td>1</td>
+									<td>2</td>
+									<td><span class="greenText">3</span></td>
+									<td>4</td>
+									<td>5</td>
+									<td>6</td>
+									<td>7</td>
+									<td>8</td>
+									<td>9</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					Compare ${A_i \leq B_j.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="greyText">3</span></td>
+									<td><span class="greyText">4</span></td>
+									<td><span class="redText">5</span></td>
+									<td>6</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greenText">2</span></td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greyText">4</span></td>
+									<td><span class="redText">5</span></td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greenText">2</span></td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					${5}$ is equal to ${5,}$ so assign ${5}$ to the array ${C,}$ which is
+					${A_j.}$ Increment ${i,}$ ${j,}$ and ${k.}$ ${i}$ is now ${3,}$ ${j}$
+					is now ${3,}$ and ${k}$ is now ${4.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="greyText">3</span></td>
+									<td><span class="greyText">4</span></td>
+									<td><span class="greyText">5</span></td>
+									<td>6</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greenText">3</span></td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greyText">4</span></td>
+									<td><span class="greyText">5</span></td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greenText">3</span></td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${C =}$</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+									<td>5</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>${k =}$</td>
+									<td>0</td>
+									<td>1</td>
+									<td>2</td>
+									<td>3</td>
+									<td><span class="greenText">4</span></td>
+									<td>5</td>
+									<td>6</td>
+									<td>7</td>
+									<td>8</td>
+									<td>9</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					Compare ${A_i \leq B_j.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="greyText">3</span></td>
+									<td><span class="greyText">4</span></td>
+									<td><span class="greyText">5</span></td>
+									<td><span class="redText">6</span></td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greenText">3</span></td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greyText">4</span></td>
+									<td><span class="greyText">5</span></td>
+									<td><span class="redText">7</span></td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greenText">3</span></td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+				<li>
+					${6}$ is less than ${7,}$ so assign ${6}$ to the array ${C,}$ which is
+					${A_j.}$ Increment ${i}$ and ${k.}$ ${i}$ is now ${4,}$ ${j}$ is still
+					${3,}$ and ${k}$ is now ${5.}$
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${A =}$</td>
+									<td><span class="greyText">3</span></td>
+									<td><span class="greyText">4</span></td>
+									<td><span class="greyText">5</span></td>
+									<td><span class="greyText">6</span></td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>${i =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greyText">3</span></td>
+									<td><span class="greenText">4</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${B =}$</td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greyText">4</span></td>
+									<td><span class="greyText">5</span></td>
+									<td>7</td>
+									<td>12</td>
+								</tr>
+								<tr>
+									<td>${j =}$</td>
+									<td><span class="greyText">0</span></td>
+									<td><span class="greyText">1</span></td>
+									<td><span class="greyText">2</span></td>
+									<td><span class="greenText">3</span></td>
+									<td>4</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+					<figure>
+						<table class="array">
+							<tbody>
+								<tr>
+									<td>${C =}$</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+									<td>5</td>
+									<td>6</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>${k =}$</td>
+									<td>0</td>
+									<td>1</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+									<td><span class="greenText">5</span></td>
+									<td>6</td>
+									<td>7</td>
+									<td>8</td>
+									<td>9</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>
+				</li>
+			</ol>
+			<p>
+				The procedure continues for the rest of the elements. Because this
+				approach to <span class="monoText">union()</span> is essentially merging
+				two arrays, it has a runtime of ${O(m+n),}$ or more generally ${O(n).}$
+				This is linear time, which is better than quadratic time.
+			</p>
 		</section>
+
+		<section id="intersection">
+			<p>
+				<span class="topic">Intersection.</span> From set theory, the
+				intersection of two sets ${A}$ and ${B}$ is the set of all elements in
+				both ${A}$ and ${B.}$ For example, suppose ${A = \{ 1, 2, 3 \}}$ and ${B
+				= \{ 1, 2, 4 \}.}$ The intersection ${A \cap B}$ is the set ${\{ 1, 2
+				\}.}$ Like the <span class="monoText">union()</span> operation, we can
+				implement the intersection operation with arrays. We'll call this
+				operation <span class="monoText">intersection(${A}$, ${B}$)</span>,
+				where ${A}$ and ${B}$ are arrays.
+			</p>
+			<p>
+				To illustrate, suppose ${A}$ and ${B}$ were the following. The array
+				${A:}$
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${A = }$</td>
+							<td>3</td>
+							<td>5</td>
+							<td>10</td>
+							<td>4</td>
+							<td>6</td>
+						</tr>
+						<tr>
+							<td>${i = }$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>And the array ${B:}$</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${B = }$</td>
+							<td>12</td>
+							<td>4</td>
+							<td>7</td>
+							<td>2</td>
+							<td>5</td>
+						</tr>
+						<tr>
+							<td>${j = }$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				We then have an empty array ${C:}$ which will store the intersection. An
+				important question is what should be the size of ${C?}$ The size of
+				${C}$ is computed from the
+				<a
+					href="{% url 'numerm:disc_setTheory' %}#size_of_intersection_and_union"
+					><i>Cardinal Number Formula:</i></a
+				>
+			</p>
+			<figure>
+				<div>
+					<p>${n(A \cap B) = n(A) + n(B) - n(A \cup B)}$</p>
+				</div>
+			</figure>
+			<p>
+				Applying the formula, the size of ${C}$ is the length of ${A}$ plus the
+				length of ${B,}$ minus the length of the array resulting from the union
+				of ${A}$ and ${B.}$ While this would give us the exact number of spaces
+				necessary for the intersection, it would be simpler, and more efficient,
+				to use the length of whichever is smaller (in terms of the number of
+				elements) between ${A}$ and ${B.}$ This is because the number of
+				elements in common between ${A}$ and ${B}$ is at most the cardinality of
+				the smaller between the two sets. If ${A}$ is a smaller set than ${B,}$
+				then the cardinality of ${A \cap B}$ is at most the cardinality of ${A}$
+				(all the elements in ${A}$ are elements in ${B}$). If ${B}$ is a smaller
+				set than ${A,}$ then the cardinality of ${A \cap B}$ is at most the
+				cardinality of ${B.}$ And if ${A}$ and ${B}$ are of the same
+				cardinality, then the cardinality of ${A \cap B}$ is at most the
+				cardinality of ${A}$ (or ${B}$).
+			</p>
+			<p>
+				In our case, the arrays ${A}$ and ${B}$ are of the same length, so the
+				length of ${C}$ is at most ${5}$ (the elements of ${A}$ are all elements
+				${B}$ and vice versa):
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${C = }$</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>${k = }$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<p>
+				We start by To output the intersection, we compare each element in ${A}$
+				against each element in ${B.}$ If there's a match, then: (1) we assign
+				the element in ${A}$ to the position in ${C,}$ and (2) increment ${k,}$
+				the index for ${C.}$ Comparing element in ${A}$ to each element in ${B}$
+				requires ${n \cdot m}$ operations. As such, this algorithm has a time
+				complexity of ${O(n^2).}$ This isn't very efficient; it's quadratic
+				time.
+			</p>
+			<p>
+				Like the <span class="monoText">union()</span> operation, we can improve
+				this runtime if the arrays are sorted before performing
+				<span class="monoText">intersection()</span>. Suppose our previous
+				arrays were sorted:
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${A = }$</td>
+							<td>3</td>
+							<td>4</td>
+							<td>5</td>
+							<td>6</td>
+							<td>10</td>
+						</tr>
+						<tr>
+							<td>${i = }$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${B = }$</td>
+							<td>2</td>
+							<td>4</td>
+							<td>5</td>
+							<td>7</td>
+							<td>12</td>
+						</tr>
+						<tr>
+							<td>${j = }$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p><span class="monoText">intersection()</span> then works as such:</p>
+			<ol>
+				<li>
+					Set <span class="monoText">i = 0</span>,
+					<span class="monoText">j = 0</span>, and
+					<span class="monoText">k = 0</span>.
+				</li>
+				<li>
+					Compare: <span class="monoText">A[i]</span> and
+					<span class="monoText">B[j]</span>.
+				</li>
+				<ol>
+					<li>
+						If <span class="monoText">A[i] > B[j]</span> increment
+						<span class="monoText">j</span>.
+					</li>
+					<li>
+						If <span class="monoText">A[i] < B[j]</span> increment
+						<span class="monoText">i</span>.
+					</li>
+					<li>
+						If <span class="monoText">A[i] = B[j]</span>, assign
+						<span class="monoText">A[i]</span> to
+						<span class="monoText">C[k]</span>, increment
+						<span class="monoText">i</span> <span class="monoText">j</span>, and
+						<span class="monoText">k</span>.
+					</li>
+				</ol>
+				<li>
+					If <span class="monoText">i > A.length</span> or
+					<span class="monoText">j > B.length</span>, return
+					<span class="monoText">C.</span> Else, return to step 2.
+				</li>
+			</ol>
+			<p>
+				With this approach, we have time complexity of ${O(m + n),}$ or more
+				generally, ${O(n).}$ This is linear time; a marked improvement from
+				quadratic time.
+			</p>
+		</section>
+
+		<section id="difference">
+			<p>
+				<span class="topic">Difference.</span> Suppose we had the following
+				sets:
+			</p>
+			<figure>
+				<div>
+					<p>${A = \{ 3, 5, 10, 4, 6 \}}$</p>
+					<p>${B = \{ 12, 4, 7, 2, 5 \}}$</p>
+				</div>
+			</figure>
+			<p>
+				The difference between these two sets is the set consisting of elements
+				not in both ${A}$ and ${B}$ (i.e., the set without the elements common
+				to both ${A}$ and ${B}$). In this case, the common elements are ${4}$
+				and ${5.}$ Thus, ${A - B = \{ 3, 10, 6 \},}$ and ${B - A = \{ 12, 7, 2
+				\}.}$ We implement this operation as the operator
+				<span class="monoText">difference()</span>.
+			</p>
+			<p>
+				With the <span class="monoText">difference()</span> operator, we say
+				that order is material. Thus,
+				<span class="monoText">difference(A, B)</span> computes ${A - B,}$ and
+				<span class="monoText">difference(B, A)</span> computes ${B - A.}$ In
+				other words, the arguments to the
+				<span class="monoText">difference()</span> operator are noncommutative.
+			</p>
+			<p>
+				Like <span class="monoText">intersection()</span>, we might implement
+				<span class="monoText">difference()</span> by comparing each element in
+				${A}$ against each element in ${B.}$ If an element in ${A}$ matches an
+				element in ${B,}$ we skip that element compare the next. If there is no
+				match, we assign the element to the resulting array ${C.}$ Again, like
+				<span class="monoText">intersection()</span>, this algorithm requires a
+				total of ${n \cdot m}$ operations to execute. This yields a quadratic
+				runtime of ${O(n^2).}$
+			</p>
+			<p>
+				Just as we saw with <span class="monoText">intersection()</span>, we can
+				improve the time complexity by ensuring the array arguments are sorted
+				before performing the
+				<span class="monoText">difference()</span> procedure. Suppose the arrays
+				are sorted:
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${A = }$</td>
+							<td>3</td>
+							<td>4</td>
+							<td>5</td>
+							<td>6</td>
+							<td>10</td>
+						</tr>
+						<tr>
+							<td>${i = }$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${B = }$</td>
+							<td>2</td>
+							<td>4</td>
+							<td>5</td>
+							<td>7</td>
+							<td>12</td>
+						</tr>
+						<tr>
+							<td>${j = }$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${C = }$</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>${k = }$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				With the arrays sorted, the
+				<span class="monoText">difference()</span> operator's algorithm works as
+				such:
+			</p>
+			<ol>
+				<li>
+					Set <span class="monoText">i = 0</span>,
+					<span class="monoText">j = 0</span>, and
+					<span class="monoText">k = 0</span>.
+				</li>
+				<li>
+					Compare <span class="monoText">A[i]</span> with
+					<span class="monoText">B[j]</span>.
+				</li>
+				<ol>
+					<li>
+						If <span class="monoText">A[i] > B[j]</span>, increment
+						<span class="monoText">j</span>.
+					</li>
+					<li>
+						If <span class="monoText">A[i] < B[j]</span>:
+						<ol>
+							<li>
+								Assign <span class="monoText">A[i]</span> to
+								<span class="monoText">C[k]</span>.
+							</li>
+							<li>Increment <span class="monoText">i</span>.</li>
+							<li>Increment <span class="monoText">k</span>.</li>
+						</ol>
+					</li>
+					<li>
+						If <span class="monoText">A[i] = B[j]</span>, increment
+						<span class="monoText">i</span>, increment
+						<span class="monoText">j</span>.
+					</li>
+				</ol>
+				<li>
+					If <span class="monoText">i > A.length</span>, return
+					<span class="monoText">C</span>. Else, return to Step 2.
+				</li>
+			</ol>
+			<p>
+				The algorithm above computes the difference ${A - B.}$ As such, when
+				difference is called, it is called as
+				<span class="monoText">difference(A, B)</span>. To compute ${B - A,}$ we
+				perform the same algorithm, but swap
+				<span class="monoText">A[i]</span> and
+				<span class="monoText">B[j]</span> (and their respective indices) in the
+				algorithm above.
+			</p>
+			<p>
+				This algorithm performs in the same manner as the
+				<span class="monoText">merge()</span> operator. Accordingly, it has a
+				time complexity of ${O(m + n),}$ or, in a single variable, ${O(n).}$
+				This is linear time; faster than quadratic time.
+			</p>
+		</section>
+	</section>
+
+	<section id="find_missing_element_sorted">
+		<h3>
+			Search-and-rescue Algorithms: Algorithms for Finding Missing Elements
+		</h3>
+		<p>
+			A particularly useful set of algorithms associated with arrays is the set
+			of algorithms for finding missing elements. As an homage to
+			search-and-rescue dogs, we call these algorithms
+			<span class="term">search-and-rescue algorithms</span>.
+		</p>
+		<p>
+			Search-and-rescue algorithms are particularly useful when we know that a
+			particular sequence should contain certain elements. For example, a
+			password, identification number, or waiting list number might have a
+			pre-defined rule for what the sequence of digits should be. If the
+			sequence is sufficiently long, it would be tedious for us to check, by
+			hand, each element one by one just to spot a missing element.
+		</p>
+		<p>
+			This is where the search-and-rescue algorithm comes in. Implementing these
+			algorithms depends on four factors: (1) the sequence (implemented as an
+			array) to check is sorted; (2) the sequence is unsorted; (3) the sequence
+			contains a single missing element; and (4) the sequence contains multiple
+			missing elements. For this section, we restrict the search-and-rescue
+			algorithms to operating on sequences of numbers. However, our discussion
+			should shed light on how these algorithms might be extended to arrays of
+			other values, such as strings.
+		</p>
+		<p>
+			First, we consider a sequence implemented as a sorted array. Suppose the
+			sorted array is the following:
+		</p>
+		<figure>
+			<div>
+				<p>${A = \lang 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12 \rang}$</p>
+			</div>
+		</figure>
+		<p>
+			This is the sequence of natural numbers. Although we immediately see that
+			the missing element is ${7,}$ the task would be far more difficult if
+			${A}$ consisted of a thousand elements. The trick to finding the missing
+			element in sorted array is to rely on the sequence's summation formula. In
+			this case, the sum of the natural numbers is given by the following:
+		</p>
+		<figure>
+			<div>
+				<p>
+					${\sum\limits_{k = 1}^{n} k = \dfrac{n(n+1)}{2} \qquad \text{where}
+					~~~~ k, n \in \N}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			Knowing that ${A}$ is the sequence of the natural numbers, we can find the
+			sum of ${A}$ if the missing element was present. We'll call this the
+			<span class="italicsText">expected sum</span>. In this case, the expected
+			sum of the array ${A}$ would be:
+		</p>
+		<figure>
+			<div>
+				<p>${\sum\limits_{i = 1}^{12} A_i = \dfrac{12(12 + 1)}{2} = 78}$</p>
+			</div>
+		</figure>
+		<p>
+			Next, we compute the sum of ${A}$ as is (without the missing element
+			included). We'll call this the
+			<span class="italicsText">current sum</span>. To do so, we use our
+			familiar
+			<a href="#summing_elements"
+				><span class="monoText">sum()</span> operator.</a
+			>
+			In this case, the <span class="italicsText">current sum</span> is ${71.}$
+			Once we obtain the current sum, the missing element is the difference
+			between the <span class="italicsText">expected sum</span> and the
+			<span class="italicsText">current sum</span>:
+		</p>
+		<figure>
+			<div>
+				<p>
+					${\large A_{\text{missing}} = S_{\text{expected}} -
+					S_{\text{current}}}$
+				</p>
+				<ul class="def">
+					<li class="where">${A_{\text{missing}}}$ is the missing element;</li>
+					<li>${S_{\text{expected}}}$ is the expected sum; and</li>
+					<li>${S_{\text{current}}}$ is the current sum.</li>
+				</ul>
+			</div>
+		</figure>
+		<p>Applying this formula:</p>
+		<figure>
+			<div>
+				$$ \begin{aligned} \large A_{\text{missing}} &= S_{\text{expected}} -
+				S_{\text{current}} \\ &= 78 - 71 \\ &= 7 \end{aligned} $$
+			</div>
+		</figure>
+		<p>The implementation might look like:</p>
+
+		<ol class="alg">
+			<li>${f}$ sum_natural_numbers(n):</li>
+			<ol>
+				<li>return ((n * (n + 1)) / 2);</li>
+			</ol>
+			<li></li>
+			<li>${f}$ findMissing(A, summation_formula()):</li>
+			<ol>
+				<li>let current_sum = 0;</li>
+				<li>for (i = 0; i < A.length - 1; i++):</li>
+				<ol>
+					<li>current_sum += A[i];</li>
+				</ol>
+				<li>let expected_sum = summation_formula(A.lastElement)</li>
+				<li>let missing_element = expected_sum - current_sum;</li>
+				<li>return missing_element;</li>
+			</ol>
+			<li></li>
+			<li>findingMissing(A, sum_natural_numbers());</li>
+		</ol>
+		<p>
+			With the implementation above, we rely on a separate function,
+			<span class="monoText">sum_natural_numbers(n)</span>, to compute the
+			expected sum. There may be situations, however, where we do not know the
+			summation formula for a particular sequence. Moreover, the call to
+			<span class="monoText">sum_natural_numbers(n)</span> requires an
+			additional stack frame, and we may have space complexity concerns (certain
+			summation formulas can get very complex or require large amounts of
+			memory). As such, we consider an alternative implementation.
+		</p>
+		<p>With the alternative implementation, we rely on the indices of each element in the array. For example, suppose we had the following array:</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A}$</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+						<td>10</td>
+						<td>11</td>
+						<td>12</td>
+						<td>13</td>
+						<td>14</td>
+						<td>15</td>
+						<td>16</td>
+						<td>17</td>
+					</tr>
+					<tr>
+						<td>${i}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+						<td>10</td>
+						<td>11</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
 	</section>
 </section>
 

@@ -1474,4 +1474,133 @@
 	</section>
 </section>
 
+<section id="array_objects">
+	<h2>Other Ways to Implement Arrays</h2>
+	<p>
+		Recall that arrays are an
+		<span class="italicsText">ordered collection</span> data structure. In terms
+		of datatype, arrays are objects. Now we're adding another trait: As objects,
+		arrays behave like iterables &mdash; a particular kind of object. But, not
+		every iterable is an array. For example, NodeList, String, Map, and Set are
+		all iterables. Objects of these types are iterables, and we can iterate
+		through them with a for-of loop. But, objects of type NodeList are
+		<span class="underlineText">not</span> arrays. They are
+		<span class="italicsText">array-like objects</span>, in that they have a
+		length property, and use indices for accessing.
+	</p>
+	<p>
+		To better understand the differences between an array and an array-like
+		object, let's revisit arrays. Recall the method for creating arrays we're
+		familiar with:
+	</p>
+	<pre class="language-javascript"><code>
+		const arr = [1]
+	</code></pre>
+	<p>
+		No surprises here. This statement creates a singleton, an array with only
+		one element. It's also the most common way to create an array. But it turns
+		out the above statement isn't the only way:
+	</p>
+	<pre class="language-javascript"><code>
+		const arr = Array(1);
+		const arr = new Array(1);
+		const arr = Array.of(1);
+		const arr = Array.from(1);
+	</code></pre>
+	<p>
+		Although each of the statements above creates an array, they all do so
+		differently. To see these differences, we revisit the
+		<span class="monoText">length</span> property of an array. We know that when
+		we create an array in JavaScript the way we usually do (with square
+		brackets) we create an array whose length can grow and shrink:
+	</p>
+	<pre class="language-javascript"><code>
+		let arr = [1, 2, 3];
+		console.log(arr);
+		console.log(arr.length);
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1, 2, 3]
+		3
+	</code></pre>
+	<p>
+		When use the <span class="monoText">Array()</span> function, we get the same
+		result:
+	</p>
+	<pre class="language-javascript"><code>
+		let arr = Array(1, 2, 3);
+		console.log(arr);
+		console.log(arr.length);
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1, 2, 3]
+		3
+	</code></pre>
+	<p>The same goes for <span class="monoText">new Array()</span>:</p>
+	<pre class="language-javascript"><code>
+		let arr = new Array(1, 2, 3);
+		console.log(arr);
+		console.log(arr.length);
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1, 2, 3]
+		3
+	</code></pre>
+	<p>Now notice what happens when we pass a single argument:</p>
+	<pre class="language-javascript"><code>
+		let arr1 = [1];
+		let arr2 = Array(1);
+		let arr3 = new Array(1);
+		console.log(arr1);
+		console.log(arr1.length);
+		console.log(arr2);
+		console.log(arr2.length);
+		console.log(arr3);
+		console.log(arr3.length);
+	</code></pre>
+	<pre class="language-bash"><code>
+		[1]
+		1
+		[empty]
+		1
+		[empty]
+		1
+	</code></pre>
+	<p>
+		When we use the square bracket syntax for initialization (<span
+			class="monoText"
+			>arr1</span
+		>), we get an array as expected. But, using
+		<span class="monoText">Array()</span> or
+		<span class="monoText">new Array()</span>, we get an empty array with a
+		length of <span class="monoText">1</span>. What's happening here?
+	</p>
+	<p>
+		We're seeing this behavior because
+		<span class="monoText">Array()</span> is a function that returns a static
+		array if only one argument is passed to it. Both
+		<span class="monoText">Array()</span> and
+		<span class="monoText">new Array()</span> are essentially the same. The only
+		difference is that <span class="monoText">Array()</span> is a function,
+		while <span class="monoText">new Array()</span> is a constructor. Either or,
+		passing only one argument is interpreted as the resulting array's length.
+		Passing multiple arguments, the values are interpeted as the resulting
+		array's elements.
+	</p>
+</section>
+
+<section id="maps">
+	<h2>Sets</h2>
+	<p>
+		Arrays are iterables, but they aren't the only ones. There's another kind of
+		iterable: <span class="term">sets</span>. Like the array, the set stores
+		nested data of any kind and length. They're also iterable, with some special
+		set methods, but not all of the array methods. The biggest difference
+		between sets and arrays: With sets, (1) order is
+		<span class="underlineText">not</span> guaranteed, (2) duplicates are
+		<span class="underlineText">not</span> allowed, (3) and there is
+		<span class="underlineText">no</span> index-based accessing. This makes sets a great, lightweight structure for storing data where we do not want duplicates.
+	</p>
+</section>
+
 {% endblock %}
