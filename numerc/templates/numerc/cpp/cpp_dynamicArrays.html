@@ -3560,124 +3560,500 @@
 			should shed light on how these algorithms might be extended to arrays of
 			other values, such as strings.
 		</p>
-		<p>
-			First, we consider a sequence implemented as a sorted array. Suppose the
-			sorted array is the following:
-		</p>
-		<figure>
-			<div>
-				<p>${A = \lang 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12 \rang}$</p>
-			</div>
-		</figure>
-		<p>
-			This is the sequence of natural numbers. Although we immediately see that
-			the missing element is ${7,}$ the task would be far more difficult if
-			${A}$ consisted of a thousand elements. The trick to finding the missing
-			element in sorted array is to rely on the sequence's summation formula. In
-			this case, the sum of the natural numbers is given by the following:
-		</p>
-		<figure>
-			<div>
-				<p>
-					${\sum\limits_{k = 1}^{n} k = \dfrac{n(n+1)}{2} \qquad \text{where}
-					~~~~ k, n \in \N}$
-				</p>
-			</div>
-		</figure>
-		<p>
-			Knowing that ${A}$ is the sequence of the natural numbers, we can find the
-			sum of ${A}$ if the missing element was present. We'll call this the
-			<span class="italicsText">expected sum</span>. In this case, the expected
-			sum of the array ${A}$ would be:
-		</p>
-		<figure>
-			<div>
-				<p>${\sum\limits_{i = 1}^{12} A_i = \dfrac{12(12 + 1)}{2} = 78}$</p>
-			</div>
-		</figure>
-		<p>
-			Next, we compute the sum of ${A}$ as is (without the missing element
-			included). We'll call this the
-			<span class="italicsText">current sum</span>. To do so, we use our
-			familiar
-			<a href="#summing_elements"
-				><span class="monoText">sum()</span> operator.</a
-			>
-			In this case, the <span class="italicsText">current sum</span> is ${71.}$
-			Once we obtain the current sum, the missing element is the difference
-			between the <span class="italicsText">expected sum</span> and the
-			<span class="italicsText">current sum</span>:
-		</p>
-		<figure>
-			<div>
-				<p>
-					${\large A_{\text{missing}} = S_{\text{expected}} -
-					S_{\text{current}}}$
-				</p>
-				<ul class="def">
-					<li class="where">${A_{\text{missing}}}$ is the missing element;</li>
-					<li>${S_{\text{expected}}}$ is the expected sum; and</li>
-					<li>${S_{\text{current}}}$ is the current sum.</li>
-				</ul>
-			</div>
-		</figure>
-		<p>Applying this formula:</p>
-		<figure>
-			<div>
-				$$ \begin{aligned} \large A_{\text{missing}} &= S_{\text{expected}} -
-				S_{\text{current}} \\ &= 78 - 71 \\ &= 7 \end{aligned} $$
-			</div>
-		</figure>
-		<p>The implementation might look like:</p>
 
-		<ol class="alg">
-			<li>${f}$ sum_natural_numbers(n):</li>
-			<ol>
-				<li>return ((n * (n + 1)) / 2);</li>
-			</ol>
-			<li></li>
-			<li>${f}$ findMissing(A, summation_formula()):</li>
-			<ol>
-				<li>let current_sum = 0;</li>
-				<li>for (i = 0; i < A.length - 1; i++):</li>
+		<section id="sorted_search_and_rescue_single">
+			<h4>Sorted Search-and-rescue: Single Missing Elements</h4>
+			<p>
+				First, we consider a sequence implemented as a sorted array. Suppose the
+				sorted array is the following:
+			</p>
+			<figure>
+				<div>
+					<p>${A = \lang 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12 \rang}$</p>
+				</div>
+			</figure>
+			<p>
+				This is the sequence of natural numbers. Although we immediately see
+				that the missing element is ${7,}$ the task would be far more difficult
+				if ${A}$ consisted of a thousand elements. The trick to finding the
+				missing element in sorted array is to rely on the sequence's summation
+				formula. In this case, the sum of the natural numbers is given by the
+				following:
+			</p>
+			<figure>
+				<div>
+					<p>
+						${\sum\limits_{k = 1}^{n} k = \dfrac{n(n+1)}{2} \qquad \text{where}
+						~~~~ k, n \in \N}$
+					</p>
+				</div>
+			</figure>
+			<p>
+				Knowing that ${A}$ is the sequence of the natural numbers, we can find
+				the sum of ${A}$ if the missing element was present. We'll call this the
+				<span class="italicsText">expected sum</span>. In this case, the
+				expected sum of the array ${A}$ would be:
+			</p>
+			<figure>
+				<div>
+					<p>${\sum\limits_{i = 1}^{12} A_i = \dfrac{12(12 + 1)}{2} = 78}$</p>
+				</div>
+			</figure>
+			<p>
+				Next, we compute the sum of ${A}$ as is (without the missing element
+				included). We'll call this the
+				<span class="italicsText">current sum</span>. To do so, we use our
+				familiar
+				<a href="#summing_elements"
+					><span class="monoText">sum()</span> operator.</a
+				>
+				In this case, the <span class="italicsText">current sum</span> is
+				${71.}$ Once we obtain the current sum, the missing element is the
+				difference between the <span class="italicsText">expected sum</span> and
+				the <span class="italicsText">current sum</span>:
+			</p>
+			<figure>
+				<div>
+					<p>
+						${\large A_{\text{missing}} = S_{\text{expected}} -
+						S_{\text{current}}}$
+					</p>
+					<ul class="def">
+						<li class="where">
+							${A_{\text{missing}}}$ is the missing element;
+						</li>
+						<li>${S_{\text{expected}}}$ is the expected sum; and</li>
+						<li>${S_{\text{current}}}$ is the current sum.</li>
+					</ul>
+				</div>
+			</figure>
+			<p>Applying this formula:</p>
+			<figure>
+				<div>
+					$$ \begin{aligned} \large A_{\text{missing}} &= S_{\text{expected}} -
+					S_{\text{current}} \\ &= 78 - 71 \\ &= 7 \end{aligned} $$
+				</div>
+			</figure>
+			<p>The implementation might look like:</p>
+
+			<ol class="alg">
+				<li>${f}$ sum_natural_numbers(n):</li>
 				<ol>
-					<li>current_sum += A[i];</li>
+					<li>return ((n * (n + 1)) / 2);</li>
 				</ol>
-				<li>let expected_sum = summation_formula(A.lastElement)</li>
-				<li>let missing_element = expected_sum - current_sum;</li>
-				<li>return missing_element;</li>
+				<li></li>
+				<li>${f}$ findMissing(A, summation_formula()):</li>
+				<ol>
+					<li>let current_sum = 0;</li>
+					<li>for (i = 0; i < A.length - 1; i++):</li>
+					<ol>
+						<li>current_sum += A[i];</li>
+					</ol>
+					<li>let expected_sum = summation_formula(A.lastElement)</li>
+					<li>let missing_element = expected_sum - current_sum;</li>
+					<li>return missing_element;</li>
+				</ol>
+				<li></li>
+				<li>findingMissing(A, sum_natural_numbers());</li>
 			</ol>
-			<li></li>
-			<li>findingMissing(A, sum_natural_numbers());</li>
-		</ol>
+			<p>
+				With the implementation above, we rely on a separate function,
+				<span class="monoText">sum_natural_numbers(n)</span>, to compute the
+				expected sum. There may be situations, however, where we do not know the
+				summation formula for a particular sequence. Moreover, the call to
+				<span class="monoText">sum_natural_numbers(n)</span> requires an
+				additional stack frame, and we may have space complexity concerns
+				(certain summation formulas can get very complex or require large
+				amounts of memory). As such, we consider an alternative implementation.
+			</p>
+			<p>
+				With the alternative implementation, we rely on the indices of each
+				element in the array. For example, suppose we had the following array:
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${A}$</td>
+							<td>6</td>
+							<td>7</td>
+							<td>8</td>
+							<td>9</td>
+							<td>10</td>
+							<td>11</td>
+							<td>13</td>
+							<td>14</td>
+							<td>15</td>
+							<td>16</td>
+							<td>17</td>
+						</tr>
+						<tr>
+							<td>${i}$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+							<td>5</td>
+							<td>6</td>
+							<td>7</td>
+							<td>8</td>
+							<td>9</td>
+							<td>10</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				Notice with each element in the array, the difference between the
+				element and its index is 6, until we get to the element at index ${6.}$
+			</p>
+			<figure>
+				<div>
+					$$ \begin{aligned} 6 - 0 &= 6 \\ 7 - 1 &= 6 \\ 8 - 2 &= 6 \\ 9 - 3 &=
+					6 \\ 10 - 4 &= 6 \\ 11 - 5 &= 6 \\ 13 - 6 &= 7 \end{aligned} $$
+				</div>
+			</figure>
+			<p>
+				The break at ${13 - 6}$ indicates there's a missing element. The missing
+				element is given by ${6 + 6,}$ which is ${12.}$ Implementing this
+				approach:
+			</p>
+			<ol class="alg">
+				<li>${f}$ findMissing(arr A):</li>
+				<ol>
+					<li>let low = A.firstElement;</li>
+					<li>let difference = low - 0;</li>
+					<li>for (let i = 0; i < A.length; i++):</li>
+					<ol>
+						<li>if (A[i] - i != difference):</li>
+						<ol>
+							<li>print "Missing element is: (i + difference)";</li>
+							<li>break</li>
+						</ol>
+						<li>else: print "No missing elements";</li>
+					</ol>
+				</ol>
+			</ol>
+			<p>
+				With both the summation formula approach and the index difference
+				approach, we must iterate through ${n}$ elements. Accordingly, both
+				algorithms have a time complexity of ${O(n)}$ &mdash; linear time.
+			</p>
+		</section>
+
+		<section id="sorted_search_and_rescue_multiple">
+			<h4>Sorted Search-and-rescue: Multiple Missing Elements</h4>
+			<p>
+				Now let's consider finding multiple missing elements. Consider the
+				following array:
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${A}$</td>
+							<td>6</td>
+							<td>7</td>
+							<td>8</td>
+							<td>9</td>
+							<td>11</td>
+							<td>12</td>
+							<td>15</td>
+							<td>16</td>
+							<td>17</td>
+							<td>18</td>
+							<td>19</td>
+						</tr>
+						<tr>
+							<td>${i}$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+							<td>5</td>
+							<td>6</td>
+							<td>7</td>
+							<td>8</td>
+							<td>9</td>
+							<td>10</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				We have several missing elements: ${10, 13, 14.}$ Not only do we have
+				multiple missing elements, we also have consecutive missing elements. To
+				sniff out the missing, we'll use the same index-difference approach.
+				But, we must account for a change in the problem's dynamics. The first
+				occurence of the missing element's scent is at ${i = 4.}$ This tells us
+				that there's a missing element: ${i + d = 4 + 6 = 10.}$
+			</p>
+			<p>
+				Equally important is the fact that this change in difference, from ${6}$
+				to ${7,}$ permeates through the rest of the sequence. Accordingly, we
+				must increment the difference: ${6 + 1 = 7.}$ The difference is now
+				${7.}$ At ${i = 5,}$ the difference is ${12 - 5 = 7,}$ so we can
+				conclude that there is no missing element. Accordingly, if there are no
+				other missing elements, the difference should remain ${7}$ on and after
+				${i = 4.}$ Clearly, however, this isn't the case. At ${i = 6,}$ we have
+				another change in the difference: ${15 - 6 = 9.}$ Because another change
+				occurs (the difference should be ${7}$), we conclude that another
+				element is missing: ${i + d = 6 + 7 = 13.}$ Once more we increment the
+				difference: ${7 + 1 = 8.}$ At ${i = 6,}$ we see that ${15 - 6 = 9,}$
+				which is not ${8.}$ Hence, we have another missing element: ${i + d = 6
+				+ 8 = 14.}$ Once more we increment the difference &mdash; ${8 + 1 = 9.}$
+				At ${i = 6,}$ we have ${15 - 6 = 9.}$ Because this is the correct
+				difference, we can conclude that the element is in the right position.
+				This process yields the missing elements: ${10, 13, 14.}$ Implementing:
+			</p>
+			<figure>
+				<ol class="alg">
+					<li>${f}$ findMissing(array A):</li>
+					<ol>
+						<li>let low = A.firstElement;</li>
+						<li>let difference = low - 0;</li>
+						<li>for (int i = 0; i < A.length; i++):</li>
+						<ol>
+							<li>if (A[i] - i != difference):</li>
+							<ol>
+								<li>while (difference < A[i] - i):</li>
+								<ol>
+									<li>print "Missing element is: (i + difference)";</li>
+									<li>difference++;</li>
+								</ol>
+							</ol>
+							<li>else: print "No missing elements";</li>
+						</ol>
+					</ol>
+				</ol>
+			</figure>
+			<p>
+				Although the algorithm above contains a while-loop inside a for-loop,
+				the time taken to print the missing elements is negligible. The majority
+				of the time taken to print the missing elements lies in the for-loop,
+				where we must iterate through ${n}$ elements. Accordingly, this
+				algorithm takes linear time to execute, ${O(n).}$
+			</p>
+		</section>
+
+		<section id="search_and_rescue_unsorted">
+			<h3>Bitsets: Search-and-rescue for Unsorted Arrays</h3>
+			<p>
+				Let's now consider how to find the missing elements of an unsorted
+				array. Suppose we had the following array:
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${A}$</td>
+							<td>3</td>
+							<td>7</td>
+							<td>4</td>
+							<td>9</td>
+							<td>12</td>
+							<td>6</td>
+							<td>1</td>
+							<td>11</td>
+							<td>2</td>
+							<td>10</td>
+						</tr>
+						<tr>
+							<td>${i}$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+							<td>5</td>
+							<td>6</td>
+							<td>7</td>
+							<td>8</td>
+							<td>9</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				To begin, we start by finding the largest element in the array. We'll
+				call this the <span class="monoText">high</span>. In this case, it's
+				${12.}$ Then, we create a new array of size ${13,}$ where each element
+				in the array is ${0:}$
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${H}$</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+							<td>0</td>
+						</tr>
+						<tr>
+							<td>${j}$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+							<td>5</td>
+							<td>6</td>
+							<td>7</td>
+							<td>8</td>
+							<td>9</td>
+							<td>10</td>
+							<td>11</td>
+							<td>12</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				Now we scan through the array ${A.}$ For each of the elements, we will
+				increment the ${0}$ occupying the corresponding index with the same
+				value in the array ${H.}$ For example, the first element in ${A}$ is
+				${3,}$ so we go to the ${0}$ at ${j = 3,}$ and increment it by ${1.}$
+				This results in the following array:
+			</p>
+			<figure>
+				<table class="array">
+					<tbody>
+						<tr>
+							<td>${H}$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>0</td>
+							<td>1</td>
+							<td>1</td>
+							<td>0</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>${j}$</td>
+							<td>0</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+							<td>5</td>
+							<td>6</td>
+							<td>7</td>
+							<td>8</td>
+							<td>9</td>
+							<td>10</td>
+							<td>11</td>
+							<td>12</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				The remaining zero elements in the array ${H}$ indicate holes in the
+				sequence. The array ${H}$ itself is more generally called a
+				<span class="term">bitset</span>. In this case, we see that the missing
+				elements are ${0,}$ ${5,}$ and ${8.}$ As we can see, this algorithm runs
+				on linear time. All we must do is iterate through each of the elements
+				in ${A,}$ then increment the corresponding element in ${H.}$ Given ${n}$
+				elements, this has a time complexity of ${O(n).}$ The implementation is
+				straightforward:
+			</p>
+			<ol class="alg">
+				<li>${f}$ findMissing(array A):</li>
+				<ol>
+					<li>let high = A.maxElement();</li>
+					<li>let H = new Array[high];</li>
+					<li>for (i = 0; i < H.length; i++):</li>
+					<ol>
+						<li>H[i] = 0;</li>
+					</ol>
+					<li>for (i = 0; i < A.length; i++):</li>
+					<ol>
+						<li>H[A[i]]++;</li>
+					</ol>
+					<li>for (i = 0; i < H.length; i++):</li>
+					<ol>
+						<li>if (H[i] = 0):</li>
+						<ol>
+							<li>print "Missing element is (i)";</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+			<p>
+				As an aside, the array ${H}$ is a very primitive example of a
+				<span class="italicsText">hash table</span>. We will revisit hash tables
+				in a later section, but it's worth mentioning this brief sighting as a
+				precursor.
+			</p>
+			<p>
+				Although the bitset is a clever approach to search-and-rescue, it is not
+				without its costs. The primary concern for bitsets (and with hash tables
+				as we'll see later), is the space complexity. Given an array whose
+				<span class="underlineText">maximum element</span> is ${n,}$ the bitset
+				requires a length of ${n + 1.}$ This means that if the array ${A}$
+				contained the element ${1~000~000,}$ the bitset requires a length of
+				${1~000~001.}$ This is a large amount of memory.
+			</p>
+		</section>
+	</section>
+
+	<section id="uniquifying_algorithms">
+		<h3>Duplicate Handling</h3>
 		<p>
-			With the implementation above, we rely on a separate function,
-			<span class="monoText">sum_natural_numbers(n)</span>, to compute the
-			expected sum. There may be situations, however, where we do not know the
-			summation formula for a particular sequence. Moreover, the call to
-			<span class="monoText">sum_natural_numbers(n)</span> requires an
-			additional stack frame, and we may have space complexity concerns (certain
-			summation formulas can get very complex or require large amounts of
-			memory). As such, we consider an alternative implementation.
+			Often, we want to eliminate, count, or store duplicate elements in a given
+			sequence. When we eliminate duplicates in a given sequence, are performing
+			a process called <span class="term">uniquifying</span> or
+			<span class="term">deduplication</span>. Algorithms dedicated to
+			accomplishing this task are called
+			<span class="term">uniquifiers</span> (or
+			<span class="italicsText">deduplicators</span>). Uniquifiers are part of a
+			broader area called <span class="term">duplicate handling</span>.
+			Duplicate handling itself is particularly important when it comes to
+			databases. For example, ensuring that every user has a unique username or
+			identification number requires duplicate handling.
 		</p>
-		<p>With the alternative implementation, we rely on the indices of each element in the array. For example, suppose we had the following array:</p>
+	</section>
+	<section id="uniquifiers">
+		<h4>Duplicate Spotters: Identifying Duplicates in a Sorted Sequence</h4>
+		<p>
+			The first step towards deduplication is to identify the duplicates.
+			Algorithms that identify duplicates are called
+			<span class="term">duplicate spotters</span>. Say we had the following
+			array:
+		</p>
 		<figure>
 			<table class="array">
 				<tbody>
 					<tr>
 						<td>${A}$</td>
+						<td>3</td>
 						<td>6</td>
-						<td>7</td>
 						<td>8</td>
-						<td>9</td>
+						<td>8</td>
 						<td>10</td>
-						<td>11</td>
 						<td>12</td>
-						<td>13</td>
-						<td>14</td>
 						<td>15</td>
-						<td>16</td>
-						<td>17</td>
+						<td>15</td>
+						<td>15</td>
+						<td>20</td>
 					</tr>
 					<tr>
 						<td>${i}$</td>
@@ -3691,12 +4067,93 @@
 						<td>7</td>
 						<td>8</td>
 						<td>9</td>
-						<td>10</td>
-						<td>11</td>
 					</tr>
 				</tbody>
 			</table>
 		</figure>
+		<p>
+			Immediately, we see the following duplicates: ${8, 8, 15, 15, 15.}$ To
+			find these duplicates, we scan through the list. Here, there are ${10}$
+			elements, but this could be any number of ${n}$ elements. Starting at ${i
+			= 0,}$ we check if the element at that index, ${A_i}$ is the same as the
+			element at ${i = 1,}$ the element ${A_{i+1}.}$ Since ${A_i}$ and
+			${A_{i+1}}$ are not the same, we now check ${A_{i+1}}$ against
+			${A_{i+2}.}$ Again, they aren't the same, so we check ${A_{i+2}}$ against
+			${A_{i+3}.}$ Here we encounter our first duplicate, so we record the fact
+			that the element at ${i = 2}$ is duplicated.
+		</p>
+		<p>
+			We continue. Check ${A_{i+3}}$ against ${A_{i+4.}}$ No duplicate. Check
+			${A_{i+4}}$ against ${A_{i+5}.}$ No duplicates. Check ${A_{i+5}}$ against
+			${A_{i+6.}}$ Again no duplicates. Check ${A_{i+6}}$ against ${A_{i+7.}}$
+			Now we have a duplicate, so we record the fact that the element at ${i=6}$
+			is duplicated. Checking ${A_{i+7}}$ against ${A_{i+8,}}$ we have the same
+			duplicate. Now we've arrived at a peculiar situation. Do we record the
+			duplicate twice? No. We just want to know what the duplicate elements are.
+			It would be confusing and unnecessary to duplicate the duplicates.
+		</p>
+		<p>
+			One solution to this problem is to initialize a
+			<span class="term">walker</span> &mdash; a variable that changes its value
+			based on the current duplicate. The walker changes its value only if the
+			duplicate changes. And only when the walker changes do we print its
+			current value. The walker is initially zero. When we encounter the first
+			duplicate, ${8,}$ the walker changes and prints its value, ${8.}$ When we
+			encounter the second duplicate, ${15,}$ the walker changes and prints its
+			value, ${15.}$ Since the second duplicate at ${i = 8}$ the same duplicate,
+			the walker doesn't change (and by contrapositive, doesn't print).
+			Implementing this approach, we call the walker
+			<span class="monoText">lastDuplicate</span>:
+		</p>
+		<figure>
+			<ol class="alg">
+				<li>${f}$ findDuplicates(array A):</li>
+				<ol>
+					<li>let last_duplicate = 0;</li>
+					<li>for (let i = 0; i < A.length; i++):</li>
+					<ol>
+						<li>if ((A[i] = A[i+1]) && (A[i] != last_duplicate)):</li>
+						<ol>
+							<li>print "Duplicate: |A[i]|";</li>
+							<li>last_duplicate = A[i];</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</figure>
+		<p>
+			With this implementation, we're iterating over each element in the array
+			${A,}$ performing a comparison. This means that given ${n}$ elements, this
+			algorithm takes ${n}$ operations to execute. As such, the running time
+			complexity is linear &mdash; ${O(n).}$
+		</p>
+		<p>
+			<span class="topic">Useful Applications.</span> There are several useful
+			applications for identifying duplicates:
+		</p>
+		<ul>
+			<li>
+				<b>Ensuring alternating values.</b> If we expect a given sequence to be
+				${\lang 1, 0, 1, 0, 1, \ldots \rang,}$ we can check the sequence follows
+				the pattern by identifying any subsequence ${0,0}$ or ${1,1.}$ One way
+				to do so is by using a duplicate spotter.
+			</li>
+		</ul>
+	</section>
+
+	<section id="counting_duplicates">
+		<h4>
+			Duplicate Counters: Counting the Number of Duplicates in a Sorted Sequence
+		</h4>
+		<p>
+			Determining the number of duplicates is critical for duplicate handling.
+			Perhaps we only want to remove a certain number of duplicates. Perhaps our
+			program has a particular threshold for the number of duplicates. A
+			nightclub, for instance, might want to keep track of the ratio of female
+			to male. After a certain amount of duplicates of the string property
+			<span class="monoText">"male"</span>, no further admissions are permitted
+			for data with that property.
+		</p>
 	</section>
 </section>
 

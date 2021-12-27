@@ -239,6 +239,10 @@ def phys_vectors(request):
 def phys_1dmotion(request):
 		return render(request, "numerm/phys/phys_1dmotion.html")
 
+# Economics
+def econ_preface(request):
+		return render(request, "numerm/econ/econ_preface.html")
+
 
 
 

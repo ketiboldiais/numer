@@ -16,9 +16,6 @@ def arch_logic(request):
 def py_preface(request):
 	return render(request, "numerc/py/py_preface.html")
 
-def py_computability(request):
-	return render(request, "numerc/py/py_computability.html")
-
 def py_programs(request):
 	return render(request, "numerc/py/py_programs.html")
 
@@ -28,38 +25,14 @@ def py_libraryImport(request):
 def py_variables(request):
 	return render(request, "numerc/py/py_variables.html")
 
-def py_branchingPrograms(request):
-	return render(request, "numerc/py/py_branchingPrograms.html")
-
-def py_loops(request):
-	return render(request, "numerc/py/py_loops.html")
-
-def py_bisectionSearch(request):
-	return render(request, "numerc/py/py_bisectionSearch.html")
-
 def py_floatsFractions(request):
 	return render(request, "numerc/py/py_floatsFractions.html")
-
-def py_newtonRaphson(request):
-	return render(request, "numerc/py/py_newtonRaphson.html")
 
 def py_decomposition(request):
 	return render(request, "numerc/py/py_decomposition.html")
 
-def py_functions(request):
-	return render(request, "numerc/py/py_functions.html")
-
 def py_controlFlow(request):
 	return render(request, "numerc/py/py_controlFlow.html")
-
-def py_keywordArguments(request):
-	return render(request, "numerc/py/py_keywordArguments.html")
-
-def py_specifications(request):
-	return render(request, "numerc/py/py_specifications.html")
-
-def py_recursion(request):
-	return render(request, "numerc/py/py_recursion.html")
 
 def py_structuredTypes(request):
 	return render(request, "numerc/py/py_structuredTypes.html")

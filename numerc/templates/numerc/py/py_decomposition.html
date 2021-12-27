@@ -80,4 +80,2588 @@
 		decompose with <span class="italicsText">classes</span>.
 	</p>
 </section>
+
+<section id="python_functions">
+	<h4>Python Functions</h4>
+	<p>
+		Functions are reusable chunks of code. Importantly, they do not run unless
+		we explicitly tell Python to run them. When we do so, we
+		<span class="boldItalics">call</span> or
+		<span class="boldItalics">invoke</span> the function. Functions have the
+		following characteristics:
+	</p>
+	<ul>
+		<li>a <span class="italicsText">name</span>;</li>
+		<li><span class="italicsText">parameters</span>;</li>
+		<li>a <span class="italicsText">docstring</span>; and</li>
+		<li>a <span class="italicsText">body.</span></li>
+	</ul>
+	<p>
+		<span class="topic">Name</span>. It goes without saying that functions must
+		have names. How else would we refer to them? Like variable names, function
+		names should be descriptive and concise. By convention, function names
+		should be in lowercase, with words separated by underscores. When we
+		encounter classes, the convention is camelCase.
+	</p>
+	<p>
+		<span class="topic">Parameters</span>. Because functions are pieces of code,
+		they usually take inputs. <span class="italicsText">Parameters</span> are
+		what specify what those inputs are, and the inputs actually passed into the
+		function are called <span class="italicsText">arguments</span>. Note, a
+		function does not always <span class="italicsText">need</span> to take
+		arguments. They can have 0 or more parameters.
+	</p>
+	<p>
+		<span class="topic">docstring</span>. Every function must have a
+		<span class="italicsText">docstring</span> &mdash; documentation that
+		informs the reader what the function does.
+	</p>
+	<p>
+		<span class="topic">Body</span>. Every function has a
+		<span class="italicsText">body</span> &mdash; the actual chunk of code we
+		want to execute when we use the function.
+	</p>
+	<p>With these definitions in mind, let's see an example:</p>
+	<pre class="language-python"><code>
+		# here we define a function
+		def is_even(num):
+			'''
+
+			Input: num, a positive integer
+			Output: Returns True if num is even, otherwise False
+
+			'''
+			print("hi")
+			return num%2 == 0
+		
+		# here we call the function
+		is_even(3)
+	</code></pre>
+	<p>There are several pieces in the example above:</p>
+	<ul>
+		<li>
+			<span class="boldText monoText">def</span> This is a keyword in Python. It
+			tells Python that we are about to define a function. Following
+			<span class="monoText">def</span>, we have the function's
+			<span class="italicsText">name</span> &mdash;
+			<span class="monoText">is_even</span>.
+		</li>
+		<li>
+			<span class="topic"
+				><span class="italicsText">name</span>.<span class="monoText"
+					>()</span
+				></span
+			>
+			Following the function's name, there are parentheses. These parentheses
+			are where we indicate the function's
+			<span class="italicsText">parameters</span>. We give those parameters a
+			name. In this case, the name <span class="monoText">num</span>.
+		</li>
+		<li>
+			<span class="boldText monoText">'''</span> Immediately below this
+			definition, we have a comment, in triple quotes (we can also use triple
+			double quotes). This is a <span class="boldItalics">docstring</span>. This
+			specifies what the function does. Traditionally, a docstring is written
+			with two states: (1) what are the function's inputs, and (2) what are the
+			function's outputs.
+		</li>
+		<li>
+			<span class="topic">Body</span>. Immediately below the docstring is the
+			<span class="boldItalics">body</span>. This the chunk of code we want to
+			execute when the function is called. Inside the body, we have the keyword
+			<span class="monoText boldText">return</span>. This keyword indicates the
+			output of the function; it tells Python, "Output this value."
+		</li>
+		<li>
+			<span class="topic">Invokation</span>. The very last line &mdash;
+			<span class="monoText">is_even(3)</span> &mdash; is where we call, or
+			invoke, the function.
+		</li>
+	</ul>
+	<p>
+		As an aside, if we want an arbitrary number of parameters, we can write
+		<span class="monoText">*vals</span>. For example:
+	</p>
+	<pre class="language-python"><code>
+		def foo(*vals):
+			return 1
+	</code></pre>
+
+	<!-- Anonymous Functions -->
+	<p>
+		<span class="topic">Anonymous Functions.</span> The functions above are an
+		example of <span class="term">named functions</span>. We can also have
+		<span class="term">anonymous functions</span> &mdash; functions that do not
+		have names. For those familiar with lambda calculus, this is a particularly
+		useful feature when we want to think about functions in lambda terms:
+	</p>
+	<pre class="language-python"><code>
+			lambda a, x, b: a * x + b
+		</code></pre>
+	<p>
+		The function above is the same as the following
+		<span class="monoText">def</span>, the difference being a name is given:
+	</p>
+	<pre class="language-python"><code>
+			def saxb (a, x, b):
+				return a * x + b
+		</code></pre>
+
+	<!-- Pure v. Impure Functions -->
+	<p>
+		<span class="topic">Pure v. Impure Functions.</span> Functions fall into two
+		categories: (1) Pure and (2) Impure.
+		<span class="term">Pure functions</span> are functions whose output depends
+		only its input. In other words, a pure function is one that takes one or
+		more inputs, and returns one, and only one, output. For example, this is a
+		pure function:
+	</p>
+	<pre class="language-python"><code>
+			def increment(a):
+				return a + 1
+		</code></pre>
+	<p>
+		In contrast, <span class="term">impure functions</span> are functions with
+		<span class="italicsText">side-effects</span> &mdash; additional outputs
+		unrelated to the actual inputs. For example:
+	</p>
+	<pre class="language-python"><code>
+			print(-5)
+		</code></pre>
+	<p>
+		The built-in function <span class="monoText">print()</span> is a special
+		function in Python. It outputs the special value
+		<span class="monoText">None</span>,
+		<span class="underlineText">and</span> it displays to the console the value
+		passed in as an argument. By allowing impure functions, Python is not a
+		member of the
+		<span class="italicsText">pure functional language</span> family (e.g.,
+		Haskell, Curry, Purescript, Mercury, and Miranda).
+	</p>
+	<p>
+		Side effects are most often used in the context of changing the value of
+		some variable. For example, consider the random number generator from the
+		<span class="monoText">random</span> module:
+	</p>
+	<pre class="language-python"><code>
+			from random import randint
+			randint(0, 100) # random number from 0 to 100
+			randint(0, 100) # a different random number from 0 to 100
+		</code></pre>
+	<p>
+		Because there are different outputs from the function invocation above, we
+		can determine that there is some variable out there being changed every time
+		we call <span class="monoText">randint</span>. As a matter of practice, the
+		use of side effects should always be treated with great suspicion. This is
+		because they have the potential for unpredictability.
+	</p>
+
+	<!-- Function Evaluation Model -->
+	<p>
+		<span class="topic">Function Evaluation Model.</span> How are function calls
+		evaluated? First, suppose we had the following function call:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>funcName(${o_1}$, ${o_2}$)</li>
+		</ul>
+	</figure>
+	<p>
+		In the call above, ${o_1}$ and ${o_2}$ are arguments passed into the
+		argument, the <span class="italicsText">operands</span>, and
+		<span class="monoText">funcName</span> is the
+		<span class="italicsText">operator</span>. These are subexpressions to the
+		larger expression, <span class="monoText">funcName(${o_1,}$ ${o_2}$)</span>.
+		Each of <span class="monoText">funcName</span>, ${o_1,}$ and ${o_2}$ are
+		expressions. So, to evaluate the function call, Python evaluates each
+		subexpression.
+	</p>
+	<p>
+		First, it evaluates <span class="monoText">funcName</span>, and returns some
+		value ${f}$ (a function). Next, it evaluates ${o_1,}$ and returns some value
+		${v_1.}$ Then if evaluates ${o_2,}$ and returns some value ${v_2.}$ With
+		each subexpression evaluated, Python calls the function ${f,}$ the value
+		evaluated from <span class="monoText">funcName</span>, with the arguments
+		${v_1}$ and ${v_2.}$ Here is an explicit example. In Python,
+		<span class="monoText">0x</span> represents a number in base-16, and
+		<span class="monoText">0o10</span> represents a number in base-8.
+	</p>
+	<pre class="language-pseudo"><code style="font-size: 0.65rem">
+			mul(add (2,mul(0x10,0o10)), add(0x3,5))
+			func mul(x,y) (add (2, mul(0x10,0o10)), add(0x3,5))
+			func mul(x,y) (func add(x,y) (2, mul(0x10,0o10)), add(0x3,5))
+			func mul(x,y) (func add(x,y) (2, func mul(x,y) (0x10,0o10)), add(0x3,5))
+			func mul(x,y) (func add(x,y) (2, func mul(x,y) (16,0o10)), add(0x3,5))
+			func mul(x,y) (func add(x,y) (2, func mul(x,y)(16,8)), add(0x3,5))
+			func mul(x,y) (func add(x,y) (2, 128), add(0x3,5))
+			func mul(x,y) (func add(x,y) (2, 128), func add(x,y)(0x3,5))
+			func mul(x,y) (func add(x,y) (2, 128), func add(x,y)(3,5))
+			func mul(x,y) (func add(x,y) (2, 128), func add(x,y)(3,5))
+			func mul(x,y) (func add(x,y) (2, 128), 8)
+			func mul(x,y) (130, 8)
+			1040
+		</code></pre>
+	<p>
+		Now, what happens when there are side effects? Suppose we called
+		<span class="monoText">print(print(1), print(2)):</span>
+	</p>
+	<pre class="language-pseudo"><code>
+			print(print(1), print(2))
+			func print(*vals) (print(1), print(2))
+			func print(*vals) (print(*vals) (1), print(2))
+			func print(*vals) (None, print(2)) <span class="italicsText">and print '1'</span>
+			func print(*vals) (None, print(*vals) (2)) 
+			func print(*vals) (None, None) <span class="italicsText">and print '2'</span>
+			None <span class="italicsText">and print 'None None'</span>
+		</code></pre>
+	<p>
+		Literals are simple to evaluate. The value 2 evaluates to 2 (a helpful way
+		to understand this point is to think of the distinction between the numeral
+		2 and the number 2; the Hindu-Arabic numeral 2 is just one way to represent
+		the number 2&mdash;the Chinese numeral is ニ).
+	</p>
+	<p>
+		But what about names? How are these evaluated? There are two ways, (1)
+		Through substitution and (2) through the environment. In Python, there are
+		several ways to define names: <span class="term">assignment</span>,
+		<span class="term">function definitions</span>, and
+		<span class="term">parameter passing</span>.
+	</p>
+	<p>
+		<span class="topic">Assignment.</span> When we write
+		<span class="monoText">x = 2</span>, we
+		<span class="italicsText">assign</span> the literal 2 to the variable
+		<span class="monoText">x.</span> By assigning a literal to a variable,
+		subsequent usage of the variable employs the assigned value. For example:
+	</p>
+	<pre class="language-python"><code>
+			x = 3
+			y = x * 2
+			z = y ** x
+		</code></pre>
+	<p>These expressions are evaluated as such:</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>x = 3</li>
+			<li>y = x * 2 ${\implies}$ y = 3 * 2 ${\implies }$ y = 6</li>
+			<li>
+				z = y ** x ${\implies}$ z = 6 ** x ${\implies}$ z = 6 ** 3 ${\implies}$
+				z = 216
+			</li>
+		</ul>
+	</figure>
+	<p>
+		<span class="topic">Function Definitions.</span> To evaluate
+		<span class="italicsText">function names</span>, we use the function
+		definition approach. Suppose a function <span class="monoText">f</span> is
+		defined as such:
+	</p>
+	<pre class="language-python"><code>
+			def f(x,y):
+				return (x * y) ** x
+		</code></pre>
+	<p>Now suppose we called <span class="monoText">f(3,2)</span>:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+				f(3,2)
+				func f(x,y): return (x * y) ** x
+				func f(x,y): return (x * y) ** x (3,2)
+				return (3 * 2) ** 3
+				return 6 ** 3
+				return 216
+				216
+			</code></pre>
+	</figure>
+	<p>
+		We can think of the parameter substitution as if it were
+		<span class="italicsText">simultaneous assignment</span>. We assigned to
+		<span class="monoText">x</span> the literal <span class="monoText">3</span>,
+		and to <span class="monoText">y</span> the literal
+		<span class="monoText">2.</span> Now consider the following definition:
+	</p>
+	<pre class="language-python"><code>
+			def incr(n):
+				def f(x):
+					return n + x
+				return f
+
+			incr(5)(6)
+		</code></pre>
+	<p>
+		How does <span class="monoText">incr(5)(6)</span> evaluate? The
+		<span class="monoText">incr</span> functions returns a function,
+		<span class="monoText">f</span>, rather than a number. We then call this
+		function on <span class="monoText">6</span>. This is an example of a
+		<span class="term">nested function</span>.
+	</p>
+	<p>
+		To evaluate a nested function, we first evaluate the outermost function. In
+		thise case, <span class="monoText">incr</span>:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+				incr(5)(6)
+				(func incr(n) : ( (def f(x) : return n + x) return f)) (5)(6)
+				(func f(x) : return 5 + x) (6)
+				return 5 + 6
+				return 11
+				11
+			</code></pre>
+	</figure>
+	<p>What if instead we had the following:</p>
+	<pre class="language-python"><code>
+			def f(x):
+				def g(x):
+					return x
+				return g
+			
+			f(5)(6)
+		</code></pre>
+	<p>
+		To evaluate <span class="monoText">f(5)(6)</span>, the arguments are used
+		respectively.
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+				f(5)(6)
+				(func f(x) : ( (def g(x) : return x) return g) (5)(6)
+				(func g(x) : return x) (6)
+				return 6
+				6
+			</code></pre>
+	</figure>
+	<p>
+		Why does this occur? Because the argument assigned to the
+		<span class="monoText">x</span> in
+		<span class="monoText">def f(x)</span> substitutes only thoses
+		<span class="monoText">x</span>s inside the body of
+		<span class="monoText">f</span>. It does not substitute the
+		<span class="monoText">x</span> inside the body of
+		<span class="monoText">def g(x)</span>, because the
+		<span class="monoText">x</span> inside the
+		<span class="monoText">def g(x)</span> is bound in the head of
+		<span class="monoText">g(x)</span>. Because the
+		<span class="monoText">x</span> inside
+		<span class="monoText">def g(x)</span> is bound to the head of
+		<span class="monoText">g</span>, the argument
+		<span class="monoText">5</span> does not substitute any
+		<span class="monoText">x</span> inside <span class="monoText">g</span>.
+	</p>
+
+	<p>
+		<span class="topic">Environment.</span> The problem with substitution,
+		however, is that it does not explain every situation. For example, consider
+		the following:
+	</p>
+	<pre class="language-python"><code>
+			x = 4
+			x = 9
+			print(x)
+		</code></pre>
+	<pre class="language-bash"><code>
+			9
+		</code></pre>
+	<p>However, if we instead wrote:</p>
+	<pre class="language-python"><code>
+			x = 4
+			print(x)
+			x = 9
+		</code></pre>
+	<pre class="language-bash"><code>
+			4
+		</code></pre>
+	<p>
+		Substitution doesn't clearly address this situation. Is it 4 or is it 9? It
+		depends on the <span class="term">environment</span>. In Python, an
+		<span class="italicsText">environment</span> is a mapping from names to
+		values. We say that <span class="italicsText">name</span> is
+		<span class="italicsText">bound to</span> a
+		<span class="italicsText">value</span> in its environment. The simplest
+		environment is the <span class="term">global environment frame</span>. For
+		example, consider the following code:
+	</p>
+	<pre class="language-python"><code>
+			from math import pi
+
+			radius = 10
+
+			def circumference(r):
+				return 2*pi*abs(r)
+
+			print(circumference(radius))
+		</code></pre>
+	<pre class="language-bash"><code>
+			62.83185307179586
+		</code></pre>
+	<p>
+		The name <span class="monoText">radius</span> is bound to the value 10 in
+		the <span class="italicsText">global environment frame</span>. The same goes
+		for the function name <span class="italicsText">circumference</span>. The
+		function <span class="monoText">circumference</span> itself has an
+		environment, the
+		<span class="monoText">func circumference(r)</span> environment. There, we
+		have several values. The name <span class="monoText">pi</span> is bound to
+		<span class="monoText">3.1415926</span> in the
+		<span class="monoText">import</span> frame (which comes from some frame in
+		the <span class="monoText">math</span> module). The name
+		<span class="monoText">abs</span> is predefined.
+	</p>
+	<p>
+		The main point: Every expression in Python is evaluated in an environment
+		frame, which supplies the meanings of any names inside the expression. If
+		the expression contains subexpressions, the interpreter first evaluates the
+		subexpressions using the same environment as the expression that contains
+		them. Once the subexpressions are evaluated, calls to user-defined functions
+		must evaluate the expressions and statements from the definitions of those
+		functions. To reinforce these ideas, compare the following:
+	</p>
+	<div class="compare">
+		<div>
+			<pre class="language-python"><code>
+					x = 10
+					def f(x):
+						return x + 1
+					print( f(1) )
+				</code></pre>
+			<pre class="language-bash"><code>
+					2
+				</code></pre>
+		</div>
+
+		<div>
+			<pre class="language-python"><code>
+					x = 10
+					def f(y):
+						return x + y
+					print( f(1) )
+				</code></pre>
+			<pre class="language-bash"><code>
+					11
+				</code></pre>
+		</div>
+
+		<div>
+			<pre class="language-python"><code>
+					x = 10
+					def f(y):
+						x = 3
+						return x + y
+					print( f(1) )
+				</code></pre>
+			<pre class="language-bash"><code>
+					4
+				</code></pre>
+		</div>
+	</div>
+	<p>
+		All environments in Python fall into one of two categories: (1) the
+		<span class="term">global environment frame</span> (of which there is only
+		one member, the global environment) and (2) a
+		<span class="term">local environment frame</span> chained to a
+		<span class="term">parent environment frame</span>. All environment frames
+		lead to the global frame.
+	</p>
+	<p>
+		For example, in the left-most example above, there are two
+		<span class="monoText">x</span>s. There is an
+		<span class="monoText">x</span> bound to the global environment frame,
+		<span class="monoText">x = 10</span>, and an
+		<span class="monoText">x</span> bound to a value in the local environment
+		frame, <span class="monoText">f</span>. When we pass the
+		<span class="monoText">1</span> as an argument, that value is bound to the
+		<span class="monoText">x</span> in the local environment frame, and is used
+		in evaluating <span class="monoText">x + 1</span>. On the other hand, in the
+		middle example, the <span class="monoText">x</span> is bound to the value
+		<span class="monoText">10</span> in the global environment frame, so
+		<span class="monoText">10</span> is used in evaluating
+		<span class="monoText">x + y</span>. These two ideas are reinforced in the
+		rightmost example. The value of a name in an environment is the vale it is
+		bound to in the first frame &mdash; in this case
+		<span class="monoText">f</span> &mdash; and if there is none, then the value
+		bound in the parent frame &mdash; in this case, the global environment
+		frame. Now, the <span class="monoText">f</span> frame can itself containing
+		rebindings:
+	</p>
+	<pre class="language-python"><code>
+			x = 10
+			def f(y):
+				y = 2
+				x = 3
+				return x + y
+			print( f(1) )
+		</code></pre>
+	<pre class="language-bash"><code>
+			5
+		</code></pre>
+	<p>
+		In this case, <span class="monoText">y</span> was previously bound to
+		<span class="monoText">1</span> in the
+		<span class="monoText">f</span> frame, but once we get into the body,
+		<span class="monoText">y</span> is then bound to
+		<span class="monoText">2</span>. All of this occurs in the
+		<span class="monoText">f</span> frame. This raises yet another point: a
+		function frame, here the frame <span class="monoText">f</span>, is not
+		created until we actually <span class="italicsText">call</span> the
+		function. In the example above, the function definition is an object that
+		exists in the global frame. This speaks to a broader notion: There is a
+		distinction between a function's definition and the function's invocation.
+	</p>
+	<p>
+		The concept of environment frames explains why we saw the earlier output.
+		When we write <span class="monoText">x = 4</span> then subsequently write
+		<span class="monoText">x = 8</span>, we have created a new binding for the
+		name <span class="monoText">x</span> in the current evaluation frame.
+	</p>
+	<div class="compare">
+		<div>
+			<p>
+				<span class="exh">Exercise.</span> What does the code below output to
+				the console:
+			</p>
+			<pre class="language-python"><code>
+					def f(x):
+						return x
+					print(f(f)(f(1)))
+				</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>We can envision the evaluation as the following:</p>
+				<pre class="language-pseudo"><code>
+						print( f(f)(f(1)) )
+						func print(*vals) ( f(f)(f(1)) )
+						( f(f)(f(1)) )
+						( func f(x) (f)(f(1)) )
+						( func f( return x ) (f)(f(1)) )
+						( func f( return f ) (f)(f(1)) )
+						( func f(x) (f(1)) )
+						( func f( return x ) (f(1)) )
+						( func f( return f ) (f(1)) )
+						( func f(x) (f(1)) )
+						( func f( return x ) (f(1)) )
+						( func f( return f(1) ) (f(1)) )
+						( func f(x) (1) )
+						( func f( return x ) (1) )
+						( return 1 )
+						1
+					</code></pre>
+			</details>
+
+			<p>
+				<span class="exh">Exercise.</span> How does the code below evaluate:
+			</p>
+			<pre class="language-python"><code>
+					def incr(n):
+						def f(x):
+							return n + x
+						return f
+
+					incr(5)(6)
+				</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-pseudo"><code>
+						incr(6)(5)
+						func incr(n) (6)(5)
+						func incr(n = 6; return f) (5)
+						n = 6; func f(x) (5)
+						n = 6; func f(return n + x) (5)
+						n = 6; x = 5; return n + x 
+						return 6 + 5 
+						11
+					</code></pre>
+			</details>
+		</div>
+
+		<div>
+			<p>
+				<span class="exh">Exercise.</span> How does the code below evaluate:
+			</p>
+			<pre class="language-python"><code>
+					def incr(n):
+						def f(x):
+							return n + x
+						return f
+					g = incr(5)
+					print( g(6) )
+				</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-pseudo"><code>
+						g(6)
+						func incr(n) (5) (6)
+						incr(5)(6)
+						n = 5; return f (6) 
+						n = 5; func f(x) (6)
+						n = 5; x = 6; return n + x
+						return 5 + 6
+						return 11
+						11
+					</code></pre>
+			</details>
+		</div>
+	</div>
+</section>
+
+<section id="exercises-functions">
+	<p>
+		<span class="exh">Exercise</span>. For the following functions, what is the
+		return type?
+	</p>
+	<ol>
+		<li>Function:</li>
+		<pre class="language-python"><code>
+				def a(x):
+					'''
+					x: int or float
+					'''
+					return x + 1
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				This function adds a data object of type
+				<span class="monoText">int</span> or
+				<span class="monoText">float</span> to the
+				<span class="monoText">int 1</span>. Recall that in Python, adding two
+				values of type <span class="monoText">int</span> will always result in
+				an <span class="monoText">int</span>, but if just one of the addends is
+				a <span class="monoText">float</span>, then the result is a
+				<span class="monoText">float</span>. Thus, this function returns outputs
+				of either type <span class="monoText">int</span> or type
+				<span class="monoText">float</span>.
+			</p>
+		</details>
+		<li>Function:</li>
+		<pre class="language-python"><code>
+				def a(x):
+					'''
+					x: int or float.
+					'''
+					return x + 1.0
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				The input here is either an <span class="monoText">int</span> or
+				<span class="monoText">float</span>. The computation is an
+				<span class="monoText">int</span> or
+				<span class="monoText">float</span> added by the float
+				<span class="monoText">1.0</span>. Because we're adding
+				<span class="monoText">x</span> to a float, function returns an output
+				of type <span class="monoText">float</span>.
+			</p>
+		</details>
+		<li>Function:</li>
+		<pre class="language-python"><code>
+				def c(x, y):
+					'''
+					x: int or float
+					y: int or float
+					'''
+					return x + y
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				Like the first function, this function's output type will vary. If both
+				<span class="monoText">x</span> and <span class="monoText">y</span> are
+				bound to data objects of type <span class="monoText">int</span>, then
+				the result is an <span class="monoText">int</span>. If
+				<span class="monoText">x</span> is bound to a
+				<span class="monoText">float</span> or
+				<span class="monoText">y</span> is bound to a
+				<span class="monoText">float</span>, then the function returns a data
+				object of type <span class="monoText">float</span>.
+			</p>
+		</details>
+		<li>Function:</li>
+		<pre class="language-python"><code>
+				def d(x, y):
+					'''
+					x: Can be int or float
+					y: Can be int or float
+					'''
+					return x > y
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				This function takes either an <span class="monoText">int</span> or a
+				<span class="monoText">float</span>, and compares the values. To do so,
+				the comparison operator <span class="monoText">">"</span> is used. This
+				operator always returns either <span class="monoText">True</span> or
+				<span class="monoText">False</span>. Thus, this function returns an
+				output of type <span class="monoText">boolean</span>.
+			</p>
+		</details>
+		<li>Function:</li>
+		<pre class="language-python"><code>
+				def e(x, y, z):
+					'''
+					x: Can be int or float
+					y: Can be int or float
+					z: Can be int or float
+					'''
+					return x >= y and x <= z
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				Like the previous example, this function uses comparison operators, but
+				it also uses the boolean operator <span class="monoText">and</span>.
+				Either or, the function returns an output of type
+				<span class="monoText">boolean</span>.
+			</p>
+		</details>
+		<li>Function:</li>
+		<pre class="language-python"><code>
+				def f(x, y):
+					'''
+					x: int or float
+					y: int or float
+					'''
+					x + y - 2
+			</code></pre>
+		<details class="answer">
+			<summary>Answer</summary>
+			<p>
+				This function does not have any output. There is no
+				<span class="monoText">return</span> statement. Accordingly, we can say
+				that the function's output type is
+				<span class="monoText">NoneType</span>.
+			</p>
+			<p>
+				If the function included a
+				<span class="monoText">return x + y - 2</span>: The function takes
+				<span class="monoText">int</span> or
+				<span class="monoText">float</span> inputs, then adds them, and
+				subtracts by the <span class="monoText">int 2</span>. Recall that with
+				subtraction, if both the subtrahend (the number being subtracted from)
+				and the minuend (the number the subtrahend is subtracted from) are
+				<span class="monoText">int</span>s, then the difference is an
+				<span class="monoText">int</span>. If either the subtrahend or the
+				minuend are <span class="monoText">float</span>s, then the difference is
+				a float. Accordingly, this function returns a data object of type
+				<span class="monoText">int</span> or
+				<span class="monoText">float</span>.
+			</p>
+		</details>
+	</ol>
+
+	<p>
+		<span class="exh">Exercise</span>. Write a function that takes one number as
+		input and returns the square of that number.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+				def square(x):
+					'''
+					x: int or float
+					output: square of int or float
+					'''
+					return x**2
+			</code></pre>
+	</details>
+
+	<p>
+		<span class="exh">Exercise</span>. Write a function,
+		<span class="monoText">evalQuadratic(a, b, c, x)</span>, that returns the
+		value of the quadratic ${f(x) = ax^2 + bx + c.}$
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+				'''
+				Given f(x) = ax^2 + bx + c, function outputs f(x)
+				a, b, c: Values for the coefficients of the quadratic equation
+				x: value at which to evaluate the quadratic
+				'''
+				return (a*(x**2) + (b*x) + c)
+			</code></pre>
+	</details>
+
+	<p><span class="exh">Exercise</span>. Consider the following code:</p>
+	<pre class="language-python"><code>
+		def a(x):
+			'''
+			x: int or float
+			'''
+			return x + 1
+
+		def b(x):
+			'''
+			x: int or float
+			'''
+			return x + 1.0
+
+		def c(x, y):
+			'''
+			x: int or float
+			y: int or float
+			'''
+			return x + y
+
+		def d(x, y):
+			'''
+			x: Can be of any type
+			y: Can be of any type
+			'''
+			return x > y
+
+		def e(x, y, z):
+			'''
+			x: Can be of any type
+			y: Can be of any type
+			z: Can be of any type
+			'''
+			return x >= y and x <= z
+
+		def f(x, y):
+			'''
+			x: int or float
+			y: int or float
+			'''
+			x + y - y
+	</code></pre>
+	<p>
+		For each of the function calls below, what is (a) the returned data object
+		and (b) what is its type?
+	</p>
+	<ol>
+		<li><span class="monoText">a(6)</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Here, we pass as an argument the <span class="monoText">int 6</span>.
+				Thus, <span class="monoText">a(x)</span> returns
+				<span class="monoText">x + 1</span>: <span class="monoText">7</span>.
+				This an <span class="monoText">int</span> added to an
+				<span class="monoText">int</span>, so the returned data object is of
+				type <span class="monoText">int</span>.
+			</p>
+		</details>
+		<li><span class="monoText">a(-5.3)</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				We pass the float <span class="monoText">-5.3</span> as an argument into
+				<span class="monoText">b(x)</span>. Thus,
+				<span class="monoText">b(x)</span> computes
+				<span class="monoText">x + 1.0</span>, which is
+				<span class="monoText">-4.3</span>. This is a
+				<span class="monoText">float</span> added to a
+				<span class="monoText">float</span>, so the returned data object is of
+				type <span class="monoText">float</span>.
+			</p>
+		</details>
+		<li><span class="monoText">a(a(a(6)))</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Here, we have nested calls. <span class="monoText">a()</span> takes as
+				an argument <span class="monoText">a()</span>, which takes as an
+				argument <span class="monoText">a(6)</span>. At
+				<span class="monoText">a(6)</span>, the returned data object is an
+				<span class="monoText">int</span> &mdash; the value
+				<span class="monoText">7</span>. That gets passed as an argument to the
+				second <span class="monoText">a()</span>, which returns the
+				<span class="monoText">int 8</span>. That then gets passed as an
+				argument into the outermost <span class="monoText">a()</span>, which
+				returns the <span class="monoText">int 9</span>.
+			</p>
+		</details>
+		<li><span class="monoText">c(a(1), b(1))</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				We have two arguments passed to this function. The first argument is
+				<span class="monoText">a(1)</span>, which returns
+				<span class="monoText">int 2</span>. The second argument is
+				<span class="monoText">b(x)</span>, which returns the
+				<span class="monoText">float 2.0</span>. Both those return values go
+				into the function <span class="monoText">c(x, y)</span>, which returns
+				<span class="monoText">x + y</span>. Thus, the returned data object is
+				<span class="monoText">4.0</span>, of type
+				<span class="monoText">float</span>.
+			</p>
+		</details>
+		<li><span class="monoText">d('apple', 11.1)</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Again, two arguments are passed to a function. Here, it is the string
+				<span class="monoText">'apple'</span> and the
+				<span class="monoText">float 11.1</span>. Inside
+				<span class="monoText">d(x, y)</span>, we are comparing values. But, in
+				this case, we're comparing string type data and numeric type data. This
+				will not do &mdash; an error is returned.
+			</p>
+		</details>
+		<li><span class="monoText">e(a(3), b(4), c(3, 4))</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Three arguments are passed into this function.
+				<span class="monoText">a(3)</span> will return the
+				<span class="monoText">int 4</span>;
+				<span class="monoText">b(4)</span> will return the
+				<span class="monoText">float 5.0</span>; and
+				<span class="monoText">c(3, 4)</span> will returns the
+				<span class="monoText">int 7</span>. Those arguments are all passed into
+				<span class="monoText">e(x, y, z)</span>, which compares the value. In
+				this case:
+			</p>
+			<ul>
+				<li><span class="monoText">x = 4</span></li>
+				<li><span class="monoText">y = 5.0</span></li>
+				<li><span class="monoText">z = 7</span></li>
+			</ul>
+			<p>Comparing the values:</p>
+			<figure class="math-display">
+				<div>
+					<p><span class="monoText">4 >= 5.0 and 4 <= 7</span></p>
+				</div>
+			</figure>
+			<p>
+				This is clearly false. The invokation returns the data object
+				<span class="monoText">False</span> of type
+				<span class="monoText">boolean</span>.
+			</p>
+		</details>
+		<li><span class="monoText">f</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				This is our first example of the type
+				<span class="monoText">function</span>. Functions are data objects.
+				Because they are data objects, they have a data type. In this case, the
+				type <span class="monoText">function</span>. If we entered
+				<span class="monoText">f</span> in the shell, we get the following:
+			</p>
+			<pre class="language-bash"><code>
+					&lt;function __main__.f(x, y)&gt;
+				</code></pre>
+			<p>We can also see that this is a data object by modifying the code:</p>
+			<pre class="language-python"><code>
+					def f(x, y):
+						'''
+						x: int or float
+						y: int or float
+						'''
+						x + y - y
+					print(type(f))
+				</code></pre>
+			<pre class="language-bash"><code>
+					&lt;class &apos;function&apos;&gt;
+				</code></pre>
+		</details>
+	</ol>
+
+	<p><span class="exh">Exercise</span>. Consider the following code:</p>
+	<pre class="language-python"><code>
+		def a(x, y z):
+			if x:
+				return y
+			else:
+				return z
+		def b(q, r):
+			return a(q>r, q, r)
+	</code></pre>
+	<p>
+		What is (a) the value output by the function calls below, and (b) if there
+		is a value output, what is its type?
+	</p>
+	<ol>
+		<li><span class="monoText">a(False, 2, 3)</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				This is a call to function <span class="monoText">a()</span>. The
+				arguments are <span class="monoText">False</span>,
+				<span class="monoText">2</span>, and <span class="monoText">3</span>.
+				Thus:
+			</p>
+			<ul>
+				<li><span class="monoText">x = False</span></li>
+				<li><span class="monoText">y = 2</span></li>
+				<li><span class="monoText">z = 3</span></li>
+			</ul>
+			<p>
+				Since <span class="monoText">x = False</span>, the
+				<span class="monoText">if</span> block does not execute. We proceed to
+				the <span class="monoText">else</span> block. That block returns
+				<span class="monoText">z</span>, which is bound to
+				<span class="monoText">3</span>. This is an
+				<span class="monoText">int</span> type value.
+			</p>
+		</details>
+		<li><span class="monoText">b(3, 2)</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				This is a call to function <span class="monoText">b(q, r)</span>. Passed
+				as arguments are <span class="monoText">int 3</span> and
+				<span class="monoText">int 2</span>. Thus:
+			</p>
+			<ul>
+				<li><span class="monoText">q = 3</span></li>
+				<li><span class="monoText">r = 2</span></li>
+			</ul>
+			<p>
+				Function <span class="monoText">b(q, r)</span> calls function
+				<span class="monoText">a(x, y, z)</span>, with the arguments
+				<span class="monoText">q>r</span>, <span class="monoText">q</span>, and
+				<span class="monoText">r</span>. The expression
+				<span class="monoText">q>r</span> evaluates to
+				<span class="monoText">True</span> (${3 > 2.}$ Thus:
+			</p>
+			<ul>
+				<li><span class="monoText">x = True</span></li>
+				<li><span class="monoText">y = 3</span></li>
+				<li><span class="monoText">z = 2</span></li>
+			</ul>
+			<p>
+				Because <span class="monoText">x = True</span>, the truth block
+				executes. Since <span class="monoText">y = 3</span>, the value
+				<span class="monoText">3</span> of type
+				<span class="monoText">int</span> is returned.
+			</p>
+		</details>
+		<li><span class="monoText">a(3>2, a, b)</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				This is a call to function <span class="monoText">a(x, y, z)</span>. The
+				arguments passed are <span class="monoText">3>2</span>,
+				<span class="monoText">a</span>, and <span class="monoText">b</span>.
+				Thus:
+			</p>
+			<ul>
+				<li>
+					<span class="monoText">x = 3>2</span> (returns
+					<span class="monoText">True</span>)
+				</li>
+				<li><span class="monoText">y = a</span></li>
+				<li><span class="monoText">z = b</span></li>
+			</ul>
+			<p>
+				Because <span class="monoText">x = True</span>, we proceed to the truth
+				block. This tells us to return <span class="monoText">y</span>.
+				<span class="monoText">y = a</span>, and
+				<span class="monoText">a</span> is the name of a function. Thus, this
+				will return a value <span class="monoText">function</span>, and the type
+				<span class="monoText">function</span>.
+			</p>
+		</details>
+		<li><span class="monoText">b(a, b)</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				This is a call to function <span class="monoText">b(q, r)</span>, with
+				the arguments <span class="monoText">a</span> and
+				<span class="monoText">b</span> passed. Hence:
+			</p>
+			<ul>
+				<li><span class="monoText">q = a</span></li>
+				<li><span class="monoText">r = b</span></li>
+			</ul>
+			<p>
+				This will return an error. The function
+				<span class="monoText">b</span> computes which of two functions is
+				greater. This is a nonsensical operation.
+			</p>
+		</details>
+	</ol>
+
+	<p>
+		<span class="exh">Exercise</span>. For each of the function calls below: (a)
+		what is the value returned, and (b) if there is a value returned, what is
+		its type?
+	</p>
+	<ol>
+		<li>
+			<pre class="language-python"><code>
+				a = 10
+				def f(x):
+					return x + a
+				a = 3
+				f(1)
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Here we call the <span class="monoText">f(x)</span>, passing into it
+					the argument <span class="monoText">1</span> of type
+					<span class="monoText">int</span>. Inside
+					<span class="monoText">f(x)</span>, we compute
+					<span class="monoText">x + a</span>. The value of
+					<span class="monoText">a</span> is <span class="monoText">3</span>,
+					the most recent binding of <span class="monoText">a</span>. Thus,
+					<span class="monoText">f(1)</span> returns
+					<span class="monoText">1 + 3</span>, which the
+					<span class="monoText">int</span> value
+					<span class="monoText">4</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				x = 12
+				def g(x):
+					x = x + 1
+					def h(y):
+						return x + y
+					return h(6)
+				g(x)
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This is a call to <span class="monoText">g(x)</span>. The variable
+					<span class="monoText">x</span> stores the
+					<span class="monoText">int</span> value
+					<span class="monoText">12</span>. Inside
+					<span class="monoText">g(x)</span>, we compute
+					<span class="monoText">x = x + 1</span>. Thus,
+					<span class="monoText">x = 12 + 1 = 13</span>.
+					<span class="monoText">g(6)</span> then calls the function
+					<span class="monoText">h(y)</span>, passing as an argument the
+					<span class="monoText">int</span> value
+					<span class="monoText">6</span>.
+					<span class="monoText">h(y)</span> then computes
+					<span class="monoText">x + y</span>; this is
+					<span class="monoText">13 + 6</span>. Thus,
+					<span class="monoText">h(6)</span> returns the
+					<span class="monoText">int</span> value
+					<span class="monoText">19</span>. This is the value returned by
+					<span class="monoText">g(x)</span>.
+				</p>
+			</details>
+		</li>
+	</ol>
+</section>
+
+<section id="calling_functions_and_scope">
+	<h4>Calling Functions; Scope</h4>
+	<p>
+		Whenever we call functions, we must always bear in mind the concept of
+		<span class="boldItalics">scope</span>. Consider the following function:
+	</p>
+	<pre class="language-python"><code>
+		def f(x):
+			x = x + 1
+			print(f'in f(x): x = {x}')
+			return x
+		x = 3
+		z = f(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		in f(x): x = 4
+	</code></pre>
+	<p>
+		Why is <span class="monoText">x = 4</span>? This is occurring because
+		<span class="boldItalics">variable scope</span>. Each
+		<span class="boldItalics">formal parameter</span> is bound to the value of
+		the <span class="boldItalics">actual parameter</span> when the function is
+		called. The moment we call a function, we created a new
+		<span class="boldItalics">environment</span> (also called a
+		<span class="italicsText">frame</span> or a
+		<span class="italicsText">scope</span>). The environment is where we bind
+		variables; evaluations inside a function are always relative to that
+		environment. Scope is simply a mapping of names to data objects.
+	</p>
+	<p>
+		In the code above, the variable <span class="monoText">x</span> is bound to
+		the data object <span class="monoText">3</span> in the
+		<span class="italicsText">global scope</span>. Because
+		<span class="monoText">x</span> is bound to
+		<span class="monoText">3</span> in the global scope, when Python reaches
+		<span class="monoText">z = f(x)</span>, the value that is passed into the
+		function is <span class="monoText">x</span>. When we call
+		<span class="monoText">f()</span>, we create a new scope. That new scope
+		will inherit data objects from the global scope if the function's body needs
+		it. In this case, the global scope provides
+		<span class="monoText">x = 3</span>. Thus, when the function executes,
+		<span class="monoText">x = 4</span> &mdash; Python evaluates the function
+		relative to the global scope.
+	</p>
+	<p>
+		Here is another example. What happens if there is no
+		<span class="monoText">return</span> statement?
+	</p>
+	<pre class="language-python"><code>
+		def is_even(i):
+			'''
+			Input: i, a positive int
+			No return
+			'''
+			i%2 == 0
+	</code></pre>
+	<p>
+		If we do not include a <span class="monoText">return</span> statement,
+		Python returns the value <span class="monoText">None</span> (the only value
+		of type <span class="monoText">NoneType</span>). As we know,
+		<span class="monoText">None</span> represents the absence of value. Note
+		what this means: If we want a function to actually output something, we must
+		have a <span class="monoText">return</span> statement.
+	</p>
+	<p>
+		<span class="topic">Caution</span>. The
+		<span class="monoText">return</span> statement will terminate the function's
+		execution. This means that once Python reaches a
+		<span class="monoText">return</span> statement, everything is done &mdash;
+		any code after the <span class="monoText">return</span> statement
+		<span class="underlineText">will not</span> be executed.
+	</p>
+	<p>
+		<span class="topic">Functions as Arguments</span>. Functions can be passed
+		as arguments to other functions. Consider the following example:
+	</p>
+	<pre class="language-python"><code>
+		def func_a():
+			print('inside func_a')
+		def func_b(y):
+			print('inside func_b')
+			return y
+		def func_c(z):
+			print('inside func_c')
+			return z()
+		print(func_a())
+		print(5 + func_b(2))
+		print(func_c(func_a))
+	</code></pre>
+	<p>
+		Let's run through what this code does. Based on what we know so far, we
+		might predict: The statement
+		<span class="monoText">print(func_a())</span> invokes
+		<span class="monoText">func_a()</span>. So, it will print
+		<span class="monoText">'inside func_a'</span>. Then,
+		<span class="monoText">print(5 + func_b(2))</span> invokes
+		<span class="monoText">func_b()</span>, and passed into it the argument
+		<span class="monoText">2</span>, a data object of type
+		<span class="monoText">int</span>. Thus,
+		<span class="monoText">func_b(y)</span> will print
+		<span class="monoText">'inside func_b'</span> and
+		<span class="monoText">return</span> the data object
+		<span class="monoText">2</span> of type <span class="monoText">int</span>.
+		Accordingly, <span class="monoText">print(5 + func_b(2))</span> will print
+		<span class="monoText">7</span>. Finally,
+		<span class="monoText">print(func_c(func_a))</span> invokes
+		<span class="monoText">func_(c))</span>, with the argument
+		<span class="monoText">func_(a)</span>. So, it prints
+		<span class="monoText">'inside func_c'</span>, then
+		<span class="monoText">return</span>s
+		<span class="monoText">func_a()</span> &mdash; which prints
+		<span class="monoText">'inside func_a'</span>.
+	</p>
+	<p>Verifying, here is the output:</p>
+	<pre class="language-bash"><code>
+		inside func_a
+		None
+		inside func_b
+		7
+		inside func_c
+		inside func_a
+		None
+	</code></pre>
+	<p>
+		All correct, except: Where is the <span class="monoText">None</span> coming
+		from? The <span class="monoText">None</span> is appearing because
+		<span class="monoText">func_a()</span> has no
+		<span class="monoText">return</span> statement. Because we told Python to
+		print the output of <span class="monoText">func_a()</span>, Python printed
+		the output <span class="monoText">None</span>.
+	</p>
+	<p>
+		<span class="topic">Using Variables in Functions</span>. There are two rules
+		we should always be cognizant of when we use variables in functions:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule</span>. Let ${f}$ be some function, and ${x}$ be
+			some variable defined <span class="italicsText">outside</span> the body of
+			${f}$. <span class="italicsText">Inside</span> the body of ${f}$:
+		</p>
+		<ol>
+			<li>We <span class="underlineText">can access</span> ${x;}$ and</li>
+			<li>We <span class="underlineText">cannot modify</span> ${x.}$</li>
+		</ol>
+	</div>
+	<p>Compare the following examples:</p>
+	<div class="compare">
+		<pre class="language-python"><code>
+			# Script A
+			def f(y):
+				x = 1
+				x += 1
+				print(x)
+			x = 5
+			f(x)
+			print(x)
+		</code></pre>
+		<pre class="language-python"><code>
+			# Script B
+			def g(y):
+				print(x)
+				print(x + 1)
+			x = 5
+			g(x)
+			print(x)
+		</code></pre>
+		<pre class="language-python"><code>
+			# Script C
+			def h(y):
+				x = x + 1
+			x = 5
+			h(x)
+			print(x)
+		</code></pre>
+	</div>
+	<p>
+		In <span class="monoText">Script A</span>, we call the function
+		<span class="monoText">f()</span> and pass into it the argument
+		<span class="monoText">x</span>. We've bound the variable
+		<span class="monoText">x</span> to the data object
+		<span class="monoText">5</span> of type <span class="monoText">int</span>.
+		Thus, <span class="monoText">x = 5</span> is passed into
+		<span class="monoText">f()</span>. But, inside
+		<span class="monoText">f()</span>, we redefined the variable
+		<span class="monoText">x</span>: <span class="monoText">x = 1</span>. Thus,
+		the value of <span class="monoText">x</span> used inside
+		<span class="monoText">f()</span> is not
+		<span class="monoText">x = 5</span>, but
+		<span class="monoText">x = 1</span>. Thus, the output from calling
+		<span class="monoText">f(x)</span> is <span class="monoText">2</span>. In
+		the last line outside the function definition (inside the global
+		environment), we print <span class="monoText">x</span>. That value is
+		<span class="monoText">x = 5</span>, not
+		<span class="monoText">x = 1</span>. Accordingly, the very last
+		<span class="monoText">print(x)</span> in the global environment outputs
+		<span class="monoText">5</span>. Running
+		<span class="monoText">Script A</span> in a shell confirms:
+	</p>
+	<pre class="language-bash"><code>
+		2
+		5
+	</code></pre>
+	<p>
+		In <span class="monoText">Script B</span>, we again pass
+		<span class="monoText">x = 5</span> as an argument for
+		<span class="monoText">g(y)</span>. That function will print
+		<span class="monoText">x</span>: <span class="monoText">5</span>. Then it
+		prints the result of <span class="monoText">x + 1</span>:
+		<span class="monoText">6</span>. Finally, the last
+		<span class="monoText">print(x)</span> in the global scope prints the value
+		of <span class="monoText">x</span>: <span class="monoText">5</span>. A shell
+		session confirms:
+	</p>
+	<pre class="language-bash"><code>
+		5
+		6
+		5
+	</code></pre>
+	<p>
+		Note that this <span class="monoText">Script B</span> works because we
+		aren't modifying the global variable <span class="monoText">x</span> at all.
+		All we are doing in <span class="monoText">g(y)</span> is printing. We can
+		see this to be the case by comparing these two scripts:
+	</p>
+	<div class="compare">
+		<div>
+			<pre class="language-python"><code>
+				def g(y):
+					return x + 1
+				x = 5
+				g(x)
+				print(g(x))
+			</code></pre>
+			<pre class="language-bash"><code>
+				6
+			</code></pre>
+		</div>
+		<div>
+			<pre class="language-python"><code>
+				def g(y):
+					x = x + 1
+					return x
+				x = 5
+				g(x)
+				print(g(x))
+			</code></pre>
+			<pre class="language-bash"><code>
+				UnboundLocalError: local variable 'x' referenced before assignment
+			</code></pre>
+		</div>
+	</div>
+	<p>
+		In <span class="monoText">Script C</span>, we again pass
+		<span class="monoText">x</span> as an argument into the function
+		<span class="monoText">h(y)</span>. This is where we encounter a problem.
+		Here, we're trying to reference the variable
+		<span class="monoText">x</span> before we've even assigned it. More
+		specifically, we are trying to <span class="italicsText">modify</span>
+		<span class="monoText">x</span> directly. This is a violation of the rule
+		above: We cannot modify <span class="monoText">x</span>. Output:
+	</p>
+	<pre class="language-bash"><code>
+		UnboundLocalError: local variable 'x' referenced before assignment
+	</code></pre>
+	<p>
+		If we wanted <span class="monoText">Script C</span> to work, we would
+		instead write:
+	</p>
+	<pre class="language-python"><code>
+		def h(x):
+			x = x + 1
+			print(x)
+		x = 5
+		h(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		6
+	</code></pre>
+	<p>
+		Why does this work? Compare <span class="monoText">Script C</span> with the
+		revised script:
+	</p>
+	<div class="compare">
+		<pre class="language-python"><code>
+			def h(y):
+				x = x + 1
+			x = 5
+			h(x)
+			print(x)
+
+			# prints UnboundLocalError
+		</code></pre>
+		<pre class="language-python"><code>
+			def h(x):
+				x = x + 1
+				print(x)
+			x = 5
+			h(x)
+
+			# prints 6
+		</code></pre>
+	</div>
+	<p>
+		The two scripts output different results because of scope. In the revised
+		script, we've declared <span class="monoText">x</span> as a parameter.
+		Because <span class="monoText">x</span> is a parameter, the variable named
+		<span class="monoText">x</span> exists inside the function
+		<span class="monoText">h(x)</span>'s scope. In contrast, for the function
+		<span class="monoText">h(y)</span>, there is no such variable. There is no
+		variable <span class="monoText">x</span> inside the function
+		<span class="monoText">h(y)</span> because the parameter for
+		<span class="monoText">h(y)</span> is only the variable named
+		<span class="monoText">y</span>. When we wrote the statement ${x = x + 1,}$
+		we effectively told Python to modify <span class="monoText">x</span>&mdash;a
+		variable <span class="italicsText">outside</span>
+		<span class="monoText">h(y)</span>&mdash;while we are
+		<span class="italicsText">inside</span> <span class="monoText">h(y)</span>.
+		This is a direct violation of the rule we stated earlier, and Python will
+		not execute. We can see that this is true with the code below:
+	</p>
+	<pre class="language-python"><code>
+		# Notice there is no x declaration in h(x)
+
+		def h(x):
+			print(f'Inside h(x), there is a variable x = {x}')
+		x = 5
+		h(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Inside h(x), there is a variable x = 5
+	</code></pre>
+	<p>
+		To nail the coffin, <span class="monoText">Script C</span> also works if we
+		assign <span class="monoText">y</span> (the variable that exists locally in
+		<span class="monoText">h(y)</span>) to <span class="monoText">x</span> (the
+		variable passed as an argument). In doing so, we obtain a
+		<span class="italicsText">local</span> <span class="monoText">x</span> which
+		we can modify:
+	</p>
+	<pre class="language-python"><code>
+		def h(y):
+			x = y
+			x = x + 1
+			print(x)	
+		x = 5
+		h(x)
+		print(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		6
+		5
+	</code></pre>
+	<p>
+		<span class="topic">Functions Defined Inside Functions</span>. Scope can get
+		very tricky when we start defining functions inside functions. This does not
+		mean we should not define functions inside functions (this is perfectly
+		normal, and in many situations, good design). Rather, it just means we
+		should always be thinking about scope. Here is code defining a function
+		inside a function:
+	</p>
+	<pre class="language-python"><code>
+		def g(x): 
+			def h():
+				x = 'abc'
+			x = x + 1
+			print(f'In g(x): x = {x}')
+			h()
+			return(x)
+		x = 3
+		z = g(x)
+	</code></pre>
+	<pre class="language-bash"><code>
+		in g(x): x = 4
+	</code></pre>
+	<p>Let's walk through this code carefully.</p>
+	<ol>
+		<li>
+			First, we defined the function <span class="monoText">g(x)</span>. It
+			takes some parameter <span class="monoText">x</span>. Inside
+			<span class="monoText">g(x)</span>, we defined the function
+			<span class="monoText">h()</span>. That function takes no parameters, but
+			it initializes a variable <span class="monoText">x</span> with the string
+			object <span class="monoText">'abc'</span>. The function
+			<span class="monoText">g(x)</span> then computes
+			<span class="monoText">x = x + 1</span>, and prints a string. Then it
+			calls <span class="monoText">h()</span>. Finally, it returns the value of
+			<span class="monoText">x</span> (<span class="monoText">x = x + 1</span>).
+		</li>
+		<li>
+			Second, we initialized the variable <span class="monoText">x</span> with
+			the <span class="monoText">int</span> object
+			<span class="monoText">3</span>.
+		</li>
+		<li>
+			Finally, we assigned to <span class="monoText">z</span> the function
+			<span class="monoText">g(x)</span>. This statement invokes
+			<span class="monoText">g(x)</span>:
+		</li>
+		<ol>
+			<li>
+				<span class="monoText">g(x)</span> computes
+				<span class="monoText">x = x + 1</span>.
+				<span class="monoText">x = 4</span>.
+			</li>
+			<li>Then it prints the relevant string.</li>
+			<li>
+				Next it calls <span class="monoText">h()</span>, but that function has
+				no return.
+			</li>
+			<li>
+				Finall, <span class="monoText">g(x)</span> returns the
+				<span class="monoText">int</span> object
+				<span class="monoText">4</span>.
+			</li>
+		</ol>
+	</ol>
+	<p>
+		Some terminology: In the code above, the function
+		<span class="monoText">h()</span> is broadly called a
+		<span class="boldItalics">helper function</span> &mdash; a function that
+		belongs to another function; it can only be used if its parent function is
+		used.
+	</p>
+
+	<p>
+		Where did the <span class="monoText">x = 'abc'</span> go? It became a
+		<span class="boldItalics">garbage value</span>. Programming languages like
+		Python have a feature called
+		<span class="boldItalics">garbage collection</span> &mdash; the ability to
+		reclaim memory occupied by data objects when those data objects are no
+		longer referenced. Garbage collection is a form of automatic memory
+		management &mdash; it is how languages like Python allow programmers to go
+		without using memory-freeing functions like
+		<span class="monoText">free()</span> in C.
+	</p>
+</section>
+
+<section id="keyword_arguments">
+	<h4>Keyword Arguments &amp; Default Values</h4>
+	<p>
+		We can write function definitions that can change, depending on
+		<span class="italicsText">how</span> we invoke it. For example:
+	</p>
+	<pre class="language-python"><code>
+		def printName(firstName, lastName, reverse):
+			if reverse:
+				print(f'{lastName}, {firstName}')
+			else:
+				print(firstName, lastName)
+
+		# invokations:
+		printName('Sherlock', 'Holmes', False)
+		printName('Sherlock', 'Holmes', reverse = False)
+		printName('Sherlock', lastName = 'Holmes', reverse = False)
+		printName(lastName = 'Holmes', firstName = 'Sherlock', reverse = False)
+		printName('Sherlock', 'Holmes', True)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Sherlock Holmes
+		Sherlock Holmes
+		Sherlock Holmes
+		Sherlock Holmes
+		Holmes, Sherlock
+	</code></pre>
+	<p>
+		Notice how all of the functions above outputed the same string, save for the
+		last one, where we set <span class="monoText">reverse</span> to true. We can
+		specify our arguments in a function's parameters.This is helpful when we
+		forget the order of the parameters.
+	</p>
+	<p>
+		<span class="topic">Default Values</span>. We can also give functions
+		<span class="italicsText">default values</span> &mdash; the values used when
+		no arguments are supplied for the parameter:
+	</p>
+	<pre class="language-python"><code>
+		def printName (firstName, lastName, reverse = False):
+			if reverse:
+				print(f'{lastName}, {firstName}')
+			else:
+				print(firstName, lastName)
+		printName('Sherlock', 'Holmes')
+		printName('Sherlock', 'Holmes', True)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Sherlock Holmes
+		Holmes, Sherlock
+	</code></pre>
+	<p>
+		Default values are particularly useful when we expect parameters to be a
+		particular value, but on rare occasions a different value is needed.
+	</p>
+</section>
+
+<section id="specifications">
+	<h4>Specifications</h4>
+	<p>
+		Functions have <span class="boldText">specifications</span>. We can think of
+		a specification like a contract between two paries: (a) the function's
+		implementer and (b) the function's users. The specification provides two
+		things: (1) the function's assumptions, and (2) the function's guarantees.
+	</p>
+	<p>
+		<span class="topic">Assumptions</span> The assumptions are the conditions
+		the client must satisfy to use the function. Almost always, the assumptions
+		are what values must be used for the function's parameters.
+	</p>
+	<p>
+		<span class="topic">Guarantees</span> The guarantees are the conditions that
+		function itself must meet, provided the user has satisfied the assumptions.
+	</p>
+	<p>
+		The functions assumptions and guarantees are made explicit in the function's
+		docstring. This is why it is considered best-practic include a docstrig for
+		every function we write.
+	</p>
+</section>
+
+<section id="iteration_v_recursion">
+	<h4>Iteration vs. Recursion</h4>
+	<p>
+		With the materials thus far, we now have the ability to write three types of
+		programs: (1) <span class="italicsText">linear programs</span>, programs
+		that execute in a single direction; (2)
+		<span class="italicsText">branching programs</span>, programs with
+		&#8220;forks&#8221;, executing in different directions depending on
+		particular conditions; and (3)
+		<span class="italicsText">iterative programs</span>, programs that execute
+		in a &#8220;circular&#8221; direction depending on a specified condition. We
+		now add an additional type to our tool kit:
+		<span class="boldText">recursive programs</span>.
+	</p>
+	<p>
+		<span class="topic">Recursion</span> Recursion is a way to design problems
+		through a divide-and-conquer approach. With respect to functions, it is a
+		programming technique where a function calls itself. There is a danger to
+		recursion &mdash; infinite executions. Save for very few situations, we
+		<span class="underlineText">never</span> want infinite recursion. For this
+		reason, we must follow this rule by default:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule</span> Let ${x}$ be some recursive function. Then
+			$x$ is defined as:
+		</p>
+		<figure class="math-display">
+			<ul class="abs-code">
+				<li>define $x$:</li>
+				<ul>
+					<li>if $n$ &rarr; return ${m;}$</li>
+					<li>else return $x$</li>
+				</ul>
+			</ul>
+		</figure>
+		<ul class="def">
+			<li>${x \coloneqq}$ the function $x$</li>
+			<li>${n \coloneqq}$ a simple base case</li>
+			<li>
+				${m \coloneqq}$ the simple base case's output; which is the function's
+				output
+			</li>
+		</ul>
+	</div>
+	<p>
+		<span class="topic">Difference from Iteration</span> Recall that with
+		iterative algorithms, we use looping constructs (<span class="monoText"
+			>while</span
+		>
+		and <span class="monoText">for</span> loops). In those constructs, we needed
+		a variable to terminate the loop's execution. That variable was set
+		<span class="italicsText">outside</span> the loop, but is changed
+		<span class="italicsText">inside</span> the loop. For example,
+		multiplication is an iterative algorithm. The computation ${a \cdot b}$ is
+		equivalent to &#8220;add $a$ to itself $b$ times.&#8221; Implementing
+		multiplication as a function in Python:
+	</p>
+	<pre class="language-python"><code>
+		def times(a, b):
+			'''
+			Input: takes two integers a and b
+			Output: a * b
+			'''
+			product = 0
+			while b > 0:
+				product += a
+				b -= 1
+			return product
+	</code></pre>
+	<p>
+		In the code above, the function <span class="monoText">times()</span> has
+		two parameters: <span class="monoText">a</span> and
+		<span class="monoText">b</span>. This corresponds to ${\texttt{a} \times
+		\texttt{b}.}$ The variable <span class="monoText">b</span> serves as our
+		<span class="italicsText">counter variable</span>. It starts the value
+		passed as argument for <span class="monoText">b</span>, and keeps going down
+		(incrementing by <span class="monoText">1</span>) until it reaches
+		<span class="monoText">0</span>. Once it reaches
+		<span class="monoText">0</span>, the loop terminates. As long as
+		${\texttt{b} > 0,}$ we keep adding <span class="monoText">a</span> to
+		<span class="monoText">product</span> &mdash; the value of the computation.
+	</p>
+	<p>
+		Let's compare this to a recursive solution. To come up with a recursive
+		solution, we should think of its two key parts:
+	</p>
+	<ol>
+		<li><span class="boldText">The Recusive Step</span></li>
+		<p>
+			Here, we must answer the following question: &#8220;How do I reduce the
+			problem to a simpler, or smaller, version of the problem?&#8221;
+		</p>
+		<li><span class="boldText">The Base Case</span></li>
+		<p>
+			To construct the base case, we want to answer this question: &#8220;How do
+			I reduce the problem until it reaches a simpler case that can be solved
+			directly?&#8221;
+		</p>
+	</ol>
+	<p>
+		Returning to the multiplication problem, consider the following analysis:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/multiplication_recursive.svg' %}"
+			alt="multiply"
+			loading="lazy"
+			class="fifty-p"
+		/>
+	</figure>
+	<p>
+		As we we've said, ${a \cdot b}$ is really just ${a + a + a \ldots + a}$.
+		We're adding $a$ to itself $b$ times. The first time we add $a$ to itself
+		(${a + a}$), the remaining amounts of times we have to add $a$ is ${b - 1.}$
+		The second time, ${b - 2}$; the third, ${b - 3;}$ and so on. This
+		computation effectively reduces to ${a + a \times (b-1).}$ But hang on.
+		We're defining multiplication with multiplication? That's circular! Indeed,
+		it is. That is both the beauty and the danger or recursive functions. We
+		avoid that danger by including a base case. Here, we know that the base case
+		will be reached: The moment ${b = 1,}$ then we have ${a \cdot b = a}$
+		&mdash; the answer is just ${a.}$ This is the
+		<span class="italicsText">simplest case</span>. Knowing this, we can
+		implement in Python:
+	</p>
+	<pre class="language-python"><code>
+		def times(a, b):
+			if b == 1: # this is our base case
+				return a
+			else:
+				return a + times(a, b-1) # recursion
+	</code></pre>
+	<p>
+		Another mathematical operation conducive to recursion is ${n!,}$ where ${n
+		\in \Z^{+}}$ (the factorial operation). Recall that the factorial takes the
+		form:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${n! = n \cdot (n - 1) \cdot (n - 2) \cdot (n -3) \cdot \ldots \cdot 1}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		For this problem, we first ask, &#8220;For what values of $n$ do I know the
+		factorial of?&#8221; Or, more clearly, &#8220;What is the simplest case for
+		this computation?&#8221; Well, the simplest case is ${1! = 1.}$ This is our
+		base case.
+	</p>
+	<p>
+		Ok. We have the base case. Now we ask, &#8220;How do I reduce this
+		problem?&#8221; To answer that question, we need to think of rewriting the
+		problem in such a way that the function, as it executes, creeps closer and
+		closer to our base case, ${1! = 1.}$
+	</p>
+	<p>
+		Just like the multiplication case, ${n!}$ is essentially ${n * (n - 1)!.}$
+		Implementing this in Python:
+	</p>
+	<pre class="language-python"><code>
+		def factorial(n):
+			if n == 1: # the base case
+				return 1 
+			else: # the recursion
+				return n*factorial(n-1)
+	</code></pre>
+	<p>
+		<span class="topic">How does the computer know when to stop?</span> Suppose
+		that executed our <span class="monoText">factorial()</span> function:
+	</p>
+	<pre class="language-python"><code>
+		def factorial(n):
+			if n == 1: # the base case
+				return 1 
+			else: # the recursion
+				return n*factorial(n-1)
+		print(factorial(4))
+	</code></pre>
+	<p>The recusion can be envisioned with the following diagram:</p>
+	<figure>
+		<img
+			src="{% static 'images/recursive_factorial.svg' %}"
+			alt="factorial whiteboard"
+			loading="lazy"
+			class="ninety-p"
+		/>
+	</figure>
+	<p>
+		The diagram above shows that each recursive call to a function creates its
+		own scope, or environment. Additionally, the variables bound within each
+		frame (environment) is not changed by a recursive call. After each recursive
+		call, the flow of control passes back to the previous scope, once the
+		function call returns a value. That return of value does not occur until the
+		function reaches the base case.
+	</p>
+	<p>Alternatively, we can think of the way recursion works in pseudocode:</p>
+	<pre class="language-pseudo"><code>
+		Input:
+		define global factorial(n)
+		{
+			define local int z = 0
+				if (n == 1): 
+					then {z = 1}
+				else:
+					{z = n * factorial(n-1)}
+			return z
+		}
+		define global n = 4
+		output factorial(n)
+	</code></pre>
+	<pre class="language-pseudo"><code>
+		Output:
+		x = factorial(4)
+		x = (4 * factorial(3))
+		x = (4 * (3 * factorial(2)))
+		x = (4 * (3 * (2 * factorial(1))))
+		x = (4 * (3 * (2 * (1))))
+		x = (4 * (3 * (2)))
+		x = (4 * (6))
+		x = (24)
+		x = 24
+	</code></pre>
+	<p>
+		Bearing these details in mind, we can see how iteration and recursion
+		compare:
+	</p>
+	<div class="compare">
+		<pre class="language-python"><code>
+			def factorial(n):
+				product = 1
+				for i in range (1, n+1):
+					product *= i
+				return product
+		</code></pre>
+		<pre class="language-python"><code>
+			def factorial(n):
+				if n == 1:
+					return 1
+				else:
+					return n*factorial(n-1)
+		</code></pre>
+	</div>
+</section>
+
+<section id="exercises-recursion">
+	<p>
+		<span class="exh">Exercise</span>. Write a recursive function that takes a
+		nonnegative integer input <span class="monoText">num</span> from the user,
+		sums all nonnegative integers up to
+		<span class="monoText">num</span> (inclusive), and prints the sum.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			The first question we ask: What is the simplest possible input? In this
+			case, the simplest input is when the integer is 0:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\underbrace{\text{sum(0)} \to 0 }_{\text{ base case }}}$</p>
+			</div>
+		</figure>
+		<p>
+			We have base case then. The next question is, how do the hard cases relate
+			to the simpler cases? For example, if we are given ${\text{sum(0)}}$ can
+			we solve ${\text{sum(1)}?}$ If we have ${\text{sum(2)}}$ can we solve
+			${\text{sum(3)}?}$ Sure. Consider the pattern:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${ n = 1 \to 1}$</p>
+				<p>${ n = 2 \to 1 + 2}$</p>
+				<p>${ n = 3 \to 1 + 2 + 3}$</p>
+				<p>${ n = 4 \to 1 + 2 + 3 + 4}$</p>
+				<p>${ n = 5 \to 1 + 2 + 3 + 4 + 5}$</p>
+			</div>
+		</figure>
+		<p>
+			This patterns shows us that if have the result where ${n = 2,}$ we can
+			obtain the result of ${n = 3}$ by adding 3 to the result of ${n = 2}$. If
+			we know the result where ${n = 3,}$ we can obtain the result of ${n = 4}$
+			by adding 4 to the result of ${n = 3.}$ Great, we have a relationship.
+		</p>
+		<p>
+			Now let's generalize the pattern. Suppose we want to compute the arbitrary
+			sum where ${n = k.}$ Well, from the pattern above, we know that this is
+			simply:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\underbrace{1 + 2 + \ldots + k}_{\text{sum($k$)}}}$</p>
+			</div>
+		</figure>
+		<p>
+			Thus, to compute ${\text{sum($k$)},}$ what we have to do is compute
+			${\text{sum($k-1$)},}$ take the result, and add $k$ to it:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${\underbrace{1 + 2 + \ldots + (k - 1)}_{\text{sum($k - 1$)}}}$</p>
+			</div>
+		</figure>
+		<p>
+			Combining the general pattern and the base case, we have an explicit
+			structure for our code:
+		</p>
+		<figure class="math-display">
+			<div>
+				$$ \text{sum($n$)} = \begin{cases} \text{if $n = 0$} \to 0 \\
+				\text{else} \to \text{sum($n-1$)} + n \end{cases} $$
+			</div>
+		</figure>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+				num = int(input("Add all nonnegative integers up to: "))
+				def int_sum(num):
+						if num == 0:
+							return 0
+						else:
+							return num + int_sum(num-1)
+				sum = int_sum(num)
+				print(f'The sum of all nonnegative integers up to {num} is {sum}')
+			</code></pre>
+		<pre class="language-bash"><code>
+				Add all nonnegative integers up to: 5
+				The sum of all nonnegative integers up to 5 is 15
+
+				Add all nonnegative integers up to: 9
+				The sum of all nonnegative integers up to 9 is 45
+
+				Add all nonnegative integers up to: 100
+				The sum of all nonnegative integers up to 100 is 5050
+
+				Add all nonnegative integers up to: 573
+				The sum of all nonnegative integers up to 573 is 164451
+
+				Add all nonnegative integers up to: 973
+				The sum of all nonnegative integers up to 973 is 473851
+			</code></pre>
+	</details>
+</section>
+
+<section id="inductive_reasoning">
+	<h4>Inductive Reasoning</h4>
+	<p>
+		With iterative code, we can know that such code will work if we ensure that
+		our loop invariant changes as we go through it. For example, reconsider our
+		iterative multiplication function:
+	</p>
+	<pre class="language-python"><code>
+		def multiply(a, b):
+			result = 0
+			while b > 0:
+				result += a
+				b -= 1
+			return result
+	</code></pre>
+	<p>
+		In the function, the loop will eventually terminate because the condition is
+		<span class="monoText">b > 0</span>, and <span class="monoText">b</span> is
+		decremented by <span class="monoText">1</span> at each iteration. At some
+		point, <span class="monoText">b = 0</span>, in which case the
+		<span class="monoText">while</span> loop's test condition returns false.
+	</p>
+	<p>Now consider the recursive function:</p>
+	<pre class="language-python"><code>
+		def multiply(a, b):
+			if b == 1:
+				return a
+			else: 
+				return a + mult(a, b-1)
+	</code></pre>
+	<p>
+		In this function, rather than using a test condition, we use a base case. In
+		this case, when <span class="monoText">b = 1</span>. When we call
+		<span class="monoText">multiply()</span>, the function returns a
+		<span class="italicsText">smaller</span> version of
+		<span class="monoText">b</span>. As we keep calling
+		<span class="monoText">multiply()</span>, we will eventually reach
+		<span class="monoText">b = 1</span>. This all leads to a crucial point in
+		writing recursive programs:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Rule</span>. Given a recursive function $f$ with a
+			parameter ${x,}$ and a base case ${b,}$ the definition of $f$ must include
+			statements that change the parameter ${x,}$ such that $f$ eventually
+			reaches the base case ${b.}$
+		</p>
+	</div>
+	<p>
+		A helpful tool to ensure we comply with the rule above is
+		<span class="boldItalics">inductive reasoning</span>. Suppose we wanted to
+		prove that a statement, indexed on integers, is true for all values of
+		${n.}$ To construct such a proof, we perform two steps:
+	</p>
+	<ol>
+		<li>
+			First, prove that it is true when $n$ is the smallest possible value
+			(e.g., ${n = 0}$ or ${n = 1}$).
+		</li>
+		<li>
+			Second, prove that if it is true for any arbitrary value of ${n,}$ then it
+			must be true for ${n + 1.}$
+		</li>
+	</ol>
+	<p>
+		For example, consider the previous exercise where we sought to sum all of
+		the nonnegative integers up to some arbtirary ${n.}$ The general pattern for
+		this computation is the following:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${0 + 1 + 2 + 3 + \ldots + n = \dfrac{n(n + 1)}{2}}$</p>
+		</div>
+	</figure>
+	<p>
+		To prove this general pattern is true, we use inductive reasoning. We know
+		the general statement for this computation is provided by the following:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${n = \dfrac{n(n+1)}{2}}$</p>
+		</div>
+	</figure>
+	<p>
+		First, we prove that it is true in the base, or simplest, case. We know that
+		${n \in \Z_{\geq 0},}$ so the base case is when ${n = 0}$:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${0 = \dfrac{0(0 + 1)}{2}}$</p>
+			<p>${\phantom{0} = \dfrac{0}{2}}$</p>
+			<p>${\phantom{0} = 0}$</p>
+		</div>
+	</figure>
+	<p>
+		This proves that statement is true in the simplest case. Now we want to
+		prove the general case. To prove the general case, we want to show that for
+		any arbitrary ${k \in \Z_{\geq 0},}$ the statement is true for ${k + 1.}$
+		What this means then, is, we want to prove the following (by substitution):
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${0 + 1 + 2 + \ldots + k + (k + 1) = \dfrac{(k + 1)(k + 2)}{2}}$</p>
+		</div>
+	</figure>
+	<p>
+		Now, assume that the statement is true for some arbtirary ${k \in \Z_{\geq
+		0}.}$ With that assumption, we can infer the following:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${ \underbrace{0 + 1 + 2 \ldots + k}_{\dfrac{k(k + 1)}{2}} + (k + 1) =
+				\dfrac{(k + 1)(k + 2)}{2}}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		Because the expression ${0 + 1 + 2 + \ldots + k}$ converges to ${\dfrac{k(k
+		+ 1)}{2},}$ we know that the lefthand side reduces to:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{k(k + 1)}{2} + (k + 1)}$</p>
+		</div>
+	</figure>
+	<p>Rearranging this reduced expression:</p>
+	<figure class="math-display">
+		<div>
+			<p>
+				${\dfrac{k(k + 1)}{2} + (k + 1) = \dfrac{k(k + 1)}{2} + \dfrac{2(k +
+				1)}{2}}$
+			</p>
+			<p>
+				${\phantom{\dfrac{k(k + 1)}{2} + (k + 1)} = \dfrac{(k + 1)(k + 2)}{2}}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		This proves that, assuming ${n = \frac{n(n + 1)}{2}}$ is true for some ${k
+		\in \Z_{\geq 0},}$ then it follows that ${n = \frac{n(n + 1)}{2}}$ is true
+		for ${k + 1.}$ And since we proved the base case where ${n = 0,}$ the
+		statement ${n = \frac{n(n + 1)}{2}}$ is true for any ${n \in \Z_{\geq 0}.}$
+		Why? Because if ${k = 0,}$ then ${k = \frac{k(k + 1)}{2}}$ is true. This
+		mean that ${k}$ is true for some ${k \in \Z_{\geq 0}.}$ Given that $k$ is
+		true for some ${k \in \Z_{\geq 0},}$ it follows that ${k = \frac{k(k +
+		1)}{2}}$ is true for ${k + 1.}$ Which in turn means that ${k = \frac{k(k +
+		1)}{2}}$ is true when ${k = 1.}$ And since the statement is true for ${k =
+		1,}$ it is true for ${k = 2,}$ ${k = 3,}$ ${k = 4,}$ and so on and so forth
+		&mdash; ${k \in \Z_{\geq 0}.}$
+	</p>
+	<p>This entire analysis directly translates to code:</p>
+	<pre class="language-python"><code>
+		def multiply(a ,b):
+			if b == 1:
+				return a
+			else:
+				return a + mult(a, b-1)
+	</code></pre>
+	<p>
+		We first show that the base case is true. Will
+		<span class="monoText">return a</span> yield the correct computation when
+		<span class="monoText">b = 1</span>? Yes. Because we know the base case is
+		true, we first assume that <span class="monoText">muliply()</span> returns
+		the correct computation for problems smaller than
+		<span class="monoText">b</span>. Given that assumption, the increment,
+		<span class="monoText">a + mult(a, b-1)</span>, will also return a correct
+		answer for problem of size <span class="monoText">b</span>. By inductive
+		reasoning, we know that our code will work.
+	</p>
+</section>
+
+<section id="towers_of_hanoi">
+	<p>
+		<span class="topic">The Towers of Hanoi.</span> The
+		<span class="italicsText">Towers of Hanoi</span> is a staple logic puzzle
+		for introductory computer science and discrete mathematics. The puzzle goes
+		as such: There are 3 posts and $n$ number of different sized discs.
+		Inititally, each of the discs are stacked on a single post. The goal: Move
+		the entire stack to the next post, with the following constraints:
+	</p>
+	<ol>
+		<li>Only one disc can be moved at a time; and</li>
+		<li>at no point can a larger disc cover a smaller disc.</li>
+	</ol>
+	<p>Visually representing this in the simplest case, when ${n = 3:}$</p>
+	<figure>
+		<img
+			src="{% static 'images/towers_of_hanoi_simple.svg' %}"
+			alt="towers"
+			loading="lazy"
+			class="ninety-p"
+		/>
+	</figure>
+	<p>
+		How would we implement this as an algorithm? Consider the most basic case,
+		${n = 3,}$ where the three discs are ${1, 2, 3,}$ where ${1}$ is the largest
+		disk, and ${3}$ the smallest. Suppose further that the posts are ${a, b,
+		c.}$ The moves would go as such:
+	</p>
+	<div class="compare">
+		<pre class="language-pseudo"><code>
+			# initial
+
+			a: 1, 2, 3
+			b:
+			c:
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-1
+
+			a: 1, 2
+			b: 3
+			c: 
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-2
+
+			a: 1
+			b: 3
+			c: 2
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-3
+
+			a: 1
+			b: 
+			c: 2, 3
+		</code></pre>
+	</div>
+	<div class="compare">
+		<pre class="language-pseudo"><code>
+			# move-4
+
+			a: 
+			b: 1
+			c: 2, 3
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-5
+
+			a: 3
+			b: 1
+			c: 2
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# move-6
+
+			a: 3
+			b: 1, 2
+			c: 
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			# final
+
+			a: 
+			b: 1, 2, 3
+			c: 
+		</code></pre>
+	</div>
+	<p>
+		It looks relatively simple, but we can see that it will take much more work
+		to expose the bottom disk as ${n}$ gets bigger. Indeed, it gets more and
+		more difficult once we start thinking about very large magnitudes of ${n.}$
+		This problem, however, is conducive to recusion. Moving a disc is no
+		different from moving a stack. If we have ${n}$ discs, move the stack on top
+		of it. How do you move the stack on top of it? Move the stack on top of it.
+		And how do you move that stock on top of it? Move that stack on top of it.
+		This process goes on and on until we're just moving single discs. Indeed, we
+		can write code for this:
+	</p>
+	<pre class="language-python"><code>
+		def printMove (fromStack, toStack):
+			print(f"Move from {fromStack} to {toStack}")
+
+		def TowersHanoi(n, fromStack, toStack, spare):
+			if n == 1:
+				printMove(fromStack, toStack)
+			else:
+				TowersHanoi(n - 1, fromStack, spare, toStack)
+				TowersHanoi(1, fromStack, toStack, spare)
+				TowersHanoi(n - 1, spare, toStack, fromStack)
+
+		print(TowersHanoi(3, 'a', 'b', 'c'))
+	</code></pre>
+	<pre class="language-bash"><code>
+		Move from a to b
+		Move from a to c
+		Move from b to c
+		Move from a to b
+		Move from c to a
+		Move from c to b
+		Move from a to b
+		None
+	</code></pre>
+	<p>
+		<span class="exh">Exercise.</span> Write an iterative function that computes
+		the greatest common divisor of two positive integers. Recall: The greatest
+		common divisor is the largest integer that divides each of the two integers
+		without a remainder.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+				a = int(input('First integer: '))
+				b = int(input('Second integer: '))
+				def gcd(a, b):
+					for i in range (b, 0, -1):
+						if (a % i == 0) and (b % i == 0):
+							return i
+						elif (i == 1):
+							return i
+				result = gcd(a, b)
+				print(f'gcd({a}, {b}) = {result}')
+			</code></pre>
+		<pre class="language-bash"><code>
+				First integer: 27
+				Second integer: 3
+				gcd(27, 3) = 3
+
+				First integer: 2
+				Second integer: 12
+				gcd(2, 12) = 2
+
+				First integer: 40
+				Second integer: 24
+				gcd(40, 24) = 8
+
+				First integer: 19
+				Second integer: 12
+				gcd(19, 12) = 1
+			</code></pre>
+	</details>
+	<p><span class="exh">Exercise.</span> Write the same program recursively.</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			Here is a simple implementation, relying on Euclid's algorithm, which
+			states: Given two integers ${a}$ and ${b,}$ if ${b = 0,}$ then the
+			greatest common divisor is ${a.}$ Otherwise, the greatest common divisor
+			is ${b \bmod (a \bmod b).}$
+		</p>
+		<pre class="language-python"><code>
+				a = int(input('First integer: '))
+				b = int(input('Second integer: '))
+				def gcd(a, b):
+						if b == 0:
+							return a
+						else:
+							return gcd(b, (a % b))
+				
+				result = gcd(a, b)
+				print(f'gcd({a}, {b}) = {result}'))
+			</code></pre>
+		<pre class="language-bash"><code>
+				First integer: 99
+				Second integer: 18
+				gcd(99, 18) = 9
+
+				First integer: 6
+				Second integer: 12
+				gcd(6, 12) = 6
+
+				First integer: 97
+				Second integer: 3
+				gcd(97, 3) = 1
+			</code></pre>
+	</details>
+</section>
+
+<section id="multiple_base_cases">
+	<p>
+		<span class="topic">Multiple Base Cases.</span> With recursion, we aren't
+		limited to just one base case. In fact, many recursive algorithms rely on
+		multiple base cases. Consider, for the example, computing the following
+		problem.
+	</p>
+	<p>
+		Leonardo of Pisa (Fibonacci) proposed this problem: Suppose we have a
+		newborn pair of rabbits, one male and one female. Call the male ${a_m}$ and
+		the female ${a_f.}$ Suppose the rabbits never die, and all female rabbits
+		produce one male rabbit and one female rabbit. After one month, the rabbits,
+		${a_m}$ and ${a_f,}$ reach gestation and mate. Thus, after one month,
+		${a_f}$ produces two offspring, ${b_m}$ and ${b_f.}$ After another month,
+		${b_m}$ and ${b_f}$ produce two offspring, ${c_m}$ and ${c_f,}$ and ${a_m}$
+		and ${a_f}$ produce another two offspring, ${b_{m_{2}}}$ and ${b_{f_{2}}.}$
+		Then, after another month, ${c_m}$ and ${c_f}$ produce two offspring, and so
+		on and so forth. Is there a quick way to determine how many rabbits we might
+		have for any ${n}$ amount of years?
+	</p>
+	<p>
+		Yes. If we focused on the number of females, a pattern of gestation and
+		offspring produced demonstrates a sequence:
+	</p>
+	<figure>
+		<table class="truth_table">
+			<thead>
+				<th>month</th>
+				<th>females</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>0</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>5</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>8</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>13</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>Examining this sequence, we can see a general formula:</p>
+	<figure class="math-display">
+		<div>
+			<p>${r_f(n) = r_f(n - 1) + r_f(n - 2)}$</p>
+			<ul class="def">
+				<li class="where">${r_f \coloneqq}$ the number of females</li>
+				<li>${n \coloneqq}$ the month</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		How might we represent this sequence in code? Well, we can see that we have
+		two base cases:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${r_f(0) = 1}$</p>
+			<p>${r_f(1) = 1}$</p>
+		</div>
+	</figure>
+	<p>
+		From the sequence's formula, we can also see that we have two invokations:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${r_f(n - 1)}$</p>
+			<p>${r_f(n - 2)}$</p>
+		</div>
+	</figure>
+	<p>Accordingly, we can translate this into code:</p>
+	<pre class="language-python"><code>
+		def fibonacci(n): 
+			'''
+			input: number of months, n 
+			output: number of females at end of n months
+			assumes: n is an int >= 0
+			'''
+			if n == 0 or n == 1:
+				return 1
+			else:
+				return fibonacci(n - 1) + fibonacci(n - 2)
+		
+		initial_month = fibonacci(0)
+		first_month = fibonacci(1)
+		sixth_month = fibonacci(6)
+
+		print(initial_month)
+		print(first_month)
+		print(sixth_month)
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		1
+		13
+	</code></pre>
+	<p>
+		The code above demonstrates a recursive function with two base cases. We
+		need two base cases here because the function itself has two invocations,
+		${r_f(n-1)}$ and ${r_f(n-2).}$
+	</p>
+</section>
+
+<section id="recursion_on_strings">
+	<h4>Recursion on Strings</h4>
+	<p>
+		Recursion is not limited to numerica data objects. We can also apply
+		recursion to textual data, i.e., strings. Consider, for example, the
+		palindrome &mdash; a string that reads the same way both forwards and
+		backwards. For example, &#8220;race car&#8221; (setting aside the
+		whitespace) is &#8220;race car&#8221; both foward and back. Ignoring white
+		space and punctuation, how might we write code that determines whether a
+		particular string is a palindrome?
+	</p>
+	<p>
+		The first step would be to remove all white spaces and punctuation marks.
+		Next, we convert all the characters to lower case. Thus, the palindrome
+		&#8220;race car&#8221; would simply become &#8220;racecar.&#8221;
+	</p>
+	<p>
+		Once the string is converted entirely to characters alone, we determine the
+		base case. What is the simplest case? A string composed of characters 0 or 1
+		is a palindrome.
+	</p>
+	<p>
+		With the base case down, we can then think of the recursive case. The
+		recursive case works as such: Check the first and last characters, and if
+		they're the same, then check the second and second to last, then the third
+		and third to last, etc. If we keep following this process, we will
+		eventually reach our base case: a string of 0 characters or a string of 1
+		character. The code:
+	</p>
+	<pre class="language-python"><code>
+		stn = input("String: ")
+
+		def isPalindrome(stn):
+			def toCharacters(stn):
+				stn = stn.lower()
+				pureStn = ''
+				for letter in stn:
+					if letter in 'abcdefghijklmnopqrstuvwxyz':
+						pureStn = pureStn + letter
+				return pureStn
+			
+			def isPal(stn):
+				if len(stn) <= 1:
+					return True
+				else:
+					return stn[0] == stn[-1] and isPal(stn[1:-1])
+
+			return isPal(toCharacters(stn))
+		
+		result = isPalindrome(stn)
+		print(result)
+	</code></pre>
+	<pre class="language-bash"><code>
+		String: race car
+		True
+
+		String: Abba
+		True
+
+		String: palindrome
+		False
+	</code></pre>
+</section>
 {% endblock %}

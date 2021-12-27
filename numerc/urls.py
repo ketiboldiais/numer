@@ -11,24 +11,12 @@ urlpatterns = [
 	
 # Python paths
 	path("py_preface", views.py_preface, name="py_preface"),
-	path("py_computability", views.py_computability, name="py_computability"),
 	path("py_programs", views.py_programs, name="py_programs"),
 	path("py_libraryImport", views.py_libraryImport, name="py_libraryImport"),
-
 	path("py_variables", views.py_variables, name="py_variables"),
-
-	path("py_branchingPrograms", views.py_branchingPrograms, name="py_branchingPrograms"),
-
-	path("py_loops", views.py_loops, name="py_loops"),
-	path("py_bisectionSearch", views.py_bisectionSearch, name="py_bisectionSearch"),
 	path("py_floatsFractions", views.py_floatsFractions, name="py_floatsFractions"),
-	path("py_newtonRaphson", views.py_newtonRaphson, name="py_newtonRaphson"),
 	path("py_decomposition", views.py_decomposition, name="py_decomposition"),
-	path("py_functions", views.py_functions, name="py_functions"),
 	path("py_controlFlow", views.py_controlFlow, name="py_controlFlow"),
-	path("py_keywordArguments", views.py_keywordArguments, name="py_keywordArguments"),
-	path("py_specifications", views.py_specifications, name="py_specifications"),
-	path("py_recursion", views.py_recursion, name="py_recursion"),
 	path("py_structuredTypes", views.py_structuredTypes, name="py_structuredTypes"),
 	path("py_tuples", views.py_tuples, name="py_tuples"),
 	path("py_lists", views.py_lists, name="py_lists"),

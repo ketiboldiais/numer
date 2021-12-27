@@ -1,16 +1,16 @@
 
 // Pop Up
 function reveal() {
-  let popups = document.getElementsByClassName("pop");
-  let popupText = document.getElementsByClassName("popText");
+  const popups = document.getElementsByClassName("pop");
+  const popupText = document.getElementsByClassName("popText");
   for (let i = 0; i < popups.length; i++) {
     popups[i].addEventListener('click', function () {
       popupText[i].classList.toggle("show");
     })
   }
 }
-reveal();
 
+// Show navigation bar at narrow width
 function showNav() { 
   const tocButton = document.getElementById("tocButton");
   const navBar = document.querySelector("nav"); 
@@ -19,7 +19,11 @@ function showNav() {
     tocButton.classList.toggle("pressed");
   })
 }
-showNav();
+
+(function () {
+  showNav();
+  reveal();
+})();
 
 /*!
  * Colcade v0.2.0

@@ -186,4 +186,78 @@
 		this way.
 	</p>
 </section>
+
+<section id="newton_raphson_method">
+	<h4>The Newton-Raphson Method</h4>
+	<p>
+		The <span class="boldItalics">Newton-Raphson Method</span> is an algorithm
+		for finding the roots of polynomials in one variable:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${p(x) = a_{n}x^n + a_{n-1}x^{n-1} + \ldots + a_{1}x + a_{0}}$</p>
+		</div>
+	</figure>
+	<p>
+		The algorithm allows us to compute an ${r}$ such that ${p(r) = 0.}$ We can
+		state the method as follows:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Newton-Raphson Method</span>. Let ${p}$ be some
+			polynomial in one variable. Then the approximation $n$ is a better
+			approximation, provided by:
+		</p>
+		<figure class="math-display">
+			<div>
+				<p>${n = g - \dfrac{p(g)}{p^{\prime}(g)}}$</p>
+				<ul class="def">
+					<li class="where">${g}$ is an approximation of the root, and</li>
+					<li>${p^{\prime}}$ is a derivative of ${p.}$</li>
+				</ul>
+			</div>
+		</figure>
+	</div>
+	<p>
+		What the Newton-Raphson method means is, if we wanted to compute, say,
+		${\sqrt{24},}$ we can do so by finding the root of:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${p(x) = x^{2} - 24}$</p>
+		</div>
+	</figure>
+	<p>
+		Let's apply the Newton-Raphson method for the simplest case: ${r(x) = cx^2 +
+		k,}$ where ${c}$ and ${k}$ are some constants. The first derivative then is
+		${r^{\prime} = 2ck.}$ Thus, given a polynomial ${p(x) = x^2 + k,}$
+		${p^{\prime} = 2x.}$ Following the Newton-Raphson method, given a guess
+		${g}$ for the root of ${p(x),}$ a better guess ${n}$ is:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${n = g - \left( \dfrac{g^2 - k}{2g} \right)}$</p>
+		</div>
+	</figure>
+	<p>
+		We can implement this algorithm with a loop. Suppose we want to compute
+		${\sqrt{24}:}$
+	</p>
+	<pre class="language-python"><code>
+		epsilon = 0.01
+		radicand = 24.0
+		guess = radicand/2.0
+		numGuesses = 0
+
+		while abs(guess*guess - radicand) >= epsilon:
+			numGuesses += 1
+			guess = guess - (((guess**2) - radicand) / (2*guess))
+		print(f'Number of guesses: {numGuesses}')
+		print(f'Square root of {radicand} is about {guess}')
+	</code></pre>
+	<pre class="language-bash"><code>
+		Number of guesses: 4
+		Square root of 24.0 is about 4.8989887432139305
+	</code></pre>
+</section>
 {% endblock %}
