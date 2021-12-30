@@ -104,14 +104,16 @@
 		--sansSerif: "sansSerifMain", "avenir", "-apple-system", "BlinkMacSystemFont", "avenir next",  "segoe ui", "helvetica neue", "helvetica", "Ubuntu", "roboto", "noto", "arial", "sans-serif"; 
 		}
 /* Page layout */
-	* {box-sizing: border-box;}
+	* {
+		box-sizing: border-box;
+	}
 	body {
-		overflow-x: hidden;
 		font-family: var(--serif);
 		color: var(--textColor);
 		padding: 0;
 		margin: 0;
 		text-align: left;
+		overscroll-behavior-y: none;
 	}
 	div {padding: 0; margin: 0}
 	main {
@@ -125,7 +127,10 @@
 		margin: 0;
 		background-color: var(--page);
 	}
-	div.content {padding-bottom: 5em;}
+	div.content {
+		padding-bottom: 5em;
+		overflow-x: hidden;
+	}
 	section {
 		margin: 0; 
 		margin-left: 2%;
@@ -213,6 +218,7 @@
 /* Table of contents button **/
 	div.nav {
 		position: sticky;
+		overflow: hidden;
 		display: block;
 		margin: 0;
 		padding: 0.4vh;
@@ -341,21 +347,15 @@
 	nav::-webkit-scrollbar {
 		width: 2px;
 	}
-	div#page::-webkit-scrollbar {
-		width: 5px;
-	}
+	
 	nav::-webkit-scrollbar-track {
 		background: #ffffff;
 	}
-	div#page::-webkit-scrollbar-track {
-		background: #8b8b8b;
-	}
+	
 	nav::-webkit-scrollbar-thumb {
 		background: rgb(132, 132, 132);
 	}
-	div#page::-webkit-scrollbar-thumb {
-		background: rgb(42, 42, 42);
-	}
+	
 	nav::-webkit-scrollbar-thumb:hover {
 		background: rgb(53, 53, 53);
 	}
@@ -506,21 +506,21 @@
 	mark {background-color: rgb(255, 232, 131);}
 /* Paragraph styles */
 	p {
+		font-size: 0.85rem;
 		text-align: left;
+		margin-top: 0;
 	}
-	section p {
+	section > p {
 		line-height: calc(1ex / 0.32);
-		margin: calc(0.65ex / 0.32) 0;
-		margin-top: 0.4em;
-		font-size: 0.9rem;
-
-		/* 60 to 70 characters per line */
-		width: 70ch;
-		max-width: 100%;
+		margin: calc(0.7ex / 0.32) 0;
 	}
-	section p:last-child {
-		padding-bottom: 0;
-		margin-bottom: 0;
+	section h2 + p, 
+	section h3 + p, 
+	section h4 + p, 
+	section h5 + p, 
+	section h6 + p {
+		margin-top: 0; 
+		padding-top: 0;
 	}
 /* Drop cap */
 		span.drop {
@@ -1343,8 +1343,6 @@
 	}
 	table.alg td:nth-child(3) {text-align: left;}
 
-
-
 /* Media Queries */
 	@media (max-width: 600px) { html {font-size: 10px;} }
 	@media (max-width: 800px) { html {font-size: 11px;} }
@@ -1356,33 +1354,52 @@
 	@media (max-width: 2400px) { html {font-size: 17px;} }
 	@media (min-width: 1101px) {
 		button#tocButton { display: none; }
-		.section-nav ul li {font-size: 0.77rem;}
+		.section-nav ul li {
+			font-size: 0.75rem;
+		}
 		.section-nav ul li::marker {font-size: 0.6rem;}
 	}
 	@media (max-width: 1100px) {
-		nav { display: none; }
+		nav {
+			display: none;
+		}
 		nav.tocShow {
 			display: block;
 			width: 100%;
+			height: 100vh;
 			position: fixed;
-			z-index: 1;
+			padding-top: 5vh;
 			padding-bottom: 15vh;
+			z-index: 1;
 		}
-		main { display: block; }
-		section {padding: 1em 8vw; margin: 0;}
+		main {
+			display: block;
+			grid-template-columns: none;
+		}
+		section {
+			padding: 0.5em 10vw;
+			margin: 0 2%;
+		}
 		pre {margin: 1px 0;}
 		.sidenote,
 		.marginnote {
-			display: block;
-			float: none;
-			width: 100%;
-			padding: 0;
-			margin: 1em 0;
+				display: block;
+				float: left;
+				left: 0;
+				clear: both;
+				width: 100%;
+				margin: 1em 0;
+				padding: 0;
+				position: relative;
 		}
-		label.margin-toggle:not(.sidenote-number) { display: inline; }
+		label.margin-toggle:not(.sidenote-number) {
+				display: inline;
+		}
 
 		.sidenote,
-		.marginnote { display: none; }
+		.marginnote {
+				display: none;
+		}
 
 		.margin-toggle:checked + .sidenote,
 		.margin-toggle:checked + .marginnote {
@@ -1406,8 +1423,13 @@
 			transform: translateX(-120%);
 		}
 	}
-	@media (max-width: 600px) {
+	@media (max-width: 900px) {
 		div.compare {display: block;}
+		figure.table {overflow-x: scroll;}
+	}
+	@media (max-width: 600px) {
+		div.content {padding: 0;}
+		section {padding: 1vw 3vw;}
 	}
 	@media (max-width: 500px) {
 		section {padding: 1em 3vw}
