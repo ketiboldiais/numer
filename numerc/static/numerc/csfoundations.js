@@ -1,4 +1,27 @@
 
+// Add main idea header
+function mainIdeaHeader() { 
+  const header = document.createElement("p");
+  header.innerText = "Thema";
+  header.classList.toggle("header");
+  const mainIdeas = document.getElementsByClassName("mainIdea");
+  for (let i = 0; i < mainIdeas.length; i++) { 
+    mainIdeas[i].prepend(header);
+  }
+}
+
+// Add input checkbox for checklist
+function addCheckBoxToCheckList() { 
+  const checkList = document.querySelectorAll("ol.checklist li");
+  for (let i = 0; i < checkList.length; i++) { 
+    const checkbox = document.createElement("input");
+    checkbox.setAttribute("type", "checkbox");
+    checkList[i].prepend(checkbox);
+  }
+}
+
+
+
 // Pop Up
 function reveal() {
   const popups = document.getElementsByClassName("pop");
@@ -23,6 +46,8 @@ function showNav() {
 (function () {
   showNav();
   reveal();
+  mainIdeaHeader();
+  addCheckBoxToCheckList();
 })();
 
 /*!

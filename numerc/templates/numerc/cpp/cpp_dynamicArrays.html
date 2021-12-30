@@ -4154,6 +4154,306 @@
 			<span class="monoText">"male"</span>, no further admissions are permitted
 			for data with that property.
 		</p>
+		<p>
+			Like the previous algorithm, we can count the number of duplicates in a
+			sorted sequence through hashing. For example, say we had the following
+			array:
+		</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A}$</td>
+						<td>3</td>
+						<td>6</td>
+						<td>8</td>
+						<td>8</td>
+						<td>10</td>
+						<td>12</td>
+						<td>15</td>
+						<td>15</td>
+						<td>15</td>
+						<td>20</td>
+					</tr>
+					<tr>
+						<td>${i}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			We see that the duplicated elements are ${8}$ and ${15.}$ The maximum
+			element here is ${20,}$ so we need bitset of length ${21:}$
+		</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${B}$</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>${j}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+						<td>10</td>
+						<td>11</td>
+						<td>12</td>
+						<td>13</td>
+						<td>14</td>
+						<td>15</td>
+						<td>16</td>
+						<td>17</td>
+						<td>18</td>
+						<td>19</td>
+						<td>20</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			Then, all we have to do is traverse the array ${A.}$ For each element
+			${x}$ in ${A,}$ we increment the ${0}$ at the index in ${B}$ equal to
+			${x.}$ This yields:
+		</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${B}$</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td class="beige">1</td>
+						<td>0</td>
+						<td>0</td>
+						<td class="beige">1</td>
+						<td>0</td>
+						<td class="beige">2</td>
+						<td>0</td>
+						<td class="beige">1</td>
+						<td>0</td>
+						<td class="beige">1</td>
+						<td>0</td>
+						<td>0</td>
+						<td class="beige">3</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td class="beige">1</td>
+					</tr>
+					<tr>
+						<td>${j}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+						<td>10</td>
+						<td>11</td>
+						<td>12</td>
+						<td>13</td>
+						<td>14</td>
+						<td>15</td>
+						<td>16</td>
+						<td>17</td>
+						<td>18</td>
+						<td>19</td>
+						<td>20</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			With this approach, all we're doing is scanning through the array ${A,}$
+			and incrementing each element in ${B}$ whose index equals the then-current
+			element in ${A.}$ If the array contains ${n}$ elements, this algorithm
+			takes ${n}$ comparisons to execute. As such, we have a time complexity of
+			${O(n).}$ This is linear time.
+		</p>
+		<p>Implementing this algorithm:</p>
+		<figure>
+			<ol class="alg">
+				<li>${f}$ findDuplicates(array A):</li>
+				<ol>
+					<li>let length_of_A = A.length;</li>
+					<li>let A_max_element = A[length_of_A];</li>
+					<li>let B = new Array[A_max_element];</li>
+					<li>for (i = 0; i < A_max_element; i++):</li>
+					<ol>
+						<li>B[i] = 0;</li>
+					</ol>
+					<li>for (i = 0; i < length_of_A; i++):</li>
+					<ol>
+						<li>B[A[i]]++;</li>
+					</ol>
+					<li>for (i = 0; i < A_max_element; i++):</li>
+					<ol>
+						<li>if (B[i] > 1):</li>
+						<ol>
+							<li>Print "{i} has {B[i]} duplicates";</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</figure>
+		<p>
+			Note that while there are multiple for-loops in this implementation, each
+			loop simply takes ${n,}$ or some multiple of ${n,}$ operations to execute.
+			Accordingly, the implementation above takes some ${k \cdot n}$ operations
+			to execute, where ${k}$ is some constant. Thus, our original analysis is
+			unchanged: the algorithm has a running time complexity of ${O(n).}$
+		</p>
+		<section id="finding_the_total_number_of_duplicates">
+			<p>
+				<span class="topic">Finding the Total Number of Duplicates.</span> With
+				this implementation, counting the number of duplicate elements is
+				trivial. If we wanted to find the total number of duplicate elements, we
+				simply traverse the array ${B,}$ and summate the elements greater than
+				${1:}$
+			</p>
+			<figure>
+				<ol class="alg">
+					<li>${f}$ findDuplicates(array A):</li>
+					<ol>
+						<li>let total_duplicates = 0;</li>
+						<li>let length_of_A = A.length;</li>
+						<li>let A_max_element = A[length_of_A];</li>
+						<li>let B = new Array[A_max_element];</li>
+						<li>for (i = 0; i < A_max_element; i++):</li>
+						<ol>
+							<li>B[i] = 0;</li>
+						</ol>
+						<li>for (i = 0; i < length_of_A; i++):</li>
+						<ol>
+							<li>B[A[i]]++;</li>
+						</ol>
+						<li>for (i = 0; i < A_max_element; i++):</li>
+						<ol>
+							<li>if (B[i] > 1):</li>
+							<ol>
+								<li>total_duplicates += B[i];</li>
+							</ol>
+						</ol>
+						<li>return total_duplicates;</li>
+					</ol>
+				</ol>
+			</figure>
+			<p>
+				Again, this doesn't change our complexity analysis. The algorithm above
+				still takes ${O(n)}$ time.
+			</p>
+		</section>
+	</section>
+
+	<section id="finding_duplicate_elements_in_an_unsorted_array">
+		<h3>Duplicate Counter: Counting Duplicates in an Unsorted Sequence</h3>
+		<p>
+			The previous algorithm counted the number of duplicates in a sorted
+			sequence. How might we count the number of duplicates in an
+			<span class="underlineText">unsorted</span> sequence? Consider this
+			unsorted array:
+		</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A}$</td>
+						<td>8</td>
+						<td>3</td>
+						<td>6</td>
+						<td>4</td>
+						<td>6</td>
+						<td>5</td>
+						<td>6</td>
+						<td>8</td>
+						<td>2</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td>${i}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			Above, we see the duplicates are ${8}$ and ${6.}$ To count these
+			duplicates, we use the following procedure:
+		</p>
+		<ol class="recipe">
+			<li>
+				Instantiate a variable called <span class="monoText">count</span>. This
+				variable will increment each time a duplicate is encountered.
+			</li>
+			<li>Instantiate two integer variables, ${i = 0}$ and ${j = i + 1.}$</li>
+			<li>As long as ${i < j}$, perform the following:</li>
+			<ol>
+				<li>Compare ${A_i}$ against ${A_j:}$</li>
+				<ol>
+					<li>If ${A_i \neq A_j,}$ increment ${j.}$</li>
+					<li>Otherwise (i.e., ${A_i}$ = ${A_j}$):</li>
+					<ol>
+						<li>Increment <span class="monoText">count</span>.</li>
+						<li>Replace ${A_j}$ with ${\texttt{-}1.}$</li>
+						<li>Increment ${j.}$</li>
+					</ol>
+				</ol>
+			</ol>
+		</ol>
 	</section>
 </section>
 

@@ -219,8 +219,6 @@ urlpatterns = [
 
 	path("cpp_dataStructuresIntro", views.cpp_dataStructuresIntro, name="cpp_dataStructuresIntro"),
 
-	path("cpp_algorithmIntro", views.cpp_algorithmIntro, name="cpp_algorithmIntro"),
-
 	path("cpp_insertionSort", views.cpp_insertionSort, name="cpp_insertionSort"),
 
 	path("cpp_mergeSort", views.cpp_mergeSort, name="cpp_mergeSort"),
@@ -248,6 +246,8 @@ urlpatterns = [
 	path("cpp_matrices", views.cpp_matrices, name="cpp_matrices"),
 
 	path("cpp_algorithmicAnalysis", views.cpp_algorithmicAnalysis, name="cpp_algorithmicAnalysis"),
+
+	path("cpp_numberTheoryCS", views.cpp_numberTheoryCS, name="cpp_numberTheoryCS"),
 
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),

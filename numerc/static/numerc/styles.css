@@ -96,6 +96,7 @@
 	--sky: rgb(252, 253, 255);
 	--gold: #D4AF37;
 	--wheat: #fffcf1;
+	--beige: rgb(255, 248, 205);
 	/* "CMU",  */
 
 	--serif: "serifMain", "Garamond", "Apple Garamond", "Athelas", "Iowan Old Style", "Hoefler Text", "Palatino", "New York", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
@@ -515,7 +516,6 @@
 	}
 /* Links Styles */
 	section a {
-		white-space: pre;
 		position: relative;
 		padding:0;
 		text-decoration: none;
@@ -531,6 +531,7 @@
 	}
 	section a:hover {
 		cursor: pointer;
+		color: var(--darkGreen);
 	}
 	section a::before {
 		content: "";
@@ -694,9 +695,8 @@
 	
 /* List styles */
 	li {
-		font-size: 0.8rem; 
+		font-size: 0.85rem; 
 		padding:0.1em 0.5em;
-		line-height: 1.4;
 	}
 	ol,ul {
 		margin: 0;
@@ -727,11 +727,10 @@
 	ul.larg li.conc::marker {content: "\2234  "; font-size: 1.4em;}
 	ul.def {
 		list-style-type: none; 
-		margin-left: 2.8em;
+		padding: 0;
 	}
 	ul.def li.where::marker {
 		content: "where  "; 
-		font-size: 1em;
 	}
 	ul.smallBullets li {
 		margin: 0;
@@ -740,7 +739,55 @@
 	ul.smallBullets li::marker {
 		font-size: 0.8em;
 	}
-	
+	/* Circle List */
+	ol.recipe, ol.recipe ol, ol.recipe ol ol, ol.recipe ol ol ol {
+		counter-reset: li;
+		list-style: none;
+		*list-style: decimal;
+	}
+	ol.recipe li {
+		position: relative;
+		padding: 0.4rem 0;
+		padding-left: 2em;
+	}
+	ol.recipe li:before {
+		content: counter(li);
+		counter-increment: li;
+		background-color: rgb(255, 233, 233);
+		color: rgb(151, 0, 0);
+		border: solid thin var(--darkRed);
+		border-radius: 50%;
+		font-size: 0.69rem;
+		width: 19px;
+		height: 19px;
+		text-align: center;
+		display: block;
+		position: absolute;
+		top: 0.5rem;
+		left: 0;
+	}
+	ol.recipe ol li::before {
+		color: rgb(156, 112, 0);
+		background-color: rgb(255, 244, 223);
+		border: solid thin rgb(190, 136, 0);
+		
+	}
+	ol.recipe ol ol li::before {
+		color: rgb(0, 98, 0);
+		background-color: rgb(225, 255, 204);
+		border: solid thin var(--darkGreen);
+		
+	}
+	ol.recipe ol ol ol li::before {
+		color: rgb(0, 91, 156);
+		background-color: rgb(231, 248, 255);
+		border: solid thin rgb(0, 90, 192);
+	}
+	ol.recipe ol ol ol ol li::before {
+		color: rgb(120, 0, 120);
+		background-color: rgb(243, 199, 243);
+		border: solid thin purple;
+	}
 	/* Special list for code general syntax */
 		ul.syntax {
 			margin: 0.5em;
@@ -795,6 +842,66 @@
 				left: -2em;
 				font-size: 0.85rem;
 		}
+/* Checklist */
+	ol.checklist {
+		box-shadow: 0.063rem 0.063rem 0.188rem #929292, -0.063rem -0.063rem 0.188rem #e4e4e4;
+		border-radius: 0.3em;
+		padding: 0.5em 1.5em;
+		padding-bottom: 1em;
+		width: fit-content;
+	}
+	ol.checklist li {
+		display: block;
+		padding: 0 1em;
+		text-indent: -1.7em;
+	}
+	ol.checklist, ol.checklist ol {
+		list-style-type: none;
+		padding-right: 0;
+	}
+	ol.checklist ol {
+		padding-bottom: 0;
+		padding-top: 0;
+	}
+	input[type=checkbox] {
+		position: relative;
+		vertical-align: middle;
+		margin-right: 0.8em;
+		width: 12px;
+		height: 12px;
+		color: #363839;
+		border: 1px solid #bdc1c6;
+		border-radius: 0.15em;
+		-webkit-appearance: none;
+			 -moz-appearance: none;
+						appearance: none;
+		outline: 0;
+		cursor: pointer;
+		transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
+	}
+	input[type=checkbox]::before {
+		position: absolute;
+		content: "";
+		display: block;
+		top: 0px;
+		left: 3px;
+		width: 2px;
+		height: 6px;
+		border-style: solid;
+		border-color: white;
+		border-width: 0 2px 2px 0;
+		border-radius: 1px;
+		transform: rotate(45deg);
+		opacity: 0;
+	}
+	input[type=checkbox]:checked {
+		color: #fff;
+		border-color: #00641e;
+		background: #74be67;
+	}
+	input[type=checkbox]:checked::before {
+		opacity: 1;
+	}
 /* Text styles */
 	em {
 		font-weight: normal;
@@ -906,10 +1013,10 @@
 		border: none;
 		margin: 0;
 	}
-	table.array * {
-		font-size: 0.75rem;
+	table.array td, table.array th {
+		font-size: 0.7rem;
 		text-align: center;
-		padding: 0.4rem;
+		padding: 1em 0.5em;
 		padding-top: 0;
 		padding-bottom: 0;
 	}
@@ -934,7 +1041,6 @@
 		color: rgb(139, 194, 212);
 		padding: 0;
 	}
-
 	table.array tr:nth-child(2) td {
 		color: rgb(185, 185, 185);
 	}
@@ -988,7 +1094,6 @@
 
 	ol.alg {
 		font-family: var(--mono);
-		cursor: pointer;
 		background-color: rgb(246, 248, 250);
 		counter-reset: lineNumber;
 		list-style: none;
@@ -1027,15 +1132,15 @@
 	}
 	table.alg th, table.alg td {
 		border: none;
-		border-bottom: solid thin rgba(0,0,0,0.2);
 		text-align: center;
 		font-size: 0.7rem;
 		padding: 0.3em;
 	}
-	table.alg th {
-		font-size: 0.68rem;
+	table.alg th { font-size: 0.68rem; }
+	table.alg tr td {
+		border-top: solid thin lightgrey;
+		border-bottom: none;
 	}
-	table.alg tr:last-child td { border: none; }
 	table.alg th, table.alg tr td:nth-child(2) {
 		font-family: "CMU";
 	}
@@ -1069,6 +1174,9 @@
 	div.rule p {
 		margin-top: 0; 
 		margin-bottom: 0.4rem;
+	}
+	div.rule p:last-child {
+		margin-bottom: 0;
 	}
 	div.rule ul.abs-code, 
 	ul.abs-code ul {
@@ -1105,15 +1213,30 @@
 		font-style: italic;
 	}
 	div.mproof {margin: 0;}
-/* Main idea box */
-	div.mainIdea {
-		margin: 1em; 
+/* Main Idea DIV - Header is created by JavaScript */
+	.header {
+		font-weight: bold;
+		margin: 0;
+		padding: 0;
 	}
-	div.mainIdea * {
-		font-family: var(--sansSerif);
-		font-size: 0.75rem;
+	.mainIdea * {
+		font-size: 0.7rem;
+		width: fit-content;
 	}
-	div.mainIdea li::marker {font-size: 0.7em;}
+	.mainIdea {
+		margin: 0;
+		margin-left: 0.5em;
+		margin-bottom: 0.25em;
+		margin-right: 0;
+		float: right;
+		border: solid thin rgb(255, 255, 255);
+		border-radius: 0.2em;
+		box-shadow: 0.063rem 0.063rem 0.188rem #929292, -0.063rem -0.063rem 0.188rem #e4e4e4;
+		padding: 0.1em 0.4em;
+		padding-right: 0.7em;
+		padding-bottom: 0.3em;
+		width: 50%;
+	}
 /* Summary Box */
 	div.summary {
 		margin: 2em 3em;
@@ -2248,11 +2371,11 @@
 	}
 
 /* Katex Styles */
-	.katex {font-size: 1em !important;}
+	.katex {font-size: inherit !important;}
 	.mord.texttt {font-family: var(--mono) !important;}	
 	.katex-display {
 		margin: 0 !important;
-		font-size: 1em !important;
+		font-size: inherit !important;
 	}
 /* Question Sets / <details> Styling */
 	/* Question sets are styled with masonry */
@@ -2317,14 +2440,14 @@
 		.grid-col--3 { display: block; } /* show column 2 */
 	}
 /* Media Queries */
-	@media (max-width: 600px) { html {font-size: 11px;} }
-	@media (max-width: 800px) { html {font-size: 12px;} }
-	@media (max-width: 1180px) { html {font-size: 13px;} }
-	@media (max-width: 1300px) { html {font-size: 14px;} }
-	@media (max-width: 1750px) { html {font-size: 15px;} }
-	@media (max-width: 1900px) { html {font-size: 16px;} }
-	@media (max-width: 2100px) { html {font-size: 17px;} }
-	@media (max-width: 2400px) { html {font-size: 18px;} }
+	@media (max-width: 600px) { html {font-size: 10px;} }
+	@media (max-width: 800px) { html {font-size: 11px;} }
+	@media (max-width: 1180px) { html {font-size: 12px;} }
+	@media (max-width: 1300px) { html {font-size: 13px;} }
+	@media (max-width: 1750px) { html {font-size: 14px;} }
+	@media (max-width: 1900px) { html {font-size: 15px;} }
+	@media (max-width: 2100px) { html {font-size: 16px;} }
+	@media (max-width: 2400px) { html {font-size: 17px;} }
 	@media (min-width: 1101px) {
 		button#tocButton { display: none; }
 		.section-nav ul li {
@@ -2332,16 +2455,6 @@
 		}
 		.section-nav ul li::marker {font-size: 0.6rem;}
 	}
-/* footer */
-/* footer {
-	position: relative;
-	width: fit-content;
-	float: right;
-	color: rgb(147, 147, 147);
-	font-size: 0.8rem;
-} */
-
-
 	@media (max-width: 1100px) {
 		nav {
 			display: none;
@@ -2408,5 +2521,5 @@
 		section {padding: 1vw 3vw;}
 	}
 	@media (max-width: 500px) {
-		section {padding: 1em 4vw}
+		section {padding: 1em 3vw}
 	}

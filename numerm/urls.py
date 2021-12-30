@@ -77,6 +77,8 @@ urlpatterns = [
 
 	path("disc_graphTheory", views.disc_graphTheory, name="disc_graphTheory"),
 
+	path("disc_probability", views.disc_probability, name="disc_probability"),
+
 
 	
 	# continuous math paths
@@ -158,6 +160,8 @@ urlpatterns = [
 	path("calc_implicit", views.calc_implicit, name="calc_implicit"),
 
 	path("calc_exponentials", views.calc_exponentials, name="calc_exponentials"),
+
+	path("calc_derivativeApplications", views.calc_derivativeApplications, name="calc_derivativeApplications"),
 
 	# sequences & series paths 
 	path("sqs_index", views.sqs_index, name="sqs_index"),

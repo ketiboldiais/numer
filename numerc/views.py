@@ -409,9 +409,6 @@ def cpp_templates(request):
 def cpp_dataStructuresIntro(request):
 	return render(request, "numerc/cpp/cpp_dataStructuresIntro.html")
 
-def cpp_algorithmIntro(request):
-	return render(request, "numerc/cpp/cpp_algorithmIntro.html")
-
 def cpp_insertionSort(request):
 	return render(request, "numerc/cpp/cpp_insertionSort.html")
 
@@ -450,6 +447,9 @@ def cpp_matrices(request):
 
 def cpp_algorithmicAnalysis(request):
 	return render(request, "numerc/cpp/cpp_algorithmicAnalysis.html")
+
+def cpp_numberTheoryCS(request):
+	return render(request, "numerc/cpp/cpp_numberTheoryCS.html")
 
 
 

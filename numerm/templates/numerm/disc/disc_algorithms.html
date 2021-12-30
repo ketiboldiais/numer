@@ -9,8 +9,8 @@
 <h1>Algorithmic Analysis</h1>
 <section id="introduction">
 	<p>
-		In discrete mathematics &mdash; and computer science &mdash; many problems
-		are best solved by first constructing a
+		<span class="drop">I</span>n discrete mathematics &mdash; and computer
+		science &mdash; many problems are best solved by first constructing a
 		<span class="italicsText">model</span>: translate the problem into
 		mathematical terms. For example, to find a fleeing murder suspect, we might
 		place all their possible hiding places into a set. We might then arrange the
@@ -39,7 +39,7 @@
 		<span class="italicsText">how-to</span> knowledge is provided by an
 		<span class="term">algorithm</span>.
 	</p>
-	<figure class="math-display">
+	<figure>
 		<div class="rule">
 			<p>
 				<span class="topic">Definition.</span> An algorithm is a finite sequence
@@ -60,7 +60,7 @@
 		>
 	</p>
 	<p>For example, consider this problem:</p>
-	<figure class="math-display">
+	<figure>
 		<div class="rule">
 			<p>
 				<span class="topic">Problem.</span> Given a finite sequence of integers,
@@ -95,7 +95,7 @@
 		notation systems, as seen in symbolic logic, mathematics, and the sciences).
 		Because of this limitation, let's write the algorithm in pseudocode:
 	</p>
-	<figure class="math-display">
+	<figure>
 		<div class="syntax">
 			<ul>
 				<li>${\ell \coloneqq [a_1, a_2, \ldots a_n] : n \in \Z}$</li>
@@ -161,388 +161,309 @@
 	</p>
 </section>
 
-<section id="searching">
-	<h2>Search</h2>
+<section id="big_o_notation">
+	<h2>Big-O Notation</h2>
 	<p>
-		A <span class="term">search</span> is an algorithm for locating a given
-		element in a list. That list may be
-		<span class="italicsText">ordered</span> &mdash; i.e., a sequence &mdash; or
-		it may be <span class="italicsText">unordered</span>. For the algorithms
-		that follow, we will assume the list is ordered. A more explicit, and
-		general, definition of the searching problem:
+		Big-O notations have been used in mathematics for a very long time. The
+		capital O is often called the
+		<span class="term">Landau symbol</span>, after the German mathematician
+		Edmund Landau for his extensive use of the symbol. Its use for complexity
+		analysis (alongside big-theta and big-omega), however, was popularized by
+		Donald Knuth in the 1970s.
 	</p>
-	<figure class="math-display">
+	<p>We begin by stating the formal definition of Big-O notation:</p>
+	<figure>
 		<div class="rule">
 			<p>
-				<span class="topic">Problem.</span> Given the list ${[a_0, a_1, \ldots ,
-				a_n],}$ locate the element ${x}$ if it exists.
+				<span class="topic">Definition: Big O.</span> Suppose ${f}$ and ${g}$
+				are functions from ${\N \to \R}$ or from ${\R \to \R.}$ If there are
+				constants ${C}$ and ${k}$ such that whenever ${n > k,}$ the following is
+				true:
+			</p>
+			<figure>
+				<div>
+					<p>${\lvert f(n) \rvert \leq C \lvert g(n) \rvert}$</p>
+				</div>
+			</figure>
+			<p>we say that ${f(n)}$ is big-O of ${g(n),}$ and write:</p>
+			<figure>
+				<div>
+					<p>${f(n) \in O(g(n))}$</p>
+				</div>
+			</figure>
+		</div>
+	</figure>
+	<p>
+		There's a lot going on with this definition, so let's break it down into a
+		checklist:
+	</p>
+	<figure>
+		<ol class="checklist">
+			<h3 class="listHeader">Big-O Checklist</h3>
+			<li>There are two functions, ${f}$ and ${g.}$</li>
+			<li>One of the following is true:</li>
+			<ol>
+				<li>${f}$ and ${g}$ map integers to real numbers,</li>
+				<em>or</em>
+				<li>${f}$ and ${g}$ map real numbers to real numbers.</li>
+			</ol>
+			<li>There are two constants, ${C}$ and ${k.}$</li>
+			<li>If ${n > k,}$ then:</li>
+			<ol>
+				<li>${\lvert f(n) \rvert < C\lvert g(n) \rvert }$</li>
+				<em>or</em>
+				<li>${\lvert f(n) \rvert = C\lvert g(n) \rvert }$</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		Check all of the boxes above, and we can conclude: ${f(n) \in O(g(n)).}$ The
+		definition above essentially means that ${f(n)}$ grows slower than some
+		fixed multiple of ${g(n)}$ as ${n}$ approaches positive infinity.
+	</p>
+	<p>
+		The key item in the checklist above is the requirement for a pair of
+		constants, ${C}$ and ${k,}$ and the last item, and implication. We call the
+		constants ${C}$ and ${k}$ the
+		<span class="term">witnesses</span> to the relationship ${f(n)}$ is
+		${O(g(n)).}$ As long as we can find at least one pair of ${C}$ and ${k}$
+		(and check off the other items), we can reach our conclusion.
+	</p>
+	<p>For example, consider the following proposition:</p>
+	<figure>
+		<div>
+			<p>
+				Given ${f(n) = 4n^2 + 16n + 2,}$ ${f(n)}$ is ${O(n^4),}$ where ${n \in
+				\R^{+}.}$
 			</p>
 		</div>
 	</figure>
 	<p>
-		The solution to a searching problem is the location of the element that
-		equals ${x.}$ I.e. ${i}$ is the solution iff ${a_i = x.}$ Otherwise, the
-		solution is ${\emptyset.}$
+		Is this proposition true? Well, let's apply the definition. We have two
+		functions, both mapping real numbers to real numbers. These two requirements
+		are seldom an issue. The bigger hurdle is finding the witnesses. One
+		approach is plug-and-play. Let's suppose that ${C = 1,}$ and that ${k = 0.}$
+		If ${k = 0,}$ then ${n > 0.}$ Let's try some values of ${n > 0:}$
+	</p>
+
+	<table class="punnett">
+		<thead>
+			<th>${n}$</th>
+			<th>${\lvert 4n^2 + 16n + 2 \rvert }$</th>
+			<th>Relation</th>
+			<th>${C \lvert n^4 \rvert }$</th>
+			<th>Truth Value</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>${\lvert 4(1)^2 + 16(1) + 2 \rvert = 22}$</td>
+				<td>${\leq}$</td>
+				<td>${(1)\lvert (1)^4 \rvert = 4}$</td>
+				<td>False</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>${\lvert 4(2)^2 + 16(2) + 2 \rvert = 50}$</td>
+				<td>${\leq}$</td>
+				<td>${(2)\lvert (2)^4 \rvert = 16}$</td>
+				<td>False</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>${\lvert 4(3)^2 + 16(3) + 2 \rvert = 86}$</td>
+				<td>${\leq}$</td>
+				<td>${(1)\lvert (3)^4 \rvert = 81}$</td>
+				<td>False</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>${\lvert 4(4)^2 + 16(4) + 2 \rvert = 130}$</td>
+				<td>${\leq}$</td>
+				<td>${(1) \lvert (4)^4 \rvert = 256}$</td>
+				<td>True</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>
+		From our analysis above, we see that when ${n > 4,}$ the proposition is
+		true. This is because once we find a single pair of witnesses, there are
+		<span class="underlineText">infinitely many</span> pairs of witnesses. This
+		is because we're comparing the absolute values of the functions ${f}$ and
+		${g.}$ Any value greater than ${C,}$ call it ${C',}$ and any value greater
+		than ${k,}$ call it ${k',}$ implies that ${C' > C}$ and ${k' > k.}$ This in
+		turn implies that ${C'\lvert g(x) \rvert \geq C\lvert g(x) \rvert}$ whenever
+		${x > k' > k.}$ As such, we change our value for the witness ${k:}$ The
+		proposition above is true when ${k = 4}$ and ${C = 1.}$
+	</p>
+	<p>
+		Now, if we could never find values of ${k}$ and ${C}$ such that ${\lvert
+		f(n) \rvert \leq C \lvert g(n) \rvert}$ is true, then the proposition
+		&#8220;${f(n)}$ is ${O(g(n))}$&#8221; is false.
+	</p>
+	<p>
+		Notice further that we could have replaced ${g(n) = n^4}$ with another
+		function. It could have been ${g(n) = n^5}$ or ${g(n) = n^3 + 1,}$ in which
+		case we could've said &#8220;${f(n)}$ is ${O(n^5)}$&#8221; and
+		&#8220;${f(n)}$ is ${O(n^3 + 1)}$&#8221; respectively. Big-O notation is
+		just a means of comparing the growth rate of functions: ${f(n)}$ grows
+		slower than some fixed multiple of ${g(n)}$ as ${n}$ approaches positive
+		infinity.
+	</p>
+	<p>
+		Because of this fact, we would have also said that ${f(n) = 4n^2 + 16n + 2}$
+		is ${O(n^2).}$ Why? Because we can come up with a pair of ${C}$ and ${k}$
+		that satisfy the definition: ${k = 0}$ and ${C = 23.}$ Once more, we can say
+		that ${4n^2 + 16n + 2}$ is ${O(n^2),}$ and vice versa, that ${n^2}$ is
+		${O(4n^2 + 16n + 2.)}$ When we have this relationship between ${f(n)}$ and
+		${g(n),}$ we say that the big-O relations are
+		<span class="term">of the same order.</span>
+	</p>
+	<p>
+		When we see ${f(n) \in O(g(n)),}$ it's helpful to interpret the proposition
+		expressed as something along the lines of:
+	</p>
+	<ul>
+		<li>
+			Eventually, ${f(n)}$ is less than some scaled up version of ${g(n).}$
+		</li>
+		<li>${f}$'s growth rate is no greater than ${g}$'s growth rate.</li>
+		<li>${f}$ can't grow any faster than ${g.}$</li>
+	</ul>
+	<p>Here are some other examples:</p>
+	<ul>
+		<li>${n - 1 \in O(n).}$</li>
+		<p>True. Suppose ${C = 1}$ and ${k = 0.}$</p>
+		<p>Then ${n - 1 \leq 1 \cdot n}$ for all ${n \in \R^{+}.}$</p>
+		<li>${n + 1 \in O(n).}$</li>
+		<p>True. Suppose ${C = 2}$ and ${k = 1.}$</p>
+		<p>Then ${n + 1 \leq 2n}$ for ${n > 1.}$</p>
+		<li>${2n - 1 \in O(n)}$</li>
+		<p>True. Suppose ${C = 3}$ and ${k = 0.}$</p>
+		<p>Then ${2n - 1 \leq 3n}$ for all ${n \in \R^{+}.}$</p>
+	</ul>
+	<p>
+		The key point: As long as we find some constants ${C}$ and ${k}$ that
+		satisfy the relation ${\lvert f(n) \rvert \leq C\lvert g(n) \rvert}$
+		whenever ${n > k}$ and where ${n \in \R}$ or ${n \in \Z,}$ we've satisfied
+		the definition.
 	</p>
 </section>
 
-<section id="linear_search">
-	<h3>Linear Search</h3>
+<section id="big_omega_notation">
+	<h2>Big-Omega Notation</h2>
 	<p>
-		The simplest searching algorithm is
-		<span class="italicsText">linear search</span>. Linear search works as such:
-		First, compare ${x}$ and ${a_0,}$ the first element in the list. If ${x =
-		a_0,}$ then the solution is 0, the location of ${a_0.}$ If ${x \neq a_0,}$
-		compare ${x}$ with ${a_1.}$ If ${x = a_1,}$ then the solution is 1, the
-		position of ${a_1.}$ Otherwise, compare ${x}$ with ${a_2.}$ We continue this
-		process until either (a) a match is found, or (b) we have gone through the
-		entire list.
+		While Big-O notation has been used for centuries, Big-Omega notation was
+		introduced by Donald Knuth in 1976 to remedy the misuse of Big-O notation.
+		The shortcoming of Big-O notation is that it only provides an upper bound
+		&mdash; ${g(n)}$ &mdash; for the size of ${f(n)}$ given large values of
+		${n.}$ The misuse arises when we use Big-O notation to somehow communicate a
+		lower bound. As we know, Big-O notation cannot express a lower bound by
+		definition. Responding to this problem, Donald Knuth introduced Big-Omega
+		notation:
 	</p>
-	<p>In pseudocode:</p>
-	<figure class="math-display">
-		<div class="syntax">
-			<ul>
-				<li>${\ell \coloneqq [a_1, a_2, \ldots, a_n]}$</li>
-				<li>${x \coloneqq {searchTerm} \in \Z}$</li>
-				<li>${linearSearch(x, \ell)}$</li>
-				<ul>
-					<li>${i \coloneqq 1}$</li>
-					<li>${\textit{while}}$ (${i \leq n}$):</li>
-					<ul>
-						<li>
-							${ \begin{cases} \textit{if } (a_i = x) &\implies &\textit{
-							location} \coloneqq i \\ \textit{else } &\implies &\textit{
-							location} \coloneqq 0 \end{cases} }$
-						</li>
-						<li>${i \coloneqq i + 1}$</li>
-					</ul>
-					<li>${\textit{return location}}$</li>
-				</ul>
-			</ul>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> Suppose ${f}$ and ${g}$ are
+				functions from ${\N \to \R}$ or from ${\R \to \R.}$ If there are
+				positive constants ${C}$ and ${k}$ such that whenever ${n > k,}$ the
+				following is true:
+			</p>
+			<figure>
+				<div>
+					<p>${\lvert f(n) \rvert \geq C\lvert g(n) \rvert}$</p>
+				</div>
+			</figure>
+			<p>We say that ${f(n)}$ is big-Omega of ${g(n),}$ and write:</p>
+			<figure>
+				<div>
+					<p>${f(n) \in \Omega(g(n))}$</p>
+				</div>
+			</figure>
 		</div>
 	</figure>
-</section>
-
-<section id="binary_search">
-	<h3>Binary Search</h3>
 	<p>
-		Another searching algorithm we could use is
-		<span class="term">binary search</span>. Binary search works much like how
-		we would look for a word in a dictionary. To begin, the list's elements must
-		be ordered from least to greatest. Only then can we perform the search.
+		Notice that the only difference between Big-O and Big-Omega is that the
+		inequality is reversed. Breaking the definition down into a checklist:
 	</p>
+	<figure>
+		<ol class="checklist">
+			<h3 class="listHeader">Big-Omega Checklist</h3>
+			<li>There are two functions, ${f}$ and ${g.}$</li>
+			<li>One of the following is true:</li>
+			<ol>
+				<li>${f}$ and ${g}$ map integers to real numbers,</li>
+				<em>or</em>
+				<li>${f}$ and ${g}$ map real numbers to real numbers.</li>
+			</ol>
+			<li>There are two constants, ${C}$ and ${k.}$</li>
+			<li>If ${n > k,}$ then:</li>
+			<ol>
+				<li>${\lvert f(n) \rvert > C\lvert g(n) \rvert }$</li>
+				<em>or</em>
+				<li>${\lvert f(n) \rvert = C\lvert g(n) \rvert }$</li>
+			</ol>
+		</ol>
+	</figure>
 	<p>
-		Assuming the elements are ordered, we begin: Suppose our search term is
-		${x,}$ and our list contains ${n}$ elements. First, locate the list's middle
-		element, ${a_{m},}$ where ${m = \lfloor \frac{n+1}{2} \rfloor.}$ If ${x =
-		a_{m}}$ then our search is complete. Otherwise, if ${x \neq a_{m},}$ then we
-		split the list in half. This results in two new lists, ${[a_1, \ldots,
-		a_{m}]}$ and ${[a_{m + 1}, \ldots, a_n].}$ If ${a_{m} < x,}$ then we examine
-		the second-half of the list ${[a_{m + 1}, \ldots, a_n].}$ If ${a_{m} > x,}$
-		then we examine the first-half of the list ${[a_1, \ldots, a_{n/2}].}$
-		Examining that list, we perform the same procedure: Locate the middle
-		element; compare; split. We keep repeating this until we either (1) find a
-		match, or (2) have no more lists to split. Consider the diagram below:
+		If we check all of the boxes above, we can say that ${f(n) \in
+		\Omega(g(n)).}$ Whenever we see the proposition ${f(n) \in \Omega(g(n)),}$
+		we should interpret it as follows:
 	</p>
-	<p>In pseudocode:</p>
-	<figure class="math-display">
-		<div class="syntax">
-			<ul>
-				<li>
-					${\ell \coloneqq [a_1, a_2, \ldots, a_n] : a_1 < a_2 < \ldots < a_n}$
-				</li>
-				<li>${x \coloneqq \textit{search term} }$</li>
-				<li>${i \coloneqq 1}$</li>
-				<li>${j \coloneqq n}$</li>
-				<li>${\textit{binarySearch}(x, \ell)}$</li>
-				<ul>
-					<li>${\textit{while} (i < j):}$</li>
-					<ul>
-						<li>${m \coloneqq \lfloor \frac{i + j}{2} \rfloor }$</li>
-						<li>
-							${ \begin{cases} \textit{if } (x > a_m) &\implies &i \coloneqq m +
-							1 \\ \textit{else } &\implies &j \coloneqq m \end{cases} }$
-						</li>
-					</ul>
-					<li>
-						${ \begin{cases} \textit{if } (x = a_i) &\implies &\textit{
-						location} \coloneqq i \\ \textit{else } &\implies &\textit{
-						location} \coloneqq 0 \end{cases} }$
-					</li>
-					<li>${\textit{return}}$ ${location}$</li>
-				</ul>
-			</ul>
+	<ul>
+		<li>
+			Eventually, ${f(n)}$ is <span class="underlineText">more than</span> some
+			scaled up version of ${g(n).}$
+		</li>
+		<li>
+			${f}$'s growth rate is <span class="underlineText">no less</span> than
+			${g}$'s growth rate.
+		</li>
+		<li>${f}$ can't grow any slower than ${g.}$</li>
+	</ul>
+	<p>
+		Essentially, we're establishing a floor, or lower bound, in terms of
+		${g(n).}$ For example, consider the following proposition:
+	</p>
+	<figure>
+		<div>
+			<p>
+				Given ${f(n) = 4n^2 + 16n + 2,}$ ${f(n) \in \Omega(n^2),}$ where ${n \in
+				\R^{+}.}$
+			</p>
 		</div>
 	</figure>
-</section>
-
-<section id="sorting">
-	<h2>Sorting</h2>
+	<p>Once more, we need witnesses ${C}$ and ${k}$ such that:</p>
+	<figure>
+		<div>
+			<p>
+				${\lvert 4n^2 + 16n + 2 \rvert \geq C\lvert n^2 \rvert }$ where ${n >
+				k.}$
+			</p>
+		</div>
+	</figure>
 	<p>
-		The previous algorithms &mdash; and many other algorithms &mdash; depend on
-		ordered inputs. In other words, the algorithms only work under the
-		assumption that its set of inputs are
-		<span class="italicsText">sorted</span>. Sorting a list of elements requires
-		transforming an unordered list into a list where the elements are ordered
-		from least to greatest. The problem of sorting elements creates an entirely
-		separate class of algorithms: <span class="term">sorting algorithms</span>.
-		More explicitly: The sorting algorithm's purpose is to take an unordered
-		list, say ${[ 1, 3, 2, 4],}$ and output an ordered list, ${[1, 2, 3, 4].}$
+		This is straightforward. Suppose ${C = 1}$ and ${k = 0.}$ Then suppose ${n =
+		1.}$ We have:
 	</p>
-
-	<section id="bubble_sort">
-		<h3>Bubble Sort</h3>
-		<p>
-			The first sorting algorithm we consider the
-			<span class="term">bubble sort</span> (also called the
-			<span class="italicsText">sinking sort</span>). The earliest reference of
-			bubble sort was in a 1956 paper by computer scientist Edward H.
-			Friend.<label for="friendE" class="margin-toggle"><sup></sup></label>
-			<input
-				type="checkbox"
-				id="friendE"
-				class="margin-toggle sidenote-number"
-			/>
-			<span class="sidenote"
-				>Friend, E., Sorting on Electronic Computer Systems, J. ACM 3, 134-168
-				(1956) (the article refers to the algorithm as "sorting by exchange"
-				rather than bubble sort).</span
-			>
-			Bubble sort is straightforward: We look at the first element, then compare
-			it with the second. If the second is larger than the first, we switch
-			their positions. Otherwise, we leave them as is. Then we look at the
-			second element, and compare it with the third. If the third element is
-			larger, we switch their positions. Otherwise, we leave them as is. Then we
-			look at the third, the fourth, the fifth, and so on. We continue this
-			process over and over again until no switches are made. Graphically, this
-			has the appearance of the largest elements &#8220;bubbling up&#8221; the
-			list.
-		</p>
-		<p>
-			For example, suppose we have the list ${\lang 3, 4, 1, 8, 2 \rang.}$ The
-			bubble sort for this list would look as such:
-		</p>
-		<figure class="table">
-			<table class="truth_table">
-				<thead>
-					<th colspan="4">
-						Initial state: ${\ell = \lang 3, 4, 1, 8, 2 \rang}$
-					</th>
-				</thead>
-				<thead>
-					<th>Pass</th>
-					<th>Result of: ${\ell[i] > \ell[i + 1]}$</th>
-					<th>Swap?</th>
-					<th>Resulting State</th>
-				</thead>
-				<tbody>
-					<tr>
-						<td rowspan="4">1</td>
-						<td>${3 > 4 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 3, 4, 1, 8, 2 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${4 > 1 \implies }$ true</td>
-						<td>yes</td>
-						<td>${\lang 3, 1, 4, 8, 2 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${4 > 8 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 3, 1, 4, 8, 2 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${8 > 2 \implies }$ true</td>
-						<td>yes</td>
-						<td>${\lang 3, 1, 4, 2, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td rowspan="4">2</td>
-						<td>${3 > 1 \implies }$ true</td>
-						<td>yes</td>
-						<td>${\lang 1, 3, 4, 2, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${3 > 4 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 3, 4, 2, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${4 > 2 \implies }$ true</td>
-						<td>yes</td>
-						<td>${\lang 1, 3, 2, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${4 > 8 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 3, 2, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td rowspan="4">3</td>
-						<td>${1 > 3 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 3, 2, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${3 > 2 \implies }$ true</td>
-						<td>yes</td>
-						<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${3 > 4 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${4 > 8 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td rowspan="4">4</td>
-						<td>${1 > 2 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${2 > 3 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${3 > 4 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td>${4 > 8 \implies }$ false</td>
-						<td>no</td>
-						<td>${\lang 1, 2, 3, 4, 8 \rang}$</td>
-					</tr>
-					<tr>
-						<td colspan="4">end</td>
-					</tr>
-				</tbody>
-			</table>
-		</figure>
-		<p>Implementing the algorithm in pseudocode:</p>
-		<figure class="math-display">
-			<div class="syntax">
-				<ul>
-					<li>${\ell = \lang a_1, a_2, \ldots, a_n \rang : n \geq 2}$</li>
-					<li>${\textit{bubble-sort}(\ell)}$</li>
-					<ul>
-						<li>${\textit{for}}$ ${i \coloneqq 1 \textit{ to } n - 1}$:</li>
-						<ul>
-							<li>
-								<span class="monoText"
-									>${\textit{for}}$ ${j \coloneqq 1 }$ ${\textit{to}}$ ${n -
-									i}$:</span
-								>
-							</li>
-							<ul>
-								<li>
-									${\textit{if }(a_j > a_{j + 1}) \implies \textit{swap}(a_j,
-									a_{j+1}) }$
-								</li>
-							</ul>
-						</ul>
-					</ul>
-				</ul>
-			</div>
-		</figure>
-		<p>
-			As we can tell, the bubble sort algorithm is not very efficient. However,
-			it's worth investigating because (1) it's an algorithm traditionally
-			presented early in the study of algorithms, and (2) it provides a good
-			exercise in analyzing algorithms.
-		</p>
-	</section>
-
-	<section id="insertion_sort">
-		<h3>Insertion Sort</h3>
-		<p>
-			Like bubble sort, <span class="term">insertion sort</span> is not very
-			efficient, but we again explore its mechanics for the aforementioned
-			reasons.
-		</p>
-		<p>
-			In insertion sort, we first look at the second element. Then, we compare
-			this second element with the first element. If it is less than or equal to
-			the first element, we insert it before the first element. If it is greater
-			than the first element, we leave it in place. After this computation, the
-			first and second elements are in place. So, we next look at the third
-			element, and compare it to the first element. If the third element is less
-			than or equal to the first element, then it is inserted before the first
-			element. If the third element is greater than the first element, then it
-			is compared to the second element. If it is less than or equal to the
-			second element, then it is inserted before the second element. If it is
-			greater than the second element, then it is left in place. We then look at
-			the fourth element, the fifth, the sixth, and so on, repeating the process
-			until the entire list is sorted.
-		</p>
-		<p>In pseudocode:</p>
-		<figure class="math-display">
-			<div class="syntax">
-				<ul>
-					<li>${\ell \coloneqq \text{length of sequence } A}$</li>
-					<li>${\textit{for } j \coloneqq 1 \textit{ to } \ell:}$</li>
-					<ul>
-						<li>${k = A_i}$</li>
-						<li>${j = i}$</li>
-						<li>${\textit{while } (j > 0) \land (A_{j-1} > k)}$
-							<ul>
-								<li>${A_j = A_{j - 1}}$</li>
-								<li>${j--}$</li>
-							</ul>
-						</li>
-						<li>${A_j = k}$</li>
-					</ul>
-				</ul>
-			</div>
-		</figure>
-	</section>
-</section>
-
-<section id="greedy_algorithms">
-	<h2>Greedy Algorithms</h2>
+	<figure>
+		<div>
+			$$ \begin{aligned} \lvert 4(1)^2 + 16(1) + 2 \rvert &\geq (1)(1)^2 \\[1em]
+			22 &\geq 1 \end{aligned} $$
+		</div>
+	</figure>
 	<p>
-		Some algorithms are designed to solve
-		<span class="term">optimization problems</span> &mdash; problems where we
-		are asked to minimize or maximize some parameter. Examples of such problems
-		include: What is the shortest possible path of connecting flights between
-		Tokyo and New York? What arrangement of beers in a cooler maximizes the
-		amount of beers we can fit in a single cooler? What is the most ideal way to
-		gerrymander a voting district? All of these questions pose optimization
-		problems.
-	</p>
-	<p>
-		One approach to solving optimization problems is to use a
-		<span class="term">greedy algorithm</span> &mdash; an algorithm that selects
-		the best possible choice at each step towards solving the problem. If the
-		algorithm finds a solution, we must then determine whether the solution is
-		optimal. This is done by either (a) proving that the solution is optimal, or
-		(b) showing a counterexample where the algorithm returns a suboptimal
-		solution. If we manage (a), then the algorithm is correct. If we manage (b),
-		then the algorithm is incorrect.
-	</p>
-	<p>
-		Let's consider a simple greedy algorithm. The problem: Make ${x}$ cents of
-		change wih quarters, dimes, nickels, and pennies with the least total number
-		of coins. The greedy algorithm would work as such: Suppose ${q}$ is a
-		quarter, ${d}$ is a dime, ${n}$ is a nickel, and ${p}$ is a penny. We are
-		asked to generate ${C}$ cents of change. Given ${C,}$ we subtract the
-		largest denomination, call it ${k_0,}$ leaving an amount of ${C - k_0.}$ We
-		then subtract from ${C - k_0}$ the next largest denomination, call it
-		${k_1,}$ leaving ${C - k_1.}$ We continue doing so until we arrive at ${C -
-		k_n = 0.}$
-	</p>
-	<p>
-		For example, given ${28}$ cents of change, we use a quarter, leaving ${28 -
-		25 = 3.}$ We then use a penny, ${3 - 1 = 2.}$ Another penny, ${2 - 1 = 1.}$
-		And another penny, ${1 - 1 = 0.}$ In this case, the optimal amount is 1
-		quarter and 3 pennies, for a total of 4 coins.
+		which is true. The function ${f(n) = 4n^2 + 16n + 2}$ cannot run slower than
+		${g(n) = n^2.}$ Or, put another way, ${f(n) = 4n^2 + 16n + 2}$ always runs
+		faster than ${g(n) = n^2.}$ Again, the brunt of our work will almost always
+		be to look for a ${C}$ and a ${k}$ that satisfy the relation.
 	</p>
 </section>
+
+<section id="big_theta_notation">
+	<h2>Big-Theta Notation</h2>
+</section>
+
 {% endblock %}

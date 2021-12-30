@@ -4,8 +4,43 @@
 <title>Graph Theory</title>
 {% endblock %} {% block content %}
 <h1>Graph Theory</h1>
+<section id="introduction">
+	<p>
+		<span class="drop">G</span>raph theory is a tremendously important field in
+		computer science. If we've ever wondered how Facebook can suggest friends so
+		well (almost eerily well), it's because of graph theory. Managing traffic,
+		creating family trees, scheduling events, tracing historical origins, the
+		mess of yarn, photos, and notes on an investigator's board &mdash; that's
+		graph theory.
+	</p>
+	<p>
+		Here's a problem sociologists and media outlets like Buzzfeed seem to obsess
+		over:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				On average, who has more opposite-gender sexual partners &mdash; men or
+				women?
+			</p>
+		</div>
+	</figure>
+	<p>
+		To simplify the mathematics behind this problem (not to make a political
+		statement), we'll suppose that there are only two genders: men and women. If
+		we read through most of the literature, we'd find that the dominant
+		conclusion is that men have more opposite-gender sexual partners than women.
+		This is done through numerous, meticulous studies. Some go so far as to
+		monitor subject surveys for years. And yet still, the question resurges
+		every so often. As long as it sells, we suppose.
+	</p>
+	<p>
+		Mathematically, however, the question is a non-starter. To see why, we begin
+		by stating a few definitions in graph theory.
+	</p>
+</section>
 <section id="forray">
-	Consider the following diagram:
+	<p>Informally, a graph is just a bunch of dots and lines:</p>
 	<figure>
 		<img
 			src="{% static 'images/graph1.svg' %}"
@@ -17,8 +52,7 @@
 		<figcaption>A graph with 5 vertices and 8 edges.</figcaption>
 	</figure>
 	<p>
-		In graph theory, we call this diagram a <span class="term">graph</span>. A
-		graph is an object consisting of two objects: vertices and edges. Each of
+		A graph is an object consisting of two objects: vertices and edges. Each of
 		the circles, or points, is called a <span class="term">vertex</span>, or
 		<span class="term">node</span> (we will use the term vertex; plural
 		<span class="italicsText">vertices</span>). Each of the lines connecting the
@@ -27,7 +61,7 @@
 		on what this distinction means in later sections. For now, we will say that
 		a simple graph has the following constraints:
 	</p>
-	<figure class="math-display">
+	<figure>
 		<div class="rule">
 			<ol>
 				<li>
@@ -50,12 +84,13 @@
 		</div>
 	</figure>
 	<p>Having said all this, we now state our first definition formally:</p>
-	<figure class="math-display">
+	<figure>
 		<div class="rule">
 			<p>
-				<span class="topic">Definition.</span> A graph, denoted ${G,}$ is an
-				ordered pair ${(V, E).}$ I.e., ${G = (E, V).}$ The first element of the
-				pair, ${V,}$ is the set of <span class="italicsText">vertices</span>, or
+				<span class="topic">Definition: Graph.</span> A graph, denoted ${G,}$ is
+				an non-empty ordered pair ${(V, E).}$ I.e., ${G = (E, V).}$ The first
+				element of the pair, ${V,}$ is the set of
+				<span class="italicsText">vertices</span>, or
 				<span class="italicsText">nodes</span>, of ${G.}$ The second element of
 				the pair, ${E,}$ is the set of <span class="italicsText">edges</span> of
 				${G.}$ Each edge has 1 or 2 vertices associated with it, called the
@@ -64,7 +99,14 @@
 			</p>
 		</div>
 	</figure>
-	<p>Let's apply the definition above to another simple graph:</p>
+	<p>
+		Note that in the definition above, we specified that the ordered pair must
+		be non-empty. We place this condition to simplify many of the theorems we
+		will explore. In later sections, we'll consider how the special case of the
+		empty graph changes our theorems. For now, assume that all graphs are
+		non-empty. That said, let's apply the definition above to another simple
+		graph:
+	</p>
 	<figure>
 		<img
 			src="{% static 'images/graph2.svg' %}"
@@ -79,25 +121,420 @@
 		The graph above, ${H,}$ consists of 4 vertices and 4 edges. The vertices are
 		denoted:
 	</p>
-	<figure class="math-display">
+	<figure>
 		<div>
 			<p>${V = \{ v_1, v_2, v_3, v_4 \}}$</p>
 		</div>
 	</figure>
 	<p>And the edges:</p>
-	<figure class="math-display">
+	<figure>
 		<div>
-			$$ \begin{aligned} E &= \{ e_1, e_2, e_3, e_4 \} \\[1em] &= \{ \{ v_1, v_2 \}, \{ v_2, v_3
-			\}, \{ v_3, v_4 \}, \{ v_4, v_1 \} \} \end{aligned} $$
+			$$ \begin{aligned} E &= \{ e_1, e_2, e_3, e_4 \} \\[1em] &= \{ \{ v_1, v_2
+			\}, \{ v_2, v_3 \}, \{ v_3, v_4 \}, \{ v_4, v_1 \} \} \end{aligned} $$
 		</div>
 	</figure>
 	<p>The entire graph:</p>
-	<figure class="math-display">
+	<figure>
 		<div>
 			$$ \begin{aligned} H &= (V, E) \\[1em] &= ( \{ v_1, v_2, v_3, v_4 \}, \{
-			e_1, e_2, e_3, e_4 \}) \\[1em] &= (\{ v_1, v_2, v_3, v_4 \}, \{ \{ v_1, v_2 \}, \{
-			v_2, v_3 \}, \{ v_3, v_4 \}, \{ v_4, v_1 \} \}) \end{aligned} $$
+			e_1, e_2, e_3, e_4 \}) \\[1em] &= (\{ v_1, v_2, v_3, v_4 \}, \{ \{ v_1,
+			v_2 \}, \{ v_2, v_3 \}, \{ v_3, v_4 \}, \{ v_4, v_1 \} \}) \end{aligned}
+			$$
 		</div>
 	</figure>
+	<p>
+		Now, just because the graph is non-empty does not imply that the graph must
+		have edges. For our purposes, it's perfectly fine to have graphs with no
+		edges. For example, here's a graph with no edges:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/no_edge_graph.svg' %}"
+			alt="no edge graph"
+			loading="lazy"
+			class="forty-p"
+		/>
+		<figcaption>The graph ${M}$</figcaption>
+	</figure>
+	<p>The graph above consists of vertices, but no edges:</p>
+	<figure>
+		<div>
+			<p>${V = \{ v_1, v_2, v_3 \}}$</p>
+			<p>${E = \varnothing}$</p>
+		</div>
+	</figure>
+	<p>If there are edges, however, we have the following definition:</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition: Adjacent Nodes.</span> Two nodes ${v_i}$
+				and ${v_j}$ are <span class="term">adjacent</span> if ${\{ x_i, x_j \}
+				\in E.}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		In other words, if the nodes ${v_i}$ and ${v_j}$ are connected with an edge,
+		we say that ${v_i}$ and ${v_j}$ are adjacent. For example, these two nodes
+		are adjacent:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/adjacent_nodes.svg' %}"
+			alt="adjacent nodes"
+			loading="lazy"
+			class="forty-p"
+		/>
+		<figcaption>
+			Some nodes are adjacent, others are not. Notice that we can name nodes
+			however way we'd like.
+		</figcaption>
+	</figure>
+	<p>
+		In the graph above, the nodes ${x_1}$ and ${x_2}$ are adjacent. The nodes
+		${x_2}$ and ${x_3}$ are adjacent, but ${x_1}$ and ${x_3}$ are not. Closely
+		related to adjacency is <span class="term">incidence</span>:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition: Incidence.</span> An edge ${e = \{ v_i,
+				v_j \}}$ is <span class="term">incident</span> to its
+				<span class="term">endpoints</span> ${v_i}$ and ${v_j.}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		For example, in the graph below, the edge ${e_1}$ is incident to ${n_1}$ and
+		${n_3:}$
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/incidence.svg' %}"
+			alt="incident nodes"
+			loading="lazy"
+			class="fifty-p"
+		/>
+		<figcaption>Incidence depends on the edge in consideration</figcaption>
+	</figure>
+	<p>
+		With the definition of incidence, we can talk about the
+		<span class="term">degrees</span> of a node:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition: Degree of a Node.</span> The number of
+				edges incident to a node is the <span class="term">degree</span> of a
+				node.
+			</p>
+		</div>
+	</figure>
+	<p>
+		For example, the node ${p_6}$ in the graph below has a degree of ${5.}$ All
+		the other nodes have a degree of ${1.}$
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/degree_of_a_node.svg' %}"
+			alt="degree of a node"
+			loading="lazy"
+			class="forty-p"
+		/>
+		<figcaption>A graph where there are different degrees.</figcaption>
+	</figure>
+	<p>
+		Next, recall that we first stated that we will only consider simple graphs.
+		The formal definition for a simple graph:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> A graph is
+				<span class="term">simple</span> if it has no loops or multiple edges.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Thus, the graphs below are not simple graphs. Graph ${A}$ contains a loop,
+		and graph ${B}$ contains multiple edges:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/non_simple_graph.svg' %}"
+			alt="non-simple graphs"
+			loading="lazy"
+			class="seventy-p"
+		/>
+		<figcaption>${A}$ contains a loop, and ${B}$ has multiple edges</figcaption>
+	</figure>
+	<p>
+		A loop is simply an edge that connects a node to itself, and a multiple
+		edge, also called a <span class="term">multiedge</span>, is an edge that
+		consists of edges that are really the same (connecting the same points).
+	</p>
+	<p>
+		Returning to our Buzzfeed question, we can find an answer with the
+		definitions we have so far. First, let's say the total population in the
+		United States is ${V.}$ We'll think of this as the set of all nodes. In the
+		United States, there are roughly ${300~000~000}$ people. Thus, ${n(V)
+		\approx 300~000~000.}$ Within the set ${V,}$ we have two subsets: ${V_m}$
+		(the number of men) and ${V_w}$ (the number of women). There are roughly
+		${147~600~000}$ men. And the number of women is roughly ${152~400~000.}$
+		Thus, we have:
+	</p>
+	<figure>
+		<div>
+			<p>${n(V_m) \approx 147~600~000}$</p>
+			<p>${n(V_w) \approx 152~400~000}$</p>
+		</div>
+	</figure>
+	<p>
+		Now, we don't know the size of the set ${E}$ (the set of all edges). But, if
+		we represented each edge as a sexual relationship between a node in ${V_m}$
+		to a node in ${V_w,}$ the degree of each node is the number of sexual
+		partners for that particular node. Thus, what we're really looking for is
+		the ratio between the average degree for a node in ${V_m,}$ and the average
+		degree for a node in ${V_w.}$ Let's denote the variables:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				Let ${A_m}$ be the average number of opposite-gender partners for men.
+			</p>
+			<p>
+				Let ${A_w}$ be the average number of opposite-gender partners for women.
+			</p>
+		</div>
+	</figure>
+	<p>The question then, is, what is the value of this expression:</p>
+	<figure>
+		<div>
+			<p>${\dfrac{A_m}{A_w}}$</p>
+		</div>
+	</figure>
+	<p>
+		To find ${A_m,}$ we can just sum all of the degrees, and divide by the
+		number of nodes:
+	</p>
+	<figure>
+		<div>
+			<p>${A_m = \dfrac{\sum\limits^{x \in V_m} \text{deg}(n)}{n(V_m)}}$</p>
+		</div>
+	</figure>
+	<p>
+		The sum in the expression is a bit too complicated to look at. Can we
+		simplify it? Sure. Since there are only opposite gender partners, all of the
+		edges appear once, and only once, when we're counting all of the degrees.
+		Thus, summing all of the degrees is just summing all of the edges:
+	</p>
+	<figure>
+		<div>
+			<p>${A_m = \dfrac{n(E)}{n(V_m)}}$</p>
+		</div>
+	</figure>
+	<p>The same analysis applies for computing ${A_w:}$</p>
+	<figure>
+		<div>
+			<p>${A_w = \dfrac{n(E)}{n(V_w)}}$</p>
+		</div>
+	</figure>
+	<p>Plugging these quantities into the original expression:</p>
+	<figure>
+		<div>
+			$$ \begin{aligned} \dfrac{A_m}{A_w} &=
+			\dfrac{\dfrac{n(E)}{n(V_m)}}{\dfrac{n(E)}{n(V_w)}} \\[2em] &=
+			\dfrac{n(V_w)}{n(V_m)} \end{aligned} $$
+		</div>
+	</figure>
+	<p>Now that's interesting. Using the population estimates, we have:</p>
+	<figure>
+		<div>
+			$$ \begin{aligned} \dfrac{A_m}{A_w} &= \dfrac{n(V_w)}{n(V_m)} \\[1em]
+			&\approx \dfrac{152~400~000}{147~600~000} \\[1em] &\approx 1.0325
+			\end{aligned} $$
+		</div>
+	</figure>
+	<p>
+		Based on a purely mathematical analysis, men have roughly 3% more opposite
+		sex partners then women. We didn't need any survey, years of research, or
+		thousands of dollars in funding. Moreover, it has nothing to do with whether
+		men are more promiscuous than women, or some theory of the modern
+		patriarchy. It all came down to the simple fact that there are more women
+		than men in the United States.
+	</p>
+	<p>
+		Questions of this variety plague current literature. They appear in a
+		variety of mutations: Why do minority students, on average, study more with
+		non-minority students? Why are atheists, on average, more likely to marry
+		non-atheists rather than atheists? Why are white men more likely to marry
+		East Asian women?
+	</p>
+</section>
+
+<section id="graph_theory_and_scheduling">
+	<h2>Graph Theory & Scheduling</h2>
+	<p>
+		With the previous example, we used an edge to analyze the
+		<span class="term">affinity</span> between two nodes &mdash; the nodes have
+		some sort of connection, or attraction, to one another. We can, however,
+		also use graphs to analyze <span class="term">aversion</span> between two
+		nodes &mdash; the nodes cannot be near one another. Aversion is precisely
+		what we use to solve scheduling problems. For example, consider the issue of
+		scheduling final exams at a college. The goal is to ensure that no students
+		take two exams at the same time (or to minimize the possibility of that
+		event occurring). Suppose the college had five classes:
+	</p>
+	<ul>
+		<li>BIO100 (denoted ${b}$), and</li>
+		<li>CS100 (denoted ${c}$),</li>
+		<li>HIST100 (denoted ${h}$).</li>
+		<li>MATH100 (denoted ${m}$),</li>
+		<li>PHYS100 (denoted ${p}$),</li>
+	</ul>
+	<p>Now let's say we have the following data:</p>
+	<ul>
+		<li>There are students enrolled in both BIO100 and CS100.</li>
+		<li>There are students enrolled in both BIO100 and MATH100.</li>
+		<li>There are students enrolled in both CS100 and PHYS100.</li>
+		<li>There are students enrolled in both CS100 and MATH100.</li>
+		<li>There are students enrolled in both PHYS100 and MATH100.</li>
+		<li>There are students enrolled in both PHYS100 and HIST100.</li>
+	</ul>
+	<p>We can represent the data above with a graph:</p>
+	<figure>
+		<img
+			src="{% static 'images/scheduling.svg' %}"
+			alt="scheduling"
+			loading="lazy"
+			class="forty-p"
+		/>
+	</figure>
+	<p>
+		From the graph above, we can easily see where exams can't be scheduled. For
+		example, with CS100, we cannot schedule an exam at the same time as BIO100,
+		MATH100, or PHYS100. But, we can have the CS100 exam at the same time as
+		HIST100.
+	</p>
+	<p>
+		Now let's say we have the following time slots for the exam, all on a
+		Wednesday:
+	</p>
+	<ul>
+		<li>12:00 - 2:00pm, denoted ${c_1,}$</li>
+		<li>2:00 - 4:00pm, denoted ${c_2,}$</li>
+		<li>4:00 - 6:00pm, denoted ${c_3,}$</li>
+		<li>6:00 - 8:00pm, denoted ${c_4,}$</li>
+		<li>8:00 - 10:00pm, denoted ${c_5}$</li>
+	</ul>
+	<p>
+		Our job is to ensure we don't use the late exam slots. The goal is to assign
+		one of the time slots above such that nodes connected by an edge do not get
+		the same time slot. This is called a
+		<span class="term">graph coloring problem</span>:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Problem: Graph Coloring.</span> Given a graph ${G}$
+				and ${k}$ colors, assign a color to each node such that adjacent nodes
+				get different colors.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The minimum number of colors we need is called the
+		<span class="term">chromatic number</span> of the graph:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition: Chromatic Number.</span> The minimum
+				number of colors that solves a graph coloring problem is the
+				<span class="italicsText">chromatic number</span> of the graph ${G,}$
+				denoted ${\Chi (G).}$
+			</p>
+		</div>
+	</figure>
+	<p>
+		In our problem, a &#8220;color&#8221; is a time slot. Clearly, we can get
+		away with ${5}$ colors:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/scheduling1.svg' %}"
+			alt="scheduling"
+			loading="lazy"
+			class="forty-p"
+		/>
+	</figure>
+	<p>
+		But, we want to avoid the later time slots as much as we can. It looks like
+		we can manage with ${4}$ colors:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/scheduling2.svg' %}"
+			alt="scheduling"
+			loading="lazy"
+			class="forty-p"
+		/>
+	</figure>
+	<p>How about ${3}$ colors? A little trickier, but yes, we can:</p>
+	<figure>
+		<img
+			src="{% static 'images/scheduling3.svg' %}"
+			alt="scheduling"
+			loading="lazy"
+			class="forty-p"
+		/>
+	</figure>
+	<p>
+		Now here's the real challenge: Can we do it in ${2?}$ Unfortunately, no. It
+		cannot be done. This is because the nodes ${c,}$ ${b,}$ and ${m}$ have edges
+		connecting all through of them. Thus, we need, at a minimum, three colors.
+		Thus, we can conclude that ${3}$ is the chromatic number. It's the best we
+		can do.
+	</p>
+	<p>
+		In general, solving graph coloring problems is unbelievably difficult. In
+		fact, there is currently no known algorithm for finding chromatic numbers.
+		The unusual characteristic of graph coloring problems is that they're very
+		easy to verify solutions for, but it's tremendously difficult to find those
+		solutions (essentially, trying an exponential number of possibilities).
+	</p>
+	<p>
+		Graph coloring problems are members of a class of problems called
+		<span class="term">NP-complete problems</span>. There are roughly a thousand
+		such problems, and they all have the characteristic of being easy to verify,
+		but difficult to find, solutions for. Even more peculiar, solving just one
+		of the NP complete problems solves the rest of the problems (or,
+		alternatively, proving that no solution exists for just one problem proves
+		that no solution exists for all of the problems). These problems are not
+		purely academic. Software producers run into NP-complete problems repeatedly
+		in development, and firms spend a significant amount of money searching for
+		solutions or mitigating costs.
+	</p>
+	<section id="basic_coloring_algorithm">
+		<h3>Basic Coloring Algorithm</h3>
+		<p>
+			Although there is no algorithm that completely solves a graph coloring
+			problem, there are algorithms that can get us close. Here's a basic one:
+		</p>
+		<ol class="recipe">
+			<li>Order the nodes ${v_1, v_2, \ldots, v_n.}$</li>
+			<li>Order the colors ${c_1, c_2, \ldots, c_n.}$</li>
+			<li>
+				For ${i = 1, 2, \ldots, n:}$ 
+			</li>
+			<ol>
+				<li>Assign the lowest legal color to ${v_i.}$</li>
+			</ol>
+		</ol>
+		<p>
+			With the algorithm above, a &#8220;legal color&#8221; is a color that
+			hasn't been assigned to a node connected by an edge.
+		</p>
+	</section>
 </section>
 {% endblock %}

@@ -111,6 +111,9 @@ def disc_algorithms(request):
 def disc_graphTheory(request):
 	return render(request, "numerm/disc/disc_graphTheory.html")
 
+def disc_probability(request):
+	return render(request, "numerm/disc/disc_probability.html")
+
 # continuous math functions
 def cont_intervals(request):
 	return render(request, "numerm/cont/cont_intervals.html")
@@ -224,6 +227,9 @@ def calc_implicit(request):
 
 def calc_exponentials(request):
 	return render(request, "numerm/calc1/calc_exponentials.html")
+
+def calc_derivativeApplications(request):
+	return render(request, "numerm/calc1/calc_derivativeApplications.html")
 
 # Sequences & Series
 def sqs_index(request):

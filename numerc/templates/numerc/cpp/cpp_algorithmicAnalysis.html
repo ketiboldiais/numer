@@ -19,7 +19,11 @@
 		question, its answer, as well as illustrations of the answer applied. The
 		materials that follow assume a basic understanding of functions, limits,
 		sequences, and series (i.e., comfort with ideas from a basic calculus and
-		discrete mathematics course).
+		discrete mathematics course). For a thorough mathematical justification of
+		algorithmic analysis,
+		<a href="{% url 'numerm:disc_algorithms' %}"
+			><i>see</i> <em>Review of Mathematics: Analysis of Algorithms</em>.</a
+		>
 	</p>
 	<p>
 		One concern for analyzing algorithms is
@@ -51,6 +55,13 @@
 		is how the algorithm compares to another search algorithm,
 		<span class="italicsText">regardless of device</span>.
 	</p>
+	<div class="mainIdea">
+		<p>
+			Time complexity is the way we measure how much time an algorithm takes to
+			execute (the algorithm's <span class="italicsText">runtime</span>)
+			according to its input size.
+		</p>
+	</div>
 	<p>
 		Occasionally, analyzing algorithms requires determining the amount of
 		<span class="italicsText">space</span> an algorithm takes to execute. For
@@ -61,17 +72,278 @@
 	</p>
 	<p>
 		So how do we determine the amount of time or space an algorithm takes? The
-		first step is to count the number of operations performed as a function of
-		${n,}$ where ${n}$ is the number of input values. In these first few
-		sections, we will count the exact number of operations. However, as we
-		progress, we will learn that we rarely count every operation. Some
-		operations are counted, others ignored.
+		first step is to count the number of
+		<span class="underlineText">fundamental operations</span> performed as a
+		function of ${n,}$ where ${n}$ is the number of input values. The
+		fundamental operations can be defined as the set of the following
+		operations:
+	</p>
+	<ul>
+		<li>
+			Comparison operations:
+			<span class="monoText"> &gt; &lt; &leq; &geq; == !=</span>
+		</li>
+		<li>Arithmetic operations: <span class="monoText">- + * / %</span></li>
+		<li>Assignment operation: <span class="monoText">=</span></li>
+		<li>Bitwise operations: <span class="monoText"> & | ^ ~ << >> </span></li>
+		<li>Return operation: <span class="monoText">return</span></li>
+		<li>
+			Casting operation:
+			<span class="monoText">(${data~type}$) ${some~value}$</span>
+		</li>
+		<li>Boolean operations: <span class="monoText">&& || !</span></li>
+		<li>
+			Evaluation of Conditionals: <span class="monoText">if, elseif, else</span>
+		</li>
+	</ul>
+	<p>Overloaded operators perform multiple operations:</p>
+	<ul>
+		<li>
+			<span class="monoText">x++</span> is shorthand for
+			<span class="monoText">x = x + 1</span>, which consists of two operations:
+			addition (<span class="monoText">+</span>) and assignment (<span
+				class="monoText"
+				>=</span
+			>).
+		</li>
+		<li>
+			<span class="monoText">x--</span> is shorthand for
+			<span class="monoText">x = x - 1</span>, which consists of two operations:
+			subtraction (<span class="monoText">-</span>) and assignment (<span
+				class="monoText"
+				>=</span
+			>).
+		</li>
+		<li>
+			<span class="monoText">x+=y</span> is shorthand for
+			<span class="monoText">x = x + y</span>, which consists of two operations:
+			addition (<span class="monoText">+</span>) and assignment (<span
+				class="monoText"
+				>=</span
+			>).
+		</li>
+		<li>
+			<span class="monoText">x-=y</span> is shorthand for
+			<span class="monoText">x = x - y</span>, which consists of two operations:
+			subtraction (<span class="monoText">-</span>) and assignment (<span
+				class="monoText"
+				>=</span
+			>).
+		</li>
+		<li>
+			<span class="monoText">x*=y</span> is shorthand for
+			<span class="monoText">x = x * y</span>, which consists of two operations:
+			multiplication (<span class="monoText">*</span>) and assignment (<span
+				class="monoText"
+				>=</span
+			>).
+		</li>
+		<li>
+			<span class="monoText">x/=y</span> is shorthand for
+			<span class="monoText">x = x / y</span>, which consists of two operations:
+			division (<span class="monoText">/</span>) and assignment (<span
+				class="monoText"
+				>=</span
+			>).
+		</li>
+		<li>
+			<span class="monoText">x%=y</span> is shorthand for
+			<span class="monoText">x = x % y</span>, which consists of two operations:
+			the remainder operation (<span class="monoText">%</span>) and assignment
+			(<span class="monoText">=</span>).
+		</li>
+		<li>
+			The ternary operator,
+			<span class="monoText">condition ? ${result_1}$ : ${result_2}$</span> can
+			consist of multiple operations. It evaluates the condition, the results
+			(if necessary), and potentially an assignment.
+		</li>
+	</ul>
+	<p>
+		We list the operations as exhaustively as we can because in these first few
+		sections we will count all of the operations. However, as we progress, we
+		will learn that we rarely count every operation. Some operations are
+		counted, others ignored. That said, let's consider an example. Suppose we
+		had the following algorithm:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>int sum = 0;</li>
+			<li>for (int i = 0; i < n; i++):</li>
+			<ol>
+				<li>sum = sum + i;</li>
+			</ol>
+			<li>return sum;</li>
+		</ol>
+	</figure>
+	<p>Counting the number of operations:</p>
+	<figure>
+		<table class="alg">
+			<thead>
+				<th>Operation</th>
+				<th>Number of Executions</th>
+				<th>Comment</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">int sum = 0;</span></td>
+					<td>1</td>
+					<td rowspan="2">These operations are performed exactly once.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">int i = 0;</span></td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i < n;</span></td>
+					<td>${n + 1}$</td>
+					<td>
+						This comparison is performed after each execution of the loop's body
+						(it is <span class="monoText">true</span> ${n}$ times and
+						<span class="monoText">false</span> once).
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">i++;</span></td>
+					<td>${n + 1}$</td>
+					<td>
+						This operation (incrementing) is performed only if the test
+						condition (the comparison operation) returns
+						<span class="monoText">true</span>. Thus, it is performed ${n}$
+						times.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">sum + i</span></td>
+					<td>${n}$</td>
+					<td>
+						The addition operation is performed only if the test condition (the
+						comparison operation) returns true. Thus, it is performed ${n}$
+						times.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">sum = sum + i;</span></td>
+					<td>${n}$</td>
+					<td>
+						The assignment operation is performed only if the test condition
+						(the comparison operation) returns true. Thus, it is performed ${n}$
+						times.
+					</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">return sum;</span></td>
+					<td>${n}$</td>
+					<td>
+						The <span class="monoText">return</span> operation is performed
+						exactly once.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>Summing the number of executions for each operation (call it ${S}$):</p>
+	<figure>
+		<div>
+			$$ \begin{aligned} S &= 1 + 1 + (n+1) + (n+1) + n + n + n \\[1em] &= n + n
+			+ n + n + n + 1 + 1 + 1 + 1 \\[1em] &= 5n + 4 \end{aligned} $$
+		</div>
+	</figure>
+	<p>
+		This sum represents the running time function of the algorithm: ${f(n) =
+		5n+4.}$ When we conduct complexity analysis, we want to express this runtime
+		in terms of Big-O notation. To do so, we perform the following:
+	</p>
+	<ol>
+		<li>Remove the constants.</li>
+		<li>Remove the lowest terms.</li>
+	</ol>
+	<p>
+		In this case, the constant is ${5,}$ and the lowest term is ${4.}$ Dropping
+		the constant and the lowest term, we have some function ${g(n) = n,}$ and we
+		express this as ${O(n).}$ We call this
+		<span class="term">linear time</span>, and we say that &#8220;The algorithm
+		above runs no faster than ${n,}$&#8221; or &#8220;The runtime complexity is
+		${O(n).}$&#8221;
+	</p>
+	<p>Now, compare the algorithm above with the following:</p>
+	<figure>
+		<ol class="alg">
+			<li>return (n * (n + 1)) / 2</li>
+		</ol>
+	</figure>
+	<p>Counting the number of operations:</p>
+	<figure>
+		<table class="alg">
+			<thead>
+				<th>Operation</th>
+				<th>Number of Executions</th>
+				<th>Comment</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="monoText">n + 1</span></td>
+					<td>1</td>
+					<td rowspan="4">All of these operations perform exactly once.</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">n * result(n + 1)</span></td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">result(n + 1) / 2</span></td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td><span class="monoText">return result</span></td>
+					<td>1</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>Summing the number of executions:</p>
+	<figure>
+		<div>
+			$$ \begin{aligned} S &= 1 + 1 + 1 + 1\\[1em] &= 4 \end{aligned} $$
+		</div>
+	</figure>
+	<p>
+		This algorithm has a running time function of ${f(n) = 4.}$ Whenever the
+		running time function is constant, we say that the algorithm runs on
+		<span class="term">constant time</span>, and we denote this with ${O(1).}$
+		This is a concise way of saying that algorithm's runtime does not depend on
+		the input size ${n.}$ We can throw as many ${n}$ as we would like at the
+		algorithm, and the runtime will never change. It's constant.
+	</p>
+	<p>
+		Compare these two algorithms. Clearly, the first algorithm is slower than
+		the second. We have function ${g(n) = n,}$ and ${g(n) = 1.}$ If we plot
+		these two functions:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/linear_v_constant.svg' %}"
+			alt="Linear versus constant time"
+			loading="lazy"
+			class="seventy-p"
+		/>
+		<figcaption>
+			where ${n}$ is the size of the input and ${t}$ is time
+		</figcaption>
+	</figure>
+	<p>
+		we see that ${g(n)}$ will always grow faster than ${g(1).}$ This indicates
+		that ${g(1)}$ will always be faster than ${g(n)}$ &mdash; ${g(1)}$ never
+		grows to begin with.
 	</p>
 </section>
 
 <section id="exercises">
 	<h2 class="pset">Exercises</h2>
-	<p>Compute the Big-O complexity of the algorithms below.</p>
+	<p>
+		Compute the Big-O complexity of the algorithms below, attempting to count
+		the exact number of operations.
+	</p>
 	<ol class="ex grid" data-colcade="columns: .grid-col, items: .grid-item">
 		<div class="grid-col grid-col--1"></div>
 		<div class="grid-col grid-col--2"></div>
@@ -99,7 +371,7 @@
 				<p>We can determine the number of operations by way of a table:</p>
 				<table class="alg">
 					<thead>
-						<th>Statement</th>
+						<th>Operation</th>
 						<th>Number of Executions</th>
 						<th>Comment</th>
 					</thead>
@@ -272,11 +544,11 @@
 					cout << sum << endl;
 				}
 			</code></pre>
-			<details class="answer" open>
+			<details class="answer">
 				<summary>Solution</summary>
 				<table class="alg">
 					<thead>
-						<th>Statement</th>
+						<th>Operation</th>
 						<th>Number of Executions</th>
 						<th>Comment</th>
 					</thead>
@@ -337,5 +609,4 @@
 		</li>
 	</ol>
 </section>
-
 {% endblock %}

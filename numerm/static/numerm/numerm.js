@@ -19,6 +19,18 @@ function showNav() {
 }
 showNav();
 
+// Add input checkbox for checklist
+function addCheckBoxToCheckList() { 
+  const checkList = document.querySelectorAll("ol.checklist li");
+  for (let i = 0; i < checkList.length; i++) { 
+    const checkbox = document.createElement("input");
+    checkbox.setAttribute("type", "checkbox");
+    checkList[i].prepend(checkbox);
+  }
+}
+addCheckBoxToCheckList();
+
+
 
 /*!
  * Colcade v0.2.0
