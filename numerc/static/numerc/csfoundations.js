@@ -20,8 +20,6 @@ function addCheckBoxToCheckList() {
   }
 }
 
-
-
 // Pop Up
 function reveal() {
   const popups = document.getElementsByClassName("pop");
@@ -48,6 +46,7 @@ function showNav() {
   reveal();
   mainIdeaHeader();
   addCheckBoxToCheckList();
+  accordion();
 })();
 
 /*!

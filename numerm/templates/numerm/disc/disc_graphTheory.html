@@ -524,16 +524,110 @@
 		<ol class="recipe">
 			<li>Order the nodes ${v_1, v_2, \ldots, v_n.}$</li>
 			<li>Order the colors ${c_1, c_2, \ldots, c_n.}$</li>
-			<li>
-				For ${i = 1, 2, \ldots, n:}$ 
-			</li>
+			<li>For ${i = 1, 2, \ldots, n:}$</li>
 			<ol>
-				<li>Assign the lowest legal color to ${v_i.}$</li>
+				<li>If ${v_i}$ has no adjacent nodes, assign the lowest color.</li>
+				<li>Otherwise, if ${v_i}$ has adjacent nodes:</li>
+				<ol>
+					<li>
+						Among the adjacent nodes, determine the lowest color assigned. Call
+						it ${c_{\ell}.}$
+					</li>
+					<li>
+						Among the adjacent nodes, determine the highest color assigned. Call
+						it ${c_{h}.}$
+					</li>
+					<li>If there is a ${c_i < c_{\ell},}$ assign ${c_i}$ to ${v_i.}$</li>
+					<li>
+						If there is no color lower, assign the color ${c_{h + 1}}$ to
+						${v_i.}$
+					</li>
+				</ol>
+				<li>Increment ${i.}$</li>
+				<li>If ${i \leq n,}$ return to step ${3.}$</li>
+				<li>
+					Otherwise, if ${i > n,}$ return the pairings of ${v_n}$ and ${c_n.}$
+				</li>
 			</ol>
 		</ol>
 		<p>
-			With the algorithm above, a &#8220;legal color&#8221; is a color that
-			hasn't been assigned to a node connected by an edge.
+			We call this algorithm the
+			<span class="term">basic coloring algorithm</span>. It's an example of a
+			<span class="term">greedy algorithm</span> &mdash; an algorith that
+			attempts to accomplish the best result at each step, always moving
+			forward. With greedy algorithms, there is no notion of &#8220;going
+			back&#8221; and redoing a computation in light of new findings.
+		</p>
+		<p>
+			Examining the basic coloring algorithm, we can likely tell it works well
+			if all of the nodes have a low degree. For example, with the exam
+			scheduling problem, the highest degree was three, and we got away with
+			four colors. Better yet, we got away with three colors. Because of this
+			result, we can suspect that if the maximum degree in the graph is some
+			natural number ${d,}$ we would need, at most, one extra color. Let's state
+			this suspicion as a hypothesis and determine if it's true or false via
+			proof:
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Hypothesis.</span>
+					If every node in a graph ${G}$ has a degree less than or equal to
+					${d,}$ then the basic coloring algorithm uses at most ${d + 1}$
+					colors.
+				</p>
+			</div>
+		</figure>
+		<p>
+			If our hunch is true, then we'd have an extremely useful insight: If the
+			graph contains thousands, or even billions of nodes, and the maximum
+			degree is three, we would only need four colors.
+		</p>
+		<p>
+			To prove the proposition above, we will perform a proof-by-induction. As
+			such, we need an inductive hypothesis. We could induct on ${d,}$ but the
+			problem with doing so is that it's not entirely clear how we would use
+			${d,}$ and how it relates to the number of nodes and edges. A better
+			starting point is to consider ${n,}$ where ${n}$ is the number of graphs
+			in the node. As such, our inductive hypothesis is a restatement of our
+			original hypothesis:
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Inductive Hypothesis.</span>
+					If every node in an ${n}$-node graph ${G}$ has a degree less than or
+					equal to ${d,}$ then the basic coloring algorithm uses at most ${d +
+					1}$ colors.
+				</p>
+			</div>
+		</figure>
+		<p>
+			We can now refer to our inductive hypothesis as ${P(n).}$ With graphs,
+			it's almost always the case that we should start by consider ${n,}$ where
+			${n}$ is the number of nodes. If that doesn't work, we should consider
+			${n(E)}$ where ${n(E)}$ is the number of edges. And only when these two
+			approaches don't work do we consider ${d,}$ the degree of each node.
+		</p>
+		<p>
+			Now we need a base case. Since we don't have any notion of graphs with no
+			nodes, we consider the next simplest case: ${n = 1.}$ If ${n = 1}$ (a
+			graph with only one node), then the number of edges is zero (since we
+			don't allow loops). Thus, since ${d = 0,}$ we use at most ${d + 1 = 0 + 1
+			= 1}$ colors. So we know our base case, ${P(1),}$ is true. For an
+			${n}$-node graph where ${n = 1,}$ the basic coloring algorithm uses at
+			most ${d + 1}$ colors.
+		</p>
+		<p>
+			Now we perform the inductive step: Assume ${P(n)}$ is true for the sake of
+			induction &mdash; proving that ${P(n) \implies P(n + 1).}$ With that
+			assumption, we consider the ${P(n + 1)}$ proposition. ${P(n) \implies P(n
+			+ 1)}$ is always true if ${P(n + 1)}$ cannot be false.
+		</p>
+		<p>
+			With ${P(n + 1),}$ we're considering the graph with ${n + 1}$ nodes.
+			Suppose the graph ${G = (V, E)}$ is any ${(n+1)}$-node graph. Suppose
+			further that ${d}$ is the maximum degree in ${G.}$
 		</p>
 	</section>
 </section>

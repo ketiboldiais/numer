@@ -4335,7 +4335,15 @@
 					<ol>
 						<li>if (B[i] > 1):</li>
 						<ol>
-							<li>Print "{i} has {B[i]} duplicates";</li>
+							<li>
+								<span class="pop">Print "{i} has {B[i]-1} duplicates";</span>
+								<div class="popText">
+									<p>
+										We use <span class="monoText">B[i]-1</span> because the
+										count includes the original.
+									</p>
+								</div>
+							</li>
 						</ol>
 					</ol>
 				</ol>
@@ -4454,6 +4462,364 @@
 				</ol>
 			</ol>
 		</ol>
+		<p>
+			Notice that in step 3.1.2.2, we replace ${A_j}$ with ${\texttt{-}1.}$ We
+			use the value ${\texttt{-}1}$ to mark the duplicate element as accounted
+			for. If we don't include this marking step, we would be duplicating our
+			count. For example, when we reach the duplicate ${6,}$ we would increment
+			<span class="monoText">count</span> after encountering the second ${6,}$
+			and increment again after encountering the third ${6.}$ When we reach the
+			second ${6,}$ we would increment <span class="monoText">count</span> again
+			when we encounter the third ${6,}$ even though we've already counted that
+			${6.}$ By replacing the values with ${\texttt{-}1,}$ we ensure that we
+			don't count duplicates that have already been counted. Implementing this
+			algorithm:
+		</p>
+		<figure>
+			<ol class="alg">
+				<li>${f}$ countDuplicates(array A):</li>
+				<ol>
+					<li>
+						<span class="pop">let B = new Array[A.length];</span>
+						<div class="popText">
+							<p>
+								Make a new array <span class="monoText">B</span>. This will be a
+								copy of <span class="monoText">A</span>.
+							</p>
+						</div>
+					</li>
+					<li>
+						<span class="pop">let count = 0;</span>
+						<div class="popText">
+							<p>
+								Initialize the <span class="monoText">count</span> variable.
+								This will keep track of how many duplicates we encounter.
+							</p>
+						</div>
+					</li>
+					<li>
+						<span class="pop">for (i = 0; i < B.size; i++): B[i] = A[i];</span>
+						<div class="popText">
+							<p>
+								Make a copy of the array <span class="monoText">A</span>; the
+								elements of <span class="monoText">A</span> are stored in
+								<span class="monoText">B</span>.
+							</p>
+						</div>
+					</li>
+					<li>
+						<span class="pop">for (i = 0; i < A.length - 1; i++):</span>
+						<div class="popText">
+							<p>
+								Now we iterate from ${0}$ to ${1}$ less than the length of
+								<span class="monoText">A</span>.
+							</p>
+						</div>
+					</li>
+					<ol>
+						<li>
+							<span class="pop">for (j = i + 1; i < A.length; j++):</span>
+							<div class="popText">
+								<p>
+									Because we have to compare the current element against all
+									other elements, we need a second for-loop. We use the variable
+									<span class="monoText">j</span> to track which of the other
+									elements we're considering.
+								</p>
+							</div>
+						</li>
+						<ol>
+							<li>
+								<span class="pop">if (A[i] == A[j]):</span>
+								<div class="popText">
+									<p>
+										If the current element is the same as the other element, we
+										increment <span class="monoText">count</span> and change the
+										element at <span class="monoText">B[j]</span> to
+										${\texttt{-}1.}$
+									</p>
+								</div>
+							</li>
+							<ol>
+								<li>count++;</li>
+								<li>B[j] = -1</li>
+							</ol>
+						</ol>
+						<li>
+							<span class="pop">if (count > 0):</span>
+							<div class="popText">
+								<p>
+									If <span class="monoText">count</span> is greater than ${0,}$
+									indicate that there are duplicates.
+								</p>
+							</div>
+						</li>
+						<ol>
+							<li>print "Element {A[i]} is duplicated {count} times"</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</figure>
+		<p>
+			The time complexity for this algorithm is ${O(n^2).}$ Because we start by
+			comparing the first element against all the others in an array of ${n}$
+			elements, the algorithm performs ${n - 1}$ comparisons at first. After
+			comparing the first element against the others, the algorithm moves to the
+			second. This yields ${n - 2}$ comparisons. After the second, the algorithm
+			moves to the third, performing ${n - 3}$ comparisons. The pattern:
+		</p>
+		<figure>
+			<div>
+				<p>${\large \lang n-1,~n-2,~n-3,~n-4,~n-5,~\ldots,~3,~2,~1 \rang}$</p>
+			</div>
+		</figure>
+		<p>The sum of this sequence:</p>
+		<figure>
+			<div>
+				$$ \begin{aligned} \sum\limits_{k = 1}^{n - 1} &= (n - 1) + (n - 2) +
+				\ldots + 3 + 2 + 1 \\[1em] &= 1 + 2 + 3 + \ldots + (n - 2) + (n - 1)
+				\\[1em] &= \dfrac{n(n-1)}{2} \\[1em] &= \dfrac{n^2 - n}{2} \end{aligned}
+				$$
+			</div>
+		</figure>
+		<p>
+			Thus, the running time function of this algorithm is ${f(n) = \dfrac{n^2 -
+			n}{2}.}$ Applying asymptotic analysis, we see that this algorithm runs on
+			quadratic time &mdash; ${O(n^2).}$
+		</p>
+		<p>
+			Alternatively, we can use a bitset, just as we did with the sorted
+			sequences. Using the same unsorted array:
+		</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A}$</td>
+						<td>8</td>
+						<td>3</td>
+						<td>6</td>
+						<td>4</td>
+						<td>6</td>
+						<td>5</td>
+						<td>6</td>
+						<td>8</td>
+						<td>2</td>
+						<td>7</td>
+					</tr>
+					<tr>
+						<td>${i}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			We create a bit set with a size equal to the largest element of ${A}$ plus
+			one. In this case, that element is ${8,}$ so we need bitset of size ${9:}$
+		</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${B}$</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+					</tr>
+					<tr>
+						<td>${j}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			The procedure is the same as we saw previously for sorted sequences. We
+			iterate through the array ${A,}$ and for each element ${x}$ in ${A,}$ we
+			increment the ${0}$ at the index ${j = x.}$ This results in:
+		</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${B}$</td>
+						<td>0</td>
+						<td>0</td>
+						<td class="beige">1</td>
+						<td class="beige">1</td>
+						<td class="beige">1</td>
+						<td class="beige">1</td>
+						<td class="beige">3</td>
+						<td class="beige">1</td>
+						<td class="beige">2</td>
+					</tr>
+					<tr>
+						<td>${j}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>The implementation for this approach is the same as we saw earlier:</p>
+		<figure>
+			<ol class="alg">
+				<li>${f}$ findDuplicates(array A):</li>
+				<ol>
+					<li>let length_of_A = A.length;</li>
+					<li>let A_max_element = A[length_of_A];</li>
+					<li>let B = new Array[A_max_element];</li>
+					<li>for (i = 0; i < A_max_element; i++):</li>
+					<ol>
+						<li>B[i] = 0;</li>
+					</ol>
+					<li>for (i = 0; i < length_of_A; i++):</li>
+					<ol>
+						<li>B[A[i]]++;</li>
+					</ol>
+					<li>for (i = 0; i < A_max_element; i++):</li>
+					<ol>
+						<li>if (B[i] > 1):</li>
+						<ol>
+							<li>Print "{i} has {B[i]-1} duplicates";</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</figure>
+		<p>
+			Compared to the previous approach, all that's required for this algorithm
+			is to iterate through ${n}$ elements and incrementing the element at the
+			corresponding index in the bitset. Hence, this algorithm has a time
+			complexity of ${O(n).}$ This is linear time, a faster approach compared
+			with the quadratic time for the previous algorithm.
+		</p>
+	</section>
+
+	<section id="pair_to_sum">
+		<h3>Pair to Sum</h3>
+		<p>Consider the following problem:</p>
+		<figure>
+			<div class="rule">
+				<p>
+					Given an array of ${n}$ integers and an integer ${k,}$ find all pairs
+					${(a, b)}$ in the array such that ${a + b = k.}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			The brute-force approach to solving this algorithm is to iterate through
+			each of the elements. For example, consider the following array:
+		</p>
+		<figure>
+			<table class="array">
+				<tbody>
+					<tr>
+						<td>${A}$</td>
+						<td>6</td>
+						<td>3</td>
+						<td>8</td>
+						<td>10</td>
+						<td>16</td>
+						<td>7</td>
+						<td>5</td>
+						<td>2</td>
+						<td>9</td>
+						<td>14</td>
+					</tr>
+					<tr>
+						<td>${i}$</td>
+						<td>0</td>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			Suppose ${k = 10.}$ Just looking at the array, we see that there is, in
+			fact, a pair ${(a, b)}$ such that ${a + b = 10.}$ In this case, ${a = 3}$
+			and ${b = 7.}$ With the brute force approach, we employ the following
+			algorithm:
+		</p>
+		<figure>
+			<ol class="recipe">
+				<li>Suppose ${k}$ is the sum.</li>
+				<li>For ${i = 0, 1, 2, 3, \ldots, n-1}$ perform the following:</li>
+				<ol>
+					<li>Let ${d = k - A_i.}$</li>
+					<li>Let ${j = i + 1.}$</li>
+					<li>For ${j = 1, 2, 3, \ldots, n,}$ perform the following:</li>
+					<ol>
+						<li>If ${A_j = d,}$ print ${(A_i, A_j).}$</li>
+						<li>Otherwise, increment ${j}$ and return to step 2.3.</li>
+					</ol>
+				</ol>
+			</ol>
+		</figure>
+		<p>Implementing this algorithm:</p>
+		<figure>
+			<ol class="alg">
+				<li>${f}$ sumPairFinder(array A, sum):</li>
+				<ol>
+					<li>for (i = 0; i < A.length - 1; i++):</li>
+					<li>let d = sum - A[i];</li>
+					<ol>
+						<li>for (j = i + 1; j < A.length; i++):</li>
+						<ol>
+							<li>if (A[j] = d): print "{Pair: A[i] + A[j] = k}";</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</figure>
+		<p>
+			Like one of our previous duplicate counters, this algorithm relies on a
+			nested for-loop to find a pair. Hence, given an array of ${n}$ elements,
+			this algorithm has a running time complexity of ${O(n^2).}$ Note, however,
+			that this algorithm only works if the array contains no duplicates. If the
+			array contains duplicates, then we must use one of the duplicate spotters
+			and remove the duplicate elements before employing this approach.
+		</p>
 	</section>
 </section>
 
