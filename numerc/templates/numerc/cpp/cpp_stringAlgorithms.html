@@ -1,0 +1,108 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on algorithms for strings." />
+{% endblock %} {% block title %}
+<title>String Algorithms</title>
+{% endblock %} {% block content %}
+<h1>Algorithms for Strings</h1>
+<section id="intro">
+	<p>
+		<span class="drop">I</span>n this section, we present several useful
+		algorithms for strings. As we know, a
+		<span class="term">character set</span> is the set of character codes a
+		language can process. Because computers only understand zeroes and ones,
+		each character in the set is assigned an integer value, which can be
+		represented in zeroes and ones. These codes are determined by an encoding
+		standard. In languages like C, the the encoding standard is ASCII.
+	</p>
+	<p>
+		For the ASCII characters, the encodings are the integers from ${0}$ to
+		${127.}$ This is a total of ${128}$ unique encodings, thereby permitting the
+		representation of ${128}$ unique characters. Because the highest possible
+		integer representation is ${127}$ &mdash; in binary, ${111~1111_{[2]}}$
+		&mdash; seven bits are sufficient for representing ${128}$ characters.
+		However, because computer memory (RAM), is addressed by byte (eight bits), a
+		minimum of 1 byte is allocated for the ASCII encoding &mdash; in C and C++,
+		a <span class="monoText">char</span> value. Because every ASCII encoding
+		requires exactly 1 byte, we say that ASCII uses a
+		<span class="term">fixed-width encoding system</span>.
+	</p>
+	<p>
+		This is a good point to introduce an important distinction: There's a
+		difference between the character set (ASCII) and the character set's
+		<span class="term">encoding system</span>. The encoding system is the way
+		the characters in the set are represented in memory. In ASCII, characters
+		are encoded as seven-bit character codes, as we stated earlier. There are,
+		however, other encoding systems:
+	</p>
+	<ul>
+		<li>
+			In <span class="boldText">UTF-32</span>,<label
+				for="utf"
+				class="margin-toggle"
+				><sup></sup
+			></label>
+			<input type="checkbox" id="utf" class="margin-toggle sidenote-number" />
+			<span class="marginnote"
+				>&#8220;UTF&#8221; stands for &#8220;Unicode Transformation
+				Format.&#8221;</span
+			>
+			all characters are encoded as a sequence of 32-bits (4 bytes). As such,
+			UTF-32 is a fixed-width encoding system. Although many more characters can
+			be represented with 32 bits, it leads to a significant amount of wasted
+			memory. For example, the character <span class="monoText">A</span> in
+			ASCII is:
+			<figure>
+				<div>
+					<p>${0100~0001_{[2]}}$</p>
+				</div>
+			</figure>
+			And in UTF-32:
+			<figure>
+				<div>
+					<p>${0000~0000~~~0000~0000~~~0000~0000~~~0100~0001_{[2]}}$</p>
+				</div>
+			</figure>
+		</li>
+		<li>
+			In contrast, <span class="boldText">UTF-16</span>, is a
+			<span class="term">variable-width encoding system</span>. Characters are
+			encoded as either a sequence of 16 bits (2 bytes), or a sequence of 32
+			bits (4 bytes). For example, since the character
+			<span class="monoText">A</span> is an ASCII character, and we only need 1
+			byte for representation, UTF-16 uses 2 bytes instead of four:
+		</li>
+		<figure>
+			<div>
+				<p>${0000~0000~~~0100~0001_{[2]}}$</p>
+			</div>
+		</figure>
+		<li>
+			<span class="boldText">UTF-8</span> is also a variable-width encoding
+			system. Characters are encoded as a sequence of 32, 16, 24, or 1 byte (8
+			bits). Thus, with the character <span class="monoText">A</span>, only one
+			byte is needed, so 1 byte is used:
+			<figure>
+				<div>
+					<p>${0100~0001_{[2]}}$</p>
+				</div>
+			</figure>
+		</li>
+	</ul>
+	<p>
+		The predominant character set today is
+		<span class="term">Unicode</span>.<label for="unicode" class="margin-toggle"
+			><sup></sup
+		></label>
+		<input type="checkbox" id="unicode" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>The name &#8220;Unicode&#8221; is a morphological blending of
+			<span class="italicsText">unique</span>,
+			<span class="italicsText">unified</span>,
+			<span class="italicsText">universal</span>, and
+			<span class="italicsText">encoding</span>.</span
+		>
+		As of this writing, Unicode is currently at version 14.0, comprising
+		${144~697}$ characters, with ${1~112~064}$ code points in reserve.
+	</p>
+</section>
+{% endblock %}

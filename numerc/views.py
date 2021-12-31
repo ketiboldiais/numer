@@ -265,6 +265,9 @@ def js_dsalg(request):
 def js_controlFlow(request):
 		return render(request, "numerc/js/js_controlFlow.html")
 
+def js_computerGraphics(request):
+		return render(request, "numerc/js/js_computerGraphics.html")
+
 #! Lisp Views (lispv)
 def lisp_preface(request):
 		return render(request, "numerc/lisp/lisp_preface.html")
@@ -450,6 +453,9 @@ def cpp_algorithmicAnalysis(request):
 
 def cpp_numberTheoryCS(request):
 	return render(request, "numerc/cpp/cpp_numberTheoryCS.html")
+
+def cpp_stringAlgorithms(request):
+	return render(request, "numerc/cpp/cpp_stringAlgorithms.html")
 
 
 

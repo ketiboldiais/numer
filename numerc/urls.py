@@ -125,6 +125,8 @@ urlpatterns = [
 
 	path("js_dsalg", views.js_dsalg, name="js_dsalg"),
 
+	path("js_computerGraphics", views.js_computerGraphics, name="js_computerGraphics"),
+
 	#! Lisp paths (lisp-paths)
 	path("lisp_preface", views.lisp_preface, name="lisp_preface"),
 
@@ -248,6 +250,8 @@ urlpatterns = [
 	path("cpp_algorithmicAnalysis", views.cpp_algorithmicAnalysis, name="cpp_algorithmicAnalysis"),
 
 	path("cpp_numberTheoryCS", views.cpp_numberTheoryCS, name="cpp_numberTheoryCS"),
+
+	path("cpp_stringAlgorithms", views.cpp_stringAlgorithms, name="cpp_stringAlgorithms"),
 
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),
