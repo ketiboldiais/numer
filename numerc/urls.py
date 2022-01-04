@@ -113,8 +113,6 @@ urlpatterns = [
 
 	path("js_functions", views.js_functions, name="js_functions"),
 
-	path("js_methods", views.js_methods, name="js_methods"),
-
 	path("js_this", views.js_this, name="js_this"),
 
 	path("js_jsLowerLevel", views.js_jsLowerLevel, name="js_jsLowerLevel"),
@@ -125,7 +123,9 @@ urlpatterns = [
 
 	path("js_dsalg", views.js_dsalg, name="js_dsalg"),
 
-	path("js_computerGraphics", views.js_computerGraphics, name="js_computerGraphics"),
+	path("js_d3", views.js_d3, name="js_d3"),
+
+	path("js_threeJS", views.js_threeJS, name="js_threeJS"),
 
 	#! Lisp paths (lisp-paths)
 	path("lisp_preface", views.lisp_preface, name="lisp_preface"),

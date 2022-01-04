@@ -241,9 +241,6 @@ def js_arrays(request):
 def js_functions(request):
 		return render(request, "numerc/js/js_functions.html")
 
-def js_methods(request):
-		return render(request, "numerc/js/js_methods.html")
-
 def js_this(request):
 		return render(request, "numerc/js/js_this.html")
 
@@ -265,8 +262,11 @@ def js_dsalg(request):
 def js_controlFlow(request):
 		return render(request, "numerc/js/js_controlFlow.html")
 
-def js_computerGraphics(request):
-		return render(request, "numerc/js/js_computerGraphics.html")
+def js_d3(request):
+		return render(request, "numerc/js/js_d3.html")
+
+def js_threeJS(request):
+		return render(request, "numerc/js/js_threeJS.html")
 
 #! Lisp Views (lispv)
 def lisp_preface(request):

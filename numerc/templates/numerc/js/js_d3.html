@@ -1,0 +1,475 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Notes on computer graphics with JavaScript."
+/>
+{% endblock %} {% block title %}
+<title>Computer Graphics with JavaScript</title>
+{% endblock %} {% block content %}
+<h1>D3JS</h1>
+<section id="dthreejs">
+	<p>
+		<span class="drop">I</span>n this module, we explore D3JS. D3
+		(&#8220;Data-Driven Documents&#8221;) is a JavaScript library for creating
+		data visualizations. Data visualization is a means of conveying a story or
+		an idea as efficiently as possible. It is an exercise of the timeless adage,
+		&#8220;A picture is worth a thousand words.&#8221; By visualizing data, the
+		viewer is more likely to easily identify patterns or anti-patterns (e.g.,
+		disruptions) in data. The base ingredients of data visualization are shape,
+		size, and color.
+	</p>
+	<div class="mainIdea">
+		<p>
+			Before creating any data visualization, we must answer the following
+			questions:
+		</p>
+		<ol>
+			<li>Who is the audience?</li>
+			<li>What does the audience know?</li>
+			<li>What does the audience need to do with the data?</li>
+		</ol>
+	</div>
+	<p>
+		Because data visualizations are only useful if they're perceived, once we've
+		determined who the viewer is, we must determine the appropriate visual. Some
+		visuals are ideal for representing ratios. Other visuals are best reserved
+		for frequencies. Yet others still are best used for densities, chronologies,
+		and partitions. Then there are field-specific visuals. A viewer with a
+		discrete mathematics background might have no difficulty understanding node
+		graphs with loops, but may have difficulty understanding chemical structure
+		formulas.
+	</p>
+	<p>
+		Once we've determined the appropriate visual, we have to perform a very
+		sensitive but critical step: Hiding clutter. When working with data, it's
+		often the case that we have a large amount of unnecessary information. This
+		is called <span class="term">clutter</span>, and it can make the
+		visualization difficult, even impossible, to read. For example, consider a
+		map of New York City. If labeled every street, building, neighborhood, and
+		landmark, we'd like just have a fuzzy, grey blob with some letters sticking
+		out. Clearly, we have to prioritize what information we want to show.
+		However, if we hide too much, we can end up communicating the wrong
+		propositions &mdash; this is equally bad, if not worse.
+	</p>
+	<p>
+		Even if we do not remove clutter, we always draw attention through shape,
+		size, and color. In other words, if we want the viewer to focus on a
+		particular part of the visualization, we manipulate one of the following
+		properties of that part: It's shape, size, or color. For example, if some
+		parts of a company's cash flow dip dangerously low, we might highlight it in
+		a bright red color.
+	</p>
+	<p>
+		D3 is the bridge between raw data and visualization. Every data
+		visualization is a bundle of two objects: (1) The
+		<span class="term">data</span> and (2) the
+		<span class="term">document</span>. Data is the computer representation of
+		real-world information, and for our purposes, it comes in various file
+		formats: JSON, CSV, TXT, etc. The document is the representation of that
+		data. In JavaScript, the document is an HTML file. Note that this process is
+		a one-way street. Real-world information drives data, and data drives the
+		document. This is a fundamental principle we must never forget. If we're
+		seeing unsightly white space, it is
+		<span class="underlineText">not</span> because of the data. It is because of
+		the document. We have to make changes to the document via D3. We
+		<span class="underlineText">never</span> make changes to the data.
+	</p>
+	<section id="installing_d3">
+		<p>
+			<span class="topic">Installing.</span>
+			To use D3, we need an HTML file (the document, say,
+			<span class="monoText">index.html</span>) and a JavaScript file (the file
+			we will be writing our visualization code in, say
+			<span class="monoText">app.js</span>). To add D3 to our project, we use
+			the D3JS CDN link available
+			<a href="https://d3js.org/" target="_blank">here</a>. The script tag
+			pointing to the CDN link should be placed before the closing body tag, but
+			<span class="underlineText">before</span> the script tag pointing to the
+			<span class="monoText">app.js</span>. For example:
+		</p>
+		<pre class="language-html"><code>
+			&lt;!DOCTYPE html&gt;
+			&lt;html lang=&quot;en&quot;&gt;
+			&lt;head&gt;
+			&#x9;&lt;meta charset=&quot;UTF-8&quot;&gt;
+			&#x9;&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+			&#x9;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+			&#x9;&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot;&gt;
+			&#x9;&lt;title&gt;D3 Lab&lt;/title&gt;
+			&lt;/head&gt;
+			&lt;body&gt;
+			&#x9;&lt;main&gt;&lt;/main&gt;
+			<span class="redText">&#x9;&lt;script src=&quot;https://d3js.org/d3.v7.min.js&quot;&gt;&lt;/script&gt;</span>
+			<span class="redText">&#x9;&lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;</span>
+			&lt;/body&gt;
+			&lt;/html&gt;&#x9;&#x9;
+		</code></pre>
+	</section>
+</section>
+
+<section id="svg_code">
+	<h2>SVG</h2>
+	<p>
+		SVG (&#8220;Scalable Vector Graphics&#8221;) is what D3 uses to create
+		charts and graphs. With SVG, images are created with mathematical equations
+		and commands. Comparing an SVG image to a JPEG image, if we zoomed in on
+		both very closely, we'd find that the JPEG image rapidly loses quality at
+		high magnification. We begin seeing the individual pixels and colors
+		constituting the JPEG image. If we looked at the SVG image, however, we'd
+		find no such distortion. The image is still smooth and crisp. Why? Because
+		our machine constantly recalculates the math equations defining the image,
+		changing values here and there in response to our actions. Hence the name
+		&#8220;Scalable.&#8221;
+	</p>
+	<p>
+		The largest cost to SVG, however, is that the more complicated the image is,
+		the more computations the machine must perform. And with more computations,
+		the more resource intensive our visualization is &mdash; a significant
+		performance concern.
+	</p>
+	<p>
+		There are numerous ways to create SVG elements. One way is to write SVG code
+		directly in an HTML file. This is done by enclosing the SVG code in an SVG
+		tag:
+	</p>
+	<figure>
+		<ul class="syntax">
+			<li>&lt;svg&gt;${~~code~~}$&lt;/svg&gt;</li>
+		</ul>
+	</figure>
+	<p>
+		Two attributes most commonly used with the SVG element is
+		<span class="monoText">width</span> and
+		<span class="monoText">height</span>:
+	</p>
+	<figure>
+		<ul class="syntax">
+			<li>&lt;svg width="${n}$" height="${m}$"&gt;${~~code~~}$&lt;/svg&gt;</li>
+		</ul>
+	</figure>
+	<p>
+		Both the <span class="monoText">width</span> and
+		<span class="monoText">height</span> attributes are used to configure the
+		SVG image's dimensions. In the template above, ${n}$ and ${m}$ can be a
+		percentage (of either the bounding box or viewport), or a number with one of
+		the usual HTML units (em, ex, px, in, cm, mm, pt, pc).
+	</p>
+	<p>
+		The SVG element alone doesn't display anything. It's just a container for
+		what we actually we want to display. To display a rectangle, for example, we
+		use the <span class="monoText">&lt;rect&gt;&lt;/rect&gt;</span> element,
+		setting its <span class="monoText">width</span> and
+		<span class="monoText">height</span> to <span class="monoText">100</span>.
+	</p>
+	<figure>
+		<svg width="100" height="100">
+			<rect width="100" height="100"></rect>
+		</svg>
+	</figure>
+	<p>The code for the SVG above looks like:</p>
+	<pre class="language-html"><code>
+		&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+		&#x9;&lt;rect width=&quot;100&quot; height=&quot;100&quot;&gt;&lt;/rect&gt;
+		&lt;/svg&gt;
+	</code></pre>
+	<p>
+		If we include a <span class="monoText">fill</span> attribute, we can change
+		the color of the rectangle. The color value can be a named color, RGBA
+		value, HSV value, or hexadecimal. With the color
+		<span class="monoText">"salmon"</span>:
+	</p>
+	<figure>
+		<svg width="100" height="100">
+			<rect width="100" height="100" fill="salmon"></rect>
+		</svg>
+	</figure>
+	<p>The code rendering the rectangle above is:</p>
+	<pre class="language-html"><code>
+		&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+		&#x9;&lt;rect width=&quot;100&quot; height=&quot;100&quot; fill=&quot;salmon&quot;&gt;&lt;/rect&gt;
+		&lt;/svg&gt;
+	</code></pre>
+	<p>
+		If we want to add an &#8220;outline&#8221; to the rectangle, we can include
+		the <span class="monoText">stroke</span> attribute. This attribute is
+		available for all SVG shapes. The code:
+	</p>
+	<pre class="language-html"><code>
+		&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+		&#x9;&lt;rect width=&quot;100&quot; height=&quot;100&quot; fill=&quot;salmon&quot; stroke=&quot;#555&quot;&gt;&lt;/rect&gt;
+		&lt;/svg&gt;
+	</code></pre>
+	<p>renders:</p>
+	<figure>
+		<svg width="100" height="100">
+			<rect width="100" height="100" fill="salmon" stroke="#000"></rect>
+		</svg>
+	</figure>
+	<p>
+		The stroke is barely visible. This is because we must include a
+		<span class="monoText">stroke-width</span> attribute:
+	</p>
+	<pre class="language-html"><code>
+		&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+		&#x9;&lt;rect
+		&#x9;&#x9;width=&quot;100&quot;
+		&#x9;&#x9;height=&quot;100&quot;
+		&#x9;&#x9;fill=&quot;salmon&quot;
+		&#x9;&#x9;stroke=&quot;#555&quot;
+		&#x9;&#x9;stroke-width=&quot;10&quot;
+		&#x9;&gt;&lt;/rect&gt;
+		&lt;/svg&gt;
+	</code></pre>
+	<p>Rendering:</p>
+	<figure>
+		<svg width="100" height="100">
+			<rect
+				width="100"
+				height="100"
+				fill="salmon"
+				stroke="#555"
+				stroke-width="10"
+			></rect>
+		</svg>
+	</figure>
+	<section id="svg_coordinate_system">
+		<h5>The SVG Coordinate System</h5>
+		<p>
+			To position shapes in an SVG image, the SVG element uses a particular
+			coordinate system. If the SVG element has the following attributes set:
+		</p>
+		<pre class="language-html"><code>
+			&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+			&lt;/svg&gt;
+		</code></pre>
+		<p>We end up with a coordinate system as follows:</p>
+		<figure>
+			<img
+				src="{% static 'images/svg_coordinate_system.svg' %}"
+				alt="SVG coordinate system"
+				loading="lazy"
+				class="sixty-p"
+			/>
+		</figure>
+		<p>
+			The <span class="monoText">height</span> attribute sets the maximum
+			${y}$-coordinate, and the <span class="monoText">width</span> attribute
+			sets the maximum ${x}$-coordinate. For both ${x}$- and ${y}$-coordinates,
+			the minimum value is ${0.}$ By default, shapes are placed to the
+			upper-left corner, the coordinate ${(0,0).}$ To avoid this default, we
+			must explicitly set the shape's <span class="monoText">x</span> and
+			<span class="monoText">y</span> attributes:
+		</p>
+		<pre class="language-html"><code>
+			&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+			&#x9;&lt;rect
+			&#x9;&#x9;x=&quot;5&quot;
+			&#x9;&#x9;y=&quot;5&quot;
+			&#x9;&#x9;width=&quot;100&quot;
+			&#x9;&#x9;height=&quot;100&quot;
+			&#x9;&#x9;fill=&quot;salmon&quot;
+			&#x9;&#x9;stroke=&quot;#555&quot;
+			&#x9;&#x9;stroke-width=&quot;10&quot;
+			&#x9;&gt;&lt;/rect&gt;
+			&lt;/svg&gt;
+		</code></pre>
+		<p>
+			An important point to note: With SVG elements, the ${y}$-axis tends
+			towards positive as we move down, and negative as we move up.
+			Additionally, we can provide positive and negative values for the
+			<span class="monoText">x</span> and
+			<span class="monoText">y</span> attributes.
+		</p>
+	</section>
+
+	<section id="circle_elements">
+		<p>
+			<span class="topic">The Circle Element.</span> With the example above, we
+			created a rectangle element. We can also create circles. This is done with
+			the following template:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>&lt;circle r="${n}$"&gt;&lt;/circle&gt;</li>
+			</ul>
+		</figure>
+		<p>
+			The one required attribute for the circle element is
+			<span class="monoText">r</span>. As we can likely guess, this attribute
+			sets the circle's radius. To illustrate, this code:
+		</p>
+		<pre class="language-html"><code>
+			&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+			&#x9;&lt;circle r=&quot;50&quot;&gt;&lt;/circle&gt;
+			&lt;/svg&gt;
+		</code></pre>
+		<p>renders:</p>
+		<figure>
+			<svg width="100" height="100">
+				<circle r="50"></circle>
+			</svg>
+		</figure>
+		<p>
+			Notice that the circle is cut off. This is because of the coordinate
+			system we explained previously. By default, all elements are placed to the
+			top left. In this case, the center of the circle is placed at coordinate
+			${(0,0).}$ To fix this, we provide <span class="monoText">x</span> and
+			<span class="monoText">y</span> coordinates for the circle explicitly.
+			Unlike other elements, the circle element has specific names for the
+			<span class="monoText">x</span> and
+			<span class="monoText">y</span> attributes:
+		</p>
+		<pre class="language-html"><code>
+			&lt;svg width=&quot;100&quot; height=&quot;100&quot;&gt;
+			&#x9;&lt;circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;50&quot;&gt;&lt;/circle&gt;
+			&lt;/svg&gt;
+		</code></pre>
+		<p>Rendering the code above:</p>
+		<figure>
+			<svg width="100" height="100">
+				<circle cx="50" cy="50" r="50"></circle>
+			</svg>
+		</figure>
+	</section>
+	<section id="line_element">
+		<p>
+			<span class="topic">Line Element.</span> To visualize lines, we use the
+			line element. This element has several required attributes::
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>&lt;line</li>
+				<ul>
+					<li>&#x9;x1=&quot;${n}$&quot;</li>
+					<li>&#x9;y1=&quot;${m}$&quot;</li>
+					<li>&#x9;x2=&quot;${p}$&quot;</li>
+					<li>&#x9;y2=&quot;${q}$&quot;</li>
+					<li>&#x9;stroke=&quot;${a}$&quot;</li>
+					<li>&#x9;stroke-width=&quot;${b}$&quot;&gt;</li>
+				</ul>
+				<li>&lt;/line&gt;</li>
+			</ul>
+		</figure>
+		<p>
+			The <span class="monoText">x1</span> and
+			<span class="monoText">y1</span> attributes set the coordinates for the
+			line's starting point. The <span class="monoText">x2</span> and
+			<span class="monoText">y2</span> attributes set the line's ending point.
+			We must also include <span class="monoText">stroke</span> (the line's
+			color) and a <span class="monoText">stroke-width</span> attribute (the
+			line's thickness).
+		</p>
+	</section>
+	<section id="svg_layering">
+		<p>
+			<span class="topic">Layering.</span> Importantly, SVG elements are layered
+			first element to the bottom, last element to the top. For example, if we
+			create a rectangle element, followed by a circle, then a line, the line
+			element would lie atop the circle, and the circle atop the rectangle.
+		</p>
+	</section>
+
+	<section id="svg_paths">
+		<h3>Paths</h3>
+		<p>
+			The most widely-used SVG element is the
+			<span class="italicsText">path</span>. A powerful tool for visualizing
+			complex shapes, it can also quickly turn into a rat's nest &mdash; there
+			are many, many commands associated with paths. The path element is a shape
+			that can be manipulated to form any other shape. It can have straight or
+			curved edges, along with an unlimited number of sides. All of the
+			attributes we saw previously are available for the path attribute,
+			alongside several others.
+		</p>
+		<p>
+			One attribute we'll often see with the path element is the
+			<span class="monoText">d</span> attribute (<span class="monoText">d</span>
+			for &#8220;data&#8221;). This attribute is assigned a list of data and
+			commands. For example, for the data, we can include coordinates, and for
+			the command, a line between the coordinates. Useful commands:
+		</p>
+		<ul class="ruled">
+			<li>
+				<span class="greyText monoText"
+					>&lt;path d = <span class="redText">"M100,100"</span>&gt;</span
+				>
+			</li>
+			<ul>
+				<li>
+					The <span class="monoText">M</span> command stands for
+					<span class="italicsText">move</span>. It will move the pen tool.
+				</li>
+				<li>
+					The values <span class="monoText">100,100</span> are the ${x}$- and
+					${y}$- coordinate respectively. By default, the pen starts at the
+					coordinates ${(0,0).}$
+				</li>
+			</ul>
+			<li>
+				<span class="greyText monoText"
+					>&lt;path d = "M100,100
+					<span class="redText">L300,150"</span>&gt;</span
+				>
+			</li>
+			<ul>
+				<li>
+					The <span class="monoText">L</span> command stands for
+					<span class="italicsText">line</span>. Thus, by writing
+					<span class="monoText">L300,150</span>, we are writing an instruction
+					to draw a line to the coordinate ${(300,150).}$
+				</li>
+			</ul>
+		</ul>
+	</section>
+</section>
+
+<section id="d3_documentation">
+	<h2>D3 Documentation</h2>
+	<p>
+		D3 is organized as a collection of packages. All of D3's packages can be
+		found <a href="https://github.com/d3" target="_blank">here</a>. D3, as a
+		whole, is a large package, weighing in at ${542 \text{ kB}.}$ Even the
+		minified version is fairly large &mdash; ${262 \text{ kB}.}$ Earlier
+		versions of D3 were much larger. Such large sizes result from all the
+		features and tools D3 provides. Many of these features, however, are
+		specific to certain use cases and not needed by all users. Accordingly, D3's
+		authors decided to break the library down into smaller packages, allowing
+		users to use which packages they needed. Because of this modular approach,
+		rather than using the entire D3 library (which contains all of the
+		packages), we can instead use some parts of D3 but not others.
+	</p>
+	<p>
+		Given D3's modular organization, there isn't a single place for
+		documentation. Instead, each of D3's packages have their own documentation.
+		These individual pieces of documentation are collected in the
+		<a href="https://github.com/d3/d3/blob/main/API.md" target="_blank"
+			>D3 API Reference Github page</a
+		>.
+	</p>
+</section>
+
+<section id="selections">
+	<h2>Selections</h2>
+	<p>
+		As we saw from the
+		<a href="{% url 'numerc:js_dom' %}"><em>DOM Section</em></a
+		>, we have a wide variety of ways to select HTML elements. The most commonly
+		used being
+		<span class="monoText"><mark>document.querySelector('${obj}$')</mark></span
+		>. D3, however, provides its own method for selecting elements:
+	</p>
+	<figure>
+		<ul class="syntax">
+			<li>d3.select('${obj}$')</li>
+		</ul>
+	</figure>
+	<p>
+		where ${obj}$ is an HTML element. D3's selector works in essentially the
+		same way as the DOM selector. We can use HTML tag names and CSS selector
+		syntax to narrow or broaden queries. The key difference, however, is that
+		the object returned from the D3 selection includes additional methods and
+		properties beyond what the DOM provides. Accordingly, when working with D3,
+		it's often best to use D3's provided selection methods.
+	</p>
+</section>
+{% endblock %}

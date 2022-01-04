@@ -2,7 +2,7 @@
 // Add main idea header
 function mainIdeaHeader() { 
   const header = document.createElement("p");
-  header.innerText = "Thema";
+  header.innerText = "Point(s)";
   header.classList.toggle("header");
   const mainIdeas = document.getElementsByClassName("mainIdea");
   for (let i = 0; i < mainIdeas.length; i++) { 
@@ -17,6 +17,26 @@ function addCheckBoxToCheckList() {
     const checkbox = document.createElement("input");
     checkbox.setAttribute("type", "checkbox");
     checkList[i].prepend(checkbox);
+  }
+}
+
+// Show code illustration
+function showCodeIllustration() { 
+  const demo = document.querySelectorAll("div.demo");
+  for (let i = 0; i < demo.length; i++) { 
+    const demoHeader = document.createElement("p");
+    demoHeader.innerText = "Language-specific Implementations";
+    demoHeader.classList.add('demoHeader');
+    demo[i].prepend(demoHeader);
+    const languageButton = document.querySelectorAll("div.demo button");
+    console.log(languageButton);
+    const codeExample = document.querySelectorAll("div.demo div.implementation");
+    for (let i = 0; i < languageButton.length; i++) { 
+      languageButton[i].addEventListener('click', function () { 
+        codeExample[i].classList.toggle('illustrate');
+        languageButton[i].classList.toggle('pressed');
+      })
+    }
   }
 }
 
@@ -46,36 +66,21 @@ function showNav() {
   reveal();
   mainIdeaHeader();
   addCheckBoxToCheckList();
-  accordion();
+  showCodeIllustration();
 })();
 
-/*!
- * Colcade v0.2.0
- * Lightweight masonry layout
- * by David DeSandro
- * MIT license
- */
-
-/*jshint browser: true, undef: true, unused: true */
 
 ( function( window, factory ) {
-  // universal module definition
-  /*jshint strict: false */
-  /*global define: false, module: false */
+  
   if ( typeof define == 'function' && define.amd ) {
-    // AMD
     define( factory );
   } else if ( typeof module == 'object' && module.exports ) {
-    // CommonJS
     module.exports = factory();
   } else {
-    // browser global
     window.Colcade = factory();
   }
 
 }( window, function factory() {
-
-// -------------------------- Colcade -------------------------- //
 
 function Colcade( element, options ) {
   element = getQueryElement( element );
@@ -409,11 +414,7 @@ function docReady( onReady ) {
   }
   document.addEventListener( 'DOMContentLoaded', onReady );
 }
-
-// -------------------------- end -------------------------- //
-
 return Colcade;
-
 }));
 
 

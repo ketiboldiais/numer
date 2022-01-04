@@ -1,0 +1,1375 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on ThreeJS" />
+{% endblock %} {% block title %}
+<title>ThreeJS</title>
+{% endblock %} {% block content %}
+<h1>ThreeJS</h1>
+<section id="threejs">
+	<p>
+		<span class="drop">T</span>hreeJS is a JavaScript library that enables
+		developers to create 3D visualizations and experiences for the web. We can
+		think of it as an abstraction of <span class="term">WebGL</span> (&#8220;Web
+		Graphics Library&#8221;).<label for="three" class="margin-toggle"
+			><sup></sup
+		></label>
+		<input type="checkbox" id="three" class="margin-toggle sidenote-number" />
+		<span class="marginnote"
+			>ThreeJS can also work with SVG and CSS, but because it's geared primarily
+			at abstracting WebGL, SVG and CSS functionalities remain limited.</span
+		>
+		WebGL itself is a JavaScript API that renders triangles. Yes &mdash;
+		impressive 3D graphics in websites are done via triangles. These triangle
+		renderings are displayed in some HTML element (most commonly, a
+		<span class="monoText">canvas</span>). 3D effects result from the fact that
+		these triangles are rendered at breathtaking speeds. These speeds are
+		possible because WebGL uses the host machine's GPU (Graphic Processing
+		Unit). The advantage to using the GPU is because of parallel computation. As
+		we know, JavaScript is a single-threaded language. And as a single-threaded
+		language, the vast majority of computations &mdash; done by the CPU &mdash;
+		can only be done one a time. Those computations are fast, but with graphics,
+		visualizations are better rendered with parallel computations &mdash; we
+		want to render a gargantuan amount of triangles all at once. For JavaScript,
+		this is only feasible through the GPU.
+	</p>
+	<aside>
+		<figure>
+			<img
+				src="{% static 'images/triangles_cube.svg' %}"
+				alt="Triangles form a cube"
+				loading="lazy"
+				class="seventy-p"
+			/>
+			<figcaption>Triangles forming a cube</figcaption>
+		</figure>
+	</aside>
+	<p>
+		The idea behind rendering triangles is that we position three vertices, and
+		state that there are edges connecting them. These instructions are written
+		in <span class="term">shaders</span>, a topic we will discuss in later
+		sections, and are forwarded to the GPU. The GPU then processes these
+		instructions and displays particular colors to the individual pixels bounded
+		by the vertices and edges. This is a remarkably fast process. By
+		manipulating the positions of various vertices all at once &mdash; which in
+		turn changes the colors of the individual pixels all at once &mdash; we can
+		create the effect of a 3D dimensional object. The entities that perform
+		these manipulations are specified functions. A
+		<span class="italicsText">camera</span>, for example, is one such function.
+		By manipulating the vertices in a particular way, we create the effect of
+		seeing the 3D object from different angles, when in reality, we're just
+		changing the position values for many vertices all at once.
+	</p>
+	<p>
+		A fair question we might have is why not just use WebGL directly then?
+		Indeed, we can. Many projects in
+		<span class="italicsText">haute graphique</span> &mdash; very high-end
+		graphics work &mdash; are written directly in WebGL for better control. And
+		with better control, the programmer can optimize for performance as needed.
+		The tradeoff, however, is that WebGL is painfully difficult to write.
+		Drawing a single triangle on an HTML
+		<span class="monoText">canvas</span> element would take, at a minimum, a
+		hundred lines of code.
+	</p>
+</section>
+
+<section id="scene">
+	<h2>The Scene</h2>
+	<p>
+		To install ThreeJS, see the
+		<a
+			href="https://threejs.org/docs/#manual/en/introduction/Installation"
+			target="_blank"
+			>ThreeJS installation page</a
+		>. It's recommended to use ThreeJS via Webpack. With the ThreeJS library
+		available, we have access to a variable called
+		<span class="monoText"><mark>THREE</mark></span
+		>. ThreeJS is structured with classes, and most of these classes are
+		accessible via the variable <span class="monoText">THREE</span>.
+	</p>
+	<p>
+		To actually display ThreeJS renderings, we must have some container that
+		houses all of the renderings. This is called a
+		<span class="term">scene</span>. More generally, to display renderings, we
+		need, at a minimum, the following:
+	</p>
+	<figure>
+		<ol class="checklist">
+			<li>A scene</li>
+			<li>An object</li>
+			<li>A camera</li>
+			<li>A renderer</li>
+		</ol>
+	</figure>
+	<p>
+		The scene is akin to a movie set. It's where all of the objects, models,
+		cameras, lights, and more are placed. After we place everything we need in
+		that scene, we ask ThreeJS to <span class="italicsText">render</span> the
+		scene. To create a scene, we write the following:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+	</code></pre>
+	<p>
+		Writing the above, we've instantiated a scene. We can then place an
+		<span class="term">object</span> in that scene. An object is any geometric
+		object, or more generally, whatever it is what we want to render. It might
+		be a cube, a sphere, a model for a building, person, video game character,
+		etc. For now, we'll start with a basic cube.
+	</p>
+	<p>
+		An object is really an abstract term for a <span class="term">mesh</span>. A
+		mesh is a combination of two things: (1) a
+		<span class="term">geometry</span>, and (2) a
+		<span class="term">material</span>. We can think of a geometry as defining
+		the object's boundaries in space (i.e., it's shape), and the material as
+		defining how the object looks (i.e., it's colors). More accurately, the
+		geometry is an abstraction for writing the instruction establishing the
+		vertices discussed earlier. ThreeJS provides numerous
+		<a
+			href="https://threejs.org/docs/#api/en/geometries/BoxGeometry"
+			target="_blank"
+			>geometries</a
+		>
+		and
+		<a
+			href="https://threejs.org/docs/#api/en/materials/LineBasicMaterial"
+			target="_blank"
+			>materials</a
+		>. For our humble cube, we will use the ThreeJS properties
+		<span class="monoText"><mark>BoxGeometry</mark></span> and
+		<span class="monoText"><mark>MeshBasicMaterial</mark></span
+		>:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 'red' });
+	</code></pre>
+	<p>
+		The values <span class="monoText">(1, 1, 1)</span> can be interpreted as any
+		unit &mdash; pixels, kilometers, meters, etc. It's entirely up to us how we
+		interpret those units. However, once we establish an interpretation, it's
+		imperative that we use that interpretation consistently. This is because
+		&#8220;units&#8221; in ThreeJS come down to proportions. If we interpret the
+		cube as having a length, width, and height of 1 meter, respectively, then we
+		must use that interpretation when we place other objects in relation to the
+		cube.
+	</p>
+	<p>
+		For the material, notice that we passed an object. In later sections, we'll
+		see that materials can easily increase in complexity. And as we know, we
+		want to manage increased complexity with various data structures. In this
+		case, we use an object. For
+		<span class="monoText"><mark>color</mark></span> property, we used a named
+		color. We can also use hexadecimal, RGB, and HSL values. Hexadecimal is the
+		more common color format, and we can write hexadecimal values directly:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+	</code></pre>
+	<p>
+		With the geometry and material initialized, we can now initialize the mesh:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+	</code></pre>
+	<p>
+		We now have a mesh. To see this mesh, however, we must add it to the scene:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+	</code></pre>
+	<p>
+		We now need a camera. Without a camera, we have no way of seeing what's in
+		the scene. ThreeJS provides
+		<a
+			href="https://threejs.org/docs/#api/en/cameras/ArrayCamera"
+			target="_blank"
+			>many kinds of cameras</a
+		>. For now, we will use a camera called
+		<span class="monoText"><mark>PerspectiveCamera</mark></span
+		>:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const camera = new THREE.PerspectiveCamera()
+	</code></pre>
+	<p>
+		Above, we initialized a new perspective camera called
+		<span class="monoText">camera</span>. The perspective camera is designed to
+		mimic the way the human eye sees. To get the camera to work, we must provide
+		the constructor a few parameters:
+	</p>
+	<figure>
+		<div>
+			<ul class="syntax">
+				<li>
+					new THREE.PerspectiveCamera(${fov}$, ${aspect}$, ${near}$, ${far}$)
+				</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		We cover these parameters one at a time. First, the ${fov}$ parameter
+		(&#8220;Field-of-view&#8221;) sets the vertical vision angle &mdash; how
+		much we can see up and down. This might seem odd, as the intuitive response
+		is that our field of view is often measured in terms of the horizontal
+		visual angle (i.e., our
+		<span class="italicsText">peripheral vision</span>). The game development
+		community (often at the forefront of computer graphics), however, has found
+		that both development and user experience is much more intuitive when
+		working with vertical visual angles. <br /><br />
+		With a larger field of view, we see everything everywhere, but the things we
+		see appear distorted. With a smaller field of view, we see things as if
+		we're peering through a scope. There are less things visible, but the things
+		that are visible are proportionate and close.
+	</p>
+	<p>With the above information, we write:</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const camera = new THREE.PerspectiveCamera(75)
+	</code></pre>
+	<p>
+		The second parameter, ${asp}$, establishes the
+		<span class="italicsText">aspect ratio</span>. This is simply the width of
+		the renderer divided by its height. We will see the renderer shortly, but
+		for now, we can think of the width and height as the dimensions of the
+		renderer. It's considered best practice to initialize the dimension values
+		in an object, then refer to the values via object notation:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const sizes = {
+			width: 800;
+			height: 800;
+		}
+		const camera = new THREE.PerspectiveCamera(
+			75, 
+			sizes.width / sizes.height
+		)
+	</code></pre>
+	<p>
+		We will examine the other parameters in later sections. But with just the
+		two parameters above, we now add the camera to the scene:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const sizes = {
+			width: 800;
+			height: 800;
+		}
+		const camera = new THREE.PerspectiveCamera(
+			75, 
+			sizes.width / sizes.height
+		)
+		scene.add(camera);
+	</code></pre>
+	<p>
+		The final step is to <span class="italicsText">render</span> the scene. This
+		is what sets off the process for drawing everything we've written. The
+		function that performs the render is called a
+		<span class="term">renderer</span>. When the renderer is called, the scene
+		is rendered from the camera's point of view, and the result is returned.
+		That result is then drawn into the HTML element selected to display the
+		result. In our case, we will use a
+		<span class="monoText">canvas</span> element. We can either write the
+		<span class="monoText">canvas</span> element directly in our HTML document,
+		or have ThreeJS do it for us. To simplify things, we'll write the
+		<span class="monoText">canvas</span> element directly:
+	</p>
+	<pre class="language-html"><code>
+		&lt;!DOCTYPE html&gt;
+		&lt;html lang=&quot;en&quot;&gt;
+		&lt;head&gt;
+		&#x9;&lt;meta charset=&quot;UTF-8&quot;&gt;
+		&#x9;&lt;title&gt;ThreeJS Lab&lt;/title&gt;
+		&lt;/head&gt;
+		&lt;body&gt;
+		<span class="redText">&#x9;&lt;canvas class=&quot;webgl&quot;&gt;&lt;/canvas&gt;</span>
+			&lt;script src=&quot;./three.min.js&quot;&gt;&lt;/script&gt;
+			&lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;
+		&lt;/body&gt;
+		&lt;/html&gt;
+	</code></pre>
+	<p>
+		Ignore the class attribute <span class="monoText">"webgl"</span> for now. We
+		will use it in a later section. The main point is that there's a
+		<span class="monoText">canvas</span> element inside the HTML document we're
+		working with. The HTML <span class="monoText">canvas</span> element itself
+		is just an element that allows us to draw objects in via JavaScript. By
+		calling the renderer, ThreeJS will use WebGL to draw the render inside the
+		<span class="monoText">canvas</span>.
+	</p>
+	<p>
+		That said, before we add the renderer, we must first create it. Like
+		<span class="monoText">material</span> a renderer can easily grow complex.
+		Accordingly, we use an object containing several properties. One of those
+		properties is the <span class="monoText">canvas</span> element. Thus, we
+		must target the <span class="monoText">canvas</span> element and store it as
+		a property:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const sizes = {
+			width: 800;
+			height: 800;
+		}
+		const camera = new THREE.PerspectiveCamera(
+			75, 
+			sizes.width / sizes.height
+		)
+		scene.add(camera);
+		const canvas = document.querySelector('.webgl');
+		const renderer = new THREE.WebGLRenderer({
+			canvas: canvas;
+		});
+	</code></pre>
+	<p>
+		If we refresh the HTML page, we'd see black rectangle, no cube in sight. To
+		see our cube, we must first give the renderer a size:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const sizes = {
+			width: 800;
+			height: 800;
+		}
+		const camera = new THREE.PerspectiveCamera(
+			75, 
+			sizes.width / sizes.height
+		)
+		scene.add(camera);
+		const canvas = document.querySelector('.webgl');
+		const renderer = new THREE.WebGLRenderer({
+			canvas: canvas;
+		});
+		renderer.setSize(sizes.width, sizes.height);
+	</code></pre>
+	<p>
+		When we resize the renderer, we resize the canvas. This is why we see the
+		size of the black rectangle increase. Next, we must call the
+		<span class="monoText">render()</span> function:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const sizes = {
+			width: 800;
+			height: 800;
+		}
+		const camera = new THREE.PerspectiveCamera(
+			75, 
+			sizes.width / sizes.height
+		)
+		scene.add(camera);
+		const canvas = document.querySelector('.webgl');
+		const renderer = new THREE.WebGLRenderer({
+			canvas: canvas;
+		});
+		renderer.setSize(sizes.width, sizes.height);
+		renderer.render(scene, camera);
+	</code></pre>
+	<p>
+		Even with the code above, we still don't see a cube. Why? Because the camera
+		is actually <span class="underlineText">inside</span> the cube. We have to
+		move the camera away from the cube. To move the camera &mdash; and really,
+		to move any object &mdash; we use the following properties (where ${obj}$ is
+		an object):
+	</p>
+	<ul class="ruled">
+		<li>
+			<span class="monoText"><mark>${obj}$.position</mark></span>
+		</li>
+		<ul>
+			<li>
+				The <span class="monoText">position</span> property is an object literal
+				with three properties: <span class="monoText"><mark>x</mark></span
+				>, <span class="monoText"><mark>y</mark></span
+				>, and <span class="monoText"><mark>z</mark>.</span> Each of these
+				properties represents the ${x}$-, ${y}$-, and ${z}$-axis values
+				respectively.
+			</li>
+			<li>
+				Note that axis interpretation varies widely across libraries. In
+				ThreeJS, the ${x}$-axis is interpreted as left-right movement, the
+				${y}$-axis as up-down movement, and the ${z}$-axis is forward-backward
+				movement.
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"><mark>${obj}$.rotation</mark></span>
+		</li>
+		<ul>
+			<li>
+				The <span class="monoText"><mark>rotation</mark></span> property
+				represents an object's local rotation, in
+				<span class="underlineText">radians</span>.
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"><mark>${obj}$.scale</mark></span>
+		</li>
+		<ul>
+			<li>
+				The <span class="monoText"><mark>scale</mark></span> property represents
+				an object's local scale.
+			</li>
+		</ul>
+	</ul>
+	<p>
+		Knowing these properties, we want to move the camera backwards (i.e.,
+		towards us):
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const sizes = {
+			width: 800;
+			height: 800;
+		}
+		const camera = new THREE.PerspectiveCamera(
+			75, 
+			sizes.width / sizes.height
+		)
+		camera.position.z = 3; // move the camera
+		scene.add(camera);
+		const canvas = document.querySelector('.webgl');
+		const renderer = new THREE.WebGLRenderer({
+			canvas: canvas;
+		});
+		renderer.setSize(sizes.width, sizes.height);
+		renderer.render(scene, camera);
+	</code></pre>
+	<p>
+		We should now see a red square. It is actually a cube, we just need to move
+		the camera to the right:
+	</p>
+	<pre class="language-javascript"><code>
+		const scene = new THREE.Scene();
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		const sizes = {
+			width: 800;
+			height: 800;
+		}
+		const camera = new THREE.PerspectiveCamera(
+			75, 
+			sizes.width / sizes.height
+		)
+		camera.position.z = 3; // move the camera back
+		camera.position.x = 2; // move the camera right
+		scene.add(camera);
+		const canvas = document.querySelector('.webgl');
+		const renderer = new THREE.WebGLRenderer({
+			canvas: canvas;
+		});
+		renderer.setSize(sizes.width, sizes.height);
+		renderer.render(scene, camera);
+	</code></pre>
+</section>
+
+<section id="transforming_objects">
+	<h2>Transforming Objects</h2>
+	<p>
+		To <span class="term">transform</span> an object is to modify some property
+		of the object. Transformation is the first step towards
+		<span class="italicsText">animating</span> the object. In ThreeJS, the four
+		properties most relevant to transformation are:
+	</p>
+	<figure>
+		<ul>
+			<li>
+				<span class="monoText"><mark>position</mark></span>
+			</li>
+			<li>
+				<span class="monoText"><mark>scale</mark></span>
+			</li>
+			<li>
+				<span class="monoText"><mark>rotation</mark></span>
+			</li>
+			<li>
+				<span class="monoText"><mark>quaternion</mark></span>
+			</li>
+		</ul>
+	</figure>
+	<p>
+		All of these properties originate in a class called
+		<span class="monoText"><mark>Object3D</mark>.</span> From the
+		<span class="monoText">Object3D</span> class we have classes like
+		<span class="monoText">PerspectiveCamera</span> and
+		<span class="monoText">Mesh</span>.
+	</p>
+	<section id="position">
+		<h3>The Position Property</h3>
+		<p>
+			As stated earlier, the <span class="monoText">position</span> property
+			originates in the class <span class="monoText">Object3D</span>. Thus, any
+			object whose ancestor class is <span class="monoText">Object3D</span> has
+			a <span class="monoText">position</span> property. The
+			<span class="monoText">position</span> property itself is a combination of
+			three properties:
+		</p>
+		<ul class="ruled">
+			<li>
+				<span class="monoText">${Obj}$.x</span>
+			</li>
+			<ul>
+				<li>Sets the ${x}$-axis coordinate.</li>
+			</ul>
+			<li>
+				<span class="monoText">${Obj}$.y</span>
+			</li>
+			<ul>
+				<li>Sets the ${y}$-axis coordinate.</li>
+			</ul>
+			<li>
+				<span class="monoText">${Obj}$.z</span>
+			</li>
+			<ul>
+				<li>Sets the ${z}$-axis coordinate.</li>
+			</ul>
+		</ul>
+		<p>For example, using the same code from the previous section:</p>
+		<pre class="language-javascript"><code>
+			mesh.position.y = 1; // move the mesh up by 1
+			mesh.position.y = -1; // move the mesh down by 1
+
+			mesh.position.x = 1; // move the mesh right by 1
+			mesh.position.x = -1; // move the mesh down by 1
+
+			mesh.position.z = 1; // move the mesh forward by 1
+			mesh.position.z = -1; // move the mesh back by 1
+		</code></pre>
+		<p>We can also update all three positions in a single line:</p>
+		<pre class="language-javascript"><code>
+			/*
+			 * Move the mesh right, up, forward by 1.
+			*/
+			mesh.position.set(1, 1, 1); 
+		</code></pre>
+		<p>When using the single-line approach, the syntax is:</p>
+		<figure>
+			<ul class="syntax">
+				<li>${Obj}$.position.set(${x}$, ${y}$, ${z}$)</li>
+			</ul>
+		</figure>
+		<p>
+			Although the comments to the code above are true, they are true insofar as
+			we are using a perspective camera. Interpreting the axes entirely depends
+			on the camera &mdash; which establishes
+			<span class="italicsText">our</span> position when we view the object. If
+			we think about this carefully, this makes perfect sense. The word
+			&#8220;right&#8221; and &#8220;left&#8221; are entirely subjective; hence
+			the existence of questions like &#8220;My left or your left?&#8221; The
+			same goes for &#8220;up&#8221; and &#8220;down.&#8221; If van Helsing
+			stands on the floor while Dracula suspends from the ceiling, Helsing's
+			&#8220;down&#8221; is Dracula's &#8220;up,&#8221; and Dracula's
+			&#8220;up&#8221; is Helsing's &#8220;down.&#8221; The words
+			&#8220;forward&#8221; and &#8220;backward&#8221; are not immune either. If
+			Don Quixote stands in front of a car and the car reverses towards Panza,
+			the car is moving &#8220;backward&#8221; from Don Quixote and
+			&#8220;forward&#8221; towards Panza.
+		</p>
+		<p>
+			Equally arbitrary is the number we used above,
+			<span class="monoText">1.</span> The distance of ${1}$ unit is entirely
+			determined by our interpretation. We can think of it was 1 nanometer, 1
+			meter, 1 mile, 1 lightyear, and so on. As stated in the earlier section,
+			distances in ThreeJS are measured in terms of proportions. Thus, once
+			we've settled on an interpretation, we must keep that interpretation in
+			mind when we use numbers for other objects.
+		</p>
+		<p>
+			The <span class="monoText">position</span> property also inherits from a
+			class called <span class="monoText"><mark>Vector3</mark></span
+			>. The <span class="monoText">Vector3</span> class contains numerous
+			methods we will use extensively. One such method is
+			<span class="monoText"><mark>.length()</mark></span
+			>:
+		</p>
+		<pre class="language-javascript"><code>
+			mesh.position.x = 0.7;
+			mesh.position.y = -0.6;
+			mesh.position.z = 1;
+			console.log(mesh.position.length());
+		</code></pre>
+		<pre class="language-bash"><code>
+			1.3601470508735443
+		</code></pre>
+		<p>
+			The output above is effectively how far our mesh is from the scene's
+			center. We can also obtain the distance between the object and the camera
+			(note that there must be a camera before we asking for the distance to the
+			camera):
+		</p>
+		<pre class="language-javascript"><code>
+			mesh.position.x = 0.7;
+			mesh.position.y = -0.6;
+			mesh.position.z = 1;
+
+			// after the camera initialization
+
+			console.log(mesh.position.distanceTo(camera.position));
+		</code></pre>
+		<pre class="language-bash"><code>
+			2.202271554554524
+		</code></pre>
+		<p>
+			One particularly useful method is
+			<span class="monoText"><mark>.normalize()</mark></span
+			>. This method will take the length of a particular vector, and reduce it
+			to a length of <span class="monoText">1</span>:
+		</p>
+		<pre class="language-javascript"><code>
+			mesh.position.x = 0.7;
+			mesh.position.y = -0.6;
+			mesh.position.z = 1;
+
+			mesh.position.normalize();
+		</code></pre>
+		<section id="position_helper">
+			<h4>Axes Helper</h4>
+			<p>
+				Because axes can get confusing when working with many different cameras,
+				ThreeJS provides a tool called
+				<span class="monoText"><mark>AxesHelper</mark></span
+				>. This is just a visualization of the axes we're working with. To
+				create it, we write the code below. Note that because the axes helper is
+				an object, it must be added to the scene:
+			</p>
+			<pre class="language-javascript"><code>
+				const axesHelper = new THREE.AxesHelper();
+				scene.add(axesHelper);
+			</code></pre>
+			<p>
+				With the axes helper, the axes are color-coded, each with a length of
+				<span class="underlineText">1 unit</span>:
+			</p>
+			<figure>
+				<ul>
+					<li>
+						The
+						<span class="redText">red</span> line corresponds to the
+						<span class="redText">${\text{$x$-axis}}$</span>
+					</li>
+					<li>
+						The
+						<span class="greenText">green</span> line corresponds to the
+						<span class="greenText">${\text{$y$-axis}}$</span>
+					</li>
+					<li>
+						The
+						<span class="blueText">blue</span> line corresponds to the
+						<span class="blueText">${\text{$z$-axis}}$</span>
+					</li>
+				</ul>
+			</figure>
+			<p>
+				With the perspective camera set to default, we likely do not see the
+				${\text{$z$-axis}}$ line. This is because the perspective camera, by
+				default, points straight ahead. To see the ${\text{$z$-axis},}$ we must
+				change the camera position:
+			</p>
+			<pre class="language-javascript"><code>
+				const axesHelper = new THREE.AxesHelper();
+				scene.add(axesHelper);
+
+				// camera initialized
+
+				camera.position.z = 3;
+				camera.position.y = 1;
+				camera.position.x = 1;
+				scene.add(camera);
+			</code></pre>
+		</section>
+	</section>
+	<section id="scale">
+		<h3>Scale</h3>
+		<p>
+			Like the position property, the
+			<span class="monoText"><mark>scale</mark></span> property is also a
+			<span class="monoText">Vector3</span>.
+		</p>
+	</section>
+</section>
+
+<section id="cameras">
+	<h2>Cameras</h2>
+	<p>In this section, we discuss cameras in further detail.</p>
+	<section id="camera">
+		<h3>Perspective Camera</h3>
+		<p>
+			The perspective camera renders a scene with perspective. For example, here
+			is a camera initialization:
+		</p>
+		<pre class="language-javascript"><code>
+			const sizes = {
+				width: 800,
+				height: 600
+			}
+			const camera = new THREE.PerspectiveCamera(100, sizes.width / sizes.height, 1, 3);
+			camera.position.x = 2;
+			camera.position.y = 2;
+			camera.position.z = 2;
+		</code></pre>
+		<p>
+			Click on the underlined parts of the template below for an explanation of
+			each argument:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>
+					let cam = new THREE.PerspectiveCamera(<span class="pop">${fov}$</span
+					>, <span class="pop">${asp}$</span>,
+					<span class="pop">${near}$</span>, <span class="pop">${far}$</span>)
+				</li>
+				<div class="popText">
+					<p>
+						This is the
+						<span class="boldText">Field of View (FOV)</span> parameter. It's
+						measured in degrees, and essentially returns the vertical vision
+						angle &mdash; how much we can see up and down.
+					</p>
+				</div>
+				<div class="popText">
+					<p>
+						This is <span class="boldText">aspect</span> argument. By default,
+						it is set to 1. In the code above, we used an object. We can think
+						of this as setting how much area the camera covers (i.e., the canvas
+						size).
+					</p>
+				</div>
+				<div class="popText">
+					<p>
+						This is the <span class="boldText">near</span> argument, effectively
+						how &#8220;close&#8221; an object is to the camera. Any object
+						closer than this value will not be seen.
+					</p>
+				</div>
+				<div class="popText">
+					<p>
+						This is the <span class="boldText">far</span> argument, how
+						&#8220;far&#8221; the object is to the camera. Any object farther
+						than this value will not be seen.
+					</p>
+				</div>
+			</ul>
+		</figure>
+		<p>
+			<span class="topic">FOV Parameter.</span>
+			The larger the FOV argument, the more likely we are to distort the
+			objects. Beyond ${{75}^\circ,}$ objects begin looking very small. Often,
+			it's best to stay within the range of ${{45}^\circ}$ through
+			${{75}^\circ.}$
+		</p>
+		<p>
+			<span class="topic">Aspect Ratio Parameter.</span>
+			The aspect ratio argument is a ratio of width:height. We can think of this
+			as setting the width and the height of the render.
+		</p>
+		<p>
+			<span class="topic">Near & Far Parameters.</span> The near and far
+			parameters correspond to how close and how far the camera can see. If an
+			object is (1) closer than near, or (2) further than far, then the object
+			will not be seen.
+		</p>
+		<p>
+			A common mistake with this parameter is setting
+			<span class="monoText">near = 0.0001</span> and
+			<span class="monoText">far = 99999</span>. Although this largely keeps
+			objects within view, it almost always introduces a bug called
+			<span class="term">z-fighting</span>. When two objects are too close to
+			one another along the ${z}$-axis, the GPU has difficulty determining which
+			of the two objects is &#8220;seen.&#8221; This leads to the objects coming
+			into conflict.
+		</p>
+	</section>
+
+	<section id="orthographic_camera">
+		<h3>Orthographic Camera</h3>
+		<p>
+			Unlike the perspective camera, the orthographic camera has no perspective.
+			Thus, objects seen through an orthographic camera have the same size,
+			regardless of their distance to the camera.
+		</p>
+		<p>The template for initializing an orthographic camera:</p>
+		<figure>
+			<ul class="syntax">
+				<li>
+					const c = new THREE.OrthographicCamera(<span class="pop"
+						>${left}$</span
+					>, <span class="pop">${right}$</span>,
+					<span class="pop">${top}$</span>, <span class="pop">${bottom}$</span>,
+					<span class="pop">${near}$</span>, <span class="pop">${far}$</span>);
+				</li>
+				<div class="popText">
+					<p>The ${left}$ parameter indicates how far left the camera sees.</p>
+				</div>
+				<div class="popText">
+					<p>
+						The ${right}$ parameter indicates how far right the camera sees.
+					</p>
+				</div>
+				<div class="popText">
+					<p>The ${top}$ parameter indicates how far up the camera sees.</p>
+				</div>
+				<div class="popText">
+					<p>
+						The ${bottom}$ parameter indicates how far down the camera sees.
+					</p>
+				</div>
+				<div class="popText">
+					<p>
+						This is the <span class="boldText">near</span> argument, effectively
+						how &#8220;close&#8221; an object is to the camera. Any object
+						closer than this value will not be seen.
+					</p>
+				</div>
+				<div class="popText">
+					<p>
+						This is the <span class="boldText">far</span> argument, how
+						&#8220;far&#8221; the object is to the camera. Any object farther
+						than this value will not be seen.
+					</p>
+				</div>
+			</ul>
+		</figure>
+		<p>
+			With the orthographic camera, we want to think of the camera's field of
+			view as a cube. What it sees directly in front of it is a square, and the
+			object lies on that square. Compare that with the perspective camera,
+			which has a field of view akin to a cylinder. Because of this, the
+			orthographic camera must know the how far left, right, top, and bottom we
+			render. Anything beyond those points is not seen. Furthermore, just like
+			the perspective camera, we can include arguments for the parameters
+			${near}$ and ${far.}$
+		</p>
+		<p>
+			When using an orthographic camera, it's often the case that changes to
+			near and far can distort the shape. To prevent this from occurring, we
+			want to use the aspect ratio &mdash; the ratio of width:height. We then
+			multiply this ratio to the ${left}$ and ${right}$ arguments:
+		</p>
+		<pre class="language-javascript"><code>
+			const sizes = {
+				width: 400,
+				height: 400
+			}
+			const aspectRatio = sizes.width / sizes.height;
+			const camera = new THREE.OrthographicCamera(
+				-1 * aspectRatio, 
+				1 * aspectRatio, 
+				1, 
+				-1, 
+				0.1, 
+				100
+			);
+		</code></pre>
+	</section>
+
+	<section id="custom_camera_controls">
+		<h3>Controlling the Camera</h3>
+		<p>
+			Because ThreeJS deals with both 3D objects and their movements, cameras
+			must be mobile. Think of a movie set. The camera operators move the
+			cameras here and there as needed. There isn't just one camera, or multiple
+			cameras, remaining in place.
+		</p>
+		<p>
+			One way to move the camera is through the cursor. For example, if the
+			cursor moves to the left, we want the camera to move left, if the cursor
+			moves right, the camera moves right, and so on.
+		</p>
+		<p>
+			To move the camera, we must know the coordinates of the cursor. If we run
+			the code below, we'll see that we get back the ${x}$-coordinates of the
+			cursor's position in real time:
+		</p>
+		<pre class="language-javascript"><code>
+			window.addEventListener('mousemove', (event) => { 
+				console.log(event.clientX);
+			});
+		</code></pre>
+		<p>And if we use the following function:</p>
+		<pre class="language-javascript"><code>
+			window.addEventListener('mousemove', (event) => { 
+				console.log(event.clientY);
+			});
+		</code></pre>
+		<p>
+			We get the ${y}$-coordinates of the cursor's position. The values we see
+			in the console are pixel values. This is not very useful. If the window
+			gets large enough, the values run into the thousands, and if the window
+			gets small enough (e.g., on a mobile device), we stay in the hundred
+			range. A much more useful metric would be one that keeps these values
+			proportional. For example, one metric would be using the values ${0}$
+			through ${1.}$ No matter what the window size is, we stay within this
+			range.
+		</p>
+		<p>To begin, we'll store the values we need in an object:</p>
+		<pre class="language-javascript"><code>
+			const cursor = {
+				x: 0,
+				y: 0
+			};
+			window.addEventListener('mousemove', (event) => { 
+					cursor.x = event.clientX;
+					cursor.y = event.clientY;
+			});
+		</code></pre>
+		<p>
+			To keep these values within the range of ${0}$ to ${1,}$ we simply divide
+			the values by the size of our viewport:
+		</p>
+		<pre class="language-javascript"><code>
+			const sizes = {
+				width: 400,
+				height: 400
+			};
+			const cursor = {
+				x: 0,
+				y: 0
+			};
+			window.addEventListener('mousemove', (event) => { 
+					cursor.x = event.clientX / sizes.width;
+					cursor.y = event.clientY / sizes.height;
+			});
+		</code></pre>
+		<p>
+			Note that the <span class="monoText">width</span> and
+			<span class="monoText">height</span> values above are not necessarily the
+			viewport's dimensions. They might be the dimensions for a
+			<span class="monoText">canvas</span> element. In later sections, we will
+			consider ways to obtain the actual viewport's dimensions.
+		</p>
+		<p>
+			With the approach above, we're getting only positive values. What if we
+			wanted to have positive and negative values, similar to a Cartesian
+			coordinate system? The solution is to just subtract ${0.5:}$
+		</p>
+		<pre class="language-javascript"><code>
+			const sizes = {
+				width: 400,
+				height: 400
+			};
+			const cursor = {
+				x: 0,
+				y: 0
+			};
+			window.addEventListener('mousemove', (event) => { 
+					cursor.x = event.clientX / sizes.width - 0.5;
+					cursor.y = event.clientY / sizes.height - 0.5;
+			});
+		</code></pre>
+		<p>
+			Why ${0.5?}$ Because the values range from ${0}$ to ${1.}$ By subtracting
+			${0.5,}$ the range now becomes ${[-0.5, 0.5].}$ The difference between
+			this implementation and the Cartesian coordinate system is the moving the
+			mouse towards the top yields negative ${y}$-values, and moving the mouse
+			towards the bottom yields positive ${y}$-values. The ${x}$-axis works as
+			expected &mdash; moving towards the left, we get negative ${x}$-values,
+			moving towards the right, we get positive ${x}$-values.
+		</p>
+		<p>
+			Having these values, we can update the camera through the
+			<span class="monoText">tick()</span> function:
+		</p>
+		<pre class="language-javascript"><code>
+			<span class="greyText">const tick = () => {</span>
+
+				camera.position.x = cursor.x * 2;
+				camera.position.y = cursor.y * 2;
+
+				<span class="greyText">renderer.render(scene, camera);</span>
+
+				<span class="greyText">window.requestAnimationFrame(tick);</span>
+			<span class="greyText">}</span>
+			<span class="greyText">tick();</span>
+		</code></pre>
+		<p>
+			Running all of the relevant code, we might notice that the camera acts
+			odd. If we move the cursor left, the camera moves right. If we move the
+			cursor right, the camera moves left. And if we move up and down, the
+			object appears to follow the camera. This is because of that earlier fact
+			we noted: In ThreeJS, the ${y}$-axis is negative towards the top, and
+			positive towards the bottom. This means we must invert the
+			${y-}$coordinate value:
+		</p>
+		<pre class="language-javascript"><code>
+			<span class="greyText">const sizes = {
+				width: 400,
+				height: 400
+			};
+			const cursor = {
+				x: 0,
+				y: 0
+			};
+			window.addEventListener('mousemove', (event) => { 
+					cursor.x = event.clientX / sizes.width - 0.5;</span>
+					cursor.y = -(event.clientY / sizes.height - 0.5);
+			<span class="greyText">});</span>
+		</code></pre>
+		<p>
+			If we want to make sure the camera is always looking at the center of the
+			cube (while still panning around):
+		</p>
+		<pre class="language-javascript"><code>
+			<span class="greyText">const tick = () => {
+
+				camera.position.x = cursor.x * 2;
+				camera.position.y = cursor.y * 2;</span>
+				camera.lookAt(new THREE.Vector3());
+
+				<span class="greyText">renderer.render(scene, camera);</span>
+
+				<span class="greyText">window.requestAnimationFrame(tick);</span>
+			<span class="greyText">}</span>
+			<span class="greyText">tick();</span>
+		</code></pre>
+		<p>
+			Alternatively, we can simply pass the object's position as an argument to
+			<span class="monoText">lookAt()</span>:
+		</p>
+		<pre class="language-javascript"><code>
+			<span class="greyText">const tick = () => {
+
+				camera.position.x = cursor.x * 2;
+				camera.position.y = cursor.y * 2;</span>
+				camera.lookAt(mesh.position);
+
+				<span class="greyText">renderer.render(scene, camera);</span>
+
+				<span class="greyText">window.requestAnimationFrame(tick);</span>
+			<span class="greyText">}</span>
+			<span class="greyText">tick();</span>
+		</code></pre>
+		<p>
+			We still, however, have a limitation: We can't see behind the object. To
+			remedy this, we want to have the camera rotate around the object. And to
+			rotate the camera around the object, we're going to use trigonometry.
+		</p>
+		<p>
+			As we know, the trigonometric functions are cyclical. For both ${y = \sin
+			x}$ and ${y = \cos x,}$ the domain is ${\R,}$ and we can see that it is
+			cyclical by way of a table:
+		</p>
+		<figure>
+			<div class="func">
+				<ul>
+					<li>${x}$</li>
+					<li>${y}$</li>
+				</ul>
+				<ul>
+					<li>0</li>
+					<li>0</li>
+				</ul>
+				<ul>
+					<li>${\dfrac{\pi}{2}}$</li>
+					<li>1</li>
+				</ul>
+				<ul>
+					<li>${\pi}$</li>
+					<li>0</li>
+				</ul>
+				<ul>
+					<li>${\dfrac{3\pi}{2}}$</li>
+					<li>-1</li>
+				</ul>
+				<ul>
+					<li>${2 \pi}$</li>
+					<li>0</li>
+				</ul>
+				<ul>
+					<li>${\dfrac{5 \pi}{2}}$</li>
+					<li>1</li>
+				</ul>
+				<ul>
+					<li>${3 \pi}$</li>
+					<li>0</li>
+				</ul>
+				<ul>
+					<li>${\dfrac{7 \pi}{2}}$</li>
+					<li>-1</li>
+				</ul>
+				<ul>
+					<li>${4 \pi}$</li>
+					<li>0</li>
+				</ul>
+			</div>
+			<figcaption>The ${x}$ and ${y}$ values of ${y = \sin x.}$</figcaption>
+		</figure>
+		<p>And for ${y = \cos x}$ we have:</p>
+		<figure>
+			<div class="func">
+				<ul>
+					<li>${x}$</li>
+					<li>${y}$</li>
+				</ul>
+				<ul>
+					<li>0</li>
+					<li>1</li>
+				</ul>
+				<ul>
+					<li>${\dfrac{\pi}{2}}$</li>
+					<li>0</li>
+				</ul>
+				<ul>
+					<li>${\pi}$</li>
+					<li>-1</li>
+				</ul>
+				<ul>
+					<li>${\dfrac{3\pi}{2}}$</li>
+					<li>0</li>
+				</ul>
+				<ul>
+					<li>${2 \pi}$</li>
+					<li>1</li>
+				</ul>
+				<ul>
+					<li>${\dfrac{5 \pi}{2}}$</li>
+					<li>0</li>
+				</ul>
+				<ul>
+					<li>${3 \pi}$</li>
+					<li>-1</li>
+				</ul>
+				<ul>
+					<li>${\dfrac{7 \pi}{2}}$</li>
+					<li>0</li>
+				</ul>
+				<ul>
+					<li>${4 \pi}$</li>
+					<li>1</li>
+				</ul>
+			</div>
+			<figcaption>The ${x}$ and ${y}$ values of ${y = \cos x.}$</figcaption>
+		</figure>
+		<p>
+			Because of these oscillations, if we use ${\cos x}$ to represent the
+			${x}$-coordinate and ${\sin x}$ to represent the ${y}$-coordinate, we
+			essentially have coordinates all along a circle. Knowing these facts, the
+			question then, is, which axes do we move along? Because we aren't moving
+			up and down (we're just trying to see behind the object), the axes we will
+			travel are the ${x}$- and ${z}$-axis.
+		</p>
+		<pre class="language-javascript"><code>
+			<span class="greyText">const tick = () => {</span>
+
+				camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3;
+				camera.position.y = cursor.y * 5;
+				camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 3;
+				camera.lookAt(new THREE.Vector3());
+
+				<span class="greyText">renderer.render(scene, camera);</span>
+
+				<span class="greyText">window.requestAnimationFrame(tick);</span>
+			<span class="greyText">}</span>
+			<span class="greyText">tick();</span>
+		</code></pre>
+	</section>
+
+	<section id="built_in_controls">
+		<h3>Built-in Controls</h3>
+		<p>
+			The control we mentioned above is an example of a custom control. ThreeJS
+			also provides <span class="term">built-in controls</span>. These built-in
+			controls are:
+		</p>
+		<figure>
+			<ul>
+				<li><span class="monoText">DeviceOrientationControls</span></li>
+				<li><span class="monoText">FirstPersonControls</span></li>
+				<li><span class="monoText">FlyControls</span></li>
+				<li><span class="monoText">OrbitControls</span></li>
+				<li><span class="monoText">PointerLockControls</span></li>
+				<li><span class="monoText">TrackBallControls</span></li>
+			</ul>
+		</figure>
+		<p>We examine each of these controls in turn.</p>
+
+		<section id="device_orientation_control">
+			<h4>Device Orientation Controls</h4>
+			<p>
+				<span class="monoText">DeviceOrientationControls</span>
+				retrieve the device orientation as set on the device, operating system,
+				or browser. With this information, we can rotate the camera based on
+				orientation.
+			</p>
+		</section>
+
+		<section id="fly_controls">
+			<h4>Fly Controls</h4>
+			<p>
+				We can think of <span class="monoText">FlyControls</span> as allowing us
+				to move the camera as if we were operating a fighter jet &mdash; we can
+				rotate on all 3 axes (e.g., performing a barrel roll), as well as moving
+				forward and back.
+			</p>
+		</section>
+
+		<section id="first_person_controls">
+			<h4>First Person Controls</h4>
+			<p>
+				<span class="monoText">FirstPersonControls</span> are similar to fly
+				controls, but with restriction: The
+				<span class="italicsText">up</span> axis is fixed. Where fly controls
+				allow us to do &#8220;aerial tricks,&#8221; first person controls are
+				more like a Boeing-747 &mdash; it can look down, but there is an upper
+				bound on how much it can look up.
+			</p>
+		</section>
+
+		<section id="pointer_lock_control">
+			<h4>Pointer Lock Controls</h4>
+			<p>
+				<span class="monoText">PointerLockControls</span> are akin to the
+				controls we see in a game like Minecraft. We can look up, down, left,
+				right, from a <span class="italicsText">fixed position</span>. Think of
+				this as operating the camera on the the Mars rover. We can see in all
+				directions, but only from a &#8220;locked&#8221; position.
+			</p>
+		</section>
+
+		<section id="orbit_control">
+			<h4>Orbit Controls</h4>
+			<p>
+				<span class="monoText">OrbitControls</span> allow us to move in all
+				directions, <span class="underlineText">except</span> below the floor (a
+				vertical angle limit). This is very much like operating a drone or
+				satellite. The camera &#8220;orbits&#8221; the object.
+			</p>
+		</section>
+
+		<section id="trackball_controls">
+			<p>
+				<span class="monoText">TrackballControls</span> are similar to orbit
+				controls, but do not have the vertical angle limit we see with orbit
+				controls.
+			</p>
+		</section>
+	</section>
+</section>
+
+<section id="full_screen_and_resizing">
+	<h2>Full Screen & Resizing</h2>
+	<p>
+		As we know, ThreeJS renders its visualizations in a canvas element. We can
+		think of the canvas element as the universe where ThreeJS renderings exist.
+		Depending on our desires, we often need to shrink, expand, or more generally
+		resize the universe. Perhaps we want only want the canvas element to cover a
+		portion of the viewport. Or we might want just the opposite, the canvas
+		element covering the entire viewport. This all comes down to full-screening
+		and resizing.
+	</p>
+	<div class="mainIdea">
+		<p>
+			Some important distinctions: The
+			<span class="italicsText">viewport</span> is the area within the browser
+			that displays webpage content. The
+			<span class="italicsText">window</span> is the entire browser's area (the
+			viewport plus the header bar with the URL). The
+			<span class="italicsText">screen</span> is the entire monitor's display
+			area.
+		</p>
+	</div>
+	<p>
+		Let's say we want our visualization to cover the entire viewport. We can do
+		so by obtaining the viewport's height and width:
+	</p>
+	<pre class="language-javascript"><code>
+		const sizes = {
+			width: window.innerWidth,
+			height: window.innerHeight
+		}
+	</code></pre>
+	<p>
+		Note that these properties are found in the
+		<span class="monoText">window</span> object, but they are width and height
+		of the viewport, note the window.
+	</p>
+	<p>
+		When we use these sizes for the renderer, the renderer now covers the entire
+		viewport. There may, however, be some margins. The trick to fixing this is
+		to add some class attribute to the HTML element
+		<span class="monoText">canvas</span> itself, then use the position property
+		in CSS:
+	</p>
+	<pre class="language-css"><code>
+		.webgl {
+			position: fixed;
+			top: 0;
+			left: 0;
+			outline: none;
+		}
+	</code></pre>
+	<p>
+		The <span class="monoText">outline: none;</span> styling is used to get rid
+		of any default outlines that the browser renders for the
+		<span class="monoText">canvas</span> element (depending on the browser, this
+		might look like a thin blue line around the canvas element).
+	</p>
+	<section id="handle_resizing">
+		<p>
+			<span class="topic">Handle Resizing.</span> One problem we might have
+			noticed with the above changes is that they aren't responsive. If we
+			enlarge the window or narrow it, the canvas element does not change unless
+			we reload the page.
+		</p>
+		<p>The fix is to use an event listener:</p>
+		<pre class="language-javascript"><code>
+			const cursor = {
+					x: 0,
+					y: 0
+			};
+			window.addEventListener('mousemove', (event) => { 
+					cursor.x = event.clientX / sizes.width - 0.5;
+					cursor.y = -(event.clientY / sizes.height - 0.5);
+			})
+		</code></pre>
+		<p>
+			But, this still does not show any changes &mdash; we're merely updating
+			the object, rather than a particular element in our scene.
+		</p>
+	</section>
+</section>
+{% endblock %}
