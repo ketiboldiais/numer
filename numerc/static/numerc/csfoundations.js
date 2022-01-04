@@ -1,11 +1,11 @@
 
 // Add main idea header
 function mainIdeaHeader() { 
-  const header = document.createElement("p");
-  header.innerText = "Point(s)";
-  header.classList.toggle("header");
   const mainIdeas = document.getElementsByClassName("mainIdea");
   for (let i = 0; i < mainIdeas.length; i++) { 
+    const header = document.createElement("p");
+    header.innerText = "Remark";
+    header.classList.toggle("header");
     mainIdeas[i].prepend(header);
   }
 }

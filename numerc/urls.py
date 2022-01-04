@@ -113,7 +113,7 @@ urlpatterns = [
 
 	path("js_functions", views.js_functions, name="js_functions"),
 
-	path("js_this", views.js_this, name="js_this"),
+	path("js_classes", views.js_classes, name="js_classes"),
 
 	path("js_jsLowerLevel", views.js_jsLowerLevel, name="js_jsLowerLevel"),
 

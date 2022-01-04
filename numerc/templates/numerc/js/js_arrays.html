@@ -717,6 +717,16 @@
 		<span class="italicsText">record data type</span>, or simply a
 		<span class="italicsText">record</span>.
 	</p>
+	<div class="mainIdea">
+		<p>
+			There are two interpretations for the word &#8220;object&#8221; in
+			JavaScript, and we will resolve the ambiguity by using different terms.
+			When we use the word &#8220;object&#8221; alone, we are referring to a
+			collection of values. When we use the word &#8220;object-literal,&#8221;
+			we are referring to a record-type data structure similar to a
+			<span class="monoText">struct</span>.
+		</p>
+	</div>
 	<p>
 		Recognizing this ambiguity, some JavaScript developers use the term
 		&#8220;object-literal&#8221;. This doesn't fix the issue entirely, but we'll
@@ -767,6 +777,14 @@
 			</li>
 		</ul>
 	</figure>
+	<div class="mainIdea">
+		<p>
+			We can think of the object-literal as akin to a stack of shelves. Each
+			shelf has a label &mdash; the key &mdash; and an item on that shelf
+			&mdash; the value. The label and the item together constitute a single
+			shelf &mdash; the property.
+		</p>
+	</div>
 	<p>
 		We will use string value keys first, and later examine number and symbol.
 		Importantly, records like the object-literal are distinct from classes in
@@ -1016,6 +1034,35 @@
 			syntax), is necessary if the field name is not a simple identifier or if
 			the name is computed by the program.
 		</p>
+		<section id="dynamically_accessing_properties">
+			<p>
+				<span class="topic">Dynamically Accessing Properties.</span> Because we
+				can place expressions inside the brackets for square-bracket syntax, we
+				can dynamically access properties in objects. For example:
+			</p>
+			<pre class="language-javascript"><code>
+				function parity(n) { 
+					if (n % 2 == 0) { return "a"; }
+					else { return "b" };
+				};
+				const obj = {
+					a: "Even",
+					b: "Odd"
+				}
+				console.log(obj[parity(2)]);
+				console.log(obj[parity(3)]);
+			</code></pre>
+			<pre class="language-bash"><code>
+				Even
+				Odd
+			</code></pre>
+			<p>
+				Above, we passed a function call into the square brackets to access the
+				properties of the object <span class="monoText">obj</span>. With this
+				idiom, we can write functions that take user inputs and return object
+				properties.
+			</p>
+		</section>
 	</section>
 
 	<section id="modifying_objects">
@@ -1160,81 +1207,75 @@
 			situations, we might want to create an object where the key name is the
 			name of the variable, and the key's assigned property is the value
 			assigned to the variable.
-			<span class="italicstext">Shorthand properties</span>
-			provide a concise way of creating such an object. For example, if we
-			wanted to collect all of the results from a function in an object, the
-			usual way would be:
+			<span class="term">Shorthand properties</span>
+			provide a concise way of creating such an object. For example, one common
+			idiom is to collect all of the results from a function in an object. Say
+			we have an array of voltage values from an experiment. We then create a
+			function computing various statistics from the the values:
 		</p>
 		<pre class="language-javascript"><code>
-					// suppose we have an array of voltage values from running an experiment:
-					const experiment1 = [0.53, 0.58, 0.59, 0.53, 0.61, 0.51, 0.53];
-					// now suppose that we create a function that computes a variety of statistics from these values:
-					const experimentstats = (arr) => {
-						const voltagequantity = arr.length;
-						const maxvoltage = math.max(...arr);
-						const minvoltage = math.min(...arr);
-						const sumvoltages = arr.reduce((sumvoltages, r) => sumvoltages + r);
-						const averagevoltage = sumvoltages / voltagequantity;
-						const sortvoltageascending = arr.sort((a, b) => a - b);
-		
-						return {
-							maximum_voltage: maxvoltage,
-							minimum_voltage: minvoltage,
-							average_voltage: averagevoltage,
-							voltages_ascending: sortvoltageascending,
-						};
-					};
-					console.log(experimentstats(experiment1));
-					/*
-					output:
-					{
-						maximum_voltage: 0.61,
-						minimum_voltage: 0.51,
-						average_voltage: 0.5542857142857143,
-						voltages_ascending: [ 0.51, 0.53, 0.53, 0.53, 0.58, 0.59, 0.61 ]
-					}
-					*/	
-					</code></pre>
+			const experiment1 = [0.53, 0.58, 0.59, 0.53, 0.61, 0.51, 0.53];
+			const experimentStats = (arr) => {
+				const voltageQuantity = arr.length;
+				const maxVoltage = math.max(...arr);
+				const minVoltage = math.min(...arr);
+				const sumVoltages = arr.reduce(
+					(sumVoltages, r) => sumVoltages + r
+				);
+				const averageVoltage = sumVoltages / voltageQuantity;
+				const sortVoltageAscending = arr.sort((a, b) => a - b);
+
+				return {
+					maximumVoltage: maxVoltage,
+					minimumVoltage: minVoltage,
+					averageVoltage: averageVoltage,
+					voltagesAscending: sortVoltageascending,
+				};
+			};
+			console.log(experimentstats(experiment1));
+		</code></pre>
+		<pre class="language-bash"><code>
+			{
+				maximumVoltage: 0.61,
+				minimumVoltage: 0.51,
+				averageVoltage: 0.5542857142857143,
+				voltagesAscending: [ 0.51, 0.53, 0.53, 0.53, 0.58, 0.59, 0.61 ]
+			}
+		</code></pre>
 		<p>
 			But, with
 			<span class="italicstext">shorthand properties</span>, we can shorten the
 			return statement in the example above:
 		</p>
 		<pre class="language-javascript"><code>
-						// suppose we have an array of voltage values from running an experiment:
-						const experiment1 = [0.53, 0.58, 0.59, 0.53, 0.61, 0.51, 0.53];
-						// now suppose that we create a function that computes a variety of statistics from these values:
-						const experimentstats = (arr) => {
-							const voltagequantity = arr.length;
-							const maxvoltage = math.max(...arr);
-							const minvoltage = math.min(...arr);
-							const sumvoltages = arr.reduce((sumvoltages, r) => sumvoltages + r);
-							const averagevoltage = sumvoltages / voltagequantity;
-							const sortvoltageascending = arr.sort((a, b) => a - b);
-		
-							return {
-								voltagequantity,
-								maxvoltage,
-								minvoltage,
-								sumvoltages,
-								averagevoltage,
-								sortvoltageascending
-							};
-						};
-						
-						console.log(experimentstats(experiment1));
-						/*
-						output:
-						{
-							voltagequantity: 7,
-							maxvoltage: 0.61,
-							minvoltage: 0.51,
-							sumvoltages: 3.88,
-							averagevoltage: 0.5542857142857143,
-							sortvoltageascending: [ 0.51, 0.53, 0.53, 0.53, 0.58, 0.59, 0.61 ]
-						}
-						*/							
-					</code></pre>
+			const experiment1 = [0.53, 0.58, 0.59, 0.53, 0.61, 0.51, 0.53];
+			const experimentStats = (arr) => {
+				const voltageQuantity = arr.length;
+				const maxVoltage = math.max(...arr);
+				const minVoltage = math.min(...arr);
+				const sumVoltages = arr.reduce(
+					(sumVoltages, r) => sumVoltages + r
+				);
+				const averageVoltage = sumVoltages / voltageQuantity;
+				const sortVoltageAscending = arr.sort((a, b) => a - b);
+
+				return {
+					maxVoltage,
+					minVoltage,
+					averageVoltage,
+					sortVoltageascending,
+				};
+			};
+			console.log(experimentstats(experiment1));
+		</code></pre>
+		<pre class="language-bash"><code>
+			{
+				maximumVoltage: 0.61,
+				minimumVoltage: 0.51,
+				averageVoltage: 0.5542857142857143,
+				voltagesAscending: [ 0.51, 0.53, 0.53, 0.53, 0.58, 0.59, 0.61 ]
+			}
+		</code></pre>
 		<p>
 			The catch, of course, is that we cannot use unique variable names (of
 			course, we can get around that by assigning those names as keys in the
@@ -1243,7 +1284,7 @@
 	</section>
 
 	<section id="computed_properties">
-		<h2>Computed Properties</h2>
+		<h3>Computed Properties</h3>
 		<p>
 			<span class="italicstext">Computed properties</span> allow us to write
 			properties of an object literal with a
@@ -1254,18 +1295,23 @@
 		</p>
 
 		<pre class="language-javascript"><code>
-					const negativecharge = -1;
-					const negparticle = 'electron';
-					// if we tried to use the variable name as a property:
-					const particledetails = {
-						negparticle: negativecharge
-					};
-					console.log(particledetails); // output: { negparticle: -1 }
-					// javascript is not checking if 'negparticle' is a variable; it's a string.			
-			</code></pre>
+				const negativeCharge = -1;
+				const negParticle = 'electron';
 
+				// if we tried to use the variable name as a property:
+
+				const particleDetails = {
+					negParticle: negativeCharge
+				};
+				console.log(particleDetails);
+		</code></pre>
+		<pre class="language-bash"><code>
+			{ negParticle: -1 }
+		</code></pre>
 		<p>
-			To use a variable name as a property name while making sure that
+			We see the output above because JavaScript does not check if
+			<span class="monoText">negParticle</span> is a variable; it's simply a
+			string. To use a variable name as a property name while making sure that
 			javascript evaluates it, we need to use the
 			<span class="monotext">object[key]</span> syntax
 			<span class="italicstext">after</span> we initialize the object:
@@ -1567,6 +1613,409 @@
 				</code></pre>
 		</section>
 	</section>
+
+	<section id="objects_in_memory">
+		<h3>Objects in Memory</h3>
+		<p>Suppose we wrote the following code:</p>
+		<pre class="language-javascript"><code>
+			const taxpayer1 = {
+				name: "Al Capone",
+				age: 48,
+				married: true
+			}
+		</code></pre>
+		<p>
+			Question: How is this object stored in memory? First, it's helpful to
+			identify the different parts of the expression above:
+		</p>
+		<figure>
+			<ul>
+				<li>There's an identifier, <span class="monoText">user1</span>.</li>
+				<li>There's a collection of properties:</li>
+				<ul>
+					<li>
+						The key <span class="monoText">taxpayer1</span> is paired with the
+						string value <span class="monoText">"Al Capone"</span>.
+					</li>
+					<li>
+						The key <span class="monoText">age</span> is paired with the number
+						value <span class="monoText">48</span>.
+					</li>
+					<li>
+						The key <span class="monoText">married</span> is paired with the
+						Boolean value <span class="monoText">false</span>.
+					</li>
+				</ul>
+			</ul>
+		</figure>
+		<p>
+			Earlier, we said that we can think of the object as a collection of
+			shelves. Accordingly, from a higher-level view, we can visualize the
+			object above as such:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/js_object.svg' %}"
+				alt="JavaScript object as a shelf"
+				loading="lazy"
+				class="fifty-p"
+			/>
+		</figure>
+		<p>
+			A lower-level view, however, would show that the variable
+			<span class="monoText">taxpayer1</span> is actually bound to a reference
+			to the object, and the object itself is a collection of references to the
+			properties:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/js_object_ref.svg' %}"
+				alt="JavaScript object as a shelf"
+				loading="lazy"
+				class="seventy-p"
+			/>
+		</figure>
+	</section>
+
+	<section id="the_ubiquity_of_objects">
+		<h3>The Ubiquity of Objects in JavaScript</h3>
+		<p>
+			Part of the reason why JavaScript falls into the problem of using the word
+			&#8220;object&#8221; confusingly is because everything boils down to the
+			mechanics behind object-literals. The exception to this general rule is
+			the primitive data types:
+		</p>
+		<figure>
+			<ul>
+				<li>
+					<span class="monoText">
+						<mark>String</mark>
+					</span>
+				</li>
+				<li>
+					<span class="monoText">
+						<mark>Number</mark>
+					</span>
+				</li>
+				<li>
+					<span class="monoText">
+						<mark>Boolean</mark>
+					</span>
+				</li>
+				<li>
+					<span class="monoText">
+						<mark>Undefined</mark>
+					</span>
+				</li>
+				<li>
+					<span class="monoText">
+						<mark>null</mark>
+					</span>
+				</li>
+				<li>
+					<span class="monoText">
+						<mark>Symbol</mark>
+					</span>
+				</li>
+			</ul>
+		</figure>
+		<p>
+			There is, however, an exception to the exception: Some of the primitive
+			data types have <span class="term">object wrapper</span> that makes them
+			behave like an object-literal in certain situations. For example, the
+			<span class="monoText">String</span> data type has an object wrapper,
+			which includes the <span class="monoText">length</span> property.
+		</p>
+	</section>
+</section>
+
+<section id="keyword_this">
+	<h2>The Keyword 'This"</h2>
+	<p>
+		A variable declared with
+		<span class="monoText">var</span> in the global scope will be included in
+		the <span class="monoText">window</span> object as a property. But,
+		variables declared with <span class="monoText">let</span> and
+		<span class="monoText">const</span> will not be included. The
+		<span class="monoText">this</span> keyword is a keyword that references the
+		current <span class="italicsText">execution scope</span>, and gives an
+		<span class="italicsText">object</span> back as its output. Thus, the
+		returned object changes depending on the current execution's scope. The
+		execution might have a global scope, or it might have some other
+		scope&mdash;expression scope, block scope, function scope, etc. For example,
+		consider the code below:
+	</p>
+	<pre class="language-javascript"><code>
+		function helloWorld() {
+			console.log("Hi")
+			console.log(this);
+		};
+		helloWorld();	
+		/*
+		Output:
+		Window {window: Window, self: Window, document: document, name: "", location: Location, …}
+		*/
+	</code></pre>
+	<p>
+		In the code above, our function contains the statement,
+		<span class="monoText">console.log(this);</span>. This statement says,
+		"JavaScript, display in the console this function's scope." In doing so, we
+		get back an object called the <span class="monoText">Window</span>. The
+		window is the global scope in the browser. When we wrote the function
+		<span class="monoText">helloworld</span>, we wrote directly into the
+		program, not under any other block. When we write functions like this, the
+		functions are written in the <span class="italicsText">global scope</span>.
+		When a function is written in the
+		<span class="italicsText">global scope</span>, it becomes a property in the
+		<span class="italicsText">global scope object</span> (in this case, the
+		browser's global scope), and as such, we can call it with the usual object
+		syntax: <span class="monoText">window.functionName()</span>. The same goes
+		for variables declared with <span class="monoText">var</span> directly into
+		the program (not inside any other block scope).
+	</p>
+	<pre class="language-javascript"><code>
+		var vector = 3;
+	</code></pre>
+	<p>
+		By declaring the variable <span class="monoText">vector</span> with the
+		keyword <span class="monoText">var</span> above, the name
+		<span class="monoText">vector</span> now becomes a property of the
+		<span class="monoText">Window</span> object, which we can call with
+		<span class="monoText">window.vector</span>.
+		<span class="term">BUT</span> this rule does not apply to variables declared
+		with the keywords <span class="monoText">let</span> and
+		<span class="monoText">const</span>.
+	</p>
+
+	<section id="using_this_">
+		<p>
+			<span class="topic">Why is 'this' so useful?</span>
+			Consider the code below, where we write a function using the
+			<span class="monoText">this</span> keyword inside an object:
+		</p>
+		<pre class="language-javascript"><code>
+			// An object containing the properties of tree ferns
+			const treeFern = {
+				scientificName: 'Dicksonia antarctica',
+				genus: 'Dicksonia',
+				family: 'Dicksoniaceae',
+				Order: 'Cyatheales',
+				Class: 'Polypodiopsida',
+				Division: 'Polypodiophyta',
+				Kingdom: 'Plantae',
+				allDetails() {
+					console.log(this);
+				}
+			};
+			treeFern.allDetails();
+			/*
+			Output:
+			{
+				scientificName: 'Dicksonia antarctica',
+				genus: 'Dicksonia',
+				family: 'Dicksoniaceae',
+				Order: 'Cyatheales',
+				Class: 'Polypodiopsida',
+				Division: 'Polypodiophyta',
+				Kingdom: 'Plantae',
+				allDetails: [Function: allDetails]
+			}
+			*/
+		</code></pre>
+		<p>
+			In the example above, we wrote the function
+			<span class="monoText">allDetails()</span> inside the object
+			<span class="monoText">treeFern</span>. That function contains the
+			statement <span class="monoText">console.log(this);</span>, which tells
+			JavaScript, "Display in the console this function's scope." When we call
+			the function with object syntax,
+			<span class="monoText">treeFern.allDetails()</span>, we get back that the
+			entire scope of that function, the object
+			<span class="monoText">treefern</span>.
+		</p>
+		<p>
+			An astute observer might notice the immediate utility of the
+			<span class="monoText">this</span> keyword: It allows us to use the
+			properties inside an object while writing statements inside said object.
+		</p>
+		<pre class="language-javascript"><code>
+			// Here is an object of some mathematical functions:
+			const mathematician = {
+				firstName: 'Renee',
+				lastName: 'Descartes',
+				firstNameDisplay() {
+					console.log(this.firstName);
+				}
+			};
+			mathematician.firstNameDisplay(); // Output: Renee
+		</code></pre>
+		<p>A more elaborate example:</p>
+		<pre class="language-javascript"><code>
+			const RD = {
+				firstName: 'Renee',
+				lastName: 'Descartes',
+				notable: 'Cartesian plane',
+				details() {
+					console.log(`${this.firstName} ${this.lastName}, notable for the ${this.notable}.`);
+				}
+			};
+			RD.details(); // Output: Renee Descartes, notable for the Cartesian plane.
+		</code></pre>
+	</section>
+
+	<section id="destructuring_and_this">
+		<p>
+			<span class="topic"> Using Destructuring Syntax with 'this'. </span>
+			In the example above, we constantly had to write the
+			<span class="monoText">this</span> keyword. We can cut all of that out
+			with the <span class="italicsText">destructuring syntax</span>:
+		</p>
+		<pre class="language-javascript"><code>
+			const rD = {
+				firstName: 'Renee',
+				lastName: 'Descartes',
+				notable: 'Cartesian plane',
+				details() {
+					const {
+						firstName,
+						lastName,
+						notable
+					} = this;
+					console.log(`${firstName} ${lastName}, notable for the ${notable}.`);
+				}
+			};
+			rD.details(); // Output: Renee Descartes, notable for the Cartesian plane.	
+		</code></pre>
+		<p>
+			The <span class="monoText">this</span> keyword allows us to write methods
+			that can "see" the other properties inside the object.
+		</p>
+	</section>
+
+	<section id="using_this_to_reference_methods">
+		<p>
+			<span class="topic"> Using the 'this' Keyword to Reference Methods.</span>
+			We can use <span class="monoText">this</span> to reference other methods
+			inside an object:
+		</p>
+		<pre class="language-javascript"><code>
+			const sR = {
+				first: "Srinivasa",
+				last: "Ramanujan",
+				country: "India",
+				fullName() {
+					return `${this.first} ${this.last}`
+				},
+				summary() {
+					const fullName = this.fullName();
+					return `${fullName} is a mathematician from ${this.country}.`
+				}
+			};
+			console.log(sR.summary()); // Output: Srinivasa Ramanujan is a mathematician from India.								
+		</code></pre>
+	</section>
+
+	<section id="value_of_this">
+		<h2>The Value of 'This'</h2>
+		<p>
+			The value of the <span class="monoText">this</span> keyword depends on how
+			we invoke the function that uses it. Put simply, the value of the
+			<span class="monoText">this</span> keyword depends on
+			<span class="italicsText">where we write it</span> and
+			<span class="italicsText">how we write it</span>. To see this crucial
+			point, consider the code below:
+		</p>
+		<pre class="language-javascript"><code>
+			// Same object from the preceding example.
+			const sR = {
+				first: "Srinivasa",
+				last: "Ramanujan",
+				country: "India",
+				fullName() {
+					return `${this.first} ${this.last}`
+				},
+				summary() {
+					const fullName = this.fullName();
+					return `${fullName} is mathematician from ${this.country}.`
+				}
+			};
+			// Suppose we assign the method SR.summary() to a variable: 
+			const summary = sR.summary;
+			// Now suppose we call that function:
+			console.log(summary());
+			/*
+			Output: 
+			TypeError: this.fullName is not a function
+			*/								
+		</code></pre>
+		<p>Compare the error above with the following code:</p>
+		<pre class="language-javascript"><code>
+			// Same object from the preceding example.
+			const sR = {
+				first: "Srinivasa",
+				last: "Ramanujan",
+				country: "India",
+				fullName() {
+					return `${this.first} ${this.last}`
+				},
+				summary() {
+					console.log(this); // Let's see what the object is
+					const fullName = this.fullName();
+					return `${fullName} is mathematician from ${this.country}.`
+				}
+			};
+			const summary = sR.summary;
+			console.log(summary());
+			/*
+			Output: 
+			Window {window: Window, self: Window, document: document, name: "", location: Location, …}
+			Uncaught TypeError: this.fullName is not a function at summary
+			*/								
+		</code></pre>
+		<p>
+			In the second example, we see that
+			<span class="monoText">this</span> is referencing the object
+			<span class="monoText">window</span>, the browser's global scope. If we
+			instead just used the typical object key syntax rather than the variable:
+		</p>
+		<pre class="language-javascript"><code>
+			// Same object from the preceding example.
+			const sR = {
+				first: "Srinivasa",
+				last: "Ramanujan",
+				country: "India",
+				fullName() {
+					return `${this.first} ${this.last}`
+				},
+				summary() {
+					console.log(this); // Let's see what the object is
+					const fullName = this.fullName();
+					return `${fullName} is mathematician from ${this.country}.`
+				}
+			};
+			console.log(sR.summary());
+			/*
+			Output: 
+			{first: "Srinivasa", last: "Ramanujan", country: "India", fullName: ƒ, summary: ƒ}
+			Srinivasa Ramanujan is mathematician from India.
+			*/								
+		</code></pre>
+		<p>
+			Now we see that the value of <span class="monoText">this</span> is the
+			object it's contained in, <span class="monoText">sR</span>, rather than
+			the <span class="monoText">window</span> object, the global scope.This
+			shows that the value of <span class="monoText">this</span> is determined
+			by the way we invoke the function that uses the
+			<span class="monoText">this</span> keyword. One way to think about this:
+			When we explicitly call the function with the object syntax,
+			<span class="monoText">object.function</span>, the value of
+			<span class="monoText">this</span> is the object itself. But, when we
+			simply just call the function without explicitly stating the object, the
+			value of <span class="monoText">this</span> is the global scope object
+			(which, in the browser, is the
+			<span class="monoText">window</span> object).
+		</p>
+	</section>
 </section>
 
 <section id="for_loop">
@@ -1622,36 +2071,41 @@
 		more generally, the code we want repeated.
 	</p>
 	<section id="incrementing_counter">
-		<p>For example, here's is a simple incrementing counter in JavaScript.</p>
+		<p>For example, here's a simple incrementing counter in JavaScript.</p>
 		<pre class="language-javascript">
 			<code>
 				for (let i = 0; i < 3; i++) {
 					console.log("execution");
 				}
-				/*
-				This loop works as such:
-	
-				Initial Expression: Declare a variable i, and assign it 0.
-				Check condition: Is i less than 3? Yes, 0 < 3. Update counter (i is now 1), and run the loop. 
-				Console output: "execution"
-	
-				Check condition: Is i less than 3? Yes, 1 < 3. Update counter (i is now 2), and run the loop. 
-				Console output: "execution"
-	
-				Check condition: Is i less than 3? Yes, 2 < 3. 
-				Update counter (i is now 3), and run the loop. 
-				Console output: "execution"
-	
-				Check condition: is i less than 3? No, 3 ≮ 3. 
-				Terminate loop. 
-	
-				The console should display:
-				"execution"
-				"execution"
-				"execution"
-				*/
 			</code>
 		</pre>
+		<pre class="language-bash"><code>
+			execution
+			execution
+			execution
+		</code></pre>
+		<p>The loop above executes in the following manner:</p>
+		<ol>
+			<li>Initial Expression: Declare a variable i, and assign it 0.</li>
+			<li>
+				Check condition: Is i less than 3? Yes, 0 < 3. Update counter (i is now
+				1), and run the loop.
+			</li>
+			<li>Console output: "execution"</li>
+			<li>
+				Check condition: Is i less than 3? Yes, 1 < 3. Update counter (i is now
+				2), and run the loop.
+			</li>
+			<li>Console output: "execution"</li>
+			<li>
+				Check condition: Is i less than 3? Yes, 2 < 3. Update counter (i is now
+				3), and run the loop.
+			</li>
+			<li>Console output: "execution"</li>
+			<li>
+				Check condition: is i less than 3? No, 3 ${\nless}$ 3. Terminate loop.
+			</li>
+		</ol>
 		<p>
 			Here's another example. Suppose we were asked to merge one array to
 			another array without use <span class="monoText">concat().</span> We can

@@ -1005,6 +1005,192 @@
 	</section>
 </section>
 
+<section id="arrow_functions_and_this">
+	<h3>Arrow Functions and <span class="monoText">this</span></h3>
+	<p>
+		One of the key differences between regular function expressions and arrow
+		functions is how they behave with the keyword
+		<span class="monoText">this</span>. When a method is written as an arrow
+		function, if its body uses the keyword <span class="monoText">this</span>,
+		the value of
+		<span class="monoText">this</span>
+		<span class="underlineText">does not change</span>.
+	</p>
+	<pre class="language-javascript"><code>
+		// The full name function as an arrow function:
+		const sR = {
+			first: "Srinivasa",
+			last: "Ramanujan",
+			country: "India",
+			fullName: () => {
+				console.log(this);
+				console.log(`${this.first} ${this.last}`);
+			}
+		};
+		sR.fullName();
+		/*
+		Output:
+		Window {window: Window, self: Window, document: document, name: "", location: Location, …}
+		undefined undefined
+		*/								
+	</code></pre>
+	<p>
+		Notice that when we display the value of
+		<span class="monoText">this</span> for the function
+		<span class="monoText">fullName()</span>, we get the back the
+		<span class="monoText">window</span> object. The value of
+		<span class="monoText">this</span> in an arrow function is always the value
+		of <span class="monoText">this</span> of its parent object (in this case,
+		the global scope). This is why methods are generally not written as arrow
+		functions inside an object written inside a global scope (since we usually
+		write methods to access other properties in such an object). But, they are
+		extremely useful when a method itself contains a function. To see this
+		utility, consider the code below:
+	</p>
+	<pre class="language-javascript"><code>
+		/*
+		Here is method that repeatedly and randomly prints out prime numbers forever.
+		We want to start the method with the function start().
+		To do this, we need to use the built in method, set.interval(), which takes two parameters, a function, and time value (3000, which equals three seconds)
+		*/
+		const randPrime = {
+			primes: [1, 3, 5, 7, 11, 13, 17],
+
+			pickPrime() {
+				const { primes } = this; // Set the value of this to be the primes property
+				const idx = Math.floor(Math.random() * primes.length); // Generate a random index
+				return primes[idx]; // Output the random index
+			},
+
+			// Now we want to call pickPrime with the set interval method:
+			start() {
+				console.log(this.pickPrime());
+				setInterval(function() { console.log(this.pickPrime()) }, 2000)
+			}
+		};
+		// Let's test briefly:
+		randPrime.start();
+		/*
+		Output:
+		13
+		Uncaught TypeError: this.pickPrime is not a function
+		*/
+	</code></pre>
+	<p>
+		Why did we get the error above? Let's see what the vlaue of
+		<span class="monoText">this</span> is in the function function
+		<span class="monoText">start()</span>:
+	</p>
+	<pre class="language-javascript"><code>
+		const randPrime = {
+			primes: [1, 3, 5, 7, 11, 13, 17],
+
+			pickPrime() {
+				const { primes } = this;
+				const idx = Math.floor(Math.random() * primes.length);
+				return primes[idx];
+			},
+
+			start() {
+				console.log(this.pickPrime());
+				setInterval(function () {
+					console.log(this);
+					console.log(this.pickPrime())
+				}, 2000)
+			}
+		};
+		randPrime.start();
+		/*
+		Output:
+		13
+		Window {0: global, window: Window, self: Window, document: document, name: "", location: Location, …}
+		*/								
+	</code></pre>
+	<p>
+		Why is the value of <span class="monoText">this</span> set to the
+		<span class="monoText">window</span> object? Because in the
+		<span class="monoText">start()</span> method's body, we are using the
+		<span class="monoText">setInterval()</span> method, which has a global
+		scope. Thus, the value of <span class="monoText">this</span>, inside the
+		<span class="monoText">setInterval()</span> method, is the global scope's
+		object, <span class="monoText">window</span>. One way to get around this
+		problem is by storing the value of <span class="monoText">this</span> in a
+		variable before we get to using the built-in method:
+	</p>
+	<pre class="language-javascript"><code>
+		const randPrime = {
+			primes: [1, 3, 5, 7, 11, 13, 17],
+
+			pickPrime() {
+				const { primes } = this;
+				const idx = Math.floor(Math.random() * primes.length);
+				return primes[idx];
+			},
+
+			start() {
+				console.log(this.pickPrime());
+
+				const that = this;
+
+				setInterval(function () {
+					console.log(that);
+					console.log(that.pickPrime())
+				}, 2000)
+			}
+		};
+		randPrime.start();
+		/*
+		Output:
+		7
+		{primes: Array(7), pickPrime: ƒ, start: ƒ}
+		13
+		9
+		1
+		5
+		*/								
+	</code></pre>
+	<p>
+		By storing <span class="monoText">this</span> in the variable
+		<span class="monoText">that</span>, we can now use the previous value of
+		<span class="monoText">this</span> in the built-in method
+		<span class="monoText">setInterval()</span>. This was the old way of getting
+		around the problem of using <span class="monoText">this</span> with built-in
+		methods, and when viewing old JavaScript code, we will often see the
+		variable name <span class="monoText">that</span>. Arrow functions, however,
+		have taken the mantle and provide a much cleaner way of solving the problem:
+	</p>
+	<pre class="language-javascript"><code>
+		const randPrime = {
+			primes: [1, 3, 5, 7, 11, 13, 17],
+
+			pickPrime() {
+				const { primes } = this;
+				const idx = Math.floor(Math.random() * primes.length);
+				return primes[idx];
+			},
+
+			start() {
+				setInterval(() => {
+					console.log(this.pickPrime())
+				}, 2000)
+			}
+		};
+		randPrime.start();
+		/*
+		Output:
+		7
+		11
+		1
+		9
+		*/								
+	</code></pre>
+	<p>
+		The above works because with arrow functions, the value of
+		<span class="monoText">this</span> is always the value
+		<span class="monoText">this</span> for the function's parent object.
+	</p>
+</section>
+
 <section id="higher_order_functions">
 	<h2>Higher Order Functions</h2>
 	<p>
@@ -2522,6 +2708,23 @@
 			*/								
 		</code></pre>
 	</section>
+</section>
+
+<section id="functions_are_objects">
+	<h2>Functions Are Objects</h2>
+	<p>
+		With a greater understanding of functions, we can now study functions more
+		deeply. To begin, functions are inherently
+		<span class="italicsText">objects</span>. And because functions are objects,
+		we can attach properties to functions. All functions have two special
+		properties that separate them from other objects: (1)
+		<span class="monoText"><mark>Code</mark></span> and (2)
+		<span class="monoText"><mark>Call</mark></span
+		>. The <span class="monoText">Code</span> property contains all of the lines
+		of code that the function object will execute. The
+		<span class="monoText">Call</span> property determines whether the function
+		can be called.
+	</p>
 </section>
 
 {% endblock %}

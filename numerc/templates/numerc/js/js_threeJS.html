@@ -723,12 +723,487 @@
 			</code></pre>
 		</section>
 	</section>
+
 	<section id="scale">
 		<h3>Scale</h3>
 		<p>
 			Like the position property, the
 			<span class="monoText"><mark>scale</mark></span> property is also a
-			<span class="monoText">Vector3</span>.
+			<span class="monoText">Vector3</span>. The
+			<span class="monoText">scale</span> property will change the scale (i.e.,
+			the unit proportions) of the particular object. For example, the default
+			value of each axis is ${1.}$ We can change this default value by modifying
+			the <span class="monoText">scale</span> property:
+		</p>
+		<pre class="language-javascript"><code>
+			mesh.scale.x = 2; // change the x-axis scale to 2
+			mesh.scale.y = 3; // change the y-axis scale to 3
+			mesh.scale.z = 0.5; // change the z-axis scale to 0.5
+		</code></pre>
+	</section>
+
+	<section id="rotating_objects">
+		<h3>Rotating Objects</h3>
+		<p>To rotate objects, we have two properties available for modification:</p>
+		<figure>
+			<ul>
+				<li>
+					<span class="monoText">
+						<mark>rotation</mark>
+					</span>
+				</li>
+				<li>
+					<span class="monoText">
+						<mark>quaternion</mark>
+					</span>
+				</li>
+			</ul>
+		</figure>
+		<p>
+			Modifying either of the properties above will achieve a rotation.
+			Importantly, updating one will update the other. Let's first consider the
+			<span class="monoText">rotation</span> property.
+		</p>
+		<p>With <span class="monoText">rotation</span>, there three properties:</p>
+		<ul>
+			<li>
+				<span class="monoText"><mark>x</mark></span
+				>, which sets the ${\text{$x$-axis}}$ angle in radians, the default
+				being ${0.}$
+			</li>
+			<li>
+				<span class="monoText"> <mark>y</mark></span
+				>, which sets the ${\text{$y$-axis}}$ angle in radians, the default
+				being ${0.}$
+			</li>
+			<li>
+				<span class="monoText"><mark>z</mark></span
+				>, which sets the ${\text{$z$-axis}}$ angle in radians, the default
+				being ${0.}$
+			</li>
+		</ul>
+		<p>
+			Each of these properties inherits from a class called
+			<span class="monoText"><mark>Euler</mark></span
+			>. The idea behind <span class="monoText">rotation</span> is that the
+			object rotates about a stick piercing through the center of the object.
+			Thus, when we use the <span class="monoText">rotation</span> property, we
+			must think about which axis we're rotating the object on (i.e., from which
+			direction the stick pierces through the object).
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/euler_rotation.svg' %}"
+				alt="Euler rotation"
+				loading="lazy"
+				class="forty-p"
+			/>
+			<figcaption>
+				As always, bear in mind that the axes are entirely dependent on where we
+				view the object (i.e., the camera's position).
+			</figcaption>
+		</figure>
+		<p>Stating the rotations follows the usual dot notation:</p>
+		<pre class="language-javascript"><code>
+			mesh.rotation.x = 0.5 // rotate about the x-axis
+			mesh.rotation.y = 0.5 // rotate about the y-axis
+			mesh.rotation.z = 0.5 // rotate about the z-axis
+		</code></pre>
+		<p>
+			Because the rotations are measured in radians, a rotation value of ${\pi}$
+			results in rotation equivalent to ${{180}^\circ,}$ and a value of ${2
+			\pi}$ results in a full revolution, ${{360}^\circ.}$
+		</p>
+		<pre class="language-javascript"><code>
+			// rotate about the y-axis half a circle
+			mesh.rotation.y = Math.pi
+
+			// rotate about the z-axis a full circle
+			mesh.rotation.z = 2 * MATH.pi 
+		</code></pre>
+		<section id="gimbal_lock">
+			<h4>Gimbal Lock</h4>
+			<p>
+				We must take care when working with rotations. Whenever we rotate an
+				axis, we might unintentionally rotate the other axis. This is because
+				the <span class="monoText">rotation</span> property always follows the
+				order <span class="monoText">x</span>, <span class="monoText">y</span>,
+				and <span class="monoText">z</span>. Consider the illustration above. If
+				we rotate the object about the ${\text{$z$-axis}}$ by ${\pi / 2,}$ the
+				${\text{$y$-}}$ and ${\text{$z$-axes}}$ point in different directions:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/euler_rotation2.svg' %}"
+					alt="Euler rotation"
+					loading="lazy"
+					class="forty-p"
+				/>
+			</figure>
+			<p>
+				Moreover, because these axes are arbitrary (it depends on the camera's
+				position), we can mistakenly rotate, say, the ${\text{$x$-axis}}$ when
+				we actually intended to rotate the ${\text{$y$-axis}.}$ If we rotate an
+				axis far enough, we can get into a situation called a
+				<span class="term">gimbal lock</span> &mdash; a phenomenon where it
+				appears as if one of the axes is stuck, or doesn't work anymore.
+			</p>
+			<p>
+				One way to avoid this problem is to change the default order with the
+				<span class="monoText"><mark>.reorder()</mark></span> method:
+			</p>
+			<pre class="language-javascript"><code>
+				// change the rotation order to y-, x-, z-axis
+				mesh.rotation.reorder('yxz')
+				// rotations
+			</code></pre>
+			<p>
+				The last comment above is included to indicate that the reordering must
+				occur before we rotate.
+			</p>
+			<p>
+				As we can likely tell, it seems tedious to have to write these
+				reorderings over and over again before rotations. Because of this
+				nuisance, ThreeJS provides another property for rotation,
+				<span class="monoText"><mark>quaternion</mark></span
+				>. We will cover quaternions in a later section, but the idea behind the
+				quaternion is that we can use some algebra to ensure rotations are
+				consistent. Because the mathematics is fairly involved, we will devote
+				an entire section for quaternions in a later discussion.
+			</p>
+		</section>
+	</section>
+	<section id="look_at">
+		<h3>Look at a Particular Point</h3>
+		<p>
+			When working with transformations, it's often helpful to keep the camera
+			pointed at a particular point. This way, no matter how we transform the
+			object, the camera points at a constant location, allowing us some
+			uniformity in evaluating transformations. To do so, we use
+			<span class="monoText"><mark>lookAt()</mark></span
+			>, a method available to all
+			<span class="monoText">Object3D</span> instances (e.g., cameras):
+		</p>
+		<pre class="language-javascript"><code>
+			// initialize camera
+			camera.lookAt(new THREE.Vector(0, -1, 0));
+		</code></pre>
+		<p>
+			By writing the code above, the camera will always point at the coordinate
+			${(0, -1, 0).}$ This coordinate, however, may or may not be on the mesh.
+			If we wanted to keep the camera pointed at the mesh, we can use the mesh's
+			position property:
+		</p>
+		<pre class="language-javascript"><code>
+			// initialize camera and mesh
+			camera.lookAt(mesh.position);
+		</code></pre>
+		<p>
+			With the above code, the camera now always points to the center of the
+			mesh.
+		</p>
+	</section>
+	<section id="grouping_objects">
+		<h3>Grouping</h3>
+		<p>
+			From our discussion thus far, it should be obvious that transforming
+			objects can lead to many lines of code. Because of this fact, it's best
+			practice to <span class="italicsText">group</span> objects whenever
+			possible. For example, 3D rendering of a house might consist of many
+			component 3D renderings &mdash; the rendering for a door, a table, the
+			walls, a roof, and so on. If the house is just one rendering in a bigger
+			rendering of, say, a landscape, we do not want to have to move each of the
+			component renderings one-by-one. Instead, we should gather all of these
+			component renderings into a group, then manipulate the properties for that
+			group. If we want to move the house to another position in the landscape,
+			we manipulate the position property for the house, rather than the
+			position property for the walls, roof, table, lamp, and so on.
+		</p>
+		<p>
+			To make a group, we use the
+			<span class="monoText"><mark>group()</mark></span> method:
+		</p>
+		<pre class="language-javascript"><code>
+			// create two cubes
+			const cube1 = new THREE.mesh(
+				new THREE.BoxGeometry(1,1,1),
+				new THREE.MeshBasicMaterial({color: 0xff0000})
+			);
+			const cube2 = new THREE.mesh(
+				new THREE.BoxGeometry(1,1,1),
+				new THREE.MeshBasicMaterial({color: 0x00ff00})
+			);
+
+			// create the group
+			const group1 = new Three.Group();
+
+			// add the cubes to the group
+			group1.add(cube1, cube2);
+
+			// add the group to the scene
+			scene.add(group1);
+		</code></pre>
+		<p>
+			Notice that we used slightly different syntax to instantiate the meshes.
+			We can directly pass the properties into the constructor. Importantly, we
+			must remember to always add our groups to the scene. Otherwise, we won't
+			see anything displayed.
+		</p>
+		<p>
+			With the two cubes in a group, we can transform them all together by
+			transforming the group:
+		</p>
+		<pre class="language-javascript"><code>
+			group.position.y = 1; // move the group by 1 on the y-axis
+		</code></pre>
+	</section>
+</section>
+
+<section id="introduction_to_animations">
+	<h2>A Brief Look at Animations</h2>
+	<p>
+		Animating in ThreeJS &mdash; and JavaScript more generally &mdash; is
+		analogous to stop motion animations. The idea is that we move points
+		slightly, take a picture, move points again, take a picture, move points
+		again, take a picture, and so on. The act of &#8220;take a picture&#8221; is
+		rendering. Take many, many pictures and present them one at time very
+		quickly &mdash; we create the illusion of movement.
+	</p>
+
+	<section id="frame_rates">
+		<h3>Frame Rates</h3>
+		<p>
+			The speed at which the pictures are shown (or, in flipbookese, how fast we
+			flip through book), is called a <span class="term">frame rate</span>, and
+			it's usually measured in the unit FPS (Frames Per Second). With higher
+			frame rates, &#8220;motion&#8221; appears smooth or fluid (think high-end
+			video games like <span class="italicsText">Diablo III</span>). With lower
+			frame rates, motion appears choppy (think some silly GIF).
+		</p>
+		<div class="mainIdea">
+			<p>
+				Frame rate: The frequency at which consecutive images are captured or
+				displayed.
+			</p>
+		</div>
+		<p>
+			Higher frame rates, however, do not imply better viewing experience. In
+			fact, the topic of an &#8220;ideal framerate&#8221; is subject to fiery
+			debate. Many of the movies and TV shows we see run at ${24 \text{ FPS}.}$
+			For cinematography, productions using frame rates beyond ${24 \text{
+			FPS}}$ tend to suffer from a phenomenon called the
+			<span class="italicsText">soap opera effect</span> (take a look at clip
+			from a product like
+			<span class="italicsText">Days of our Lives</span> &mdash; it has a
+			distinctive &#8220;look.&#8221;) Video games, at a minimum, generally run
+			on ${60 \text{ FPS}.}$
+		</p>
+		<p>
+			Furthermore, a viewing experience is also impacted by
+			<span class="term">frame time</span> &mdash; how long a frame stays in
+			view. We can have a frame rate of ${60 \text{ FPS},}$ but if frame times
+			are inconsistent (e.g., one frame lasts for ${2 \text{ mS}}$ and another
+			${5 \text{ mS},}$) we see phenomenon called
+			<span class="term">stuttering</span> &mdash; small &#8220;pauses&#8221; or
+			&#8220;stills&#8221; in the motion.
+		</p>
+		<p>
+			The issue with frame rates and animations is that computers have different
+			frame rates. Many computers run on ${60 \text{ FPS,}}$ but more powerful
+			computers can run on ${120 \text{ FPS}.}$ Because of these variations, if
+			we animated a spinning propeller, the propeller might appear to spin much,
+			much faster on machines with higher frame rates. This is not what we want.
+			Our animations must look the same, regardless of the machine's frame rate.
+		</p>
+		<p>
+			Before we solve this problem, let's talk about how to animate to begin
+			with. The JavaScript API provides a method that allows us to take the
+			pictures we need:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>window.requestAnimationFrame(${f_c}$)</li>
+			</ul>
+			<figcaption>
+				where ${f_c}$ is a <span class="italicsText">callback function</span>.
+			</figcaption>
+		</figure>
+		<p>
+			The procedure for animating is to pass object transformations into the
+			<span class="monoText">requestAnimationFrame()</span> method, perform the
+			renderings therein, then call the
+			<span class="monoText">requestAnimationFrame()</span> in the next call.
+			This is a little tricky to think about, but we can clarify by thinking of
+			the method's purpose: The purpose of
+			<span class="monoText">requestAnimationFrame()</span> is to call a
+			function provided in the <span class="underlineText">next</span> frame. To
+			perform animations, we must always keep this fact in the back of our
+			minds. The method <span class="monoText">requestAnimationFrame()</span>,
+			despite its name, is <span class="underlineText">not</span> a function
+			that performs animations; it's a function that calls some function in the
+			next frame just once.
+		</p>
+		<p>
+			For example, suppose we've instantiated all of our meshes and cameras, and
+			added them to the scene. To animate our mesh, we first need the callback
+			function:
+		</p>
+		<pre class="language-javascript"><code>
+			const tick = () => {
+				window.requestAnimationFrame(tick);
+			};
+			tick();
+		</code></pre>
+		<p>
+			By writing the function above, we are telling JavaScript to call the
+			<span class="monoText">tick</span> function on the next frame, then on
+			that frame, call the <span class="monoText">tick</span> function on the
+			next frame, and on the next frame, and so on.
+		</p>
+		<p>
+			Because the <span class="monoText">tick()</span> function is constantly
+			being called at different times, we can pass our transformations and
+			renderings into the <span class="monoText">tick()</span> function. Using
+			some ThreeJS methods that update the transformations and renderings, we
+			effectively modify object properties many, many times:
+		</p>
+		<pre class="language-javascript"><code>
+			const tick = () => {
+				// update object properties
+				mesh.position.x += 0.01;
+
+				// render
+				renderer.render(scene, camera);
+
+				// call the tick function for the next frame
+				window.requestAnimationFrame(tick);
+			};
+			tick();
+		</code></pre>
+		<p>
+			The code above will display the mesh moving along the ${x}$-axis. If we
+			instead wrote:
+		</p>
+		<pre class="language-javascript"><code>
+			const tick = () => {
+				// update object properties
+				mesh.rotation.y += 0.01;
+
+				// render
+				renderer.render(scene, camera);
+
+				// call the tick function for the next frame
+				window.requestAnimationFrame(tick);
+			};
+			tick();
+		</code></pre>
+		<p>
+			We would see our mesh rotating about the ${y}$-axis. At this point, we now
+			run into our previous problem. On a machine with a higher frame rate, the
+			mesh would move or rotate much faster than a machine with a lower frame
+			rate. This is because the number of calls to the
+			<span class="monoText">tick()</span> equals the number of frames per
+			second. More frames per second &mdash; more calls to
+			<span class="monoText">tick()</span> &mdash; more updates to the
+			properties.
+		</p>
+		<p>
+			There are many ways to solve this problem. A common solution is to
+			<span class="italicsText">adapt to the framerate</span>. The idea behind
+			this solution is to use a <span class="term">timestamp</span> of the
+			current time, or date. Because the timestamp will be the same for all
+			users, regardless of frame rate, we can use the timestamp as a common
+			starting point for all viewers. With the timestamp, we compare the current
+			timestamp against the previous timestamp. Because both timestamps are
+			constant, the difference between the two timestamps is constant. We'll
+			call this difference <span class="monoText">deltaTime</span>. Because
+			<span class="monoText">deltaTime</span> is constant, we can then use it to
+			establish uniformity across frame rates.
+		</p>
+		<p>
+			To initialize a timestamp, we use the native method
+			<span class="monoText"><mark>Date.now()</mark>:</span>
+		</p>
+		<pre class="language-javascript"><code>
+			let previousTime = Date.now();
+			const tick = () => {
+				// current time for frame
+				const currentTime = Date.now();
+				
+				// elapsed time
+				const deltaTime = currentTime - previousTime;
+
+				// update the previous time for the next tick to use
+				previousTime = currentTime;
+
+				// update object properties
+				mesh.rotation.y += 0.01;
+
+				// render
+				renderer.render(scene, camera);
+
+				// call the tick function for the next frame
+				window.requestAnimationFrame(tick);
+			};
+			tick();
+		</code></pre>
+		<p>
+			Because the <span class="monoText">deltaTime</span> value is constant,
+			multiplying that value with the values for property updates creates
+			uniformity across frame rates:
+		</p>
+		<pre class="language-javascript"><code>
+			let previousTime = Date.now();
+			const tick = () => {
+				// current time for frame
+				const currentTime = Date.now();
+				
+				// elapsed time
+				const deltaTime = currentTime - previousTime;
+
+				// update the previous time for the next tick to use
+				previousTime = currentTime;
+
+				// update object properties
+				mesh.rotation.y += 0.01 * deltaTime;
+
+				// render
+				renderer.render(scene, camera);
+
+				// call the tick function for the next frame
+				window.requestAnimationFrame(tick);
+			};
+			tick();
+		</code></pre>
+		<p>
+			Another fix is to use ThreeJS's built-in solution,
+			<span class="monoText"><mark>Clock()</mark></span
+			>. The <span class="monoText">Clock</span> object provides a method called
+			<span class="monoText">getElapsedTime()</span>, which essentially computes
+			the <span class="monoText">deltaTime</span> we saw earlier:
+		</p>
+		<pre class="language-javascript"><code>
+			const clock = new THREE.Clock();
+			const tick = () => {
+				// elapsed time
+				const deltaTime = clock.getElapsedTime();
+
+				// update object properties
+				mesh.rotation.y = deltaTime;
+
+				// render
+				renderer.render(scene, camera);
+
+				// call the tick function for the next frame
+				window.requestAnimationFrame(tick);
+			};
+			tick();
+		</code></pre>
+		<p>
+			Importantly, the <span class="monoText">getElapsedTime()</span> method
+			returns the elapsed time in seconds. Because this is a number value that
+			changes, we can assign this number directly to
+			<span class="monoText">mesh.rotation.y</span>.
 		</p>
 	</section>
 </section>
