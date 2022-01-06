@@ -37,7 +37,7 @@
 				src="{% static 'images/triangles_cube.svg' %}"
 				alt="Triangles form a cube"
 				loading="lazy"
-				class="seventy-p"
+				class="ten-p"
 			/>
 			<figcaption>Triangles forming a cube</figcaption>
 		</figure>
@@ -2217,7 +2217,7 @@
 				src="{% static 'images/geometry_cylinder.svg' %}"
 				alt=""
 				loading="lazy"
-				class="eighty-p"
+				class="ten-p"
 			/>
 			<figcaption>The geometry behind a cylinder</figcaption>
 		</figure>
@@ -2425,7 +2425,7 @@
 				src="{% static 'images/segment_cube1.svg' %}"
 				alt="segment of 1 cube"
 				loading="lazy"
-				class="twenty-p"
+				class="ten-p"
 			/>
 		</figure>
 		<p>Notice that there are exactly ${1 \times 2 = 2}$ triangles.</p>
@@ -2439,7 +2439,7 @@
 				src="{% static 'images/segment_cube2.svg' %}"
 				alt="segment of 2 cube"
 				loading="lazy"
-				class="twenty-p"
+				class="ten-p"
 			/>
 		</figure>
 		<p>
@@ -2467,7 +2467,7 @@
 				src="{% static 'images/sphere.svg' %}"
 				alt="Triangles forming a sphere"
 				loading="lazy"
-				class="forty-p"
+				class="twenty-p"
 			/>
 		</figure>
 		<p>
@@ -2682,9 +2682,314 @@
 		interface is called a <span class="term">debug UI</span>.
 	</p>
 	<p>
-		To implement a debug UI, we have two options: (1) create our own, or (2) use
-		a library. And with option (2), we again have options: dat.GUI, ControlKit,
-		Guify, Oui, and many others.
+		Why do so many projects include this feature? Because it allows for quick
+		debugging and development. Coding in computer graphics can be tedious, and
+		it is inefficient to update values in a file and refreshing over and over
+		again. With a debug UI, we can quickly see our modifications. As we work
+		through a project, we should always pause and consider whether to add a
+		particular control in the debug UI panel.
 	</p>
+	<p>
+		To implement a debug UI, we have two options: (1) create our own, or (2) use
+		a library. And with option (2), we again have options:
+	</p>
+	<ul>
+		<li>
+			<a href="https://github.com/dataarts/dat.gui" target="_blank">dat.GUI</a>
+		</li>
+		<li>
+			<a href="https://lil-gui.georgealways.com/" target="_blank">lil-gui</a>
+		</li>
+		<li>
+			<a href="https://github.com/freeman-lab/control-panel" target="_blank"
+				>control-panel</a
+			>
+		</li>
+		<li>
+			<a href="https://github.com/automat/controlkit.js" target="_blank"
+				>ControlKit</a
+			>
+		</li>
+		<li><a href="https://github.com/lo-th/uil" target="_blank">Uil</a></li>
+		<li>
+			<a href="https://cocopon.github.io/tweakpane/" target="_blank"
+				>TweakPlane</a
+			>
+		</li>
+		<li><a href="https://github.com/colejd/guify" target="_blank">Guify</a></li>
+		<li><a href="https://github.com/wearekuva/oui" target="_blank">Oui</a></li>
+	</ul>
+	<p>
+		To use one of the libraries above: (1) Download the library and place it in
+		the relevant folder and import it into the JavaScript file for the
+		animations; or (2) use webpack to install the dependency and import. For
+		example, if we decided to use lil-gui, we would import it into our
+		JavaScript file as follows (followed by console log to ensure it imported
+		successfully):
+	</p>
+	<pre class="language-javascript"><code>
+		import * as lil from 'lil-gui'
+		console.log(lil);
+	</code></pre>
+	<pre class="language-bash"><code>
+		Module {...}
+	</code></pre>
+	<p>Once imported, we instantiate the GUI:</p>
+	<pre class="language-javascript"><code>
+		import * as lil from 'lil-gui'
+
+		// Debugger
+		const gui = new lil.GUI();
+	</code></pre>
+	<p>
+		This will display an empty interface, called the
+		<span class="italicsText">control panel</span>, on our canvas. Many
+		libraries provide objects we can place in the control panel. These objects
+		generally fall into the following categories:
+	</p>
+	<ul>
+		<li>
+			A <span class="term">range</span> object for numbers with minimum and
+			maximum values.
+		</li>
+		<li>A <span class="term">color</span> for colors with various formats.</li>
+		<li>A <span class="term">text</span> for simple text.</li>
+		<li>A <span class="term">checkbox</span> for Boolean values.</li>
+		<li>A <span class="term">select</span> for a list of selections.</li>
+		<li>A <span class="term">button</span> to trigger functions.</li>
+		<li>A <span class="term">folder</span> to organize the panel.</li>
+	</ul>
+	<p>
+		For the rest of this section, we'll use lil-gui's syntax. To add an element
+		to the control panel, we must first decide what we want the element to
+		manipulate. For example, let's say we want the element to manipulate the
+		mesh's ${y}$-axis position. To add this control to the panel, we write the
+		following <span class="underlineText">after</span> the mesh has been
+		initialized and added to the scene:
+	</p>
+
+	<pre class="language-javascript"><code>
+		// Debug
+		gui.add(mesh.position, 'y');
+	</code></pre>
+
+	<div class="mainIdea">
+		<p>
+			By default, adding a debug UI will always display the control panel on our
+			rendering. To hide the control panel by default, simply write
+			<span class="monoText"><mark>${n}$.hide()</mark></span> after
+			instantiating the debug UI object ${n.}$
+		</p>
+	</div>
+
+	<p>
+		Writing the code above, we see a new field labeled
+		<span class="monoText">y</span>, where we can enter numbers to manipulate
+		the mesh's ${y}$-axis position. With lil-gui, we can also place additional
+		parameters for the minimum and maximum ${y}$-values, as well as the step
+		(allowing the user to control precision):
+	</p>
+	<pre class="language-javascript"><code>
+		// Debug
+		gui.add(mesh.position, 'y', -3, 3, 0.01);
+	</code></pre>
+
+	<p>
+		In the code above, <span class="monoText">-3</span> sets the minimum value,
+		<span class="monoText">3</span> sets the maximum value, and
+		<span class="monoText">0.01</span> sets the step. With these additional
+		parameters, the ${y}$-axis control becomes a slider rather than a simple
+		input field. Using the same syntax, we can add controls for the other axes:
+	</p>
+	<pre class="language-javascript"><code>
+		// Debug
+		gui.add(mesh.position, 'x', -3, 3, 0.01);
+		gui.add(mesh.position, 'y', -3, 3, 0.01);
+		gui.add(mesh.position, 'z', -3, 3, 0.01);
+	</code></pre>
+	<p>
+		For greater readability, we can avoid the appearance of magic numbers with
+		chaining:
+	</p>
+	<pre class="language-javascript"><code>
+		gui.add(mesh.position, 'y').min(-3).max(3).step(0.01);
+	</code></pre>
+	<p>And for greater readability, chaining with line breaks:</p>
+	<pre class="language-javascript"><code>
+		gui
+			.add(mesh.position, 'y')
+			.min(-3)
+			.max(3)
+			.step(0.01);
+	</code></pre>
+
+	<section id="custom_labels">
+		<h3>Custom Labels</h3>
+		<p>
+			By default, the control's name is the mesh's property name. To use a
+			custon label, we use the
+			<span class="monoText"><mark>.name()</mark></span> function:
+		</p>
+		<pre class="language-javascript"><code>
+			gui
+				.add(mesh.position, 'y')
+				.min(-3)
+				.max(3)
+				.step(0.01)
+				.name('elevation');
+		</code></pre>
+	</section>
+
+	<section id="toggling_visibility">
+		<h3>Toggling Visibility</h3>
+		<p>
+			All meshes have a property called
+			<span class="monoText"><mark>.visible</mark></span
+			>. This is a Boolean property &mdash; set it to
+			<span class="monoText">false</span>, and the mesh is no longer visible.
+			Because we have access to this property, we can include a control for
+			toggling a particular mesh's visibility.
+		</p>
+		<pre class="language-javascript"><code>
+			gui
+				.add(mesh, 'visible')
+		</code></pre>
+		<p>
+			Writing the code above, we see a checkbox with the label
+			<span class="monoText">visible</span>. Clicking this checkbox toggles the
+			mesh's visibility.
+		</p>
+		<p>
+			This GUI feature extends to other objects with the
+			<span class="monoText">visible</span> property. For example, we can toggle
+			wireframe visibility:
+		</p>
+		<pre class="language-javascript"><code>
+			gui
+				.add(material, 'wireframe');
+		</code></pre>
+	</section>
+
+	<section id="colors">
+		<h2>Colors</h2>
+		<p>
+			To add a control to change our mesh's color, we use the
+			<span class="monoText"><mark>.addColor()</mark></span> method. A separate
+			method is used because using <span class="monoText">.add()</span> alone,
+			the <span class="monoText">gui</span> object has no way of differentiating
+			between the string <span class="monoText">'0xffff'</span> and the color
+			<span class="monoText">0xffff</span>.
+		</p>
+		<p>
+			To use <span class="monoText">.addColor()</span> we must use an object.
+			This is because we cannot access the
+			<span class="monoText">.color</span> property for
+			<span class="monoText">material</span> through
+			<span class="monoText">.addColor()</span>.
+		</p>
+		<pre class="language-javascript"><code>
+			const parameters = {
+				color: 0xff0000
+			};
+			gui
+				.addColor(parameters, 'color');
+		</code></pre>
+		<p>
+			Writing the code above adds a color meter to the control panel. However
+			changing the meter value doesn't render any changes. This is because the
+			<span class="monoText">parameters</span> object has nothing to do with the
+			rest of the scene. We must provide code to update the material's color
+			when the meter is changed. We can do so with the
+			<span class="monoText">.onChange()</span> method:
+		</p>
+		<pre class="language-javascript"><code>
+			const parameters = {
+				color: 0xff0000
+			}
+			gui
+				.addColor(parameters, 'color')
+				.onChange(() => { 
+						material.color.set(parameters.color);
+				});
+		</code></pre>
+		<p>
+			In the code above, we used the lil-gui method
+			<span class="monoText">.onChange()</span>. This is essentially an event
+			listener. We then pass an arrow function as a parameter. If the color
+			meter changes, the arrow function invokes
+			<span class="monoText">material.color.set(parameters.color)</span>. The
+			<span class="monoText">.set()</span> method is the
+			<span class="monoText">Color</span> class's function for setting a color.
+		</p>
+		<p>
+			As an aside, we should always place values hard values like colors and
+			other numbers in an object, then use the object to assign values.
+			Following this practice keeps code clean and modular.
+		</p>
+	</section>
+
+	<section id="functions">
+		<h2>Triggering Functions</h2>
+		<p>
+			With more complicated meshes, it's helpful to have a button for triggering
+			particular functions. Like the hurdle with changing colors, we cannot pass
+			non-object-literals as parameters to the lil-gui methods. Instead, we must
+			include the function in an object, and pass the relevant object value into
+			the lil-gui method.
+		</p>
+		<pre class="language-javascript"><code>
+			const parameters = {
+				color: 0xff0000,
+				spin: () => { console.log('spin') }
+			}
+			gui
+				.add(parameters, 'spin');
+		</code></pre>
+		<p>
+			The control panel should now display a button. Clicking that button, we
+			see <span class="monoText">spin</span> in the console. Using
+			<span class="monoText">gsap</span>, we can replace the console log with a
+			rotation animation:
+		</p>
+		<pre class="language-javascript"><code>
+			const parameters = {
+				color: 0xff0000,
+				spin: () => {
+					gsap.to(mesh.rotation, {
+							duration: 1,
+							y: mesh.rotation.y + 10
+					})
+				}
+			};
+			gui
+				.add(parameters, 'spin');
+		</code></pre>
+		<section id="close_button">
+			<h3>Close Button</h3>
+			<p>As an aside, we can add a close button by writing the following:</p>
+			<pre class="language-javascript"><code>
+				const gui = new dat.GUI({closed: true});
+			</code></pre>
+			<p>The code above will add to the control panel an open/close button.</p>
+		</section>
+	</section>
+
+	<section id="control_panel_width">
+		<h3>Control Panel Width</h3>
+		<p>
+			To change the control panel's width, we include the value in the
+			constructor:
+		</p>
+		<pre class="language-javascript"><code>
+			const gui = new dat.GUI({
+				closed: true,
+				width: 400
+			});
+		</code></pre>
+	</section>
+</section>
+
+<section id="textures">
+	<h2>Textures</h2>
 </section>
 {% endblock %}
