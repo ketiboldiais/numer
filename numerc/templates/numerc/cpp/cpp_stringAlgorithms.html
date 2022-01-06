@@ -3,7 +3,7 @@
 {% endblock %} {% block title %}
 <title>String Algorithms</title>
 {% endblock %} {% block content %}
-<h1>Algorithms for Strings</h1>
+<h1>Algorithms on Strings</h1>
 <section id="intro">
 	<p>
 		<span class="drop">I</span>n this section, we present several useful
@@ -1306,14 +1306,10 @@
 		each word is separated by a space:
 	</p>
 	<figure>
-		<div>
+		<div class="rule">
 			<p>
-				${\small \text{As} \underbrace{~}_{\text{1}} \text{a}
-				\underbrace{~}_{\text{2}} \text{matter} \underbrace{~}_{\text{3}}
-				\text{of} \underbrace{~}_{\text{4}} \text{law,}
-				\underbrace{~}_{\text{5}} \text{the} \underbrace{~}_{\text{6}}
-				\text{house} \underbrace{~}_{\text{7}} \text{is}
-				\underbrace{~}_{\text{8}} \text{haunted.}}$
+				As &#9248; a &#9248; matter &#9248; of &#9248; law, &#9248; the &#9248;
+				house &#9248; is &#9248; haunted.
 			</p>
 		</div>
 	</figure>
@@ -1418,6 +1414,164 @@
 		special symbols in the password, alongside digits and uppercase letters. To
 		ensure compliance, we subject to a given string to a
 		<span class="term">string validator</span>.
+	</p>
+	<p>
+		Our simple string validator, <span class="monoText">isValidString()</span>,
+		will return <span class="monoText">true</span> if the string argument
+		satisfies our criteria, and <span class="monoText">false</span> otherwise.
+		Suppose we had the following string:
+	</p>
+	<pre class="language-c"><code>
+		char S[] = "Ben?123";
+	</code></pre>
+	<p>
+		Further suppose that the only valid characters are letters and numerals.
+		Thus, we see that the eroteme (the question mark), is an invalid character,
+		so our algorithm should return <span class="monoText">false</span>.
+	</p>
+	<p>Using the following facts from the ASCII table:</p>
+	<figure>
+		<ul>
+			<li>Numerals are mapped to the integers ${48}$ through ${57.}$</li>
+			<li>Uppercase letters mapped to the integers ${65}$ through ${90.}$</li>
+			<li>Lowercase letters mapped to the integers ${97}$ through ${122.}$</li>
+		</ul>
+	</figure>
+	<p>
+		we have a criteria. If a character is not within any of the ranges above, it
+		is invalid. Thus:
+	</p>
+	<figure>
+		<ol class="recipe">
+			<li>Suppose ${S}$ is a string.</li>
+			<li>Let ${\ell}$ be the length of the string.</li>
+			<li>
+				Let ${i \in \lang 0, 1, 2, \ldots, \ell \rang,}$ starting at ${i = 0.}$
+			</li>
+			<li>
+				If ${i < \ell,}$ perform the operations below. Otherwise, go to step 5.
+			</li>
+			<ol>
+				<li>
+					If:
+					<ul>
+						<li>${48 \nleq S_i \nleq 57,}$ and</li>
+						<li>${65 \nleq S_i \nleq 90,}$ and</li>
+						<li>${97 \nleq S_i \nleq 122}$</li>
+					</ul>
+					return false. End. ${\blacksquare}$
+				</li>
+				<li>Otherwise, increment ${i}$ and go to step 4.</li>
+			</ol>
+			<li>Return true. End. ${\blacksquare}$</li>
+		</ol>
+	</figure>
+	<p>Implementing in pseudocode:</p>
+	<figure>
+		<ol class="alg">
+			<li>${f}$ isValidString(char S[]):</li>
+			<ol>
+				<li>for (int i = 0; S[i] != '\0'; i++):</li>
+				<ol>
+					<li>if (</li>
+					<ol>
+						<li>!(48 <= S[i] && S[i] <= 57) AND</li>
+						<li>!(65 <= S[i] && S[i] <= 90) AND</li>
+						<li>!(97 <= S[i] && S[i] <= 122)):</li>
+						<ol>
+							<li>return false;</li>
+						</ol>
+					</ol>
+				</ol>
+				<li>return true;</li>
+			</ol>
+		</ol>
+	</figure>
+</section>
+
+<section id="reversing_string">
+	<h2>String Reversal</h2>
+	<p>
+		When searching for a particular string, it can be a good idea to search for
+		the string's reversal. For example, the strings:
+	</p>
+	<figure>
+		<ol>
+			<li><span class="monoText">"studied"</span></li>
+			<li><span class="monoText">"hurried"</span></li>
+			<li><span class="monoText">"madam"</span></li>
+			<li><span class="monoText">"12/09/21"</span></li>
+			<li><span class="monoText">"110101"</span></li>
+		</ol>
+	</figure>
+	<p>would have the reversals:</p>
+	<figure>
+		<ol>
+			<li><span class="monoText">"deiduts"</span></li>
+			<li><span class="monoText">"deirruh"</span></li>
+			<li><span class="monoText">"madam"</span></li>
+			<li><span class="monoText">"12/90/21"</span></li>
+			<li><span class="monoText">"101011"</span></li>
+		</ol>
+	</figure>
+	<p>
+		Notice that by reversing the first two strings, we now have the three common
+		letters towards the beginning and the different letters towards the end. For
+		the third string, we have a
+		<span class="italicsText">palindrome</span> &mdash; a sequence of characters
+		that reads the same way forward and backward. In the fourth string, we see
+		what appears to be a date format in reverse. The fifth string is
+		specifically called a <span class="term">bitstring</span> &mdash; a
+		character sequence of ones and zeroes. The original string is the decimal
+		number ${53,}$ and its reversal is ${43.}$ In many situations, working with
+		the string's reversal rather than the original string can simplify a problem
+		considerably.
+	</p>
+	<p>
+		To implement the string reversal algorithm, let's use the following string:
+	</p>
+	<pre class="language-c"><code>
+		char S[] = "python";
+	</code></pre>
+	<p>
+		The simplest approach is to create another array, then copy the elements in
+		the original string, from last to first, into the new array, from first to
+		last:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>${f}$ reversedString(char S[]):</li>
+			<ol>
+				<li>int SLength = stringLength(s);</li>
+				<li>let R = new char[SLength];</li>
+				<li>
+					<span class="pop">int i = SLength;</span>
+					<div class="popText">
+						<p>Alternatively, we could've computed the length as:</p>
+						<ol class="alg">
+							<li>for (int i = 0; i != '\0'; i++);</li>
+							<li>i = i - 1;</li>
+						</ol>
+					</div>
+				</li>
+				<li>for (int j = 0; i >= 0; i--, j++):</li>
+				<ol>
+					<li>B[j] = A[i];</li>
+				</ol>
+				<li>return R;</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		In C and C++, C-strings are immutable by default. To ensure mutability, we
+		must use the syntax:
+	</p>
+	<pre class="language-c"><code>
+		char S[] = "python";
+	</code></pre>
+	<p>
+		Assuming the string argument is mutable, we can employ perform a string
+		reversal with a <span class="monoText">swap()</span> function.
 	</p>
 </section>
 

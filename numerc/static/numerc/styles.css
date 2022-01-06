@@ -31,6 +31,12 @@
 	}
 	@font-face {
 		font-family: "serifMain";
+		src: url("./numerc_fonts/cmu_serif/serifMainItl.woff");
+		font-weight: normal;
+		font-style: italic;
+	}
+	@font-face {
+		font-family: "serifMain";
 		src: url("./numerc_fonts/cmu_serif/serifMainBold.woff");
 		font-weight: bold;
 		font-style: normal;
@@ -42,33 +48,9 @@
 		font-style: normal;
 	}
 	@font-face {
-		font-family: "sansSerifMain";
-		src: url("./numerc_fonts/cmu_serif/serifMainItl.woff");
-		font-weight: normal;
-		font-style: italic;
-	}
-	@font-face {
 		font-family: "Inconsolata";
 		src: url("./numerc_fonts/inconsolata/inconsolata_regular.ttf");
 		font-weight: normal;
-		font-style: normal;
-	}
-	@font-face {
-		font-family: "Linux Biolinum";
-		src: url("./numerc_fonts/cmu_serif/linux-biolinum.regular.ttf");
-		font-weight: normal;
-		font-style: normal;
-	}
-	@font-face {
-		font-family: "Linux Biolinum";
-		src: url("./numerc_fonts/cmu_serif/linux-biolinum.bold.ttf");
-		font-weight: bold;
-		font-style: normal;
-	}
-	@font-face {
-		font-family: "Fira";
-		src: url("./numerc_fonts/inconsolata/FiraCode-VariableFont_wght.ttf");
-		font-weight: bold;
 		font-style: normal;
 	}
 	@font-face {
@@ -86,6 +68,7 @@
 	--darkBlue: #0077B6;
 	--linkBlue: #006a97dc;
 	--babyBlue: #edf5f8;
+	--ruledListHeader: #fff8e8;
 	--mainIdeaBG: rgb(255, 251, 233);
 	--lightBlue: #ffffff;
 	--mediumBlue: #9eddf4;
@@ -296,27 +279,22 @@
 		float: right;
 	}
 /* Scrollbar */
-		nav::-webkit-scrollbar {
-			width: 2px;
-		}
-		div#page::-webkit-scrollbar {
-			width: 2px;
-		}
-		nav::-webkit-scrollbar-track {
-			background: #ffffff;
-		}
-		div#page::-webkit-scrollbar-track {
-			background: #8b8b8b;
-		}
-		nav::-webkit-scrollbar-thumb {
-			background: var(--darkBlue);
-		}
-		div#page::-webkit-scrollbar-thumb {
-			background: rgb(125, 255, 251);
-		}
-		nav::-webkit-scrollbar-thumb:hover {
-			background: rgb(53, 53, 53);
-		}
+	::-webkit-scrollbar {
+		width: 10px;
+		height: 7px;
+	}
+	::-webkit-scrollbar-thumb {
+		background-color: #d6dee1;
+		border-radius: 4px;
+		border: 1px solid transparent;
+		background-clip: content-box;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background-color: #a8bbbf;
+	}
+	li::-webkit-scrollbar {
+		display: none;
+	}
 /* Superscripts/Footnotes */
 	main {counter-reset: fn;}
 	sup {
@@ -460,8 +438,8 @@
 	}
 	h1 {
 		font-size: 2em;
-		font-family: "CMU";
 		padding: 1.2em 0;
+		margin: 5vw;
 		text-align: center;
 		color: var(--textColor);
 	}
@@ -776,75 +754,22 @@
 		}
 	/* Circle List */
 		ol.recipe {
-			counter-reset: li;
-			list-style: none;
-			*list-style: decimal;
+			list-style: decimal;
+			background-image: linear-gradient(var(--textColor), var(--textColor)),
+			linear-gradient(var(--textColor), var(--textColor)),
+			linear-gradient(var(--textColor), var(--textColor)),
+			linear-gradient(var(--textColor), var(--textColor));
+
+			background-repeat: no-repeat;
+			background-size: 8px 1px;
+			background-position: top left, top right, bottom left, bottom right;
+			border: solid var(--textColor);
+			border-width: 0 1px;
 		}
-		ol.recipe ol {
-			counter-reset: lia;
-			list-style: none;
-			*list-style:decimal;
-		}
-		ol.recipe ol ol {
-			counter-reset: lib;
-			list-style: none;
-			*list-style: decimal;
-		}
-		ol.recipe ol ol ol {
-			counter-reset: lic;
-			list-style: none;
-			*list-style: decimal;
-		}
-		ol.recipe ol ol ol {
-			counter-reset: lid;
-			list-style: none;
-			*list-style: decimal;
-		}
-		ol.recipe li {
-			font-size: 0.8rem;
-			position: relative;
-			padding: 0.4rem 0;
-			padding-left: 2em;
-		}
-		ol.recipe li:before {
-			content: counter(li);
-			padding: 0;
-			counter-increment: li;
-			background-color: var(--darkRed);
-			font-family: "CMU";
-			color: white;
-			border-radius: 50%;
-			font-size: 0.74rem;
-			width: 18px;
-			height: 18px;
-			text-align: center;
-			display: block;
-			position: absolute;
-			top: 0.4rem;
-			left: 0;
-		}
-		ol.recipe ol li::before {
-			content: counter(lia);
-			counter-increment: lia;
-			background-color: rgb(233, 151, 0);
-			
-		}
-		ol.recipe ol ol li::before {
-			content: counter(lib);
-			counter-increment: lib;
-			background-color: var(--darkGreen);
-			
-		}
-		ol.recipe ol ol ol li::before {
-			content: counter(lic);
-			counter-increment: lic;
-			background-color: var(--darkBlue);
-		}
-		ol.recipe ol ol ol ol li::before {
-			content: counter(lid);
-			counter-increment: lid;
-			background-color: rgb(158, 0, 158);
-		}
+		ol.recipe ol {list-style-type: lower-alpha;}
+		ol.recipe ol ol {list-style-type: lower-latin;}
+		ol.recipe ol ol ol {list-style-type: upper-alpha;}
+		ol.recipe ol ol ol ol {list-style-type: decimal;}
 	/* Function i/o */
 		div.func {
 			display: flex;
@@ -876,8 +801,10 @@
 		}
 		ul.ruled > li {
 			padding: 0.3em;
-			font-size: 0.85rem;
-			background-color: var(--babyBlue);
+			white-space:nowrap;
+			overflow-x: scroll;
+			overflow-y: hidden;
+			background-color: var(--ruledListHeader);
 			padding-top: 0;
 			border: thin solid lightgrey;
 			list-style-type: none;
@@ -1049,6 +976,7 @@
 	.monoText *.katex {font-size: 1.1em !important;}
 	.smallcaps {font-variant: small-caps;}
 	.term {
+		font-family: "CMU";
 		font-weight: bold; 
 		font-style: italic; 
 	}
@@ -1420,7 +1348,7 @@
 		font-family: var(--mono);
 		text-align: left;
 		font-size: 0.65rem;
-		white-space: pre-wrap;
+		white-space:pre;
 		font-weight: normal;
 		word-spacing: normal;
 		word-break: normal;
@@ -2578,14 +2506,14 @@
 		.grid-col--3 { display: block; } /* show column 3 */
 	}
 /* Media Queries */
-	@media (max-width: 600px) { html {font-size: 9px;} }
-	@media (max-width: 800px) { html {font-size: 10px;} }
-	@media (max-width: 1180px) { html {font-size: 11px;} }
-	@media (max-width: 1300px) { html {font-size: 12px;} }
-	@media (max-width: 1750px) { html {font-size: 13px;} }
-	@media (max-width: 1900px) { html {font-size: 14px;} }
-	@media (max-width: 2100px) { html {font-size: 15px;} }
-	@media (max-width: 2400px) { html {font-size: 16px;} }
+	@media (max-width: 600px) { html {font-size: 10px;} }
+	@media (max-width: 800px) { html {font-size: 11px;} }
+	@media (max-width: 1180px) { html {font-size: 12px;} }
+	@media (max-width: 1300px) { html {font-size: 13px;} }
+	@media (max-width: 1750px) { html {font-size: 14px;} }
+	@media (max-width: 1900px) { html {font-size: 15px;} }
+	@media (max-width: 2100px) { html {font-size: 16px;} }
+	@media (max-width: 2400px) { html {font-size: 17px;} }
 	@media (min-width: 1101px) {
 		button#tocButton { display: none; }
 		.section-nav ul li {

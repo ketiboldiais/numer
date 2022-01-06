@@ -1203,8 +1203,50 @@
 			Importantly, the <span class="monoText">getElapsedTime()</span> method
 			returns the elapsed time in seconds. Because this is a number value that
 			changes, we can assign this number directly to
-			<span class="monoText">mesh.rotation.y</span>.
+			<span class="monoText">mesh.rotation.y</span>. If we want to perform 1
+			revolution per second:
 		</p>
+		<pre class="language-javascript"><code>
+			const clock = new THREE.Clock();
+			const tick = () => {
+				// elapsed time
+				const deltaTime = clock.getElapsedTime();
+
+				// update object properties
+				mesh.rotation.y = deltaTime * Math.PI * 2;
+
+				// render
+				renderer.render(scene, camera);
+
+				// call the tick function for the next frame
+				window.requestAnimationFrame(tick);
+			};
+			tick();
+		</code></pre>
+		<p>
+			If we want animations that cycle through various movements, we rely on
+			trigonometry. We know that the functions ${y = \sin x,}$ ${y = \cos x,}$
+			${y = \tan x,}$ and their inverses are all cyclical functions.
+			Accordingly, we can use this fact to perform repetitive animations, like a
+			mesh oscillating up and down:
+		</p>
+		<pre class="language-javascript"><code>
+			const clock = new THREE.Clock();
+			const tick = () => {
+				// elapsed time
+				const deltaTime = clock.getElapsedTime();
+
+				// update object properties
+				mesh.rotation.y = Math.sin(elapsedTime);
+
+				// render
+				renderer.render(scene, camera);
+
+				// call the tick function for the next frame
+				window.requestAnimationFrame(tick);
+			};
+			tick();
+		</code></pre>
 	</section>
 </section>
 
@@ -1766,7 +1808,7 @@
 </section>
 
 <section id="full_screen_and_resizing">
-	<h2>Full Screen & Resizing</h2>
+	<h2>Full-screen & Resizing</h2>
 	<p>
 		As we know, ThreeJS renders its visualizations in a canvas element. We can
 		think of the canvas element as the universe where ThreeJS renderings exist.
@@ -1832,19 +1874,817 @@
 		</p>
 		<p>The fix is to use an event listener:</p>
 		<pre class="language-javascript"><code>
-			const cursor = {
-					x: 0,
-					y: 0
+			const sizes = {
+				width: window.innerWidth,
+				height: window.innerHeight
+			}
+			
+			window.addEventListener('resize', () => {
+				// update sizes 
+				sizes.width = window.innerWidth;
+				sizes.height = window.innerHeight;
+			});
+		</code></pre>
+		<p>
+			Above, we updated the sizes with the event listener, but this isn't
+			enough. The sizes are used by different parts of our rendering, but it
+			doesn't actually update the container for our scene. Thus, the next thing
+			we must do is update the camera. For the camera, we must update the aspect
+			ratio.
+		</p>
+		<pre class="language-javascript"><code>
+			const sizes = {
+				width: window.innerWidth,
+				height: window.innerHeight
+			}
+			
+			window.addEventListener('resize', () => {
+				// update sizes 
+				sizes.width = window.innerWidth;
+				sizes.height = window.innerHeight;
+
+				// update camera
+				camera.aspect = sizes.width / sizes.height;
+			});
+		</code></pre>
+		<p>
+			This is still not enough. Even if we update the camera's aspect, ThreeJS
+			doesn't know that aspect is being updated dynamically. To be precise,
+			updating the camera's aspect property doesn't update the camera's
+			<span class="italicsText">projection matrix</span>. Accordingly, we must
+			call the built-in method
+			<span class="monoText">updateProjectionMatrix()</span>:
+		</p>
+		<pre class="language-javascript"><code>
+			const = sizes = {
+				width: window.innerWidth,
+				height: window.innerHeight
 			};
-			window.addEventListener('mousemove', (event) => { 
-					cursor.x = event.clientX / sizes.width - 0.5;
-					cursor.y = -(event.clientY / sizes.height - 0.5);
+			window.addEventListener('resize', () => {
+				// update sizes
+				sizes.width = window.innerWidth;
+				sizes.height = window.innerHeight;
+
+				// update camera
+				camera.aspect = sizes.width / sizes.height;
+				camera.updateProjectMatrix();
 			})
 		</code></pre>
 		<p>
-			But, this still does not show any changes &mdash; we're merely updating
-			the object, rather than a particular element in our scene.
+			Updating the camera's projection matrix, we see that resizing the window
+			causes some sort of resizing, but it's not quite what we want. Expanding
+			the window seems to stretch the mesh, and narrowing the window appears to
+			contract the mesh.
+		</p>
+		<p>
+			We're seeing this behavior because we're only updating the camera, but not
+			the renderer. Accordingly, we must update the renderer's size:
+		</p>
+		<pre class="language-javascript"><code>
+			const = sizes = {
+				width: window.innerWidth,
+				height: window.innerHeight
+			};
+			window.addEventListener('resize', () => {
+				// update sizes
+				sizes.width = window.innerWidth;
+				sizes.height = window.innerHeight;
+
+				// update camera
+				camera.aspect = sizes.width / sizes.height;
+				camera.updateProjectMatrix();
+
+				// update the renderer
+				renderer.setSize(sizes.width, sizes.height)
+			})
+		</code></pre>
+		<p>
+			Performing this update, we now see our scene expanding and contracting
+			responsively.
 		</p>
 	</section>
+
+	<section id="pixel_ratios">
+		<h3>Pixel Ratios</h3>
+		<p>
+			On some machines, the mesh rendering &mdash; whether through ThreeJS or
+			some other graphics software &mdash; might appear blurry or jagged. When
+			we see this behavior, the most likely culprit is a screen with a pixel
+			ratio greater than ${1.}$
+		</p>
+		<p>
+			The <span class="term">pixel ratio</span> is a ratio of the number of
+			physical pixels there are for one pixel unit in software.<label
+				for="pixel"
+				class="margin-toggle"
+				><sup></sup
+			></label>
+			<input type="checkbox" id="pixel" class="margin-toggle sidenote-number" />
+			<span class="marginnote"
+				>The word &#8220;pixel&#8221; is a blending of &#8220;picture
+				element.&#8221;</span
+			>
+			Inherent in this definition is the distinction between a
+			<span class="italicsText">physical pixel</span> and the
+			<span class="italicsText">logical pixel</span>. The logical pixel is a
+			pixel unit, denoted ${\text{px}.}$ It is the software interpretation of a
+			pixel. The physical pixel, however, is a single composition of molecules
+			between two transparent electrons (i.e., the tiny squares we see if we
+			look at an electronic screen with a magnifying glass).
+		</p>
+		<p>
+			Keeping this distinction in mind, there are a few terms we should be clear
+			about:
+		</p>
+		<ul>
+			<li>
+				<span class="term">Resolution</span> is the number of physical pixels
+				along the width and the number of physical pixels along the height.
+				Thus, a resolution of ${16 \times 12}$ denotes some collection of pixels
+				${16}$ pixels horizontally and ${12}$ pixels vertically. Resolution,
+				more generally, is the product:
+				<figure>
+					<div>
+						<p>${width \times height.}$</p>
+					</div>
+				</figure>
+			</li>
+			<li>
+				<span class="term">Aspect ratio</span> is the reduced form of a
+				resolution. For example, with a resolution of of ${16 \times 12,}$ the
+				greatest common factor is ${4,}$ so the aspect ratio is ${4:3.}$ The
+				aspect ratio, more generally, is the ratio:
+				<figure>
+					<div>
+						<p>${width:height.}$</p>
+					</div>
+				</figure>
+				In computer graphics and cinematography, when captured content has a
+				wider aspect ratio than the display, we often see black bars at the top
+				and bottom of the screen. This is called
+				<span class="term">letterboxing</span>. When the captured content has a
+				taller aspect ratio than the display, black bars appear at the left and
+				right sides of the screen. This is called
+				<span class="term">pillarboxing</span>.
+			</li>
+			<li>
+				A <span class="term">screen size</span> is the diagonal length of the
+				screen, usually measured in inches or centimeters. For example, given a
+				resolution of ${16 \times 12,}$ the screen size can be computed as:
+			</li>
+			<li>
+				<span class="term">Pixels Per Inch (PPI)</span> is a measure of pixel
+				density (i.e., how closely packed the physical pixels are), represented
+				as the ratio ${\dfrac{d}{s}}$ where ${d}$ is the diagonal number of
+				pixels, and ${s}$ is the screen size. For example, for the ${16 \times
+				12}$ device, the diagonal number of pixels is:
+				<figure>
+					<div>
+						<p>${\text{screen size} = \sqrt{16^2 + 12^2} \approx 20.2731}$</p>
+					</div>
+				</figure>
+				If the screen size is ${8.2 \text{ in.},}$ the device has a PPI of:
+				<figure>
+					<div>
+						<p>${\dfrac{20.2731}{8.2} \approx 2.4723}$</p>
+					</div>
+				</figure>
+				This essentially tells us that the device fits about ${2}$ pixels for
+				every inch.
+			</li>
+			<li>
+				The <span class="term">device pixel ratio</span>, or
+				<span class="italicsText">pixel ratio</span> for short, is the number of
+				<span class="italicsText">physical pixels</span> for each
+				<span class="italicsText">logical pixel</span>.
+			</li>
+		</ul>
+		<p>
+			For many years, all screens had a pixel ratio of ${1.}$ In that bygone
+			era, one physical pixel corresponded to one logical pixel. However, some
+			very clever hardware and software engineers at places like Apple began
+			creating screens that supported a pixel ratio of two (in Apple's case, the
+			so-branded <span class="italicsText">Retina&trade; displays</span>). With
+			a pixel ratio of two, developers can render ${4}$ pixel units for each
+			physical pixel. Eventually, other device manufacturers noticed this
+			opportunity and began creating screens supporting even higher pixel ratios
+			&mdash; three (giving ${9}$ pixels units to render), four (${16}$ pixel
+			units to render), five (${25}$ pixel units), and even six (${36}$ pixel
+			units). To get our device's pixel ratio, we can use the
+			<span class="monoText"><mark>window.devicePixelRatio</mark></span>
+			property.
+		</p>
+		<p>
+			Currently, higher pixel ratios are a double-edged sword. On the one hand,
+			these higher pixel ratios lead to much more detailed images, and by
+			extension, fluid and smooth animations. On the other hand, higher pixel
+			ratios are enormously costly on the GPU, and the GPU industry has not
+			progressed nearly as fast as its display counterpart. This is a
+			significant problem when we consider the fact that we've now arrived at a
+			situation where the highest pixel ratios are on the weakest machines
+			&mdash; mobile phones. There is no technological reason for having such
+			high pixel ratios on mobiles; their GPUs simply cannot exploit these
+			increased numbers. In fact, to the naked eye, the mobile device with a
+			pixel ratio of three is indistinguishable from devices with higher pixel
+			ratios. How did it come to this? Frighteningly clever marketing teams.
+		</p>
+		<p>
+			Because of the variations in pixel ratio, we must write code accounting
+			for these differences:
+		</p>
+		<pre class="language-javascript"><code>
+			renderer.setPixelRatio(window.devicePixelRatio);
+		</code></pre>
+		<p>
+			Writing the code above ensures that our renderer conforms to the relevant
+			machine's pixel ratio. Recall, however, that there are devices with
+			outrageous pixel ratios like five. Because of the GPU cost, we must limit
+			our rendering to a particular pixel ratio:
+		</p>
+		<pre class="language-javascript"><code>
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		</code></pre>
+		<p>
+			The code above reads: If the pixel ratio is less than two, set that as the
+			pixel ratio, otherwise, use two. Of note, it's considered best-practice to
+			place the pixel ratio setter inside the resize function we used earlier:
+		</p>
+		<pre class="language-javascript"><code>
+			const sizes = {
+				width: window.innerWidth,
+				height: window.innerHeight
+			}
+		
+			window.addEventListener('resize', () => {
+				// update sizes 
+				sizes.width = window.innerWidth;
+				sizes.height = window.innerHeight;
+		
+				// update camera
+				camera.aspect = sizes.width / sizes.height;
+				camera.updateProjectionMatrix();
+		
+				// update the renderer
+				renderer.setSize(sizes.width, sizes.height)
+				renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+			});
+		</code></pre>
+		<p>
+			We do so because more users today connect smaller devices to larger
+			displays (e.g., linking a laptop to a monitor via HDMI). By placing the
+			pixel ratio setter inside our resizing function, our rendering can
+			self-modify when viewed on a larger resolution device.
+		</p>
+	</section>
+	<section id="full_screen_toggle">
+		<h3>Full-screen</h3>
+		<p>
+			Full-screen visualizations allow us to create more immersive experiences.
+			The first step is to implement a way to toggle full-screen. In the
+			illustrations below, we'll use a double-click approach, but there are many
+			other ways: a button, a keyboard shortcut, a dropdown, etc.
+		</p>
+		<p>
+			Four double-click, we'll use an event listener with a double click event:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>window.addEventListener('dblclick', ${f_c}$)</li>
+			</ul>
+			<figcaption>where ${f_c}$ is a callback function</figcaption>
+		</figure>
+		<p>
+			The DOM provides a read-only property called
+			<span class="monoText"><mark>${obj}$.fullscreenElement</mark></span
+			>, which returns <span class="monoText">true</span> if some element
+			${obj}$ is in full-screen mode, and
+			<span class="monoText">false</span> otherwise. We can use this as a test
+			condition for toggling between the different states:
+		</p>
+		<pre class="language-javascript"><code>
+			window.addEventListener('dblclick', () => { 
+				if (!document.fullscreenElement) {
+					console.log('go fullscreen');
+				} else { 
+					console.log('leave fullscreen');
+				}
+			})
+		</code></pre>
+		<p>Double clicking our viewport:</p>
+		<pre class="language-javascript"><code>
+			go fullscreen
+		</code></pre>
+		<p>
+			It works as expected. Next, we use another DOM method,
+			<span class="monoText"><mark>.requestFullscreen()</mark></span> to toggle
+			full-screen mode. Because our scene is in a
+			<span class="monoText">canvas</span> element, we call this method on the
+			<span class="monoText">canvas</span> element. And to exit full-screen
+			mode, we call the
+			<span class="monoText"><mark>document.exitFullScreen()</mark></span>
+			method:
+		</p>
+		<pre class="language-bash"><code>
+			window.addEventListener('dblclick', () => { 
+				if (!document.fullscreenElement) {
+					canvas.requestFullscreen();
+				} else { 
+					document.exitFullscreen();
+				}
+			})
+		</code></pre>
+		<p>
+			Now when the user double clicks on the
+			<span class="monoText">canvas</span> element (the scene), our
+			visualization goes into full-screen mode, and on another double-click (or
+			pressing the <span class="monoText">esc</span> key), the user exits
+			full-screen mode.
+		</p>
+	</section>
+</section>
+
+<section id="geometries">
+	<h2>Geometries</h2>
+	<p>
+		Recall that a <span class="term">geometry</span> is the shape, our outline
+		of some object we want to render. In our previous examples, we used
+		ThreeJS's <span class="monoText"><mark>BoxGeometry</mark></span
+		>. We now examine other geometries.
+	</p>
+	<aside>
+		<figure>
+			<img
+				src="{% static 'images/geometry_cylinder.svg' %}"
+				alt=""
+				loading="lazy"
+				class="eighty-p"
+			/>
+			<figcaption>The geometry behind a cylinder</figcaption>
+		</figure>
+	</aside>
+	<p>
+		To begin, we consider a few additional details about geometries. A geometry
+		is composed of <span class="term">vertices</span> and
+		<span class="term">faces</span>. In 3D graphics, a vertex is a point
+		coordinate in 3D space. A face is the surface that results from joining
+		vertices together with triangles. We can also use geometries for particles.
+		When used in this manner, we set aside the faces, and just use the vertices.
+		But for now, we will focus on vertices and faces.
+	</p>
+	<p>
+		A geometry can store more than just the vertex coordinates. Every vertex has
+		a position, but we can also assign colors, number values, size,
+		ThreeJS-specific properties, any kind of data. Before we create our own
+		geometries, we should know ThreeJS's native geometries.
+	</p>
+	<p>
+		All native geometries in ThreeJS inherit from the
+		<span class="monoText"><mark>BufferGeometry</mark></span> class. Within the
+		<span class="monoText">BufferGeometry</span> class, there are many built-in
+		methods and properties we can use. The documentation can be found
+		<a
+			href="https://threejs.org/docs/#api/en/core/BufferGeometry"
+			target="blank"
+			>here</a
+		>. Some useful methods:
+	</p>
+	<ul class="ruled">
+		<li>
+			<span class="monoText"><mark>.rotateX</mark></span
+			>, <span class="monoText"><mark>.rotateY</mark></span
+			>, <span class="monoText"><mark>.rotateZ</mark></span>
+		</li>
+		<ul>
+			<li>Rotate the geometry (not the mesh) along the relevant axis.</li>
+			<li>These methods take a float argument, measured in radians.</li>
+		</ul>
+		<li>
+			<span class="monoText"><mark>.translate(${x}$, ${y}$, ${z}$)</mark></span>
+		</li>
+		<ul>
+			<li>
+				Translate the geometry (not the mesh) along the axes, where ${x,}$
+				${y,}$ and ${z}$ are floats.
+			</li>
+		</ul>
+	</ul>
+	<p>
+		The native geometries in ThreeJS are implemented as classes inheriting from
+		<span class="monoText">BufferGeometry</span>. Below are some of the more
+		commonly used geometries, but a full list can be found in
+		<a
+			href="https://threejs.org/docs/#api/en/geometries/BoxGeometry"
+			target="_blank"
+			>the documentation</a
+		>:
+	</p>
+	<ul class="ruled">
+		<li>
+			<span class="monoText"
+				>const ${c}$ = new THREE.BoxGeometry(${w}$, ${h}$, ${d}$)</span
+			>
+		</li>
+		<ul>
+			<li>
+				Instantiates a cuboid with the width ${w,}$ height ${h,}$ and depth
+				${d.}$
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"
+				>const ${c}$ = new THREE.PlaneGeometry(${w}$, ${h}$)</span
+			>
+		</li>
+		<ul>
+			<li>
+				Instantiates a plane with width ${w}$ along the ${x}$-axis, and a height
+				${h}$ along the ${y}$-axis.
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"
+				>const ${c}$ = new THREE.CircleGeometry(${r}$, ${s}$)</span
+			>
+		</li>
+		<ul>
+			<li>
+				Instantiates a circle of radius ${r,}$ with segments ${s.}$ Because
+				everything is drawn via triangles, the integer ${s}$ determines the
+				number of triangles used to draw the triangle. A minimum of ${3}$ is
+				needed, and the default is ${8.}$ The more triangles are used, the
+				&#8220;smoother&#8221; the circle looks.
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"
+				>const ${c}$ = new THREE.SphereGeometry(${r}$, ${w_s}$, ${h_s}$)</span
+			>
+		</li>
+		<ul>
+			<li>
+				Instantiates a sphere of radius ${r.}$ The integer argument ${w_s}$ sets
+				the number of horizontal segments (default ${32,}$ minimum ${3,}$), and
+				the integer argument ${h_s}$ sets the number of vertical segments
+				(default ${16,}$ minimum ${2}$).
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"
+				>const ${c}$ = new THREE.ConeGeometry(${r}$, ${h}$, ${rs}$)</span
+			>
+		</li>
+		<ul>
+			<li>
+				Instantiates a cone with a base of radius ${r,}$ and a height ${h.}$ The
+				integer argument ${rs}$ sets the number of segmented faces around the
+				cone's circumference. The default is ${8,}$ higher values render a
+				smoother cone.
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"
+				>const ${c}$ = new THREE.CylinderGeometry(${r_t}$, ${r_b}$, ${h}$,
+				${rs}$)</span
+			>
+		</li>
+		<ul>
+			<li>
+				Instantiates a cylinder. Given that a cylinder has two circle bases, the
+				float argument ${r_t}$ sets the radius for the top base, and the float
+				argument ${r_b}$ sets the radius for the bottom. The float argument
+				${h}$ sets the height, and the integer argument ${r_s}$ sets the number
+				of segmented faces around the cylinder's circumference.
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"
+				>const ${c}$ = new THREE.RingGeometry(${r_i}$, ${r_o}$,
+				${\theta_s}$)</span
+			>
+		</li>
+		<ul>
+			<li>
+				Instantiates a disk with a hole through its center. The float argument
+				${r_i}$ sets the inner radius, and ${r_o}$ the outer radius. The integer
+				argument ${\theta_s}$ sets the number of segments; a greater integer
+				will render a rounder disk.
+			</li>
+		</ul>
+		<li>
+			<span class="monoText"
+				>const ${c}$ = new THREE.TextGeometry(${s}$, ${p}$)</span
+			>
+		</li>
+		<ul>
+			<li>
+				Instantiates a text geometry. The text to render is the string argument
+				${s,}$ and the parameters are passed via the object-literal ${p.}$
+			</li>
+		</ul>
+	</ul>
+
+	<p>
+		From the small sampling of the API above, we can see that there are numerous
+		native geometries available at our disposal. Before we consider creating our
+		own geometries, we should always examine the documentation to determine
+		whether an implementation already exists. For the most complex geometries,
+		we will need to use 3D-modelling programs like Blender.
+	</p>
+	<section id="segments">
+		<h3>Segments</h3>
+		<p>
+			In the previous API table, we saw some parameters related to
+			<span class="term">segments</span>. These parameters, at a higher level,
+			impact the number of triangles used to draw the geometry's faces. To
+			understand how these segments work, let's consider the cube. Recall that
+			to instantiate a cube, we write:
+		</p>
+		<pre class="language-javascript"><code>
+			const cube = new THREE.BoxGeometry(1, 1, 1);
+		</code></pre>
+		<p>
+			The full parameter list for <span class="monoText">BoxGeometry()</span>,
+			however, is the following:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>
+					THREE.BoxGeometry(${w}$, ${h}$, ${d}$, ${s_w}$, ${s_h}$, ${s_d}$)
+				</li>
+			</ul>
+		</figure>
+		<p>
+			The ${s}$ parameters, all integers, correspond to the number of segments.
+			${s_w}$ maps to the number of width segments, ${s_h}$ the height segments,
+			and ${s_d}$ the depth segments. By default, each of these parameters is
+			assigned the value ${1.}$ Focusing on ${s_h,}$ if ${s_h = 1,}$ the cube
+			looks like:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/segment_cube1.svg' %}"
+				alt="segment of 1 cube"
+				loading="lazy"
+				class="twenty-p"
+			/>
+		</figure>
+		<p>Notice that there are exactly ${1 \times 2 = 2}$ triangles.</p>
+		<p>
+			When ${s_h = 2,}$ we draw two segments from the midpoints, generating what
+			we can think of as four squares. Each square then forms two triangles,
+			yielding ${2 \times 4 = 8}$ triangles.:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/segment_cube2.svg' %}"
+				alt="segment of 2 cube"
+				loading="lazy"
+				class="twenty-p"
+			/>
+		</figure>
+		<p>
+			At ${s_h = 3,}$ we have ${3 \times 3 = 9}$ squares, and ${3 \times 2 = 9}$
+			triangles. At ${s_h = 4,}$ we have ${4 \times 4 = 16}$ squares and ${16
+			\times 2 = 32}$ triangles. Generalizing this pattern:
+		</p>
+		<figure>
+			<div>
+				<p>${n = 2s^2}$</p>
+			</div>
+			<figcaption>
+				where ${n}$ is the number of triangles, and ${s}$ is the number of
+				segments.
+			</figcaption>
+		</figure>
+		<p>
+			Why do we need more triangles? Well, for a simple geometry like a cube,
+			the more triangles does not produce any visible difference. However, for
+			geometries with curvatures, the number of triangles determines how smooth
+			the curvatures are:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/sphere.svg' %}"
+				alt="Triangles forming a sphere"
+				loading="lazy"
+				class="forty-p"
+			/>
+		</figure>
+		<p>
+			For all meshes, we can see the geometry's consisting triangles by
+			including in the <span class="monoText">material</span>'s parameters a
+			<span class="monoText"><mark>wireframe</mark></span> property set to
+			<span class="monoText">true</span>:
+		</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshBasicMaterial({
+				color: 0xff0000,
+				wireframe: true
+			})
+		</code></pre>
+	</section>
+	<section id="custom_buffer_geometries">
+		<h3>Custom Buffer Geometries</h3>
+		<p>
+			Suppose we wanted to create a triangle on our own, without relying on
+			ThreeJS's built-in geometries. To do so, we must create our own buffer
+			geometry.
+		</p>
+		<p>
+			To create custom buffer geometries, we must use a
+			<span class="monoText"><mark>Float32Array</mark></span> &mdash; a typed
+			array of fixed length in the JavaScript language. Specifically, a
+			<span class="monoText">Float32Array</span> is an array that can only store
+			<span class="monoText">float</span> values.
+		</p>
+		<p>
+			To initialize the <span class="monoText">Float32Array</span>, we use the
+			following syntax:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>new Float32Array(${n}$)</li>
+			</ul>
+			<figcaption>
+				where ${n}$ is an <span class="monoText">int</span> value, corresponding
+				to the length of the array.
+			</figcaption>
+		</figure>
+		<p>For example:</p>
+		<pre class="language-javascript"><code>
+			const positionsArray = new Float32Array(9);
+		</code></pre>
+		<p>
+			With the <span class="monoText">Float32Array</span> instantiated, we can
+			then assign values to the array's positions:
+		</p>
+		<pre class="language-javascript"><code>
+			const positionsArray = new Float32Array(9);
+			positionsArray[0] = 0;
+			positionsArray[1] = 0;
+			positionsArray[2] = 0;
+
+			positionsArray[3] = 0;
+			positionsArray[4] = 1;
+			positionsArray[5] = 0;
+
+			positionsArray[6] = 1;
+			positionsArray[7] = 0;
+			positionsArray[8] = 0;
+		</code></pre>
+		<p>
+			Tying this to ThreeJS is the following: Every three positions is the
+			coordinate to vertex, with the positions corresponding to the ${x-}$,
+			${y}$-, and ${z}$-axis respectively. Given that a triangle consists of
+			three vertices, we have the following interpretation:
+		</p>
+		<pre class="language-javascript"><code>
+			const positionsArray = new Float32Array(9);
+
+			// vertex 1
+			positionsArray[0] = 0; // x-coordinate
+			positionsArray[1] = 0; // y-coordinate
+			positionsArray[2] = 0; // z-coordinate
+
+			// vertex 2
+			positionsArray[3] = 0;
+			positionsArray[4] = 1;
+			positionsArray[5] = 0;
+
+			// vertex 3
+			positionsArray[6] = 1;
+			positionsArray[7] = 0;
+			positionsArray[8] = 0;
+		</code></pre>
+		<p>
+			Rather than writing all of the lines above individually, we can accomplish
+			the same result in a single line:
+		</p>
+		<pre class="language-javascript"><code>
+			const positionsArray = new Float32Array([
+				0, 0, 0,
+				0, 1, 0,
+				0, 1, 0
+			]);
+		</code></pre>
+		<p>
+			Why aren't we just using regular JavaScript arrays? Because computers can
+			handle the <span class="monoText">Float32Array</span> much more easily
+			than a regular array. With the standard array, there's a longer checklist
+			the machine must go through before returning an output.
+			<span class="monoText">Float32Array</span> significantly shortens that
+			checklist. The array consists entirely of floats, so type inference is
+			quick; the array's length is fixed so no calculations are necessary; the
+			array is immutable so even fewer calculations must be made.
+		</p>
+		<p>
+			Once we've initialized our positions array, we must convert the
+			<span class="monoText">Float32Array</span> to a
+			<span class="monoText"><mark>BufferAttribute</mark></span> object &mdash;
+			essentially a container for attribute data (in this case, our positions).
+		</p>
+		<pre class="language-javascript"><code>
+			const positionsArray = new Float32Array([
+				0, 0, 0,
+				0, 1, 0,
+				1, 0, 0
+			]);
+			const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
+		</code></pre>
+		<p>
+			Notice how we passed the <span class="monoText">positionsArray</span> into
+			the constructor, followed by the integer <span class="monoText">3</span>.
+			This integer essentially tells the constructor that each of the floats in
+			<span class="monoText">positionsArray</span> are grouped by three
+			(corresponding to the coordinates of each vertex).
+		</p>
+		<p>
+			With our coordinates now stored in a
+			<span class="monoText">BufferAttribute</span>, we can now create a new
+			geometry using the coordinates. We do so by passing appropriate label and
+			the <span class="monoText">positionsAttribute</span> into the geometry's
+			<span class="monoText">.setAttribute()</span> method:
+		</p>
+		<pre class="language-javascript"><code>
+			const positionsArray = new Float32Array([
+				0, 0, 0,
+				0, 1, 0,
+				1, 0, 0
+			]);
+			const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
+			const geometry = new THREE.BufferGeometry();
+			geometry.setAttribute('position', positionsAttribute);
+		</code></pre>
+		<p>
+			What exactly is the string argument
+			<span class="monoText">'position'</span>? This is the value that ThreeJS's
+			<span class="italicsText">shaders</span> will use. We will cover shaders
+			in a later section, but for now, think of the
+			<span class="monoText">'position'</span> argument as telling ThreeJS's
+			shaders, &#8220;These are coordinates.&#8221;
+		</p>
+		<section id="multiple_custom_geometries">
+			<h4>Multiple Custom Geometries</h4>
+			<p>
+				Above, we created a single triangle. How do we create multiple
+				triangles? We use the same procedure from last. We'll start with a
+				variable, <span class="monoText">triangleCount</span>, for the number of
+				our triangles we want:
+			</p>
+			<pre class="language-javascript"><code>
+				const triangleCount = 50;
+			</code></pre>
+			<p>
+				Then, we'll create a positions array. Each triangle must have three
+				coordinates, and each coordinate must have have three positions, so we
+				multiply <span class="monoText">triangleCount</span> by 9:
+			</p>
+			<pre class="language-javascript"><code>
+				const triangleCount = 50;
+				const positionsArray = new Float32Array(triangleCount * 3 * 3);
+			</code></pre>
+			<p>
+				Because we're just generating fifty triangles, we can fill the
+				<span class="monoText">positionsArray</span> with random values:
+			</p>
+			<pre class="language-javascript"><code>
+				const triangleCount = 50;
+				const positionsArray = new Float32Array(triangleCount * 3 * 3);
+				for (let i = 0; i < (count * 3 * 3); i++) { 
+						positionsArray[i] = Math.random();
+				}
+			</code></pre>
+			<p>
+				Then we store the <span class="monoText">positionsArray</span> in
+				<span class="monoText">BufferAttribute</span> and add this attribute to
+				a geometry:
+			</p>
+			<pre class="language-javascript"><code>
+				const triangleCount = 50;
+				const positionsArray = new Float32Array(triangleCount * 3 * 3);
+				for (let i = 0; i < (triangleCount * 3 * 3); i++) { 
+					positionsArray[i] = Math.random();
+				}
+				const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3);
+				const geometry = new THREE.BufferGeometry();
+				geometry.setAttribute('position', positionsAttribute);
+			</code></pre>
+			<p></p>
+		</section>
+	</section>
+</section>
+
+<section id="debug_ui">
+	<h2>Debug UI</h2>
+	<p>
+		In many ThreeJS projects, we can see a rectangular interface in the corner
+		displaying performance-related metrics and other real-time data. This small
+		interface is called a <span class="term">debug UI</span>.
+	</p>
+	<p>
+		To implement a debug UI, we have two options: (1) create our own, or (2) use
+		a library. And with option (2), we again have options: dat.GUI, ControlKit,
+		Guify, Oui, and many others.
+	</p>
 </section>
 {% endblock %}
