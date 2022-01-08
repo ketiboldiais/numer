@@ -11,26 +11,12 @@ urlpatterns = [
 	
 # Python paths
 	path("py_preface", views.py_preface, name="py_preface"),
-	path("py_programs", views.py_programs, name="py_programs"),
-	path("py_libraryImport", views.py_libraryImport, name="py_libraryImport"),
-	path("py_variables", views.py_variables, name="py_variables"),
-	path("py_floatsFractions", views.py_floatsFractions, name="py_floatsFractions"),
+	path("py_basics", views.py_basics, name="py_basics"),
 	path("py_decomposition", views.py_decomposition, name="py_decomposition"),
 	path("py_controlFlow", views.py_controlFlow, name="py_controlFlow"),
 	path("py_structuredTypes", views.py_structuredTypes, name="py_structuredTypes"),
-	path("py_tuples", views.py_tuples, name="py_tuples"),
-	path("py_lists", views.py_lists, name="py_lists"),
-	path("py_mutability", views.py_mutability, name="py_mutability"),
-	path("py_functionObjects", views.py_functionObjects, name="py_functionObjects"),
-	path("py_dictionaries", views.py_dictionaries, name="py_dictionaries"),
 	path("py_tests", views.py_tests, name="py_tests"),
-	path("py_exceptionsAssertions", views.py_exceptionsAssertions, name="py_exceptionsAssertions"),
-	path("py_bugs", views.py_bugs, name="py_bugs"),
 	path("py_oop", views.py_oop, name="py_oop"),
-	path("py_classes", views.py_classes, name="py_classes"),
-	path("py_sets", views.py_sets, name="py_sets"),
-	path("py_hierarchies", views.py_hierarchies, name="py_hierarchies"),
-	path("py_classVariables", views.py_classVariables, name="py_classVariables"),
 
 	# Swift paths
 	path("swift_preface", views.swift_preface, name="swift_preface"),
@@ -97,6 +83,8 @@ urlpatterns = [
 	path("java_interfaces", views.java_interfaces, name="java_interfaces"),
 
 	path("java_dataStructuresAndAlgorithms", views.java_dataStructuresAndAlgorithms, name="java_dataStructuresAndAlgorithms"),
+
+	path("java_design_patterns", views.java_design_patterns, name="java_design_patterns"),
 
 	# js paths 
 	path("js_preface", views.js_preface, name="js_preface"),

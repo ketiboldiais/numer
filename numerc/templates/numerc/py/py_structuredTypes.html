@@ -1,8 +1,2209 @@
 {% extends '../layout.html' %}
 {% load static %}
 {% block content %}
+<h1>Structured Types</h1>
 <section id="structured_types">
-	<h3>Structured Types</h3>
 	<p>Data is not limited to single numbers and strings. In fact, it is much more common for data to come in collections. Just as functions group computations together, <span class="term">data structures</span> group data objects. In the next sections, we consider some of these data structures.</p>
+</section>
+
+<section id="tuples">
+	<h2>Tuples</h2>
+	<p>
+		A <span class="term">tuple</span> is a data structure whose elements are
+		<span class="italicsText">ordered</span> in sequence. By
+		&#8220;ordered,&#8221; we do not mean that the values are ordered from least
+		to greatest or vice versa. We mean that every element in the tuple has an
+		<span class="italicsText">index</span>, or position, in the sequence which
+		we can refer to so as to retrieve that element.
+	</p>
+	<p>
+		Like strings, tuples are an <span class="term">immutable</span> data
+		structure &mdash; once initialized, the values of the tuple's elements
+		cannot be changed. Tuples can be <span class="term">homogenous</span> (all
+		of its elements are of just one data type), or they can be
+		<span class="term">heterogenous</span> (the tuple contains mixed data
+		types). In Python, we represent tuples with parentheses:
+	</p>
+	<pre class="language-python"><code>
+		# declare a tuple
+		tple = ()
+
+		# initialize a tuple
+		tpl = (2, "one", 3)
+
+		# index into tuple; evaluates to 2
+		tpl[0];
+
+		# concatenate tuples; evaluates to (2, "one", 3, 5, 6)
+		(2, "one", 3) + (5, 6)  
+
+		# slice tuple; evaluates to ("one",)
+		tpl[1:2] 
+
+		# slice again; evaluates to ("one", 3)
+		tpl[1:3]
+
+		# TypeError; cannot modify a tuple
+		tpl[1] = 4
+	</code></pre>
+	<p>
+		Note that we must have commas when initializing tuples. If we fail to
+		include commas, Python will assume we are scoping code, rather than
+		initializing a tuple:
+	</p>
+	<pre class="language-python"><code>
+		tple = ('name',) # outputs a tuple -- ('name',)
+		tple = ('name') # outputs a string -- 'name'
+	</code></pre>
+	<p>
+		<span class="topic">Variable Swapping.</span> Tuples are useful for variable
+		swapping. Consider the following variable swaps:
+	</p>
+	<div class="compare">
+		<figure>
+			<pre class="language-python"><code>
+				# invalid
+				x = y
+				y = x
+			</code></pre>
+			<figcaption>Script A</figcaption>
+		</figure>
+		<figure>
+			<pre class="language-python"><code>
+				# valid
+				temp = x
+				x = y
+				y = temp
+			</code></pre>
+			<figcaption>Script B</figcaption>
+		</figure>
+		<figure>
+			<pre class="language-python"><code>
+				# valid
+				(x, y) = (y, x)
+			</code></pre>
+			<figcaption>Script C</figcaption>
+		</figure>
+	</div>
+	<p>
+		We know that Script A returns an error. In Script B, we used the temporary
+		variable method for swapping. Script C provides an alternative way &mdash;
+		with tuples. With the tuple method, we created bindings for
+		<span class="monoText">x</span> and <span class="monoText">y</span>, then we
+		swapped their order in the tuple.
+	</p>
+	<p>
+		<span class="topic">Returning More Than One Value.</span> Tuples also allow
+		us to return more than one value from a function:
+	</p>
+	<pre class="language-python"><code>
+		def quotient_and_remainder(x, y):
+			q = x // y
+			r = x % y 
+			return (q, r)
+
+		(quotient, remainder) = quotient_and_remainder(4, 5)
+	</code></pre>
+	<p>
+		<span class="topic">Manipulating Tuples.</span> Tuples are also iterable
+		&mdash; we can loop through them:
+	</p>
+	<pre class="language-python"><code>
+		def get_data(aTuple):
+			nums = ()
+			words = ()
+			for element in aTuple:
+				nums = nums + (element[0],)
+				if element[1] not in words: 
+					words = words + (element[1],)
+			min_nums = min(nums)
+			max_nums = max(nums)
+			unique_words = len(words)
+			return (min_nums, max_nums, unique_words) 
+	</code></pre>
+	<p>
+		The code above iterates over a tuple containing tuples.
+		<span class="monoText">aTuple((), (), ()).</span> At each iteration (each
+		tuple inside the tuple), we collect the first element inside the tuple, an
+		<span class="monoText">int</span>, and insert it into the empty tuple
+		<span class="monoText">num</span> (<span class="monoText"
+			>nums = nums + (t[0],)</span
+		>). Then, we check the second element in the tuple &mdash; a word &mdash; to
+		see if it isn't already inside the empty tuple
+		<span class="monoText">word</span>. If it isn't, we collect and insert it
+		into <span class="monoText">word</span>. We perform for each tuple inside
+		the tuple.
+	</p>
+	<p>
+		<span class="exh">Exercise.</span> Suppose the following tuple is
+		initialized:
+	</p>
+	<pre class="language-python"><code>
+		x = (1, 2, (3, 'John', 4), 'Hi')
+	</code></pre>
+	<p>
+		For each of the following expressions, what is its output type and value?
+	</p>
+	<ol>
+		<li><span class="monoText">x[0]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">1</span>, type
+				<span class="monoText">int</span>.
+			</p>
+		</details>
+		<li><span class="monoText">x[2]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">(3, 'John', 4,)</span>, type
+				<span class="monoText">tuple</span>.
+			</p>
+		</details>
+		<li><span class="monoText">x[-1]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">'Hi'</span>, type
+				<span class="monoText">String</span>.
+			</p>
+		</details>
+		<li><span class="monoText">x[2][2]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">4</span>, type
+				<span class="monoText">int</span>.
+			</p>
+		</details>
+		<li><span class="monoText">x[2][-1]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">4</span>, type
+				<span class="monoText">int</span>.
+			</p>
+		</details>
+		<li><span class="monoText">x[-1][-1]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">'i'</span>, type
+				<span class="monoText">String</span>.
+			</p>
+		</details>
+		<li><span class="monoText">x[-1][2]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">Error</span>; index is out of bounds.
+			</p>
+		</details>
+		<li><span class="monoText">x[0:1]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">(1, 2, (3, 'John', 4))</span>, type
+				<span class="monoText">tuple</span>.
+			</p>
+		</details>
+		<li><span class="monoText">x[0:-1]</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">(1, 2, (3, 'John', 4))</span>, type
+				<span class="monoText">tuple</span>.
+			</p>
+		</details>
+		<li><span class="monoText">len(x)</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">4</span>, type
+				<span class="monoText">int</span>.
+			</p>
+		</details>
+		<li><span class="monoText">2 in x</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">True</span>, type
+				<span class="monoText">Boolean</span>.
+			</p>
+		</details>
+		<li><span class="monoText">3 in x</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">False</span>, type
+				<span class="monoText">Boolean</span>.
+			</p>
+		</details>
+		<li><span class="monoText">x[0] = 8</span></li>
+		<details class="answer">
+			<summary>Solution</summary>
+			<p>
+				Output: <span class="monoText">TypeError</span>, cannot modify a tuple.
+			</p>
+		</details>
+	</ol>
+	<p>
+		<span class="exh">Exercise.</span> Write a procedure called
+		<span class="monoText">oddTuples</span>, which takes a tuple as input, and
+		returns a new tuple as output, where every other element of the input tuple
+		is copied, starting with the first one.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>One implementation:</p>
+		<pre class="language-python"><code>
+				def oddTuples(aTup):
+					'''
+					input: aTup -- a tuple
+					output: a tuple with every other element of aTup
+					'''
+					newTup = ()
+					for element in aTup[::2]:
+						newTup = newTup + (element,)
+					return newTup
+			</code></pre>
+		<p>Or, even shorter:</p>
+		<pre class="language-python"><code>
+				def oddTuples(aTup):
+					'''
+					input: aTup -- a tuple
+					output: a tuple with every other element of aTup
+					'''
+					return aTup[::2]
+			</code></pre>
+	</details>
+</section>
+
+<section id="lists">
+	<h2>Lists</h2>
+	<p>
+		A <span class="term">list</span> is a data structure like a tuple, but with
+		the key difference that it is <span class="term">mutable</span> &mdash; we
+		can enter the list and change its elements after initialization. This is
+		very different from strings and tuples, which are immutable. This feature is
+		a double-edged sword; the ability to change lists is very useful, but it
+		also presents room for errors.
+	</p>
+	<p>
+		Like tuples, lists store their elements in ordered sequence. Accordingly,
+		every list element has an index. In contrast to tuples, we denote lists with
+		square brackets <span class="monoText">[]</span>. Lists are almost always
+		homogenous and rarely heterogenous.
+	</p>
+	<p>Just like strings and tuples, we can perform operations with indices:</p>
+	<pre class="language-python"><code>
+		# declare a list
+		a_list = []
+
+		# initialize some lists
+		b_list = [2, 'a', 2.17, true]
+		L = [1, 2, 3]
+
+		# return lists's length; evaluates to 3
+		len[L] 
+
+		# return element at index; evaluates to 1
+		L[0]
+
+		# evaluates to 4
+		L[2] + 1
+
+		# Out of bounds error
+		L[3]
+	</code></pre>
+	<p>
+		Note that indices need not be literals; we can also provide expressions:
+	</p>
+	<pre class="language-python"><code>
+		i = 2
+		L = [1, 2, 3]
+
+		# evaluates to 2, since L[i - 1] == L[1] 
+		L[i - 1]
+	</code></pre>
+	<p>
+		<span class="topic">List Mutability.</span> Because lists are mutable, we
+		can assign elements to indices inside the list. As we saw, we cannot do this
+		with strings and tuples:
+	</p>
+	<pre class="language-python"><code>
+		L = [1, 2, 3]
+		L[0] = 0 
+
+		# L is now [0, 2, 3]
+	</code></pre>
+	<p>
+		Writing the code above, we directly changed <span class="monoText">L</span>.
+		This is <span class="underlineText">not</span> a new object. It is the same
+		object, changed.
+	</p>
+	<p>
+		<span class="topic">Looping through a List.</span> Like strings and tuples,
+		lists are iterable; we can loop through their elements:
+	</p>
+	<pre class="language-python"><code>
+		total = 0
+			for i in range(len(L)):
+				total += L[i]
+	</code></pre>
+	<p>
+		The code above is a common pattern for summing all of the elements in a
+		list. The same code can be written more concisely:
+	</p>
+	<pre class="language-python"><code>
+		total = 0
+			for i in L:
+				total += i
+	</code></pre>
+	<p>
+		As a reminder, the elements of a list are indexed starting from
+		<span class="monoText">0</span> to
+		<span class="monoText">len(list)-1</span>. If the
+		<span class="monoText">range(n)</span> function is used, then the elements
+		are indexed from <span class="monoText">0</span> to
+		<span class="monoText">range(n-1)</span>.
+	</p>
+	<p><span class="exh">Exercise.</span> The following array is initialized:</p>
+	<pre class="language-python"><code>
+		x = [1, 2, [3, 'John', 4], 'Hi']
+	</code></pre>
+	<p>
+		For each of the expressions below, what is the value and the value's type?
+	</p>
+	<ol>
+		<li>
+			<pre class="language-python"><code>
+				x = [1, 2, [3, 'John', 4], 'Hi']
+				x[0]
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Evaluates to <span class="monoText">1</span> of type
+					<span class="monoText">int</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				x = [1, 2, [3, 'John', 4], 'Hi']
+				x[2]
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Evaluates to <span class="monoText">[3, 'John', 4]</span> of type
+					<span class="monoText">list</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				x = [1, 2, [3, 'John', 4], 'Hi']
+				x[-1]
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Evaluates to <span class="monoText">Hi</span> of type
+					<span class="monoText">String</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				x = [1, 2, [3, 'John', 4], 'Hi']
+				x[2][2]
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Evaluates to <span class="monoText">4</span> of type
+					<span class="monoText">int</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				x = [1, 2, [3, 'John', 4], 'Hi']
+				x[0:1]
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Evaluates to <span class="monoText">[1]</span> of type
+					<span class="monoText">list</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				x = [1, 2, [3, 'John', 4], 'Hi']
+				2 in x
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Evaluates to <span class="monoText">True</span> of type
+					<span class="monoText">boolean</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				x = [1, 2, [3, 'John', 4], 'Hi']
+				3 in x
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Evaluates to <span class="monoText">False</span> of type
+					<span class="monoText">boolean</span>.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				x = [1, 2, [3, 'John', 4], 'Hi']
+				x[0] = 8
+				x
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Evaluates to
+					<span class="monoText">[8, 2, [3, 'John', 4], 'Hi']</span> of type
+					<span class="monoText">list</span>.
+				</p>
+			</details>
+		</li>
+	</ol>
+</section>
+
+<section id="list_operations">
+	<h3>Operations on Lists</h3>
+	<p>
+		Like strings and tuples, there are lists come with useful methods. Below we
+		cover some of the most commonly used.
+	</p>
+	<p>
+		<span class="topic">Adding New Elements to a List.</span> We can add new
+		elements to a list with the <span class="monoText">.append()</span> method:
+	</p>
+	<pre class="language-python"><code>
+		myList = [1, 2, 3]
+		myList.append(4)
+
+		# myList is now [1, 2, 3, 4]
+	</code></pre>
+	<p>
+		Just as replacing existing elements with indices changes a list, inserting
+		new elements into an existing list
+		<span class="italicsText">mutates</span> the list. The result list is not a
+		new list; it is the same list, mutated.
+	</p>
+	<p>
+		Notice further that we use dot notation when applying the
+		<span class="monoText">.append()</span> method. This is because lists in
+		Python are objects &mdash; nearly everything in Python is an object. Because
+		lists are objects, they contain data and functions (methods). We access
+		these functions and data with dot notation:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			object_name.data_or_method
+		</code></pre>
+	</figure>
+	<p>
+		<span class="topic">Concatenating Lists.</span> We can also merge, or
+		concatenate lists:
+	</p>
+	<pre class="language-python"><code>
+		list_a = [1, 2, 3]
+		list_b = [4, 5, 6]
+		list_c = list_a + list_b 
+		# list_c is [1, 2, 3, 4, 5, 6]
+
+		list_c.extend([7, 8])
+		# list_c is now [1, 2, 3, 4, 5, 6, 7, 8]
+	</code></pre>
+	<p>
+		The code above also shows the
+		<span class="monoText">.extend()</span> method, which allows us to add
+		multiple elements to the list.
+	</p>
+	<p>
+		<span class="topic">Removing Elements in a List.</span> There are multiple
+		ways to delete existing elements in a list. If we want to remove an element
+		with a specific index, we can use the
+		<span class="monoText"
+			>.del(<span class="italicsText">list_name[index]</span>)</span
+		>
+		method. If we want to remove the last element in the list, we can use the
+		<span class="monoText">list_name.pop()</span> method. If we want to remove
+		an element but we do now know its index, we can use the
+		<span class="monoText"
+			>list_name.remove(<span class="italicsText">element</span>)</span
+		>
+		method.
+	</p>
+	<p>
+		The second and last methods, <span class="monoText">.pop()</span> and
+		<span class="monoText">list_name.remove()</span>, have certain features. For
+		<span class="monoText">.pop()</span>, the return value is the last element
+		in the list. For <span class="monoText">list_name.remove()</span>, the
+		method will look for the element, and then remove it. If the the element
+		appears multiple times, it will only remove the first occurrence. If the
+		element is not in the list, it will return an error (you cannot remove
+		something that does not exist).
+	</p>
+	<pre class="language-python"><code>
+		myList = [1, 2, 3, 4, 5, 6]
+
+		myList.remove(2)
+		# myList mutated -- now [1, 3, 4, 5, 6]
+
+		myList.remove(3)
+		# myList mutated -- now [1, 4, 5, 6]
+
+		del(myList[1])
+		# myList mutated -- now [1, 5, 6]
+
+		myList.pop()
+		# myList mutated -- now [1, 5]; returns 6
+	</code></pre>
+	<p>
+		As an aside, the method <span class="monoText">.pop()</span> is so named
+		from the colloquialism of &#8220;popping&#8221; something off a stack.
+	</p>
+	<p>
+		<span class="topic">Lists and Strings.</span> An interesting feature in
+		Python is converting from lists to strings and vice versa. This is a
+		particularly useful feature, considering many languages &mdash; e.g.,
+		JavaScript &mdash; do not allow this computation. To convert a string to a
+		list, we use the method <span class="monoText">list(string_object)</span>.
+		This method will return a list with every character in
+		<span class="monoText">string_object</span> as elements in a list.
+	</p>
+	<p>
+		We can also split strings on a character parameter with
+		<span class="monoText">string_object.split(parameter)</span>. With the
+		<span class="monoText">.split()</span> method, the output is a list of
+		strings. If no parameter is provided, then the string is split according to
+		spaces.
+	</p>
+	<p>
+		We can also convert a list of characters into a string with the
+		<span class="monoText">''.join(list_name)</span> method. If we want each of
+		the characters or strings in the list to be separated by a particular
+		character, we use the syntax
+		<span class="monoText">'separating_character'.join(list_name)</span>.
+	</p>
+	<pre class="language-python"><code>
+		myString = "CS :)"
+
+		list(myString)
+		# returns ['C', 'S', ' ', ':', ')']
+
+		myString.split('S')
+		# returns ['C', ' :)']
+
+		charList = ['a', 'b', 'c']
+		''.join(charList)
+		# returns 'abc'
+
+		'_'.join(charList)
+		# returns 'a_b_c'
+	</code></pre>
+	<p>
+		<span class="topic">Sorting Lists.</span> We can also sort or reverse the
+		order of the elements in a list:
+	</p>
+	<pre class="language-python"><code>
+		myList = [3, 4, 1, 2]
+
+		sorted(myList)
+		# returns [1, 2, 3, 4] -- does NOT MUTATE myList
+
+		myList.sort()
+		# returns [1, 2, 3, 4] -- MUTATES myList
+
+		myList.reverse()
+		# returns [4, 3, 2, 1] -- MUTATES myList
+	</code></pre>
+	<p>
+		<span class="topic">The Range Procedure.</span> Now that we've encountered
+		lists and tuples, we can see how the
+		<span class="monoText">range()</span> procedure behaves. When used on its
+		own, <span class="monoText">range()</span> behaves like a tuple:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<tbody>
+				<tr>
+					<td>range(5)</td>
+					<td>Output: (0, 1, 2, 3, 4)</td>
+				</tr>
+				<tr>
+					<td>range(2, 6)</td>
+					<td>Output: (2, 3, 4, 5)</td>
+				</tr>
+				<tr>
+					<td>range(5, 2, -1)</td>
+					<td>Output: (5, 4, 3)</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		When used in a <span class="monoText">for</span> loop,
+		<span class="monoText">range()</span> behaves like a list:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<tbody>
+				<tr>
+					<td>range(5)</td>
+					<td>Output: [0, 1, 2, 3, 4]</td>
+				</tr>
+				<tr>
+					<td>range(2, 10, 2)</td>
+					<td>Output: [2, 4, 6, 8]</td>
+				</tr>
+				<tr>
+					<td>range(5, 0, -1)</td>
+					<td>Output: [5, 4, 3, 2, 1]</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		<span class="exh">Exercise.</span> Suppose the following lists are
+		initialized:
+	</p>
+	<pre class="language-python"><code>
+		list_a = [1, 4, 3, 0]
+		list_b = ['x', 'z', 't', 'q']
+	</code></pre>
+	<p>
+		For each of the expressions following the initialization, what is the output
+		value and its type?
+	</p>
+	<ol>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [1, 4, 3, 0]
+				list_b = ['x', 'z', 't', 'q']
+
+				list_a.sort
+				list_a.sort()
+				list_a
+				list_a.insert(0, 100)
+				list_a.remove(3)
+				list_a.append(7)
+				list_a
+				list_a + list_b
+				list_b.sort()
+				list_b.pop()
+				list_b.count('a')
+				list_b.remove('a')
+				list_a.extend([4, 1, 6, 3, 4])
+				list_a.count(4)
+				list_a.index(1)
+				list_a.pop(4)
+				list_a.reverse()
+				list_a
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<pre class="language-python"><code>
+					list_a = [1, 4, 3, 0]
+					list_b = ['x', 'z', 't', 'q']
+
+					list_a.sort
+					# return: built-in method
+					# type: function
+
+					list_a.sort()
+					# Sort and mutate list_a
+					# return: None
+					# type: NoneType
+					# side effects:
+						list_a = [0, 1, 3, 4]
+
+					list_a
+					# return: [0, 1, 3, 4]
+					# type: list
+
+					list_a.insert(0, 100)
+					# .insert(index, element) method inserts 'element' at 'index' 
+					# Insert the element 100 at index 0. 
+					# list_a is mutated
+					# return: None
+					# type: NoneType
+					# side effects:
+						# list_a = [100, 0, 1, 3, 4]
+
+					list_a.remove(3)
+					# Remove element 3 from list_a.
+					# return: None  
+					# type: NoneType
+					# side effects:
+						# list_a = [100, 0, 1, 4]
+
+					list_a.append(7)
+					# Insert element 7 at end of list_a
+					# return: None
+					# type: NoneType
+					# side effects:
+						# list_a = [100, 0, 1, 4, 7]
+
+					list_a
+					# return: [100, 0, 1, 4, 7]
+					# type: list
+
+					list_a + list_b
+					# concatenate list_a and list_b
+					# creates new list 
+					# return: [100, 0, 1, 4, 7, 'x', 'y', 't', 'q']
+					# type: list
+
+					list_b.sort()
+					# when sort() is used on strings, the strings are sorted alphabetically
+					# return: None
+					# type: NoneType
+					# side effects:
+						# sort and mutate list_b 
+						# list_b = ['q', 't', 'x', 'y' 'z']
+
+					list_b.pop()
+					# remove last element in list_b
+					# return: 'z'
+					# type: String
+					# side effects:
+						# list_b is mutated 
+						# list b = ['q', 't', 'x', 'y'] 
+					
+					list_b.count('a')
+					# .count(param) returns number of times param appears
+					# return: 0
+					# type: int
+					
+					list_b.remove('a')
+					# there is no 'a' in list_b
+					# return: error
+					# type: NoneType
+
+					list_a.extend([4, 1, 6, 3, 4])
+					# return: None
+					# type: NoneType
+					# side effects:
+						# extend and mutate list_a
+						# list_a = [100, 0, 1, 4, 7, 4, 1, 6, 3, 4]
+
+					list_a.count(4)
+					# count how many times '4' appears
+					# return: 3
+					# type: int
+
+					list_a.index(1)
+					# .index(element) returns index of element 
+					# return: 2
+					# type: int
+
+					list_a.pop(4)
+					# .pop(i) removes element at index i
+					# element '7' is removed
+					# return: 7
+					# type: int
+					# side effects:
+						# list_a is mutated:
+						# [100, 0, 1, 4, 4, 1, 6, 3, 4]
+
+					list_a.reverse()
+					# reverse list_a elements in place
+					# return: None
+					# type: NoneType
+					# side effects:
+						# list_a is mutated
+						# list_a = [4, 3, 6, 1, 4, 4, 1, 0, 100]
+
+					list_a
+					# return: [4, 3, 6, 1, 4, 4, 1, 0, 100]
+					# type: list
+				</code></pre>
+			</details>
+		</li>
+	</ol>
+</section>
+
+<section id="mutating_aliasing_cloning">
+	<p>
+		Lists are mutable data objects in memory. When we initialize a list, the
+		list's name is a <span class="italicsText">variable name</span> that points
+		to the list object in memory. Lists, however, have a unique characteristic
+		&mdash; we can have multiple variables pointing to the same list. These
+		different variables are all <span class="term">aliases</span> of the list
+		object &mdash; they all refer to the list object.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/multiple_list_aliases.svg' %}"
+			alt="multiple aliases"
+			loading="lazy"
+			class="thirty-p"
+		/>
+		<figcaption>
+			Multiple variable names pointing to the same list object
+		</figcaption>
+	</figure>
+	<p>
+		What this means is, if a list has multiple aliases, and we change one of its
+		aliases, that change will affect all of the other aliases. This is called a
+		<span class="term">side effect</span>, and it is something we must always
+		keep in mind when handling lists. For example, the
+		<span class="monoText">sort()</span> proceudre will mutate the list and
+		return nothing. But, the <span class="monoText">sorted()</span> procedure
+		does not mutate the list, and because it returns a new, sorted list, we must
+		assign it to a variable:
+	</p>
+	<pre class="language-python"><code>
+		list_a = [3, 4, 1, 2]
+		list_b = [9, 8, 6, 7]
+
+		print('list_a before sorting = ', list_a)
+		print('list_b before sorting = ', list_b)
+
+		sorted_list_a = list_a.sort()
+
+		print('sorted_list_a = ', sorted_list_a)
+		print('list_a = ', list_a)
+
+		sorted_list_b = sorted(list_b)
+
+		print('sorted_list_b = ', sorted_list_b)
+		print('list_b = ', list_b)
+	</code></pre>
+	<pre class="language-bash"><code>
+		list_a before sorting =  [3, 4, 1, 2]
+		list_b before sorting =  [9, 8, 6, 7]
+		sorted_list_a =  None
+		list_a =  [1, 2, 3, 4]
+		sorted_list_b =  [6, 7, 8, 9]
+		list_b =  [9, 8, 6, 7]
+	</code></pre>
+	<p>
+		The example above is evidence of how dangerous list mutability can be. The
+		statement <span class="monoText">list_a.sort()</span> mutates the original
+		list. This danger is exacerbated when we have multiple names for the same
+		list.
+	</p>
+	<p>
+		Another way to understand this concept of multiple aliases is by way of
+		analogy. Consider a famous individual, say Calvin Cordozar Broadus Jr. We
+		can associate attributes with Mr. Broadus: creative, rich, rapper. Mr.
+		Broadus has many other names &mdash; Snoop Dogg; Snoop Doggy Dogg; Snoop
+		Lion; Bigg Snoop Dogg; Dogg Father; Snoop Rock; Snoopzilla; DJ Snoopadelic.
+		All these names point to the same person. As such, all of Mr. Broadus's
+		attributes, old and new or associated with government or entertainment name,
+		are attributable to Mr. Broadus: Snoop Doggy Dogg is a rapper; Snoop Dogg is
+		rich; Snoop Lion is a reggae performer &mdash; they all point to the same
+		person, Mr. Broadus. The same phenomenon occurs for list aliases:
+	</p>
+	<pre class="language-python"><code>
+		warm = ['red', 'yellow', 'orange']
+		hot = warm
+
+		print(warm)
+		print(hot)
+
+		hot.append('pink')
+
+		print(warm)
+	</code></pre>
+	<pre class="language-bash"><code>
+		['red', 'yellow', 'orange']
+		['red', 'yellow', 'orange']
+		['red', 'yellow', 'orange', 'pink']
+	</code></pre>
+	<p>
+		Notice that when we appended the data object
+		<span class="monoText">pink</span> to the list
+		<span class="monoText">hot</span>, we also appended the data object to the
+		list <span class="monoText">warm</span>. This is because both
+		<span class="monoText">warm</span> and
+		<span class="monoText">hot</span> point to the same list object. This is a
+		side effect of manipulating lists. The danger in mutability comes from the
+		fact that we might not have intended to manipulate
+		<span class="monoText">warm</span>.
+	</p>
+	<p>
+		On the other hand, the fact that two different names print the same list
+		does not imply that they are aliases for the same list. In other words, the
+		fact that some list name <span class="monoText">list_a</span> and some list
+		name <span class="monoText">list_b</span> print what appeas to be the same
+		list does not imply that <span class="monoText">list_a == list_b.</span> We
+		can see this is the case by mutating one of the lists and checking it
+		against the other:
+	</p>
+	<pre class="language-python"><code>
+		list_a = [1, 2, 3]
+		list_b = [1, 2, 3]
+
+		print('list_a: ', list_a)
+		print('list_b: ', list_b)
+
+		list_b.append(4)
+
+		print('list_b mutated')
+
+		print('list_b: ', list_b)
+		print('list_a: ', list_a)
+	</code></pre>
+	<pre class="language-bash"><code>
+		list_a:  [1, 2, 3]
+		list_b:  [1, 2, 3]
+		list_b mutated
+		list_b:  [1, 2, 3, 4]
+		list_a:  [1, 2, 3]
+	</code></pre>
+	<p>
+		Mutating <span class="monoText">list_b</span> does not affect
+		<span class="monoText">list_a</span> because
+		<span class="monoText">list_a</span> and
+		<span class="monoText">list_b</span> point to different list objects.
+	</p>
+	<p>
+		<span class="topic">Cloning Lists.</span> We can also make copies of, or
+		<span class="term">clone</span>, a list. When we clone a list, we create a
+		new list, called a <span class="boldText">clone</span>, which is a copy of
+		the original list, called the <span class="boldText">source</span>. To clone
+		an entire list, we use the syntax
+		<span class="monoText">list_name[:]</span>.
+	</p>
+	<pre class="language-python"><code>
+		list_a = ['john', 'ali', 'sadako']
+		list_b = list_a[:]
+
+		print(list_b)
+	</code></pre>
+	<pre class="language-bash"><code>
+		['john', 'ali', 'sadako']
+	</code></pre>
+	<p>
+		A critical point with cloning is that we're creating a new list object.
+		Modifying the clone does not modify the source:
+	</p>
+	<pre class="language-python"><code>
+		list_a = ['john', 'ali', 'sadako']
+		list_b = list_a[:]
+
+		print('list_b:', list_b)
+
+		list_b[0] = 'bing'
+
+		print('list_b mutated')
+		print('list_b:', list_b)
+		print('list_a:', list_a)
+	</code></pre>
+	<pre class="language-bash"><code>
+		list_b: ['john', 'ali', 'sadako']
+		list_b mutated
+		list_b: ['bing', 'ali', 'sadako']
+		list_a: ['john', 'ali', 'sadako']
+	</code></pre>
+	<p>
+		When we want to work some list ${a}$ but do not want to mutate ${a,}$ then
+		cloning ${a}$ is the best approach.
+	</p>
+	<p>
+		<span class="topic">Nested Lists.</span> Nothing stops us from having lists
+		of lists, or lists of lists of lists. Nested lists, however, are ripe for
+		unexpected mutation. Consider the following:
+	</p>
+	<pre class="language-python"><code>
+		list_a = [1, 2]
+		list_b = [3]
+		list_c = [list_a]
+
+		print(list_c)
+	</code></pre>
+	<pre class="language-bash"><code>
+		[[1, 2]]
+	</code></pre>
+	<p>
+		In the above code, we assigned as an element of
+		<span class="monoText">list_c</span> the
+		<span class="monoText">list_a</span>, resulting in a list containing a list.
+		Visually, the lists point as such:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/nested_lists_pointers.svg' %}"
+			alt="nested lists"
+			loading="lazy"
+			class="thirty-p"
+		/>
+	</figure>
+	<p>
+		Notice that <span class="monoText">list_c</span> points to the same object
+		that <span class="monoText">list_a</span> points to. This means that if we
+		modify the list inside <span class="monoText">list_c</span>, we modify
+		<span class="monoText">list_a</span> as well, since they both point to the
+		same object.
+	</p>
+	<pre class="language-python"><code>
+		list_a = [1, 2]
+		list_b = [3]
+		list_c = [list_a]
+
+		print('list_a =', list_a)
+		print('list_c =', list_c)
+
+		list_c[0].append(3)
+
+		print('array inside list_c mutated')
+		print('list_c =', list_c)
+		print('list_a =', list_a)
+	</code></pre>
+	<pre class="language-bash"><code>
+		list_a = [1, 2]
+		list_c = [[1, 2]]
+		array inside list_c mutated
+		list_c = [[1, 2, 3]]
+		list_a = [1, 2, 3]
+	</code></pre>
+	<p>
+		But, as long as we do not modify the list inside
+		<span class="monoText">list_c</span> (the list pointing to
+		<span class="monoText">list_a</span>), we can modify
+		<span class="monoText">list_c</span> without modifying
+		<span class="monoText">list_a</span>:
+	</p>
+	<pre class="language-python"><code>
+		list_a = [1, 2]
+		list_b = [3]
+		list_c = [list_a]
+
+		print('list_a =', list_a)
+		print('list_c =', list_c)
+
+		list_c.append(list_b)
+
+		print('list_c mutated')
+		print('list_c =', list_c)
+		print('list_a =', list_a)
+	</code></pre>
+	<pre class="language-bash"><code>
+		list_a = [1, 2]
+		list_c = [[1, 2]]
+		list_c mutated
+		list_c = [[1, 2], [3]]
+		list_a = [1, 2]
+	</code></pre>
+	<p>
+		<span class="topic">Mutation and Iteration.</span> One thing we should avoid
+		doing as much as possible is mutating a list as we iterate over it. This is
+		a common source for bug infestations:
+	</p>
+	<pre class="language-python"><code>
+		def remove_duplicates(list_1, list_2):
+			for element in list_1:
+				if element in list_2:
+					list_1.remove(element)
+			return list_1
+
+		myList = ['vodka', 'wine', 'coors', 'gin']
+		herList = ['vodka', 'wine', 'tequila', 'whiskey']
+
+		final_list = remove_duplicates(myList, herList)
+
+		print(final_list)
+	</code></pre>
+	<pre class="language-bash"><code>
+		['wine', 'coors', 'gin']
+	</code></pre>
+	<p>
+		Weird. Why is the list
+		<span class="monoText">['wine', 'coors', 'gin']</span> when it should be
+		<span class="monoText">['coors', 'gin']</span>? This occurs because Python
+		uses an internal counter to keep track of the index. At each iteration,
+		however, we're removing an element from the list, which mutates the list's
+		length. Python does not update the counter, so the loop never actually sees
+		the element <span class="monoText">'wine'</span> as a duplicate.
+	</p>
+	<p>A better way to write the function is to first clone the list:</p>
+	<pre class="language-python"><code>
+		def remove_duplicates(list_1, list_2):
+			list_1_clone = list_1[:]
+			for element in list_1_clone:
+				if element in list_2:
+					list_1.remove(element)
+			return list_1
+
+		myList = ['vodka', 'wine', 'coors', 'gin']
+		herList = ['vodka', 'wine', 'tequila', 'whiskey']
+
+		final_list = remove_duplicates(myList, herList)
+
+		print(final_list)
+		print(myList)
+	</code></pre>
+	<pre class="language-bash"><code>
+		['coors', 'gin']
+		['coors', 'gin']
+	</code></pre>
+	<p>
+		Note, however, that the code above mutates
+		<span class="monoText">myList</span>. If we want to make sure
+		<span class="monoText">myList</span> is not mutated, we need to create a
+		separate list object.
+	</p>
+	<pre class="language-python"><code>
+		def remove_duplicates(list_1, list_2):
+			list_1_no_duplicates = []
+			for element in list_1:
+				if element not in list_2:
+					list_1_no_duplicates.append(element)
+			return list_1_no_duplicates
+
+		myList = ['vodka', 'wine', 'coors', 'gin']
+		herList = ['vodka', 'wine', 'tequila', 'whiskey']
+
+		myList_no_duplicates = remove_duplicates(myList, herList)
+
+		print(myList_no_duplicates)
+		print(myList)
+	</code></pre>
+	<pre class="language-bash"><code>
+		['coors', 'gin']
+		['vodka', 'wine', 'coors', 'gin']
+	</code></pre>
+	<p>
+		<span class="exh">Exercise.</span> For each of the following, specify the
+		type and value of the last expression.
+	</p>
+	<ol>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [0, 1, 2, 3, 4, 5]
+				list_b = list_a
+				list_a[2] = 'hello'
+				list_a == list_b
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Value: <span class="monoText">True</span></p>
+				<p>Type: <span class="monoText">boolean</span></p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [0, 1, 2, 3, 4, 5]
+				list_b = list_a
+				list_a[2] = 'hello'
+				list_a == list_b
+				list_a is list_b
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Value: <span class="monoText">True</span></p>
+				<p>Type: <span class="monoText">Boolean</span></p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [0, 1, 2, 3, 4, 5]
+				list_b = list_a
+				list_a[2] = 'hello'
+				list_a == list_b
+				list_a is list_b
+				list_a
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Value: <span class="monoText">[0, 1, 'hello', 3, 4, 5]</span></p>
+				<p>Type: <span class="monoText">List</span></p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [0, 1, 2, 3, 4, 5]
+				list_b = list_a
+				list_a[2] = 'hello'
+				list_a == list_b
+				list_a is list_b
+				list_a
+				list_b
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Value: <span class="monoText">[0, 1, 'hello', 3, 4, 5]</span></p>
+				<p>Type: <span class="monoText">List</span></p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [0, 1, 2, 3, 4, 5]
+				list_b = list_a
+				list_a[2] = 'hello'
+				list_a == list_b
+				list_a is list_b
+				list_a
+				list_b
+				list_c = [6, 5, 4, 3, 2]
+				list_d = []
+				for num in list_c:
+					list_d.append(num)
+				list_c == list_d
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Value: <span class="monoText">True</span></p>
+				<p>Type: <span class="monoText">boolean</span></p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [0, 1, 2, 3, 4, 5]
+				list_b = list_a
+				list_a[2] = 'hello'
+				list_a == list_b
+				list_a is list_b
+				list_a
+				list_b
+				list_c = [6, 5, 4, 3, 2]
+				list_d = []
+				for num in list_c:
+					list_d.append(num)
+				list_c == list_d
+				list_c is list_d
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Value: <span class="monoText">False</span></p>
+				<p>Type: <span class="monoText">boolean</span></p>
+				<p>
+					Notice the difference between the
+					<span class="monoText">is</span> operator and the
+					<span class="monoText">==</span> operator. The
+					<span class="monoText">is</span> operator will check if the list names
+					point to the same address (i.e., point to the same list object). In
+					contrast, the <span class="monoText">==</span> operator checks if both
+					lists have exactly the same elements.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [0, 1, 2, 3, 4, 5]
+				list_b = list_a
+				list_a[2] = 'hello'
+				list_a == list_b
+				list_a is list_b
+				list_a
+				list_b
+				list_c = [6, 5, 4, 3, 2]
+				list_d = []
+				for num in list_c:
+					list_d.append(num)
+				list_c == list_d
+				list_c is list_d
+				list_c[2] = 20
+				list_c
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Value: <span class="monoText">[6, 5, 20, 3, 2]</span></p>
+				<p>Type: <span class="monoText">List</span></p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				list_a = [0, 1, 2, 3, 4, 5]
+				list_b = list_a
+				list_a[2] = 'hello'
+				list_a == list_b
+				list_a is list_b
+				list_a
+				list_b
+				list_c = [6, 5, 4, 3, 2]
+				list_d = []
+				for num in list_c:
+					list_d.append(num)
+				list_c == list_d
+				list_c is list_d
+				list_c[2] = 20
+				list_c
+				list_d
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>Value: <span class="monoText">[6, 5, 4, 3, 2]</span></p>
+				<p>Type: <span class="monoText">List</span></p>
+			</details>
+		</li>
+	</ol>
+</section>
+
+<section id="python_dictionaries">
+	<h2>Dictionaries</h2>
+	<p>Comparing the data structures we've seen thus far:</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Type</th>
+				<th>Element Type</th>
+				<th>Example Literal</th>
+				<th>Mutable?</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>str</td>
+					<td>character</td>
+					<td>'hello'</td>
+					<td>no</td>
+				</tr>
+				<tr>
+					<td>tuple</td>
+					<td>any type</td>
+					<td>(1, 2, 'abc', 4)</td>
+					<td>no</td>
+				</tr>
+				<tr>
+					<td>range</td>
+					<td>int</td>
+					<td>range(2, 10, 2)</td>
+					<td>no</td>
+				</tr>
+				<tr>
+					<td>list</td>
+					<td>any type</td>
+					<td>[1, 2, 'a', 3, [0, 1]]</td>
+					<td>yes</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		With strings, tuples, lists, and ranges, we have the following operations:
+	</p>
+	<div class="compare">
+		<ul>
+			<li>
+				<span class="blueText monoText">sequence[${i}$]</span> - return the
+				element inside the data structure at index ${i.}$
+			</li>
+			<li>
+				<span class="blueText monoText">len(sequence)</span> - return the data
+				structure's length
+			</li>
+			<li>
+				<span class="blueText monoText">sequenceA + sequenceB</span> -
+				concatenate multiple data structures (does not apply to ranges)
+			</li>
+			<li>
+				<span class="blueText monoText">${n}$ * sequence</span> - repeat the
+				sequence ${n}$ times (does not apply to ranges)
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<span class="blueText monoText">sequence[start:end]</span> - return a
+				portion of the data structure
+			</li>
+			<li>
+				<span class="blueText monoText">${e}$ in sequence</span> - return
+				whether a particular element ${e}$ is inside the data structure
+			</li>
+			<li>
+				<span class="blueText monoText">${e}$ not in sequence</span> - return
+				whether a particular element ${e}$ is not inside the data structure
+			</li>
+			<li>
+				<span class="blueText monoText">for ${e}$ in sequence</span> - iterate
+				over the elements in the sequence
+			</li>
+		</ul>
+	</div>
+	<p>
+		The beauty in these operations rests on the fact they abstract away the
+		technical details underlying their implementations. We can concatenate,
+		obtain length, or perform the operations above without having to worry about
+		whether we are applying them to strings, tuples, or lists. Considering these
+		feature, we explore another data structure &mdash; dictionaries.
+	</p>
+	<p>
+		Suppose we have different students with different grades for different
+		courses. With only the data structures we have so far, we might store the
+		data as such:
+	</p>
+	<pre class="language-python"><code>
+		student_names = ['James', 'Roberto', 'Ahmed', 'Ivan']
+		grades = ['B', 'B', 'B', 'A']
+		course = ['physics', 'chemistry', 'calculus', 'biology']
+	</code></pre>
+	<p>
+		The data is stored with separate lists, all of which have the same length to
+		ensure they match each of the students. The problem with this approach: It
+		is very messy to work with. We must index to separate lists to retrieve
+		relevant data. A dictionary directly solves this problem.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/list_v_dictionary.svg' %}"
+			alt="list v dictionary"
+			loading="lazy"
+			class="thirty-p"
+		/>
+		<figcaption>
+			List versus dictionary, where: ${i}$ is the index; ${e}$ is an element,
+			${k}$ is a key; and ${v}$ is a value.
+		</figcaption>
+	</figure>
+	<p>
+		With dictionaries, we can index to an <span class="term">item</span> in the
+		dictionary directly (and the index need not be an integer). Because
+		dictionaries are just one data structure, we do not have to use separate
+		lists.
+	</p>
+	<p>
+		In a list, we have a sequence of elements, where each element has an index
+		starting at 0. Similar to a list, a dictionary is a collection of elements.
+		But, rather than using strictly integers for indices, we create a custom
+		index, called a <span class="term">key</span> for a particular element.
+	</p>
+	<p>
+		Examining the data structure, we can see why the dictionary data structure
+		is called a dictionary &mdash; like a dictionary, we can reference a word
+		(the key), and retrieve all of the information associated with key (the
+		element(s)). In the diagram above, the dictionary is purposefully drawn
+		differently from the list, to represent the fact that dictionaries are not
+		necessarily ordered the way lists are. We might order the keys a particular
+		way, but the dictionary data structure itself is not inherently ordered the
+		way lists are inherently ordered by index.
+	</p>
+	<p>
+		In Python, the items stored in a dictionary are called
+		<span class="term">key-value pairs</span> &mdash; a dictionary item consists
+		of a key and its associated value. To demonstrate, consider the multiple
+		lists we had above. Representing the collection as a dictionary:
+	</p>
+	<pre class="language-python"><code>
+		grades = {'James':'B', 'Roberto':'B', 'Ahmed':'B', 'Ivan':'A'} 
+	</code></pre>
+	<p>
+		From the example, we can see that dictionaries are initialized with curly
+		braces <span class="monoText">{}</span>:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			dictionary_name = {key_name1:data_value1, ...}
+		</code></pre>
+	</figure>
+	<p>
+		With dictionaries, we can access the value associated with a particular key
+		with square bracket notation:
+	</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		print(number_of_crates['apple'])
+		print(number_of_crates['grape'])
+		print(number_of_crates['kiwi'])
+	</code></pre>
+	<pre class="language-bash"><code>
+		4
+		9
+		7
+	</code></pre>
+	<p>
+		If we use a key not inside the dictionary, we get back a
+		<span class="monoText">KeyError</span>:
+	</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		print(number_of_crates['strawberry'])
+	</code></pre>
+	<pre class="language-bash"><code>
+		KeyError: 'strawberry'
+	</code></pre>
+	<p>We can fix this by adding an entry to the dictionary:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		number_of_crates['strawberry'] = 6
+
+		print(number_of_crates['strawberry'])
+	</code></pre>
+	<pre class="language-bash"><code>
+		6
+	</code></pre>
+	<p>
+		The fact that we can add entries to an existing dictionary tells us that
+		dictionaries are mutable &mdash; we can modify them after they are
+		initialized.
+	</p>
+	<p>We can also test if a particular key is in the dictionary:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+		number_of_crates['strawberry'] = 6
+
+		haveApples = 'apple' in number_of_crates  
+		haveMangos = 'mango' in number_of_crates
+
+		print(haveApples)
+		print(haveMangos)
+	</code></pre>
+	<pre class="language-bash"><code>
+		True
+		False
+	</code></pre>
+	<p>We can also remove entries:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		del(number_of_crates['apple'])
+
+		haveApples = 'apple' in number_of_crates  
+
+		print(haveApples)
+	</code></pre>
+	<pre class="language-bash"><code>
+		False
+	</code></pre>
+	<p>Suppose we want a set of all the keys in the dictionary:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		available_fruits = number_of_crates.keys()
+
+		print(available_fruits)
+	</code></pre>
+	<pre class="language-bash"><code>
+		dict_keys(['apple', 'grade', 'kiwi'])
+	</code></pre>
+	<p>
+		Notice that the output is an iterable. If we want to put all of the keys
+		into a separate list:
+	</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		available_fruits = []
+
+		for fruit in number_of_crates.keys():
+			available_fruits.append(fruit)
+
+		print(available_fruits)
+	</code></pre>
+	<pre class="language-bash"><code>
+		['apple', 'grape', 'kiwi']
+	</code></pre>
+	<p>We can also obtain a set of all the values inside the dictionary:</p>
+	<pre class="language-python"><code>
+		number_of_crates = {'apple': 4, 'grape': 9, 'kiwi': 7}
+
+		total_crates = 0
+
+		for crates in number_of_crates.values():
+			total_crates += crates
+		
+		print(total_crates)
+	</code></pre>
+	<pre class="language-bash"><code>
+		20
+	</code></pre>
+	<p>
+		A key point with dictionaries is that they do not have a particular order.
+		This means whenever we use dictionaries, we can never rely on the entries
+		being ordered.
+	</p>
+	<p>
+		Dictionary values can be any data type &mdash; immutable or mutable. This
+		means dictionaries can store tuples, lists, or even other dictionaries as
+		values.
+	</p>
+	<p>
+		The limitations apply to keys: The keys
+		<span class="underlineText">must be unique</span>. We cannot have duplicate
+		keys (but, we can have duplicate values). Keys must also be an immutable
+		type &mdash;
+		<span class="monoText">int, float, string, tuple, bool</span> (but, we need
+		to be careful with using a <span class="monoText">float</span> as a key;
+		recall there are accuracy issues, so we may not find what we're looking
+		for). More technically, keys must be <span class="term">hashable</span>. We
+		meet this requirement by ensuring our keys are immutable types.
+	</p>
+	<p>Comparing lists and dictionaries:</p>
+	<div class="compare">
+		<div>
+			<p class="subheading">Lists</p>
+			<ul>
+				<li>
+					an <span class="italicsText">ordered</span> sequence of elements
+				</li>
+				<li>we access elements by referencing an integer index</li>
+				<li>indices have an order</li>
+				<li>index is an <span class="monoText">int</span></li>
+			</ul>
+		</div>
+		<div>
+			<p class="subheading">Dictionaries</p>
+			<ul>
+				<li>
+					matches <span class="italicsText">keys</span> to
+					<span class="italicsText">values</span> (key-value pairs)
+				</li>
+				<li>we access elements by referencing either the key or the value</li>
+				<li>inherently no order</li>
+				<li>key can be <span class="italicsText">any</span> immutable type</li>
+			</ul>
+		</div>
+	</div>
+	<p><span class="exh">Exercise.</span> Suppose the following expressions:</p>
+	<pre class="language-python"><code>
+		animals = {'a': 'aardvark', 'b': 'baboon', 'c': 'coati'}
+		animals['d'] = 'donkey'
+	</code></pre>
+	<p>
+		For the expressions below, what printed to the console? Assume that the
+		expressions occur one after another.
+	</p>
+	<ol>
+		<li>
+			<pre class="language-python"><code>
+				print(animals)
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>This will return the dictionary:</p>
+				<pre class="language-bash"><code>
+					{'a': 'aardvark', 'b': 'baboon', 'c': 'coati', 'd': 'donkey'}
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(animals['c'])
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This will return the value paired with the key
+					<span class="monoText">'c'</span>:
+				</p>
+				<pre class="language-bash"><code>
+					coati
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(animals['donkey'])
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This will return an <span class="monoText">error</span>. The data
+					object <span class="monoText">'donkey'</span> is a value, not a key.
+				</p>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(len(animals))
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This returns <span class="monoText">4</span> &mdash; there are
+					<span class="monoText">4</span> items (key-value pairs) in the
+					dictionary.
+				</p>
+				<pre class="language-bash"><code>
+					4
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				animals['a'] = 'anteater'
+				print(animals['a'])
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This replaces the value paired with the key
+					<span class="monoText">'a'</span> from
+					<span class="monoText">'aardvark'</span> to
+					<span class="monoText">'anteater'</span>:
+				</p>
+				<pre class="language-bash"><code>
+					'anteater'
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(len(animals['a']))
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					The value stored in <span class="monoText">'a'</span> is a string,
+					<span class="monoText">'anteater'</span>, which has a length of
+					<span class="monoText">8</span>:
+				</p>
+				<pre class="language-bash"><code>
+					8
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print('baboon' in animals)
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This returns <span class="monoText">False</span> because the operator
+					<span class="monoText">in</span> checks for whether a key, not a
+					value, is in a dictionary:
+				</p>
+				<pre class="language-bash"><code>
+					False
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print('donkey' in animals.values())
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This returns <span class="monoText">True</span> because now we're
+					checking if <span class="monoText">'donkey'</span> is among the
+					values.
+				</p>
+				<pre class="language-bash"><code>
+					True
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print('b' in animals)
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This returns <span class="monoText">True</span> because the key
+					<span class="monoText">'b'</span> is in the dictionary.
+				</p>
+				<pre class="language-bash"><code>
+					True
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(animals.keys())
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>This will return an iterable object of the dictionary's keys:</p>
+				<pre class="language-bash"><code>
+					dict_keys(['a', 'b', 'c', 'd'])
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				del animals['b']
+				print(len(animals))
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					This deletes one of the keys along with its paired value, so the
+					length is now three:
+				</p>
+				<pre class="language-bash"><code>
+					3
+				</code></pre>
+			</details>
+		</li>
+		<li>
+			<pre class="language-python"><code>
+				print(animals.value())
+			</code></pre>
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>This returns an iterable object of the dictionary's values:</p>
+				<pre class="language-bash"><code>
+					dict_values(['anteater', 'coati', 'donkey'])
+				</code></pre>
+			</details>
+		</li>
+	</ol>
+</section>
+
+<section id="dictionary_applications">
+	<h4>Using Dictionaries</h4>
+	<p>
+		With dictionaries, we can begin writing even more sophisticated programs. In
+		this section, we explore some applications of dictionaries, which in turn
+		will evidence just how powerful they are.
+	</p>
+	<p>
+		<span class="topic">Data Occurrence Data.</span> A common problem in
+		peruasive writing is using words too many times &mdash; the most common
+		perpetrators: that, of, very, was, has, etc. Let's write a program that
+		takes a string, and outputs the most common words in that string.
+	</p>
+	<p>
+		First, we want to create a frequency dictionary, which maps every instance
+		of a string to an integer. We're going to want to iterate through our text,
+		so we should also write a function that converts our text into a list:
+	</p>
+	<pre class="language-python"><code>
+		def text_to_array(text):
+			punctuation = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+			text = text.lower()
+			for letter in text:
+				if letter in punctuation:
+					text = text.replace(letter, '')
+			arr_text = text.split(' ') 
+			return arr_text
+			
+		def verbose (text):
+			myDict = {}
+			text_array = text_to_array(text)
+			for word in text_array:
+				if word in myDict:
+					myDict[word] += 1
+				else:
+					myDict[word] = 1
+			return myDict
+		
+		sample = input("Enter text for verbosity analysis: ")
+		print(verbose(sample))
+	</code></pre>
+	<p>
+		Let's test if this works. Here's a sentence from a criminal trial brief:
+	</p>
+	<pre class="language-bash"><code>
+		Enter text for verbosity analysis: This statement ignores the fact that the response was made on that date and before this response was recorded.
+
+		{
+			'this': 2, 
+			'statement': 1, 
+			'ignores': 1, 
+			'the': 2, 
+			'fact': 1, 
+			'that': 2, 
+			'response': 2, 
+			'was': 2, 
+			'made': 1, 
+			'on': 1, 
+			'date': 1, 
+			'and': 1, 
+			'before': 1, 
+			'recorded': 1
+		}
+	</code></pre>
+	<p>
+		Success. This dictionary, however, is somewhat hard to parse. Let's write
+		another function that gives us the most common words, along with how many
+		times they occur:
+	</p>
+	<pre class="language-python"><code>
+		def text_to_array(text):
+			punctuation = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+			text = text.lower()
+			for letter in text:
+				if letter in punctuation:
+					text = text.replace(letter, '')
+			arr_text = text.split(' ') 
+			return arr_text
+			
+		def verbose (text):
+			myDict = {}
+			text_array = text_to_array(text)
+			for word in text_array:
+				if word in myDict:
+					myDict[word] += 1
+				else:
+					myDict[word] = 1
+			return myDict
+		
+		def most_common_words(frequencies):
+			values = frequencies.values()
+			best = max(values)
+			common_words = []
+			for word in frequencies:
+				if frequencies[word] == best:
+					common_words.append(word)
+			return (common_words, best)
+		
+		sample = input("Enter text for verbosity analysis: ")
+
+		verbose_analysis = verbose(sample)
+
+		common_words = most_common_words(verbose_analysis)
+
+		print(f'The most common words are {common_words[0]} occuring {common_words[1]} times each.')
+	</code></pre>
+	<pre class="language-bash"><code>
+		Enter text for verbosity analysis: This statement ignores the fact that the response was made on that date and before this response was recorded.
+
+		The most common words are: 
+			['this', 'the', 'that', 'response', 'was'] 
+		occuring 2 times each.
+	</code></pre>
+	<p>Woe is the power of dictionaries.</p>
+	<p><span class="exh">Exercise.</span> Consider the following expressions:</p>
+	<pre class="language-python"><code>
+		animals = {'a': ['aardvark'], 'b':['baboon'], 'c':['coati']}
+		animals['d'] = ['donkey']
+		animals['d'].append('dog')
+		animals['d'].append('dingo')
+	</code></pre>
+	<p>
+		Write a function called <span class="monoText">how_many</span> that returns
+		the sum of the number of values associated with a dictionary.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+			animals = {'a': ['aardvark'], 'b':['baboon'], 'c':['coati']}
+			animals['d'] = ['donkey']
+			animals['d'].append('dog')
+			animals['d'].append('dingo')
+
+			def how_many(aDict):
+				num_values = 0
+				dict_values = aDict.values()
+				for val in dict_values:
+					num_values += len(val)
+				return num_values
+			
+			test = how_many(animals)
+			print(test)
+		</code></pre>
+		<pre class="language-bash"><code>
+			6
+		</code></pre>
+	</details>
+	<p><span class="exh">Exercise.</span> Consider the following expressions:</p>
+	<pre class="language-python"><code>
+		animals = {'a': ['aardvark'], 'b':['baboon'], 'c':['coati']}
+		animals['d'] = ['donkey']
+		animals['d'].append('dog')
+		animals['d'].append('dingo')
+	</code></pre>
+	<p>
+		Write a prograum that the returns the key corresponding to the entry with
+		the largest number of values paired. If there is more than one such entry,
+		erturn any one of the matching keys.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Here is one possible implementation:</p>
+		<pre class="language-python"><code>
+			animals = {'a': ['aardvark'], 'b':['baboon'], 'c':['coati']}
+			animals['d'] = ['donkey']
+			animals['d'].append('dog')
+			animals['d'].append('dingo')
+
+			def biggest(aDict):
+				lengths = []
+				longest_entries = []
+				for kee in aDict:
+					lengths.append(len(aDict[kee]))
+				longest = max(lengths)
+				for kee in aDict:
+					if len(aDict[kee]) == longest:
+						longest_entries.append(kee)
+				return longest_entries
+			
+			test = biggest(animals)
+			print(test)
+		</code></pre>
+		<pre class="language-bash"><code>
+			['d']
+		</code></pre>
+	</details>
+	<p>
+		<span class="topic">The Fibonacci Sequence and Dictionaries.</span> Recall
+		the recursive function we wrote for the Fibonacci sequence. We had two base
+		cases, and the function calls itself twice:
+	</p>
+	<pre class="language-python"><code>
+		def fibonacci(n):
+			if n == 1:
+				return 1
+			elif n == 2:
+				return 2
+			else:
+				return fibonacci(n-1) + fibonacci(n-2)
+	</code></pre>
+	<p>
+		The problem with the code above? It's inefficient. Suppose we compute
+		<span class="monoText">fibonacci(5)</span>. The expression
+		<span class="monoText">fibonacci(5)</span> evaluates to
+		<span class="monoText">fibonacci(4)</span>, which evaluates to
+		<span class="monoText">fibonacci(3)</span>, which evaluates to
+		<span class="monoText">fibonacci(2)</span> and
+		<span class="monoText">fibonacci(1)</span> (our base cases). Having obtained
+		<span class="monoText">fibonacci(3)</span>,
+		<span class="monoText">fibonacci(4)</span> receives
+		<span class="monoText">fibonacci(2)</span>, a base case, and
+		<span class="monoText">fibonacci(5)</span> receives
+		<span class="monoText">fibonacci(3)</span>, which evaluates to
+		<span class="monoText">fibonacci(2)</span> and
+		<span class="monoText">fibonacci(1)</span>, the base cases.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/fibonacci_tree.svg' %}"
+			alt="fibonacci tree"
+			loading="lazy"
+			class="eighty-p"
+		/>
+	</figure>
+	<p>
+		Why is this computation inefficient? Because we keep computing
+		<span class="monoText">fibonacci(2)</span> and
+		<span class="monoText">fibonacci(1)</span>, our base cases, over and over
+		again. From the tree above, we can see that the computations are done 5
+		separate times. This inefficiency may not seem like much for small
+		computations like <span class="monoText">fibonacci(5)</span>, but it is
+		substantial and noticeable for very large numbers.
+	</p>
+	<p>
+		We can improve this program's efficiency with dictionaries. Instead of
+		computing the base cases repeatedly, we can use a dictionary to keep track
+		of calculated values:
+	</p>
+	<pre class="language-python"><code>
+		def fib(num, fib_dict):
+			if num in fib_dict:
+				return fib_dict[num]
+			else:
+				result = fib(num - 1, fib_dict) + fib(num - 2, fib_dict)
+				fib_dict[num] = result
+				return result
+
+		d = {1:1, 2:2}
+
+		# test:
+		print(fib(5, d))
+	</code></pre>
+	<pre class="language-bash"><code>
+		8
+	</code></pre>
+	<p>
+		In the code above, we continue to compute recursively, but instead of
+		including just one parameter, we have two: the number we want to compute the
+		Fibonacci for, and a dictionary. Inside the function, we compute as we
+		normally would, but with the additional step of storing the result in the
+		dictionary argument. If we've already done the computation, then Python will
+		simply use the result stored in the dictionary rather than performing the
+		computation again.
+	</p>
+	<p>
+		In computer science, this process is called
+		<span class="term">memoization</span> &mdash; we create a &#8220;memo&#8221;
+		in order to recall what we've already done.
+	</p>
+	<p>
+		<span class="topic">The <span class="monoText">global</span> Symbol.</span>
+		Let's compare using memoization and without using memoization. To do so, we
+		will use the <span class="monoText">global</span> symbol, a symbol that
+		warrants a brief and important warning.
+	</p>
+	<p>
+		In many of our programs so far, we've been using
+		<span class="term">global variables</span>. Global variables, by and large,
+		are frowned upon in practice. This is because they are dangerous &mdash;
+		they effectively break the scoping of variables by function call, and they
+		leave for side effects changing variable values in ways that affect other
+		computations. They are, however, a convenient way to keep track of
+		information inside a function.
+	</p>
+	<p>
+		Another way to declare global variables is with the symbol
+		<span class="monoText">global</span>. Recall: variables inside a function
+		are only visible inside that function. When append the symbol
+		<span class="monoText">global</span>, we effectively break that rule, and
+		the variables prefaced with <span class="monoText">global</span> become
+		visible outside. Again, this is very dangerous.
+	</p>
+	<p>
+		In the previous example, we used a module called
+		<span class="monoText">time</span> to compare how long it took for each
+		program to run. Let's instead use a global variable to determine how many
+		times the Fibonacci functions are called.
+	</p>
+	<p>
+		Let's compare the function call for a number argument of 35. Without using
+		memoization, the recursive function is called 29,860,703 times:
+	</p>
+	<pre class="language-python"><code>
+		def fibonacci(n):
+			global numFibCalls
+			numFibCalls += 1
+			if n == 0 or n == 1:
+				return 1
+			else:
+				return fibonacci(n - 1) + fibonacci(n - 2)
+
+		numFibCalls = 0
+
+		print(fibonacci(35))
+		print(f'Number of calls: {numFibCalls}')
+	</code></pre>
+	<pre class="language-bash"><code>
+		14930352
+		Number of calls: 29860703
+	</code></pre>
+	<p>Using memoization, the recursive function is called 67 times:</p>
+	<pre class="language-python"><code>
+		def fib(num, fib_dict):
+			global numFibCalls
+			numFibCalls += 1
+			if num in fib_dict:
+				return fib_dict[num]
+			else:
+				result = fib(num - 1, fib_dict) + fib(num - 2, fib_dict)
+				fib_dict[num] = result
+				return result
+
+		d = {1:1, 2:2}
+
+		numFibCalls = 0
+
+		print(fib(35, d))
+		print(f'Number of calls: {numFibCalls}')
+	</code></pre>
+	<pre class="language-bash"><code>
+		14930352
+		Number of calls: 67
+	</code></pre>
+	<p>
+		29,860,703 calls versus 67 calls. The difference in efficiency should be
+		apparent.
+	</p>
 </section>
 {% endblock %}

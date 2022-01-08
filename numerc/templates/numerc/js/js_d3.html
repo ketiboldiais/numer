@@ -248,7 +248,7 @@
 				src="{% static 'images/svg_coordinate_system.svg' %}"
 				alt="SVG coordinate system"
 				loading="lazy"
-				class="sixty-p"
+				class="thirty-p"
 			/>
 		</figure>
 		<p>
@@ -499,5 +499,494 @@
 		<span class="monoText">.querySelectorAll()</span> method provided by the
 		DOM.
 	</p>
+</section>
+
+<section id="appending">
+	<h2>Appending Elements</h2>
+	<p>Like the selection methods, D3 provides methods for appending elements.</p>
+	<pre class="language-javascript"><code>
+		const body = d3.select('body'); 
+		body.append('p');
+	</code></pre>
+	<p>
+		Writing the code above, we append a paragraph element to the body element.
+		Unlike JavaScript's native DOM methods, D3's
+		<span class="monoText"><mark>.append(${s}$)</mark></span> method
+		automatically <span class="italicsText">creates</span> and
+		<span class="italicsText">appends</span> the tag name passed as an argument,
+		${s.}$
+	</p>
+	<p>
+		The output to the <span class="monoText">.append()</span> method is a
+		<span class="monoText">selection</span> containing the element we created
+		and appended.
+	</p>
+	<pre class="language-javascript"><code>
+		const body = d3.select('body'); 
+		const p = body.append('p');
+		console.log(p);
+	</code></pre>
+	<pre class="language-bash"><code>
+		Selection$1 {_groups: Array(1), _parents: Array(1)}
+			_groups: Array(1)
+				0: [p]
+				length: 1
+				[[Prototype]]: Array(0)
+			_parents: Array(1)
+				0: html
+				length: 1
+				[[Prototype]]: Array(0)
+			[[Prototype]]: Object
+	</code></pre>
+</section>
+
+<section id="transformation_methods">
+	<h2>Transformation Methods</h2>
+	<p>
+		After we've made a selection, we likely want to modify the selected
+		object(s) somehow. These modifications, called
+		<span class="term">transformations</span>, can be done through either native
+		JavaScript or D3's provided methods.
+		<a
+			href="https://github.com/d3/d3-selection#modifying-elements"
+			target="_blank"
+			>D3's documentation</a
+		>
+		details these methods. The keypoints to transformation methods are the
+		following:
+	</p>
+	<ul>
+		<li>
+			If a method selects or creates an element, then a new selection is
+			returned.
+		</li>
+		<li>
+			If a method manipulates a selection, then the same selection is returned.
+		</li>
+	</ul>
+	<div class="mainIdea">
+		<p>
+			In programming more generally, a
+			<span class="term">transformation method</span> or
+			<span class="term">transformation function</span> is a function that
+			modifies an object's properties.
+		</p>
+	</div>
+	<p>
+		The <span class="monoText">.append()</span> method we saw earlier is
+		actually a transformation method (since calling the method modifies the
+		selected element's children &mdash; a property). All transformation methods
+		return a selection: the previous selection with the modifications applied.
+	</p>
+	<section id="html_attributes">
+		<h3>Modifying HTML Attributes</h3>
+		<p>
+			One of the most commonly used transformation methods is
+			<span class="monoText"><mark>.attr()</mark></span
+			>. The template:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>${obj}$.attr('${a}$', ${v}$)</li>
+			</ul>
+			<figcaption>
+				Where ${obj}$ is some selection, ${a}$ is the name of the attribute (a
+				string value), and ${v}$ is the value for the attribute.
+			</figcaption>
+		</figure>
+		<p>For example:</p>
+		<pre class="language-javascript"><code>
+			const body = d3.select('body'); 
+			const p = body.append('p').attr('class', 'foo');
+			console.log(p);
+		</code></pre>
+		<pre class="language-bash"><code>
+			Selection$1 {_groups: Array(1), _parents: Array(1)}
+				_groups: Array(1)
+					0: [p.foo]
+					length: 1
+					[[Prototype]]: Array(0)
+				_parents: [html]
+				[[Prototype]]: Object
+		</code></pre>
+		<p>
+			Notice the use of chaining, a common pattern in D3. Writing the statements
+			above, we have appended a paragraph element with the class
+			<span class="monoText">'foo'</span> to the body element. Note that if we
+			do not include the argument ${v,}$ we will get back the current value of
+			the attribute ${v.}$
+		</p>
+		<p>
+			A <span class="redText">warning</span>: The
+			<span class="monoText">.attribute()</span> method will override existing
+			attributes. If we want to add multiple classes, we use:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>${obj}$.classed('${c}$', ${b}$)</li>
+			</ul>
+			<figcaption>
+				Where ${c}$ is some class name, ${b}$ is a Boolean value (<span
+					class="monoText"
+					>true</span
+				>
+				or <span class="monoText">false</span>), and ${obj}$ is some selection.
+			</figcaption>
+		</figure>
+		<p>
+			With the method above, if the parameter ${b}$ is
+			<span class="monoText">true</span>, then class ${c}$ is added to the class
+			list. If ${b}$ is <span class="monoText">false</span>, then the class
+			${c}$ is or are removed from the class list. To add a second class value,
+			we call the method again:
+		</p>
+		<pre class="language-javascript"><code>
+			const p = d3.select('body')
+				.append('p')
+				.classed('foo', true)
+				.classed('bar', true)
+		</code></pre>
+		<p>
+			In the code above, the class values <span class="monoText">foo</span> and
+			<span class="monoText">bar</span> are added to the paragraph element's
+			class list.
+		</p>
+
+		<section id="inline_styles">
+			<h4>Inline Styles</h4>
+			<p>
+				HTML elements have a <span class="monoText">style</span> attribute, and
+				assigning values to this attribute creates an
+				<span class="italicsText">inline style</span>. D3 provides a
+				transformer, <span class="monoText"><mark>.style()</mark></span
+				>, which we can use for modifications:
+			</p>
+			<pre class="language-javascript"><code>
+				const body = d3.select('body'); 
+				const p = body
+					.append('p')
+					.text('Hello!')
+					.style('color', 'red');
+			</code></pre>
+			<p>
+				The paragraph element's text color should now be red. In general, the
+				template for <span class="monoText">.style()</span> is as follows:
+			</p>
+			<figure>
+				<ul class="syntax">
+					<li>${obj}$.style('${s}$', '${v}$')</li>
+				</ul>
+				<figcaption>
+					where ${obj}$ is some selection, ${s}$ is the name of the CSS style (a
+					string value), and ${v}$ is the value assigned (also a string value).
+				</figcaption>
+			</figure>
+		</section>
+	</section>
+
+	<section id="modifying_text">
+		<h3>Modifying Text</h3>
+		<p>
+			Alongside the attribute transformer, we can also transform text with the
+			<span class="monoText"><mark>.text()</mark></span> method. The template:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>${obj}$.text('${s}$')</li>
+			</ul>
+			<figcaption>
+				Where ${obj}$ is some selection, and ${s}$ is the text to insert.
+			</figcaption>
+		</figure>
+		<p>
+			Like the attribute transformer, if the argument ${s}$ is not supplied,
+			<span class="monoText">.text()</span> returns the element's current text.
+			For example:
+		</p>
+		<pre class="language-javascript"><code>
+			const body = d3.select('body'); 
+			const p = body.append('p').text('Hello!');
+		</code></pre>
+		<p>
+			Writing the code above, we see that the paragraph element now contains the
+			inner-text value <span class="monoText">'Hello!'</span>.
+		</p>
+	</section>
+</section>
+
+<section id="joining_data">
+	<h2>Joining Data</h2>
+	<p>
+		In programming generally, everything we work with is data &mdash; code,
+		images, audio, text, videos, it's all data. With D3, there are only two
+		categories of data: (1) <b>text</b> and (2) <b>numbers</b>. D3 visualizes
+		data by associating datum with HTML and CSS. This process is called
+		<b>joining data</b>.
+	</p>
+	<p>For example, suppose we had the following array of data:</p>
+	<pre class="language-javascript"><code>
+		const foo = [1.2, 1.4, 1.8, 1.7];
+	</code></pre>
+	<p>
+		We can <i>join</i> the data by associating each element to, say, a paragraph
+		element. The first paragraph is associated with ${1.2,}$ the second
+		paragraph with ${1.4,}$ the third with ${1.8,}$ and the fourth with ${1.7.}$
+		The simplest way to join data is to use the
+		<span class="monoText"><mark>.data()</mark></span> method. Suppose we had
+		the following list in our HTML:
+	</p>
+	<pre class="language-html"><code>
+		&lt;body&gt;
+		&#x9;&lt;main&gt;
+		&#x9;&#x9;&lt;ul&gt;
+		&#x9;&#x9;&#x9;&lt;li&gt;a&lt;/li&gt;
+		&#x9;&#x9;&#x9;&lt;li&gt;b&lt;/li&gt;
+		&#x9;&#x9;&#x9;&lt;li&gt;c&lt;/li&gt;
+		&#x9;&#x9;&#x9;&lt;li&gt;d&lt;/li&gt;
+		&#x9;&#x9;&#x9;&lt;li&gt;e&lt;/li&gt;
+		&#x9;&#x9;&lt;/ul&gt;
+		&#x9;&lt;/main&gt;
+		&#x9;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.js&quot;&gt;&lt;/script&gt;
+		&#x9;&lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;
+		&lt;/body&gt;		
+	</code></pre>
+	<p>In our driver file, we write:</p>
+	<pre class="language-javascript"><code>
+		const data = [1, 2, 3, 4, 5];
+		const listItems = d3.selectAll('li')
+			.data(data);
+	</code></pre>
+	<p>
+		Each of the list elements is now associated with the values in the
+		<var>data</var> array. The first list element is associated with the value
+		<var>1</var>, the second with <var>2</var>, and so on. But what do we mean
+		by <q>associated</q>? In terms of implementation, each of the list elements
+		has a property called <var>__data__</var>. If we examined the property for
+		each of these elements, we see that their assigned values are the respective
+		elements in the <var>data</var> array.
+	</p>
+	<p>If we log to the console <var>listItems</var>:</p>
+	<pre class="language-bash"><code>
+		Selection$1 {_groups: Array(1), _parents: Array(1), _enter: Array(1), _exit: Array(1)}
+			_enter: [Array(5)]
+			_exit: [Array(5)]
+			_groups: [Array(5)]
+			_parents: [html]
+			[[Prototype]]: Object
+	</code></pre>
+	<p>
+		Let's focus on the properties <var>_enter</var> and <var>_exit</var>. When
+		we join data, we must ensure that data and elements are mapped one-to-one.
+		If there are more elements than there are data, we should remove the excess
+		elements, and if there are fewer elements then there are data, we should
+		insert additional elements.
+	</p>
+
+	<section id="enter_selection">
+		<h3>Enter Selection</h3>
+		<p>
+			The <var>_enter</var> property indicates data that have not been joined to
+			an element. If we look inside this property, we find an empty array
+			&mdash; each datum has been joined to an element. Say we removed the first
+			three list items in our HTML code and logged to the console
+			<var>listItems</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.selectAll('li')
+				.data(data);
+			console.log(listItems);
+		</code></pre>
+		<pre class="language-bash"><code>
+			Selection$1 {_groups: Array(1), _parents: Array(1), _enter: Array(1), _exit: Array(1)}
+				_enter: Array(1)
+					0: (5) [empty × 3, EnterNode, EnterNode]
+					length: 1
+					[[Prototype]]: Array(0)
+				_exit: [Array(3)]
+				_groups: [Array(5)]
+				_parents: [html]
+				[[Prototype]]: Object
+		</code></pre>
+		<p>
+			Notice the expression <var>empty × 3</var>. This is an indicator that the
+			first three elements are empty. The last two items, each called
+			<var>EnterNode</var>, are <i>virtual elements</i> created by D3. A virtual
+			element is a node stored in memory but does not occupy space in the
+			document.
+		</p>
+		<p>
+			Let's join the data. To do so, we use the
+			<span class="monoText"><mark>.join(${s}$)</mark></span> method. This
+			method takes a string argument, ${s,}$ corresponding to the name of an
+			HTML element. In this case, we'll use <var>li</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.selectAll('li')
+				.data(data)
+				.join('li');
+		</code></pre>
+		<p>
+			Running the code above, we see three new list items inserted after the two
+			existing list items. These new list items, however, are not aligned with
+			the existing list items, and they contain no content. Furthermore, if we
+			inspected the HTML document, we'd find that the list items are appended
+			<em>after</em> the body tag. We see these outputs because the
+			<var>.join()</var> method only creates and appends new elements to the
+			parent element of the current selection. It does not make any
+			modifications to properties like style or inner-text.
+		</p>
+		<p>
+			Writing <var>d3.selectAll('li')</var>, the parent element of the selection
+			is the <var>html</var> element. Whenever we call the
+			<var>.selectAll()</var> method directly through <var>d3</var>, D3
+			automatically sets the parent element property to the
+			<var>html</var> element. To ensure a particular parent element value, we
+			chain the <var>.selectAll()</var> method to a <var>.select()</var> method:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join('li');
+		</code></pre>
+		<p>
+			Writing the code above, when we first call <var>.select('ul')</var>, the
+			parent element is <var>html</var>. The selection itself, however, is
+			<var>ul</var>. Thus, when we call <var>.selectAll('li')</var> on that
+			selection, the parent element for the <var>.selectAll()</var> selection is
+			<var>ul</var>. To confirm:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const list = d3.select('ul')
+			const listItems = list.selectAll('li')
+
+			console.log(list);
+			console.log(listItems);
+		</code></pre>
+		<pre class="language-bash"><code>
+			Selection$1 {_groups: Array(1), _parents: Array(1)}
+				_groups: [Array(1)]
+				_parents: [html]
+				[[Prototype]]: Object
+			Selection$1 {_groups: Array(1), _parents: Array(1)}
+				_groups: [NodeList(2)]
+				_parents: [ul]
+				[[Prototype]]: Object
+		</code></pre>
+		<p>Writing:</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join('li');
+		</code></pre>
+		<p>
+			we should now see that the list items have been appended to the
+			<var>ul</var> element as intended. We can then add text to each of the
+			list items using the <var>.text()</var> transformer:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join('li')
+				.text('List item')
+		</code></pre>
+		<p>
+			Each of the list items now has the text <var>'List item'</var>. Notice
+			that this modifies each list item's property. This is because the
+			<var>.join()</var> method merges the groups and enters properties all at
+			once.
+		</p>
+	</section>
+
+	<section id="exit_selection">
+		<h3>Exit Selection</h3>
+		<p>
+			The <var>_enter</var> selection returns an array of elements that should
+			be included. It's opposite twin is the <var>_exit</var> selection: An
+			array of elements that should be <em>removed</em>. D3 provides this method
+			because there are situations where we have more elements than there are
+			data. In this situations, we should remove the excess elements. To begin,
+			let's say we had the following HTML code:
+		</p>
+		<pre class="language-html"><code>
+			&lt;body&gt;
+			&#x9;&lt;main&gt;
+			&#x9;&#x9;&lt;ul&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;10&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;20&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;30&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;40&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;50&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;60&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;70&lt;/li&gt;
+			&#x9;&#x9;&lt;/ul&gt;
+			&#x9;&lt;/main&gt;
+			&#x9;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.js&quot;&gt;&lt;/script&gt;
+			&#x9;&lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;
+			&lt;/body&gt;
+		</code></pre>
+		<p>There are seven list elements. Writing the code below:</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+			console.log(listItems);
+		</code></pre>
+		<pre class="language-bash"><code>
+			Selection$1 {_groups: Array(1), _parents: Array(1), _enter: Array(1), _exit: Array(1)}
+				_enter: [Array(5)]
+				_exit: Array(1)
+					0: Array(7)
+						5: li
+						6: li
+						length: 7
+					[[Prototype]]: Array(0)
+				length: 1
+				[[Prototype]]: Array(0)
+			_groups: [Array(5)]
+			_parents: [ul]
+			[[Prototype]]: Object
+		</code></pre>
+		<p>
+			We see that there five <var>empty</var> and two <var>li</var> values.
+			Given that there are five data values, these two additional
+			<var>li</var> values indicate excess elements. To remove these methods, we
+			can use the <var>join()</var> method again:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join('li')
+		</code></pre>
+		<p>We now see that the two excess elements have been removed.</p>
+	</section>
+
+	<section id="displaying_data">
+		<h3>Displaying Data</h3>
+	</section>
+
+	<ol class="references">
+		<li>
+			<a href="https://github.com/d3/d3-selection#joining-data" target="_blank"
+				>D3, <strong>Documentation: Joining Data</strong></a
+			>
+		</li>
+		<li>
+			<a href="https://www.d3indepth.com/datajoins/" target="_blank"
+				>D3 in Depth, <strong>Data Joins</strong></a
+			>
+		</li>
+	</ol>
 </section>
 {% endblock %}

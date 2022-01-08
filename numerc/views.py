@@ -16,17 +16,8 @@ def arch_logic(request):
 def py_preface(request):
 	return render(request, "numerc/py/py_preface.html")
 
-def py_programs(request):
-	return render(request, "numerc/py/py_programs.html")
-
-def py_libraryImport(request):
-	return render(request, "numerc/py/py_libraryImport.html")
-
-def py_variables(request):
-	return render(request, "numerc/py/py_variables.html")
-
-def py_floatsFractions(request):
-	return render(request, "numerc/py/py_floatsFractions.html")
+def py_basics(request):
+	return render(request, "numerc/py/py_basics.html")
 
 def py_decomposition(request):
 	return render(request, "numerc/py/py_decomposition.html")
@@ -37,45 +28,12 @@ def py_controlFlow(request):
 def py_structuredTypes(request):
 	return render(request, "numerc/py/py_structuredTypes.html")
 
-def py_tuples(request):
-	return render(request, "numerc/py/py_tuples.html")
-
-def py_lists(request):
-	return render(request, "numerc/py/py_lists.html")
-
-def py_mutability(request):
-	return render(request, "numerc/py/py_mutability.html")
-
-def py_functionObjects(request):
-	return render(request, "numerc/py/py_functionsObjects.html")
-
-def py_dictionaries(request):
-	return render(request, "numerc/py/py_dictionaries.html")
-
 def py_tests(request):
 	return render(request, "numerc/py/py_tests.html")
-
-def py_bugs(request):
-	return render(request, "numerc/py/py_bugs.html")
-
-def py_exceptionsAssertions(request):
-	return render(request, "numerc/py/py_exceptionsAssertions.html")
 
 def py_oop(request):
 	return render(request, "numerc/py/py_oop.html")
 	
-def py_classes(request):
-	return render(request, "numerc/py/py_classes.html")
-
-def py_sets(request):
-	return render(request, "numerc/py/py_sets.html")
-
-def py_hierarchies(request):
-	return render(request, "numerc/py/py_hierarchies.html")
-
-def py_classVariables(request):
-	return render(request, "numerc/py/py_classVariables.html")
-
 #! Swift functions (swiftv)
 def swift_preface(request):
 	return render(request, "numerc/swift/swift_preface.html")
@@ -218,6 +176,9 @@ def java_interfaces(request):
 
 def java_dataStructuresAndAlgorithms(request):
 		return render(request, "numerc/java/java_dataStructuresAndAlgorithms.html")
+
+def java_design_patterns(request):
+		return render(request, "numerc/java/java-design-patterns.html")
 
 #! JavaScript Views (jsv)
 def js_preface(request):

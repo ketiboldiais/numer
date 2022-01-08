@@ -1,12 +1,225 @@
-{%extends "numerc/layout.html"%} {% load static %} {% block description %}
-<meta
-	name="description"
-	content="Variables, types, and basic operations in Python"
-/>
-{% endblock %} {% block title %}
-<title>Python: Simple Data</title>
-{% endblock %} {% block content %}
-<h1>Simple Data</h1>
+{% block description %}
+<meta name="description" content="Notes on Python basics">
+{% endblock %}
+{% block title %}
+<title>Python Basics</title>
+
+<h1>Python: Basic Data & Operations</h1>
+<section id="python_programs">
+	<p>
+		A Python <span class="term">program</span> is a sequence of
+		<span class="italicsText">definitions</span> and
+		<span class="italicsText">commands</span>. Definitions are
+		<span class="italicsText">evaluated</span>, and commands are
+		<span class="italicsText">executed</span> in a
+		<span class="term">shell</span> &mdash; a window where we can type
+		expressions to be passed to the Python interpreter. Commands are also called
+		<span class="italicsText">statements</span> &mdash; they are expressions
+		that tell the interpreter to do something.
+	</p>
+	<p>
+		Both commands and expressions can be typed directly into a shell, or they
+		can be stored in a Python file (files with the extension
+		<span class="monoText">.py</span>), which is then
+		<span class="italicsText">read</span> into a shell and evaluated.
+	</p>
+	<p>
+		As we study Python, we'll likely notice how concise it is as a language.
+		Without doubt, programs in Python are largely much shorter than programs in
+		languages like C. Conciseness, readability, and user-friendliness, however,
+		comes at a cost &mdash; speed. C is simply a much faster language when it
+		comes to handling large data structures. This is largely because of how
+		close the language is to the computer's hardware.
+	</p>
+	<p>
+		Where C is a <span class="term">low-level language</span>, Python is
+		a <span class="term">high-level language</span> &mdash; a language
+		that abstracts away the low-level details we normally must handle. In C, we
+		manage memory ourselves. If we find a more efficient approach, we can
+		implement. If we see memory leaks, we can go straight to the source. In
+		Python, we have no business handling memory. Instead, we are forced to use
+		Python's general-purpose approach to memory management. This can be costly.
+		Because memory management is not a one-size-fits-all issue, there will be
+		instances were Python's approach is inefficient.
+	</p>
+	<p>
+		Additionally, using a high-level language incurs overhead costs in memory
+		consumption. In contrast to C code &mdash; which is handled directly by the
+		<span class="italicsText">compiler</span> &mdash; Python code is handled by
+		the Python <span class="italicsText">interpreter</span>. This distinction
+		evidences two categories of programming languages: (1)
+		<span class="term">compiled languages</span>, and (2)
+		<span class="term">interpreted languages</span>.
+	</p>
+	<p>
+		Interpreted languages are essentially programs themselves. The clearest
+		evidence of this is when we execute Python code via our terminal:
+	</p>
+	<pre class="command-line language-bash" data-output=""><code>
+		python foo.py
+	</code></pre>
+	<p>
+		That keyword, <span class="monoText">Python</span>, is a call to a program.
+		More specifically, it is a call to the Python
+		<span class="term">interpreter</span>, a program that translates our
+		source code into 0s and 1s <span class="underlineText">on</span> execution,
+		<span class="underlineText">without</span> compiling. This is different from
+		C, where our source code must be translated into 0s and 1s &mdash; compiling
+		&mdash; <span class="underlineText">before</span> execution. This difference
+		is akin to analyzing a poem written in German when we only understand
+		English. We can either (1) go to the first line, translate into English,
+		analyze, then move to the second line and repeat, then the third line, the
+		fourth, fifth, etc., or (2) translate the entire poem into English first,
+		then analyze. The second approach is clearly faster. With the first
+		approach, we have to translate each word one at a time, then put them all
+		together, then analyze (likely changing our analysis because of previous
+		lines), then move to the next line. In sum, whenever we execute Python code,
+		we aren't just executing our code, we are also executing the interpreter's
+		code. This incurs a certain amount of overhead in memory use and time.
+	</p>
+</section>
+
+<section id="python_objects">
+	<h2>Objects in Python</h2>
+	<p>
+		The fundamental primitives in a programming language are more broadly called
+		<span class="term">data objects</span>. Programs manipulate data
+		objects to extract parts of those objects or to do something with those
+		objects.
+	</p>
+	<p>
+		Every data object has a <span class="term">type</span>. A
+		<span class="italicsText">type</span> is the set of all rules that defines
+		what we can and cannot do with the data objects of that type. For example, C
+		has the data type <span class="monoText">char</span>. If a program expects a
+		<span class="monoText">char</span> type data object, and we give it instead
+		an <span class="monoText">int</span> or
+		<span class="monoText">double</span>, our program usually will not do
+		anything with the data object, because the rules prevent it.
+	</p>
+	<p>
+		Types themselves fall into two categories: (1)
+		<span class="term">scalar</span> or (2)
+		<span class="term">non-scalar</span>. If a data object's type is
+		scalar, then the data object cannot be subdivided. If a data object's type
+		is non-scalar, then the data object has an
+		<span class="italicsText">internal structure</span> composed of smaller
+		parts, and we can access that internal structure to extract those parts.
+	</p>
+	<p>In Python, there are four scalar type objects:</p>
+	<ol>
+		<li>
+			<span class="monoText">int</span> &mdash; representing
+			<span class="italicsText">integers</span>
+		</li>
+		<li>
+			<span class="monoText">float</span> &mdash; representing
+			<span class="italicsText">real numbers</span>
+		</li>
+		<li>
+			<span class="monoText">bool</span> &mdash; representing the Boolean values
+			<span class="monoText">True</span> and <span class="monoText">False</span>
+		</li>
+		<li>
+			<span class="monoText">NoneType</span> &mdash; a special type of only one
+			value, <span class="monoText">None</span>
+		</li>
+	</ol>
+	<p>
+		We can test what the type of a data object is with
+		<span class="monoText">type()</span>. For example, let's write the following
+		code in a shell:
+	</p>
+	<pre class="language-bash"><code>
+		In [1]: 2.8
+		Out[1]: 2.8
+		In [2]: type(2.8)
+		Out[2]: float
+		In [3]: 2 
+		Out[3]: 2 
+		In [4]: type(2) 
+		Out[4]: int 
+	</code></pre>
+</section>
+
+<section id="library_importing">
+	<h4>Importing Libraries/Modules in Python</h4>
+	<p>Recall how we import libraries in C:</p>
+	<pre class="language-c"><code>
+		#include &lt;library.h&gt;
+	</code></pre>
+	<p>
+		The same operation exists in Python for
+		<span class="boldItalics">modules</span> (Python's term for "libraries"). In
+		C, libraries are indicated by the
+		<span class="monoText">.h</span> extension; modules, and all Python files,
+		simply use the <span class="monoText">.py</span> extension. Importing
+		modules in Python is done with the following syntax:
+	</p>
+	<pre class="language-pseudo"><code>
+		import module
+	</code></pre>
+	<p>
+		Where <span class="monoText">module</span> is the module's name (e.g.,
+		<span class="monoText">module.py</span>). For example, suppose we wanted to
+		import the <span class="monoText">math</span> module, a popular library for
+		mathematical functions. With <span class="monoText">math.py</span> in our
+		current directory, we write:
+	</p>
+	<pre class="language-python"><code>
+		import math
+	</code></pre>
+	<p>
+		Suppose we want to import just a specific function rather than the entire
+		module. For example, the <span class="monoText">cos()</span> function
+		provided by the <span class="monoText">math</span> module:
+	</p>
+	<pre class="language-python"><code>
+		import math cos  
+	</code></pre>
+	<p>If we wanted multiple functions:</p>
+	<pre class="language-python"><code>
+		from math import cos, sin, log10
+	</code></pre>
+	<p>
+		A word of caution: If we use the first syntax,
+		<span class="monoText">import module</span>, calls to functions from that
+		module must be be written in the following syntax:
+	</p>
+	<pre class="language-pseudo"><code>
+		import module
+		... module.definition ... 
+	</code></pre>
+	<p>
+		The ellipses indicate code using the module definition;
+		<span class="monoText">module</span> is the module's name; and
+		<span class="monoText">definition</span> is the particular data object, like
+		a function, we want to import. Thus, if we used
+		<span class="monoText">import math</span>, calls to the
+		<span class="monoText">cos()</span> definition inside the
+		<span class="monoText">math</span> module must be written as:
+	</p>
+	<pre class="language-python"><code>
+		import math
+		x = math.cos()
+	</code></pre>
+	<p>
+		The code above effectively tells Python, "Go inside the module
+		<span class="monoText">math</span>, and call the function
+		<span class="monoText">cos()</span>. This syntax must be used because of
+		<span class="boldItalics">namespacing</span> &mdash; a language feature
+		allowing programs to have identically-named data objects. This feature works
+		only if the data objects exist in two different
+		<span class="boldItalics">namespaces</span> within the program. A
+		<span class="italicsText">namespace</span> is simply a system ensuring that
+		all names in a program are <span class="italicsText">unique</span>, so as to
+		avoid collisions. Writing <span class="monoText">math.cos()</span> tells
+		Python that the data object <span class="monoText">cos()</span> exists in a
+		single namespace &mdash; in Python, a
+		<span class="italicsText">dictionary</span> &mdash; inside the module named
+		<span class="monoText">math</span>.
+	</p>
+</section>
 
 <section id="types">
 	<figure>
@@ -1206,5 +1419,4 @@
 		</li>
 	</ol>
 </section>
-
 {% endblock %}

@@ -10,6 +10,17 @@ function mainIdeaHeader() {
   }
 }
 
+function referenceListHeader() { 
+  const references = document.getElementsByClassName("references");
+  for (let i = 0; i < references.length; i++) { 
+    const header = document.createElement("p");
+    header.innerText = "References";
+    header.classList.toggle("referencesHeader");
+    references[i].prepend(header);
+  }
+}
+
+
 // Add input checkbox for checklist
 function addCheckBoxToCheckList() { 
   const checkList = document.querySelectorAll("ol.checklist li");
@@ -67,6 +78,7 @@ function showNav() {
   mainIdeaHeader();
   addCheckBoxToCheckList();
   showCodeIllustration();
+  referenceListHeader();
 })();
 
 

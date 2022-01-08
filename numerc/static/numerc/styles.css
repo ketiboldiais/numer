@@ -76,6 +76,7 @@
 	--paleGrey: rgb(224, 224, 224);
 	--lightGrey: rgb(190, 190, 190);
 	--textColor: #333;
+	--licorice: rgb(102, 102, 102);
 	--blackBG: #EFF2EF;
 	--sky: rgb(252, 253, 255);
 	--gold: #D4AF37;
@@ -100,7 +101,7 @@
 		--codeBrightYellow: rgb(255, 238, 126);
 		--codeOrange: #ffa55b;
 		--codeRedOrange: #ff6929;
-		--jsComment: rgb(117, 166, 137);
+		--jsComment: rgb(173, 173, 173);
 
 	--serif: "serifMain", "Garamond", "Apple Garamond", "Athelas", "Iowan Old Style", "Hoefler Text", "Palatino", "New York", "Droid Serif", "Times", "Source Serif Pro", "serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
 
@@ -382,7 +383,7 @@
 		margin: 2vh auto;
 		padding: 0;
 		font-family: var(--serif);
-		text-align: justify;
+		text-align: center;
 	}
 	figure div {
 		width: fit-content;
@@ -438,14 +439,14 @@
 		border-bottom: thin solid;
 	}
 	h3 {
-		font-size: 1.4em;
+		font-size: 1.3em;
 	}
 	h4 {
-		font-size: 1.2em;
+		font-size: 1.1em;
 	}
-	h5 {font-size: 0.95rem;}
+	h5 {font-size: 0.98em;}
 	h6 {
-		font-size: 0.9rem; 
+		font-size: 0.95em; 
 		text-align: center;
 	}
 	p.h7,p.h8,p.h9,p.h10 {
@@ -465,7 +466,7 @@
 	section.exercise>p.subheading {
 		margin: 1%;
 	}
-	span.topic {
+	.topic {
 		display: inline-block;
 		margin: 0;
 		margin-top: 1em;
@@ -513,7 +514,8 @@
 		border-bottom: thin solid #ccc;
 	}
 	section p a {
-		border-bottom: thin dotted rgb(71, 71, 71);
+		color: var(--linkBlue);
+		border-bottom: thin dotted var(--linkBlue);
 	}
 	section a:visited {
 		color: none;
@@ -579,20 +581,20 @@
 	}
 	ol.alg li span.pop { margin-left: -0.55em; }
 	.popText {
+		display: none;
 		visibility: hidden;
 		opacity: 0;
 		max-height: 0px;
 		max-width: 0px;
 		transition: max-height 0s, opacity 0s, visibility 0.2s linear;
 		z-index: 1;
-		display: none;
 	}
 	.show {
 		display: block;
 		position: absolute;
 		z-index: 1;
 		width: 75%;
-		background: white;
+		background-color: var(--beige);
 		border: solid thin lightgray;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 		color: var(--textColor);
@@ -607,14 +609,15 @@
 	.show p {
 		padding: 0;
 		white-space: normal;
-		margin: 0;
+		margin: 0 0 0.2em 0;
 		font-family: var(--serif);
 	}
 	.show * {
 		font-size: 0.7rem;
 	}
 /* Drop cap */
-	span.drop {
+	span.drop, u {
+		text-decoration: none;
 		float: left;
 		font-family: Georgia;
 		font-size: 75px;
@@ -691,15 +694,14 @@
 /* List styles */
 	li {
 		font-size: 0.85rem;
-		padding: 0.1em 0.5em;
+		padding: 0.3em 0.5em;
 	}
 	ul li::marker {
 		font-size: 0.7rem;
 	}
 	ol,ul {
 		margin: 0;
-		padding: 0.3em;
-		padding-left: 2em;
+		padding: 0 0 0 1.2em;
 	}
 	ol > ol {list-style-type:lower-latin;}
 	figure.math-display>div>ul.larg {
@@ -742,17 +744,22 @@
 		}
 	/* Circle List */
 		ol.recipe {
+			padding: 0 0 0 1em;
+			width: 80%;
+			margin: 0 auto;
 			list-style: decimal;
-			background-image: linear-gradient(var(--textColor), var(--textColor)),
-			linear-gradient(var(--textColor), var(--textColor)),
-			linear-gradient(var(--textColor), var(--textColor)),
-			linear-gradient(var(--textColor), var(--textColor));
-
+			/* background-image: linear-gradient(var(--commentGrey), var(--commentGrey)),
+			linear-gradient(var(--commentGrey), var(--commentGrey)),
+			linear-gradient(var(--commentGrey), var(--commentGrey)),
+			linear-gradient(var(--commentGrey), var(--commentGrey));
 			background-repeat: no-repeat;
 			background-size: 8px 1px;
 			background-position: top left, top right, bottom left, bottom right;
-			border: solid var(--textColor);
-			border-width: 0 1px;
+			border: solid var(--commentGrey);
+			border-width: 0 1px; */
+		}
+		ol.recipe li {
+			font-size: 0.8rem;
 		}
 		ol.recipe ol {list-style-type: lower-alpha;}
 		ol.recipe ol ol {list-style-type: lower-latin;}
@@ -863,7 +870,7 @@
 		div.toc li::marker {font-size: 0.9rem}
 	/* Counter Reset for Figures */
 		figure { counter-reset: list; }
-	/* numbered list */
+	/* Parenthesized numbers list */
 		ol.numd > li {
 			list-style: none;
 			position: relative;
@@ -874,6 +881,27 @@
 				position: absolute;
 				left: -2em;
 				font-size: 0.85rem;
+		}
+	/* References List */
+		article {counter-reset: ref;}
+		ol.references p {
+			font-size: 0.75rem;
+			margin: 0;
+			padding: 0;
+			font-style: italic;
+		}
+		ol.references {
+			margin: 1em 0 1em 0.4em;
+			list-style: none;
+			padding: 0 0 0 0.1em;
+			color: var(--darkBlue);
+		}
+		ol.references li {font-size: 0.75rem;}
+		ol.references li::before {
+			counter-increment: ref;
+			content: counter(ref);
+			vertical-align: super;
+			font-size: 0.6rem;
 		}
 /* Checklist */
 	ol.checklist {
@@ -945,11 +973,16 @@
 		opacity: 1;
 	}
 /* Text styles */
-	em {
+	strong {
 		font-weight: normal;
-		font-style: normal;
 		font-variant: small-caps;
 	}
+	em {
+		font-style: normal;
+		text-decoration: underline;
+	}
+	b {font-weight: bold;}
+	i {font-style: italic;}
 	.redText {color: var(--scarlet);}
 	.greenText {color: var(--darkGreen);}
 	.blueText {color: var(--darkBlue);}
@@ -965,7 +998,7 @@
 		font-weight: bold; 
 		font-style: italic;
 	}
-	.monoText {
+	.monoText, var {
 		font-family: "Fira"; 
 		text-rendering: optimizeLegibility;
 		font-size: 0.82em; 
@@ -975,9 +1008,10 @@
 	.monoText *.katex {font-size: 1.1em !important;}
 	.smallcaps {font-variant: small-caps;}
 	.term {
-		font-family: "CMU";
 		font-weight: bold; 
-		font-style: italic; 
+	}
+	span.hl {
+		background-color: gold;
 	}
 /* Blockquote */
 	blockquote {
@@ -1291,21 +1325,25 @@
 		margin: 0;
 		padding: 0;
 	}
+	.mainIdea {
+		margin: 0.6em 0 0.2em 0.6em;
+		float: right;
+		color: var(--rust);
+		border-radius: 0.5em;
+		background-color: var(--mainIdeaBG);
+		padding: 0.1em 0.7em 0.3em 0.7em;
+		padding-bottom: 0.3em;
+		width: 50%;
+	}
 	.mainIdea p,
 	.mainIdea li {
 		font-size: 0.74rem;
-		color: var(--rust);
 		width: fit-content;
 	}
-	.mainIdea {
-		margin: 0.6em 0 0 0.6em;
-		float: right;
-		border-radius: 0.2em;
-		background-color: var(--mainIdeaBG);
-		padding: 0.1em 0.4em;
-		padding-right: 0.7em;
-		padding-bottom: 0.3em;
-		width: 50%;
+	.mainIdea ul,
+	.mainIdea ol {
+		margin: 0;
+		padding: 0 0 0 4vw;
 	}
 /* Aside */
 	aside {
@@ -1381,9 +1419,6 @@
 		overflow: auto;
 	}
 	div.compare > div > pre.language-pseudo {width: fit-content; border: none;}
-	code[class*="language-"]>.token.comment {
-		font-size: 0.7rem;
-	}
 /* Language - Pseudo */
 	pre[class*="language-pseudo"] {
 		padding: 0.8em;
@@ -1503,13 +1538,16 @@
 /* Language - Bash */
 	code[class*="language-bash"],
 	pre[class*="language-bash"] {
-		color: white;
+		font-family: Courier, monospace;
+		color: var(--textColor);
 		border-radius: 0;
 	}
 	/* Code blocks */
 	pre[class*="language-bash"],
 	:not(pre) > code[class*="language-bash"] {
-		background: rgb(44, 44, 44);
+		border-top: thin solid var(--commentGrey);
+		border-bottom: thin solid var(--commentGrey);
+		background: var(--page);
 	}
 
 	.command-line-prompt {
@@ -1545,8 +1583,6 @@
   .command-line-prompt > span[data-prompt]:before {
 		content: attr(data-prompt);
   }
-
-
 /* Language - Lisp */
 	code[class*="language-scheme"],
 	pre[class*="language-scheme"] {

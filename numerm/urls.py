@@ -88,8 +88,6 @@ urlpatterns = [
 
 	path("cont_cartesianPlane", views.cont_cartesianPlane, name="cont_cartesianPlane"),
 
-	path("cont_pythagoreanCartesian", views.cont_pythagoreanCartesian, name="cont_pythagoreanCartesian"),
-
 	path("cont_distanceFormula", views.cont_distanceFormula, name="cont_distanceFormula"),
 
 	path("cont_graphLines", views.cont_graphLines, name="cont_graphLines"),

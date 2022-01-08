@@ -121,9 +121,6 @@ def cont_intervals(request):
 def cont_cartesianPlane(request):
 	return render(request, "numerm/cont/cont_cartesianPlane.html")
 
-def cont_pythagoreanCartesian(request):
-	return render(request, "numerm/cont/cont_pythagoreanCartesian.html")
-
 def cont_distanceFormula(request):
 	return render(request, "numerm/cont/cont_distanceFormula.html")
 
