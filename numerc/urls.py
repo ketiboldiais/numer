@@ -231,8 +231,6 @@ urlpatterns = [
 
 	path("cpp_overloading", views.cpp_overloading, name="cpp_overloading"),
 
-	path("cpp_inheritance", views.cpp_inheritance, name="cpp_inheritance"),
-
 	path("cpp_matrices", views.cpp_matrices, name="cpp_matrices"),
 
 	path("cpp_algorithmicAnalysis", views.cpp_algorithmicAnalysis, name="cpp_algorithmicAnalysis"),

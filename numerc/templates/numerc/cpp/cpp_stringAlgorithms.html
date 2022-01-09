@@ -440,6 +440,29 @@
 
 <section id="strings">
 	<h3>Strings</h3>
+	<p>
+		Before we consider the implementation details underyling strings, we should
+		get some formal definitions out of the way. First, what is a string? The
+		formal definition:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition: String.</span> A <i>string</i> ${S}$ is
+				an ordered list of characters placed contiguously from left to right.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Short as it may be, the definition above imposes a few restrictions: (1)
+		Strings have an <i>order</i>, and (2) each character is ordered, or written,
+		from left to right. The first restriction implies that a string like
+		<var>'abc'</var> is not the same as the string <var>'bca'</var>. There is a
+		certain order. The second restriction implies that we're only concerned with
+		strings where reading and writting is done from left to right. As such, this
+		covers strings representing words in English and many of the other Western
+		languages, but excludes East Asian languages like Chinese and Japanese.
+	</p>
 	<div class="mainIdea">
 		<p>
 			A string (C string) is an array of
@@ -1375,28 +1398,6 @@
 			<li>return nWords + 1;</li>
 		</ol>
 	</ol>
-
-	<div class="demo">
-		<div class="options">
-			<button>C++</button>
-			<button>Java</button>
-		</div>
-		<div class="implementation">
-			<p>Here is a C++ implementation.</p>
-			<pre class="language-cpp"><code>
-				int main() {
-					return 0;
-				}
-			</code></pre>
-		</div>
-		<div class="implementation">
-			<pre class="language-java"><code>
-				public class main() {
-					return 0;
-				}
-			</code></pre>
-		</div>
-	</div>
 </section>
 
 <section id="string_validation">
@@ -1730,7 +1731,40 @@
 </section>
 
 <section id="palindrome">
-	<h2>Palindrome</h2>
+	<h2>Palindrome Verification</h2>
+	<p>
+		A <b>palindrome</b> is a sequence of characters that, when read forward,
+		reads the same backward. For example, all of the following strings are the
+		same read forward and backward:
+	</p>
+	<figure>
+		<ul>
+			<li><var>"civic"</var></li>
+			<li><var>"racecar"</var></li>
+			<li><var>"11/11/11"</var></li>
+			<li><var>"1:1"</var></li>
+			<li><var>"3.3"</var></li>
+			<li><var>"9 &times; 9"</var></li>
+		</ul>
+	</figure>
+	<p>The algorithm for verifying whether a given string is a palindrome:</p>
+	<ol class="recipe">
+		<li>Suppose ${S}$ is a string of length ${\ell,}$ of uniform case.</li>
+		<li>Let ${\lang i \in \N \mid i &lt; \ell \rang.}$</li>
+		<li>Let ${\lang j \in \N \mid 0 < j \leq \ell \rang.}$</li>
+		<li>Suppose ${i}$ is initially ${0,}$ and ${j}$ is initially ${\ell.}$</li>
+		<li>If ${i < j,}$ perform steps (a) xor (b). Otherwise, go to step (4).</li>
+		<ol>
+			<li>If ${S_i = S_{j}:}$</li>
+			<ol>
+				<li>Increment ${i}$</li>
+				<li>Decrement ${j.}$</li>
+				<li>Return to step (5).</li>
+			</ol>
+			<li>Else, return false. ${\blacksquare}$</li>
+		</ol>
+		<li>Return true. ${\blacksquare}$</li>
+	</ol>
 </section>
 
 <!-- <section id="proper_casing">

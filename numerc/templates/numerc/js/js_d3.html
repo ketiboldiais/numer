@@ -974,6 +974,135 @@
 
 	<section id="displaying_data">
 		<h3>Displaying Data</h3>
+		<p>
+			Now that we know how to select elements and join data, we now examine ways
+			to display data. We have the following HTML code:
+		</p>
+		<pre class="language-html"><code>
+			&lt;body&gt;
+			&#x9;&lt;main&gt;
+			&#x9;&#x9;&lt;ul&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;a&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;b&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;c&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;d&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;e&lt;/li&gt;
+			&#x9;&#x9;&lt;/ul&gt;
+			&#x9;&lt;/main&gt;
+			&#x9;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.js&quot;&gt;&lt;/script&gt;
+			&#x9;&lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;
+			&lt;/body&gt;			
+		</code></pre>
+		<p>and the following JavaScript code in our driver file:</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join('li')
+		</code></pre>
+		<p>
+			We now want to display the data joined to each of the
+			<var>li</var> elements. To do so, we first use a callback function that
+			takes the data joined as an argument, call it <var>d</var>:
+		</p>
+		<pre class="language-js"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join('li')
+				.text(function (d) {
+					return d;
+				})
+		</code></pre>
+		<p>
+			The code above works fine, but we can make it more concise with an arrow
+			function:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join('li')
+				.text(d => d)
+		</code></pre>
+		<p>
+			Executing the code above, we see that the list items, originally with
+			character text, now has inner text corresponding to the array values
+			joined.
+		</p>
+	</section>
+
+	<section id="modifying_the_join_method">
+		<h3>Modifying the Join Method</h3>
+		<p>
+			The <var>.join()</var> method can be modified in a variety of ways. For
+			example, we can display an animation for an element entering or exiting
+			the selection by passing a function argument to the
+			<var>.join()</var> method's <var><mark>enter</mark></var> parameter.
+			Suppose we had the following HTML code:
+		</p>
+		<pre class="language-html"><code>
+			&lt;body&gt;
+			&#x9;&lt;main&gt;
+			&#x9;&#x9;&lt;ul&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;1&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;2&lt;/li&gt;
+			&#x9;&#x9;&#x9;&lt;li&gt;3&lt;/li&gt;
+			&#x9;&#x9;&lt;/ul&gt;
+			&#x9;&lt;/main&gt;
+			&#x9;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.js&quot;&gt;&lt;/script&gt;
+			&#x9;&lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;
+			&lt;/body&gt;			
+		</code></pre>
+		<p>
+			Note that there are two missing <var>li</var> elements. In our driver
+			file:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join(
+					enter => { 
+						return enter.append('li')
+							.style('color', 'purple')
+					}
+				)
+				.text(d => d)
+		</code></pre>
+		<p>
+			Notice howe we're passing a function to the <var>.join()</var> method. The
+			function takes the property <var>enter</var> as an argument, and executes
+			<var>enter.append</var>. It is imperative that we include this line.
+			Otherwise, there is no selection resulting from calling
+			<var>.join()</var>. After calling <var>.append</var>, we then call
+			<var>.style()</var>. Examining our list, we should see the two missing
+			list items in purple.
+		</p>
+		<p>
+			We can also have the <var>update</var> and <var>exit</var> selections
+			return a function:
+		</p>
+		<pre class="language-javascript"><code>
+			const data = [1, 2, 3, 4, 5];
+			const listItems = d3.select('ul')
+				.selectAll('li')
+				.data(data)
+				.join(
+					enter => { 
+						return enter.append('li')
+							.style('color', 'purple')
+					},
+					update => update.style('color', 'green'),
+					exit => exit.remove()
+				)
+				.text(d => d)
+		</code></pre>
+		<p>The first three list items are now green.</p>
 	</section>
 
 	<ol class="references">

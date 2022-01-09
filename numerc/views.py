@@ -398,9 +398,6 @@ def cpp_dynamicArrays(request):
 def cpp_oop(request):
 	return render(request, "numerc/cpp/cpp_oop.html")
 
-def cpp_inheritance(request):
-	return render(request, "numerc/cpp/cpp_inheritance.html")
-
 def cpp_fileIO(request):
 	return render(request, "numerc/cpp/cpp_fileIO.html")
 

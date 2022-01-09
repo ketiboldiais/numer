@@ -3197,6 +3197,7 @@
 			Loaded
 		</code></pre>
 	</section>
+
 	<section id="uv_unwrapping">
 		<h3>UV Unwrapping</h3>
 		<p>
@@ -3269,6 +3270,104 @@
 			in later sections. When we create our own geometries, we can implement our
 			own approaches to UV mapping.
 		</p>
+	</section>
+
+	<section id="texture_transformations">
+		<h3>Texture Transformations</h3>
+		<p>
+			ThreeJS provides several methods and properties for transforming textures.
+			For example, consider the color texture we saw earlier:
+		</p>
+		<pre class="language-javascript"><code>
+			const textureLoader = new THREE.TextureLoader(loadingManager);
+			const colorTexture = textureLoader.load('/textures/door/color.jpg',);
+		</code></pre>
+
+		<section id="repeat_texture">
+			<h4>Repeating a Texture</h4>
+			<p>
+				We can repeat this texture using the
+				<var><mark>repeat</mark></var> property. The <var>repeat</var> property
+				is a <var>Vector2</var> property with both <var>x</var> and
+				<var>y</var> properties:
+			</p>
+			<pre class="language-javascript"><code>
+				const textureLoader = new THREE.TextureLoader(loadingManager);
+				const colorTexture = textureLoader.load('/textures/colors/color.jpg',);
+				colorTexture.repeat.x = 2;
+				colorTexture.repeat.y = 3;
+			</code></pre>
+			<p>
+				Writing the code above, we might see some unexpected results. By
+				default, the texture does not repeat and the last pixel gets stretched.
+				To fix this, we use the
+				<var><mark>THREE.RepeatWrapping</mark></var> property on the texture's
+				<var><mark>wrapS</mark></var> and <var>wrapT</var> properties.
+			</p>
+			<pre class="language-javascript"><code>
+				const textureLoader = new THREE.TextureLoader(loadingManager);
+				const colorTexture = textureLoader.load('/textures/colors/color.jpg',);
+				colorTexture.repeat.x = 2;
+				colorTexture.repeat.y = 3;
+				colorTexture.wrapS = THREE.RepeatWrapping;
+				colorTexture.wrapT = THREE.RepeatWrapping;
+			</code></pre>
+			<p>Now we see that the texture actually repeats around the mesh.</p>
+		</section>
+
+		<section id="offsetting">
+			<h4>Offsetting</h4>
+			<p>
+				We can offset a texture with <var>Vector2</var> property
+				<var><mark>offset</mark></var
+				>. This property only offsets the texture; it does not offset the entire
+				UV.
+			</p>
+			<pre class="language-javascript"><code>
+				const textureLoader = new THREE.TextureLoader(loadingManager);
+				const colorTexture = textureLoader.load('/textures/door/color.jpg',);
+				colorTexture.offset.x = 0.5;
+				colrTexture.offset.y = 0.5;
+			</code></pre>
+		</section>
+
+		<section id="rotating_textures">
+			<h4>Rotating Textures</h4>
+			<p>
+				We can also rotate textures. Two important points: (1) This is
+				<em>not</em> a <var>Vector2</var> property. (2) We shouldn't think about
+				texture rotations in terms of axes &mdash; the texture is just rotating
+				inside a 2D space.
+			</p>
+			<p>
+				The property for rotating textures is <var><mark>.rotation</mark></var
+				>, and its assigned values are in radians, positive values measured
+				counter-clockwise. Thus, to rotate the texture by a half-circle, we
+				would use the value ${\pi,}$ for a quarter-circle, ${\pi/2,}$ and for a
+				full-circle, ${2\pi.}$
+			</p>
+			<pre class="language-javascript"><code>
+				const textureLoader = new THREE.TextureLoader(loadingManager);
+				const colorTexture = textureLoader.load('/textures/door/color.jpg',);
+				colorTexture.rotation = Math.PI * 0.25;
+			</code></pre>
+			<p>
+				The texture rotation's pivot is on the geometry's center point. Thus, if
+				we want to change the pivot, we can do so by changing the texture's
+				<var>.center</var> property:
+			</p>
+			<pre class="language-javascript"><code>
+				const textureLoader = new THREE.TextureLoader(loadingManager);
+				const colorTexture = textureLoader.load('/textures/door/color.jpg',);
+				colorTexture.rotation = Math.PI * 0.25;
+				colorTexture.center.x = 0.5;
+				colorTexture.center.y = 0.5;
+			</code></pre>
+		</section>
+	</section>
+
+	<section id="filtering_and_midmapping">
+		<h3>Filtering &amp; Midmapping</h3>
 	</section>
 </section>
 {% endblock %}
