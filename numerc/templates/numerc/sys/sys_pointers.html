@@ -18,6 +18,7 @@
 		Establishing a very strong understanding of the underlying concepts, and
 		practicing using pointers as much as possible.
 	</p>
+
 	<p>
 		Programming in C, it's pretty much inevitable that we use pointers in some
 		way. The language is too substantially limited without using pointers.
@@ -25,10 +26,60 @@
 		imperative that we are as comfortable with pointers as possible.
 	</p>
 
+	<p>Pointers in C are necessary for the following tasks:</p>
+
+	<figure>
+		<ol class="numd">
+			<li>Passing by pointer.</li>
+			<li>Returning more than one output from a function.</li>
+			<li>Passing arrays and strings to functions.</li>
+			<li>Allocating unknown memory at runtime.</li>
+		</ol>
+	</figure>
+
 	<p>
-		To begin, we review how main memory works. First, visualize main memory as
-		the following:
+		That said, let's get some terminology out of the way. At the end of the day,
+		a <b>pointer</b> is just a variable. But, it's a variable with a special
+		ability: It stores a <b>reference</b> to another variable. The variable the
+		pointer refers to is called the pointer's <b>pointee</b>. When two pointers
+		refer to the same pointee, we say that the pointers are <b>sharing</b>.
+		Because a pointer is a variable with this special feature, there are two
+		things we should always keep in mind:
 	</p>
+
+	<figure>
+		<ol class="numd">
+			<li>The pointer itself has an address of its own.</li>
+			<li>The pointer stores an address to some other variable.</li>
+		</ol>
+	</figure>
+
+	<p>
+		When we <b>dereference</b> a pointer, we are commanding:
+		<q>Give me the value at the address stored in this pointer</q>. But, when we
+		<b>reference</b> a pointer, we command,
+		<q>Give me the address of this pointer</q>. A large amount of confusion with
+		pointers stems from failing to separate these two traits of pointers. We
+		state them explicitly to ensure clarity. Now, for dereferencing, we have the
+		following rule:
+	</p>
+
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Rule.</span> A pointer can be dereferenced
+				<em>if and only if</em> it has a pointee.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		If a pointer has no pointee, it cannot be dereferenced. Almost all
+		pointer-bred bugs originate in some violation of the rule above. To place
+		all of this in context, let's briefly review how main memory works. First,
+		visualize main memory as the following:
+	</p>
+
 	<figure class="math-display">
 		<div>
 			<pre class="language-pseudo"><code>
@@ -48,26 +99,27 @@
 		</div>
 		<figcaption>
 			The numbers to the left are
-			<span class="italicsText">memory addresses</span>. These are not valid
-			addresses. They are used just to keep things simple. In reality, they
-			would be in hexadecimal.
+			<i>memory addresses</i>. These are not valid addresses. They are used just
+			to keep things simple. In reality, they would be in hexadecimal.
 		</figcaption>
 	</figure>
+
 	<p>
 		We use the □ to indicate the place of a bit, and the vertical ellipses ⋮ to
 		indicate further stacks. Notice that each stack contains eight □. This
 		represents the fact that each frame is a
-		<span class="term">byte</span> &mdash; a sequence of 8 bits. We'll keep this
-		in mind as we continue.
+		<b>byte</b> &mdash; a sequence of 8 bits. We'll keep this in mind as we
+		continue.
 	</p>
+
 	<p>
 		In C, we must explicitly state the data type for our variables. This serves
 		as an instruction to the compiler to allocate a certain amount of memory. On
-		modern computers, <span class="monoText">int</span> is allocated 4 bytes,
-		<span class="monoText">char</span> is allocated 1 byte, and
-		<span class="monoText">float</span> is allocated 4 bytes. When write
-		<span class="monoText">int a;</span> the memory appears as such:
+		modern computers, <var>int</var> is allocated 4 bytes, <var>char</var> is
+		allocated 1 byte, and <var>float</var> is allocated 4 bytes. When write
+		<var>int a;</var> the memory appears as such:
 	</p>
+
 	<figure class="math-display">
 		<div>
 			<pre class="language-pseudo"><code>
@@ -91,8 +143,7 @@
 	<p>
 		In the diagram above, we use the ▨ to indicate that the space is allocated,
 		but the value therein could be anything. I.e.,
-		<span class="italicsText">garbage value</span>. Writing
-		<span class="monoText">char c;</span> thereafter:
+		<i>garbage value</i>. Writing <var>char c;</var> thereafter:
 	</p>
 	<figure class="math-display">
 		<div>
@@ -116,9 +167,8 @@
 		</div>
 	</figure>
 	<p>
-		A <span class="monoText">char</span> variable takes 1 byte of memory, so it
-		takes up a single address. If we then write
-		<span class="monoText">a = 5;</span> the memory then appears as:
+		A <var>char</var> variable takes 1 byte of memory, so it takes up a single
+		address. If we then write <var>a = 5;</var> the memory then appears as:
 	</p>
 	<figure class="math-display">
 		<div>
@@ -142,10 +192,9 @@
 		</div>
 	</figure>
 	<p>
-		We now fill the addresses from <span class="monoText">102</span> to
-		<span class="monoText">105</span> (4 bytes), with the bits representing
-		<span class="monoText">5</span>. Writing
-		<span class="monoText">char c = 'a';</span> we get:
+		We now fill the addresses from <var>102</var> to <var>105</var> (4 bytes),
+		with the bits representing <var>5</var>. Writing <var>char c = 'a';</var> we
+		get:
 	</p>
 	<figure class="math-display">
 		<div>
@@ -169,8 +218,8 @@
 		</div>
 	</figure>
 	<p>
-		And when we write <span class="monoText">a++;</span> we are simply changing
-		the bits in the address allocated for <span class="monoText">a</span>:
+		And when we write <var>a++;</var> we are simply changing the bits in the
+		address allocated for <var>a</var>:
 	</p>
 	<figure class="math-display">
 		<div>
@@ -195,10 +244,9 @@
 	</figure>
 	<p>
 		In all of the examples above, the address of
-		<span class="monoText">a</span> is <span class="monoText">102</span>. We can
-		store that address in a variable. That variable is called a
-		<span class="term">pointer</span>. For example, if we next wrote
-		<span class="monoText">int *p</span>, the memory would appear as such:
+		<var>a</var> is <var>102</var>. We can store that address in a variable.
+		That variable is called a <b>pointer</b>. For example, if we next wrote
+		<var>int *p</var>, the memory would appear as such:
 	</p>
 	<figure class="math-display">
 		<div>
@@ -233,10 +281,8 @@
 		Notice that the pointer takes up 8 bytes. For now, we will say that this is
 		the case for a 64-bit machine. On a 32-bit machine, the pointer would take
 		up 4 bytes. Now, let's say we then wrote
-		<span class="monoText">p = &amp;a;</span>. This assigns the
-		<span class="italicsText">address</span> of
-		<span class="monoText">a</span> to the pointer
-		<span class="monoText">p</span>, resulting in:
+		<var>p = &amp;a;</var>. This assigns the <i>address</i> of <var>a</var> to
+		the pointer <var>p</var>, resulting in:
 	</p>
 	<figure class="math-display">
 		<div>
@@ -269,28 +315,22 @@
 	</figure>
 	<p>
 		Again, in our diagram, the address stored in
-		<span class="monoText">p</span> is not a valid address. We use the simple
-		integer addresses to the left to keep the illustration simple, but the
-		principle is the same &mdash; the pointer
-		<span class="monoText">p</span> stores a number, and that number is an
-		address. In actuality, a valid address stored in
-		<span class="monoText">p</span> would be in hexadecimal and appear something
-		like: <span class="monoText">66 00 00 00</span>. The address of
-		<span class="monoText">p</span> itself would look something like
-		<span class="monoText">1C 91 96 EC FE 7F 00 00</span>.
+		<var>p</var> is not a valid address. We use the simple integer addresses to
+		the left to keep the illustration simple, but the principle is the same
+		&mdash; the pointer <var>p</var> stores a number, and that number is an
+		address. In actuality, a valid address stored in <var>p</var> would be in
+		hexadecimal and appear something like: <var>66 00 00 00</var>. The address
+		of <var>p</var> itself would look something like
+		<var>1C 91 96 EC FE 7F 00 00</var>.
 	</p>
 	<p>
 		From these demonstrations, we observe the following: Whenever we deal with
 		pointers, there are really only three perspectives: (i)
-		<span class="italicsText"
-			>the address <span class="underlineText">in</span></span
-		>,
-		<span class="italicsText"
-			>(iii) the address <span class="underlineText">of</span></span
+		<span class="italicsText">the address <em>in</em></span
+		>, <span class="italicsText">(iii) the address <em>of</em></span
 		>, and (iii)
 		<span class="italicsText"
-			>the value <span class="underlineText">at</span> the address
-			<span class="underlineText">in</span>.</span
+			>the value <em>at</em> the address <em>in</em>.</span
 		><label for="pionterrhyme" class="margin-toggle"><sup></sup></label>
 		<input
 			type="checkbox"
@@ -310,76 +350,84 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td><span class="monoText">${t}$ *p;</span></td>
-				<td>Create a pointer of type ${t}$</td>
-				<td><span class="monoText">p == null</span></td>
+				<td>
+					<p><var>${t}$ *p;</var></p>
+				</td>
+				<td><p>Let there be a pointer of type ${t.}$</p></td>
+				<td><var>p == null</var></td>
 			</tr>
 			<tr>
 				<td>
-					<p><span class="monoText">${t}$ a = ${n}$;</span></p>
-					<p><span class="monoText">${t}$ *p = &amp;a;</span></p>
+					<p><var>${t}$ a;</var></p>
+					<p><var>${t}$ *p = &amp;a;</var></p>
 				</td>
 				<td>
-					Assign to the pointer <span class="monoText">p</span> the
-					${\textit{address-of}}$ <span class="monoText">a</span>
+					<p>
+						Assign to the pointer <var>p</var> the address-of
+						<var>a</var>
+					</p>
 				</td>
-				<td>
-					<span class="monoText">p ==</span> ${\textit{address-of}}$
-					<span class="monoText">x</span>
-				</td>
+				<td><var>p ==</var> ${\textit{address-of}}$ <var>a</var></td>
 			</tr>
 			<tr>
 				<td colspan="3">
-					Suppose:
-					<ul class="smallBullets">
-						<li><span class="monoText">a == 5</span></li>
-						<li><span class="monoText">*p = &a</span></li>
-						<li>
-							${\textit{address-of}}$ <span class="monoText">a == 102</span>
-						</li>
-						<li>
-							${\textit{address-of}}$ <span class="monoText">p == 107</span>
-						</li>
-					</ul>
-					then:
+					<p>Suppose:</p>
+					<p>Address-of <var>a == 102</var></p>
+					<p>Address-of <var>p == 107</var></p>
+					<p><var>a == 5</var></p>
+					<p><var>*p = &a</var></p>
 				</td>
 			</tr>
 			<tr>
-				<td><span class="monoText">p</span></td>
 				<td>
-					Give me the ${\textit{address-in}}$ <span class="monoText">p</span>
+					<p><var>p</var></p>
 				</td>
-				<td><span class="monoText">102</span></td>
+				<td>
+					<p>Return the address-in <var>p</var></p>
+				</td>
+				<td><var>102</var></td>
 			</tr>
 			<tr>
-				<td><span class="monoText">&a</span></td>
 				<td>
-					Give me the ${\textit{address-of}}$ <span class="monoText">a</span>
+					<p><var>&a</var></p>
 				</td>
-				<td><span class="monoText">102</span></td>
+				<td>
+					<p>Return the address-of <var>a</var></p>
+				</td>
+				<td><var>102</var></td>
 			</tr>
 			<tr>
-				<td><span class="monoText">&p</span></td>
 				<td>
-					Give me the ${\textit{address-of}}$ <span class="monoText">p</span>
+					<p><var>&p</var></p>
 				</td>
-				<td><span class="monoText">107</span></td>
+				<td>
+					<p>Return the address-of <var>p</var></p>
+				</td>
+				<td><var>107</var></td>
 			</tr>
 			<tr>
-				<td><span class="monoText">*p</span></td>
 				<td>
-					Give me the ${\textit{value-at-the-address-in}}$
-					<span class="monoText">p</span>.
+					<p><var>*p</var></p>
 				</td>
-				<td><span class="monoText">5</span></td>
+				<td>
+					<p>
+						Return the value at the address-in
+						<var>p</var>.
+					</p>
+				</td>
+				<td><var>5</var></td>
 			</tr>
 			<tr>
-				<td><span class="monoText">*p = ${v}$</span></td>
 				<td>
-					Change the ${\textit{value-at-the-address-in}}$
-					<span class="monoText">p</span> to ${v}$
+					<p><var>*p = ${\large v}$</var></p>
 				</td>
-				<td><span class="monoText">a == ${v}$</span></td>
+				<td>
+					<p>
+						Change the value at the address-in
+						<var>p</var> to ${\large v}$
+					</p>
+				</td>
+				<td><var>a == ${\large v}$</var></td>
 			</tr>
 		</tbody>
 	</table>
@@ -399,7 +447,7 @@
 			src="{% static 'images/pointer_address_C.svg' %}"
 			alt="Pointer in memory"
 			loading="lazy"
-			class="thirty-p"
+			class="sixty-p"
 		/>
 		<figcaption>
 			A section of RAM. The ellipses represent some other section of RAM
@@ -407,23 +455,19 @@
 		</figcaption>
 	</figure>
 	<p>
-		The variables <span class="monoText">i</span> and
-		<span class="monoText">j</span> are variables storing
-		<span class="monoText">17</span> and
-		<span class="monoText">32</span> respectively. The variables
-		<span class="monoText">*p</span> and <span class="monoText">*q</span>,
-		however, are pointers. They store the addresses of
-		<span class="monoText">i</span> and
-		<span class="monoText">j</span> respectively. The start symbol,
-		<span class="monoText">*</span>, is what we use to tell the compiler that a
-		variable is a pointer. Thus, whenever the compiler comes across a variable
-		prepended with <span class="monoText">*</span>, it goes, &#8220;Oh, this is
-		a pointer. There's going to be an address in here.&#8221; The ampersand
-		symbol, <span class="monoText">&</span>, is what we use to obtain the
-		address of a variable. Thus, when the compiler sees a variable prepended
-		with <span class="monoText">&</span>, it goes, &#8220;Ah, they're asking for
-		what address is named with this variable name. Let me go and get
-		it.&#8221;<label for="variableName" class="margin-toggle"
+		The variables <var>i</var> and <var>j</var> are variables storing
+		<var>17</var> and <var>32</var> respectively. The variables
+		<var>*p</var> and <var>*q</var>, however, are pointers. They store the
+		addresses of <var>i</var> and <var>j</var> respectively. The start symbol,
+		<var>*</var>, is what we use to tell the compiler that a variable is a
+		pointer. Thus, whenever the compiler comes across a variable prepended with
+		<var>*</var>, it goes, &#8220;Oh, this is a pointer. There's going to be an
+		address in here.&#8221; The ampersand symbol, <var>&</var>, is what we use
+		to obtain the address of a variable. Thus, when the compiler sees a variable
+		prepended with <var>&</var>, it goes, &#8220;Ah, they're asking for what
+		address is named with this variable name. Let me go and get it.&#8221;<label
+			for="variableName"
+			class="margin-toggle"
 			><sup></sup
 		></label>
 		<input
@@ -440,35 +484,26 @@
 	</p>
 	<p>
 		Notice the memory addresses in the diagram above. They go by increment by 4,
-		but after the first pointer, <span class="monoText">p</span>, it increments
-		by 8. This is intentional. Notice further that the pointers occupy a space
-		slightly larger than the others. This too is intentional.
+		but after the first pointer, <var>p</var>, it increments by 8. This is
+		intentional. Notice further that the pointers occupy a space slightly larger
+		than the others. This too is intentional.
 	</p>
 	<p>
 		Each of the addresses above is the address of a particular
-		<span class="term">byte</span> in memory. An
-		<span class="monoText">int</span>, however, cannot fit in one byte of
+		<b>byte</b> in memory. An <var>int</var>, however, cannot fit in one byte of
 		memory. For this particular architecture, a 64-bit system, the
-		<span class="monoText">int</span> requires 4 bytes of memory. Thus, the
-		value <span class="monoText">17</span>, assigned to
-		<span class="monoText">i</span>, occupies the addresses
-		<span class="monoText">0x1000</span>, <span class="monoText">0x1001</span>,
-		<span class="monoText">0x1002</span>, and
-		<span class="monoText">0x1003</span>. Then, for
-		<span class="monoText">32</span>, assigned to
-		<span class="monoText">j</span>, occupies the addresses
-		<span class="monoText">0x1004</span>, <span class="monoText">0x1005</span>,
-		<span class="monoText">0x1006</span>, and
-		<span class="monoText">0x1007</span>.
+		<var>int</var> requires 4 bytes of memory. Thus, the value <var>17</var>,
+		assigned to <var>i</var>, occupies the addresses <var>0x1000</var>,
+		<var>0x1001</var>, <var>0x1002</var>, and <var>0x1003</var>. Then, for
+		<var>32</var>, assigned to <var>j</var>, occupies the addresses
+		<var>0x1004</var>, <var>0x1005</var>, <var>0x1006</var>, and
+		<var>0x1007</var>.
 	</p>
 	<p>
 		Pointers, again for this machine, occupy 8 bytes of memory. Thus, the
-		pointer <span class="monoText">p</span> occupies the addresses from
-		<span class="monoText">0x1008</span> through
-		<span class="monoText">0x1015</span>. And the pointer
-		<span class="monoText">q</span> occupies the addresses
-		<span class="monoText">0x1016</span> through
-		<span class="monoText">0x1023</span>.
+		pointer <var>p</var> occupies the addresses from <var>0x1008</var> through
+		<var>0x1015</var>. And the pointer <var>q</var> occupies the addresses
+		<var>0x1016</var> through <var>0x1023</var>.
 	</p>
 	<p>Let's add a bit more code:</p>
 	<pre class="language-c"><code>
@@ -490,382 +525,686 @@
 	</code></pre>
 	<p>
 		Examine the output closely. When we ask for the value
-		<span class="monoText">*p</span>, we are
-		<span class="term">dereferencing</span> the pointer
-		<span class="monoText">p</span>. This is often a point of confusion among
-		newcomers. The <span class="monoText">*</span> symbol is used for both
-		creating pointers
-		<span class="underlineText">and</span> dereferencing.<label
+		<var>*p</var>, we are <b>dereferencing</b> the pointer <var>p</var>. This is
+		often a point of confusion among newcomers. The <var>*</var> symbol is used
+		for both creating pointers <em>and</em> dereferencing.<label
 			for="star"
 			class="margin-toggle"
 			><sup></sup
 		></label>
 		<input type="checkbox" id="star" class="margin-toggle sidenote-number" />
 		<span class="marginnote"
-			>&#8220;The first star points, the second retrieves.&#8221;</span
+			>&#8220;The first star creates a marker, the second star goes to the
+			marker, and the amp obtains an address.</span
 		>
 		Thus, if we want to access the value stored in the address a pointer points
-		to, we must use the dereference operator <span class="monoText">*</span>.
-		Without using that operator, i.e., just writing
-		<span class="monoText">p</span>, we are asking for the address the pointer
-		points to. These are two very different things. One way to remember the two
-		different uses of <span class="monoText">*</span> is to think of it as a
-		star for navigating the wildnerness. The first time we use
-		<span class="monoText">*</span>, we are marking a particular location. When
-		when we use it again, we journey back to that location, wherein lies a
-		value.
+		to, we must use the dereference operator <var>*</var>. Without using that
+		operator, i.e., just writing <var>p</var>, we are asking for the address the
+		pointer points to. These are two very different things. One way to remember
+		the two different uses of <var>*</var> is to think of it as a star for
+		navigating the wildnerness. The first time we use <var>*</var>, we are
+		marking a particular location. When when we use it again, we journey back to
+		that location, wherein lies a value.
 	</p>
-	<ol class="ex grid" data-colcade="columns: .grid-col, items: .grid-item">
-		<div class="grid-col grid-col--1"></div>
-		<div class="grid-col grid-col--2"></div>
-		<div class="grid-col grid-col--3"></div>
-		<div class="grid-col grid-col--4"></div>
 
-		<li class="grid-item">
-			What result:
-			<pre class="language-c"><code>
-				int main() {
-					int* p;
-					return 0;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<p>Creates a pointer of <var>p</var> of type <var>int*</var>.</p>
-			</details>
-		</li>
+	<section id="exercises">
+		<ol class="ex grid" data-colcade="columns: .grid-col, items: .grid-item">
+			<div class="grid-col grid-col--1"></div>
+			<div class="grid-col grid-col--2"></div>
+			<div class="grid-col grid-col--3"></div>
+			<div class="grid-col grid-col--4"></div>
 
-		<li class="grid-item">
-			Consider the code below. What is the output of the last line?
-			<pre class="language-pseudo"><code>
-				int main() {
-					int a;
-					int *p;
-					printf("%p\n", p);
-					return 0;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<pre class="language-bash"><code>
-					0x7ffee8e00138
+			<li class="grid-item">
+				<p>What output:</p>
+				<pre class="language-c"><code>
+					int main() {
+						int n = 5, m = 7;
+						int *p1, *p2; 
+						printf("n = %d, m = %d \n", n, m);
+					}
 				</code></pre>
-				<p>
-					This returns the address stored in <span class="monoText">p</span>.
-					Note that because <span class="monoText">p</span> is uninitialized, it
-					is called a <span class="term">wild pointer</span> &mdash; a pointer
-					that points to an arbitrary (random) memory location.
-				</p>
-			</details>
-		</li>
-		<li class="grid-item">
-			Consider the code below. What is the output of the last line?
-			<pre class="language-pseudo"><code>
-				int main() {
-					int a;
-					int *p;
-					printf("%p\n", *p);
-					return 0;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<pre class="language-bash"><code>
-					exercises.c:6:17: warning: format specifies type 'void *' but the argument has type 'int' [-Wformat]
-						printf("%p\n", *p);
-										~~     ^~
-										%d
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-bash"><code>
+						n = 5
+						m = 7
+					</code></pre>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>What output:</p>
+				<pre class="language-c"><code>
+					int main() {
+						int n = 5, m = 7;
+						int *p1, *p2;
+						p1 = &amp;n;
+						p2 = &amp;m;
+						printf("n = &d, m = %d\n", n, m);
+					}	
 				</code></pre>
-				<p>
-					This returns a warning. <span class="monoText">*p</span> is the
-					<span class="italicsText">dereference operator</span>. It will return
-					the value stored in the address in <span class="monoText">p</span>.
-					The format specifier, however, <span class="monoText">%p</span>,
-					pertains to those of type <span class="monoText">void *</span>.
-				</p>
-			</details>
-		</li>
-		<li class="grid-item">
-			Consider the code below. What is the output of the last line?
-			<pre class="language-pseudo"><code>
-				int main() {
-					int a;
-					int *p;
-					printf("%d\n", *p);
-					return 0;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<pre class="language-bash"><code>
-					0
-				</code></pre>
-				<p>
-					This is <span class="term">undefined behavior</span>. It is not,
-					however, necessarily always zero. When we dereference a wild pointer,
-					we are essentially dereferencing random memory locations. Because of
-					this fact, it is best practice to perform
-					<span class="italicsText">inline initialization</span> when creating
-					pointers. Instead of simply writing
-					<span class="monoText">int *p</span>, we write
-					<span class="monoText">int *p = NULL</span>.
-				</p>
-			</details>
-		</li>
-		<li class="grid-item">
-			Consider the code below. What is the result of
-			<span class="monoText">p = q</span>?
-			<pre class="language-pseudo"><code>
-				int main() {
-					int i = 0;
-					int j = 1;
-					int *p = &amp;i;
-					int *q = &amp;j;
-					p = q;
-					return 0;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<p>
-					The line <span class="monoText">p = q</span> assigns to the pointer
-					<span class="monoText">p</span> the address stored in
-					<span class="monoText">q</span>. Thus,
-					<span class="monoText">p</span> now stores the address
-					<span class="monoText">&j</span>, as opposed to
-					<span class="monoText">&i</span>. The result:
-					<span class="monoText">p</span> and
-					<span class="monoText">q</span> are now aliases for the address
-					<span class="monoText">&j</span>. We can confirm this is the case with
-					some print-statements:
-				</p>
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-bash"><code>
+						n = 5
+						m = 7
+					</code></pre>
+					<p>
+						<var>p1</var> now stores <var>&n</var> (the address of
+						<var>n</var>), and <var>p2</var> now stores <var>&m</var> (the
+						address of <var>m</var>).
+					</p>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>What output:</p>
 				<pre class="language-c"><code>
 					#include &lt;stdio.h&gt;
+
 					int main() {
-						int i = 0;
-						printf("i = 0;\n");
-						printf("\t &i: %p\n", &i);
-						int j = 1;
-						printf("j = 1;\n");
-						printf("\t &j: %p\n", &j);
-						int *p = &amp;i;
-						printf("*p = &amp;i;\n");
-						printf("\t p: %p\n", p);
-						int *q = &amp;j;
-						printf("*q = &amp;j;\n");
-						printf("\t q: %p\n", q);
-						p = q;
-						printf("p = q;\n");
-						printf("\t p: %p\n", p);
+						int n = 5, m = 7;
+						int *p1, *p2;
+						p1 = &amp;n;
+						p2 = &amp;m;
+						*p1 = *p1 + 1;
+						*p2 = *p2 + 3;
+						printf("n = &d, m = %d\n", n, m);
+						return 0;
+					}	
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<details class="answer">
+						<summary>Solution</summary>
+						<pre class="language-bash"><code>
+							n = 6
+							m = 10
+						</code></pre>
+					</details>
+					<p>
+						Writing <var>*p = *p + 1</var> is equivalent to saying, "Go to the
+						address stored in <var>p</var>, and assign it <var>*p + 1</var>.
+						Writing <var>*p + 1</var> is equivalent to writing, "Go to address
+						stored in <var>*p</var>, and add <var>1</var> to whatever's in
+						there. The same goes for <var>*p2 = *p2 + 3</var>.
+					</p>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>What output:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdio.h&gt;
+
+					int main() {
+						int n = 5, m = 7;
+						int *p1, *p2;
+						p1 = &amp;n;
+						p2 = &amp;m;
+						*p1 = *p1 + 1;
+						*p2 = *p2 + 3;
+						p1 = p2;
+						p2 = p1;
+						printf("n = %d, m = %d\n", n, m);
+						printf("*p1 = %d, *p2 = %d\n", *p1, *p2);
 						return 0;
 					}
 				</code></pre>
-				<pre class="language-bash"><code>
-					i = 0;
-										&i: 0x7ffee7f6a118
-					j = 1;
-										&j: 0x7ffee7f6a114
-					*p = &amp;i;
-										p: 0x7ffee7f6a118
-					*q = &amp;j;
-										q: 0x7ffee7f6a114
-					p = q;
-										p: 0x7ffee7f6a114
-				</code></pre>
-			</details>
-		</li>
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-bash"><code>
+						n = 6, m = 10
+						*p1 = 10, *p2 = 10
+					</code></pre>
+					<p>
+						&nbsp;Writing <var>p1 = p2</var> instructs, "Assign the address in
+						<var>p2</var> to <var>p1</var>. Writing
+						<var>p2 = p1</var> instructs, "Assign the address in
+						<var>p1</var> to <var>p2</var>. Because <var>p2</var> points to
+						<var>m</var>, writing <var>p1 = p2</var> means that
+						<var>p1</var> now points to <var>m</var>. And since
+						<var>p1</var> points to <var>m</var>, writing
+						<var>p2 = p1</var> means that <var>p2</var> also points to
+						<var>m</var>.
+					</p>
+				</details>
+			</li>
 
-		<li class="grid-item">
-			Consider the code below. What is the result of
-			<span class="monoText">p = q</span>?
-			<pre class="language-pseudo"><code>
-				int main() {
-					int i = 0;
-					int j = 1;
-					int *p = &amp;i;
-					int *q = &amp;j;
-					p = q;
-					return 0;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
+			<li class="grid-item">
+				<p>What output:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdio.h&gt;
+
+					int main() {
+						int n = 5, m = 7;
+						int *p1, *p2;
+						p1 = &amp;n;
+						p2 = &amp;m;
+						*p1 = *p1 + 1;
+						*p2 = *p2 + 3;
+						p1 = p2;
+						p2 = p1;
+						n = *p2;
+						m = n - 3;
+						printf("n = %d, m = %d\n", n, m);
+						printf("*p1 = %d, *p2 = %d\n", *p1, *p2);
+						return 0;
+					}	
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-bash"><code>
+						n = 10, m = 7;
+					</code></pre>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>Explain the code in English:</p>
+				<pre class="language-c"><code>
+					int main() {
+						int a;
+						int *p;
+						p = &amp;a;
+						*p = 5; 
+					}
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<ul>
+						<li>Initialize a variable <var>a</var> of type <var>int</var>.</li>
+						<li>Initialize pointer <var>p</var> of type <var>int*</var>.</li>
+						<li>
+							Assign to the pointer <var>p</var> the address of the variable
+							<var>a</var>.
+						</li>
+						<li>
+							Go the address stored in <var>p</var> (the address of
+							<var>a</var>), and store inside of it the literal <var>5</var>.
+						</li>
+					</ul>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>What result:</p>
+				<pre class="language-c"><code>
+					int main() {
+						int* p;
+						return 0;
+					}
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<p>Creates a pointer of <var>p</var> of type <var>int*</var>.</p>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>Consider the code below. What is the output of the last line?</p>
+				<pre class="language-c"><code>
+					int main() {
+						int a;
+						int *p;
+						printf("%p\n", p);
+						return 0;
+					}
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-bash"><code>
+						0x7ffee8e00138
+					</code></pre>
+					<p>
+						This returns the address stored in <var>p</var>. Note that because
+						<var>p</var> is uninitialized, it is called a
+						<b>wild pointer</b> &mdash; a pointer that points to an arbitrary
+						(random) memory location.
+					</p>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>Consider the code below. What is the output of the last line?</p>
+				<pre class="language-c"><code>
+					int main() {
+						int a;
+						int *p;
+						printf("%p\n", *p);
+						return 0;
+					}
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-bash"><code>
+						exercises.c:6:17: warning: format specifies type 'void *' but the argument has type 'int' [-Wformat]
+							printf("%p\n", *p);
+											~~     ^~
+											%d
+					</code></pre>
+					<p>
+						This returns a warning. <var>*p</var> is the
+						<i>dereference operator</i>. It will return the value stored in the
+						address in <var>p</var>. The format specifier, however,
+						<var>%p</var>, pertains to those of type <var>void *</var>.
+					</p>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>Consider the code below. What is the output of the last line?</p>
+				<pre class="language-c"><code>
+					int main() {
+						int a;
+						int *p;
+						printf("%d\n", *p);
+						return 0;
+					}
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-c"><code>
+						0
+					</code></pre>
+					<p>
+						This is <b>undefined behavior</b>. It is not, however, necessarily
+						always zero. When we dereference a wild pointer, we are essentially
+						dereferencing random memory locations. Because of this fact, it is
+						best practice to perform <i>inline initialization</i> when creating
+						pointers. Instead of simply writing <var>int *p</var>, we write
+						<var>int *p = NULL</var>.
+					</p>
+				</details>
+			</li>
+
+			<li class="grid-item">
 				<p>
-					We always evaluate the right-hand part of the expression first. Here,
-					we dereference <span class="monoText">q</span>, so we get the value
-					<span class="monoText">1</span>. Then, we dereference
-					<span class="monoText">p</span> &mdash; accessing what's inside the
-					address stored by <span class="monoText">p</span> &mdash; and we place
-					inside it the value <span class="monoText">1</span>. Thus,
-					<span class="monoText">i</span> is now
-					<span class="monoText">1</span>.
+					Consider the code below. What is the result of
+					<var>p = q</var>?
 				</p>
 				<pre class="language-c"><code>
+					int main() {
+						int i = 0;
+						int j = 1;
+						int *p = &amp;i;
+						int *q = &amp;j;
+						p = q;
+						return 0;
+					}
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<p>
+						The line <var>p = q</var> assigns to the pointer <var>p</var> the
+						address stored in <var>q</var>. Thus, <var>p</var> now stores the
+						address <var>&j</var>, as opposed to <var>&i</var>. The result:
+						<var>p</var> and <var>q</var> are now aliases for the address
+						<var>&j</var>. We can confirm this is the case with some
+						print-statements:
+					</p>
+					<pre class="language-c"><code>
 						#include &lt;stdio.h&gt;
 						int main() {
 							int i = 0;
 							printf("i = 0;\n");
-							printf("\t i: %d\n", i);
+							printf("\t &i: %p\n", &i);
 							int j = 1;
 							printf("j = 1;\n");
-							printf("\t j: %d\n", j);
+							printf("\t &j: %p\n", &j);
 							int *p = &amp;i;
 							printf("*p = &amp;i;\n");
-							printf("\t *p: %d\n", *p);
+							printf("\t p: %p\n", p);
 							int *q = &amp;j;
 							printf("*q = &amp;j;\n");
-							printf("\t *q: %d\n", *q);
-							*p = *q;
-							printf("*p = *q;\n");
-							printf("\t *p: %d\n", *p);
-							printf("\t i: %d\n", i);
+							printf("\t q: %p\n", q);
+							p = q;
+							printf("p = q;\n");
+							printf("\t p: %p\n", p);
 							return 0;
 						}
 					</code></pre>
-				<pre class="language-bash"><code>
+					<pre class="language-bash"><code>
 						i = 0;
-										i: 0
+											&i: 0x7ffee7f6a118
 						j = 1;
-										j: 1
+											&j: 0x7ffee7f6a114
 						*p = &amp;i;
-										*p: 0
+											p: 0x7ffee7f6a118
 						*q = &amp;j;
-										*q: 1
-						*p = *q;
-										*p: 1
-										i: 1
+											q: 0x7ffee7f6a114
+						p = q;
+											p: 0x7ffee7f6a114
 					</code></pre>
-			</details>
-		</li>
+				</details>
+			</li>
 
-		<li class="grid-item">
-			Consider the code below. What is the result of
-			<span class="monoText">p = q</span>?
-			<pre class="language-pseudo"><code>
-				int main() {
-					int i = 0;
-					int j = 1;
-					int *p = &amp;i;
-					int *q = &amp;j;
-					*p = q;
-					return 0;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<pre class="language-bash"><code>
-					exercises.c:16:5: warning: incompatible pointer to integer conversion assigning to 'int' from 'int *'; dereference with * [-Wint-conversion]
-									*p = q;
-										^ ~
-											*
-					1 warning generated.
-				</code></pre>
+			<li class="grid-item">
 				<p>
-					Again, evaluate the right-hand part of the expression. Here, it's a
-					lone <span class="monoText">q</span>, meaning we're going to get an
-					address. Then, we dereference <span class="monoText">p</span> &mdash;
-					accessing what's inside the address stored by
-					<span class="monoText">p</span> &mdash; and we place inside it the
-					address stored by <span class="monoText">q</span>. This will likely
-					return a warning, given that addresses are fairly large numbers. The
-					<span class="monoText">int</span> variable is likely not large enough
-					to fit the address; if the compiler allows us to do this, it's like
-					that parts of the data are lost, since the compiler can't fit
-					everything into the allocated space.
+					Consider the code below. What is the result of
+					<var>p = q</var>?
 				</p>
-			</details>
-		</li>
-
-		<li class="grid-item">
-			Consider the code below. What is the result of
-			<span class="monoText">p = q</span>?
-			<pre class="language-pseudo"><code>
-				int main() {
-					int i = 0;
-					int j = 1;
-					int *p = &amp;i;
-					int *q = &amp;j;
-					p = *q;
-					return 0;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<pre class="language-bash"><code>
-					exercises.c:8:4: warning: incompatible integer to pointer conversion assigning to 'int *' from 'int'; remove * [-Wint-conversion]
-									p = *q;
-										^ ~~
-					1 warning generated.
+				<pre class="language-c"><code>
+					int main() {
+						int i = 0;
+						int j = 1;
+						int *p = &amp;i;
+						int *q = &amp;j;
+						p = q;
+						return 0;
+					}
 				</code></pre>
-				<p>
-					Here, we are dereferencing <span class="monoText">q</span>. The value
-					stored in the address pointed at by <span class="monoText">q</span> is
-					then stored as the address stored by <span class="monoText">p</span>.
-					This essentially means that the address stored by
-					<span class="monoText">p</span> is the
-					<span class="monoText">1</span>. This is not a valid address. This
-					will not itself cause a crash. However, if we try to dereference
-					<span class="monoText">p</span>, we will get a
-					<span class="term">segmentation fault</span>.
-				</p>
-			</details>
-		</li>
-	</ol>
+				<details class="answer">
+					<summary>Solution</summary>
+					<p>
+						We always evaluate the right-hand part of the expression first.
+						Here, we dereference <var>q</var>, so we get the value <var>1</var>.
+						Then, we dereference <var>p</var> &mdash; accessing what's inside
+						the address stored by <var>p</var> &mdash; and we place inside it
+						the value <var>1</var>. Thus, <var>i</var> is now <var>1</var>.
+					</p>
+					<pre class="language-c"><code>
+							#include &lt;stdio.h&gt;
+							int main() {
+								int i = 0;
+								printf("i = 0;\n");
+								printf("\t i: %d\n", i);
+								int j = 1;
+								printf("j = 1;\n");
+								printf("\t j: %d\n", j);
+								int *p = &amp;i;
+								printf("*p = &amp;i;\n");
+								printf("\t *p: %d\n", *p);
+								int *q = &amp;j;
+								printf("*q = &amp;j;\n");
+								printf("\t *q: %d\n", *q);
+								*p = *q;
+								printf("*p = *q;\n");
+								printf("\t *p: %d\n", *p);
+								printf("\t i: %d\n", i);
+								return 0;
+							}
+						</code></pre>
+					<pre class="language-bash"><code>
+							i = 0;
+											i: 0
+							j = 1;
+											j: 1
+							*p = &amp;i;
+											*p: 0
+							*q = &amp;j;
+											*q: 1
+							*p = *q;
+											*p: 1
+											i: 1
+						</code></pre>
+				</details>
+			</li>
 
+			<li class="grid-item">
+				<p>
+					Consider the code below. What is the result of
+					<var>p = q</var>?
+				</p>
+				<pre class="language-c"><code>
+					int main() {
+						int i = 0;
+						int j = 1;
+						int *p = &amp;i;
+						int *q = &amp;j;
+						*p = q;
+						return 0;
+					}
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-bash"><code>
+						exercises.c:16:5: warning: incompatible pointer to integer conversion assigning to 'int' from 'int *'; dereference with * [-Wint-conversion]
+										*p = q;
+											^ ~
+												*
+						1 warning generated.
+					</code></pre>
+					<p>
+						Again, evaluate the right-hand part of the expression. Here, it's a
+						lone <var>q</var>, meaning we're going to get an address. Then, we
+						dereference <var>p</var> &mdash; accessing what's inside the address
+						stored by <var>p</var> &mdash; and we place inside it the address
+						stored by <var>q</var>. This will likely return a warning, given
+						that addresses are fairly large numbers. The <var>int</var> variable
+						is likely not large enough to fit the address; if the compiler
+						allows us to do this, it's like that parts of the data are lost,
+						since the compiler can't fit everything into the allocated space.
+					</p>
+				</details>
+			</li>
+
+			<li class="grid-item">
+				<p>
+					Consider the code below. What is the result of
+					<var>p = q</var>?
+				</p>
+				<pre class="language-c"><code>
+					int main() {
+						int i = 0;
+						int j = 1;
+						int *p = &amp;i;
+						int *q = &amp;j;
+						p = *q;
+						return 0;
+					}
+				</code></pre>
+				<details class="answer">
+					<summary>Solution</summary>
+					<pre class="language-bash"><code>
+						exercises.c:8:4: warning: incompatible integer to pointer conversion assigning to 'int *' from 'int'; remove * [-Wint-conversion]
+										p = *q;
+											^ ~~
+						1 warning generated.
+					</code></pre>
+					<p>
+						Here, we are dereferencing <var>q</var>. The value stored in the
+						address pointed at by <var>q</var> is then stored as the address
+						stored by <var>p</var>. This essentially means that the address
+						stored by <var>p</var> is the <var>1</var>. This is not a valid
+						address. This will not itself cause a crash. However, if we try to
+						dereference <var>p</var>, we will get a <b>segmentation fault</b>.
+					</p>
+				</details>
+			</li>
+		</ol>
+	</section>
+
+	<section id="printing_variable_address">
+		<p>
+			<span class="topic">Printing the Address of a Variable.</span> Whenever we
+			are unsure of what a particular variable or reference is, it's helpful to
+			print the value and/or the address:
+		</p>
+		<pre class="language-c"><code>
+			#include &lt;stdio.h&gt;
+	
+			int main() {
+				int x = 5;
+				printf("x VALUE: %d\n", x);
+				printf("x ADDRESS: %p\n", &x);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			x VALUE: 5
+			x ADDRESS: 0x7ffedffe61bc
+		</code></pre>
+	</section>
+
+	<section id="uninitialized_pointer">
+		<h3>Failing to Initialize</h3>
+		<p>
+			As we know, failing to initialize variables before using them is asking
+			for trouble. For example, consider the output of the following code:
+		</p>
+
+		<pre class="language-c"><code>
+			#include &lt;stdio.h&gt;
+			int main() {
+				int i;
+				printf("i = %i\n", i);
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			i = 358010917
+		</code></pre>
+
+		<p>
+			The value of <var>i</var> is called a <b>garbage value</b>. It's the value
+			in the memory address identified as <var>i</var> at time of compilation
+			and essentially random. Worse, this will not cause a crash. It's a
+			potentially lethal and massive bug, eager to crawl out of the woodwork.
+		</p>
+		<div class="mainIdea">
+			<p>
+				C provides a great deal of freedom when it comes to pointers. That
+				freedom, however, also means that C is unforgiving of our mistakes.
+				Contrast this with a language like Java, where pointers are
+				automatically set to
+				<var>NULL</var> when they're declared. No such safeguard exists in C
+				&mdash; the programmer is assumed to know what they want and how best to
+				obtain it.
+			</p>
+		</div>
+		<p>
+			The same danger applies pointers, as they too are variable. When a pointer
+			is first declared, it has no pointee. Without assigning an address to a
+			declared pointer, we say that the pointer is an
+			<b>uninitialized pointer</b>. Because C will not prevent us from
+			dereferencing the uninitialized pointer, such dereferences lead to runtime
+			errors. This is even worse than using an uninitialized non-pointer
+			variable. Uninitialized pointers effectively point to anywhere in memory,
+			and that memory could be in use by another program. This will more than
+			likely lead to segmentation fault, causing our program to crash. That's
+			the best case scenario. The worst case scenario is if C, for whatever
+			reason, allows us to touch the value in that random address, thereby
+			modifying &mdash; and potentially crashing &mdash; an entirely unrelated
+			program.
+		</p>
+		<p>
+			For this reason, whenever we work with pointers, it is best practice to
+			strictly follow these rules:
+		</p>
+		<figure>
+			<ol class="numd">
+				<li>Initialize pointers in a single line, always.</li>
+				<li>
+					If a pointer cannot be initialized in a single line, follow the
+					pointer's declaration by assignining the pointer
+					<var>NULL</var> immediately.
+				</li>
+			</ol>
+		</figure>
+		<p>For example, here is an application of rule 1:</p>
+		<pre class="language-c"><code>
+			int a = 1;
+			int *p = &amp;a;
+		</code></pre>
+		<p>And here is an application of rule 2:</p>
+		<pre class="language-c"><code>
+			int a = 1;
+			int *p;
+			p = NULL;
+		</code></pre>
+	</section>
+
+	<section id="the_null_pointer">
+		<p>
+			<span class="topic">The Null Pointer.</span> By assigining the value
+			<var>NULL</var> to a pointer, we are essentially assigning the integer
+			<var>0</var> as the pointer's address. We call such a pointer a
+			<b>null pointer</b>. At the very least, this ensures the pointee isn't
+			some <i>random</i> address.
+		</p>
+		<p>
+			The catch, however, is that <var>0</var> is not a valid address.
+			Attempting to dereference the null pointer will return a segmentation
+			fault. This danger, however, is precisely what makes the null pointer so
+			useful. Many data structures rely on the null pointer, particularly where
+			we have to ensure the pointer we're working with is or is not the null
+			pointer.
+		</p>
+		<pre class="language-c"><code>
+			if (p == NULL) {
+				// do something
+			}
+		</code></pre>
+	</section>
+</section>
+
+<section id="pointer_types">
+	<h2>Pointer Types</h2>
 	<p>
-		<span class="topic">Failing to Initialize.</span> Failing to initialize
-		variables before using them is asking for trouble. For example, consider the
-		output of the following code:
+		Because C is a static- and explicitly-typed language, all pointers must have
+		an explicit type on declaration. These types are denoted in the language
+		with symbols like <var>int*</var> or <var>char*</var>. For example, if we
+		have a pointer to an <var>int</var> variable, the pointer's type is
+		<var>int*</var>. If we have a pointer to a <var>char</var> variable, the
+		pointer's type is <var>char*</var>.
 	</p>
-	<pre class="language-c"><code>
-		#include &lt;stdio.h&gt;
-		int main() {
-			int i;
-			printf("i = %i\n", i);
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		i = 358010917
-	</code></pre>
+	<figure>
+		<table class="alg">
+			<thead>
+				<th>Syntax</th>
+				<th>Meaning</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>int*</var></td>
+					<td>Pointer to an <var>int</var></td>
+				</tr>
+				<tr>
+					<td><var>float*</var></td>
+					<td>Pointer to an <var>float</var></td>
+				</tr>
+				<tr>
+					<td><var>char*</var></td>
+					<td>Pointer to an <var>char</var></td>
+				</tr>
+				<tr>
+					<td><var>struct fraction*</var></td>
+					<td>Pointer to a struct called <var>fraction</var></td>
+				</tr>
+				<tr>
+					<td><var>struct fraction**</var></td>
+					<td>Pointer to a pointer to a struct called <var>fraction</var></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
 	<p>
-		The value above is called a <span class="term">garbage value</span>. It's
-		the value in the memory address at time of compilation, and it's pretty much
-		random. This won't cause a crash, but it will lead to strange results.
+		More formally: Suppose ${p}$ is a pointer, ${t}$ is a type, and ${x}$ is a
+		standard variable. When we write ${t \space {*p} = x;}$ we are stating that
+		that value stored in ${x}$ is of type ${t.}$ More explicitly, we are stating
+		to C: &#8220;Treat the value inside ${\texttt{\&}x}$ as a value of type
+		${t.}$&#8221;
 	</p>
 	<p>
-		The same danger applies to uninitialized pointers, only worse. Uninitialized
-		pointers effectively point to anywhere in memory, and that memory could be
-		in use by another program. This will more than likely lead to segmentation
-		fault, causing our program to crash.
+		Why can't we just use <var>int</var>? Or some other numeric type? After all,
+		aren't memory addresses just numbers? C requires strong types because the
+		pointer isn't solely used for storing addresses. They also have the added
+		feature of <i>dereferencing</i>. Not only can they store addresses, they can
+		be used to access and modify the values inside the addresses they store. And
+		because values can be of different types (and by implication of different
+		sizes), pointers must have types. Otherwise, C would allow us to do things
+		like assigning an <var>int</var> value in a <var>char</var> variable. The
+		costs of allowing this (most significantly, data loss) significantly
+		outweigh the convenience of not requiring explicit typing.
 	</p>
-	<p>
-		<span class="topic">The Null Pointer.</span> We can assign the value
-		<span class="monoText">NULL</span> to a pointer. When we do so, we are
-		essentially assigning the integer <span class="monoText">0</span> as the
-		pointer's address, and <span class="monoText">0</span> is not a valid
-		address. Attempting to dereference the null pointer will return a
-		segmentation fault.
-	</p>
-	<p>
-		This danger, however, is precisely what makes the null pointer so useful.
-		Many data structures rely on the null pointer, particularly where we have to
-		ensure the pointer we're working with is or is not the null pointer.
-	</p>
-	<pre class="language-c"><code>
-		if (p == NULL) {
-			// do something
-		}
-	</code></pre>
 </section>
 
 <section id="pointer_arguments">
-	<h2>Pointer as Arguments to Functions</h2>
+	<h2>Pointer Parameters</h2>
 	<p>
 		With pointers, we can write functions that modify their arguments. For
-		example, suppose that instead of writing <span class="monoText">a++</span>,
-		we want to write a separate function called
-		<span class="monoText">increment()</span>:
+		example, suppose that instead of writing <var>a++</var>, we want to write a
+		separate function called <var>increment()</var>:
 	</p>
 
 	<pre class="language-c"><code>
@@ -885,21 +1224,20 @@
 	<pre class="language-bash"><code>
 		1
 	</code></pre>
+
 	<p>
 		It does not work. In C, the default rule is
-		<span class="term">pass-by-value</span>: When a datum is passed as an
-		argument to a function, a <span class="underlineText">copy</span> of the
-		datum is passed; <span class="underlineText">not</span> the original.
-		Whether its simple or composite data, only a copy is passed. Once
-		<span class="monoText">increment()</span> has finished executing all of the
-		data passed into it is destroyed.
+		<b>pass-by-value</b>: When a datum is passed as an argument to a function, a
+		<em>copy</em> of the datum is passed; <em>not</em> the original. Whether its
+		simple or composite data, only a copy is passed. Once
+		<var>increment()</var> has finished executing all of the data passed into it
+		is destroyed.
 	</p>
+
 	<p>
 		What we instead want to do is pass the address of
-		<span class="monoText">a</span> into the function
-		<span class="monoText">increment()</span> as an argument. This is called
-		<span class="term">pass-by-address</span>, or
-		<span class="term">pass-by-reference</span>.
+		<var>a</var> into the function <var>increment()</var> as an argument. This
+		is called <b>pass-by-address</b>, or <b>pass-by-reference</b>.
 	</p>
 
 	<pre class="language-c"><code>
@@ -919,16 +1257,19 @@
 	<pre class="language-bash"><code>
 		2
 	</code></pre>
+
 	<p>Now it works. Notice the syntax. We wrote:</p>
+
 	<pre class="language-c"><code>
 		*a = *a + 1;
 	</code></pre>
 
 	<section id="variable_swap">
+		<h3>Swapping with Pointers</h3>
 		<p>
-			<span class="topic">Swapping with Pointers.</span> The previous example
-			was a relatively simple demonstration. A clearer illustration of why
-			pointers are so useful is to consider the idiom of swapping variables:
+			The previous example was a relatively simple demonstration. A clearer
+			illustration of why pointers are so useful is to consider the idiom of
+			swapping variables:
 		</p>
 		<pre class="language-c"><code>
 			#include &lt;stdio.h&gt;
@@ -975,17 +1316,14 @@
 		</code></pre>
 		<p>
 			Again, because the default rule in C for functions is pass-by-value, the
-			<span class="monoText">swap()</span> function has no idea what
-			<span class="monoText">a</span> and <span class="monoText">b</span> are.
-			It only has the values <span class="monoText">0</span> and
-			<span class="monoText">1</span>. Accordingly, when
-			<span class="monoText">swap()</span> executes, it only performs the
-			swapping inside itself. Nothing actually happens inside
-			<span class="monoText">main()</span>.
+			<var>swap()</var> function has no idea what <var>a</var> and
+			<var>b</var> are. It only has the values <var>0</var> and <var>1</var>.
+			Accordingly, when <var>swap()</var> executes, it only performs the
+			swapping inside itself. Nothing actually happens inside <var>main()</var>.
 		</p>
 		<p>
 			The fix is to pass addresses as arguments, instead of the values inside
-			those addresses. We call this <span class="term">pass-by-reference</span>:
+			those addresses. We call this <b>pass-by-reference</b>:
 		</p>
 		<pre class="language-c"><code>
 			#include &lt;stdio.h&gt;
@@ -1023,17 +1361,18 @@
 	</section>
 
 	<section id="functions_multiple_returns">
+		<h3>Multifunctions</h3>
 		<p>
-			<span class="topic">Multifunctions.</span> By default, functions in C can
-			only output one value. More formally, functions in C are equivalent to
-			<span class="italicsText">injective functions</span> &mdash; functions
-			whose output matches exactly one input. With pointers, however, we can
-			write <span class="term">multifunctions</span> &mdash; non-functional
-			relations where several output values map to a single input. For example,
-			let's say we want to write a function that returns both a minimum and a
-			maximum given two numbers. They words &#8220;returns both&#8221; should
-			alert us immediately that this is a big no no under the default rules of
-			C. However, pointers provide the bypass:
+			By default, functions in C can only output one value. More formally,
+			functions in C are equivalent to
+			<i>injective functions</i> &mdash; functions whose output matches exactly
+			one input. With pointers, however, we can write
+			<b>multifunctions</b> &mdash; non-functional relations where several
+			output values map to a single input. For example, let's say we want to
+			write a function that returns both a minimum and a maximum given two
+			numbers. They words &#8220;returns both&#8221; should alert us immediately
+			that this is a big no no under the default rules of C. However, pointers
+			provide the bypass:
 		</p>
 		<pre class="language-c"><code>
 			#include &lt;stdio.h&gt;
@@ -1064,14 +1403,14 @@
 		<p>
 			The example above is another demonstration of pass-by-reference. By
 			passing by reference, we effectively modify the arguments passed into
-			<span class="monoText">setMinMax</span>. And because we modify the
-			arguments, changes are affected in <span class="monoText">main()</span>.
+			<var>setMinMax</var>. And because we modify the arguments, changes are
+			affected in <var>main()</var>.
 		</p>
 	</section>
 
 	<p>
-		Pointers also allow us to return more than one thing from a function. For
-		example, a function that returns both the minimum and the maximum.
+		Pointers are what allow us to return more than one thing from a function.
+		For example, a function that returns both the minimum and the maximum.
 		Furthermore, they allow us to pass arrays, strings, and entire data
 		structures into functions. Finally, pointers allow us to allocate unknown
 		memory at run time. This is a powerful ability, given that we don't always
@@ -1085,11 +1424,9 @@
 	<p>
 		Because pointers store a memory address, and because memory addresses are
 		just numbers, it follows that we can perform arithmetic with pointers. This
-		is called <span class="term">pointer arithmetic</span>. For example, suppose
-		a pointer <span class="monoText">p</span> of type
-		<span class="monoText">int</span> stores the address
-		<span class="monoText">1001</span>. What is the value of
-		<span class="monoText">p++</span>? Well, let's try it:
+		is called <b>pointer arithmetic</b>. For example, suppose a pointer
+		<var>p</var> of type <var>int</var> stores the address <var>1001</var>. What
+		is the value of <var>p++</var>? Well, let's try it:
 	</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
@@ -1124,16 +1461,14 @@
 	</code></pre>
 	<p>
 		Notice that the difference between these addresses is 4. This is because an
-		<span class="monoText">int</span> is allocated 4 bytes of memory. Thus, when
-		we increment the pointer <span class="monoText">p</span>, are asking for the
-		next <span class="monoText">int</span> address. Essentially, 4 bytes more
-		than the address in <span class="monoText">p</span>.
+		<var>int</var> is allocated 4 bytes of memory. Thus, when we increment the
+		pointer <var>p</var>, we are asking for the next <var>int</var> address.
+		Essentially, 4 bytes more than the address in <var>p</var>.
 	</p>
 	<p>
 		Pointer arithmetic provides us greater control in navigating memory. This is
 		a great deal of power, and we can run into trouble if we aren't careful. For
-		example, the value at the address in <span class="monoText">p++</span> is
-		garbage value:
+		example, the value at the address in <var>p++</var> is garbage value:
 	</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
@@ -1155,10 +1490,125 @@
 		*(p++) = -420097736
 	</code></pre>
 	<p>
-		Look at how random the value of <span class="monoText">p++</span> is. If we
-		used the value of the dereferenced <span class="monoText">p</span> later
-		down our program, we'd be in for surprises.
+		Look at how random the value of <var>p++</var> is. If we used the value of
+		the dereferenced <var>p</var> later down our program, we'd be in for
+		surprises. A few helpful general rules with pointer arithmetic:
 	</p>
+
+	<p>
+		The core rule behind pointer arithmetic is that arithmetic operations are
+		done in chunks of the pointee's data type. Generally, these chunks are as
+		follows:
+	</p>
+
+	<table class="api">
+		<thead>
+			<th>Type</th>
+			<th>Chunk</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<var><mark>char</mark></var>
+				</td>
+				<td>1 byte</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>signed char</mark></var>
+				</td>
+				<td>1 byte</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>unsigned char</mark></var>
+				</td>
+				<td>1 byte</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>short</mark></var
+					>, <var><mark>short int</mark></var
+					>, <var><mark>signed short</mark></var
+					>, <var><mark>signed short int</mark></var>
+				</td>
+				<td>2 bytes</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>unsigned short</mark></var
+					>, <var><mark>unsigned short int</mark></var>
+				</td>
+				<td>2 bytes</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>int</mark></var
+					>, <var><mark>signed</mark></var
+					>, <var><mark>signed int</mark></var>
+				</td>
+				<td>4 bytes (2 bytes for a 32-bit compiler)</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>unsigned</mark></var
+					>, <var><mark>unsigned int</mark></var>
+				</td>
+				<td>4 bytes (2 bytes for a 32-bit compiler)</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>long</mark></var
+					>, <var><mark>long int</mark></var
+					>, <var><mark>signed long</mark></var
+					>, <var><mark>signed long int</mark></var>
+				</td>
+				<td>8 bytes (4 bytes for a 32-bit compiler)</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>unsigned long</mark></var
+					>, <var><mark>unsigned long int</mark></var>
+				</td>
+				<td>8 bytes (4 bytes for a 32-bit compiler)</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>long long</mark></var
+					>, <var><mark>long long int</mark></var
+					>, <var><mark>signed long long</mark></var
+					>, <var><mark>signed long long int</mark></var>
+				</td>
+				<td>8 bytes</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>unsigned long long</mark></var
+					>, <var><mark>unsigned long long int</mark></var>
+				</td>
+				<td>8 bytes</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>float</mark></var>
+				</td>
+				<td>typically 4 bytes</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>double</mark></var>
+				</td>
+				<td>typically 8 bytes</td>
+			</tr>
+			<tr>
+				<td>
+					<var><mark>long double</mark></var>
+				</td>
+				<td>typically 10 bytes</td>
+			</tr>
+		</tbody>
+	</table>
+
 	<p>
 		As an aside, notice that the memory addresses have changed. This evidences
 		the fact that our program's data doesn't just stay in a single location
@@ -1168,39 +1618,127 @@
 	</p>
 </section>
 
-<section id="pointer_types">
-	<h2>Pointer Types</h2>
+<section id="the_size_of_a_pointer">
+	<h2>The Size of a Pointer</h2>
 	<p>
-		Because C is a static- and explicitly-typed language, all pointers must have
-		an explicit type on declaration. These types are denoted in the language
-		with symbols like <span class="monoText">int*</span> or
-		<span class="monoText">char*</span>. For example, if we have a pointer to an
-		<span class="monoText">int</span> variable, the pointer's type is
-		<span class="monoText">int*</span>. If we have a pointer to a
-		<span class="monoText">char</span> variable, the pointer's type is
-		<span class="monoText">char*</span>.
+		Suppose we have two computers, <var>Machine1</var> and <var>Machine2</var>.
+		On <var>Machine1</var>, we write the following:
+	</p>
+	<pre class="language-c"><code>
+		int main() {
+			int n = 10;
+			int *p = &amp;n;
+			printf("sizeof(p) = %d bytes", sizeof(p));
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		sizeof(p) = 8 bytes
+	</code></pre>
+	<p>
+		Notice, however, what happens when we execute the same code on
+		<var>Machine2</var>:
+	</p>
+	<pre class="language-bash"><code>
+		main.c:6:27: warning: format specifies type 'int' but the argument has type 'unsigned long' [-Wformat]
+        printf("sizeof(p) = %d", sizeof(p));
+                            ~~   ^~~~~~~~~
+                            %lu
+	</code></pre>
+	<p>
+		Why are there two different outputs? We're seeing two different results
+		because <var>Machine1</var> is running on a 32-bit system, while
+		<var>Machine2</var> is running on a 64-bit system. To understand the
+		differences between these systems, let's brush up on some computer memory
+		concepts.
 	</p>
 	<p>
-		More formally: Suppose ${p}$ is a pointer, ${t}$ is a type, and ${x}$ is a
-		standard variable. When we write ${t \space {*p} = x;}$ we are stating that
-		that value stored in ${x}$ is of type ${t.}$ More explicitly, we are stating
-		to C: &#8220;Treat the value inside ${\texttt{\&}x}$ as a value of type
-		${t.}$&#8221;
+		As we know, we can think of computer memory as a single, giant array of
+		bytes, each with a unique <i>address</i>. When we initialize and access
+		variables, we are effectively reading and writing these bytes. Our programs
+		refer to these bytes by their addresses, and variable names &mdash;
+		identifiers &mdash; are just a convenience for not having to write the
+		actual numeric address of a byte. The set of all possible addresses a
+		computer can have is called the <b>address space</b>.
 	</p>
 	<p>
-		Why can't we just use <span class="monoText">int</span>? Or some other
-		numeric type? After all, aren't memory addresses just numbers? C requires
-		strong types because the pointer isn't solely used for storing addresses.
-		They also have the added feature of
-		<span class="italicsText">dereferencing</span>. Not only can they store
-		addresses, they can be used to access and modify the values inside the
-		addresses they store. And because values can be of different types (and by
-		implication of different sizes), pointers must have types. Otherwise, C
-		would allow us to do things like assigning an
-		<span class="monoText">int</span> value in a
-		<span class="monoText">char</span> variable. The costs of allowing this
-		(most significantly, data loss) significantly outweigh the convenience of
-		not requiring explicit typing.
+		Now, not all values can fit in just one byte. For example, the
+		<var>int</var> value <var>3921</var> cannot fit in a single byte. There are
+		8 bits in a byte, and the number <var>3921</var> in binary is
+		<var>111101010001</var>. That's ${12}$ bits, so we need at least 3 bytes.
+		Recall that memory addresses themselves are just numbers. Thus, addresses
+		themselves have sizes. And given that addresses have sizes, a computer's
+		ability to read and write an address is limited by how large an address can
+		be &mdash; i.e., the address's size. The size of a memory address in machine
+		is called the machine's <b>word size</b>.
+	</p>
+	<p>
+		When we say that a computer runs on a <q>64-bit system</q>, we're really
+		saying that the machine uses ${64}$ bits for addressing. With 64 bits, the
+		computer can read and write ${2^{64} \approx 1.8 \times 10^{19}}$ addresses.
+		For a <q>32-bit system</q>, addresses exist as ${32}$ bits, allowing the
+		computer to read and write ${2^{32}}$ addresses. Comparing the two:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/32_vs_64_bit.svg' %}"
+			alt="32- verus 64-bit words"
+			loading="lazy"
+			class="eighty-p"
+		/>
+	</figure>
+	<p>
+		Since each byte consists of 8 bits, <i>words</i> are 8 bytes long on a 64
+		bit system, and 4 bytes long on a 32-bit system. Importantly, addresses
+		still specify the locations of bytes in memory. A word is simply the largest
+		chunk of bits a processor can perform computations at a single point in
+		time. This is why the terms <i>word size</i> and <i>register size</i> are
+		often used interchangeably. When we perform operations like addition and
+		multiplication, we aren't actually working with the bytes themselves &mdash;
+		the machine is working with words. To work with those words, however, the
+		computer must use the addresses of the bytes.
+	</p>
+	<p>
+		Going back to our example, <var>Machine1</var> allows us to print the
+		address stored in <var>p</var> because it's a 32-bit system. The address can
+		<q>fit</q> in an <var>int</var> because it consists of ${32}$ bits &mdash;
+		${4}$ bytes. Thus, we can use the format specifier <var>%d</var>. On
+		<var>Machine2</var>, however, the address cannot fit in an
+		<var>int</var> because <var>Machine2</var>'s addresses consist of ${64}$
+		bits &mdash; ${8}$ bytes. This is why <var>Machine2</var>'s compiler is
+		instructing us to use the format specifier <var>%lu</var> (a
+		<var>long unsigned</var> type), since a <var>long unsigned</var> takes up
+		${64}$ bits on a ${64-bit}$ system.
+	</p>
+	<p>
+		The simplest way to determine whether a given machine uses a 32-bit or
+		64-bit system is to determine size of <var>char</var> pointer. Running the
+		code below on <var>Machine2</var>, we see:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+
+		int main() {
+			printf("sizeof(char*) = %lu\n", sizeof(char*));
+			return 0;
+		}	
+	</code></pre>
+	<pre class="language-bash"><code>
+		sizeof(char*) = 8
+	</code></pre>
+	<p>
+		Given that the size of <var>char*</var> is eight, we can conclude that the
+		machine runs on a 64-bit system. If we ran the same code above on
+		<var>Machine1</var> &mdash; a 32-bit system &mdash; we would see:
+	</p>
+	<pre class="language-bash"><code>
+		sizeof(char*) = 4
+	</code></pre>
+	<p>
+		Note, however, that the test above only informs us of the machine performing
+		the compilation. If we ran a 32-bit executable on a 64-bit system, we would
+		see
+		<var>sizeof(char*) = 4</var>, unless a cross-compiler is used.
 	</p>
 </section>
 
@@ -1209,8 +1747,8 @@
 	<p>
 		Because pointers are variables, we can have pointers pointing to pointers.
 		This ability essentially allows us to bypass the boundaries of
-		<span class="italicsText">variable scope</span> by establishing bridges
-		between memory locations. For example, suppose we wrote the following:
+		<i>variable scope</i> by establishing bridges between memory locations. For
+		example, suppose we wrote the following:
 	</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
@@ -1223,23 +1761,15 @@
 	</code></pre>
 	<p>
 		As we know, the code above allocates 4 bytes for
-		<span class="monoText">int x = 5</span>, and 8 bytes for
-		<span class="monoText">int *p = &amp;x;</span>. Suppose the address of
-		<span class="monoText">x</span> is <span class="monoText">125</span>. Then
-		the value of <span class="monoText">p</span> is
-		<span class="monoText">125</span>. Now suppose that the address of
-		<span class="monoText">p</span> is <span class="monoText">432</span>. Can we
-		have a pointer <span class="monoText">q</span> pointing to
-		<span class="monoText">p</span>? Sure. But wait. What should type of
-		<span class="monoText">q</span> be? Well, because
-		<span class="monoText">p</span> points to an
-		<span class="monoText">int</span>, it follows that
-		<span class="monoText">p</span> is of type
-		<span class="monoText">int*</span>. And because
-		<span class="monoText">p</span> is of type
-		<span class="monoText">int*</span>, it follows that
-		<span class="monoText">q</span> must be of type
-		<span class="monoText">int**</span>. Hence:
+		<var>int x = 5</var>, and 8 bytes for <var>int *p = &amp;x;</var>. Suppose
+		the address of <var>x</var> is <var>125</var>. Then the value of
+		<var>p</var> is <var>125</var>. Now suppose that the address of
+		<var>p</var> is <var>432</var>. Can we have a pointer <var>q</var> pointing
+		to <var>p</var>? Sure. But wait. What should type of <var>q</var> be? Well,
+		because <var>p</var> points to an <var>int</var>, it follows that
+		<var>p</var> is of type <var>int*</var>. And because <var>p</var> is of type
+		<var>int*</var>, it follows that <var>q</var> must be of type
+		<var>int**</var>. Hence:
 	</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
@@ -1281,8 +1811,7 @@
 	</code></pre>
 	<p>
 		Exact same addresses. We can then create another pointer,
-		<span class="monoText">r</span>, that points to
-		<span class="monoText">q</span>:
+		<var>r</var>, that points to <var>q</var>:
 	</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
@@ -1325,12 +1854,10 @@
 		10 61 D5 E7 FE 7F 00 00 
 	</code></pre>
 	<p>
-		Notice that the address in <span class="monoText">r</span> looks different.
-		It's off by 8 bytes. This is because <span class="monoText">r</span> doesn't
-		point to <span class="monoText">p</span>; it points to
-		<span class="monoText">q</span>. If we printed the address of
-		<span class="monoText">q</span>, we would see that it is in fact the address
-		in <span class="monoText">r</span>:
+		Notice that the address in <var>r</var> looks different. It's off by 8
+		bytes. This is because <var>r</var> doesn't point to <var>p</var>; it points
+		to <var>q</var>. If we printed the address of <var>q</var>, we would see
+		that it is in fact the address in <var>r</var>:
 	</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
@@ -1364,16 +1891,352 @@
 	</code></pre>
 </section>
 
-<section id="memory_allocation">
-	<h2>Memory Allocation</h2>
+<section id="void_pointer">
+	<h2>Void Pointers</h2>
 	<p>
-		In the examples above, we allocated memory strictly in the
-		<span class="term">stack</span>. When we allocate memory in the stack, the
-		memory is automatically cleaned when the function returns. In the preceding
-		examples, the function was <span class="monoText">main()</span>. Once
-		<span class="monoText">main()</span> returns &mdash; i.e., the line
-		<span class="monoText">return 0</span> &mdash; all of the memory we asked to
-		be allocated for our program is cleaned.
+		So far, we've seen pointers with specific types. For example, an
+		<var>int*</var> is a pointer to an <var>int</var>, a <var>char*</var> is a
+		pointer to a <var>char</var>, a <var>float**</var> is a pointer to a pointer
+		to a <var>float</var>. There is, however, a special pointer type &mdash;
+		<var><mark>void*</mark></var
+		>. This type denotes a <b>void pointer</b>. Observe that the code below
+		compiles just fine:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+
+		int main() {
+			int n = 5;
+			void* p = &amp;n;
+		}	
+	</code></pre>
+	<p>
+		This may seem odd. Under normal circumstances, this shouldn't compile.
+		<var>void</var> and <var>int</var> are not the same type. And indeed, they
+		aren't. The void pointer, however, is a <i>universal pointer</i>. It can
+		point to <em>any</em> address storing any data type.
+	</p>
+	<p>
+		Void pointers are most often used for two situations. (1) Implementing
+		unctions that should return a pointer type value, but we don't know what
+		that type will be ahead of time. (2) Implementing general purpose functions
+		&mdash; i.e., some mathematical function that takes any numeric data,
+		whether it's a <var>float</var>, <var>int</var>, or <var>double</var>.
+	</p>
+	<p>
+		Before we delve deeper into void pointers, we should be clear on why
+		pointers have types in the first place. C implements explicit- and
+		static-typing as a matter of efficiency. Given that every type takes a fixed
+		amount of memory, when we write <var>int* p</var> on a 64-bit machine, we
+		are providing additional information to the compiler:
+		<q>This pointer points to a value that spans 4 memory addresses.</q> In
+		other words, the pointer type serves as a way of giving the compiler just
+		enough information for counting. By providing this information, the compiler
+		does not have to perform all the additional steps of determining which
+		addresses contain the value's bits.
+	</p>
+	<p>
+		When we write something like <var>void* p = &n</var>, we are saying that the
+		pointer <var>p</var> points to the address identified as <var>n</var>, which
+		is <i>some type</i>. Now, notice what happens when we try to dereference
+		<var>p</var>:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+
+		int main() {
+			int n = 5;
+			void* p = &amp;n;
+			printf("*p = %d", *p);
+		}	
+	</code></pre>
+	<pre class="language-bash"><code>
+		main.c:6:20: error: argument type 'void' is incomplete
+        printf("*p = %d", *p);
+                          ^
+		1 error generated.
+	</code></pre>
+	<p>
+		We're seeing a compiler error &mdash; the type <var>'void'</var> is
+		incomplete. This is because the compiler has no idea how many bytes in
+		memory it should read. The void pointer allows us to point to any given
+		type, but that's all it permits. Want to read and write? We have to give the
+		compiler more information:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+
+		int main() {
+			int n = 5;
+			void* p = &amp;n;
+			printf("*p = %d\n", *((int*) p));
+		}	
+	</code></pre>
+	<pre class="language-bash"><code>
+		*p = 5
+	</code></pre>
+	<p>Closely examine what we wrote:</p>
+	<figure>
+		<table class="alg">
+			<thead>
+				<th>Statement</th>
+				<th>Meaning</th>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td>
+						<var><mark>*((int*) p)</mark></var>
+					</td>
+					<td>
+						Dereference <var><mark>(int*) p</mark></var>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<var><mark>(int*) p</mark></var>
+					</td>
+					<td>
+						Cast <var>p</var> to <var><mark>int* p</mark></var>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</section>
+
+<section id="malloc_memcpy">
+	<h2>Malloc and Memcpy</h2>
+	<p>
+		With void pointers, we can write more generalized functions. For example,
+		consider the humble <var>swap()</var> function:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+
+		void swap(int* a, int* b) {
+			int temp = *a;
+			*a = *b;
+			*b = temp;
+		}
+		
+		int main() {
+			int n = 1;
+			int m = 2;
+			swap(&n, &m);
+			return 0;
+		}	
+	</code></pre>
+	<p>
+		The most obvious limitation with our function is that it can only work with
+		arguments of type <var>int*</var>. Thus, it cannot swap <var>float</var>,
+		<var>char</var>, or <var>double</var> values. With what we know thus far, if
+		we wanted to swap non-<var>int</var> values, we must implement separate
+		<var>swap()</var> functions. This is where the void pointer comes in:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		#include &lt;stdlib.h&gt;
+		#include &lt;string.h&gt;
+		
+		void swap(void* a, void* b, int size) {
+			void* tempMemory = malloc(size);
+			memcpy(tempMemory, a, size);
+			memcpy(a, b, size);
+			memcpy(b, tempMemory, size);
+		}
+		
+		int main() {
+			int n = 1;
+			int m = 2;
+			printf("Pre swap(): \n n = %d \n m = %d \n", n, m);
+		
+			swap(&n, &m, 4);
+		
+			printf("Post swap(): \n n = %d \n m = %d \n", n, m);
+			return 0;
+		}	
+	</code></pre>
+	<pre class="language-bash"><code>
+		Pre swap(): 
+		 n = 1 
+		 m = 2 
+		Post swap(): 
+		 n = 2 
+		 m = 1
+	</code></pre>
+	<p>Let's focus on the function we wrote:</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		#include &lt;stdlib.h&gt;
+		#include &lt;string.h&gt;
+		
+		void swap(void* a, void* b, int size) {
+			void* tempMemory = malloc(size);
+			memcpy(tempMemory, a, size);
+			memcpy(a, b, size);
+			memcpy(b, tempMemory, size);
+		}
+	</code></pre>
+	<p>
+		First, this function has a <var>void</var> return type. Nothing new here,
+		since we're just swapping values. Inside parameter list, we see three
+		things:
+	</p>
+	<figure>
+		<ol class="numd">
+			<li>
+				<var><mark>void* a</mark></var>
+			</li>
+			<li>
+				<var><mark>void* b</mark></var>
+			</li>
+			<li>
+				<var><mark>int size</mark></var>
+			</li>
+		</ol>
+	</figure>
+	<p>
+		As we know, <var>void* a</var> and <var>void* b</var> are void pointers.
+		They will point to the addresses of the two variables we pass as arguments
+		&mdash; <var>swap(&n, &m)</var>. The parameter
+		<var>int size</var> corresponds to the size of the data types for
+		<var>n</var> and <var>m</var>. For an <var>int</var> on a 64-bit system,
+		that's ${4.}$ Hence the call <var>swap(&n, &m, 4)</var>.
+	</p>
+	<p>Insie the function's body, the first line is:</p>
+	<figure>
+		<div>
+			<p><var>void* tempMemory = malloc(size);</var></p>
+		</div>
+	</figure>
+	<p>
+		This line instructs,
+		<q
+			>Create a pointer <var>tempMemory</var> of type void, and have it point to
+			<var>malloc(size)</var>.</q
+		>
+		The function <var><mark>malloc()</mark></var> (short for
+		<q>memory allocate</q>) is a function provided by C's standard library,
+		<var><mark>&lt;stdlib.h&gt;</mark></var
+		>. The general template:
+	</p>
+	<figure>
+		<ul class="syntax">
+			<li>malloc(${s}$)</li>
+		</ul>
+	</figure>
+	<p>
+		In the template above, ${s}$ is an <var>int</var> value, corresponding to
+		the size of a memory block, in bytes. Importantly, this memory is allocated
+		in the <b>heap</b>, but we'll get back to this later.
+		<var>malloc()</var> has a <var>void</var> return type, and the value
+		returned is a <i>void pointer</i> to the allocated space, or
+		<var>NULL</var> if there is insufficient memory available. By writing
+		<var>malloc(size)</var>, we're really writing <var>malloc(4)</var> &mdash;
+		allocate ${4}$ bytes of memory in the heap.
+	</p>
+	<p>The next line we wrote is the following:</p>
+	<figure>
+		<div>
+			<p><var>memcpy(tempMemory, a, size);</var></p>
+		</div>
+	</figure>
+	<p>
+		Here, we're invoking another C library function,
+		<var><mark>memcpy()</mark></var> (short for <q>memory copy</q>). This
+		function is found in the library <var><mark>&lt;string.h&gt;</mark></var
+		>. The general template:
+	</p>
+	<figure>
+		<ul class="syntax">
+			<li>memcpy(${d}$, ${s}$, ${n}$)</li>
+		</ul>
+	</figure>
+	<p>The <var>memcpy()</var> function takes three arguments:</p>
+	<figure>
+		<ol>
+			<li>
+				${d,}$ the destination. This is a void pointer to where in memory we
+				would like the data copied.
+			</li>
+			<li>
+				${s,}$ the source. This is a void pointer to the location in memory
+				where the data we want copied exists.
+			</li>
+			<li>
+				${n,}$ the size. This is an <var>int</var> value, corresponding to the
+				number of bytes we want copied.
+			</li>
+		</ol>
+	</figure>
+	<p>Thus, when we write:</p>
+	<figure>
+		<div>
+			<p><var>memcpy(tempMemory, a, size)</var></p>
+		</div>
+	</figure>
+	<p>we execute the following procedure:</p>
+
+	<ol class="numd">
+		<li>
+			Go to the address identified <var><mark>a</mark></var
+			>.
+		</li>
+		<li>
+			Starting at that address, read the data contained in
+			<var><mark>a</mark></var> and the 3 bytes following (i.e., copy 4 bytes).
+		</li>
+		<li>Save that data.</li>
+		<li>
+			Go to the address identified as <var><mark>tempMemory</mark></var
+			>.
+		</li>
+		<li>Starting at that address, write the saved data.</li>
+	</ol>
+
+	<p>
+		The same process extends to the remaining lines. We're just copying and
+		transferring the copies from one address to the next. Using void pointers,
+		we've written more generic functions. We can call <var>swap()</var> on
+		<var>int</var>s, <var>double</var>s, <var>char</var>s, and so on.
+	</p>
+	<p>
+		<span class="topic">Freeing Memory.</span> The function we've written,
+		however, is incomplete. We have one piece missing:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		#include &lt;stdlib.h&gt;
+		#include &lt;string.h&gt;
+		
+		void swap(void* a, void* b, int size) {
+			void* tempMemory = malloc(size);
+			memcpy(tempMemory, a, size);
+			memcpy(a, b, size);
+			memcpy(b, tempMemory, size);
+			free(tempMemory);
+		}
+	</code></pre>
+	<p>
+		The final line calls another library function, <var><mark>free()</mark></var
+		>. This function essentially clears out, or makes available for others, the
+		memory occupied by <var>tempMemory</var>. Whenever we allocate memory with
+		<var>malloc()</var>, we <em>always</em> free the allocated memory once it's
+		no longer needed.
+	</p>
+</section>
+
+<section id="dynamic_memory_allocation">
+	<h2>Dynamic Memory Allocation</h2>
+	<p>
+		The void pointer is what brings us to <b>dynamic memory allocation</b>. In
+		previous examples above, we allocated memory strictly in the <b>stack</b>.
+		When we allocate memory in the stack, the memory is automatically cleaned
+		when the function returns. In most of our programs, the primary function was
+		<var>main()</var>. Once <var>main()</var> returns &mdash; i.e., the line
+		<var>return 0</var> is executed &mdash; all of the memory we asked to be
+		allocated for our program is cleaned.
 	</p>
 	<figure class="math-display">
 		<div>
@@ -1397,9 +2260,9 @@
 	<p>
 		In some situations, however, we want more control over how to use memory. In
 		C, we achieve greater control by using memory in the
-		<span class="term">heap</span>. To use heap memory, we use the
-		<span class="monoText">malloc(${s}$)</span> function, where ${s}$ is the
-		<span class="italicsText">size</span> of memory we want.
+		<b>heap</b>. To use heap memory, we use the
+		<var>malloc(${s}$)</var> function, where ${s}$ is the <i>size</i> of memory
+		we want.
 	</p>
 </section>
 
@@ -1449,9 +2312,9 @@
 	<p>
 		The diagram above illustrates the fact that when we declare an array in the
 		manner we did above, we are allocating memory in the
-		<span class="italicsText">stack</span> for future use. Observe further that
-		each of the allocated blocks consists of 4 bytes. Thus, with an array of
-		size 3, we consume 12 bytes of memory. Once we initialize the array:
+		<i>stack</i> for future use. Observe further that each of the allocated
+		blocks consists of 4 bytes. Thus, with an array of size 3, we consume 12
+		bytes of memory. Once we initialize the array:
 	</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
@@ -1517,11 +2380,11 @@
 		 a[0] = 13924   a[1] = 39287  a[2] = 998768            <span class="redText">p = 100</span>
 	</code></pre>
 	<p>
-		Notice the syntax <span class="monoText">int *p = array</span>. This is
-		equivalent to <span class="monoText">int *p = array[0]</span>. Thus, when we
-		assign a variable storing an array to a pointer ${p,}$ we are assigning the
-		memory address of the <span class="underlineText">first</span> element of
-		the array to the pointer. Examining the different values:
+		Notice the syntax <var>int *p = array</var>. This is equivalent to
+		<var>int *p = array[0]</var>. Thus, when we assign a variable storing an
+		array to a pointer ${p,}$ we are assigning the memory address of the
+		<em>first</em> element of the array to the pointer. Examining the different
+		values:
 	</p>
 	<pre class="language-c"><code>
 		#include &lt;stdio.h&gt;
@@ -1578,15 +2441,12 @@
 		 | 64 36 00 00  | 77 99 00 00  | 70 3D 0F 00  |
 	</code></pre>
 	<p>
-		Notice the various syntax. The variable <span class="monoText">array</span>,
-		on its own, will return the address of the array's first element. This is
-		called the array's <span class="term">base address</span>. If we want to
-		access that element, we write <span class="monoText">*array</span>. If we
-		wanted to access the second element, we write
-		<span class="monoText">*(array + 1)</span>. And the second,
-		<span class="monoText">*(array + 2),</span> the third
-		<span class="monoText">*(array + 3)</span>, and so on. This is a big
-		insight:
+		Notice the various syntax. The variable <var>array</var>, on its own, will
+		return the address of the array's first element. This is called the array's
+		<b>base address</b>. If we want to access that element, we write
+		<var>*array</var>. If we wanted to access the second element, we write
+		<var>*(array + 1)</var>. And the second, <var>*(array + 2),</var> the third
+		<var>*(array + 3)</var>, and so on. This is a big insight:
 	</p>
 	<figure class="math-display">
 		<div class="rule">
@@ -1597,8 +2457,8 @@
 			</p>
 			<figure class="math-display">
 				<div>
-					<p><span class="monoText">&${A}$[${i}$] ${\equiv}$ &${A}$</span></p>
-					<p><span class="monoText">${A}$[${i}$] ${\equiv}$ *${A}$</span></p>
+					<p><var>&${A}$[${i}$] ${\equiv}$ &${A}$</var></p>
+					<p><var>${A}$[${i}$] ${\equiv}$ *${A}$</var></p>
 					<p>
 						<span class="monoText"
 							>&${A}$[${i}$ + ${n}$] ${\equiv}$ &(${A}$ + ${n}$)</span
@@ -1615,14 +2475,31 @@
 	</figure>
 	<p>
 		Note that while the arithmetic operators work on array identifiers, we
-		cannot use the unary operators like <span class="monoText">++</span>,
-		<span class="monoText">--</span>, etc. These will return a compiler error.
+		cannot use the unary operators like <var>++</var>, <var>--</var>, etc. These
+		will return a compiler error.
 	</p>
+	<p>
+		Separately, we can always print the size of an array with the
+		<var>sizeof</var> operator:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+
+		int main() {
+			int arr[5] = {1, 2, 3, 4, 5};
+			printf("sizeof(arr) = %lu bytes\n", sizeof(arr));
+			return 0;
+		}	
+	</code></pre>
+	<pre class="language-bash"><code>
+		sizeof(arr) = 20 bytes
+	</code></pre>
 
 	<section id="arrays_as_function_arguments">
+		<h3>Arrays as Function Arguments</h3>
 		<p>
-			<span class="topic">Arrays as Function Arguments.</span> Suppose we wrote
-			the following program that computes the average from an array of prices:
+			Suppose we wrote the following program that computes the average from an
+			array of prices:
 		</p>
 		<pre class="language-c"><code>
 			#include &lt;stdio.h&gt;
@@ -1666,31 +2543,26 @@
 		</p>
 		<p>
 			When we tell the compiler that a function takes an array as an argument,
-			the compiler <span class="underlineText">will not</span> make a copy of
-			the array for the function to use in its stack frame. Notice that this is
-			in contrast to non-composite data like
-			<span class="monoText">int</span> or
-			<span class="monoText">char</span> values. Those values will be passed by
-			value (i.e., the function gets its own copy of the value; not the
-			original). Composite data like arrays, on the other hand, are passed by
-			pointer. Why? Efficiency. Arrays are a staple in programming, but more
-			often than not, the functions we write do not need an entire copy of the
-			array for themselves. The array we have above is a small one. Imagine an
-			array with a million values being used by several thousand functions.
-			That's a fair amount of memory usage.
+			the compiler <em>will not</em> make a copy of the array for the function
+			to use in its stack frame. Notice that this is in contrast to
+			non-composite data like <var>int</var> or <var>char</var> values. Those
+			values will be passed by value (i.e., the function gets its own copy of
+			the value; not the original). Composite data like arrays, on the other
+			hand, are passed by pointer. Why? Efficiency. Arrays are a staple in
+			programming, but more often than not, the functions we write do not need
+			an entire copy of the array for themselves. The array we have above is a
+			small one. Imagine an array with a million values being used by several
+			thousand functions. That's a fair amount of memory usage.
 		</p>
 		<p>
 			So what does pass by pointer imply? It implies that the parameter
-			<span class="monoText">array[]</span> in the function above is actually a
-			pointer to base type. In this case, <span class="monoText">double</span>.
-			This in turn means that all the compiler knows with respect to
-			<span class="monoText">array[]</span> is that it's a
-			<span class="monoText">double</span> pointer &mdash;
-			<span class="monoText">double*</span>. Nothing else. It doesn't know what
-			that pointer points to, or whether it points to anything at all.
-			Accordingly, for this program to work, we must initialize the
-			<span class="monoText">size</span> parameter
-			<span class="underlineText">outside</span> the function:
+			<var>array[]</var> in the function above is actually a pointer to base
+			type. In this case, <var>double</var>. This in turn means that all the
+			compiler knows with respect to <var>array[]</var> is that it's a
+			<var>double</var> pointer &mdash; <var>double*</var>. Nothing else. It
+			doesn't know what that pointer points to, or whether it points to anything
+			at all. Accordingly, for this program to work, we must initialize the
+			<var>size</var> parameter <em>outside</em> the function:
 		</p>
 		<pre class="language-c"><code>
 			#include &lt;stdio.h&gt;

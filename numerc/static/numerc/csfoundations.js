@@ -10,6 +10,8 @@ function mainIdeaHeader() {
   }
 }
 
+
+// Add header to reference list
 function referenceListHeader() { 
   const references = document.getElementsByClassName("references");
   for (let i = 0; i < references.length; i++) { 
@@ -50,7 +52,6 @@ function showCodeIllustration() {
     }
   }
 }
-
 // Pop Up
 function reveal() {
   const popups = document.getElementsByClassName("pop");

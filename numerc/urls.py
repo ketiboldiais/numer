@@ -107,6 +107,8 @@ urlpatterns = [
 
 	path("js_dom", views.js_dom, name="js_dom"),
 
+	path("js_react", views.js_react, name="js_react"),
+
 	path("js_angular", views.js_angular, name="js_angular"),
 
 	path("js_dsalg", views.js_dsalg, name="js_dsalg"),
@@ -201,8 +203,6 @@ urlpatterns = [
 
 	path("cpp_collections", views.cpp_collections, name="cpp_collections"),
 
-	path("cpp_arrays", views.cpp_arrays, name="cpp_arrays"),
-
 	path("cpp_preprocessor", views.cpp_preprocessor, name="cpp_preprocessor"),
 
 	path("cpp_namespaces", views.cpp_namespaces, name="cpp_namespaces"),
@@ -239,6 +239,9 @@ urlpatterns = [
 
 	path("cpp_stringAlgorithms", views.cpp_stringAlgorithms, name="cpp_stringAlgorithms"),
 
+	path("cpp_linked_list", views.cpp_linked_list, name="cpp_linked_list"),
+
+
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),
 
@@ -263,6 +266,8 @@ urlpatterns = [
 
 	# Computer Systems Paths
 	path("sys_index", views.sys_index, name="sys_index"),
+
+	path("sys_assembly", views.sys_assembly, name="sys_assembly"),
 
 	path("sys_cIntro", views.sys_cIntro, name="sys_cIntro"),
 

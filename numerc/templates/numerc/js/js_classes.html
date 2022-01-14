@@ -1,11 +1,663 @@
-{% extends '../layout.html' %}
-{% load static %}
-{% block description %}
-<meta name="description" content="Notes on classes in JavaScript.">
-{% endblock %}
-{% block title %}
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on classes in JavaScript." />
+{% endblock %} {% block title %}
 <title>JS Classes</title>
-{% endblock %}
-{% block content %}
+{% endblock %} {% block content %}
 <h1>Classes in JavaScript</h1>
+<section id="intro">
+	<p>
+		Although JavaScript in practice is most closely aligned to functional
+		programming, the language does support object-oriented programming. In
+		particular, JavaScript provides <i>classes</i>.
+	</p>
+	<p>
+		JavaScript is an ideal language for demonstrating that object-oriented
+		programming is just one approach to problem solving. It's also a great
+		language for comparing value types (e.g., <i>records</i> and <i>structs</i>)
+		and reference types (e.g., <i>classes</i>).
+	</p>
+	<p>
+		For example, suppose we were writing some program for managing an investment
+		portfolio. We have an array of stocks, each stock an object:
+	</p>
+	<pre class="language-javascript"><code>
+		const stocks = [
+			{
+				title: 'Blackacre stock',
+				price: 23.49,
+				quantity: 200
+			},
+			{
+				title: 'Intely stock',
+				price: 19.49,
+				quantity: 200
+			}
+		]
+	</code></pre>
+	<p>
+		If we're trying to model a portfolio, it would make more sense to place the
+		list of stocks into an object called <var>portfolio</var>:
+	</p>
+	<pre class="language-javascript"><code>
+		const portfolio = {
+			stocks: [
+				{
+					title: 'Blackacre stock',
+					price: 23.49,
+					quantity: 200
+				},
+				{
+					title: 'Intely stock',
+					price: 19.49,
+					quantity: 200
+				}
+			]
+		}
+	</code></pre>
+	<p>We can even place some functions inside this object:</p>
+	<pre class="language-javascript"><code>
+		const portfolio = {
+			stocks: [
+				{
+					title: 'Blackacre stock',
+					price: 23.49,
+					quantity: 200
+				},
+				{
+					title: 'Intely stock',
+					price: 19.49,
+					quantity: 200
+				}
+			],
+			worth() { 
+				let sum = 0;
+				for (let i = 0; i < this.stocks.length; i++) { 
+					sum += this.stocks[i].quantity * this.stocks[i].price;
+				}
+				return sum;
+			}
+		}
+		console.log(portfolio.worth());
+	</code></pre>
+	<pre class="language-bash"><code>
+		8596
+	</code></pre>
+	<p>
+		Object-literals are a good way to keep related code together, but writing
+		these records explicitly reduces readability. And with reduced readability,
+		we end up walking on eggshells &mdash; the slightest mistake can sink our
+		program. Instead of writing object-literals explicitly, we can instead write
+		functions to create the objects. This illustrates a
+		<i>functional programming</i> approach:
+	</p>
+	<pre class="language-javascript"><code>
+		function stock(title, price, quantity) { 
+			const stock = {
+				title: title,
+				price: price,
+				quantity: quantity
+			}
+			return stock;
+		}
+		
+		function portfolio() { 
+			const portfolio = {
+				stocks: [
+					stock('blackacre stock', 23.49, 200),
+					stock('Intely stock', 19.49, 200)
+				],
+				worth() { 
+					let sum = 0;
+					for (let i = 0; i < this.stocks.length; i++) { 
+						sum += this.stocks[i].quantity * this.stocks[i].price;
+					}
+					return sum;
+				}
+			}
+			return portfolio;
+		}
+		console.log(portfolio().worth());
+	</code></pre>
+	<pre class="language-bash"><code>
+		8596
+	</code></pre>
+	<p>
+		Functional programming, however, is not the only approach we have at our
+		disposal. We can achieve similar results with object-oriented programming.
+		This is done by way of classes:
+	</p>
+	<pre class="language-javascript"><code>
+		// Class for stocks
+		class Stock { 
+			title;
+			price;
+			quantity;
+
+			constructor(title, price, quantity) { 
+				this.title = title;
+				this.price = price;
+				this.quantity = quantity;
+			}
+		}
+		
+		// Class for portfolio
+		class Portfolio { 
+			stocks;
+		
+			constructor(stock = []) { 
+				this.stocks = stock;
+			}
+		
+			worth() {
+				let sum = 0;
+				for (let i = 0; i < this.stocks.length; i++) { 
+					sum += this.stocks[i].price * this.stocks[i].quantity;
+				}
+				return sum;
+			}
+		}
+		
+		// Instantiate a portfolio
+		const portfolio1 = new Portfolio([
+			new Stock('Newbury', 34.98, 4),
+			new Stock('Wework', 14.38, 57)
+		]);
+		
+		// Show the portfolio's worth
+		console.log(portfolio1.worth());
+	</code></pre>
+	<pre class="language-bash"><code>
+		959.58
+	</code></pre>
+	<p>
+		In the JavaScript context, we can think of classes as blueprints for
+		object-literals. We use the term <q>object-literal</q> to differentiate
+		JavaScript's approach to OOP from languages like Python, Java, and C++. In
+		general, the basic JavaScript class has the following form:
+	</p>
+	<ol class="alg">
+		<li>class ${C}$ {</li>
+		<ol>
+			<li><span class="pop">${F_1}$</span></li>
+			<div class="popText">
+				<p>${F_1}$ to ${P_n}$ are called <b>fields</b>.</p>
+			</div>
+			<li>${F_2}$</li>
+			<li>${\vdots}$</li>
+			<li>${F_n}$</li>
+			<li><span class="pop">constructor(${p_1, p_2, \ldots, p_n}$) {</span></li>
+			<div class="popText">
+				<p>
+					The <b>constructor</b> is a function that creates an instance of a
+					class. The word <var>constructor</var> itself is a keyword.
+				</p>
+			</div>
+			<ol>
+				<li><span class="pop">this.${F_1 = p_1}$</span></li>
+				<div class="popText">
+					<p>
+						The arguments passed to the constructor are assigned to the fields.
+						Once assigned, they become <b>properties</b>.
+					</p>
+				</div>
+				<li>this.${F_2 = p_2}$</li>
+				<li>${\vdots}$</li>
+				<li>this.${F_n = p_n}$</li>
+			</ol>
+			<li>}</li>
+		</ol>
+		<li>}</li>
+	</ol>
+</section>
+
+<section id="getters_and_setters">
+	<h2>Getters & Setters</h2>
+	<p>
+		A common idiom in object-oriented programming is the usage of
+		<i>getters</i> and <i>setters</i>:
+	</p>
+	<ul>
+		<li>
+			A <b>getter</b> is a method that, when invoked, returns some object
+			property's assigned value.
+		</li>
+		<li>
+			A <b>setter</b> is a method that, when invoked, assigns some value to an
+			object property.
+		</li>
+	</ul>
+	<p>
+		In JavaScript, getters and setters can be defined with the
+		<var><mark>get</mark></var> and <var><mark>set</mark></var> keywords
+		respectively:
+	</p>
+	<pre class="language-javascript"><code>
+		class Regulation { 
+			title_;
+			field_;
+			hasPenalties_ = true;
+			constructor(title, field, trueOrFalse) { 
+				this.title_ = title;
+				this.field_ = field;
+				this.hasPenalties_ = trueOrFalse;
+			}
+			get title() { return this.title_; }
+			set title(title) { this.title_ = title; }
+			get field() { return this.field_; }
+			set field(field) { this.field_ = field; }
+			get hasPenalties() { return this.hasPenalties_; }
+			set hasPenalties(trueOrFalse) { this.hasPenalties_ = trueOrFalse; }
+		}
+		
+		let reg1_132 = new Regulation("Reg. 1-132", "Corporate Law", true);
+		// print the current properties
+		console.log(reg1_132.title);
+		console.log(reg1_132.field);
+		console.log(reg1_132.hasPenalties);
+		// change the values with the setters
+		reg1_132.title = "Reg. 1-133";
+		reg1_132.field = "Securities Law";
+		reg1_132.hasPenalties = false;
+		// print the new properties
+		console.log(reg1_132.title);
+		console.log(reg1_132.field);
+		console.log(reg1_132.hasPenalties);
+	</code></pre>
+	<pre class="language-bash"><code>
+		Reg. 1-132
+		Corporate Law
+		true
+
+		Reg. 1-133
+		Securities Law
+		false
+	</code></pre>
+	<p>
+		In essence, getters allow us to retrieve object properties, and setters
+		allow us to modify, or initialize, object properties. Moreover, they aren't
+		limited to classes. We can use the <var>get</var> and <var>set</var> keyword
+		inside object-literals as well. We will revisit getters and setters in the
+		section on access modifiers.
+	</p>
+</section>
+
+<section id="static_methods_and_properties">
+	<h2>Statics &amp; Non-statics</h2>
+	<p>
+		As we saw, JavaScript classes have two components: (1) <b>properties</b> and
+		(2) <b>methods</b>. Properties correspond to the class's data, and methods
+		correspond to the class's operations. There are two kinds of properties and
+		methods:
+	</p>
+	<ul>
+		<li>Statics</li>
+		<li>Non-statics</li>
+	</ul>
+	<p>
+		Because there are two kinds of properties and methods, we have ${2 \times 2
+		= 4}$ varieties of properties and methods:
+	</p>
+	<ul>
+		<li>Static properties</li>
+		<li>Non-static properties</li>
+		<li>Static methods</li>
+		<li>Non-static methods</li>
+	</ul>
+	<p>
+		We use the term <i>statics</i> to refer to both static properties and static
+		methods, and the term <i>non-statics</i> to refer to both non-static
+		properties and non-static methods. Let's start with statics.
+	</p>
+
+	<section id="statics">
+		<h3>Static Properties &amp; Methods</h3>
+		<p>
+			Statics are properties or methods accessible on the class itself, without
+			instantiation. In other words, we can use a static property or static
+			method without having to create an instance of the class.
+		</p>
+		<p>
+			Statics most often used for <b>helper classes</b> &mdash; classes that
+			provide utility functions and global configurations. For example,
+			JavaScript natively provides a class called <var><mark>Date</mark></var
+			>. This class contains the static method <var><mark>Date.now()</mark></var
+			>:
+		</p>
+		<pre class="language-javascript"><code>
+			console.log(Date.now());
+		</code></pre>
+		<pre class="language-bash"><code>
+			1641830951347
+		</code></pre>
+		<p>
+			The <var>.now()</var> method returns the primitive integer value,
+			representing the number of milliseconds elapsed since January 1, 1970,
+			00:00:00 UTC.
+		</p>
+		<p>
+			We can define our own statics with the
+			<var><mark>static</mark></var> keyword:
+		</p>
+		<pre class="language-javascript"><code>
+			class Maths { 
+				static Planck = 6.626e-34;
+				static natNumSeries(n) { 
+					return (n * (n + 1)) / 2;
+				}
+			}
+			const sum0to100 = Maths.natNumSeries(100);
+			console.log(sum0to100);
+			console.log(Maths.Planck);
+		</code></pre>
+		<pre class="language-bash"><code>
+			5050
+			6.626e-34
+		</code></pre>
+		<p>
+			Above, we created a class called <var>Maths</var>, containing (1) a static
+			property called <var>Planck</var>, and (2) a static method called
+			<var>natNumSeries()</var>. The static property corresponds to Planck's
+			constant from physics, and the static method corresponds to the sum of the
+			natural numbers.
+		</p>
+	</section>
+
+	<section id="non_statics">
+		<h3>Non-static Properties &amp; Methods</h3>
+		<p>
+			The opposite of a static is a <b>non-static</b>. In JavaScript, all
+			properties and methods are, by default, non-static &mdash; they are
+			defined <em>without</em> the <var>static</var> keyword. As we can guess,
+			non-static methods or properties can only be called on instances of the
+			class. In other words, to use a non-static property or method, we must
+			have an instance of the class &mdash; an object of that class &mdash; to
+			call the property or method.
+		</p>
+		<p>
+			For example, using the same <var>Maths</var> class in the previous
+			example, removing the <var>static</var> keyword, without more, leads to
+			errors:
+		</p>
+		<pre class="language-javascript"><code>
+			class Maths { 
+				Planck = 6.626e-34;
+				natNumSeries(n) { 
+					return (n * (n + 1)) / 2;
+				}
+			}
+			const sum0to100 = Maths.natNumSeries(100);
+			console.log(sum0to100);
+			console.log(Maths.Planck);
+		</code></pre>
+		<pre class="language-bash"><code>
+			TypeError: Maths.natNumSeries is not a function
+		</code></pre>
+		<p>
+			The error message isn't clear, but it stems from the fact that we're
+			calling the property and method on some unknown entity called
+			<var>Maths</var>. We must instantiate <var>Maths</var> to use them:
+		</p>
+		<pre class="language-javascript"><code>
+			class Maths { 
+				Planck = 6.626e-34;
+				natNumSeries(n) { 
+					return (n * (n + 1)) / 2;
+				}
+			}
+			const maths = new Maths();
+			const sum0to100 = maths.natNumSeries(100);
+			console.log(sum0to100);
+			console.log(maths.Planck);
+		</code></pre>
+		<pre class="language-bash"><code>
+			5050
+			6.626e-34
+		</code></pre>
+	</section>
+</section>
+
+<section id="inheritance">
+	<h2>Inheritance</h2>
+	<p>
+		A common feature of object-oriented programming is <b>inheritance</b>. We
+		can think of inheritance as a way of avoiding duplicate code. For example,
+		suppose we wrote a social media program, where users can post text, images,
+		videos, and sounds. Thinking of these entities as a whole, we see three
+		types:
+	</p>
+
+	<ul>
+		<li>Text posts</li>
+		<li>Image posts</li>
+		<li>Video posts</li>
+		<li>Sound posts</li>
+	</ul>
+
+	<p>Now, each of these posts might have some properties in common:</p>
+	<ul>
+		<li>A title</li>
+		<li>A post operation</li>
+		<li>Delete post</li>
+		<li>A poster identification</li>
+		<li>A date of posting</li>
+		<li>A post URL</li>
+	</ul>
+	<p>
+		But they also might have some unique properties, and properties in common
+		with some but not others:
+	</p>
+	<ul>
+		<li>Text posts:</li>
+		<ul>
+			<li>A text field</li>
+			<li>Tag list</li>
+		</ul>
+		<li>Image posts:</li>
+		<ul>
+			<li>Image download</li>
+			<li>Tag list</li>
+		</ul>
+		<li>Video posts:</li>
+		<ul>
+			<li>Video quality options</li>
+			<li>A play button</li>
+			<li>An age rating</li>
+		</ul>
+		<li>Sound posts:</li>
+		<ul>
+			<li>Sound quality options</li>
+			<li>A play button</li>
+			<li>An age rating</li>
+		</ul>
+	</ul>
+	<p>We could implement these types by writing separate classes:</p>
+	<pre class="language-javascript"><code>
+		class TextPost {
+			title;
+			post() { };
+			deletePost() { };
+			posterId;
+			postDate;
+			textField;
+			tagList;
+		}
+		class ImagePost {
+			title;
+			post() { };
+			deletePost() { };
+			posterId;
+			postDate;
+			tagList;
+			download() { };
+		}
+		class VideoPost {
+			title;
+			post() { };
+			deletePost() { };
+			posterId;
+			postDate;
+			videoQualityOptions;
+			play() { };
+			ageRating;
+		}
+		class SoundPost {
+			title;
+			post() { };
+			deletePost() { };
+			posterId;
+			postDate;
+			soundQualityOptions;
+			play() { };
+			ageRating;
+		}
+	</code></pre>
+	<p>
+		Notice the amount of duplicate code. Many of the methods or properties like
+		<var>post()</var> and <var>title</var> could be reused across these classes.
+		Object-oriented programming allows us to do so with inheritance. Rather than
+		creating individual classes, we create more generalized classes, and have
+		more specific classes <i>inherit</i> properties and methods from the
+		generalized classes.
+	</p>
+	<p>
+		To begin, instead of visualizing the complexity with lists, let's use
+		another layout:
+	</p>
+	<figure>
+		<table class="inheritance">
+			<thead>
+				<th colspan="2"><b>Post</b></th>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="2">
+						<ul>
+							<li>title</li>
+							<li>post()</li>
+							<li>deletePost()</li>
+							<li>posterId</li>
+							<li>postDate</li>
+							<li>URL</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td><b>StaticPost</b></td>
+					<td><b>DynamicPost</b></td>
+				</tr>
+				<tr>
+					<td>
+						<ul>
+							<li>tagList</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>play()</li>
+							<li>ageRating</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table>
+							<tbody>
+								<tr>
+									<td><b>TextPost</b></td>
+									<td><b>ImagePost</b></td>
+								</tr>
+								<tr>
+									<td>
+										<ul>
+											<li>textField</li>
+										</ul>
+									</td>
+									<td>
+										<ul>
+											<li>description</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+					<td>
+						<table>
+							<tbody>
+								<tr>
+									<td><b>VideoPost</b></td>
+									<td><b>SoundPost</b></td>
+								</tr>
+								<tr>
+									<td>
+										<ul>
+											<li>videoQualityOptions</li>
+										</ul>
+									</td>
+									<td>
+										<ul>
+											<li>soundQualityOptions</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		In the table above, the bold cells indicate a particular class, with all of
+		the methods and properties in the class above it. Thus, the
+		<var>TextPost</var> class has the <var>tagList</var> property, as well as
+		all of the properties and methods of <var>Post</var>. But, it does not have
+		any of the methods or properties of the classes to its left, right, or
+		below. It only inherits from the row &mdash; the <b>parent class</b> &mdash;
+		directly above it. This principle is called <b>single inheritance</b>.
+	</p>
+	<p>
+		To establish inheritance, we use the
+		<var><mark>extends</mark></var> keyword:
+	</p>
+	<pre class="language-javascript"><code>
+		class Post {
+			title;
+			post() { };
+			deletePost() { };
+			posterId() { };
+			postDate() { };
+			URL;
+		}
+		class StaticPost extends Post { 
+			tagList;
+		}
+		class DynamicPost extends Post { 
+			play() { };
+			ageRating;
+		}
+		class TextPost extends StaticPost { 
+			textField;
+		}
+		class ImagePost extends StaticPost { 
+			description;
+		}
+		class VideoPost extends DynamicPost { 
+			videoQualityOptions;
+		}
+		class SoundPost extends DynamicPost { 
+			soundQualityOptions;
+		}
+	</code></pre>
+	<p>
+		Writing the code above, we've gained much more reusability. We don't have to
+		write, or copy-paste, code across classes. Every <var>VideoPost</var> has
+		the property <var>postDate</var>, the method <var>deletePost()</var>, the
+		method <var>play()</var>, and so on &mdash; it has all of the properties and
+		methods from the class following the keyword <var>extends</var>.
+	</p>
+</section>
+<section id="overriding_methods">
+	<h2>Overriding Methods</h2>
+</section>
 {% endblock %}

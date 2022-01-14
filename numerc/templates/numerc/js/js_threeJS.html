@@ -38,7 +38,7 @@
 				src="{% static 'images/triangles_cube.svg' %}"
 				alt="Triangles form a cube"
 				loading="lazy"
-				class="ten-p"
+				class="sixty-p"
 			/>
 			<figcaption>Triangles forming a cube</figcaption>
 		</figure>
@@ -781,7 +781,7 @@
 				src="{% static 'images/euler_rotation.svg' %}"
 				alt="Euler rotation"
 				loading="lazy"
-				class="twenty-p"
+				class="sixty-p"
 			/>
 			<figcaption>
 				As always, bear in mind that the axes are entirely dependent on where we
@@ -821,7 +821,7 @@
 					src="{% static 'images/euler_rotation2.svg' %}"
 					alt="Euler rotation"
 					loading="lazy"
-					class="twenty-p"
+					class="sixty-p"
 				/>
 			</figure>
 			<p>
@@ -2173,7 +2173,7 @@
 				src="{% static 'images/geometry_cylinder.svg' %}"
 				alt=""
 				loading="lazy"
-				class="ten-p"
+				class="sixty-p"
 			/>
 			<figcaption>The geometry behind a cylinder</figcaption>
 		</figure>
@@ -2380,7 +2380,7 @@
 				src="{% static 'images/segment_cube1.svg' %}"
 				alt="segment of 1 cube"
 				loading="lazy"
-				class="ten-p"
+				class="twenty-p"
 			/>
 		</figure>
 		<p>Notice that there are exactly ${1 \times 2 = 2}$ triangles.</p>
@@ -2394,7 +2394,7 @@
 				src="{% static 'images/segment_cube2.svg' %}"
 				alt="segment of 2 cube"
 				loading="lazy"
-				class="ten-p"
+				class="twenty-p"
 			/>
 		</figure>
 		<p>
@@ -2422,7 +2422,7 @@
 				src="{% static 'images/sphere.svg' %}"
 				alt="Triangles forming a sphere"
 				loading="lazy"
-				class="twenty-p"
+				class="sixty-p"
 			/>
 		</figure>
 		<p>
@@ -2935,6 +2935,25 @@
 				>ThreeJS, <strong>Documentation: Textures</strong>.</a
 			>
 		</li>
+		<li>
+			<a href="https://www.poliigon.com/" target="_blank"
+				>Poliigon (resource for textures)</a
+			>
+		</li>
+		<li>
+			<a href="https://3dtextures.me/" target="_blank"
+				>3dtextures.me (resource for textures)</a
+			>
+		</li>
+		<li>
+			<a href="https://ambientcg.com/" target="_blank">ambientCG</a> (resource
+			for textures)
+		</li>
+		<li>
+			<a href="https://polyhaven.com/textures" target="_blank"
+				>Poly Haven, <strong>All Textures</strong> (resource for textures)</a
+			>
+		</li>
 	</ol>
 	<p>
 		In the simplest terms, a <b>texture</b> is an image that covers a geometry's
@@ -3212,7 +3231,7 @@
 					src="{% static 'images/origami_crane.svg' %}"
 					alt="origami crane unwrapped"
 					loading="lazy"
-					class="ten-p"
+					class="sixty-p"
 				/>
 			</figure>
 			<figcaption>Origami crane unwrapped.</figcaption>
@@ -3367,7 +3386,1272 @@
 	</section>
 
 	<section id="filtering_and_midmapping">
-		<h3>Filtering &amp; Midmapping</h3>
+		<h3>Filtering &amp; Mipmapping</h3>
+		<ol class="references">
+			<li>
+				<a
+					href="https://threejs.org/docs/#api/en/constants/Textures"
+					target="_blank"
+					>ThreeJS, <strong>Documentation: Texture Constants</strong></a
+				>
+			</li>
+		</ol>
+		<p>
+			<b>Mipmapping</b> is a rendering technique where a texture is created by
+			creating half of a smaller version of the texture again and again until a
+			${1 \times 1}$ texture is created. Each of the texture variatons are then
+			sent to the GPU, and the GPU chooses the most appropriate version of the
+			texture for certain areas of the material.
+		</p>
+		<p>
+			To use these midmappings, ThreeJS employs two kinds of algorithms. The
+			first is
+			<b>minification filter</b>. Minification algorithms are used when the when
+			the texture's pixels are smaller than the render's pixels (i.e., the
+			texture is too large for the surface).
+		</p>
+		<p>
+			The clearest example of a minification algorithm at work is seen when we
+			zoom out on a render. As we zoom out further and further, the texture gets
+			smaller and smaller, keeping the texture's details in proportion. Without
+			a minification algorithm, the texture would appear distorted. ThreeJS
+			allows us to change which minified texture is used through the
+			<var><mark>minFilter</mark></var> property.
+		</p>
+		<p>There are several minification algorithms provided by ThreeJS:</p>
+		<ul>
+			<li>
+				<var><mark>THREE.NearestFilter</mark></var>
+			</li>
+			<li>
+				<var><mark>THREE.LinearFilter</mark></var>
+			</li>
+			<li>
+				<var><mark>THREE.NearestMipmapNearestFilter</mark></var>
+			</li>
+			<li>
+				<var><mark>THREE.NearestMipmapLinearFilter</mark></var>
+			</li>
+			<li>
+				<var><mark>THREE.LinearMipmapNearestFilter</mark></var>
+			</li>
+			<li>
+				<var><mark>THREE.LinearMipmapLinearFilter</mark></var> (default)
+			</li>
+		</ul>
+		<p>
+			For example, if we want the texture's details to appear sharper on zooming
+			out, we can write:
+		</p>
+		<pre class="language-javascript"><code>
+			const textureLoader = new THREE.TextureLoader(loadingManager);
+			const colorTexture = textureLoader.load('/textures/colors/color.jpg',);
+			colorTexture.minFilter = THREE.NearestFilter;
+		</code></pre>
+		<p>
+			If the texture image is too small, we will see some blurring. This is not
+			necessarily a bad thing. In fact, in most cases, it's ideal to have this
+			blurring as a default. For complex renderings with many meshes, users
+			seldom notice the blurring &mdash; the additional processing for a sharper
+			look is unnecessary. Moreover, we may be working on renderings where we
+			want that blurring. However, if we don't want this blurring, we can modify
+			the texture's <var><mark>magFilter</mark></var> property:
+		</p>
+		<pre class="language-javascript"><code>
+			const textureLoader = new THREE.TextureLoader(loadingManager);
+			const colorTexture = textureLoader.load('/textures/colors/colors.png',);
+			colorTexture.magFilter = THREE.NearestFilter;
+		</code></pre>
+		<p>
+			When working with these filters, always keep performance costs in mind.
+			<var>THREE.NearestFiler</var> consumes less resouces than the other
+			filters. We can significantly improve performance by turning off
+			mipmapping for textures we don't need mipmapping for:
+		</p>
+		<pre class="language-javascript"><code>
+			const textureLoader = new THREE.TextureLoader(loadingManager);
+			const colorTexture = textureLoader.load('/colors/colors.png',);
+			colorTexture.generateMipmaps = false;
+		</code></pre>
+	</section>
+	<section id="texture_formats_optimization">
+		<h3>Texture Formats & Optimization</h3>
+		<p>
+			Textures present numerous opportunities for performance savings. Three
+			things to always consider in choosing and preparing textures: (1) the
+			texture's <i>weight</i>, (2) the texture's <i>size</i>, and (3) the
+			texture's <i>data</i>.
+		</p>
+		<p>
+			The texture's weight is the size of the texture image file. The most
+			common image files used are <var>.jpg</var> and <var>.png</var> files.
+			There are costs and benefits to both:
+		</p>
+		<div class="costBenefit">
+			<ul class="choice">
+				<li>.png</li>
+				<ul class="benefits">
+					<li>Lossless compression (image details are kept intact).</li>
+					<li>Supports transparency.</li>
+				</ul>
+				<ul class="costs">
+					<li>Heavier file size.</li>
+				</ul>
+			</ul>
+			<ul class="choice">
+				<li>.jpg</li>
+				<ul class="benefits">
+					<li>Lighter file size.</li>
+				</ul>
+				<ul class="costs">
+					<li>Does not support transparency.</li>
+					<li>
+						Lossy compression (image details are removed to reduce file size).
+					</li>
+				</ul>
+			</ul>
+		</div>
+		<p>
+			In generaly, when faced with various images, we want to keep the weight as
+			low as possible. One way to do so is through compression. Both .png and
+			.jpg files can be compressed. For .png files, a common compression
+			resource is
+			<a href="https://tinypng.com/" target="_blank">TinyPNG</a>.
+		</p>
+		<p>
+			The texture's size is the texture image's resolution. Textures are
+			processed by sending the image's pixels to the GPU. The higher an image's
+			resolution, the more pixels there are.<label
+				for="resolution"
+				class="margin-toggle"
+				><sup></sup
+			></label>
+			<input
+				type="checkbox"
+				id="resolution"
+				class="margin-toggle sidenote-number"
+			/>
+			<span class="marginnote"
+				>Importantly, an image's resolution does not always correspond to its
+				file size. A .jpg image might be small in weight, but have a high
+				resolution.</span
+			>
+			And the more pixels there are, the more memory must be allocated for the
+			GPU's storage for processing. The GPU, like any other processing component
+			of the computer system, has storage limitations. Teetering close or
+			exceeding those limitations (e.g., overuse of mipmapping) is a recipe for
+			disaster. Accordingly, we must always consider whether we need such high
+			resolution texture images.
+		</p>
+		<p>
+			Related to resolutions, we should always use texture images whose width
+			and height are powers of two. For example, ${512 \times 512,}$ ${1024
+			\times 1024,}$ ${512 \times 2048,}$ etc. This is because mipmapping works
+			by continuously dividing the texture by two. Using other resolutions will
+			require ThreeJS to perform more computations for resizing, which can lead
+			to unexpected results.
+		</p>
+		<p>
+			The texture's data are the data attached to the texture image. For
+			example, in the previous .png and .jpg comparison, we see that .png
+			supports transparency, but .jpg does not. If we want our texture to
+			support transparency, we must use a .png file.
+		</p>
+		<p>
+			Some textures like <var>normal</var> require the exact coordinates for
+			image's objects. These coordinates are another piece of data. They are
+			preserved in lossless image formats like .png, but lost in lossy formats
+			like .jpg.
+		</p>
+	</section>
+</section>
+
+<section id="materials">
+	<h2>Materials</h2>
+	<ol class="references">
+		<li>
+			<a
+				href="https://threejs.org/docs/#api/en/materials/Material"
+				target="_blank"
+				>ThreeJS, <strong>Documentation: Materials</strong></a
+			>
+		</li>
+		<li>
+			<a
+				href="https://threejs.org/docs/?q=color#api/en/math/Color"
+				target="_blank"
+				>ThreeJS, <strong>Documentation: Color</strong></a
+			>
+		</li>
+	</ol>
+	<p>
+		In the previous sections, we used a basic material. ThreeJS, however,
+		provides many different materials. Recall: A <b>material</b> is an object
+		that assigns colors to each visible pixel of a <i>geometry</i>. The
+		algorithms for executing these assignments are called <b>shaders</b>.
+		Without materials, we would have to write shaders ourselves. As we'll see in
+		the section on shaders, this can be a tedious and difficult task.
+	</p>
+	<p>
+		We'll start by creating three meshes, all of which will use the same
+		material.
+	</p>
+	<pre class="language-javascript"><code>
+		// Canvas
+		const canvas = document.querySelector('canvas.webgl')
+
+		// Scene
+		const scene = new THREE.Scene()
+
+		// Objects
+		const material = new THREE.MeshBasicMaterial();
+
+		const sphere = new THREE.Mesh(
+				new THREE.SphereBufferGeometry(0.5, 16, 16),
+				material
+		)
+		const plane = new THREE.Mesh(
+				new THREE.PlaneGeometry(1, 1),
+				material
+		)
+		const torus = new THREE.Mesh(
+				new THREE.TorusGeometry(10,3,16,100),
+				material
+		)
+
+		// Add to scene
+		scene.add(sphere, plane, torus);
+	</code></pre>
+	<p>
+		The code above renders all of the objects in the same place. Let's change
+		their position properties:
+	</p>
+	<pre class="language-javascript"><code>
+		// Canvas
+		const canvas = document.querySelector('canvas.webgl');
+
+		// Scene
+		const scene = new THREE.Scene();
+
+		// Objects
+		const material = new THREE.MeshBasicMaterial();
+
+		const sphere = new THREE.Mesh(
+				new THREE.SphereBufferGeometry(0.5, 16, 16),
+				material
+		);
+		sphere.position.x = -1.5;
+		const plane = new THREE.Mesh(
+				new THREE.PlaneGeometry(1, 1),
+				material
+		);
+		const torus = new THREE.Mesh(
+				new THREE.TorusBufferGeometry(0.3, 0.2, 16, 32),
+				material
+		);
+		torus.position.x = 1.5;
+
+		// Add to scene
+		scene.add(sphere, plane, torus);
+	</code></pre>
+	<p>
+		Because all of the objects use <var>material</var>, modifying this object
+		will affect changes to all:
+	</p>
+	<pre class="language-javascript"><code>
+		const material = new THREE.MeshBasicMaterial({
+				color: 0xff0000
+		});
+	</code></pre>
+	<p>
+		For performance reasons, it's best practice to minimize the amount of
+		materials we use. Let's add some animations through the
+		<var>tick()</var> function:
+	</p>
+	<pre class="language-javascript"><code>
+		const clock = new THREE.Clock()
+		const tick = () => {
+			const elapsedTime = clock.getElapsedTime()
+
+			// Update objects
+			sphere.rotation.y = elapsedTime * 0.1;
+			plane.rotation.y = elapsedTime * 0.1;
+			torus.rotation.y = elapsedTime * 0.1;
+
+			sphere.rotation.x = elapsedTime * 0.15;
+			plane.rotation.x = elapsedTime * 0.15;
+			torus.rotation.x = elapsedTime * 0.15;
+
+			// Update controls
+			controls.update()
+
+			// Render
+			renderer.render(scene, camera)
+
+			// Call tick again on the next frame
+			window.requestAnimationFrame(tick)
+		}
+		tick()
+	</code></pre>
+	<p>We'll also load a few textures:</p>
+	<pre class="language-javascript"><code>
+		const textureLoader = new THREE.TextureLoader();
+		const gradientTexture = textureLoader.load('/textures/gradients/3.jpg');
+		const matcapTexture = textureLoader.load('/textures/matcaps/2.png');
+	</code></pre>
+	<p>With all of this ready, we can now consider materials.</p>
+
+	<section id="mesh_basic_material">
+		<h3>Basic Material</h3>
+		<p>
+			So far, we've been using <var><mark>MeshBasicMaterial</mark></var
+			>. As we've seen, <var>MeshBasicMaterial</var> applies a uniform texture
+			&mdash; whether that's an image or color value &mdash; to the geometry.
+		</p>
+		<p>
+			<var>MeshBasicMaterial</var> has many properties. Earlier, we saw one
+			property, <var>color</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshBasicMaterial({
+				color: 0xff0000
+			})
+		</code></pre>
+		<p>We can also use the <var>map</var> property to add a texture:</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshBasicMaterial({
+				map: gradientTexture
+			});
+		</code></pre>
+		<p>The <var>map</var> property can also be set by writing:</p>
+		<pre class="language-javascript"><code>
+			material.map = gradientTexture;
+		</code></pre>
+		<p>
+			We cannot, however, do the same with the <var>color</var> property. This
+			is because the <var>color</var> property is an instance of
+			<a
+				href="https://threejs.org/docs/?q=color#api/en/math/Color"
+				target="_blank"
+				>the <var>Color</var> class</a
+			>. Accordingly, outside of passing an object, there are two ways to set
+			the color property. We can use the <var>Color</var> class's method
+			<var><mark>.set()</mark></var
+			>:
+		</p>
+		<pre class="language-javascript"><code>
+			material.set('#ff0000');
+		</code></pre>
+		<p>or we can assign a <var>Color</var> object to the property:</p>
+		<pre class="language-javascript"><code>
+			material.color = new THREE.color('yellow');
+		</code></pre>
+		<p>
+			<var>MeshBasicMaterial</var> also has the <var>wireframe</var> property,
+			which we saw earlier:
+		</p>
+		<pre class="language-javascript"><code>
+			material.wireframe = true
+		</code></pre>
+		<p>
+			For some visualizations, we might want to see through a mesh. We can
+			achieve through the the material's
+			<var><mark>.opacity</mark></var> property. To use this property, we must
+			ensure the material's <var><mark>.transparent</mark></var> property is set
+			to <var>true</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshBasicMaterial({
+				opacity: 0.5,
+				transparent: true
+			});
+		</code></pre>
+		<p>
+			Alternatively, we could achieve a similar effect with the
+			<var><mark>.alphaMap</mark></var> property. Recall that
+			<var>alphaMap</var> controls the transparency through a texture &mdash;
+			whites are shown and blacks are hidden. Like the
+			<var>opacity</var> property, the <var>alphaMap</var>'s assigned value will
+			only be made visible if the <var>transparency</var> property is set to
+			<var>true</var>. For example, assuming we've loaded some texture called
+			<var>alphaTexture</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshBasicMaterial({
+				alphaMap: alphaTexture,
+				transparent: true
+			});
+		</code></pre>
+	</section>
+
+	<section id="mesh_normal_material">
+		<h3>Normal Material</h3>
+		<p>
+			A <b>normal</b> is a piece of information about the outside direction of
+			an object's face. For example, the outside of a sphere's face is the
+			sphere's surface. We can think of the sphere's normals as arrows coming
+			off of the sphere's surface.
+		</p>
+		<p>
+			We can use normals for lighting, reflection, and refraction. For example,
+			consider the process of visualizing light bouncing off of a sphere's
+			surface. How does ThreeJS know which side is lighter and which side is
+			darker? Through the sphere's normals. If the sphere's normal is pointed in
+			the direction of the light source, then that particular area with the
+			normal should be lighter. If the sphere's normal is pointed away from the
+			light source, then the area with the normal should be darker.
+		</p>
+		<p>
+			ThreeJS provides normal material through
+			<var><mark>.MeshNormalMaterial()</mark></var
+			>:
+		</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshNormalMaterial();
+		</code></pre>
+		<p>
+			With normal materials, we have properties like
+			<var><mark>.flatShading</mark></var
+			>, which flattens the mesh's faces.
+		</p>
+	</section>
+
+	<section id="mesh_matcap_material">
+		<h3>Matcap Materials</h3>
+		<ol class="references">
+			<li>
+				<a href="https://github.com/nidorx/matcaps" target="_blank"
+					>nidorx, <strong>Github: matcaps</strong> (large collection of matcap
+					materials)</a
+				>
+			</li>
+		</ol>
+		<p>
+			A <b>matcap material</b> is a material that displays a color, but with the
+			added feature of rendering different shades on the surface. This is done
+			by using the normals in a texture image as a reference. The effect: the
+			mesh appears illuminated. In ThreeJS:
+		</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshMatcapMaterial()
+			material.matcap = matcapTexture
+		</code></pre>
+		<p>
+			Matcap materials effectively allow us to simulate light without having an
+			actual light source.
+		</p>
+	</section>
+
+	<section id="mesh_depth_material">
+		<h3>Depth Material</h3>
+		<p>
+			Recall that cameras have both <var><mark>near</mark></var> and
+			<var><mark>far</mark></var> properties. A <b>depth material</b> takes
+			advantage of these two properties. If we are close to the mesh (a greater
+			<var>near</var> value), the depth material colors the close area white. If
+			we are further from the mesh (a greater <var>far</var> value), the depth
+			material colors the far area black. Instantiating:
+		</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshDepthMaterial();
+		</code></pre>
+		<p>
+			Depth material creates the effect of illuminating a particular area as we
+			get closer. We can think of it like exploring a cave with a flashlight.
+			Objects closer to us are more illuminated than objects further.
+		</p>
+	</section>
+
+	<section id="light_reliant_materials">
+		<h3>Light-reliant Materials</h3>
+		<p>
+			The materials below can be referred to as <b>light-reliant materials</b>.
+			These are materials that must have some light source. We will examine
+			lights in closer detail at a later juncture, but these materials provide a
+			sneak peak at instantiating and using lights. For the following materials,
+			we will use the following code:
+		</p>
+		<pre class="language-javascript"><code>
+			const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+			const pointLight = new THREE.PointLight(0xffffff, 0.5);
+			pointLight.position.x = 2;
+			pointLight.position.y = 3;
+			pointLight.position.z = 4;
+			scene.add(ambientLight, pointLight)
+		</code></pre>
+		<p>With the lights established, let's now examine the materials.</p>
+
+		<section id="lambert_material">
+			<h4>Lambert Material</h4>
+			<p>
+				The most basic light-reliant material is a <b>lambert material</b>. This
+				material simply reacts to light.
+			</p>
+			<pre class="language-javascript"><code>
+				const material = new THREE.MeshLambertMaterial();
+			</code></pre>
+			<p>
+				Applying lambert material, we might notice some white blurring along the
+				mesh's edges. This is to be expected. Out of all the light-reliant
+				materials, the lambert material is the most performant. The tradeoff,
+				however, is meticulous detail.
+			</p>
+		</section>
+
+		<section id="phong_material">
+			<h4>Phong Materials</h4>
+			<p>
+				A <b>phong material</b> looks similar to a lambert material, but with a
+				few differences. First, the white blurring along the mesh's edges are
+				essentially eliminated, and we see light bouncing off of the material.
+				With the lambert material, the surface pointed towards the light is
+				merely illuminated. Initializing:
+			</p>
+			<pre class="language-javascript"><code>
+				const material = new THREE.MeshPhongMaterial();
+			</code></pre>
+			<p>
+				Because phong materials can reflect light, they have a parameter,
+				<var><mark>shininess</mark></var
+				>, which we can modify to set how <q>shiny</q> the object is:
+			</p>
+			<pre class="language-javascript"><code>
+				const material = new THREE.MeshPhongMaterial();
+				material.shininess = 80;
+			</code></pre>
+			<p>
+				Additionally, we can change the shine's color by modifying the
+				<var><mark>specular</mark></var> property:
+			</p>
+			<pre class="language-javascript"><code>
+				const material = new THREE.MeshPhongMaterial();
+				material.specular = new THREE.color(0xff0000);
+			</code></pre>
+			<p>
+				The drawback with phong materials, of course, is that they aren't as
+				performant as lambert materials.
+			</p>
+		</section>
+
+		<section id="mesh_toon_material">
+			<h4>Mesh Toon Material</h4>
+			<p>
+				The <b>toon material</b> achieves the same effect as the lambert and
+				phong materials, but with higher contrast on the shine. This achieves a
+				cartoon-like effect. Instantiating:
+			</p>
+			<pre class="language-javascript"><code>
+				const material = new THREE.MeshToonMaterial();
+			</code></pre>
+			<p>
+				We can control the contrasts by adding more steps to the coloration
+				through the <var><mark>.gradientMap</mark></var> property and the
+				<var><mark>.gradientTexture</mark></var> property.
+			</p>
+			<pre class="language-javascript"><code>
+				const textureLoader = new THREE.TextureLoader();
+				const gradientTexture = textureLoader.load('/textures/gradients/3.jpg');
+				const material = new THREE.MeshToonMaterial();
+				material.gradientMap = gradientTexture;
+			</code></pre>
+			<p>
+				In the code above, we applied a texture called
+				<var>gradientTexture</var>, which is an image to some image file
+				displaying a gradient. If the gradient is small, executing the code
+				above renders a mesh that looks more like a lambert mesh than the
+				original toon mesh. We're seeing this behavior because the computer is
+				attempting to resolve the small gradient through mipmapping rather than
+				a clear separation (as we would expect with a toon mesh).
+			</p>
+			<p>
+				We can avoid this behavior by setting the <var>minFilter</var> and
+				<var>magFilter</var> to the object <var>THREE.NearestFilter</var>:
+			</p>
+			<pre class="language-javascript"><code>
+				const textureLoader = new THREE.TextureLoader();
+				const gradientTexture = textureLoader.load('/textures/gradients/3.jpg');
+
+				gradientTexture.minFilter = THREE.NearestFilter;
+				gradientTexture.magFilter = THREE.NearestFilter;
+
+				const material = new THREE.MeshToonMaterial();
+				material.gradientMap = gradientTexture;
+			</code></pre>
+			<p>
+				Becuse mip maps can be resource-intensive, using
+				<var>.NearestFilter</var> presents an opportunity to turn off
+				mipmapping:
+			</p>
+			<pre class="language-javascript"><code>
+				const textureLoader = new THREE.TextureLoader();
+				const gradientTexture = textureLoader.load('/textures/gradients/3.jpg');
+
+				gradientTexture.minFilter = THREE.NearestFilter;
+				gradientTexture.magFilter = THREE.NearestFilter;
+				gradientTexture.generateMipmaps = false;
+
+				const material = new THREE.MeshToonMaterial();
+				material.gradientMap = gradientTexture;
+			</code></pre>
+			<p>
+				Doing so can save a significant amount of memory and processing power.
+			</p>
+		</section>
+	</section>
+
+	<section id="mesh_standard_material">
+		<h3>Standard Material</h3>
+		<p>
+			We can think of the <b>standard material</b> as an upgraded basic
+			material. It supports lights and all of the other features we've seen with
+			other materials, but implements them through PBR principles. This leads to
+			materials appearing far more realistic. The standard material also
+			provides more descriptive parameters like <var>metalness</var> and
+			<var>roughness</var>.
+		</p>
+		<pre class="language-javascript"><code>
+			const material = new THREE.MeshStandardMaterial();
+			const material = new THREE.MeshStandardMaterial();
+			material.metalness = 0.45;
+			material.roughness = 0.65;
+		</code></pre>
+		<p>
+			With the standard material, we also have access to a property called
+			<var><mark>aoMap</mark></var> (<q>ambient occlusion map</q>). This
+			property adds shadows to dark textures. To use this property, we must
+			provide a second set of UV coordinates named <var><mark>uv2</mark></var
+			>. Recall that UV coordinates are what determine how textures are applied
+			to a geometry, and they exist as attributes of a particular geometry:
+		</p>
+		<pre class="language-javascript"><code>
+			console.log(plane.geometry.attributes);
+		</code></pre>
+		<pre class="language-bash"><code>
+			{position: Float32BufferAttribute, normal: Float32BufferAttribute, uv: Float32BufferAttribute}
+		</code></pre>
+		<p>
+			For example, if we wanted to modify the <var>aoMap</var> property for a
+			plane geometry, we would first have to set the plane geometry's
+			<var>uv2</var> property. To do so, we must pass as an argument an instance
+			of a <var><mark>BufferAttribute</mark></var> to the
+			<var>setAttribute()</var> method. Because we're creating a
+			<var>uv2</var> buffer attribute, we must pass the
+			<var>uv</var> coordinates for the plane geometry, alongside the grouping
+			number (in the code below, <var>2</var>, since UV coordinates consist of
+			two numbers):
+		</p>
+		<pre class="language-javascript"><code>
+			plane.geometry.setAttribute(
+				'uv2',
+				new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+			)			
+		</code></pre>
+		<p>
+			Once we've initialized the <var>uv2</var> property, we can then use the
+			material's <var>aoMap</var> property:
+		</p>
+		<pre class="language-javascript"><code>
+			const textureLoader = new THREE.TextureLoader();
+			const doorAmbientOcclusionTexture = textureLoader.load('/textures/ambientOcclusion.jpg');
+			material.aoMap = ambientOcclusionTexture;
+		</code></pre>
+		<p>We can also change the <var>aoMap</var>'s intensity:</p>
+		<pre class="language-javascript"><code>
+			material.aoMapIntensity = 10;
+		</code></pre>
+		<p>
+			This will increase the shadows' intensity &mdash; making them even more
+			dark.
+		</p>
+		<p>
+			The <var>aoMap</var> can create the effect of a relief from a fixed point,
+			but rotating the mesh, everything still appears flat. To create true
+			relief, we can use the <var><mark>displacementMap</mark></var> property:
+		</p>
+		<pre class="language-javascript"><code>
+			const textureLoader = new THREE.TextureLoader();
+			const heightTexture = textureLoader.load('/textures/height.jpg');
+			material.displacementMap = heightTexture;
+		</code></pre>
+		<p>
+			Depending on what the texture image is, <var>displacementMap</var> can
+			lead to some bizarre renderings. These bizarreries almost always result
+			from a lack of vertices, a displacement value too large, or a combination
+			of the two. We can fix the oddities by playing with the subdivisions and
+			displacement values. For example, with a torus geometry:
+		</p>
+		<pre class="language-javascript"><code>
+			material.displacementScale = 0.05;
+			const torus = new THREE.Mesh(
+				new THREE.TorusBufferGeometry(0.3, 0.2, 64, 128),
+				material
+			);
+		</code></pre>
+		<p>
+			We also have the properties <var><mark>metalnessMap</mark></var> and
+			<var><mark>roughnessMap</mark></var> for applying metallic and rough
+			textures. Importantly, these properties are distinct from the properties
+			<var><mark>metalness</mark></var> and <var><mark>roughness</mark></var
+			>. In general, we want to avoid using these these properties all together.
+			Pick one set or the other. Using both can lead to (1) performance issues,
+			and (2) too much or too little light reflection.
+		</p>
+		<p>
+			To add even more details &mdash; relief, shadows, lighting, etc. &mdash;
+			we can use the <var><mark>normalMap</mark></var> property. This property
+			essentially fakes the orientation of normals and adds detials on the
+			surface, regardless of the amount of subdivisions a geometry has.
+		</p>
+		<pre class="language-javascript"><code>
+			material.normalMap = doorNormalTexture;
+		</code></pre>
+		<p>
+			We can change the normal map's intensity by modifying the
+			<var><mark>normalScale</mark></var> property:
+		</p>
+		<pre class="language-javascript"><code>
+			material.normalScale.set(0.01, 0.01); 
+		</code></pre>
+	</section>
+</section>
+
+<section id="threeD_text">
+	<h2>3D Text</h2>
+	<ol class="references">
+		<li>
+			<a
+				href="https://threejs.org/docs/#examples/en/geometries/TextGeometry"
+				target="_blank"
+				>ThreeJS, <strong>Documentation: Text Geometry</strong></a
+			>
+		</li>
+		<li>
+			<a href="https://gero3.github.io/facetype.js/" target="_blank"
+				>gero3, <strong>Facetype.js</strong> (Tool for converting fonts to
+				typeface.js format).</a
+			>
+		</li>
+	</ol>
+	<p>
+		In this section, we examine how to render three-dimensional text. This is
+		done using ThreeJS's <var><mark>TextGeometry</mark></var> class.
+	</p>
+	<p>
+		The first requirement we must meet to use <var>TextGeometry</var> is to
+		ensure the font we use is a <b>typeface.json generated font</b>. The easiest
+		way to do this is to upload our font to
+		<a href="https://gero3.github.io/facetype.js/" target="_blank"
+			>Facetype.js</a
+		>, a program for converting fonts to <var>typeface.js</var> fonts.
+		Alternatively, we can use
+		<a
+			href="https://threejs.org/docs/#examples/en/geometries/TextGeometry"
+			target="_blank"
+			>ThreeJS's provided fonts</a
+		>. Once we've decided on our fonts, we can place them in our project
+		directory and import them to our driver file, just as we would other files:
+	</p>
+	<pre class="language-javascript"><code>
+		import typeFaceFont from 'three/fonts/typeface.json'
+	</code></pre>
+	<p>
+		Alternatively, and the more common way to load fonts, is to use ThreeJS's
+		<var><mark>FontLoader()</mark></var> method:
+	</p>
+	<pre class="language-javascript"><code>
+		// Import the font loader
+		import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+
+		// Load the fonts
+		const fontLoader = new FontLoader();
+		fontLoader.load(
+				'/fonts/myFont.typeface.json',
+				(font) => { 
+						console.log('loaded');
+				}
+		);
+	</code></pre>
+	<pre class="language-bash"><code>
+		loaded
+	</code></pre>
+	<p>
+		Above, we called <var>fontLoader.load()</var> and passed it two arguments:
+		(1) The file path to our typeface font, and (2) a callback function. This
+		callback function is used to instantiate a <var>TextGeometry</var>. Because
+		the <var>TextGeometry</var> class is in a separate module from the usual
+		modules, we must import it separately. Once we imported, we can instantiate
+		<var>TextGeometry</var> inside the callback function for
+		<var>fontloader.load()</var>:
+	</p>
+	<pre class="language-javascript"><code>
+		// Import text geometry 
+		import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+
+		// Import the font loader
+		import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+
+		// Load the fonts
+		const fontLoader = new FontLoader();
+		fontLoader.load(
+				'/fonts/helvetiker_regular.typeface.json',
+				(font) => {
+						const textGeometry = new TextGeometry();
+				}
+		);
+	</code></pre>
+	<p>
+		Inside the callback function's return, we write the following (we'll go over
+		each property momentarily):
+	</p>
+	<pre class="language-javascript"><code>
+		const fontLoader = new FontLoader();
+		fontLoader.load(
+			'/fonts/helvetiker_regular.typeface.json',
+			(font) => {
+				const textGeometry = new TextGeometry(
+					'Text',
+					{
+						font: font,
+						size: 0.5,
+						height: 0.2,
+						curveSegments: 12,
+						bevelEnabled: true,
+						bevelThickness: 0.03,
+						bevelSize: 0.02,
+						bevelOffset: 0,
+						bevelSegments: 5
+					}
+				)
+				const textMaterial = new THREE.MeshBasicMaterial({wireframe: true})
+				const text = new THREE.Mesh(textGeometry, textMaterial)
+				scene.add(text)
+			}
+		);
+	</code></pre>
+	<p>
+		In the callback function, the return is an object. Inside that object, we
+		have a <var>TextGeometry</var> object, a material, a mesh, and a scene-add.
+		The <var>TextGeometry</var> constructor takes two arguments: (1) a string
+		&mdash; corresponding to the text we want displayed; and (2) an object
+		containing the displayed text's properties.
+	</p>
+	<p>
+		Before examining the text properties, a few things to note. First, creating
+		a text geometry is long and resource-intensive. Without optimizations, the
+		text geometry often contains numerous unnecessary segments. These are all
+		hampers on performance. Accordingly, we must always perform the following
+		when working with text geometries:
+	</p>
+	<ol>
+		<li>
+			Ask: Is this text geometry necessary? If there's another, more performant
+			way to achieve the same purpose, use that approach. Minimizing text
+			geometries as much as possible yields substantial gains in performance.
+		</li>
+		<li>
+			Act: Keep the geometry as low as possible by reducing the
+			<var>curveSegments</var> and <var>bevelSegments</var> properties. Curve
+			segments are the segments that compose most of the text. We can think of
+			them as the primary segments for geometry. Bevel segments are used to add
+			bevels to the the geometry &mdash; sharp edges are smoothened to establish
+			a rounder effect.
+		</li>
+	</ol>
+	<p>
+		<span class="topic">Centering Text.</span> By default, a text geometry's
+		center is at the most bottom-left corner of the first character rendered. To
+		center the text, we could manipulate the mesh's position, but doing so would
+		prevent us from performing animations like rotations on the text's center.
+		(Since the center is still on the text's most bottom-left corner). There are
+		two ways to center text geometries. The first is to use a <b>bounding</b>.
+	</p>
+	<p>
+		A bounding is data associated with a given geometry, corresponding to the
+		space occupied by that geometry. This space is either a box or a sphere.
+		ThreeJS uses bounding for various procedures, the most common being
+		<b>frustrum culling</b> &mdash; roughly, the process of determining whether
+		an object is on the screen. For example, if an object is behind the camera,
+		the object should not be rendered. Or if the object is not within the
+		camera's view more generally, the object should not be rendered. Determining
+		whether a particular object is within the camera's view is just one example
+		of frustrum culling.
+	</p>
+	<p>
+		For a text geometry, we can use a box bounding to center the text. By
+		default, ThreeJS uses <b>sphere bounding</b>. To use box bounding, we first
+		call the <var><mark>computeBoundingBox</mark></var> method:
+	</p>
+	<pre class="language-javascript"><code>
+		const fontLoader = new FontLoader();
+		fontLoader.load(
+			'/fonts/helvetiker_regular.typeface.json',
+			(font) => {
+				const textGeometry = new TextGeometry(
+					'Text',
+					{
+						font: font,
+						size: 0.5,
+						height: 0.2,
+						curveSegments: 5,
+						bevelEnabled: true,
+						bevelThickness: 0.03,
+						bevelSize: 0.02,
+						bevelOffset: 0,
+						bevelSegments: 4
+					}
+				)
+
+				// Bounding Box
+				textGeometry.computeBoundingBox();
+				console.log(textGeometry.boundingBox);
+
+				const textMaterial = new THREE.MeshBasicMaterial({wireframe: true})
+				const text = new THREE.Mesh(textGeometry, textMaterial)
+				scene.add(text)
+			}
+		);
+	</code></pre>
+	<pre class="language-bash"><code>
+		Box3
+			max: Vector3 {x: 1.409500002861023, y: 0.5264999866485596, z: 0.23000000417232513}
+			min: Vector3
+				x: -0.019999999552965164
+				y: -0.033042728900909424
+				z: -0.029999999329447746
+				[[Prototype]]: Object
+			[[Prototype]]: Object
+	</code></pre>
+	<p>
+		Logging to the console <var>textGeometry.boundingBox</var>, we see that we
+		get back an instance of the class <var><mark>Box3</mark></var
+		>. Instances of <var>Box3</var> are not visible objects. It's purely a
+		purely mathematical entity. We can think of it as a box, but it is not a
+		visible box. Notice that the <var>Box3</var> object has a <var>max</var> and
+		<var>min</var> value. Both of which are <var>Vector3</var> objects.
+		Examining them closely, we see that they're coordinates. But why are there
+		negative values for the <var>min</var> object? We're seeing these negative
+		values because of the <var>bevelThickness</var> and
+		<var>bevelSize</var> properties.
+	</p>
+	<p>
+		The idea behind using the bounding box is to move the
+		<em>geometry</em> rather than the mesh. In other words, we move the geometry
+		such that its center point is the mesh's center point, rather than moving
+		the mesh entirely. To move a text geometry, we can use the
+		<var>translate()</var> method, since <var>textGeometry</var> inherits from
+		<var>BufferGeometry</var>.
+	</p>
+	<pre class="language-javascript"><code>
+		const fontLoader = new FontLoader();
+		fontLoader.load(
+			'/fonts/helvetiker_regular.typeface.json',
+			(font) => {
+				const textGeometry = new TextGeometry(
+						'Text',
+						{
+								font: font,
+								size: 0.5,
+								height: 0.2,
+								curveSegments: 5,
+								bevelEnabled: true,
+								bevelThickness: 0.03,
+								bevelSize: 0.02,
+								bevelOffset: 0,
+								bevelSegments: 4
+						}
+				)
+
+				// Bounding Box
+				textGeometry.computeBoundingBox()
+
+				// Center Text
+				textGeometry.translate(
+						- textGeometry.boundingBox.max.x * 0.5,
+						- textGeometry.boundingBox.max.y * 0.5,
+						- textGeometry.boundingBox.max.z * 0.5
+					)
+
+				const textMaterial = new THREE.MeshBasicMaterial({wireframe: true})
+				const text = new THREE.Mesh(textGeometry, textMaterial)
+				scene.add(text)
+			}
+		);
+	</code></pre>
+	<p>
+		The text above, however, is not entirely centered. This is because of the
+		two properties we mentioned earlier, <var>bevelThickness</var> and
+		<var>bevelSize</var>. Accordingly, what we want to do is subtract these
+		property values from the <var>textGeometry.boundingBox.max</var> values:
+	</p>
+	<pre class="language-javascript"><code>
+		const fontLoader = new FontLoader();
+		fontLoader.load(
+			'/fonts/helvetiker_regular.typeface.json',
+			(font) => {
+				const textGeometry = new TextGeometry(
+						'Text',
+						{
+								font: font,
+								size: 0.5,
+								height: 0.2,
+								curveSegments: 5,
+								bevelEnabled: true,
+								bevelThickness: 0.03,
+								bevelSize: 0.02,
+								bevelOffset: 0,
+								bevelSegments: 4
+						}
+				)
+
+				// Bounding Box
+				textGeometry.computeBoundingBox()
+
+				// Center Text
+				textGeometry.translate(
+						- (textGeometry.boundingBox.max.x - 0.02) * 0.5,
+						- (textGeometry.boundingBox.max.y - 0.02) * 0.5,
+						- (textGeometry.boundingBox.max.z - 0.03) * 0.5
+					)
+
+				const textMaterial = new THREE.MeshBasicMaterial({wireframe: true})
+				const text = new THREE.Mesh(textGeometry, textMaterial)
+				scene.add(text)
+			}
+		);
+	</code></pre>
+	<p>
+		Now our text is really centered. This entire process is encapsulated by a
+		method in ThreeJS called <var><mark>center()</mark></var
+		>:
+	</p>
+	<pre class="language-javascript"><code>
+		const fontLoader = new FontLoader();
+		fontLoader.load(
+			'/fonts/helvetiker_regular.typeface.json',
+			(font) => {
+				const textGeometry = new TextGeometry(
+						'Text',
+						{
+								font: font,
+								size: 0.5,
+								height: 0.2,
+								curveSegments: 5,
+								bevelEnabled: true,
+								bevelThickness: 0.03,
+								bevelSize: 0.02,
+								bevelOffset: 0,
+								bevelSegments: 4
+						}
+				)
+
+				textGeometry.center()
+
+				const textMaterial = new THREE.MeshBasicMaterial({wireframe: true})
+				const text = new THREE.Mesh(textGeometry, textMaterial)
+				scene.add(text)
+			}
+		);
+	</code></pre>
+</section>
+
+<section id="creating_multiple_meshes">
+	<h2>Creating Multiple Meshes</h2>
+	<p>
+		Suppose we have a torus geometry, and we want to create a hundred instances
+		of the torus geometry. One way to do so is by writing the following:
+	</p>
+	<pre class="language-javascript"><code>
+		const textureLoader = new THREE.TextureLoader();
+		const matCapTexture = textureLoader.load('/textures/matcaps/1.png');
+		for (let i = 0; i < 100; i++) {
+			// Instantiate geometry and material
+			const torus = new THREE.TorusBufferGeometry(0.3, 0.2, 20, 45);
+			const torusMaterial = new THREE.MeshMatCapMaterial({
+				matcap: matCapTexture;
+			});
+
+			// Create mesh
+			const torus = new THREE.Mesh(torus, torusMaterial);
+
+			// Vary the toruses's positions
+			torus.position.x = (Math.random() - 0.5) * 10;
+			torus.position.y = (Math.random() - 0.5) * 10;
+			torus.position.z = (Math.random() - 0.5) * 10;
+
+			// Vary the toruses's rotations
+			torus.rotation.x = Math.random() * Math.PI;
+
+			// Vary the toruses's scales
+			const scale = Math.random();
+			torus.scale.x = scale;
+			torus.scale.y = scale;
+			torus.scale.z = scale;
+
+			// Add to scene
+			scene.add(torus)
+		}
+	</code></pre>
+	<p>
+		The problem with this approach, however, is that it's not performant. We can
+		see the time cost approach for this approach by using the JavaScript's
+		<var><mark>.time()</mark></var> and
+		<var><mark>.timeEnd()</mark></var> methods:
+	</p>
+	<pre class="language-javascript"><code>
+		console.time('torus');
+
+		const textureLoader = new THREE.TextureLoader();
+		const matCapTexture = textureLoader.load('/textures/matcaps/1.png');
+		for (let i = 0; i < 100; i++) {
+			// Instantiate geometry and material
+			const torus = new THREE.TorusBufferGeometry(0.3, 0.2, 20, 45);
+			const torusMaterial = new THREE.MeshMatCapMaterial({
+				matcap: matCapTexture;
+			});
+
+			// Create mesh
+			const torus = new THREE.Mesh(torus, torusMaterial);
+
+			// Vary the toruses's positions
+			torus.position.x = (Math.random() - 0.5) * 10;
+			torus.position.y = (Math.random() - 0.5) * 10;
+			torus.position.z = (Math.random() - 0.5) * 10;
+
+			// Vary the toruses's rotations
+			torus.rotation.x = Math.random() * Math.PI;
+
+			// Vary the toruses's scales
+			const scale = Math.random();
+			torus.scale.x = scale;
+			torus.scale.y = scale;
+			torus.scale.z = scale;
+
+			// Add to scene
+			scene.add(torus)
+		}
+
+		console.timeEnd('torus');
+	</code></pre>
+	<pre class="language-bash"><code>
+		70.4560546875 ms
+	</code></pre>
+	<p>
+		It takes about ${70.5~\text{ms}}$ to execute the code above. At a thousand
+		toruses, we would see this time cost increase to nearly half a second. This
+		is bad. Very bad. With a sufficiently complex scene, we would see our
+		renderings freeze, or worse, crash.
+	</p>
+	<p>
+		We're seeing an enormous rendering time because JavaScript is processing all
+		of the statements in the loop's body at <em>each iteration</em>. A single
+		call to a method like <var>new HREE.TorusBufferGeometry()</var> is a
+		significant undertaking. Now multiply that by a hundred.
+	</p>
+	<p>
+		It follows then that we can significantly reduce this time cost by
+		processing
+		<b>invariant commands</b> &mdash; code to be repeated &mdash; ahead of their
+		repetitions or reuse. In this case, the material and the geometry are always
+		the same. The only things that vary are their properties:
+	</p>
+	<pre class="language-javascript"><code>
+		console.time('torus');
+
+		const textureLoader = new THREE.TextureLoader();
+		const matCapTexture = textureLoader.load('/textures/matcaps/1.png');
+
+		// Instantiate geometry and material
+		const torus = new THREE.TorusBufferGeometry(0.3, 0.2, 20, 45);
+		const torusMaterial = new THREE.MeshMatCapMaterial({
+			matcap: matCapTexture;
+		});
+
+		for (let i = 0; i < 100; i++) {
+			// Create mesh
+			const torus = new THREE.Mesh(torus, torusMaterial);
+
+			// Vary the toruses's positions
+			torus.position.x = (Math.random() - 0.5) * 10;
+			torus.position.y = (Math.random() - 0.5) * 10;
+			torus.position.z = (Math.random() - 0.5) * 10;
+
+			// Vary the toruses's rotations
+			torus.rotation.x = Math.random() * Math.PI;
+
+			// Vary the toruses's scales
+			const scale = Math.random();
+			torus.scale.x = scale;
+			torus.scale.y = scale;
+			torus.scale.z = scale;
+
+			// Add to scene
+			scene.add(torus)
+		}
+
+		console.timeEnd('torus');
+	</code></pre>
+	<pre class="language-bash"><code>
+		3.361083984375 ms
+	</code></pre>
+	<p>
+		By just moving the geometry and material instantiation outside of the loop,
+		we went from rough ${70.5~\text{ms}}$ to ${3.4~\text{ms}.}$ This is roughly
+		a ${95.177\%}$ decrease in rendering time. That's a massive improvement.
+	</p>
+	<p>
+		This illustrates a critical lesson in graphics programming: Always &mdash;
+		always &mdash; look for opportunities to optimize and take them. In many
+		other areas of programming, we can get away with practices like leaving
+		computations and function calls inside for-loops. That is not the case with
+		graphics programming. Computations are costly, both in time and space. Even
+		the smallest changes &mdash; like moving two lines of code elsewhere &mdash;
+		can yield great returns.
+	</p>
+</section>
+
+<section id="lights">
+	<h2>Lights</h2>
+	<p>
+		Adding a light is no different from adding meshes. With ThreeJS, we just
+		have to instantiate the property class and add the resulting instance to our
+		scene. ThreeJS provides several kinds of lights. Let's go over them.
+	</p>
+
+	<section id="ambient_light">
+		<h3>Ambient Light</h3>
+		<p>
+			An <b>ambient light</b> applies what we call
+			<b>omnidirectional lighting</b>. This means that light radiating from an
+			ambient light source comes from all directions. In ThreeJS, ambient lights
+			are provided through the <var><mark>AmbientLight</mark></var> class. The
+			constructor:
+		</p>
+
+		<ul class="syntax">
+			<li>const ambientLight = new THREE.AmbientLight(${c}$, ${t}$)</li>
+		</ul>
+
+		<p>
+			The first parameter, ${c,}$ corresponds to the light's color. The second
+			parameter, ${t,}$ corresponds to the light's intensity. In JavaScript:
+		</p>
+
+		<pre class="language-javascript"><code>
+			const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+			scene.add(ambientLight);
+		</code></pre>
+
+		<p>
+			Adding an ambient light to the scene creates uniform light on the meshes.
+			This means that, without more, ambient light looks more like a material
+			than an actual light source. It can, however, be a very useful tool.
+		</p>
+		<p>As an aside, we can add a light source to debug panel as follows:</p>
+		<pre class="language-javascript"><code>
+			import * as debugUI from 'lil-gui'
+			const debugPanel = new debugGUI.GUI()
+			debugPanel.add(ambientLight, 'intensity').min(0).max(1).step(0.01);
+		</code></pre>
 	</section>
 </section>
 {% endblock %}

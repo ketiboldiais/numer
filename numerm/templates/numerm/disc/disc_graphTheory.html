@@ -39,6 +39,7 @@
 		by stating a few definitions in graph theory.
 	</p>
 </section>
+
 <section id="forray">
 	<h2>What is a graph?</h2>
 	<p>Informally, a graph is just a bunch of dots and lines:</p>
@@ -654,9 +655,126 @@
 			Thus, even if we remove a node from the graph ${G',}$ the maximum degree
 			of ${G'}$ remains ${d.}$ Thus, for the ${n}$-node graph, ${P(n)}$ is true
 			because ${d}$ doesn't increase &mdash; given an ${n}$-node graph, the
-			basic coloring algorithm, at most, uses ${d + 1}$ colors.
+			basic coloring algorithm, at most, uses ${d + 1}$ colors for ${v_1, v_2,
+			\ldots, v_n.}$
 		</p>
-		<p>Now we consider the ${n+1}$-node graph.</p>
+		<p>
+			Now we consider the ${n+1}$-node graph. The node ${v_{n+1},}$ has at most
+			${d}$ neighbors<label for="neighbor" class="margin-toggle"
+				><sup></sup
+			></label>
+			<input
+				type="checkbox"
+				id="neighbor"
+				class="margin-toggle sidenote-number"
+			/>
+			<span class="marginnote"
+				>A <b>neighbor</b> of a node ${v}$ is a node adjacent to ${v.}$</span
+			>
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/node_neighbors.svg' %}"
+				alt="node neighbors"
+				loading="lazy"
+				class="fifteen-p"
+			/>
+			<figcaption>${v_{n+1}}$ has ${\leq d}$ neighbors.</figcaption>
+		</figure>
+		<p>
+			Given that ${v_{n+1}}$ has at most ${d}$ neighbors, what does this mean in
+			terms of the colors we can use? Well, we know that it can't be any one of
+			the colors assigned to the neighbors ${u_1, u_2, \ldots, u_d.}$ Thus, we
+			can rule out ${d}$ colors. Given that we're working with ${d}$ colors, we
+			have:
+		</p>
+		<figure>
+			<div>
+				<p>${(d + 1) - d = 1}$</p>
+			</div>
+		</figure>
+		<p>
+			color left to use safely. Thus, there is at least one color in the set of
+			${d + 1}$ colors unused by any neighbor. That color can be assigned to
+			${v_{n+1}.}$ It follows then that the basic algorithm uses, at most, ${d +
+			1}$ colors on some graph ${G,}$ which in turn proves that ${P(n+1)}$ is
+			true. We've completed the induction:
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Theorem.</span>
+					If every node in an ${n}$-node graph ${G}$ has a degree less than or
+					equal to ${d,}$ then the basic coloring algorithm uses at most ${d +
+					1}$ colors.
+				</p>
+			</div>
+		</figure>
+		<p>
+			Importantly, the theorem above only provides an upper bound. It says
+			nothing about whether we can get away with less than ${d + 1.}$ In fact,
+			the most obvious example of a graph where we can do better than ${d + 1}$
+			is a <b>star graph</b>:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/star_graph.svg' %}"
+				alt="star graph"
+				loading="lazy"
+				class="ten-p"
+			/>
+		</figure>
+		<p>A more complicated example:</p>
+		<figure>
+			<img
+				src="{% static 'images/bipartite-graph-1.svg' %}"
+				alt="bipartite graph"
+				loading="lazy"
+				class="fifteen-p"
+			/>
+		</figure>
+		<p>
+			Notice that red node connects to each yellow node other than the node
+			directly across from it. Because of this property, we can get away with
+			two colors, red and yellow. This only works, however, if we used the right
+			ordering:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/bipartite-graph-2.svg' %}"
+				alt="bipartite graph"
+				loading="lazy"
+				class="twenty-p"
+			/>
+		</figure>
+		<p>Had we used another ordering, we'd be in trouble:</p>
+		<figure>
+			<img
+				src="{% static 'images/bipartite-graph-2.svg' %}"
+				alt="bipartite graph"
+				loading="lazy"
+				class="twenty-p"
+			/>
+		</figure>
+		<p>
+			The graphs above are called <b>bipartite graphs</b>. The formal
+			definition:
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Definition: Bipartite Graph.</span> A graph ${G =
+					(V, E)}$ is a bipartite graph iff the vertices ${V}$ can be
+					partitioned (i.e., split) into two sets, ${V_\ell}$ (the left set) and
+					${V_r}$ (the right set), so that all the edges connect a node in
+					${V_\ell}$ to a node in ${V_r.}$
+				</p>
+			</div>
+		</figure>
 	</section>
+</section>
+
+<section id="matching">
+	<h2>Matching</h2>
 </section>
 {% endblock %}

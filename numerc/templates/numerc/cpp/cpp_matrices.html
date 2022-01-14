@@ -878,6 +878,7 @@
 
 <section id="special_matrices">
 	<h2>Special Matrices</h2>
+
 	<p>
 		Before we examine algorithms on matrices, we consider certain kinds of
 		matrices. Each of these matrices have unique properties that separate them
@@ -917,6 +918,7 @@
 				<th>2</th>
 				<th>3</th>
 				<th>4</th>
+				<th>${\rarr i}$</th>
 			</thead>
 			<tbody>
 				<tr>
@@ -958,6 +960,9 @@
 					<td>0</td>
 					<td>0</td>
 					<td class="beige">6</td>
+				</tr>
+				<tr>
+					<td>${\darr j}$</td>
 				</tr>
 			</tbody>
 		</table>
@@ -1152,10 +1157,38 @@
 		<p></p>
 		<div class="demo">
 			<div class="options">
+				<button>Java</button>
 				<button>Python</button>
 			</div>
 			<div class="implementation">
-				<p>Here's an implementation in Python:</p>
+				<p>Here's an implementation in Java.</p>
+				<pre class="language-java"><code>
+					import java.util.Arrays;
+
+					class matrix {
+						public static int[] flatten(int[][] m) {
+							int n = m[0].length;
+							int arr[] = new int[n];
+							for (int i = 0; i < n; i++) {
+								for (int j = 0; j < n; j++) {
+									if (i == j) {arr[i] = m[i][j];}
+									else {continue;}
+								}
+							}
+							return arr;
+						}
+					}
+					public class diagonalMatrix {
+						public static void main(String[] args) {
+							int[][] M = &lcub;{1, 0, 0}, {0, 2, 0}, {0, 0, 3}};
+							int[] A = matrix.flatten(M);
+							System.out.println(Arrays.toString(A));
+						}
+					}
+				</code></pre>
+			</div>
+			<div class="implementation">
+				<p>Here's an implementation in Python.</p>
 				<pre class="language-python"><code>
 					def flattenDiagonally(M):
 						arr = []
@@ -1177,6 +1210,166 @@
 				</code></pre>
 			</div>
 		</div>
+	</section>
+
+	<section id="lower_triangular_matrix">
+		<h3>Lower Triangular Matrix</h3>
+		<p>A <b>lower triangular matrix</b> looks like the following:</p>
+		<figure>
+			$$ \begin{bmatrix} a_{0_0} & 0 & 0 & 0 & 0 \\ a_{1_0} & a_{1_1} & 0 & 0 &
+			0 \\ a_{2_0} & a_{2_1} & a_{2_2} & 0 & 0 \\ a_{3_0} & a_{3_1} & a_{3_2} &
+			a_{3_3} & 0 \\ a_{4_0} & a_{4_1} & a_{4_2} & a_{4_3} & a_{4_4} \\
+			\end{bmatrix} $$
+		</figure>
+		<p>
+			Needless to say, this special matrix's name is self-descriptive. The
+			matrix is essentially cut diagonally, forming two triangles. The lower
+			triangle is occupied by non-zero values (represented above with the
+			variable ${a}$), and the upper triangle is occupied by zeroes. Examining
+			the non-zero elements:
+		</p>
+		<div class="func">
+			<ul>
+				<li>Element</li>
+				<li>${i}$</li>
+				<li>${j}$</li>
+				<li>Relation</li>
+			</ul>
+			<ul>
+				<li>${a_{0_0}}$</li>
+				<li>0</li>
+				<li>0</li>
+				<li>${i = j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{1_0}}$</li>
+				<li>1</li>
+				<li>0</li>
+				<li>${i > j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{1_1}}$</li>
+				<li>1</li>
+				<li>1</li>
+				<li>${i = j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{2_0}}$</li>
+				<li>2</li>
+				<li>0</li>
+				<li>${i > j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{2_1}}$</li>
+				<li>2</li>
+				<li>1</li>
+				<li>${i > j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{2_2}}$</li>
+				<li>2</li>
+				<li>2</li>
+				<li>${i = j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{3_0}}$</li>
+				<li>3</li>
+				<li>0</li>
+				<li>${i > j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{3_1}}$</li>
+				<li>3</li>
+				<li>1</li>
+				<li>${i > j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{3_2}}$</li>
+				<li>3</li>
+				<li>2</li>
+				<li>${i > j}$</li>
+			</ul>
+			<ul>
+				<li>${a_{3_3}}$</li>
+				<li>3</li>
+				<li>3</li>
+				<li>${i = j}$</li>
+			</ul>
+			<ul>
+				<li>&vellip;</li>
+				<li>&vellip;</li>
+				<li>&vellip;</li>
+				<li>&vellip;</li>
+			</ul>
+		</div>
+		<p>
+			If we look at the relations between ${i}$ and ${j,}$ we see that for the
+			non-zero elements, ${i}$ is <em>always</em> greater than or equal to
+			${j.}$ Everything else is zero. Stated another way: If ${i < j,}$ then the
+			element ${a_{i_j} = 0.}$ Hence, we have the following conditions:
+		</p>
+		<figure>
+			<div>
+				<ol class="numd">
+					<li>${(i < j) \implies a_{i_j} = 0}$</li>
+					<li>${(i \geq j) \implies a_{i_j} \neq 0}$</li>
+				</ol>
+			</div>
+		</figure>
+		<p>
+			As we saw with the diagonal matrix, depending on what we're doing with the
+			lower triangular matrix, there's potentially wasted memory. Here, we see a
+			pattern to the zero elements. In the first row there are four zeroes, in
+			the second there are three, in the third there are two, and in the fourth
+			there is one. This is an arithmetic sequence:
+		</p>
+		<figure>
+			<div>
+				<p>${\lang 4, 3, 2, 1 \rang}$</p>
+			</div>
+		</figure>
+		<p>The arithmetic series:</p>
+		<figure>
+			<div>
+				<p>${1 + 2 + 3 + 4 = 10}$</p>
+			</div>
+		</figure>
+		<p>We can generalize this formula:</p>
+		<figure>
+			<div>
+				<p>${\sum\limits_{k = 0}^{n-1} k = \dfrac{n(n-1)}{2}}$</p>
+			</div>
+		</figure>
+		<p>
+			Thus, given an ${n \times n}$ matrix, the amount of memory used by the
+			zero elements is:
+		</p>
+		<figure>
+			<div>
+				<p>${m_w(T) = b_t \left(\dfrac{n(n-1)}{2}\right)}$</p>
+			</div>
+			<figcaption>
+				Where ${m_w(T)}$ is a function of the wasted memory, ${T}$ is some lower
+				triangular matrix of size ${n \times n,}$ and ${b_t}$ is the amount of
+				bytes consumed by the matrix type ${t.}$
+			</figcaption>
+		</figure>
+		<p>
+			Because there are ${n^2}$ elements, the amount of memory needed for the
+			non-zero elements is:
+		</p>
+		<figure>
+			$$ \begin{aligned} M(T) &= n^2 - \dfrac{n(n-1)}{2} \\[1em] &= \dfrac{2n^2
+			- n^2 + n}{2} \\[1em] &= \dfrac{n^2 + n}{2} \end{aligned} $$
+		</figure>
+		<p>
+			We can confirm that this is correct by observing that the sum of all the
+			non-zero elements is the arithmetic series of the positive integers:
+		</p>
+		<figure>
+			$$ \begin{aligned} \sum\limits_{k = 0}^{n} k &= 1 + 2 + 3 + \ldots + n
+			\\[1em] &= \dfrac{n(n + 1)}{2} \end{aligned} $$
+		</figure>
 	</section>
 </section>
 

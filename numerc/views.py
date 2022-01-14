@@ -223,6 +223,9 @@ def js_controlFlow(request):
 def js_classes(request):
 		return render(request, "numerc/js/js_classes.html")
 
+def js_react(request):
+		return render(request, "numerc/js/js_react.html")
+
 def js_d3(request):
 		return render(request, "numerc/js/js_d3.html")
 
@@ -350,9 +353,6 @@ def cpp_variablesAndTypes(request):
 def cpp_collections(request):
 	return render(request, "numerc/cpp/cpp_collections.html")
 
-def cpp_arrays(request):
-	return render(request, "numerc/cpp/cpp_arrays.html")
-
 def cpp_basicOperators(request):
 	return render(request, "numerc/cpp/cpp_basicOperators.html")
 
@@ -416,6 +416,9 @@ def cpp_numberTheoryCS(request):
 def cpp_stringAlgorithms(request):
 	return render(request, "numerc/cpp/cpp_stringAlgorithms.html")
 
+def cpp_linked_list(request):
+	return render(request, "numerc/cpp/cpp_linked_list.html")
+
 
 
 #! C# Views (cshv)
@@ -453,6 +456,9 @@ def cmp_index(request):
 #! Computer Systems & Organization Views (sysv)
 def sys_index(request):
 	return render(request, "numerc/sys/sys_index.html")
+
+def sys_assembly(request):
+	return render(request, "numerc/sys/sys_assembly.html")
 
 def sys_cIntro(request):
 	return render(request, "numerc/sys/sys_cIntro.html")

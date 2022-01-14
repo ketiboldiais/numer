@@ -1,0 +1,483 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on linked lists." />
+{% endblock %} {% block title %}
+<title>Linked Lists</title>
+{% endblock %} {% block content %}
+<h1>Linked Lists</h1>
+<section id="intro">
+	<p>
+		In the previous sections, we worked exclusively with arrays. Arguably, the
+		largest limitation we saw with arrays is the fact that they were of fixed
+		size. Whenever we create an array, we must provide a size. And if we do not,
+		the compiler will do so for us. Once set, the array's size is fixed &mdash;
+		we cannot lengthen or shorten the array.
+	</p>
+	<p>
+		Because of the length limitation, we cannot modify the array at runtime.
+		This makes it prohibitively difficult to work with sequences whose sizes are
+		unknown at the time of writing. Of course, we could always just initialize
+		massive arrays, hoping that our sequences can fit. But this is clearly
+		inefficient &mdash; it's a waste of memory. And even if we went with this
+		approach, there's no guarantee that our sequence would fit the monolithic
+		array.
+	</p>
+	<p>
+		Comparing arrays and linked lists, it's helpful to visualize how they might
+		be stored in memory. Suppose we had the following sequence:
+	</p>
+	<figure>
+		<div>
+			<p>${\lang 3, 7, 2, 9, 1 \rang}$</p>
+		</div>
+	</figure>
+	<p>
+		From what we know, we can implement this sequence in three ways: (1) a
+		static array; (2) a dynamic array; and (3) a linked list. Compare these
+		three approaches from a computer memory perspective:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/linked_list_compare.svg' %}"
+			alt="Comparison linked list"
+			loading="lazy"
+		/>
+		<figcaption>
+			Comparing the static array, the dynamic array, and the linked list. The
+			grey regions represent the heap, while the white regions represent the
+			stack. The variable <var>p</var> is a pointer.
+		</figcaption>
+	</figure>
+	<!-- <p>
+		To remove a node ${x_n,}$ we would simply have the pointer for the node
+		${x_{n-1}}$ point to ${x_{n+1}.}$
+	</p> -->
+	<p>Here's a closer look at the linked list:</p>
+	<figure>
+		<img
+			src="{% static 'images/linked_list_focus.svg' %}"
+			alt="linked list"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		In the diagram above, each of the boxes are called <b>nodes</b>. A linked
+		list node consists of two parts: (1) substantive data and (2) procedural
+		data. The <b>substantive data</b> consists of the actual data we want to
+		work with. This could be some literal, an array, or some instance of an
+		abstract data type. The <b>procedural data</b> consists of a <i>pointer</i>.
+		That pointer points to the next node. Note what this means:
+	</p>
+	<figure>
+		<div>
+			<p>A node pointer is of type node.</p>
+		</div>
+	</figure>
+	<p>
+		Recognizing this point, a node is itself a data structure, albeit simple:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/nodeDataStructure.svg' %}"
+			alt="node data structure"
+			loading="lazy"
+			class="thirty-p"
+		/>
+	</figure>
+</section>
+
+<section id="linked_list_data_structure">
+	<h2>The Linked List Data Structure</h2>
+	<p>
+		Before we examine linked list algorithms, we must first understand the
+		linked list data structure. We will do so by investigating the mechanics
+		behind implementing a linked list.
+	</p>
+	<section id="node_implementation">
+		<h3>Implementing the Node Data Structure</h3>
+		<p>
+			To implement the node data structure, we use a record. In C, we would
+			write this record as:
+		</p>
+		<pre class="language-c"><code>
+			struct Node {
+				int data;
+				struct Node* next;
+			}
+		</code></pre>
+		<p>We could also write this in C++ as:</p>
+		<pre class="language-cpp"><code>
+			struct Node {
+				int data;
+				Node* next;
+			}
+		</code></pre>
+		<p>
+			A linked list's data field determines its type. Thus,
+			<var>int data</var> indicates a linked list of type <var>int</var>, and
+			<var>int data</var> a linked list of type <var>char</var>. A linked list's
+			data type, however, is distinct from its nodes's data type.
+		</p>
+		<p>
+			A linked list <i>node</i> is of type <var>Node</var>. The type node is a
+			<a
+				href="{% url 'numerc:ml_customDataTypes' %}#recursive_types"
+				target="_blank"
+				><i>recursive sum type</i></a
+			>
+			${N.}$ It consists of a type ${t,}$ <em>and</em> a type ${N^*}$ &mdash; a
+			pointer to a value of type ${N.}$ Notice this self-referential structure;
+			linked lists provide great opportunities for recursion, as we'll soon see.
+		</p>
+		<p>
+			Let's get a bit of terminology out of the way. First, every linked list
+			has a
+			<b>head</b> and a <b>tail</b>, both of which are nodes on the linked list.
+			Here's a more abstract diagram of the linked list data structure:
+		</p>
+
+		<img
+			src="{% static 'images/headTail.svg' %}"
+			alt="Linked last data structure"
+			loading="lazy"
+		/>
+
+		<p>
+			Above, ${n}$ represents some node. Each node ${n}$ consists of two parts,
+			a <i>data field</i>, containing of some data value ${v,}$ and a
+			<i>next field</i>, containing a pointer to some heap memory address ${h.}$
+			Notice that each node stores the address ${h}$ of the next node.
+		</p>
+
+		<p>
+			The linked list as a whole has a <i>head</i>, which is not a node, but a
+			<i>node pointer</i>. The head serves as the linked list's <i>name</i> or
+			<i>identifier</i>. It is the only part of the linked list that we have
+			direct access to, and thus serves as liaison for the rest of the list.
+		</p>
+		<p>
+			The linked list also has a <i>tail</i>, which is the last node in the
+			linked list. Unlike the other nodes, the tail's pointer is a
+			<b>null pointer</b> &mdash; it points to the memory address ${0.}$
+		</p>
+		<p>
+			Question: How much memory does the node data structure take? Well, we know
+			that there are two parts to the node; the substantive data and the
+			pointer. We'll denote the substantive data ${d,}$ and the pointer ${p.}$
+			We'll also denote the amount of memory a given node consumes as the
+			function ${N:}$
+		</p>
+		<figure>
+			<div>
+				<p>${N = d + p}$</p>
+			</div>
+		</figure>
+		<p>
+			Focusing on the variable ${d}$ first, the amount of memory consumed by
+			${d}$ is a function of its type, and number of instances of ${d.}$ We'll
+			denote the amount of memory consumed by a value of type ${d}$ as
+			${S(t_d),}$ and the number of instances as ${n.}$ Thus, ${d = n \cdot
+			t_d.}$ Placing this in our equation:
+		</p>
+		<figure>
+			<div>
+				<p>${N = n(S(t_d)) + p}$</p>
+			</div>
+		</figure>
+		<p>
+			Now let's think about ${p.}$ For any given compiler, the memory consumed
+			by ${p}$ depends on the data type of the value the pointer points to. For
+			example, if an <var>int</var> value <var>x</var> takes ${2}$ bytes, a
+			pointer <var>p</var> to <var>x</var> would take ${2}$ bytes. Thus, we
+			have:
+		</p>
+		<figure>
+			<div>
+				<p>${N = n(S(t_d)) + S(t_d)}$</p>
+			</div>
+		</figure>
+		<p>
+			Simplifying, we have the following formula for the amount of memory a
+			single node takes:
+		</p>
+		<figure>
+			<div>
+				<p>${N = S(t_d) \cdot (n + 1)}$</p>
+			</div>
+			<figcaption>
+				Where ${t_d}$ is the data type of the substantive data value, ${n}$ is
+				the number of substantive data values stored in a single node, and
+				${S(t_d)}$ is the size of the data type ${t_d.}$
+			</figcaption>
+		</figure>
+		<p>
+			Applying this formula, suppose we have a node storing the
+			<var>int</var> value ${1.}$ On a 64-bit compiler where an
+			<var>int</var> takes up ${4}$ bytes, the size of the node would be:
+		</p>
+		<figure>
+			<div>
+				<p>${N = 4 \cdot (1 + 1) = 8}$ bytes.</p>
+			</div>
+		</figure>
+	</section>
+
+	<section id="instantiating_node">
+		<h3>Instantiating the Node</h3>
+		<p>
+			After creating the node data structure, we want to begin the linking of
+			different nodes. To do so, we employ the following fact:
+		</p>
+		<figure>
+			<div>
+				<p>
+					<span class="topic">Fact.</span> Linked lists are stored in heap
+					memory.
+				</p>
+			</div>
+		</figure>
+		<p>
+			Thus, to instantiate a node, we must first have a pointer to the node. In
+			C, this would be implemented as:
+		</p>
+		<pre class="language-c"><code>
+			struct Node {
+				int data;
+				struct Node* next;
+			};
+			
+			int main() {
+				struct Node* h = NULL;
+				return 0;
+			}
+		</code></pre>
+		<p>Alternatively, in C++</p>
+		<pre class="language-cpp"><code>
+			struct Node {
+				int data;
+				Node *next;
+			};
+			
+			int main() {
+				Node* h = NULL;
+				return 0;
+			}
+		</code></pre>
+		<p>
+			Above, we've instantiated a <var>Node*</var> pointer, currently pointing
+			to nowhere (the list is empty). Importantly, the pointer we've just
+			initialized lives in the stack. This is a necessary feature of the linked
+			list because we cannot access heap memory ourselves. The pointer
+			<var>p</var> serves as our link to the heap. We can't go to the heap, but
+			we can use <var>p</var> to control what we've created there.
+		</p>
+		<p>
+			Now that we've got a head, let's create our first node in the heap. In C,
+			we write:
+		</p>
+		<pre class="language-c"><code>
+			#include &lt;stdio.h&gt;
+	
+			struct Node {
+				int data;
+				struct Node* next;
+			};
+			
+			int main() {
+				struct Node* h = NULL;
+				struct Node* temp = malloc(sizeof(struct Node));
+				return 0;
+			}
+		</code></pre>
+		<p>
+			Notice the second to last line of the code above. Recall that the
+			<var><mark>malloc()</mark></var> function takes the following form:
+		</p>
+		<figure>
+			<ul class="syntax">
+				<li>malloc(sizeof(${d_t}$))</li>
+			</ul>
+			<figcaption>where ${d_t}$ is a data type</figcaption>
+		</figure>
+		<p>
+			The <var>malloc()</var> function takes allocates the requested memory
+			${d_t,}$ and returns a pointer to the address of the memory allocated in
+			the <em>heap</em>. That pointer, however, is a <em>void pointer</em>.
+			Thus, we must type cast:
+		</p>
+		<pre class="language-c"><code>
+			#include &lt;stdio.h&gt;
+	
+			struct Node {
+				int data;
+				struct Node* next;
+			};
+			
+			int main() {
+				struct Node* h = NULL;
+				struct Node* temp = (struct Node*) malloc(sizeof(struct Node));
+				return 0;
+			}
+		</code></pre>
+		<p>In sum, when we write:</p>
+		<figure>
+			<pre class="language-c"><code>
+				struct Node* temp = (struct Node*) malloc(sizeof(struct Node));
+			</code></pre>
+		</figure>
+		<p>
+			We perform the following operations: (1) Allocate enough heap memory for
+			the size of a <var>Node.</var> (2) Type cast the returned
+			<var>void*</var> pointer to a <var>Node*</var> pointer. Assign that
+			pointer to <var>temp</var>. The code thus far looks like the following in
+			memory:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/unlinked_node.svg' %}"
+				alt="unlinked nodes"
+				loading="lazy"
+				class="forty-p"
+			/>
+		</figure>
+		<p>
+			Now that we have a node, we can initialize its fields by dereferencing
+			<var>temp</var>:
+		</p>
+		<pre class="language-c"><code>
+			struct Node {
+				int data;
+				struct Node* next;
+			}
+			
+			int main() {
+				struct Node* h = NULL;
+				struct Node* temp = malloc(sizeof(struct Node));
+				(*temp).data = 1;
+				(*temp).next = NULL;
+				return 0;
+			}
+		</code></pre>
+		<p>Now <var>temp</var> has values in both its data and next fields:</p>
+		<figure>
+			<img
+				src="{% static 'images/unlinked_node1.svg' %}"
+				alt="unlinked nodes"
+				loading="lazy"
+				class="fifty-p"
+			/>
+		</figure>
+		<p>
+			Note that both C and C++ provide syntactic sugar for dereferencing object
+			pointers through the arrow operator. Furthermore, in C++, instead of using
+			<var>malloc()</var>, we can use the <var><mark>new</mark></var> operator:
+		</p>
+		<pre class="language-cpp"><code>
+			struct Node {
+				int data;
+				Node* next;
+			}
+			
+			int main() {
+				Node* h = 0;
+				Node* temp = new Node();
+				temp->data = 1;
+				temp->next = 0;
+				return 0;
+			}
+		</code></pre>
+		<p>
+			In the pseudocode illustrations, we will use C++'s more concise syntax.
+			Now, all that's left to do is write the address of the newly created node
+			to our head:
+		</p>
+		<pre class="language-c"><code>
+			struct Node {
+				int data;
+				struct Node* next;
+			}
+			
+			int main() {
+				struct Node* h = NULL;
+				struct Node* temp = malloc(sizeof(struct Node));
+				(*temp).data = 1;
+				(*temp).next = NULL;
+				h = temp;
+				return 0;
+			}
+		</code></pre>
+		<p>Alternatively, in C++:</p>
+		<pre class="language-cpp"><code>
+			struct Node {
+				int data;
+				Node* next;
+			}
+			
+			int main() {
+				Node* h = 0;
+				Node* temp = new Node();
+				temp->data = 1;
+				temp->next = 0;
+				h = temp;
+				return 0;
+			}
+		</code></pre>
+		<p>
+			Writing the code above results in the diagram below. Suppose the allocated
+			memory in the heap has the address <var>200</var>. The pointer
+			<var>p</var> resides in the stack, and its address is <var>100</var>. The
+			address <var>200</var>, returned from <var>malloc()</var>, is stored in
+			<var>p</var>.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/linkedNode.svg' %}"
+				alt="Node initialization"
+				loading="lazy"
+				class="fifty-p"
+			/>
+		</figure>
+		<p>
+			Great, we've made our first linked list. Let's make a linked list with
+			three nodes:
+		</p>
+		<pre class="language-cpp"><code>
+			struct Node {
+				int data;
+				Node *next;
+			};
+			
+			int main() {
+				// Head
+				Node* head = 0;
+
+				// First node
+				Node* node1 = new Node();
+				node1->data = 1;
+				node1->next = 0; // first node is the tail
+				head = node1; // link head to first node
+			
+				// Second node
+				Node* node2 = new Node();
+				node2->data = 2;
+				node1->next = 0; // second node is now the tail
+				node1->next = node2; // link first node to second node
+			
+				// Third node
+				Node* node3 = new Node();
+				node3->data = 3;
+				node3->next = 0; // third node is now the tail
+				node2->next = node3; // link second node to third node
+				return 0;
+			}
+		</code></pre>
+	</section>
+
+	<section id="node_operations">
+		<h3>Linked List Syntax</h3>
+	</section>
+
+</section>
+
+<!-- <script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerc/graphics.js"></script> -->
+{% endblock %}
