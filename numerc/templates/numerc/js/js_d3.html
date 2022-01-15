@@ -3,6 +3,7 @@
 	name="description"
 	content="Notes on computer graphics with JavaScript."
 />
+<link rel="stylesheet" href="../../../static/numerc/d3demo.css" />
 {% endblock %} {% block title %}
 <title>Computer Graphics with JavaScript</title>
 {% endblock %} {% block content %}
@@ -1377,13 +1378,1116 @@
 		</p>
 	</section>
 </section>
+
 <section id="drawing_charts">
-	<h2>Creating Visualizations</h2>
-	<p>There are three steps to creating visualizations:</p>
-	<ol>
-		<li>Fetch the data.</li>
-		<li>Draw the chart dimensions.</li>
-		<li>Draw the image.</li>
-	</ol>
+	<h2>Drawing with Data</h2>
+	<p>
+		Let's put everything we've learned so far to the test. First, we're working
+		with an empty HTML document, placing all of our code in the driver file
+		<var>script.js</var>.
+	</p>
+	<pre class="language-html"><code>
+		&lt;!DOCTYPE html&gt;
+		&lt;html lang=&quot;en&quot;&gt;
+		&lt;head&gt;
+		&#x9;&lt;meta charset=&quot;UTF-8&quot;&gt;
+		&#x9;&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+		&#x9;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+		&#x9;&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot;&gt;
+		&#x9;&lt;title&gt;D3&lt;/title&gt;
+		&lt;/head&gt;
+		&lt;body&gt;
+		&#x9;&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.js&quot;&gt;&lt;/script&gt;
+		&#x9;&lt;script src=&quot;./script.js&quot;&gt;&lt;/script&gt;
+		&lt;/body&gt;
+		&lt;/html&gt;&#x9;&#x9;
+	</code></pre>
+	<p>In our <var>script.js</var> file, here's the data we're working with:</p>
+	<pre class="language-javascript"><code>
+		const dataset = [10, 20, 30, 40, 50];
+	</code></pre>
+	<p>In our CSS file, we'll write the following:</p>
+	<pre class="language-css"><code>
+		div.bar {
+			display: inline-block;
+			width: 20px;
+			height: 75px;
+			border: thin solid red;
+			background-color: salmon;
+		}
+	</code></pre>
+	<p>Going back to our driver file, let's add some div elements:</p>
+	<pre class="language-javascript"><code>
+		const dataset = [10, 20, 30, 40, 50];
+		d3.select('body').selectAll('div')
+			.data(dataset)
+			.enter()
+			.append('div')
+			.attr('class', 'bar');
+	</code></pre>
+	<p>The code above renders:</p>
+	<figure class="d3Demo" id="demo1"></figure>
+	<p>Let's setting different heights for the div elements:</p>
+	<pre class="language-javascript"><code>
+		const dataset = [10, 20, 30, 40, 50];
+		d3.select('body').selectAll('div')
+			.data(dataset)
+			.enter()
+			.append('div')
+			.attr('class', 'bar')
+			.style('height', d => `${d}px`);
+	</code></pre>
+	<p>we get the following:</p>
+	<figure class="d3Demo" id="demo2"></figure>
+	<p>Let's modify the margin-right property for some spacing:</p>
+	<pre class="language-javascript"><code>
+		const dataset = [10, 20, 30, 40, 50];
+		d3.select('body').selectAll('div')
+			.data(dataset)
+			.enter()
+			.append('div')
+			.attr('class', 'bar')
+			.style('height', d => `${d}px`);
+			.style('margin-right', '2px');
+	</code></pre>
+	<p>We now see:</p>
+	<figure class="d3Demo" id="demo3"></figure>
+	<p>
+		Notice what happens when we change <var>dataset</var> to some seemingly
+		random assortment of values:
+	</p>
+	<pre class="language-javascript"><code>
+		const dataset = [11, 23, 7, 46, 58, 32, 28, 27];
+		d3.select('body').selectAll('div')
+			.data(dataset)
+			.enter()
+			.append('div')
+			.attr('class', 'bar')
+			.style('height', d => `${d}px`);
+			.style('margin-right', '2px');
+	</code></pre>
+	<p>We now see:</p>
+	<figure class="d3Demo" id="demo4"></figure>
+	<p>
+		Using div elements to draw bar charts isn't bad, but we don't usually use D3
+		in this way. Instead, D3 is more often used to draw SVGs. Instead of using a
+		div element, we'll use SVG. First, we must append the SVG element. On a
+		blank driver file, we write the following:
+	</p>
+	<pre class="language-javascript"><code>
+		const dataset = [4, 8, 12, 16, 20];
+		const svg = d3.select('body').append('svg');
+	</code></pre>
+	<p>
+		Writing the last statement above, we now have a <i>reference</i> to the SVG
+		object. And because we have that reference, we can modify its properties:
+	</p>
+	<pre class="language-javascript"><code>
+		const dataset = [4, 8, 12, 16, 20];
+		const svg = d3.select('body').append('svg');
+		svg.attr('width', 500)
+			.attr('height', 50);
+	</code></pre>
+	<p>
+		The width and height values look like magic numbers at the moment, so let's
+		place them in an object. We'll also add a comment for clarity:
+	</p>
+	<pre class="language-javascript"><code>
+		const dataset = [4, 8, 12, 16, 20];
+		const dimensions = {
+			width: 500,
+			height: 50
+		};
+		const svg = d3.select('body').append('svg');
+		// set svg width and height
+		svg.attr('width', dimensions.width)
+			.attr('height', dimensions.height);
+	</code></pre>
+	<p>
+		At this point, we'll depart from our rectangle bars and draw circles
+		instead:
+	</p>
+	<pre class="language-javascript"><code>
+		const dataset = [4, 8, 12, 16, 20];
+		const dimensions = {
+			width: 500,
+			height: 50
+		};
+		const svg = d3.select('body').append('svg');
+		// set svg width and height
+		svg.attr('width', dimensions.width)
+			.attr('height', dimensions.height);
+		// add circles to SVG
+		svg.selectAll('circle')
+			.data(dataset3)
+			.enter()
+			.append('circle')
+	</code></pre>
+	<p>
+		We don't see anything yet because the SVG circle elements must have their
+		properties initialized. Namely, the <var>cx</var>, <var>cy</var>, and
+		<var>r</var> properties:
+	</p>
+	<pre class="language-javascript"><code>
+		const dataset = [4, 8, 12, 16, 20];
+		const dimensions = {
+			width: 500,
+			height: 50
+		};
+		const svg = d3.select('body').append('svg');
+		// set svg width and height
+		svg.attr('width', dimensions.width)
+			.attr('height', dimensions.height);
+		// add circles to SVG
+		svg.selectAll('circle')
+			.data(dataset3)
+			.enter()
+			.append('circle')
+			.attr('cx', function (d, i) { 
+				return (i * 50) + 25;
+			})
+			.attr('cy', dimensions.height / 2)
+			.attr('r', function (d) { 
+				return d;
+			})
+	</code></pre>
+	<p>The code above renders:</p>
+	<figure class="d3Demo" id="demo5"></figure>
+	<p>
+		A few things to note from this example. The variable
+		<var><mark>d</mark></var> corresponds to each element in the array
+		<var>dataset</var>. The name <var>d</var> is purely arbitrary. We could've
+		used <var>data</var>, <var>v</var>, <var>e</var>, etc. Second, the variable
+		<var><mark>i</mark></var> corresponds to the index of the element
+		<var>d</var>. Thus, when we write:
+	</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			.attr('cx', function (d, i) { 
+				return (i * 50) + 25;
+			})
+		</code></pre>
+	</figure>
+	<p>
+		We are setting the center-${x}$-coordinate for each circle at the value
+		${50i + 25.}$ Then, when we write:
+	</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			.attr('cy', dimensions.height / 2)
+		</code></pre>
+	</figure>
+	<p>
+		we set the center-${y}$-coordinate for each circle at the value ${50/2 =
+		25.}$ This results in the following center-coordinates for each of the
+		circles:
+	</p>
+	<div class="func">
+		<ul>
+			<li><var>dataset[i]</var></li>
+			<li><var>(cx, cy)</var></li>
+		</ul>
+		<ul>
+			<li><var>dataset[0]</var></li>
+			<li>(25, 25)</li>
+		</ul>
+		<ul>
+			<li><var>dataset[1]</var></li>
+			<li>(75, 25)</li>
+		</ul>
+		<ul>
+			<li><var>dataset[2]</var></li>
+			<li>(125, 25)</li>
+		</ul>
+		<ul>
+			<li><var>dataset[3]</var></li>
+			<li>(175, 25)</li>
+		</ul>
+		<ul>
+			<li><var>dataset[4]</var></li>
+			<li>(225, 25)</li>
+		</ul>
+	</div>
+	<p>
+		Because each of <var>cy</var> coordinates are the same, the circles are
+		aligned. Moreover, by using half of the SVG's height as the
+		<var>cy</var> coordinate, the circles are all aligned along the vertical
+		center. Let's add some colors:
+	</p>
+	<pre class="language-javascript"><code>
+		const dataset = [4, 8, 12, 16, 20];
+		const dimensions = {
+			width: 500,
+			height: 50
+		};
+		const svg = d3.select('body').append('svg');
+		// set svg width and height
+		svg.attr('width', dimensions.width)
+			.attr('height', dimensions.height);
+		// add circles to SVG
+		svg.selectAll('circle')
+			.data(dataset3)
+			.enter()
+			.append('circle')
+			.attr('cx', function (d, i) { 
+				return (i * 50) + 25;
+			})
+			.attr('cy', dimensions.height / 2)
+			.attr('r', function (d) { 
+				return d;
+			})
+			.attr('fill', 'gold')
+			.attr('stroke', 'red')
+			.attr('stroke-width', function (d) { 
+				return d / 2;
+			})
+	</code></pre>
+	<p>We now have:</p>
+	<figure class="d3Demo" id="demo6"></figure>
 </section>
+
+<section id="bar_plot">
+	<h2>Bart Chart</h2>
+	<p>
+		Knowing the basics of drawing SVG elements, let's redraw a simple bar chart
+		using SVG rectangles rather than divs. In a blank driver file, we have the
+		following:
+	</p>
+	<pre class="language-javascript"><code>
+		const svg = body.selectAll('figure#demo7').append('svg')
+		const dimensions = [8, 11, 23, 29, 17, 33, 18, 14, 44, 12, 58];
+		const dimensions = {
+			width: 233,
+			height: 130
+		};
+		const colors = {
+			lightGreen: '#DFF2D8',
+			darkGreen: '#78866b'
+		}
+		// set SVG width and height
+		svg.attr('width', dimensions.width)
+			 .attr('height', dimensions.height);
+	</code></pre>
+	<p>Let's join the data and add the rectangles:</p>
+	<pre class="language-javascript"><code>
+		// add rectangles to SVG
+		svg.selectAll('rect')
+			.data(dataset3)
+			.enter()
+			.append('rect')
+	</code></pre>
+	<p>
+		Again, these rectangles won't immediately appear, because we have to set
+		their properties. In this case, <var><mark>x</mark></var
+		>, <var><mark>y</mark></var
+		>, <var><mark>width</mark></var
+		>, and <var><mark>height</mark></var
+		>. We'll also add some stroke and fill colors:
+	</p>
+	<pre class="language-javascript"><code>
+		// add rectangles to SVG
+		svg.selectAll('rect')
+			.data(dataset3)
+			.enter()
+			.append('rect')
+			.attr('fill', colors.lightGreen)
+			.attr('stroke', colors.darkGreen)
+			.attr('x', 0)
+			.attr('y', 0)
+			.attr('width', 20)
+			.attr('height', 100)
+	</code></pre>
+	<p>Running the code above:</p>
+	<figure class="d3Demo" id="demo7"></figure>
+	<p>
+		We're only getting one bar. This is because all of the rectangles have the
+		same <var>x</var> and <var>y</var> coordinates &mdash; they're overlapping.
+		So, to space them out, we'll need to modify the <var>x</var> property:
+	</p>
+	<pre class="language-javascript"><code>
+		// add rectangles to SVG
+		svg.selectAll('rect')
+			.data(dataset3)
+			.enter()
+			.append('rect')
+			.attr('fill', colors.lightGreen)
+			.attr('stroke', colors.darkGreen)
+			.attr('x', function (d, i) { // change x-coordinate
+				return i * 21;
+			})
+			.attr('y', 0)
+			.attr('width', 20)
+			.attr('height', 100)
+	</code></pre>
+	<figure class="d3Demo" id="demo8"></figure>
+	<p>
+		Great, now the're all separate. The rectangles are all the same height
+		because we hardcoded <var>100</var>. Let's have the
+		<var>height</var> correspond to the data:
+	</p>
+	<pre class="language-javascript"><code>
+		// add rectangles to SVG
+		svg.selectAll('rect')
+			.data(dataset3)
+			.enter()
+			.append('rect')
+			.attr('fill', colors.lightGreen)
+			.attr('stroke', colors.darkGreen)
+			.attr('x', function (d, i) { // change x-coordinate
+				return i * 21;
+			})
+			.attr('y', 0)
+			.attr('width', 20)
+			.attr('height', function(d) {
+				return d;
+			})
+	</code></pre>
+	<p>The render looks odd:</p>
+	<figure class="d3Demo" id="demo9"></figure>
+	<p>
+		The bars above are upside down because of the coordinate system used in
+		graphics-programming. Recall that the positive ${y}$-axis runs from top to
+		bottom, but ${x}$-axis runs as expected. Thus, because each of the
+		rectangles have ${y}$-coordinate of ${0,}$ increasing their height extends
+		them from top to bottom. To fix this, we have to change the
+		${y}$-coordinate:
+	</p>
+	<pre class="language-javascript"><code>
+		// add rectangles to SVG
+		svg.selectAll('rect')
+			.data(dataset3)
+			.enter()
+			.append('rect')
+			.attr('fill', colors.lightGreen)
+			.attr('stroke', colors.darkGreen)
+			.attr('x', function (d, i) { // change x-coordinate
+				return i * 21;
+			})
+			.attr('y', function(d) {
+				dimensions.height - d;
+			})
+			.attr('width', 20)
+			.attr('height', function(d) {
+				return d;
+			})
+	</code></pre>
+	<p>The code above renders:</p>
+	<figure class="d3Demo" id="demo10"></figure>
+	<p>
+		Just to scale things somewhat, we'll use a multiplier for the
+		<var>d</var> values for the ${y}$-axis and <var>height</var> properties:
+	</p>
+	<pre class="language-javascript"><code>
+		// add rectangles to SVG
+		svg.selectAll('rect')
+			.data(dataset3)
+			.enter()
+			.append('rect')
+			.attr('fill', colors.lightGreen)
+			.attr('stroke', colors.darkGreen)
+			.attr('x', function (d, i) { // change x-coordinate
+				return i * 21;
+			})
+			.attr('y', function(d) {
+				dimensions.height - (d*2);
+			})
+			.attr('width', 20)
+			.attr('height', function(d) {
+				return d * 4;
+			})
+	</code></pre>
+	<p>Rendering:</p>
+	<figure class="d3Demo" id="demo11"></figure>
+	<p>
+		Instead of using some static color for the fill, we can use a function to
+		generate <i>color weights</i>. We'll see this function again when we get to
+		heat maps. In our color object, we write:
+	</p>
+	<pre class="language-javascript"><code>
+		const colors = {
+			lightGreen: '#DFF2D8',
+			darkGreen: '#78866b',
+			dynamicGreen: function (d) {
+				const red = 255 - Math.round(d * 2);
+				const green = 240;
+				const blue = 255 - Math.round(d + 80);
+				const alpha = 0.5;
+				return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+			}
+		}
+	</code></pre>
+	<p>Now we can assign this function to the <var>fill</var> property:</p>
+	<pre class="language-javascript"><code>
+		// add rectangles to SVG
+		svg.selectAll('rect')
+			.data(dataset)
+			.enter()
+			.append('rect')
+			.attr('fill', d => colors.dynamicGreen(d))
+			.attr('stroke', colors.darkGreen)
+			.attr('x', function (d, i) { // change x-coordinate
+				return i * 21;
+			})
+			.attr('y', function(d) {
+				dimensions.height - (d*2);
+			})
+			.attr('width', 20)
+			.attr('height', function(d) {
+				return d * 4;
+			})
+	</code></pre>
+	<p>Rendering:</p>
+	<figure class="d3Demo" id="demo12"></figure>
+	<p>
+		<span class="topic">Labels.</span> To add labels to our data, we'll use the
+		<var>text</var> SVG element. Using the same <var>svg</var> object:
+	</p>
+	<pre class="language-javascript"><code>
+		svg.selectAll('text')
+			 .data(dataset)
+			 .enter()
+			 .append('text')
+	</code></pre>
+	<p>
+		Again, nothing renders because we haven't initialized the
+		<var>text</var> object's properties. To do so, we use
+		<var><mark>.text()</mark></var> method. This method takes a string as an
+		argument, corresponding to the text we want displayed. Furthermore, we'll
+		set the <var>text</var> object's <var>x</var> and <var>y</var> coordinates
+		to ensure the text objects are centered on our rectangles. We'll also add
+		some padding to our bars, just to make the process of centering easier:
+	</p>
+	<pre class="language-javascript"><code>
+		const padding = 3;
+		svg.selectAll('text')
+			 .data(dimensions)
+		   .enter()
+		   .append('text')
+		   .text(function (d) { 
+				 return d;
+			 })
+			 .attr('width', dimensions.width / dataset.length - demo13padding) // add padding to bars
+		   .attr('x', function (d, i) { 
+				 return i * (dimensions.width / dimensions.length) + (dimensions.width / dimensions.length - padding) / 2.4; // set x-coordinate
+		    })
+		   .attr('y', function (d) { 
+			   return dimensions.height - (d * 2) + 14; // set y-coordinate
+		   })
+		   .attr('font-family', 'sans-serif') // set text font family
+		   .attr('font-size', '10px') // set text font size
+		   .attr('text-anchor', 'middle') // anchor text to middle
+			 .attr('fill', colors.darkGreen); // set text color
+	</code></pre>
+	<p>Rendering:</p>
+	<figure class="d3Demo" id="demo13"></figure>
+	<p>
+		Notice the inordinate amount of magic numbers we're using just to center
+		these text elements. And even then, the elements don't look quite right.
+		Indeed, this is <em>not</em> how we add labels or center elements in D3. We
+		present this approach here purely to demonstrate how tedious this process
+		is. In a later section, we'll see that D3 takes care of all of this through
+		<i>scale methods</i>.
+	</p>
+</section>
+
+<section id="scatter_plot">
+	<h2>Scatter Plots</h2>
+	<p>
+		Having examined bar charts, let's consider another basic visualization
+		&mdash; the scatter plot. Once again, we'll be working a blank
+		<var>index.html</var> file. In our driver file, we have the following data
+		set:
+	</p>
+	<pre class="language-javascript"><code>
+		const scatterData = [
+			[5, 20],
+			[480, 90],
+			[250, 50],
+			[100, 33],
+			[330, 95],
+			[410, 12],
+			[475, 44],
+			[25, 67],
+			[85, 21],
+			[220, 88],
+			[600, 150]
+		];
+	</code></pre>
+	<p>
+		Notice that this is an array of arrays. Or, more abstractly, a sequence of
+		ordered pairs. In fact, we'll interpret each element of
+		<var>scatterData</var> as representing the ordered pair ${(x, y),}$ a
+		coordinate. Thus, the <var>scatterData</var> element
+		<var>scatterData[${i}$][0]</var> corresponds to the ${x}$-coordinate, and
+		the element <var>scatterData[${i}$][1]</var> corresponds to the
+		${y}$-coordinate, where ${0 \leq i &lt; \texttt{scatterData.length}.}$
+	</p>
+	<p>
+		To begin, we'll append an SVG element, using a <var>dimensions</var> object
+		for constants:
+	</p>
+	<pre class="language-javascript"><code>
+		// scatter data
+		const scatterData = [
+			[5, 20],
+			[480, 90],
+			[250, 50],
+			[100, 33],
+			[330, 95],
+			[410, 12],
+			[475, 44],
+			[25, 67],
+			[85, 21],
+			[220, 88],
+			[600, 150]
+		];
+
+		// dimensions for svg
+		const scatterDimensions = {
+			width  : 500,
+			height : 100,
+			padding: 1
+		};
+
+		// colors for circles
+		const scatterColors = {
+			darkBlue : '#5da9e9',
+			lightBlue: '#e5f4e3'
+		};
+
+		// add an svg element
+		const svg = d3.select('body').append('svg');
+	</code></pre>
+	<p>
+		Then, we begin adding creating the circles, initializing its properties:
+	</p>
+	<pre class="language-javascript"><code>
+		// initialize and insert svg element
+		const svg = d3.select('body').append('svg');
+
+		// set svg dimensions
+		svg.attr('width', scatterDimensions.width)
+			 .attr('height', scatterDimensions.height);
+
+		svg.selectAll('circle')
+			 .data(scatterData)
+			 .enter()
+			 .append('circle') 		                  // add circles to svg
+			 .attr('cx', function (d) { 
+					return d[0];                        // x-coordinate is scatterData[i][0]
+			 })
+			 .attr('cy', function (d) {
+					return d[1];                        // y-coordinate is scatterData[i][1]
+			 })
+			.attr('r', 5);
+			.attr('fill', scatterColors.lightBlue)  // add fill color
+			.attr('stroke', scatterColors.darkBlue) // add stroke color
+	</code></pre>
+	<p>Running the code above, we get the following rendering:</p>
+	<figure class="d3Demo" id="demo14"></figure>
+	<p>
+		Suppose we want the circles' sizes to correspond to their ${y}$ values. This
+		creates the effect of larger circles corresponding to larger values, and
+		smaller circles corresponding to smaller values. To do so, we have to
+		manipulate each circle's <i>area</i>, not its <i>radius</i>. Why? Just look
+		at the data values. If each of those values were the radius's length in
+		pixels, the circles would be massive.
+	</p>
+	<p>
+		Now, the circle element doesn't have an area property, but it does have the
+		radius property <var>r</var>. Hence, to manipulate the area, we'll represent
+		it in terms of ${r.}$ From geometry, we know that the area of a circle,
+		denoted ${A_c,}$ is given by the formula:
+	</p>
+	<figure>
+		<div>
+			<p>${\large A_c = \pi r^2}$</p>
+		</div>
+	</figure>
+	<p>with some basic algebra:</p>
+	<figure>
+		$$ \begin{aligned} A_c &= \pi r^2 \\[1em] \dfrac{A_c}{\pi} &= r^2 \\[1em]
+		\sqrt{\dfrac{A_c}{\pi}} &= r \\[1em] r &= \sqrt{\dfrac{A_c}{\pi}} \\[1em]
+		\end{aligned} $$
+	</figure>
+	<p>
+		So that's how we get the radius. In JavaScript, we could implement the
+		formula above as a function:
+	</p>
+	<pre class="language-javascript"><code>
+		const radiusInTermsOfArea = area => Math.sqrt(area / Math.PI);
+	</code></pre>
+	<p>
+		We want circles with greater ${y}$-values to be larger and circles with
+		smaller ${y}$-values to be smaller. Thus, the ${y}$-values map to the
+		circle's areas. In execution, the function would operate:
+	</p>
+	<figure>
+		<div>
+			<pre class="language-pseudo"><code>
+				.attr('r', d => radiusInTermsOfArea(d))
+				.attr('r', d => d => Math.sqrt(d / Math.PI))
+				.attr('r', Math.sqrt(scatterData[i][0]))
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		This isn't exactly what we want however. First, we want the circles at the
+		top to be larger than the circles at the bottom. After all, the circles at
+		the top are the circles with the largest values. Second, we don't actually
+		want to divide ${\pi.}$ Second, we're not working with areas. These are data
+		values. If we divided by ${\pi,}$ we'd see that the circles all look fairly
+		similar &mdash; we're essentially just dividing by ${3}$ and taking the
+		square root, shrinking all of the circles <i>uniformly</i>. Thus, what we
+		really want is to subtract the ${y}$-coordinate from the SVG's height, and
+		take the square root. This establishes different radii for each circle,
+		while keeping things in proportion:<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			Do not worry if the derivation isn't entirely clear. It's employed here
+			purely for demonstration purposes. Once we get to scales, all of this will
+			click and become much easier.
+		</p>
+	</div>
+	<pre class="language-javascript"><code>
+		// initialize and insert svg element
+		const svg = d3.select('body').append('svg');
+
+		// set svg dimensions
+		svg.attr('width', scatterDimensions.width)
+			 .attr('height', scatterDimensions.height);
+
+		svg.selectAll('circle')
+			 .data(scatterData)
+			 .enter()
+			 .append('circle') 		                  // add circles to svg
+			 .attr('cx', function (d) { 
+					return d[0];                        // x-coordinate is scatterData[i][0]
+			 })
+			 .attr('cy', function (d) {
+					return d[1];                        // y-coordinate is scatterData[i][1]
+			 })
+			.attr('r', function(d) {
+				return Math.sqrt(
+					scatterDimensions.height - d[1]     // Change radii
+				); 
+			});
+			.attr('fill', scatterColors.lightBlue)  // add fill color
+			.attr('stroke', scatterColors.darkBlue) // add stroke color
+	</code></pre>
+	<p>The code above renders:</p>
+	<figure class="d3Demo" id="demo15"></figure>
+	<p>
+		Great. Now we have circles with larger values at the top, and circles with
+		smaller values at the bottom. If it's still not clear why we used the
+		formula above, do not worry. This is <em>not</em> how we establish
+		proportions in D3. All of this is much easier when we get to scale methods.
+	</p>
+	<p>Let's add some labels to our data:</p>
+	<pre class="language-javascript"><code>
+		svg.selectAll('text')
+			 .data(scatterData) 
+			 .enter()
+			 .append('text')                       // add text element
+			 .text(d => `${d[0]},${d[1]}`)         // set the text to display
+			 .attr('x', d => d[0])                 // use d[i][0] for x-coordinate
+			 .attr('y', d => d[1])                 // use d[i][1] for y-coordinate
+			 .attr('font-family', 'sans-serif')    // set font-family
+			 .attr('font-size', '11px')            // set font-size
+			 .attr('fill', scatterColors.darkBlue) // set fill color
+	</code></pre>
+	<p>Running the code above, we have the following labels:</p>
+	<figure class="d3Demo" id="demo16"></figure>
+	<p>
+		That's all we're going to do with this plot. It's not bad, but it doesn't
+		look good. The difficulties with getting this visualization to look great
+		require use to now consider <i>scales.</i>
+	</p>
+</section>
+
+<section id="scales">
+	<h2>Scales</h2>
+	<p>
+		To understand how scales work, we must revisit a few concepts in
+		mathematics. First, from coordinate geometry, we're familiar with the
+		Cartesian plane:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/scale1.svg' %}"
+			alt="Cartesian plane"
+			loading="lazy"
+			width="300px"
+			height="300px"
+		/>
+	</figure>
+	<p>
+		The graph has two <b>axes</b>, the ${y}$-axis, or <i>vertical axis</i>, and
+		the ${x}$-axis, or <i>horizontal axis</i>. Each axis has a property called
+		its <b>range</b> &mdash; the lower and upper limits of the values on the
+		axis. In the graph above, the range for the ${x}$-axis is ${[-3, 3],}$ and
+		the range for the ${y}$-axis is also ${[-3, 3].}$
+	</p>
+	<p>
+		Now, the <b>scale</b> of an axis is how much each <q>square</q> in the grid
+		above represents. For example, with the graph above, each square has a width
+		and height of ${1.}$ The beauty of the coordinate system, however, is that
+		we aren't limited to ${1.}$ We could have used a <i>scale</i> such that each
+		square had a width of ${0.5}$ and a height of ${0.5.}$ Or we could have used
+		a scale where each square had a width of ${\sqrt{2}}$ and a height of
+		${\pi.}$ It's entirely up to us.
+	</p>
+	<p>
+		Now, why would we use different scales? To address two problems. First, data
+		values aren't always nice sequences with set differences. If our first set
+		of data values consisted of ${(0,0), (1,1), (2,2),}$ we could get away with
+		using the simple plane above. But if we were suddenly thrown ${(100, 100),}$
+		that point wouldn't even fit &mdash; it's outside the range of either axis.
+	</p>
+	<p>
+		Second, we might have data whose ${y}$ or ${x}$ values are substantially
+		different from one another in size. For example, if we had data values like
+		${(0, 1000),}$ ${(1, 20~000)}$ and ${(2, 300~000),}$ we would want to scale
+		the ${y}$-axis's scale appropriately. Otherwise, the graph between these
+		points would essentially be a vertical line.
+	</p>
+	<p>
+		D3 allows us to accomplish scaling through its <b>scales</b>. Simply put, a
+		scale is just a function that maps values from an input domain to values in
+		an output range. For example, suppose we had the following data about store
+		visits:
+	</p>
+	<pre class="language-javascript"><code>
+		const storeVisits = [10, 20, 30, 40, 50];
+	</code></pre>
+	<p>
+		If we attempted to visualize these values with a bar chart, we would use the
+		rectangle element's height property. With the values above, not a big deal.
+		But what if the store suddenly gets ${10~000}$ visits? Well, we'd have a
+		rectangle element ${10~000}$ pixels tall. To get around this problem, we
+		must <i>scale</i> our model.
+	</p>
+	<p>The first step to scaling is answering the following questions:</p>
+	<figure>
+		<ol class="numd">
+			<li>What is the data's <i>domain</i>?</li>
+			<li>What is the data's <i>codomain</i>?</li>
+		</ol>
+	</figure>
+	<p>
+		The data's <b>domain</b> is the range of possible <em>input</em> data
+		values. The data's <b>codomain</b> is the range of possible
+		<em>output</em> data values. Of the two, the data's codomain is entirely at
+		our discretion. The data's domain, however, is dictated by the data we're
+		given.
+	</p>
+	<p>
+		For example, with the store visits, the domain is ${[0, 50],}$ or ${[10,
+		50].}$ Let's say its ${[10,50].}$ The codomain is up to us. If we say that
+		the codomain is ${[10,100],}$ then ${10}$ maps to ${10,}$ and ${50}$ maps to
+		${100.}$ In terms of visualization, the shortest bar would be ${10,}$ and
+		the tallest would be ${100.}$ The data value ${30}$ is right at the center,
+		so it would map to ${50.}$
+	</p>
+	<p>Now that we have the foundations down, let's consider D3's scales.</p>
+
+	<section id="linear_scale">
+		<h3>Linear Scale</h3>
+		<p>
+			In D3, the <var><mark>d3.scaleLinear()</mark></var> function constructs a
+			new continuous scale that performs the mapping example we saw earlier.
+			Effectively, the linear scale models a function of the form ${y = mx +
+			b,}$ where ${y}$ is a codomain value and ${x}$ is a domain value. The
+			template:
+		</p>
+		<ul class="syntax">
+			<li>
+				d3.scaleLinear().domain([${x_\ell}$, ${x_h}$]).range([${y_\ell}$,
+				${y_h}$])
+			</li>
+		</ul>
+		<p>
+			In the template above, the argument
+			<var>[${x_\ell}$, ${x_h}$]</var> corresponds to the domain range, and
+			<var>[${y_\ell}$, ${y_h}$]</var> corresponds to the codomain range. For
+			example, consider the output of running the code:
+		</p>
+		<pre class="language-javascript"><code>
+			const linearScale = d3.scaleLinear()
+														.domain([10,50])
+														.range([5, 25]);
+
+			console.log(linearScale(10));
+			console.log(linearScale(20));
+			console.log(linearScale(30));
+			console.log(linearScale(40));
+			console.log(linearScale(50));
+		</code></pre>
+		<pre class="language-bash"><code>
+			5
+			10
+			15
+			20
+			25
+		</code></pre>
+		<p>
+			Let's use a linear scale for our previous scatter plot example. First, the
+			scales:
+		</p>
+		<pre class="language-javascript"><code>
+			const xScale = d3.scaleLinear()
+				.domain([0, d3.max(scatterData, d => d[0])])
+				.range([0, scatterDimensions.width]);
+
+			const yScale = d3.scaleLinear()
+				.domain([0, d3.max(scatterData, d => d[1])])
+				.range([0, scatterDimensions.height]);
+		</code></pre>
+		<p>
+			We're using a new function here, <var><mark>d3.max()</mark></var
+			>. The <var>.max()</var> function has the following form:
+		</p>
+		<ul class="syntax">
+			<li>d3.max(${A}$, ${f_a}$)</li>
+		</ul>
+		<p>
+			The argument ${A}$ is an array of values. The function
+			<var>.max()</var> will iterate through the array in seach of the largest
+			value. For a one-dimensional array, we need only pass the array as an
+			argument. The second parameter, ${f_a,}$ is optional. This parameter is an
+			<b>accessor function</b>. In the case of multidimensional arrays, we
+			provide the accessor function so that D3 know which values it's supposed
+			to find the maximum for.
+		</p>
+		<p>
+			D3 also provides a <var><mark>d3.min()</mark></var> function, which
+			operates similarly:
+		</p>
+		<ul class="syntax">
+			<li>d3.min(${A}$, ${f_a}$)</li>
+		</ul>
+		<p>
+			With scales initialized, we can now apply the scales. Before we do so,
+			let's initialize a variable for some <var>padding</var>. We'll need it
+			later.
+		</p>
+		<pre class="language-javascript"><code>
+			const circlePadding = 20;
+		</code></pre>
+		<p>
+			Next, instead of using the formula we used earliter, we'll let D3 take
+			care of it for us. To do so, we'll also write a scale for our radius:
+		</p>
+		<pre class="language-javascript"><code>
+			const rScale = d3.scaleLinear()
+				.domain([0, d3.max(scatterData, d => d[1])])
+				.range([2, 5]);
+		</code></pre>
+		<p>Putting all of it together:</p>
+		<pre class="language-javascript"><code>
+			const svg = body.append("svg");
+
+			const scatterDimensions = {
+				width: 400, // easily change proportions by changing these values
+				height: 300,
+			};
+
+			const circlePadding = 20; // padding for circles
+
+			const xScale = d3.scaleLinear()
+				.domain([0, d3.max(scatterData, d => d[0])]) 
+				.range([circlePadding, scatterDimensions.width - circlePadding * 2]);
+
+			const yScale = d3.scaleLinear()
+				.domain([0, d3.max(scatterData, d => d[1])])
+				.range([scatterDimensions17.height - circlePadding, circlePadding]);
+
+			const rScale = d3.scaleLinear()
+				.domain([0, d3.max(scatterData, d => d[1])])
+				.range([2, 5]); // scale for circles
+
+			svg
+				.attr("width", scatterDimensions17.width)
+				.attr("height", scatterDimensions17.height);
+
+			svg
+				.selectAll("circle")
+				.data(scatterData)
+				.enter()
+				.append("circle")
+				.attr("cx", d => xScale(d[0])) // scale the circle's x-coordinate
+				.attr("cy", d => yScale(d[1])) // scale the circle's y-coordinate
+				.attr("r", d => rScale(d[1]))
+				.attr("fill", scatterColors.lightBlue)
+				.attr("stroke", scatterColors.darkBlue);
+
+			svg
+				.selectAll("text")
+				.data(scatterData)
+				.enter()
+				.append("text")
+				.text((d) => `${d[0]},${d[1]}`)
+				.attr("x", (d) => xScale(d[0])) // scale the text's x-coordinate
+				.attr("y", (d) => yScale(d[1])) // scale the text's y-coordinate
+				.attr("font-family", "sans-serif")
+				.attr("font-size", "11px")
+				.attr("fill", scatterColors.darkBlue)
+		</code></pre>
+		<p>Running the code above, we have the following rendering:</p>
+		<figure class="d3Demo" id="demo17"></figure>
+		<p>
+			Not bad, but the circles are pretty small. Recall that our earlier
+			derivation for the radius involved a square root. D3 provides a scale
+			<var><mark>scaleSqrt()</mark></var
+			>, which corresponds to a square root scale. This is an ideal scale for
+			our circles. We rename our scale to <var>aScale</var> (since the scale
+			corresponds to area), and adjust the <var>aScale</var>'s range:
+		</p>
+		<pre class="language-javascript"><code>
+			const aScale = d3.scaleSqrt()
+				.domain([0, d3.max(scatterData, d => d[1])])
+				.range([2, 10]); // adjust range
+		</code></pre>
+		<p>The code above renders:</p>
+		<figure class="d3Demo" id="demo18"></figure>
+	</section>
+</section>
+
+<section id="axes">
+	<h2>Axes</h2>
+	<p>
+		Our scatter plot looks nice, but it would be better if we had some axes. In
+		D3, axes are functions, much like scales. However, unlike scales, they do
+		not return values. Instead, they return the objects that visualize the axis
+		&mdash; the line, lable, ticks, arrows, etc. In the code illustrations
+		below, we'll use the same scatter plot employed earlier.
+	</p>
+	<p>In D3, there are four axis constructors:</p>
+	<figure>
+		<ol class="numd">
+			<li>
+				<var><mark>d3.axisTop()</mark></var>
+			</li>
+			<p>Instantiates a top horizontal axis.</p>
+			<li>
+				<var><mark>d3.axisBottom()</mark></var>
+			</li>
+			<p>Instantiates a bottom horizontal axis.</p>
+			<li>
+				<var><mark>d3.axisLeft()</mark></var>
+			</li>
+			<p>Instantiates a vertical left axis.</p>
+			<li>
+				<var><mark>d3.axisRight()</mark></var>
+			</li>
+			<p>Instantiates a vertical right axis.</p>
+		</ol>
+	</figure>
+	<p>
+		Consider the <var>d3.axisBottom()</var> constructor. For the axes
+		constructors to work, we must provide them a scale. Fortunately, we have our
+		<var>xScale</var> from earlier:
+	</p>
+	<pre class="language-javascript"><code>
+		const xAxis = d3.axisBottom().scale(xScale);
+	</code></pre>
+	<p>
+		We now have an axis. To display it, we must call the
+		<var>xAxis</var> function. At the very bottom of our diver file, we write:
+	</p>
+	<pre class="language-javascript"><code>
+		svg.append('g')
+			 .attr('class', 'axis')
+			 .attr('color', scatterColors.darkBlue)
+			 .call(xAxisDemo19)
+	</code></pre>
+	<p>
+		This short snippet is placed at the end of the driver file, after
+		<em>all other</em> SVG elements have rendered. What this effectively does is
+		take all of the SVG elements we've had so far, an object in the DOM, and
+		append a group element to its end. That results in a new object, upon which
+		we call the <var>xAxis</var> function. The group element is merely there to
+		<i>group</i> all of the vectors the <var>xAxis</var> function is about to
+		draw.<sup></sup>
+	</p>
+	<div class="note">
+		<p>Writing:</p>
+		<pre class="language-pseudo"><code>
+			svg.append('g')
+				 .call(xAxis);
+		</code></pre>
+		<p>is functionally the same as writing:</p>
+		<pre class="language-pseudo"><code>
+			svg.append('g')
+				 .call(d3.axisBottom())
+				 .scale(xScale);
+		</code></pre>
+	</div>
+	<p>
+		Note that we also added a few attributes. First, a
+		<var>class</var> attribute, with the value <var>'axis'</var>. It's best
+		practice to add classes to newly generated elements whenever possible. This
+		allows for both quick debugging and styling as projects get more complex.
+		Additionally, we added a simple <var>color</var> attribute for styling.
+	</p>
+	<p>Running our code thus far:</p>
+	<figure class="d3Demo" id="demo19"></figure>
+	<p>
+		Great. We have a scale. Let's position it to the bottom. To do so, we use
+		the <var>transform</var> attribute for SVGs. This allows us to shift an
+		entire group element. In this case, we have group element consisting of the
+		${x}$-axis. By setting the <var>transform</var> attribute on this element,
+		we effectively shift the entire group:
+	</p>
+	<pre class="language-javascript"><code>
+		svg.append('g')
+			 .attr('class', 'axis')
+			 .attr('color', scatterColors.darkBlue)
+			 .attr(
+					'transform',
+					`translate(0,${scatterDimensions.height - circlePadding})`
+			 )
+			 .call(xAxisDemo19)
+	</code></pre>
+	<p>Running the code above, we have:</p>
+	<figure class="d3Demo" id="demo20"></figure>
+	<p>
+		This is pretty good. To show just how responsive the scales are, let's use a
+		data set of random values:
+	</p>
+	<pre class="language-javascript"><code>
+		const scatterData = [];
+		const dataPoints = 50;
+		const xRange = Math.random() * 1000;
+		const yRange = Math.random() * 1000;
+		for (let i = 0; i < dataPoints; i++) { 
+			const newXValue = Math.floor(Math.random() * xRange);
+			const newYValue = Math.floor(Math.random() * yRange);
+			scatterData.push([newXValue, newYValue]);
+		}
+	</code></pre>
+	<p>
+		The code above generates random data values, and pushes them to the
+		<var>scatterData</var> array. Refreshing the page will generate a new plot
+		each time.
+	</p>
+	<p>Finally, let's add a ${y}$-axis:</p>
+	<pre class="language-javascript"><code>
+		const yAxis = d3.axisLeft()
+			.scale(yScale)
+			.ticks(5);
+			// add left y-axis
+		svg.append('g')
+			.attr('class', 'axis')
+			.attr('color', scatterColors.darkBlue)
+			.attr('transform', `translate(${circlePadding}, 0)`)
+			.call(yAxis)
+	</code></pre>
+	<p>Just for clarity, we'll remove the text elements. The result:</p>
+	<figure class="d3Demo" id="demo21"></figure>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.js"></script>
+<script src="../../../static/numerc/d3demo.js"></script>
 {% endblock %}

@@ -8,11 +8,109 @@
 	<p>
 		In this module, we examine some basic ideas in assembly language. This will
 		provide much of the foundations for later discussions. To do so, we will use
-		the <b>6502 Assembly Language</b>, as employed on the Atari 2600 platform.
-		Such a simple platform is used for several reasons: (1) It allows us to
-		avoid having to address the enormous stretches of complexity on modern
-		devices, and (2) it captures most, if not all, of the most important ideas
-		in assembly and computer architecture concisely.
+		the <b>6502 Assembly Language</b>, as employed on the Atari 2600 (<q
+			>the 2600</q
+		>) platform. Such a simple platform is used for several reasons: (1) It
+		allows us to avoid having to address the enormous stretches of complexity on
+		modern devices, and (2) it captures most, if not all, of the most important
+		ideas in assembly and computer architecture concisely.
+	</p>
+	<p>The Atari 2600's hardware at a glance:</p>
+	<ul>
+		<li>
+			The 2600 uses a 6507 processor, running at ${1.19~\text{MHz}}$ (${1.19
+			\times 10^6}$ instructions per second). Atari originally selected the 6502
+			processor, but in production, the cheaper version, 6507, was used. Both
+			architectures are similar, but we'll note a few differences as we proceed.
+			Of note, the 6502 powered many computers: the Apple II, various Commodore
+			machines, the Tamagotchi, NES, and Bender from <i>Futurama</i>.
+		</li>
+		<li>
+			For audio and video, the 2600 uses a TIA (Television Interface Adapter)
+			chip.
+		</li>
+		<li>
+			In terms of RAM (<q>Read-Access Memory</q>), the 2600 employs a 6532 RIOT
+			(<q>RAM Input Output Timer</q>) Chip, capable of storing &mdash; wait for
+			it &mdash; 128 bytes. Yes, that's all we get.
+		</li>
+		<li>
+			In terms of ROM (<q>Read-Only Memory,</q> i.e., the game catridge), we
+			have ${4~\text{kB}}$ to work with. The ROM is where we will read our
+			instructins from for the 2600's processor.
+		</li>
+		<li>
+			For input, we're working with two controller ports, connecting some
+			non-keyboard peripheral &mdash; e.g., a joystick.
+		</li>
+		<li>
+			For output, the 2600 uses a <b>cathode-ray tube (CRT) television</b>. Note
+			that <i>CRT TVs</i> are different from <i>CRT Monitors</i>. We're
+			operating under the assumption of working with a CRT TV, not a CRT
+			monitor.
+		</li>
+	</ul>
+	<p>
+		We should now see why the Atari 2600 is an ideal medium for exploring
+		assembly programming. We're working with extremely tight constraints: The
+		processor can only do so much; audio and video have to be manually taken
+		care of; the set of possible user inputs is small; and memory is
+		unquestionably scarce.
+	</p>
+</section>
+
+<section id="6502_processor">
+	<h2>Overview of the 6502</h2>
+	<p>
+		Below is a pinout diagram of the 6502 processor. Let's go over some of the
+		key features of the pinout.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/6502.svg' %}"
+			alt="6502 Diagram"
+			loading="lazy"
+			width="400px"
+			height="400px"
+		/>
+	</figure>
+	<p>
+		First, all of the pins above have specific purposes that we'll go over in
+		due time. For example, pin 1 is labeled <var>RDY</var>. This is the
+		<b>ready pin</b>. It receives signals &mdash; called
+		<i>ready signals</i> &mdash; indicating that something has happened (e.g.,
+		the television set is ready, the joystick is ready, etc.). At pin 4, there's
+		a label ${\overline{\texttt{IRQ}}.}$ This pin receives
+		<b>interruption requests</b>. Working with assembly, we'll be turning back
+		to this diagram repeatedly for reference.
+	</p>
+	<p>
+		Importantly, there are two large swathes of pins called the
+		<b>address bus</b> and the <b>data bus</b>. Notice that the data bus region
+		consists of eight pins. This corresponds to the fact that there
+		<em>${8}$ bits</em> for the data bus. These eight bits are responsible for
+		moving values to and from the <b>processor registers</b>.
+	</p>
+	<p>
+		What are processor registers? We can think of them as small places inside
+		the processor that store bits &mdash; zeroes and ones. On the 2600, each
+		register in the processor can only hold eight bits at any given time. These
+		days, most machines run on 64-bit processors &mdash; processors whose
+		registers can hold sixty-four bits.
+	</p>
+	<p>
+		In addition to the data bus, we have a region called the <b>address bus</b>.
+		The pins comprising the address bus are responsible for storing
+		<b>memory addresses</b>. We can think of them as trackers. They're job is to
+		always know where things are at any given time. Notice that there are 16
+		pins. This is why the 2600 has ${16}$ bits &mdash; ${2}$ bytes &mdash; to
+		store a memory address.
+	</p>
+	<p>
+		So, that's the 6502. What about the 6507? Well, the 6507 is essentially the
+		6502 with just a few differences: (1) The pins <var>A13</var>,
+		<var>A14</var>, <var>A15</var>, and a few interruption lines are
+		inaccessible.
 	</p>
 </section>
 {% endblock %}

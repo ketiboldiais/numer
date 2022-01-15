@@ -660,18 +660,11 @@
 		</p>
 		<p>
 			Now we consider the ${n+1}$-node graph. The node ${v_{n+1},}$ has at most
-			${d}$ neighbors<label for="neighbor" class="margin-toggle"
-				><sup></sup
-			></label>
-			<input
-				type="checkbox"
-				id="neighbor"
-				class="margin-toggle sidenote-number"
-			/>
-			<span class="marginnote"
-				>A <b>neighbor</b> of a node ${v}$ is a node adjacent to ${v.}$</span
-			>
+			${d}$ neighbors.<sup></sup>
 		</p>
+		<div class="note">
+			<p>A <b>neighbor</b> of a node ${v}$ is a node adjacent to ${v.}$</p>
+		</div>
 		<figure>
 			<img
 				src="{% static 'images/node_neighbors.svg' %}"
@@ -721,7 +714,8 @@
 				src="{% static 'images/star_graph.svg' %}"
 				alt="star graph"
 				loading="lazy"
-				class="ten-p"
+				width="60px"
+				height="60px"
 			/>
 		</figure>
 		<p>A more complicated example:</p>
@@ -730,7 +724,8 @@
 				src="{% static 'images/bipartite-graph-1.svg' %}"
 				alt="bipartite graph"
 				loading="lazy"
-				class="fifteen-p"
+				width="130px"
+				height="130px"
 			/>
 		</figure>
 		<p>
@@ -776,5 +771,196 @@
 
 <section id="matching">
 	<h2>Matching</h2>
+	<p>
+		In human society, there are numerous relations concern <i>attraction</i>. By
+		attraction, we mean objects that share some common bond. For example, a man
+		and a woman might share the bond of marriage, just as two women would. In
+		the United States, recent medical school graduates look for residences
+		&mdash; a bond between the freshly-minted doctor and a hospital. The same
+		doctors have taught us that heart disease is the U.S.'s greatest killer,
+		through evidence of a common bond &mdash; a person and a cause of death.
+	</p>
+	<p>
+		In mathematics, we call these bonds <b>matchings</b>, and algorithms for
+		solving their associated problems are called <b>matching algorithms</b>.
+		These algorithms pervade huge swathes of modern life. Indeed, we are just
+		beginning to see generations of humans resulting from the application of
+		these algorithms. There are now children whose parents met through Tinder,
+		Grindr, Her, Scissr, Bumble, Hinge, and OkCupid, to name a few. Regardless
+		of user base, all of these platforms only work because of some matching
+		algorithm.
+	</p>
+	<p>
+		The matching algorithm's goal is to find the maximum number of matches. To
+		understand how this is accomplished, we begin with the formal definition of
+		a matching:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition: Matching.</span> Given a graph ${G,}$
+				with nodes ${V}$ and edges ${E,}$ a matching is a subgraph of ${G}$
+				&mdash; a subset of ${V}$ and ${E}$ &mdash; where every node has degree
+				1.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Matchings are also called <b>independent edge sets</b> &mdash; a set of
+		edges where no two edges are adjacent. This is similar to the
+		<b>independent node set</b> &mdash; a set of nodes where no two nodes are
+		adjacent. For example, consider the following graph:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/independent_sets.svg' %}"
+			alt="independent sets"
+			loading="lazy"
+			height="220px"
+			width="220px"
+		/>
+	</figure>
+	<p>
+		The graph above contains the independent vertex set ${\{ v_1, v_4, v_6 \}.}$
+		None of these vertices are adjacent to one another. The independent edge set
+		&mdash; a matching &mdash; is a subgraph of the graph above where no two
+		edges are adjacent. And when are no two edges adjacent? When the two edges
+		<em>do not share</em> a common endpoint. Thus, in the graph above, one
+		matching is ${\{ v_1-v_2, v_5-v_6 \}.}$
+	</p>
+	<p>Here's another example:</p>
+	<figure>
+		<img
+			src="{% static 'images/matching1.svg' %}"
+			alt="Matchings"
+			loading="lazy"
+			width="150px"
+			height="150px"
+		/>
+	</figure>
+	<p>
+		Here, one matching is ${\{ n_1-n_6, n_2-n_5. \}}$ There are two elements in
+		this matching, so we say that this matching has a size of ${2.}$ Is there a
+		bigger matching? Sure: ${\{n_1-n_7, n_2-n_6, n_3-n_5\}.}$ This is a matching
+		of size ${3.}$ Can we get a matching of size ${4?}$ It looks like we can't.
+		There are only ${8}$ nodes, so to have ${4}$ matches, we'd have to have all
+		${8}$ nodes involved in the matching. Thus, ${n_7}$ and ${n_8}$ would have
+		to be involved in the matching, but both of them can only be paired with
+		${n_1.}$ Thus, with this graph, ${3}$ is the best we can do.
+	</p>
+	<p>
+		Given some graph ${G,}$ if we manage to get all of ${G}$'s node in a
+		matching, then we have a <b>perfect matching</b>. Formally:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Definition.</span> Given a graph ${G,}$ matching is
+				<i>perfect</i> iff it has a size ${\dfrac{n(V)}{2},}$ where ${V}$ is the
+				set of all vertices of ${G.}$
+			</p>
+		</div>
+	</figure>
+	<p>Consider the following graph:</p>
+	<figure>
+		<img
+			src="{% static 'images/perfect_match1.svg' %}"
+			alt="Possible perfect match"
+			loading="lazy"
+			width="120px"
+			height="120px"
+		/>
+	</figure>
+	<p>Here, we see that we have a perfect matching:</p>
+	<figure>
+		$$ M = \left\{ \begin{aligned} a_1 - b_1, \\ a_2 - b_3, \\ a_3 - b_2, \\ a_4
+		- b_4 \end{aligned} \right\} $$
+	</figure>
+	<p>There are ${8}$ vertices total, and the matching above has the size:</p>
+	<figure>
+		<div>
+			<p>${n(M) = \dfrac{n(V)}{2} = \dfrac{8}{2} = 4.}$</p>
+		</div>
+	</figure>
+
+	<section id="weighted_edges">
+		<h3>Weighted Graphs</h3>
+		<p>
+			Let's a bit more nuance to our graphs. When we're working with matches,
+			it's often the case that some matches weigh more than others. For example,
+			the horse breeder pairing male horses to female horses might find that
+			certain male horses would better paired with certain female horses. Those
+			desirable pairings, in a sense, weigh more than others. In graph theory,
+			we quantify this notion of desirability through <b>weighted edges</b>. For
+			example, the edges in the graph below have varying edges.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/weighted_edges1.svg' %}"
+				alt="weighted edges"
+				loading="lazy"
+				width="140px"
+				height="140px"
+			/>
+		</figure>
+		<p>
+			Examining the graph above, heaviest edges are ${a_1-b_2}$ and ${a_4-b_4.}$
+			The lightest edge is ${a_1-b_1.}$ Generally, when we work with weighted
+			edges, a lower weight corresponds to a more desirable match, and a heavier
+			weight corresponds to less desirable match.<sup></sup> Using this
+			abstraction, we can state propositions like:
+		</p>
+		<div class="note">
+			<p>
+				Problems involving weighted matchings typically only arise with perfect
+				matchings.
+			</p>
+		</div>
+		<figure>
+			<div>
+				<ul>
+					<li>
+						${a_4}$ and ${b_1}$ have a better chance of staying in a
+						relationship than ${a_4}$ and ${b_4.}$
+					</li>
+					<li>It makes no difference if ${a_2}$ dates ${b_3}$ or ${b_4.}$</li>
+					<li>${a_1}$ really should date ${b_1.}$</li>
+				</ul>
+			</div>
+		</figure>
+		<p>
+			Given that each edge in the graph has a weight, the graph as a whole has a
+			weight. Formally:
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Definition.</span> The weight of a matching ${M,}$
+					denoted ${\mathcal{W}(M),}$ is the sum of the weights on the edges of
+					${M.}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			Furthermore, since the graph has subgraphs comprising matchings, each of
+			those matchings have a weight. With weighted matching problems, the goal
+			is usually to find a matching with the smallest possible weight. Formally:
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Definition.</span> A
+					<i>minimum weight matching</i> for a graph ${G}$ is a perfect matching
+					for ${G}$ with the minimum weight over all perfect matchings.
+				</p>
+			</div>
+		</figure>
+		<p>
+			Note how the definition constrains the notion of a minimum weight matching
+			to perfect matchings. This constraint exists because without it, we would
+			always have minimum weight matchings &mdash; just pull out ignore some or
+			all of the nodes.
+		</p>
+	</section>
 </section>
 {% endblock %}
