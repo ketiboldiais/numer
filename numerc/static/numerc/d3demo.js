@@ -298,7 +298,7 @@ const scatterData = [
 	[25, 67],
 	[85, 21],
 	[220, 88],
-	[600, 150]
+	[600, 150],
 ];
 const scatterDimensions = {
 	width: 600,
@@ -383,7 +383,7 @@ demo16
 	.attr("y", (d) => d[1])
 	.attr("font-family", "sans-serif")
 	.attr("font-size", "11px")
-	.attr("fill", scatterColors.darkBlue)
+	.attr("fill", scatterColors.darkBlue);
 
 /* -------------------------------------------------------------------------- */
 /*                                 Scale Demos                                */
@@ -398,16 +398,19 @@ const scatterDimensions17 = {
 	padding: 1,
 };
 const circlePadding = 30;
-const xScaleDemo17 = d3.scaleLinear()
-	.domain([0, d3.max(scatterData, d => d[0])])
+const xScaleDemo17 = d3
+	.scaleLinear()
+	.domain([0, d3.max(scatterData, (d) => d[0])])
 	.range([circlePadding, scatterDimensions17.width - circlePadding * 2]);
 
-const yScaleDemo17 = d3.scaleLinear()
-	.domain([0, d3.max(scatterData, d => d[1])])
+const yScaleDemo17 = d3
+	.scaleLinear()
+	.domain([0, d3.max(scatterData, (d) => d[1])])
 	.range([scatterDimensions17.height - circlePadding, circlePadding]);
 
-const rScaleDemo17 = d3.scaleLinear()
-	.domain([0, d3.max(scatterData, d => d[1])])
+const rScaleDemo17 = d3
+	.scaleLinear()
+	.domain([0, d3.max(scatterData, (d) => d[1])])
 	.range([2, 5]);
 
 demo17
@@ -418,9 +421,9 @@ demo17
 	.data(scatterData)
 	.enter()
 	.append("circle")
-	.attr("cx", d => xScaleDemo17(d[0]))
-	.attr("cy", d => yScaleDemo17(d[1]))
-	.attr("r", d => rScaleDemo17(d[1]))
+	.attr("cx", (d) => xScaleDemo17(d[0]))
+	.attr("cy", (d) => yScaleDemo17(d[1]))
+	.attr("r", (d) => rScaleDemo17(d[1]))
 	.attr("fill", scatterColors.lightBlue)
 	.attr("stroke", scatterColors.darkBlue);
 demo17
@@ -433,12 +436,13 @@ demo17
 	.attr("y", (d) => yScaleDemo17(d[1]))
 	.attr("font-family", "sans-serif")
 	.attr("font-size", "11px")
-	.attr("fill", scatterColors.darkBlue)
+	.attr("fill", scatterColors.darkBlue);
 
 /* --------------------------------- Demo 18 -------------------------------- */
 const demo18 = body.selectAll("figure#demo18").append("svg");
-const aScaleDemo18 = d3.scaleLinear()
-	.domain([0, d3.max(scatterData, d => d[1])])
+const aScaleDemo18 = d3
+	.scaleLinear()
+	.domain([0, d3.max(scatterData, (d) => d[1])])
 	.range([2, 10]);
 demo18
 	.attr("width", scatterDimensions17.width)
@@ -448,9 +452,9 @@ demo18
 	.data(scatterData)
 	.enter()
 	.append("circle")
-	.attr("cx", d => xScaleDemo17(d[0]))
-	.attr("cy", d => yScaleDemo17(d[1]))
-	.attr("r", d => aScaleDemo18(d[1]))
+	.attr("cx", (d) => xScaleDemo17(d[0]))
+	.attr("cy", (d) => yScaleDemo17(d[1]))
+	.attr("r", (d) => aScaleDemo18(d[1]))
 	.attr("fill", scatterColors.lightBlue)
 	.attr("stroke", scatterColors.darkBlue);
 demo18
@@ -463,7 +467,7 @@ demo18
 	.attr("y", (d) => yScaleDemo17(d[1]))
 	.attr("font-family", "sans-serif")
 	.attr("font-size", "11px")
-	.attr("fill", scatterColors.darkBlue)
+	.attr("fill", scatterColors.darkBlue);
 
 /* -------------------------------------------------------------------------- */
 /*                                 Axes Demos                                 */
@@ -479,9 +483,9 @@ demo19
 	.data(scatterData)
 	.enter()
 	.append("circle")
-	.attr("cx", d => xScaleDemo17(d[0]))
-	.attr("cy", d => yScaleDemo17(d[1]))
-	.attr("r", d => aScaleDemo18(d[1]))
+	.attr("cx", (d) => xScaleDemo17(d[0]))
+	.attr("cy", (d) => yScaleDemo17(d[1]))
+	.attr("r", (d) => aScaleDemo18(d[1]))
 	.attr("fill", scatterColors.lightBlue)
 	.attr("stroke", scatterColors.darkBlue);
 demo19
@@ -494,13 +498,14 @@ demo19
 	.attr("y", (d) => yScaleDemo17(d[1]))
 	.attr("font-family", "sans-serif")
 	.attr("font-size", "11px")
-	.attr("fill", scatterColors.darkBlue)
+	.attr("fill", scatterColors.darkBlue);
 
 // add bottom x-axis
-demo19.append('g')
-	.attr('class', 'axis')
-	.attr('color', scatterColors.darkBlue)
-	.call(xAxisDemo19)
+demo19
+	.append("g")
+	.attr("class", "axis")
+	.attr("color", scatterColors.darkBlue)
+	.call(xAxisDemo19);
 
 /* --------------------------------- Demo 20 -------------------------------- */
 const demo20 = body.selectAll("figure#demo20").append("svg");
@@ -512,9 +517,9 @@ demo20
 	.data(scatterData)
 	.enter()
 	.append("circle")
-	.attr("cx", d => xScaleDemo17(d[0]))
-	.attr("cy", d => yScaleDemo17(d[1]))
-	.attr("r", d => aScaleDemo18(d[1]))
+	.attr("cx", (d) => xScaleDemo17(d[0]))
+	.attr("cy", (d) => yScaleDemo17(d[1]))
+	.attr("r", (d) => aScaleDemo18(d[1]))
 	.attr("fill", scatterColors.lightBlue)
 	.attr("stroke", scatterColors.darkBlue);
 demo20
@@ -527,42 +532,43 @@ demo20
 	.attr("y", (d) => yScaleDemo17(d[1]))
 	.attr("font-family", "sans-serif")
 	.attr("font-size", "11px")
-	.attr("fill", scatterColors.darkBlue)
+	.attr("fill", scatterColors.darkBlue);
 
 // add bottom x-axis
-demo20.append('g')
-	.attr('class', 'axis')
-	.attr('color', scatterColors.darkBlue)
+demo20
+	.append("g")
+	.attr("class", "axis")
+	.attr("color", scatterColors.darkBlue)
 	.attr(
-		'transform',
+		"transform",
 		`translate(0,${scatterDimensions17.height - circlePadding})`
 	)
-	.call(xAxisDemo19)
+	.call(xAxisDemo19);
 
 /* --------------------------------- Demo 21 -------------------------------- */
 const demo21RandomData = [];
 const demo21DataPoints = 50;
 const xRange = Math.random() * 1000;
 const yRange = Math.random() * 1000;
-for (let i = 0; i < demo21DataPoints; i++) { 
+for (let i = 0; i < demo21DataPoints; i++) {
 	const newXValue = Math.floor(Math.random() * xRange);
 	const newYValue = Math.floor(Math.random() * yRange);
 	demo21RandomData.push([newXValue, newYValue]);
 }
-const xScaleDemo21 = d3.scaleLinear()
-	.domain([0, d3.max(demo21RandomData, d => d[0])])
+const xScaleDemo21 = d3
+	.scaleLinear()
+	.domain([0, d3.max(demo21RandomData, (d) => d[0])])
 	.range([circlePadding, scatterDimensions17.width - circlePadding]);
-const yScaleDemo21 = d3.scaleLinear()
-	.domain([0, d3.max(demo21RandomData, d => d[1])])
+const yScaleDemo21 = d3
+	.scaleLinear()
+	.domain([0, d3.max(demo21RandomData, (d) => d[1])])
 	.range([scatterDimensions17.height - circlePadding, circlePadding]);
-const aScaleDemo21 = d3.scaleLinear()
-	.domain([0, d3.max(demo21RandomData, d => d[1])])
+const aScaleDemo21 = d3
+	.scaleLinear()
+	.domain([0, d3.max(demo21RandomData, (d) => d[1])])
 	.range([2, 10]);
-const demo21yAxis = d3.axisLeft()
-	.scale(yScaleDemo21)
-	.ticks(5)
-const demo21xAxis = d3.axisBottom()
-	.scale(xScaleDemo21)
+const demo21yAxis = d3.axisLeft().scale(yScaleDemo21).ticks(5);
+const demo21xAxis = d3.axisBottom().scale(xScaleDemo21);
 const demo21 = body.selectAll("figure#demo21").append("svg");
 demo21
 	.attr("width", scatterDimensions17.width)
@@ -572,25 +578,30 @@ demo21
 	.data(demo21RandomData)
 	.enter()
 	.append("circle")
-	.attr("cx", d => xScaleDemo21(d[0]))
-	.attr("cy", d => yScaleDemo21(d[1]))
-	.attr("r", d => aScaleDemo21(d[1]))
+	.attr("cx", (d) => xScaleDemo21(d[0]))
+	.attr("cy", (d) => yScaleDemo21(d[1]))
+	.attr("r", (d) => aScaleDemo21(d[1]))
 	.attr("fill", scatterColors.lightBlue)
 	.attr("stroke", scatterColors.darkBlue);
 // add bottom x-axis
-demo21.append('g')
-	.attr('class', 'axis')
-	.attr('color', scatterColors.darkBlue)
+demo21
+	.append("g")
+	.attr("class", "axis")
+	.attr("color", scatterColors.darkBlue)
 	.attr(
-		'transform',
+		"transform",
 		`translate(0,${scatterDimensions17.height - circlePadding})`
 	)
-	.call(demo21xAxis)
+	.call(demo21xAxis);
 // add left y-axis
-demo21.append('g')
-	.attr('class', 'axis')
-	.attr('color', scatterColors.darkBlue)
-	.attr('transform', `translate(${circlePadding}, 0)`)
-	.call(demo21yAxis)
+demo21
+	.append("g")
+	.attr("class", "axis")
+	.attr("color", scatterColors.darkBlue)
+	.attr("transform", `translate(${circlePadding}, 0)`)
+	.call(demo21yAxis);
 
+/* -------------------------------------------------------------------------- */
+/*                              Linked List Demo                              */
+/* -------------------------------------------------------------------------- */
 

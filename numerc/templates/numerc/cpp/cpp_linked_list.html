@@ -147,18 +147,6 @@
 			<i>next field</i>, containing a pointer to some heap memory address ${h.}$
 			Notice that each node stores the address ${h}$ of the next node.
 		</p>
-
-		<p>
-			The linked list as a whole has a <i>head</i>, which is not a node, but a
-			<i>node pointer</i>. The head serves as the linked list's <i>name</i> or
-			<i>identifier</i>. It is the only part of the linked list that we have
-			direct access to, and thus serves as liaison for the rest of the list.
-		</p>
-		<p>
-			The linked list also has a <i>tail</i>, which is the last node in the
-			linked list. Unlike the other nodes, the tail's pointer is a
-			<b>null pointer</b> &mdash; it points to the memory address ${0.}$
-		</p>
 		<p>
 			Question: How much memory does the node data structure take? Well, we know
 			that there are two parts to the node; the substantive data and the
@@ -476,10 +464,124 @@
 
 	<section id="node_operations">
 		<h3>Linked List Syntax</h3>
-	</section>
+		<p>Say we had the following code:</p>
 
+		<pre class="language-cpp"><code>
+			struct Node {
+				int data;
+				Node *next;
+			};
+			
+			int main() {
+				q* = NULL;
+				Node* p = 0;
+				Node* n = new Node();
+				n->data = 1;
+				n->next = 0;
+				p = n;
+				Node* m = new Node();
+				m->data = 2;
+				m->next = 0;
+				n->next = m;
+			}
+		</code></pre>
+
+		<p>Next, suppose the following:</p>
+		<figure>
+			<div>
+				<ul>
+					<li>The address in <var>p</var> is <var>0x200</var>.</li>
+					<li>The address of <var>n</var> is <var>0x200</var>.</li>
+					<li>The address in <var>n->next</var> is <var>0x210</var>.</li>
+				</ul>
+			</div>
+		</figure>
+		<p>What happens if we write the statement below?</p>
+		<pre class="language-cpp"><code>
+			q = p;
+		</code></pre>
+		<p>
+			Well, <var>q</var> is just a pointer, so assigning it the value
+			<var>p</var> assigns it the address <var>0x200</var>. This means that the
+			linked list now has <i>two</i> heads, since <var>p</var> and
+			<var>q</var> both point to <var>n</var>, the first node.<sup></sup>
+		</p>
+		<div class="note">
+			<p>More explicitly:</p>
+			<pre class="language-pseudo"><code>
+				q = p = &n = 0x200
+			</code></pre>
+		</div>
+		<p>Next, what happens if we write:</p>
+		<pre class="language-cpp"><code>
+			q = p->next;
+		</code></pre>
+		<p>
+			Well, we know that <var>p</var> stores the address <var>0x200</var>.
+			That's the address of <var>n</var>. Thus, by writing the above,
+			<var>q</var> now stores the address in <var>n->next</var>, which is
+			<var>0x210</var>. This is the address of the node <var>m</var>.<sup></sup>
+		</p>
+		<div class="note">
+			<p>Expanding:</p>
+			<pre class="language-pseudo"><code>
+				q = p->next = &n->next = &amp;m;
+			</code></pre>
+			<p>It can also be helpful to think in terms of dereferencing in C:</p>
+			<pre class="language-pseudo"><code>
+				q = (*p).next = &n.next = &amp;m;
+			</code></pre>
+		</div>
+		<p>How about this statement:</p>
+		<pre class="language-cpp"><code>
+			p = n->next;
+		</code></pre>
+		<p>
+			Writing the line above, we assign to <var>p</var> the address
+			<var>n->next</var>. This is the address of <var>m</var>. Thus, the pointer
+			<var>p</var> ceases pointing at <var>n</var>, and instead points at
+			<var>m</var>.<sup></sup> This statement is particularly useful &mdash; it
+			allows us to move from the current node to the next node. And if we can
+			move from the current node to the next node, we can <i>iterate</i> through
+			a list. Because of how useful it is, we state it more explicitly:
+		</p>
+		<div class="note">
+			<p>Expanding:</p>
+			<pre class="language-pseudo"><code>
+				p = n->next = &amp;m
+			</code></pre>
+			<p>In C terms:</p>
+			<pre class="language-pseudo"><code>
+				p = (*n).next = &amp;m;
+			</code></pre>
+		</div>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Statement.</span> Given a head pointer ${H}$
+					pointing to the head ${n_0,}$ to move to ${n_1,}$ we write:
+				</p>
+				<figure>
+					<div>
+						<p><var>${\large H}$ = ${\Large n_0}$->next</var>, or</p>
+						<p><var>${\large H}$ = (*${\Large n_0}$).next</var></p>
+					</div>
+				</figure>
+				<p>
+					More generally, given a pointer ${P}$ pointing to some node ${n_i,}$
+					to move to ${n_{i+1},}$ we write:
+				</p>
+				<figure>
+					<div>
+						<p><var>${\large P}$ = ${\Large n_i}$->next</var>, or</p>
+						<p><var>${\large P}$ = (*${\Large n_i}$).next</var></p>
+					</div>
+				</figure>
+			</div>
+		</figure>
+	</section>
 </section>
 
-<!-- <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="../../../static/numerc/graphics.js"></script> -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerc/d3demo.js"></script>
 {% endblock %}

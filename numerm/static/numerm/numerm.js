@@ -24,7 +24,7 @@ function mainIdeaHeader() {
     mainIdeas[i].prepend(header);
   }
 }
-// Show Nav Button
+// Show navigation bar at narrow width
 function showNav() { 
   const tocButton = document.getElementById("tocButton");
   const navBar = document.querySelector("nav"); 
@@ -46,7 +46,6 @@ function addCheckBoxToCheckList() {
 (function () {
   showNav();
   mainIdeaHeader();
-  showNav();
   addCheckBoxToCheckList();
   marginNote();
 })();
