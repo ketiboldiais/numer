@@ -22,9 +22,58 @@
 		array.
 	</p>
 	<p>
-		Comparing arrays and linked lists, it's helpful to visualize how they might
-		be stored in memory. Suppose we had the following sequence:
+		The linked list corresponds to the abstract data type <b>list</b>.<sup
+		></sup> A list has the following traits:
 	</p>
+	<ol>
+		<li>
+			A list can store any given number of elements of a given data type ${t.}$
+		</li>
+		<li>A list's elements can be written or modified in place.</li>
+		<li>A list has a specified data type ${L_t.}$</li>
+		<li>A list's elements can be read.</li>
+		<li>A list can be traversed.</li>
+		<li>Elements in a list can be enumerated.</li>
+		<li>The empty list has a size of ${0.}$</li>
+		<li>An element can be inserted at <em>any</em> position in the list.</li>
+		<li>An element can be removed at <em>any</em> position in the list.</li>
+	</ol>
+	<p>
+		The first seven properties above are all properties present in the
+		<i>sequence</i> ADT. It is the last two properties that differentiate lists
+		from sequences. Sequences are implemented as static arrays. And as static
+		arrays, they have a <em>fixed size</em>. The list, however, has a
+		<i>dynamic size</i>. They can grow and shrink as we please.
+	</p>
+	<div class="note">
+		<p>
+			In these materials, we make a distinction between the abstract data type
+			<i>list</i> and the abstract data type <i>sequence</i>. The static arrays
+			we worked with earlier correspond to the abstract data type
+			<i>sequence</i>.
+		</p>
+	</div>
+	<p>
+		Comparing arrays and linked lists, it's helpful to visualize how they might
+		be stored in memory. Suppose we had the following sequence:<sup></sup>
+	</p>
+	<div class="note">
+		<p>With sequences, we used the notation:</p>
+		<figure>
+			<div>
+				<p>${\lang n_0, n_1, n_2, \ldots n_i \rang}$</p>
+			</div>
+		</figure>
+		<p>
+			where ${n}$ is some element. For lists, we will use the following
+			notation:
+		</p>
+		<figure>
+			<div>
+				<p>${(n_0, n_1, n_2, \ldots n_i)}$</p>
+			</div>
+		</figure>
+	</div>
 	<figure>
 		<div>
 			<p>${\lang 3, 7, 2, 9, 1 \rang}$</p>
@@ -40,6 +89,8 @@
 			src="{% static 'images/linked_list_compare.svg' %}"
 			alt="Comparison linked list"
 			loading="lazy"
+			width="200px"
+			height="200px"
 		/>
 		<figcaption>
 			Comparing the static array, the dynamic array, and the linked list. The
@@ -129,23 +180,25 @@
 			linked lists provide great opportunities for recursion, as we'll soon see.
 		</p>
 		<p>
-			Let's get a bit of terminology out of the way. First, every linked list
-			has a
-			<b>head</b> and a <b>tail</b>, both of which are nodes on the linked list.
-			Here's a more abstract diagram of the linked list data structure:
+			Let's get a bit of terminology out of the way. Examine the diagram below:
 		</p>
-
 		<img
 			src="{% static 'images/headTail.svg' %}"
 			alt="Linked last data structure"
 			loading="lazy"
 		/>
-
 		<p>
 			Above, ${n}$ represents some node. Each node ${n}$ consists of two parts,
 			a <i>data field</i>, containing of some data value ${v,}$ and a
 			<i>next field</i>, containing a pointer to some heap memory address ${h.}$
 			Notice that each node stores the address ${h}$ of the next node.
+		</p>
+		<p>
+			Every linked list has a <b>root</b>. This is a pointer to the first node
+			of the list, called the <b>head</b>. All nodes that are <em>not</em> the
+			head comprise the list's <b>tail</b>. The last node of the list is called
+			the <b>foot</b>. Finally, all nodes between the head and the tailend
+			constitute the <b>trunk</b>.
 		</p>
 		<p>
 			Question: How much memory does the node data structure take? Well, we know
@@ -271,7 +324,7 @@
 			};
 			
 			int main() {
-				struct Node* h = NULL;
+				struct Node* h    = NULL;
 				struct Node* temp = malloc(sizeof(struct Node));
 				return 0;
 			}
@@ -301,7 +354,7 @@
 			};
 			
 			int main() {
-				struct Node* h = NULL;
+				struct Node* h    = NULL;
 				struct Node* temp = (struct Node*) malloc(sizeof(struct Node));
 				return 0;
 			}
@@ -338,10 +391,10 @@
 			}
 			
 			int main() {
-				struct Node* h = NULL;
-				struct Node* temp = malloc(sizeof(struct Node));
-				(*temp).data = 1;
-				(*temp).next = NULL;
+				struct  Node* h    = NULL;
+				struct  Node* temp = malloc(sizeof(struct Node));
+				(*temp).data       = 1;
+				(*temp).next       = NULL;
 				return 0;
 			}
 		</code></pre>
@@ -366,10 +419,10 @@
 			}
 			
 			int main() {
-				Node* h = 0;
-				Node* temp = new Node();
-				temp->data = 1;
-				temp->next = 0;
+				Node* h          = 0;
+				Node* temp       = new Node();
+				      temp->data = 1;
+				      temp->next = 0;
 				return 0;
 			}
 		</code></pre>
@@ -387,11 +440,11 @@
 				}
 				
 				int main() {
-					Node* h = 0;
-					Node* temp = new Node();
-					temp->data = 1;
-					temp->next = 0;
-					h = temp;
+					Node* h          = 0;
+					Node* temp       = new Node();
+					      temp->data = 1;
+					      temp->next = 0;
+					      h          = temp;
 					return 0;
 				}
 			</code></pre>
@@ -403,11 +456,11 @@
 			}
 			
 			int main() {
-				struct Node* h = NULL;
-				struct Node* temp = malloc(sizeof(struct Node));
-				(*temp).data = 1;
-				(*temp).next = NULL;
-				h = temp;
+				struct  Node* h    = NULL;
+				struct  Node* temp = malloc(sizeof(struct Node));
+				(*temp).data       = 1;
+				(*temp).next       = NULL;
+				        h          = temp;
 				return 0;
 			}
 		</code></pre>
@@ -441,22 +494,22 @@
 				Node* head = 0;
 
 				// First node
-				Node* node1 = new Node();
-				node1->data = 1;
-				node1->next = 0; // first node is the tail
-				head = node1; // link head to first node
+				Node* node1       = new Node();
+				      node1->data = 1;
+				      node1->next = 0;           // first node is the tail
+				      head        = node1;       // link head to first node
 			
 				// Second node
-				Node* node2 = new Node();
-				node2->data = 2;
-				node1->next = 0; // second node is now the tail
-				node1->next = node2; // link first node to second node
+				Node* node2       = new Node();
+				      node2->data = 2;
+				      node1->next = 0;           // second node is now the tail
+				      node1->next = node2;       // link first node to second node
 			
 				// Third node
-				Node* node3 = new Node();
-				node3->data = 3;
-				node3->next = 0; // third node is now the tail
-				node2->next = node3; // link second node to third node
+				Node* node3       = new Node();
+				      node3->data = 3;
+				      node3->next = 0;           // third node is now the tail
+				      node2->next = node3;       // link second node to third node
 				return 0;
 			}
 		</code></pre>
@@ -473,16 +526,16 @@
 			};
 			
 			int main() {
-				q* = NULL;
+				Node* q = NULL;
 				Node* p = 0;
 				Node* n = new Node();
-				n->data = 1;
-				n->next = 0;
-				p = n;
+				      n->data = 1;
+				      n->next = 0;
+				      p       = n;
 				Node* m = new Node();
-				m->data = 2;
-				m->next = 0;
-				n->next = m;
+				      m->data = 2;
+				      m->next = 0;
+				      n->next = m;
 			}
 		</code></pre>
 
@@ -534,11 +587,11 @@
 		</div>
 		<p>How about this statement:</p>
 		<pre class="language-cpp"><code>
-			p = n->next;
+			p = p->next;
 		</code></pre>
 		<p>
 			Writing the line above, we assign to <var>p</var> the address
-			<var>n->next</var>. This is the address of <var>m</var>. Thus, the pointer
+			<var>p->next</var>. This is the address of <var>m</var>. Thus, the pointer
 			<var>p</var> ceases pointing at <var>n</var>, and instead points at
 			<var>m</var>.<sup></sup> This statement is particularly useful &mdash; it
 			allows us to move from the current node to the next node. And if we can
@@ -548,11 +601,11 @@
 		<div class="note">
 			<p>Expanding:</p>
 			<pre class="language-pseudo"><code>
-				p = n->next = &amp;m
+				p = p->next = &amp;n->next = &amp;m
 			</code></pre>
 			<p>In C terms:</p>
 			<pre class="language-pseudo"><code>
-				p = (*n).next = &amp;m;
+				p = (*p).next = n.next &amp;m;
 			</code></pre>
 		</div>
 		<figure>
@@ -563,8 +616,8 @@
 				</p>
 				<figure>
 					<div>
-						<p><var>${\large H}$ = ${\Large n_0}$->next</var>, or</p>
-						<p><var>${\large H}$ = (*${\Large n_0}$).next</var></p>
+						<p><var>${\large H}$ = ${\Large H}$->next</var>, or</p>
+						<p><var>${\large H}$ = (*${\Large H}$).next</var></p>
 					</div>
 				</figure>
 				<p>
@@ -573,15 +626,1327 @@
 				</p>
 				<figure>
 					<div>
-						<p><var>${\large P}$ = ${\Large n_i}$->next</var>, or</p>
-						<p><var>${\large P}$ = (*${\Large n_i}$).next</var></p>
+						<p><var>${\large P}$ = ${\large P}$->next</var>, or</p>
+						<p><var>${\large P}$ = (*${\large P}$).next</var></p>
 					</div>
 				</figure>
 			</div>
 		</figure>
+
+		<section id="null_nonnull_check">
+			<h4>Null &amp; Nonnull Tests</h4>
+			<p>Compare the two examples below:</p>
+			<div class="compare">
+				<figure>
+					<pre class="language-cpp"><code>
+						struct Node {
+							int data;
+							Node *next;
+						}
+						int main() {
+							*p = NULL;
+						}
+					</code></pre>
+					<figcaption>Program 1</figcaption>
+				</figure>
+				<figure>
+					<pre class="language-cpp"><code>
+						struct Node {
+							int data;
+							Node *next;
+						}
+						int main() {
+							Node* p       = 0;
+							Node* n       = new Node();
+							      n->data = 1;
+							      n->next = 0;
+							      p       = n;
+							Node* m       = new Node();
+							      m->data = 2;
+							      m->next = 0;
+							      n->next = m;
+						}
+					</code></pre>
+					<figcaption>Program 2</figcaption>
+				</figure>
+			</div>
+			<p>
+				In Program 1, the pointer <var>p</var> is the null pointer. In Program
+				2, the pointer <var>p</var> points to the address of
+				<var>n</var> (suppose it's <var>0x200</var>).
+			</p>
+			<p>
+				Whether a pointer is the null address or otherwise corresponds to
+				Boolean values. In Program 1, the pointer <var>p</var> has the value
+				<var>0</var>. In Program 2, the pointer <var>p</var> has a non-zero
+				value. In C and its descendants &mdash; e.g., C++ &mdash; zero
+				corresponds to <var>false</var> and non-zero values correspond to
+				<var>true</var>. Thus, if some pointer ${p}$ is not pointing on any
+				node, then it is <i>false</i>. Otherwise, it is <i>true</i>. Because of
+				this fact, we have the following:
+			</p>
+			<figure>
+				<div class="rule">
+					<p>
+						<span class="topic">Null Pointer Test.</span> A pointer ${p}$ is the
+						<i>null pointer</i> &mdash; a pointer pointing nowhere &mdash; if
+						and only if the following expressions are true:
+					</p>
+					<figure>
+						<div>
+							<p><var>${\large p}$ == NULL</var></p>
+							<p><var>${\large p}$ == 0</var> ${~~or}$</p>
+							<p><var>!${\large p}$</var></p>
+						</div>
+					</figure>
+				</div>
+			</figure>
+			<p>For the nonnull pointer, we have the following:</p>
+			<figure>
+				<div class="rule">
+					<p>
+						<span class="topic">Nonnull Pointer Test.</span> A pointer ${p}$ is
+						the <i>nonnull pointer</i> &mdash; a pointer pointing to a valid
+						address &mdash; if and only if the following expressions are true:
+					</p>
+					<figure>
+						<div>
+							<p><var>${\large p}$ !== NULL</var></p>
+							<p><var>${\large p}$ !== 0</var> ${~~or}$</p>
+							<p><var>${\large p}$</var></p>
+						</div>
+					</figure>
+				</div>
+			</figure>
+		</section>
+
+		<section id="last_node_check">
+			<h4>Foot Test</h4>
+			<p>
+				Many operations involving linked lists require to test whether a given
+				node ${n}$ is the <b>tailend</b> &mdash; the last node in the list. If a
+				given node ${n}$ is the <b>tailend</b>, then there are no other nodes
+				after it. If a given node ${n}$ is <em>not</em> the <b>tailend</b>, then
+				there are nodes after the node ${n}$ &mdash; node ${n}$ is a
+				<b>parent node</b>. The test:
+			</p>
+			<figure>
+				<div class="rule">
+					<p>
+						<span class="topic">Tailend Test.</span> The node ${n}$ is the
+						<i>tailend</i> &mdash; the last node in the linked list &mdash; if
+						and only if:
+					</p>
+					<figure>
+						<div>
+							<p><var>!(${n}$->next == NULL)</var></p>
+							<p><var>!(${n}$->next == 0)</var> ${~~or}$</p>
+							<p><var>!(${n}$->next)</var></p>
+						</div>
+					</figure>
+					<p>Otherwise, the node is a <i>parent node</i>.</p>
+				</div>
+			</figure>
+		</section>
+
+		<section id="traversing_a_linked_list">
+			<h3>Traversing a Linked List Iteratively</h3>
+			<p>Suppose we had the following linked list:</p>
+			<figure>
+				<ul class="linkedlist">
+					<ul class="head">
+						<li>p</li>
+						<li>0x200</li>
+					</ul>
+					<ul class="node">
+						<li>8</li>
+						<li>0x210</li>
+					</ul>
+					<ul class="node">
+						<li>3</li>
+						<li>0x270</li>
+					</ul>
+					<ul class="node">
+						<li>7</li>
+						<li>0x300</li>
+					</ul>
+					<ul class="node">
+						<li>12</li>
+						<li>0x350</li>
+					</ul>
+					<ul class="node">
+						<li>9</li>
+						<li>0</li>
+					</ul>
+				</ul>
+			</figure>
+			<p>
+				Now suppose we want to traverse the linked list &mdash; i.e., visiting
+				all of the nodes one at a time. To do so, we employ the facts: First, we
+				note that the pointer <var>p</var> has the pointee <var>0x200</var>.
+				This is the address of the first node storing <var>8</var>. The next
+				node, storing <var>3</var>, has the address <var>0x210</var>, which is
+				the pointee of the first node's <var>next</var> field.
+			</p>
+			<p>
+				From the previous section, we know that the first node's
+				<var>next</var> field can be expressed as:
+			</p>
+			<figure>
+				<div>
+					<pre class="language-pseudo"><code>
+						p->next
+					</code></pre>
+				</div>
+			</figure>
+			<p>
+				Thus, to iterate through the linked list, all we have to do is
+				performing <var>p = p->next</var>, so long as <var>next</var> is a
+				nonnull pointer. Hence, the general form for iterating through the
+				linked list is as follows:
+			</p>
+			<figure>
+				<div>
+					<pre class="language-pseudo"><code>
+						while(p != 0) {
+							p = p->next;
+						}
+					</code></pre>
+				</div>
+			</figure>
+			<p>
+				<span class="topic">Printing a Linked List.</span> Now that we know how
+				to iterate through a linked list, we can perform the simple operating of
+				printing the linked list's data fields. In C:
+			</p>
+			<pre class="language-cpp"><code>
+				while(p != 0) {
+					print("%d", p->data);
+					p = p->next;
+				}
+			</code></pre>
+			<p>In C++:</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+				int main() {
+					Node* root = 0;
+
+					// first node
+					Node* n1       = new Node();
+					      n1->data = 1;
+					      n1->next = 0;
+					      root     = n1;
+
+					// second node
+					Node* n2       = new Node();
+					      n2->data = 2;
+					      n2->next = 0;
+					      n1->next = n2;
+
+					// third node
+					Node* n3       = new Node();
+					      n3->data = 3;
+					      n3->next = 0;
+					      n2->next = n3;
+
+					// temporary pointer for traversal
+					Node* p = root;
+
+					// print the node
+					while (p != 0) {
+						std:: cout &lt;&lt; temp->data &lt;&lt; std:: endl;
+						p = p->next;
+					}
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				1
+				2
+				3
+			</code></pre>
+			<p>
+				Note how we used a variable <var>p</var> to iterate through the linked
+				list. We need the temporary pointer <var>p</var> because using
+				<var>root</var> directly would cause losing the address to the head.
+			</p>
+			<p>
+				This is a pretty useful procedure. Let's encapsulate it in a function:
+			</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				void printList(Node* p)  {
+					while (p != 0) {
+						std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+						p = p->next;
+					}
+				}
+				
+				int main() {
+					Node* root = 0;
+				
+					Node* n1       = new Node();
+					      n1->data = 1;
+					      n1->next = 0;
+					      root     = n1;
+				
+					Node* n2       = new Node();
+					      n2->data = 2;
+					      n2->next = 0;
+					      n1->next = n2;
+				
+					Node* n3       = new Node();
+					      n3->data = 3;
+					      n3->next = 0;
+					      n2->next = n3;
+				
+					Node* p = root;
+				
+					printList(p);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				1
+				2
+				3
+			</code></pre>
+		</section>
+
+		<section id="traversing_a_linked_list_recursively">
+			<h3>Traversing a Linked List Recursively</h3>
+			<p>
+				Because of the linked list's self-referential nature, we can also
+				traverse a linked list recursively. Suppose we had the following linked
+				list:
+			</p>
+			<figure>
+				<ul class="linkedlist">
+					<ul class="head">
+						<li>r</li>
+						<li>0x200</li>
+					</ul>
+					<ul>
+						<li>8</li>
+						<li>0x210</li>
+					</ul>
+					<ul>
+						<li>3</li>
+						<li>0x270</li>
+					</ul>
+					<ul>
+						<li>7</li>
+						<li>0x270</li>
+					</ul>
+					<ul>
+						<li>12</li>
+						<li>0x350</li>
+					</ul>
+					<ul>
+						<li>9</li>
+						<li>0</li>
+					</ul>
+				</ul>
+			</figure>
+			<p>
+				Like the iterative approach, we need a traversal pointer. Call it
+				<var>p</var>. Our function's head:
+			</p>
+			<figure>
+				<div>
+					<pre class="language-pseudo"><code>
+						void printList(Node* p)
+					</code></pre>
+				</div>
+			</figure>
+			<p>
+				As we know, if <var>p</var> is not the tail, then there's data to print.
+				And after printing that data, we should move on to the next node
+				<i>recursively</i>. Thus, <var>printList()</var> will call itself by
+				passing the next node's pointer:
+			</p>
+			<figure>
+				<div>
+					<pre class="language-pseudo"><code>
+						void printList(Node* p) {
+							if (p != 0) {
+								printf("%d", p->data);
+								printList(p->next);
+							}
+						}
+					</code></pre>
+				</div>
+			</figure>
+			<p>That's it. Implementing this in C++:</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				void printList(Node* p)  {
+					if (p != 0) {
+						std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+						printList(p->next);
+					}
+				}
+				
+				int main() {
+					Node* root = 0;
+				
+					Node* n1       = new Node();
+					      n1->data = 1;
+					      n1->next = 0;
+					      root     = n1;
+				
+					Node* n2       = new Node();
+					      n2->data = 2;
+					      n2->next = 0;
+					      n1->next = n2;
+				
+					Node* n3       = new Node();
+					      n3->data = 3;
+					      n3->next = 0;
+					      n2->next = n3;
+				
+					Node* p = root;
+				
+					printList(p);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				1
+				2
+				3
+			</code></pre>
+			<p>
+				Very cool. Comparing the iterative approach and the recursive approach
+				side by side:
+			</p>
+			<div class="compare">
+				<figure>
+					<pre class="language-cpp"><code>
+							void printList(Node* p)  {
+								while (p != 0) {
+									std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+									p = p->next;
+								}
+							}
+					</code></pre>
+					<figcaption>Iterative traversal.</figcaption>
+				</figure>
+				<figure>
+					<pre class="language-cpp"><code>
+							void printList(Node* p)  {
+								if (p != 0) {
+									std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+									printList(p->next);
+								}
+							}
+					</code></pre>
+					<figcaption>Recursive traveral.</figcaption>
+				</figure>
+			</div>
+			<p>
+				The time complexity for either of these approaches is linear &mdash;
+				${O(n).}$ This is because we're iterating through ${n}$ nodes, and
+				outputting to the console and the <var>p != 0</var> comparison are basic
+				steps.
+			</p>
+			<p>
+				The space complexity, however, is a different story. With the iterative
+				approach, we're only calling the function once. And because each
+				function call takes one stack frame, the iterative approach has constant
+				space complexity &mdash; ${O(1).}$ In contrast, the recursive approach
+				makes ${n+1}$ calls, given ${n}$ nodes. As such, the recursive approach
+				is of linear space complexity &mdash; ${O(n).}$
+			</p>
+			<p>
+				<span class="topic">Printing in Reverse.</span> With the recursive
+				approach, printing in reverse is just a matter of changing the order:
+			</p>
+			<pre class="language-cpp"><code>
+				void printList(Node* p)  {
+					if (p != 0) {
+						printList(p->next);
+						std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+					}
+				}
+			</code></pre>
+		</section>
+	</section>
+
+	<section id="creating_node_function">
+		<h3>Node Constructor</h3>
+		<p>
+			In our previous code examples, we've had some fairly repetitive code. The
+			first of which is the way we've been creating new nodes:
+		</p>
+		<pre class="language-pseudo"><code>
+			n       = new Node();
+			n->data = 1
+			n->next = m;
+		</code></pre>
+		<p>
+			To make our lives easier, we should write a function for this procedure:
+		</p>
+		<pre class="language-cpp"><code>
+			struct Node {
+				int data;
+				Node* next;
+			}
+			Node* newNode(int data) {
+				Node* node       = new Node;
+				      node->data = data;
+				      node->next = 0;
+				return node;
+			}
+		</code></pre>
+		<p>
+			This constructor takes an <var>int</var> value as a parameter, creates a
+			new <var>Node</var>, and returns a pointer to that node. Note that all
+			this constructor does is create a new node. Nothing more. We will see
+			later how to insert nodes into a linked list. For now, we'll use the
+			<var>newNode()</var> constructor to clean up our code a bit.
+		</p>
 	</section>
 </section>
 
+<section id="linked_list_length">
+	<h2>Length of a Linked List</h2>
+	<p>
+		One particularly useful operation is to count the number of nodes in a
+		linked list. This will return the <b>length</b> of a linked list. Say we had
+		the following linked list:
+	</p>
+	<figure>
+		<ul class="linkedlist">
+			<ul class="head">
+				<li>root</li>
+				<li>0x200</li>
+			</ul>
+			<ul>
+				<li>8</li>
+				<li>0x210</li>
+			</ul>
+			<ul>
+				<li>3</li>
+				<li>0x270</li>
+			</ul>
+			<ul>
+				<li>7</li>
+				<li>0x300</li>
+			</ul>
+			<ul>
+				<li>12</li>
+				<li>0x350</li>
+			</ul>
+			<ul>
+				<li>9</li>
+				<li>0</li>
+			</ul>
+		</ul>
+	</figure>
+	<p>Implementing the linked list above:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		struct Node {
+			int data;
+			Node* next;
+		};
+		
+		Node* newNode(int data) {
+			Node* node       = new Node;
+			      node->data = data;
+			      node->next = 0;
+			return node;
+		}
+		
+		int main() {
+			Node* root = 0;            // create root
+			Node* n1   = newNode(8);   // create nodes
+			Node* n2   = newNode(3);
+			Node* n3   = newNode(7);
+			Node* n4   = newNode(12);
+			Node* n5   = newNode(9);
+		
+			root     = n1;  // link nodes
+			n1->next = n2;
+			n2->next = n3;
+			n3->next = n4;
+			n4->next = n5;
+			n5->next = 0;
+		}
+	</code></pre>
+	<p>
+		There are five nodees in the linked list. Thus, we should expect our count
+		to return 5.
+	</p>
+	<p>
+		Counting the number of nodes in a linked list is similar to counting the
+		number of elements in an array. We can do so iteratively with a
+		<b>count</b> variable:
+	</p>
+	<pre class="language-cpp"><code>
+		int length(Node* p) {
+			int count = 0;
+			while(p != 0) {
+				count++;
+				p = p->next;
+			}
+			return count;
+		}
+	</code></pre>
+	<p>
+		The time complexity for this procedure is straightforward. We're traversing
+		through ${n}$ nodes, incrementing <var>count</var>. Hence, we have a time
+		complexity of ${O(n).}$
+	</p>
+	<p>
+		And the space complexity? Constant. This is a single function call, and each
+		of the variables used take a fixed amount of memory. Accordingly, this
+		approach has a space complexity of ${O(1).}$
+	</p>
+	<p>
+		<span class="topic">Recursive Implementation.</span> As always, we can
+		implement the same function recursively:
+	</p>
+	<pre class="language-cpp"><code>
+		int length(Node* p) {
+			if (p == 0) {
+				return 0;
+			} else {
+				return length(p->next) + 1;
+			}
+		}
+	</code></pre>
+	<p>
+		As with all recursive functions, we start with a base case. The base case is
+		a list of length ${0}$ &mdash; ${P(0),}$ the empty list. If the list
+		contains one element, then it is a list of length ${1}$ &mdash; ${P(1) =
+		P(0) + 1.}$ And if the list contains two elements, then it is a list of
+		length ${2}$ &mdash; ${P(2) = P(1) + 1 = (P(0) + 1) + 1.}$
+	</p>
+	<p>
+		The function above captures this induction. If the <var>next</var> field is
+		${0,}$ then we've reached the end of a list; the list of length ${0.}$
+		However, if the <var>next</var> field is not ${0,}$ then the list is not
+		empty. In which case we must continue until we reach the end of the list.
+	</p>
+</section>
+
+<section id="sum_all_elements">
+	<h2>Sum of All Elements</h2>
+	<p>
+		Just as we saw with arrays, given a linked list of numeric type, we can find
+		the sum of all its elements through iteration. Suppose we had the following
+		linked list:
+	</p>
+	<figure>
+		<ul class="linkedlist">
+			<ul class="head">
+				<li>root</li>
+				<li>0x120</li>
+			</ul>
+			<ul>
+				<li>7</li>
+				<li>0x120</li>
+			</ul>
+			<ul>
+				<li>3</li>
+				<li>0x230</li>
+			</ul>
+			<ul>
+				<li>5</li>
+				<li>0x380</li>
+			</ul>
+			<ul>
+				<li>4</li>
+				<li>0x298</li>
+			</ul>
+		</ul>
+	</figure>
+	<p>In code:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		struct Node {
+			int data;
+			Node* next;
+		};
+		
+		Node* newNode(int data) {
+			Node* node       = new Node;
+			      node->data = data;
+			      node->next = 0;
+			return node;
+		}
+		
+		int main() {
+			Node* root        = 0;
+			Node* node1       = newNode(7);  // First node
+			      root        = node1;
+			Node* node2       = newNode(3);  // Second node
+			      node1->next = node2;
+			Node* node3       = newNode(5)   // Third node
+			      node2->next = node3;
+			Node* node4       = newNode(4)   // Fourth node
+			      node3->next = node4;
+			
+			return 0;
+		}
+	</code></pre>
+	<p>
+		To sum all of the elements, we use a variable <var>sum</var>, set initially
+		to zero. Then, we iterate through the linked list, incrementing
+		<var>sum</var> by each element's <var>data</var> field:
+	</p>
+	<pre class="language-cpp"><code>
+		int listSum(Node* p) {
+			int sum = 0;
+			while (p != 0) {
+				sum += p->data;
+				p    = p->next;
+			}
+			return sum;
+		}
+	</code></pre>
+	<p>Testing:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		struct Node {
+			int data;
+			Node* next;
+		};
+		
+		Node* newNode(int data) {
+			Node* node       = new Node;
+			      node->data = data;
+			      node->next = 0;
+			return node;
+		}
+		
+		int listSum(Node* p) {
+			int sum = 0;
+			while (p != 0) {
+				sum += p->data;
+				p    = p->next;
+			}
+			return sum;
+		}
+		
+		int main() {
+			Node* root        = 0;
+			Node* node1       = newNode(7);  // First node
+			      root        = node1;
+			Node* node2       = newNode(3);  // Second node
+			      node1->next = node2;
+			Node* node3       = newNode(5);  // Third node
+			      node2->next = node3;
+			Node* node4       = newNode(4);  // Fourth node
+			      node3->next = node4;
+		
+			Node* sumPtr = root;
+			int   sum    = listSum(sumPtr);
+		
+			std::cout << sum << std::endl;
+			
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		19
+	</code></pre>
+	<p>
+		The time complexity for this function is linear, and the space complexity is
+		constant. We're iterating through ${n}$ nodes, and the operations of
+		<var>==</var> and <var>+=</var> are basic steps. Accordingly, the function
+		has a time complexity of ${O(n).}$ With respect to space, only a single
+		function call is made, and each of the variables take a fixed amount of
+		memory. Hence, the space complexity is ${O(1).}$
+	</p>
+	<p>
+		<span class="topic">Recursive Approach.</span> The same function can be
+		implemented recursively:
+	</p>
+	<pre class="language-cpp"><code>
+		int listSum(Node* p) {
+			if (p == 0) {
+				return 0;
+			} else {
+				return listSum(p->next) + p->data;
+			}
+		}
+	</code></pre>
+	<p>
+		With the recursive approach, the time complexity is ${O(n),}$ just as we saw
+		with the iterative approach. The space complexity, however, is ${O(n),}$
+		given that ${n+1}$ calls must be made.
+	</p>
+</section>
+
+<section id="find_max">
+	<h2>Peak Finder</h2>
+	<p>
+		As we saw with arrays, a <b>peak finder</b> is an algorithm for finding the
+		maximum element in a given collection. In this case, the maximum element in
+		a linked list.
+	</p>
+	<p>
+		<strong>Procedure.</strong> Suppose ${n_0}$ is the head, and it contains the
+		peak, ${v_0,}$ in its data field. Iterating through the linked list, compare
+		${v_0}$ against ${v_1,}$ the value in the data field of the second node,
+		${n_1.}$ If ${v_0 &lt; v_1,}$ then ${n_1}$ contains the peak. Otherwise,
+		${v_0}$ is the peak, and we compare it against ${v_2,}$ the value in the
+		data field of the third node. The process until we reach the foot of the
+		list: If ${v_i &lt; v_{i+1},}$ then ${v_{i+1}}$ is the maximum element.
+		Otherwise, compare ${v_i}$ against ${v_{i+2 \ldots k}.}$
+	</p>
+	<p>Implementing this procedure:</p>
+	<pre class="language-cpp"><code>
+		int findMax(Node* p) {
+			int max = p->data;
+			while (p != 0) {
+				if (p->data > max) {
+					max = p->data;
+				} 
+				p = p->next;
+			}
+			return max;
+		}
+	</code></pre>
+	<p>For testing, let's say we had the following linked list:</p>
+	<figure>
+		<ul class="linkedlist">
+			<ul class="head">
+				<li>root</li>
+				<li>0x200</li>
+			</ul>
+			<ul>
+				<li>312</li>
+				<li>0x432</li>
+			</ul>
+			<ul>
+				<li>219</li>
+				<li>0x476</li>
+			</ul>
+			<ul>
+				<li>313</li>
+				<li>0x487</li>
+			</ul>
+			<ul>
+				<li>319</li>
+				<li>0</li>
+			</ul>
+		</ul>
+	</figure>
+	<p>
+		The diagram shows that ${319}$ is the maximum element, so we should expect
+		to see ${319}$ as the output. Testing:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		struct Node {
+			int data;
+			Node* next;
+		};
+		
+		Node* newNode(int data) {
+			Node* p       = new Node;
+						p->data = data;
+						p->next = 0;
+			return p;
+		}
+		
+		int findMax(Node* p) {
+			int max = p->data;
+			while (p != 0) {
+				if (p->data > max) {
+					max = p->data;
+				} 
+				p = p->next;
+			}
+			return max;
+		}
+		
+		int main() {
+			Node* root        = 0;
+			Node* node1       = newNode(312);
+						root        = node1;
+			Node* node2       = newNode(219);
+						node1->next = node2;
+			Node* node3       = newNode(313);
+						node2->next = node3;
+			Node* node4       = newNode(319);
+						node3->next = node4;
+		
+			Node* temp     = root;
+			int   maxValue = findMax(temp);
+		
+			std::cout &lt;&lt; maxValue &lt;&lt; std::endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		319
+	</code></pre>
+	<p>
+		Note that there are a variety of ways to implement the same function.
+		Another approach is to set the initial <var>max</var> to
+		<var><mark>INT_MIN</mark></var
+		>, the smallest possible <var>int</var> value:
+	</p>
+	<pre class="language-cpp"><code>
+		int findMax(Node* p) {
+			int max = INT_MIN;
+			while (p != 0) {
+				if (p->data > max) {
+					max = p->data;
+				} 
+				p = p->next;
+			}
+			return max;
+		}
+	</code></pre>
+	<p>
+		<span class="topic">Recursive Implementation.</span> The recursive peak
+		finder is somewhat longer:
+	</p>
+	<pre class="language-cpp"><code>
+		int findMax(Node* p) {
+			int x = 0;
+			if (p == 0) {
+				return INT_MIN;
+			} else {
+				x = findMax(p->next);
+				if (x > p->data) {
+					return x;
+				} else {
+					return p->data;
+				}
+			}
+		}
+	</code></pre>
+	<p>Of course, we can shorten it with the ternary operator:</p>
+	<pre class="language-cpp"><code>
+		int findMax(Node* p) {
+			int x = 0;
+			if (p == 0) {
+				return INT_MIN;
+			} 
+			x = findMax(p->next);
+			return x > p->data ? x : p->data;
+		}
+	</code></pre>
+</section>
+
+<section id="valley_finder">
+	<h2>Valley Finder</h2>
+	<p>
+		In contrast to peak finding, the <b>valley finder</b> is an algorithm for
+		finding the mimimum element. The implementation is similar to the peak
+		finder; the only difference is we're looking for the smallest element.
+	</p>
+	<pre class="language-cpp"><code>
+		int findMin(Node* p) {
+			int min = p->data;
+			while (p != 0) {
+				if (p->data &lt; min) {
+					min = p->data;
+				}
+				p = p->next;
+			}
+			return min;
+		}
+	</code></pre>
+	<p>Testing:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		struct Node {
+			int data;
+			Node* next;
+		};
+		
+		Node* newNode(int data) {
+			Node* node       = new Node;
+						node->data = data;
+						node->next = 0;
+			return node;
+		}
+		
+		int findMin(Node* p) {
+			int min = p->data;
+			while (p != 0) {
+				if (p->data &lt; min) {
+					min = p->data;
+				}
+				p = p->next;
+			}
+			return min;
+		}
+		
+		int main() {
+			Node* root        = 0;
+			Node* node1       = newNode(3);
+						root        = node1;
+			Node* node2       = newNode(9);
+						node1->next = node2;
+			Node* node3       = newNode(1);
+						node2->next = node3;
+			Node* node4       = newNode(7);
+						node3->next = node4;
+		
+			Node* list = root;
+		
+			int listMin = findMin(list);
+		
+			std::cout &lt;&lt; listMin &lt;&lt; std::endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+	</code></pre>
+</section>
+
+<section id="searching_linked_lists">
+	<h2>Searching a Linked List</h2>
+	<p>
+		As we saw with arrays, we can search through a linked list. The catch,
+		however, is that we cannot employ binary search. This is because with the
+		linked list, we do not have indices. There are only pointers. The only way
+		for us to know when we've reached some element is by traversing. And because
+		we have no choice but to traverse, we cannot access the
+		<q>middle node</q> in constant time. As such, binary search on a linked list
+		is no better than a linear search.
+	</p>
+	<p>That said, suppose we had the following linked list:</p>
+	<figure>
+		<ul class="linkedlist">
+			<ul class="head">
+				<li>root</li>
+				<li>0x200</li>
+			</ul>
+			<ul>
+				<li>3</li>
+				<li>0x241</li>
+			</ul>
+			<ul>
+				<li>9</li>
+				<li>0x342</li>
+			</ul>
+			<ul>
+				<li>5</li>
+				<li>0x378</li>
+			</ul>
+			<ul>
+				<li>2</li>
+				<li>0x432</li>
+			</ul>
+			<ul>
+				<li>4</li>
+				<li>0</li>
+			</ul>
+		</ul>
+	</figure>
+	<p>
+		Now suppose our query is <var>2</var>. From the linked list above, that's
+		the fourth node. Searching for our query is similar to linear searching
+		through an array &mdash; we just have to pass the value we want found, and a
+		pointer to the linked list.
+	</p>
+	<pre class="language-cpp"><code>
+		Node* linearSearch(Node* p, int query) {
+			while(p != 0) {
+				if (p->data == query) {
+					return p;
+				}
+				p = p->next;
+			}
+			return 0;
+		}
+	</code></pre>
+	<p>
+		With the implementation above, we're returning a pointer to the query if
+		it's found. Otherwise, we return <var>0</var>, in which case the pointer to
+		the query is null. This, of course, is entirely arbitrary. We could return
+		<var>true</var>, <var>false</var>, <var>1</var>, <var>0</var>, or print some
+		output to the console.
+	</p>
+	<p>Testing with the diagram above:</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		struct Node {
+			int data;
+			Node* next;
+		};
+		
+		Node* newNode(int data) {
+			Node* node = new Node;
+						node->data = data;
+						node->next = 0;
+			return node;
+		}
+		
+		Node* linearSearch(Node* p, int query) {
+			while(p != 0) {
+				if (p->data == query) {
+					return p;
+				}
+				p = p->next;
+			}
+			return 0;
+		}
+		
+		int main() {
+			Node* root        = 0;
+			Node* node1       = newNode(3);
+			      root        = node1;
+			Node* node2       = newNode(9);
+			      node1->next = node2;
+			Node* node3       = newNode(5);
+			      node2->next = node3;
+			Node* node4       = newNode(2);
+			      node3->next = node4;
+			Node* node5       = newNode(4);
+			      node4->next = node5;
+			Node* list        = root;
+			Node* query       = linearSearch(list, 2);
+		
+			std::cout &lt;&lt; query->data &lt;&lt; std::endl;
+		
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		2
+	</code></pre>
+	<p>
+		As we saw with arrays, however, we can improve linear search through
+		<i>transposition</i> or <i>move-to-head</i>. Recall that with transposition,
+		whenever we search for a particular element, the element moves closer to the
+		beginning. For example:
+	</p>
+	<figure>
+		<table class="alg">
+			<thead>
+				<th>Search Attempt</th>
+				<th>Query</th>
+				<th>List State</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="2">Initial:</td>
+					<td>
+						<ul class="linkedlist">
+							<ul class="head">
+								<li>root</li>
+								<li>0x150</li>
+							</ul>
+							<ul>
+								<li>3</li>
+								<li>0x350</li>
+							</ul>
+							<ul>
+								<li>7</li>
+								<li>0x366</li>
+							</ul>
+							<ul>
+								<li>4</li>
+								<li>0x432</li>
+							</ul>
+							<ul>
+								<li style="background-color: rgb(252, 217, 255)">8</li>
+								<li style="background-color: rgb(253, 235, 255)">0</li>
+							</ul>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>8</td>
+					<td>
+						<ul class="linkedlist">
+							<ul class="head">
+								<li>root</li>
+								<li>0x150</li>
+							</ul>
+							<ul>
+								<li>3</li>
+								<li>0x350</li>
+							</ul>
+							<ul>
+								<li>7</li>
+								<li>0x366</li>
+							</ul>
+							<ul>
+								<li style="background-color: rgb(252, 217, 255)">8</li>
+								<li style="background-color: rgb(253, 235, 255)">0x432</li>
+							</ul>
+							<ul>
+								<li>4</li>
+								<li>0</li>
+							</ul>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>8</td>
+					<td>
+						<ul class="linkedlist">
+							<ul class="head">
+								<li>root</li>
+								<li>0x150</li>
+							</ul>
+							<ul>
+								<li>3</li>
+								<li>0x350</li>
+							</ul>
+							<ul>
+								<li style="background-color: rgb(252, 217, 255)">8</li>
+								<li style="background-color: rgb(253, 235, 255)">0x366</li>
+							</ul>
+							<ul>
+								<li>7</li>
+								<li>0x432</li>
+							</ul>
+							<ul>
+								<li>4</li>
+								<li>0</li>
+							</ul>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>8</td>
+					<td>
+						<ul class="linkedlist">
+							<ul class="head">
+								<li>root</li>
+								<li>0x150</li>
+							</ul>
+							<ul>
+								<li style="background-color: rgb(252, 217, 255)">8</li>
+								<li style="background-color: rgb(253, 235, 255)">0x350</li>
+							</ul>
+							<ul>
+								<li>3</li>
+								<li>0x366</li>
+							</ul>
+							<ul>
+								<li>7</li>
+								<li>0x432</li>
+							</ul>
+							<ul>
+								<li>4</li>
+								<li>0</li>
+							</ul>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		And with move-to-head, a single search moves the element immediately to the
+		head:
+	</p>
+	<figure>
+		<table class="alg">
+			<thead>
+				<th>Search Attempt</th>
+				<th>Query</th>
+				<th>List State</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="2">Initial:</td>
+					<td>
+						<ul class="linkedlist">
+							<ul class="head">
+								<li>root</li>
+								<li>0x150</li>
+							</ul>
+							<ul>
+								<li>3</li>
+								<li>0x350</li>
+							</ul>
+							<ul>
+								<li>7</li>
+								<li>0x366</li>
+							</ul>
+							<ul>
+								<li>4</li>
+								<li>0x432</li>
+							</ul>
+							<ul>
+								<li style="background-color: rgb(252, 217, 255)">8</li>
+								<li style="background-color: rgb(253, 235, 255)">0</li>
+							</ul>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>8</td>
+					<td>
+						<ul class="linkedlist">
+							<ul class="head">
+								<li>root</li>
+								<li>0x150</li>
+							</ul>
+							<ul>
+								<li style="background-color: rgb(252, 217, 255)">8</li>
+								<li style="background-color: rgb(253, 235, 255)">0x350</li>
+							</ul>
+							<ul>
+								<li>3</li>
+								<li>0x366</li>
+							</ul>
+							<ul>
+								<li>7</li>
+								<li>0x432</li>
+							</ul>
+							<ul>
+								<li>4</li>
+								<li>0</li>
+							</ul>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		It turns out that transposition isn't a very good idea, but before we
+		address why, let's consider move-to-head, the preferred approach with linked
+		lists.
+	</p>
+	<p>
+		<span class="topic">Recursive Implementation.</span> We could've also
+		implemented the linear search function recursively:
+	</p>
+	<pre class="language-cpp"><code>
+		Node* recursiveLinearSearch(Node* p, int query) {
+			if (p == 0) {
+				return 0;
+			} else if (query == p->data) {
+				return p;
+			} else {
+				return recursiveLinearSearch(p->next, query);
+			}
+		}
+	</code></pre>
+</section>
+
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="../../../static/numerc/d3demo.js"></script>
+<script src="../../../static/numerc/linkedList.js"></script>
 {% endblock %}

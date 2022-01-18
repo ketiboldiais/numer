@@ -107,6 +107,173 @@
 			<li>A declaration</li>
 		</ol>
 	</figure>
-	<p>That's it. Nothing else.</p>
+	<p>
+		An <b>expressiong</b> is a sequence is a sequence of symbols that evaluates
+		to a result. A <b>declaration</b> is a top-level binding that allows us to
+		<i>name</i> expressions. Names, or <i>identifiers</i>, can then be used
+		later in our programs to refer to their associated expressions.
+	</p>
+	<p>
+		Expressions are in <b>normal form</b> when no further evaluation steps can
+		be taken. For example, the expression <var>1</var> is in normal form. The
+		expression <var>2 + 2</var> is not &mdash; its normal form is <var>4</var>.
+		An expression like <var>2 + 2</var> is one where further evaluation steps
+		can made. Such expressions are said to <b>redexes</b> (<q
+			>reducible expressions</q
+		>).<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			The process of evaluating an expression to normal form has many names
+			&mdash; <q>normalizing,</q> <q>executing,</q> <q>reducing</q>,
+			<q>evaluating,</q> &mdash; they all refer to the process of taking a redex
+			and boiling it down to a normal expression.
+		</p>
+	</div>
+</section>
+
+<section id="functions">
+	<h2>Functions</h2>
+	<p>
+		The most basic unit in a Haskell program is the <b>function</b> &mdash; an
+		expression which, when applied to an argument, returns a result. Unlike
+		other languages, functions in Haskell <em>always</em> return the same values
+		for a given input. No side effects here. Moreover, Haskell functions only
+		take <em>one</em> argument, and only return <em>one</em> result.
+	</p>
+	<p>
+		Here's a simple function in a Haskell source file, call it
+		<var>foo.hs</var>:
+	</p>
+	<pre class="language-haskell"><code>
+		double x = x * 2;
+	</code></pre>
+	<p>Let's dissect the line above. First:</p>
+	<pre class="language-pseudo"><code>
+		<span class="redText">double</span> x = x * 2
+	</code></pre>
+	<p>
+		The symbol <var>double</var> is the function's name. We call this a
+		<b>function declaration</b>. Importantly, function declarations and variable
+		names in Haskell must begin with a lowercase letter.<sup></sup>
+	</p>
+	<div class="note">
+		<p>In Haskell, the naming convention is <i>camelCasing</i>.</p>
+	</div>
+	<p>Next:</p>
+	<pre class="language-pseudo"><code>
+		double <span class="redText">x</span> = x * 2
+	</code></pre>
+	<p>
+		This is the function's <b>parameter</b>. In terms of lambda calculus, the
+		function's parameter corresponds to a lambda's head. It binds the variables
+		that appear in the body expression.
+	</p>
+	<p>Then we have the equal sign:</p>
+	<pre class="language-pseudo"><code>
+		double x <span class="redText">=</span> x * 2
+	</code></pre>
+	<p>
+		The equal sign has a special meaning in Haskell. It is dedicated to
+		defining, or declaring, values and functions. It does <em>not</em> denote
+		equality.
+	</p>
+	<p>Finally, we have the function's <b>body</b>:</p>
+	<pre class="language-javascript"><code>
+		double x = <span class="redText">x * 2</span>
+	</code></pre>
+	<p>
+		When <var>double</var> applies to argument, the argument is bound to
+		<var>x.</var> Once bound, the function's body is normalized with that
+		binding.
+	</p>
+	<p>That said, let's use our function:</p>
+	<pre class="language-bash"><code>
+		$ ghci
+		GHCi, version 8.10.6: https://www.haskell.org/ghc/  :? for help
+		$ :l foo.hs
+		[1 of 1] Compiling Main             ( foo.hs, interpreted )
+		Ok, one module loaded.
+		*Main> double 3
+		6
+		*Main> double 2
+		4
+		*Main> double (1+3)
+		8
+		*Main> double (double 3)
+		12
+	</code></pre>
+	<p>
+		Above, we used the <var><mark>:l</mark></var> command to load our
+		<var>foo.hs</var> file into the REPL. Once loaded, we can call the function
+		with the relevant arguments. Notice how we can pass expressions to the
+		functions. We can also pass functions as arguments to the functions. Very
+		cool.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			After making changes to the source code file, we can relad the same file
+			by running <var><mark>:r</mark></var
+			>.
+		</p>
+	</div>
+</section>
+
+<section id="evaluation">
+	<h2>Evaluation</h2>
+	<p>
+		In Haskell, values are expressions. But, they're expressions in irreducible
+		form. For example, <var>179</var> is an expression, but it cannot be reduced
+		any further. In contrast, a function call is an expression, but it is
+		reducible.
+	</p>
+	<p>
+		When an expression can no longer be reduced, we say that the expression is
+		<b>irreducible</b>. In Haskell, expressions are reduced to irreducible form
+		<em>only if</em> it's required. In other words, if Haskell can accomplish a
+		task without having to reduce a particular expression, it will not perform
+		the reduction. This is called <b>lazy evaluation</b>, or more formally,
+		<b>nonstrict evaluation</b>. Instead of evaluating every expression,
+		Haskell's defult is to only evaluate to <b>weak head normal form (WHNF)</b>.
+	</p>
+</section>
+
+<section id="variables">
+	<h2>The Variable: A Declaration of Value</h2>
+	<p>
+		To declare variables in Haskell, we use the keyword
+		<var><mark>let</mark></var
+		>. To illustrate, let's write some code in a source code file called
+		<var>lab.hs</var>:
+	</p>
+	<pre class="language-haskell"><code>
+		module Lab where
+		x = 10 * 5 + y
+		result = x * 5
+		y = 5
+	</code></pre>
+	<pre class="language-bash"><code>
+		$ ghci
+		$ :l lab.hs
+		*Lab> x
+		55
+	</code></pre>
+	<p>A few things to note about the code we've written. First, the line:</p>
+	<pre class="language-pseudo"><code>
+		module Lab where
+	</code></pre>
+	<p>
+		This is <b>module name declaration</b>. Writing this line allows us to the
+		contents of <var>lab.hs</var> into other files. It's not of much use at the
+		moment, but as we work on larger and more complex programs, modularization
+		is everything.<sup></sup>
+	</p>
+	<div class="note">
+		<p>In Haskell, module names are always capitalized.</p>
+	</div>
+</section>
+<section id="arithmetic_operations">
+	<h2>Arithmetic Operations</h2>
+	<p></p>
 </section>
 {% endblock %}

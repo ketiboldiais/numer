@@ -4861,4 +4861,243 @@
 		</code></pre>
 	</section>
 </section>
+
+<section id="shadows">
+	<h2>Shadows</h2>
+	<p>
+		Once we have lights, we can begin working with shadows.<sup></sup> When we
+		instantiate and add a light to our scene, we have, by default, a
+		<b>core shadow</b>. This is the shadow behind an object's light-exposed
+		face. However, we may also want <b>drop shadows</b> &mdash; shadows
+		indicating the mesh's silhouette on the plane.
+	</p>
+	<div class="note">
+		<p>
+			Shadow rendering has traditionally been one of the most challenging
+			domains in graphics programming. This is because shadows are dynamic in a
+			multitude of parts &mdash; they decay, vary in intensity and color,
+			elongate or shrink, and reorient their positions in response to light. The
+			challenging aspect is not so much how many parts there are, but more so
+			how to achieve the shadow's dynamic nature while maintaining performance.
+		</p>
+	</div>
+	<p>
+		Before implement shadows, we must understand at a high level how shadows
+		work in ThreeJS. When a single render is performed, ThreeJS renders each
+		light that supports shadows. We can think of each rendering as if it were a
+		camera &mdash; each rendering simulates what the light <q>sees.</q> As the
+		lights render, the mesh's materials are replaced with the
+		<var>MeshDepthMaterial</var>. The light renderings themselves are stored as
+		textures called <b>shadow maps</b>. These shadow maps are then used on all
+		the materials needing shadows and are projected on to the geometry.
+	</p>
+	<p>
+		<span class="topic">Activating Shadows.</span> To work with shadows, we must
+		first activate the shadows. As we can tell, shadows are not activated by
+		default for performance reasons. To activate:
+	</p>
+	<pre class="language-javascript"><code>
+		// activate shadow map
+		renderer.shadowMap.enabled = true;
+	</code></pre>
+	<p>
+		<span class="topic">Casting or Receiving?</span>
+		Once we've enabled shadows, we must go through each of our scene's objects
+		and ask the following questions:
+	</p>
+	<figure>
+		<div>
+			<ol>
+				<li>Does this mesh <em>cast</em> a shadow?</li>
+				<li>Does this mesh <em>receive</em> a shadow?</li>
+			</ol>
+		</div>
+	</figure>
+	<p>
+		If the answer to the first question is yes, then we must set the
+		<var><mark>castShadow</mark></var> property on the object to
+		<var>true</var>. If the answer to the second question is yes, then we must
+		set the <var><mark>receiveShadow</mark></var> property to <var>true</var>.
+	</p>
+	<p>
+		For example, if we had a sphere on a plane, we might want the sphere to cast
+		a shadow on to the plane:
+	</p>
+	<pre class="language-javascript"><code>
+		sphere.castShadow = true;
+		plane.receiveShadow = true;
+	</code></pre>
+	<p>
+		<span class="topic">Activate Shadows for the Lights.</span> The final step
+		is to active the shadows for the lights. In ThreeJS, there are three types
+		of lights that support shadows:
+	</p>
+	<figure>
+		<div>
+			<ol>
+				<li>
+					<var><mark>PointLight</mark></var>
+				</li>
+				<li>
+					<var><mark>DirectionalLight</mark></var>
+				</li>
+				<li>
+					<var><mark>SpotLight</mark></var>
+				</li>
+			</ol>
+		</div>
+	</figure>
+	<p>For example, let's consider the <var>DirectionalLight</var>.</p>
+	<pre class="language-javascript"><code>
+		directionalLight.castShadow = true;
+	</code></pre>
+	<p>Now we've got a shadow. The next step is to <i>optimize</i>.</p>
+
+	<section id="optimization">
+		<h3>Optimization</h3>
+		<p>
+			When we first render a shadow, we might notice some pixelation along the
+			shadow's edges. This is because the shadow map has both a width and a
+			height. Thus, if the shadow map is disproportionate to our other
+			rendering's widths and heights, we will see distortion. Accordingly, we
+			must modify the shadow map's width and height through each light's
+			<var><mark>shadow</mark></var> property.
+		</p>
+		<p>
+			Executing <var>console.log(directionalLight.shadow)</var>, we would see a
+			multitude of properties and methods. Among them is the property
+			<var><mark>map</mark></var> (omitted properties and methods indicated with
+			a vertical ellipses):
+		</p>
+		<pre class="language-bash"><code>
+			DirectionalLightShadow
+				&vellip;
+				map: WebGLRenderTarget
+					&vellip;
+					height: 512
+					&vellip;
+					width: 512
+					&vellip;
+				&vellip;
+				mapSize: Vector2 {x: 512, y: 512}
+				&vellip;
+		</code></pre>
+		<p>
+			Examining these values, we can infer that the shadow map size is ${512
+			\times 512.}$ We can change these values for more a more detailed shadow
+			rendering. We can do so by setting the <var>width</var> and
+			<var>height</var> properties:
+		</p>
+		<pre class="language-javascript"><code>
+			directionalLight.shadow.mapSize.width = 1024; 
+			directionalLight.shadow.mapSize.height = 1024; 
+		</code></pre>
+		<p>
+			Or we can do so by setting the <var>x</var> and <var>y</var> properties:
+		</p>
+		<pre class="language-javascript"><code>
+			directionalLight.shadow.mapSize.x = 1024; 
+			directionalLight.shadow.mapSize.y = 1024; 
+		</code></pre>
+		<p>
+			Changing the values, our shadow is now more detailed. Given that the
+			properties inherit from <var>Vector2</var>, always keep the values to
+			powers of two. Otherwise, ThreeJS must perform more computations; that's
+			the last thing we need with shadow optimizations.
+		</p>
+		<p>
+			As a warning: we <em>must</em> be careful with shadow map changes. Too
+			large of a shadow map, and we're consuming enormous resources. We gain
+			nothing from a frozen rendering.
+		</p>
+	</section>
+	<section id="debugging">
+		<h3>Debugging Shadows</h3>
+		<p>
+			Working with shadows, it's almost always helpful to have a
+			<var><mark>CamerHelper</mark></var
+			>, found in a shadow-supporting light's <var>shadow</var> property:
+		</p>
+		<pre class="language-javascript"><code>
+			const directionalLightCameraHelper = new THREE.CameraHelper(
+				directionalLight.shadow.camera
+			);
+			scene.add(directionalLightCameraHelper);
+		</code></pre>
+		<p>
+			Once we have a camera helper, we can begin manipulating the shadow's
+			camera. In doing so, we change the size of the shadow. As with any camera,
+			we can set the <var>near</var>, <var>far</var>, <var>top</var>,
+			<var>right</var>, <var>bottom</var>, and <var>left</var> properties for
+			positioning:
+		</p>
+		<pre class="language-javascript"><code>
+			directionalLight.shadow.camera.near   = 1;
+			directionalLight.shadow.camera.far    = 6;
+			directionalLight.shadow.camera.top    = 2;
+			directionalLight.shadow.camera.right  = 2;
+			directionalLight.shadow.camera.bottom = -2;
+			directionalLight.shadow.camera.left   = -2;
+		</code></pre>
+		<p>
+			Given that the camera helper inherits from <var>Object3D</var>, we can
+			turn it off once we're done by setting its <var>visible</var> property to
+			<var>false</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			directionalLightCameraHelper.visible = false;
+		</code></pre>
+	</section>
+	<section id="controlling_shadow_blur">
+		<h3>Controlling a Shadow's Blur</h3>
+		<p>
+			By default, a shadow will look have fine cutoffs. We can blur the shadow's
+			boundaries &mdash; a more natural rendering &mdash; by manipulating the
+			shadow's <var><mark>radius</mark></var> property:
+		</p>
+		<pre class="language-javascript"><code>
+			directionalLight.shadow.radius = 10;
+		</code></pre>
+		<p>
+			Note that this isn't a directional blur. It will look odd at different
+			angles. Achieving a more natural effect requires manipulating the radius
+			value.
+		</p>
+	</section>
+	<section id="shadow_map_algorithm">
+		<h3>The Shadow Map Algorithm</h3>
+		<p>There are four different algorithms we can use to apply shadow maps:</p>
+		<ul>
+			<li>
+				<var><mark>THREE.BasicShadowMap</mark></var> &mdash; This is a very
+				performant algorith, but the quality is poor.
+			</li>
+			<li>
+				<var><mark>THREE.PCFShadowMap</mark></var> &mdash; This is the default
+				algorithm. It's less performant than <var>THREE.BasicShadowMap</var>,
+				but the edges are smoother.
+			</li>
+			<li>
+				<var><mark>THREE.PCFSoftShadowMap</mark></var> &mdash; Less performant
+				than <var>THREE.PCFShadowMap</var>, but the edges are softer.
+			</li>
+			<li>
+				<var><mark>THREE.VSMShadowMap</mark></var> &mdash; The most costly of
+				the algorithms, has more constraints, and is still largely experimental.
+				This can lead to unexpected results.
+			</li>
+		</ul>
+		<p>
+			To use one of these algorithms, we must update the renderer's
+			<var>shadowMap</var> property:
+		</p>
+		<pre class="language-javascript"><code>
+			renderer.shadowMap.type = THREE.PCFShadowMap;
+		</code></pre>
+		<p>
+			With <var>PCFShadowMap</var>, we lose access to the
+			<var>.radius</var> property we saw earlier.
+		</p>
+	</section>
+</section>
 {% endblock %}

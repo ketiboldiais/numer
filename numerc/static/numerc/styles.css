@@ -99,6 +99,19 @@
 			--HaskellOperator: lavender;
 			--HaskellLiteral: rgb(36, 133, 11);
 			--HaskellFunction: rgb(0, 90, 192);
+		/* Haskell Colors */
+			--rustBackground: rgb(253, 252, 242);
+			--rustPrimary: rgb(83, 49, 2);
+			--rustKeyword: rgb(230, 26, 26);
+			--rustComment: rgb(182, 148, 103);
+			--rustOperator: lavender;
+			--rustLiteral: rgb(206, 117, 1);
+			--rustFunction: rgb(119, 86, 35);
+			--rustFunctionDefinition: rgb(4, 156, 167);
+		/* C++ Colors */
+			--CPPOperator: rgb(255 181 68);
+			--CPPClassName: rgb(180 251 69);
+			--CPPConditional: rgb(255, 252, 65);
 		--codeWhite: #f0fbff;
 		--codeBlackText: rgb(80, 80, 80);
 		--codeBlackBG: rgb(32, 36, 37);
@@ -419,7 +432,7 @@
 	figcaption {
 		counter-increment: fig;
 		font-size: 0.7rem;
-		margin: 2vh auto;
+		margin: 1% auto;
 		padding: 0;
 		font-family: var(--serif);
 		text-align: center;
@@ -468,7 +481,10 @@
 		padding: 0;
 		margin: 0;
 		margin-top: 1em;
-		/* font-family: var(--sansSerifTitle); */
+	}
+	h1 var, h2 var, h3 var, h4 var, h5 var, h6 var, span.topic var {
+		font-family: monospace, 'Courier New', Courier;
+		font-size: 1em;
 	}
 	h1 {
 		font-size: 2.5em;
@@ -1202,9 +1218,10 @@
 	}
 	table.array td, table.array th {
 		font-size: 0.7rem;
-		font-family: "CMU";
+		font-family: "Fira";
+		line-height: 0;
 		text-align: center;
-		padding: 0.1em 0.6em;
+		padding: 0.2rem 0.3rem;
 	}
 	table.array td {border: none;}
 	table.array tr:nth-child(1) td + td,
@@ -1220,16 +1237,16 @@
 	}
 	table.array tr td:first-child,
 	table.string tr td:first-child {
-		font-size: 0.6rem;
+		font-size: 0.68rem;
 		border: none;
 	}
 	table.array tr td:nth-child(1) * {
-		color: rgb(139, 194, 212);
+		color: var(--lightGrey);
 		padding: 0;
 	}
 	table.array tr:nth-child(2) td,
 	table.string tr:nth-child(2) td {
-		color: rgb(185, 185, 185);
+		color: var(--lightGrey);
 	}
 /* Char Array */
 	table.string td {
@@ -1417,14 +1434,17 @@
 		font-size: 0.85rem;
 	}
 	div.rule {
+		border: thin dashed var(--lightGrey);
+		width: 80%;
+		padding: 2%;
 		margin: 0 auto;
 	}
 	div.rule p {
-		margin-top: 0; 
-		margin-bottom: 0.4rem;
+		padding: 0;
+		margin: 0;
 	}
-	div.rule p:last-child {
-		margin-bottom: 0;
+	div.rule span.topic {
+		margin-top: 0;
 	}
 	div.rule ul.abs-code, 
 	ul.abs-code ul {
@@ -1487,6 +1507,18 @@
 		margin: 0;
 		padding: 0 0 0 4vw;
 	}
+/* Comparison Div - use to compare code */
+	div.compare {
+		display: flex;
+		flex-direction: row;
+	}
+	div.compare figure {
+		margin: 0 2px;
+		flex-grow: 1;
+	}
+	div.compare figure pre {
+		height: 100%;
+	}
 /* Aside */
 	aside {
 		float: right;
@@ -1528,14 +1560,6 @@
 	div.summary ul {
 		padding: 0 0.8em;
 	}
-/* Split Column Layout */
-	div.compare {
-		counter-reset: exnum;
-	}
-	div.compare span.exh::after {
-		counter-increment: exnum;
-		content: counter(exnum);
-	}
 /* Global Code Styles */
 	code, pre {
 		width: auto;
@@ -1562,7 +1586,6 @@
 		padding: 0.5rem 0.6rem;
 		overflow: auto;
 	}
-	div.compare > div > pre.language-pseudo {width: fit-content; border: none;}
 /* Language - Pseudo */
 	pre[class*="language-pseudo"] {
 		padding: 0.8em;
@@ -2058,7 +2081,20 @@
 	code[class*="language-cpp"] >.token.inserted {
 		color: hsl(103, 100%, 72%); /* #8F9D6A */
 	}
-	code[class*="language-cpp"] >.token.operator {color: rgb(233, 68, 255);}
+	code[class*="language-cpp"] >.token.operator {
+		color: var(--CPPOperator);
+	}
+	code[class*="language-cpp"]>.token.class-name {
+    color: var(--CPPClassName);
+	}
+	code[class*="language-cpp"] .token.directive-hash {
+    color: rgb(240 153 255);
+	}
+	code[class*="language-cpp"] .token.keyword-else, 
+	code[class*="language-cpp"] .token.keyword-if {
+		color: var(--CPPConditional);
+	}
+	
 	code[class*="language-cpp"] >.token.atrule {
 		color: hsl(218, 22%, 55%); /* #7587A6 */
 	}
@@ -2524,6 +2560,95 @@
 	code[class*="language-haskell"] > .token.inserted {
 		color: green;
 	}
+/* Rust */
+	pre[class*="language-rust"],
+	pre[class*="language-rust"] code {
+		color: var(--rustPrimary);
+		background-color: var(--rustBackground);
+	}
+	pre[class*="language-rust"] {
+		border-top: solid thin var(--lightGrey);
+		border-bottom: solid thin var(--lightGrey);
+	}
+	
+	code[class*="language-rust"] > .token.comment,
+	code[class*="language-rust"] > .token.block-comment,
+	code[class*="language-rust"] > .token.prolog,
+	code[class*="language-rust"] > .token.doctype,
+	code[class*="language-rust"] > .token.cdata {
+		color: var(--rustComment);
+	}
+	
+	code[class*="language-rust"] > .token.punctuation {
+		color: var(--rustPrimary);
+	}
+	
+	code[class*="language-rust"] > .token.tag,
+	code[class*="language-rust"] > .token.attr-name,
+	code[class*="language-rust"] > .token.namespace,
+	code[class*="language-rust"] > .token.deleted {
+		color: var(--rustPrimary);
+	}
+	
+	code[class*="language-rust"] > .token.boolean,
+	code[class*="language-rust"] > .token.string,
+	code[class*="language-rust"] > .token.char,
+	code[class*="language-rust"] > .token.number {
+		color: var(--rustLiteral);
+	}
+	code[class*="language-rust"] > .token.function {
+		color: var(--rustFunction);
+	}
+
+	code[class*="language-rust"] > .token.function-definition.function {
+		color: var(--rustFunctionDefinition);
+	}
+	
+	code[class*="language-rust"] > .token.property,
+	code[class*="language-rust"] > .token.class-name,
+	code[class*="language-rust"] > .token.constant,
+	code[class*="language-rust"] > .token.symbol {
+		color: var(--rustPrimary);
+	}
+	
+	code[class*="language-rust"] > .token.selector,
+	code[class*="language-rust"] > .token.operator,
+	code[class*="language-rust"] > .token.important,
+	code[class*="language-rust"] > .token.atrule,
+	code[class*="language-rust"] > .token.keyword {
+		color: var(--rustKeyword);
+	}
+	
+	code[class*="language-rust"] > .token.string-interpolation {color: #f8c555}
+	code[class*="language-rust"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	
+	
+	code[class*="language-rust"] > .token.attr-value,
+	code[class*="language-rust"] > .token.regex,
+	code[class*="language-rust"] > .token.variable {
+		color: rgb(199,255,145);
+	}
+	
+	code[class*="language-rust"] > .token.entity,
+	code[class*="language-rust"] > .token.url {
+		color: #6fe7e5;
+	}
+	
+	code[class*="language-rust"] > .token.important,
+	code[class*="language-rust"] > .token.bold {
+		font-weight: bold;
+	}
+	code[class*="language-rust"] > .token.italic {
+		font-style: italic;
+	}
+	
+	code[class*="language-rust"] > .token.entity {
+		cursor: help;
+	}
+	
+	code[class*="language-rust"] > .token.inserted {
+		color: green;
+	}
 /* Language - HTML */
 	code[class*="language-html"],
 	pre[class*="language-html"] {
@@ -2637,7 +2762,44 @@
 	}
 	div.demo div.implementation {display: none;}
 	div.demo div.illustrate {display: block;}
-
+/* Linked List */
+	ul.linkedlist {
+		display: flex;
+		font-family: "Fira";
+		font-size: 0.65rem;
+		flex-direction: row;
+		padding: 0;
+		margin: 0;
+	}
+	ul.linkedlist, ul.linkedlist ul {
+		padding: 0;
+		margin: 0;
+	}
+	ul.linkedlist li {
+		padding: 3px 0.4em;
+		text-align: center;
+		list-style: none;
+	}
+	ul.linkedlist ul {
+		height: fit-content;
+		width: fit-content;
+		display: flex;
+	}
+	ul.linkedlist ul li:nth-child(1) {
+		border: solid thin var(--lightGrey);
+		border-right: none;
+		background-color: var(--beige);
+	}
+	ul.linkedlist ul li:nth-child(2) {
+		border: solid thin var(--lightGrey);
+		background-color: var(--ruledListHeader);
+	}
+	ul.linkedlist ul.head li:first-child {
+		background-color: lightcyan;
+	}
+	ul.linkedlist ul.head li:nth-child(2) {
+		background-color: var(--codeWhite);
+	}
 /* Code annotation styling */
 	span.code-annotation {
 		font-size: 0.8rem;
@@ -2743,7 +2905,7 @@
 				display: block;
 				float: right;
 				clear: right;
-				margin: 0 -65% 0 0;
+				margin: 1% -65% 1% 0;
 				width: 60%;
 				position: relative;
 			}
@@ -2810,7 +2972,6 @@
 			}
 		}
 		@media (max-width: 900px) {
-			div.compare {display: block;}
 			.grid {
 				display: block;
 			}

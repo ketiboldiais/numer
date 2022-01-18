@@ -2488,6 +2488,133 @@
 	<figure class="d3Demo" id="demo21"></figure>
 </section>
 
+<section id="updates_transitions_and_motions">
+	<h2>Dynamic Datasets</h2>
+	<p>
+		In our previous examples, we've primarily used
+		<i>static datasets</i> &mdash; data sets that do not change. Many data sets,
+		however, are <i>dynamic datasets</i> &mdash; data sets that change in
+		response to some dynamic variable (e.g., time, user input, size, and so on).
+		In D3, we handle dynamic data sets with <b>updates</b> and
+		<b>transitions</b>.
+	</p>
+	<p>To illustrate, we'll create a bar chart. The code:</p>
+	<pre class="language-javascript"><code>
+		// Add a new SVG
+		const barGraph      = body.append("svg");
+
+		// Sizes for the SVG/bar graph
+		const barGraphSizes = {
+			width : 400,
+			height: 250,
+		};
+
+		// Colors for bar graph
+		const barGraphColors = {
+			textColor : "firebrick",
+			darkRed   : "salmon",
+			dynamicRed: (d) =>
+				`rgba(255, ${Math.floor(240 - d)}, ${Math.floor(190 + d)}, 0.7)`,
+		};
+
+		// The dataset
+		const dataset = [
+			5, 10, 13, 19, 
+			21, 25, 22, 18, 
+			15, 13, 11, 12, 
+			15, 20, 18, 17, 
+			16, 18, 23, 25,
+		];
+
+		// The scales
+		const xScale = d3
+			.scaleBand()
+			.domain(d3.range(dataset.length))
+			.rangeRound([0, barGraphSizes.width])
+			.paddingInner(0.2);
+		const yScale = d3
+			.scaleLinear()
+			.domain([0, d3.max(dataset)])
+			.range([0, barGraphSizes.height]);
+
+		// Set SVG width and height
+		const svg = barGraph
+			.attr("width", barGraphSizes.width)
+			.attr("height", barGraphSizes.height);
+
+		// Create bars
+		svg
+			.selectAll("rect")
+			.data(dataset)
+			.enter()
+			.append("rect")
+			.attr("x", (d, i) => xScale(i))
+			.attr("y", (d) => barGraphSizes.height - yScale(d))
+			.attr("width", xScale.bandwidth())
+			.attr("height", (d) => yScale(d))
+			.attr("fill", (d) => barGraphColors.dynamicRed(d))
+			.attr("stroke", barGraphColors.darkRed);
+
+		// Create labels
+		svg
+			.selectAll("text")
+			.data(dataset)
+			.enter()
+			.append("text")
+			.text((d) => d)
+			.attr("text-anchor", "middle")
+			.attr("x", (d, i) => xScale(i) + xScale.bandwidth() / 2)
+			.attr("y", (d) => barGraphSizes.height - yScale(d) + 14)
+			.attr("font-family", "sans-serif")
+			.attr("font-size", "10px")
+			.attr("fill", barGraphColors.textColor);
+	</code></pre>
+	<p>
+		Not much is new with the code above, but there are a few new methods we're
+		using. First, notice that with the <var>xScale</var>, we're using the
+		<var><mark>d3.scaleBand()</mark></var> method. This method constructs a
+		scale, just as we saw with the <var>linearScale()</var>. The difference,
+		however, is that it's an <b>ordinal scale</b>.
+	</p>
+	<p>
+		Ordinal scales are used with ordinal data &mdash; data that can be
+		classified into discrete categories with an inherent order. For example,
+		letter grades (A+, A, A-, B+, B, B-, etc.), preferences (strongly agree,
+		agree, disagree, strongly disagree, etc.), or assigned sex (male, female,
+		N/A). Thus, if we call <var>d3.scaleBand()</var> on the domain
+		<var>[1, 2, 3]</var>, D3 sets up a scale where each axis unit is
+		evenly-spaced to accomodate for 3 data points.
+	</p>
+	<p>
+		But wait, our data set's values <em>isn't</em> inherently ordered. They're
+		all over the place. This is where this line comes in:
+	</p>
+	<pre class="language-javascript"><code>
+		.domain(d3.range(dataset.length))
+	</code></pre>
+	<p>
+		The <var><mark>d3.range()</mark></var> method takes an integer number (in
+		this case, <var>dataset.length</var>), and produces an array containing the
+		elements <var>0</var>, <var>1</var>, <var>2</var>, <var>3</var>, all the way
+		up to <var>dataset.length</var>. Thus, when we call
+		<var>d3.scaleBand()</var> on our specified domain, D3 knows to create a
+		scale where each axis unit is evenly spaced (here, for the
+		<var>xScale</var>).
+	</p>
+	<p>After calling <var>domain()</var>, we then called:</p>
+	<pre class="language-javascript"><code>
+		.rangeRound([0, barGraphSizes.width])
+	</code></pre>
+	<p>
+		This line ensures that <var>.scaleBand()</var>'s outputs are rounded,
+		preventing any strange pixel values like <var>11.89</var>. Finally, we
+		called the method <var><mark>.paddingInner()</mark></var> on the scale. This
+		creates some padding between each unit along the <var>xScale</var>.
+	</p>
+	<p>With all of that, we have the following render:</p>
+	<figure class="d3Demo" id="demo22"></figure>
+</section>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.js"></script>
 <script src="../../../static/numerc/d3demo.js"></script>
 {% endblock %}

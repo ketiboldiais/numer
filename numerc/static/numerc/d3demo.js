@@ -347,7 +347,7 @@ demo15
 		return d[1];
 	})
 	.attr("r", function (d) {
-		return Math.sqrt(scatterDimensions.height - d[1]);
+		return Math.sqrt(scatterDimensions.height);
 	})
 	.attr("fill", scatterColors.lightBlue)
 	.attr("stroke", scatterColors.darkBlue);
@@ -369,7 +369,7 @@ demo16
 		return d[1];
 	})
 	.attr("r", function (d) {
-		return Math.sqrt(scatterDimensions.height - d[1]);
+		return Math.sqrt(scatterDimensions.height);
 	})
 	.attr("fill", scatterColors.lightBlue)
 	.attr("stroke", scatterColors.darkBlue);
@@ -602,6 +602,62 @@ demo21
 	.call(demo21yAxis);
 
 /* -------------------------------------------------------------------------- */
-/*                              Linked List Demo                              */
+/*                              Transition Demos                              */
 /* -------------------------------------------------------------------------- */
+/* --------------------------------- Demo 22 -------------------------------- */
+const demo22 = body.selectAll("figure#demo22").append("svg");
+const sizesDemo22 = {
+	width: 400,
+	height: 250,
+};
+const colors22 = {
+	textColor: "firebrick",
+	darkRed: "salmon",
+	dynamicRed: (d) =>
+		`rgba(255, ${Math.floor(240 - d)}, ${Math.floor(190 + d)}, 0.7)`,
+};
+const dataSet22 = [
+	5, 10, 13, 19, 21, 25, 22, 18, 15, 13, 11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
+];
+const xScale22 = d3
+	.scaleBand()
+	.domain(d3.range(dataSet22.length))
+	.rangeRound([0, sizesDemo22.width])
+	.paddingInner(0.2);
 
+const yScale22 = d3
+	.scaleLinear()
+	.domain([0, d3.max(dataSet22)])
+	.range([0, sizesDemo22.height]);
+
+// Set SVG width and height
+const demo22SVG = demo22
+	.attr("width", sizesDemo22.width)
+	.attr("height", sizesDemo22.height);
+
+// Create bars
+demo22SVG
+	.selectAll("rect")
+	.data(dataSet22)
+	.enter()
+	.append("rect")
+	.attr("x", (d, i) => xScale22(i))
+	.attr("y", (d) => sizesDemo22.height - yScale22(d))
+	.attr("width", xScale22.bandwidth())
+	.attr("height", (d) => yScale22(d))
+	.attr("fill", (d) => colors22.dynamicRed(d))
+	.attr("stroke", colors22.darkRed);
+
+// Create labels
+demo22SVG
+	.selectAll("text")
+	.data(dataSet22)
+	.enter()
+	.append("text")
+	.text((d) => d)
+	.attr("text-anchor", "middle")
+	.attr("x", (d, i) => xScale22(i) + xScale22.bandwidth() / 2)
+	.attr("y", (d) => sizesDemo22.height - yScale22(d) + 14)
+	.attr("font-family", "sans-serif")
+	.attr("font-size", "10px")
+	.attr("fill", colors22.textColor);

@@ -1,38 +1,214 @@
-{% extends '../layout.html' %} {% load static %} {% block content %}
-<section id="regular_expressions_introduction" class="grid-item">
-	<h2>Regular Expressions</h2>
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Notes on regular expressions in JavaScript."
+/>
+{% endblock %} {% block title %}
+<title>JS Regex</title>
+{% endblock %} {% block content %}
+<h1>Regular Expressions</h1>
+<section id="regular_expressions_introduction">
 	<p>
-		A <span class="term">regular expression</span> is a sequence of characters
-		instructing JavaScript on what to search for in a set of data. Regular
-		expressions effectively allow us to describe patterns in string type data.
+		A <b>regular expression</b> is a sequence of characters instructing
+		JavaScript on what to search for in a set of data. Regular expressions
+		effectively allow us to describe patterns in string type data. For example,
+		many
+	</p>
+	<figure>
+		<div>
+			<pre class="language-pseudo"><code>
+				"The solution's wrong &mdash; there's no decrement; eternal loop!"
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		Suppose we wanted to go through this string, removing all of the punctuation
+		marks. We could go through each character in the string, checking if it
+		falls in a certain range. This isn't wrong, but a better way would be to use
+		a <i>regular expression</i> to match punctuation marks, then use a replace
+		method to replace the punctuation marks with nothing.
 	</p>
 	<p>
-		There are two ways to create regular expressions: (1) with a
-		<span class="term">regular expression constructor</span>
-		or (2) with a
-		<span class="term">regular expression literal</span>.
+		Regular expressions are a powerful tool for parsing textual forms of data.
+		The most common use cases for regular expressions:
+	</p>
+	<figure>
+		<div>
+			<ul>
+				<li>
+					Checking if a user input (password, email, phone number, etc.)
+					complies with a particular criteria.
+				</li>
+				<li>
+					Computing the number of times a particular word occurs in a given
+					text.
+				</li>
+				<li>
+					Removing from, or inserting in, certain words or characters in a given
+					text.
+				</li>
+				<li>Analyzing a log file for particular data.</li>
+				<li>Analyzing a system's structure given its URL or file path.</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		The concept of a regular expression has been around for nearly as long as
+		modern computers. Developed by Stephen Keene in 1950, regular expressions
+		were (and still are) extensively used by Unix text processing utilities.
+		Most notably, <var>grep</var> (<q
+			>Global Search for Regular Expressions and Print Matching</q
+		>). As computers grew more pervasive, regular expressions were standardized
+		under the POSIX standard.
 	</p>
 	<p>
-		The result from using a regular expression is a
-		<span class="term">regex object</span>.
+		In 1997, The computer scientist Philip Hazel introduced a more modern
+		version, PCRE (<q>Pearl Compatible Regular Expressions</q>), which is now
+		used by a wide variety of tools and languages. Because of this uniformity,
+		regular expressions are largely language-agnostic. While there are some
+		differences across regular expression use in particular languages, these
+		differences are minor. Much of the syntax and grammar of regular expressions
+		is the same, whether we're using JavaScript, Python, Java, C, C++, and so
+		on.
 	</p>
 </section>
 
-<section id="regular_expression_constructor" class="grid-item">
-	<h3>The Regular Expression Constructor</h3>
+<section id="creating_regex">
+	<h2>Creating a Regular Expression</h2>
 	<p>
-		The regular expression constructor takes the form
-		<code class="language-javascript"
-			>new RegExp(<em>pattern</em>[, <em>flags</em>])</code
-		>.
+		Before we can use a regular expression, we must first create the regular
+		expression. In JavaScript, regular expressions are objects. And as we saw
+		with objects, there are two ways to create regular expressions. We can use
+		object-literal syntax, or we can use a constructor.
 	</p>
+	<p>For example, here's a method with a constructor:</p>
+	<pre class="language-javascript"><code>
+		let regex1 = new RegExp("hello");
+	</code></pre>
+	<p>
+		The <var><mark>RegExp()</mark></var> constructor takes as an argument the
+		<i>pattern</i> the regular expression will look for.
+	</p>
+	<p>In contrast, here's the literal syntax:</p>
+	<pre class="language-javascript"><code>
+		let regex1 = /hello/;
+	</code></pre>
+	<p>
+		In the syntax above, the first forward slash (<var>/</var>) marks the start
+		of the pattern, and the second forward slash marks the end of the pattern.
+	</p>
+	<p>
+		Once we have a regex object, we can use the object with JavaScript's
+		<var>RegExp</var> methods or the String object wrapper. For example, one
+		useful method is <var><mark>.test()</mark></var
+		>. This is a method on the regex object, and it has the following syntax:
+	</p>
+	<ul class="syntax">
+		<li>${regex}$.test(${s}$)</li>
+	</ul>
+	<p>
+		Here, ${regex}$ is some regex object, and ${s}$ is some string we want
+		tested. The <var>.test()</var> method returns true if the pattern in
+		${regex}$ is found, and false otherwise. Illustrating:
+	</p>
+	<pre class="language-javascript"><code>
+		const text        = "CS lessons always have a 'hello world' snippet.";
+		const regexHello  = new RegExp('hello');
+		const regexWorld  = /world/;
+		const regexWorlds = /worlds/;
+
+		const helloIsPresent  = regexHello.test(text);
+		const worldIsPresent  = regexWorld.test(text);
+		const worldsIsPresent = regexWorlds.test(text);
+
+		console.log(helloIsPresent);
+		console.log(worldIsPresent);
+		console.log(worldsIsPresent);
+	</code></pre>
+	<pre class="language-bash"><code>
+		true
+		true
+		false
+	</code></pre>
+	<p>
+		We get back <var>true</var>, as expected. Both <var>/hello/</var> and
+		<var>/world/</var> were found.<sup></sup> But, we get false for
+		<var>/worlds/</var> because there is no match.
+	</p>
+	<div class="note">
+		<p>
+			To differentiate strings from regular expression patterns in discussion,
+			we will denote regular expression patterns with forward slashes, and
+			string values with double quotes.
+		</p>
+	</div>
+	<p>
+		Test isn't the only method we can use. There are two methods on the regex
+		object, and four methods for the string object. We examine these methods in
+		turn.
+	</p>
+	<section id="exect">
+		<h3>The <var>exec()</var> Method</h3>
+		<p>Consider the output of the following code:</p>
+		<pre class="language-javascript"><code>
+			const text       = "CS lessons always have a 'hello world' snippet.";
+			const regexHello = /hello/;
+			const regexWorld = /world/;
+
+			const helloExec = regexHello.exec(text);
+			const worldExec = regexWorld.exec(text);
+
+			console.log(helloExec);
+			console.log(worldExec);
+		</code></pre>
+		<pre class="language-bash"><code>
+			Array(1)
+				[
+					'hello',
+					index : 26,
+					input : "CS lessons always have a 'hello world' snippet.",
+					length: 1,
+					groups: undefined
+				]
+			Array(1)
+				[
+					'world',
+					index : 32,
+					input : "CS lessons always have a 'hello world' snippet.",
+					length: 1,
+					groups: undefined
+				]
+		</code></pre>
+		<p>
+			Notice that we get back arrays. Both of these arrays contain the subsrings
+			that matched our regular expression patterns, <var>/hello/</var> and
+			<var>/world/</var>. This demonstrates that
+			<var><mark>exec()</mark></var> returns an array of the substrings that
+			match the regular expression in a given string.
+		</p>
+		<p>
+			There are also several pieces of information &mdash; properties &mdash;
+			that accompany the array object returned. First, a property
+			<var><mark>index</mark></var
+			>, which provides where in the string the match occurred. For example,
+			with the matching <var>'hello'</var>, the beginning of the match is at
+			index <var>26</var> (the index corresponding to the position of each
+			character in the string). With the matching <var>'world'</var>, the
+			beginning of the match is at index <var>32</var>.
+		</p>
+	</section>
+
+	<section id="string_methods">
+		<h3>String Methods</h3>
+		<p>
+			Whenever we create strings in JavaScript, the strings are produced with a
+			<var>string</var> object wrapper. This object wrapper provides several
+			<i>string methods</i>, four of which can be used with regex objects.
+		</p>
+		<section id="match">
+			<h4>The <var>match()</var> Method</h4>
+		</section>
+	</section>
 </section>
 
-<section id="regular_expression_literal" class="grid-item">
-	<h3>The Regular Expression Literal</h3>
-	<p>
-		The regular expression literal, on the other hand, takes the form
-		<code class="language-javascript">/<em>pattern</em>/<em>flags</em></code>
-	</p>
-</section>
 {% endblock %}

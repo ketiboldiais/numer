@@ -271,6 +271,8 @@ urlpatterns = [
 
 	path("sys_cIntro", views.sys_cIntro, name="sys_cIntro"),
 
+	path("sys_rustIntro", views.sys_rustIntro, name="sys_rustIntro"),
+
 	path("sys_hardware", views.sys_hardware, name="sys_hardware"),
 
 	path("sys_os", views.sys_os, name="sys_os"),

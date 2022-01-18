@@ -472,6 +472,9 @@ def sys_os(request):
 def sys_pointers(request):
 	return render(request, "numerc/sys/sys_pointers.html")
 
+def sys_rustIntro(request):
+	return render(request, "numerc/sys/sys_rustIntro.html")
+
 #! Software Design Views (desv)
 def des_index(request):
 	return render(request, "numerc/des/des_index.html")
