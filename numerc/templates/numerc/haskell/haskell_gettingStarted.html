@@ -274,6 +274,174 @@
 </section>
 <section id="arithmetic_operations">
 	<h2>Arithmetic Operations</h2>
+	<p>Below are Haskell's arithmetic operators:</p>
+	<table class="api">
+		<thead>
+			<th>Operator</th>
+			<th>Operation</th>
+			<th>Example</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td><var>${m}$ + ${n}$</var></td>
+				<td>Add ${m}$ and ${n}$</td>
+				<td>
+					<pre class="language-bash"><code>
+						Prelude> 1 + 1
+						2
+					</code></pre>
+				</td>
+			</tr>
+			<tr>
+				<td><var>${m}$ - ${n}$</var></td>
+				<td>Subtract ${n}$ from ${m}$</td>
+				<td>
+					<pre class="language-bash"><code>
+						Prelude> 1 - 1
+						0
+					</code></pre>
+				</td>
+			</tr>
+			<tr>
+				<td><var>${m}$ * ${n}$</var></td>
+				<td>${m}$ times ${n}$</td>
+				<td>
+					<pre class="language-bash"><code>
+						Prelude> 2 * 3
+						6
+					</code></pre>
+				</td>
+			</tr>
+			<tr>
+				<td><var>${m}$ / ${n}$</var></td>
+				<td>Fractional division, ${\dfrac{m}{n}}$</td>
+				<td>
+					<pre class="language-bash"><code>
+						Prelude> 5 / 2
+						2.5
+						Prelude> 4 / 2
+						2.0
+					</code></pre>
+				</td>
+			</tr>
+			<tr>
+				<td><var>mod ${m}$ ${n}$</var></td>
+				<td>Remainder after modular division &mdash; ${m \bmod n.}$</td>
+				<td>
+					<pre class="language-bash"><code>
+						Prelude> mod 6 3
+						0
+						Prelude> mod 6 4
+						2
+					</code></pre>
+				</td>
+			</tr>
+			<tr>
+				<td><var>div ${m}$ ${n}$</var></td>
+				<td>Integral division, ${\dfrac{m}{n},}$ round down.</td>
+				<td>
+					<pre class="language-bash"><code>
+						Prelude> div 9 3
+						3
+						Prelude> div 9 2
+						4
+					</code></pre>
+				</td>
+			</tr>
+			<tr>
+				<td><var>quot ${m}$ ${n}$</var></td>
+				<td>Integral division, ${\dfrac{m}{n},}$ rounds towards zero.</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						Prelude> quot 21 2
+						10
+						Prelude> quot 21 3
+						7
+					</code></pre>
+				</td>
+			</tr>
+			<tr>
+				<td><var>rem ${m}$ ${n}$</var></td>
+				<td>Remainder after division ${m \text{ rem } n.}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						Prelude> rem 10 2
+						0
+						Prelude> rem 10 3
+						1
+						Prelude> rem 10 4
+						2
+					</code></pre>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<section id="negative_numbers">
+		<h3>Negative Numbers</h3>
+		<p>
+			Haskell has a particular rule with respect to negative numbers &mdash; if
+			the negative rule is next to an arithmetic operator, we should surround
+			the negative operand with parentheses. For example:
+		</p>
+		<pre class="language-haskell"><code>
+			2 + -1   -- This returns an error
+			2 + (-1) -- This is ok
+		</code></pre>
+		<p>
+			We're seeing the strange behavior with the lack of parentheses because the
+			negative sign is actually just <i>actually syntactic sugar</i> for the
+			<var>negate</var> function (or alternatively, subtraction):
+		</p>
+		<pre class="language-pseudo"><code>
+			2 + (-1) 
+			2 + (negate 1)
+			2 + (0 - 1)
+		</code></pre>
+	</section>
+
+	<section id="parenthization">
+		<h3>The Dollar Operator</h3>
+		<p>
+			The <var><mark>$</mark></var> operator can be used to clean up
+			parentheses. For example, consider the following:
+		</p>
+		<pre class="language-bash"><code>
+			Prelude> 2^(2+2)
+			16
+		</code></pre>
+		<p>The dollar operator allows us to write:</p>
+		<pre class="language-bash"><code>
+			Prelude> (2^) $ 2 + 2
+			16
+		</code></pre>
+		<p>
+			The dollar operator tells Haskell to evaluate everything to the right of
+			<var>$</var> to be evaluated first. In essence, it's used to delay
+			function application.
+		</p>
+	</section>
+
+	<section id="let_and_where">
+		<h3>Let & Where</h3>
+		<p>
+			In Haskell code, we often see two keywords,
+			<var><mark>let</mark></var> and <var><mark>where</mark></var
+			>. The keyword <var>let</var> introduces an <i>expression</i>, and the
+			keyword <var>where</var> introduces a <i>declaration</i>. More
+			specifically, the keyword <var>let</var> is what we use to create
+			<i>local bindings</i>. For example:
+		</p>
+		<pre class="language-bash"><code>
+			Prelude> let x = 5 in x * x
+			25
+			Prelude> let x = 5; y = 6 in x * y
+			30
+		</code></pre>
+	</section>
+</section>
+
+<section id="strings_in_haskell">
+	<h2>Strings</h2>
 	<p></p>
 </section>
 {% endblock %}

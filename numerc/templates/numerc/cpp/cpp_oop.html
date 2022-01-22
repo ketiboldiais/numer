@@ -272,264 +272,265 @@
 		>, and <var><mark>private</mark></var
 		>. We'll look at each of them in turn.
 	</p>
-</section>
-
-<section id="private_access">
-	<h3>The Private Keyword</h3>
-	<p>
-		By default, all properties and methods in a C++ class are set to
-		<var>private</var>. This means that outside of the class containing those
-		properties and methods, no access is provided. For example:
-	</p>
-	<pre class="language-cpp"><code>
-		// we don't have to write out 'private', but we do so here to be explicit
-		class Cylinder {
-			private:
+	<section id="private_access">
+		<h3>The Private Keyword</h3>
+		<p>
+			By default, all properties and methods in a C++ class are set to
+			<var>private</var>. This means that outside of the class containing those
+			properties and methods, no access is provided. For example:
+		</p>
+		<pre class="language-cpp"><code>
+			// we don't have to write out 'private', but we do so here to be explicit
+			class Cylinder {
+				private:
+					double pi = 3.14;
+					double radius;
+					double height;
+				public:
+					double surfaceArea() {
+						return 2 * pi * radius * (radius + height);
+					}
+					double volume() {
+						return pi * radius * radius * height;
+					}
+			};
+		</code></pre>
+		<p>
+			By default, all of the properties in class
+			<var>Cylinder</var> is set to <var>private</var>. However, we set the
+			methods <var>public</var>, because those are functions we would like to
+			access directly. Now, because the properties of <var>Cylinder</var> are
+			set to <var>private</var>, we cannot access them in <var>main()</var>, nor
+			anywhere else outside of <var>class Cylinder</var>'s definition. But this
+			means that the methods <var>surfaceArea()</var> and
+			<var>volume()</var> are essentially useless, because we don't have a way
+			to set the values of <var>radius</var> and <var>height</var>. But we want
+			to keep the properties
+			<var>private</var>
+			<span class="underlineText">and</span> be still be able to initialize them
+			outside of the <var>class</var> definition. Can we do so? It seems like we
+			can't.
+		</p>
+		<p>
+			Oh but we can. We can get around the
+			<var>private</var> barrier by setting some function in the inside the
+			class as <var>public</var>. Think of it as leaving a tiny gap, or window,
+			for us to access the class.
+		</p>
+		<p>
+			Let's start with one of the properties,
+			<var>radius</var>. To be able to initialize this property, we just need a
+			<var>public</var> method that initializes the property:
+		</p>
+		<pre class="language-cpp"><code>
+			class Cylinder {
 				double pi = 3.14;
 				double radius;
 				double height;
-			public:
-				double surfaceArea() {
-					return 2 * pi * radius * (radius + height);
-				}
-				double volume() {
-					return pi * radius * radius * height;
-				}
-		};
-	</code></pre>
-	<p>
-		By default, all of the properties in class
-		<var>Cylinder</var> is set to <var>private</var>. However, we set the
-		methods <var>public</var>, because those are functions we would like to
-		access directly. Now, because the properties of <var>Cylinder</var> are set
-		to <var>private</var>, we cannot access them in <var>main()</var>, nor
-		anywhere else outside of <var>class Cylinder</var>'s definition. But this
-		means that the methods <var>surfaceArea()</var> and <var>volume()</var> are
-		essentially useless, because we don't have a way to set the values of
-		<var>radius</var> and <var>height</var>. But we want to keep the properties
-		<var>private</var>
-		<span class="underlineText">and</span> be still be able to initialize them
-		outside of the <var>class</var> definition. Can we do so? It seems like we
-		can't.
-	</p>
-	<p>
-		Oh but we can. We can get around the
-		<var>private</var> barrier by setting some function in the inside the class
-		as <var>public</var>. Think of it as leaving a tiny gap, or window, for us
-		to access the class.
-	</p>
-	<p>
-		Let's start with one of the properties,
-		<var>radius</var>. To be able to initialize this property, we just need a
-		<var>public</var> method that initializes the property:
-	</p>
-	<pre class="language-cpp"><code>
-		class Cylinder {
-			double pi = 3.14;
-			double radius;
-			double height;
-			public:
-				double surfaceArea() {
-					return 2 * pi * radius * (radius + height);
-				}
-				double volume() {
-					return pi * radius * radius * height;
-				}
-				void setRadius(double r) {
-					radius = r; // remember you don't need a return for void return types
-				}
-				void setHeight(double h) {
-					height = h;
-				}
-		};
-	</code></pre>
-	<p>
-		The functions <var>setRadius()</var> and <var>setHeight()</var> are set to
-		<var>public</var>, and they are what allow us to access to initialize the
-		properties <var>radius</var> and <var>height</var>, even if they are set to
-		<var>private</var>. Let's try it:
-	</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		class Cylinder {
-			double pi = 3.14;
-			double radius;
-			double height;
-			public:
-				double surfaceArea() {
-					return 2 * pi * radius * (radius + height);
-				}
-				double volume() {
-					return pi * radius * radius * height;
-				}
-				void setRadius(double r) {
-					radius = r; // remember you don't need a return for void return types
-				}
-				void setHeight(double h) {
-					height = h;
-				}
-		};
-		
-		int main() {
-			Cylinder cindy = Cylinder();
-			cindy.setRadius(3.2);
-			cindy.setHeight(8.6);
-			cout << cindy.surfaceArea() << endl;
-			cout << cindy.volume() << endl;
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		237.133
-		276.521
-	</code></pre>
-	<p>
-		Great. It works. Unfortunately, we can't directly access
-		<var>radius</var> and <var>height</var> because they're still set to
-		<var>private</var>. But what if we need the <var>radius</var> and
-		<var>height</var>? Well, we'll just write another <var>public</var> method,
-		one that retrieves <var>radius</var> and <var>height</var>:
-	</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		class Cylinder {
-			double pi = 3.14;
-			double radius;
-			double height;
-			public:
-				double surfaceArea() {
-					return 2 * pi * radius * (radius + height);
-				}
-				double volume() {
-					return pi * radius * radius * height;
-				}
-				void setRadius(double r) {
-					radius = r; // remember you don't need a return for void return types
-				}
-				double getRadius() {
-					return radius;
-				}
-				void setHeight(double h) {
-					height = h;
-				}
-				double getHeight() {
-					return height;
-				}
-		};
-		
-		int main() {
-			Cylinder cindy = Cylinder();
-			cindy.setRadius(3.2);
-			cindy.setHeight(8.6);
-			cout << cindy.getRadius() << endl;
-			cout << cindy.getHeight() << endl;
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		3.2
-		8.6
-	</code></pre>
-	<p>
-		Above, we wrote two new functions,
-		<var>getRadius()</var> and <var>getHeight()</var>, both of which are of type
-		<var>double</var>, since they return a <var>double</var>. Let's think a
-		little more carefully about what this means. The methods
-		<var>getRadius()</var> and <var>getHeight()</var> are one way streets. We
-		can only <i>retrieve</i> the values assigned to the properties
-		<var>radius</var> and <var>height</var>, but in no way can we use them to
-		<i>modify</i> the values assigned. This effectively ensures that
-		<var>radius</var> and <var>height</var> remain <var>private</var>; we cannot
-		modify them, we can only read them. Hence the term <i>access modifier</i>,
-		rather than something like &#8220;visibility modifier.&#8221; In other
-		words, the access modifier only restricts the ability to write; it doesn't
-		necessarily restrict the ability to read.
-	</p>
-	<p>
-		The methods <var>setRadius()</var> and <var>setHeight()</var> are examples
-		of what we call <b>setters</b>. Setters are methods for
-		<i>initializing</i>
-		properties in a class definition. The methods
-		<var>getRadius()</var> and <var>getHeight()</var> are examples of
-		<b>getters</b>: methods that <i>retrieve</i>, or <i>read</i>, the values
-		assigned to properties in a class definition.<sup></sup>
-	</p>
-	<div class="note">
+				public:
+					double surfaceArea() {
+						return 2 * pi * radius * (radius + height);
+					}
+					double volume() {
+						return pi * radius * radius * height;
+					}
+					void setRadius(double r) {
+						radius = r; // remember you don't need a return for void return types
+					}
+					void setHeight(double h) {
+						height = h;
+					}
+			};
+		</code></pre>
 		<p>
-			Getters are also called <i>accessors</i>, and setters are also called
-			<i>mutators</i>. These methods are more broadly called
-			<i>property functions</i>.
+			The functions <var>setRadius()</var> and <var>setHeight()</var> are set to
+			<var>public</var>, and they are what allow us to access to initialize the
+			properties <var>radius</var> and <var>height</var>, even if they are set
+			to <var>private</var>. Let's try it:
 		</p>
-	</div>
-	<p>
-		With getters and setters, we can now be more elaborate in how class
-		properties are initialized. For example, there's a troubling aspect to our
-		properties and methods: What if the user sets a property to negative? That
-		would make no sense mathematically, because the lengths, widths, heights,
-		radii, volumes, etc. of geometric figures cannot be negative. Accordingly,
-		we should ensure that these values are always positive:
-	</p>
-	<pre class="language-cpp"><code>
-		#include &lt;iostream&gt;
-		using namespace std;
-		
-		class Maths {
-			public:
-				template&lt;class T&gt;
-				T abs(T x) {
-					if (x < 0) { return -1 * x; }
-					else { return x; }
-				}
-		};
-		
-		class Cylinder {
-			double pi = 3.14;
-			double radius;
-			double height;
-			public:
-				double surfaceArea() {
-					return 2 * pi * radius * (radius + height);
-				}
-				double volume() {
-					return pi * radius * radius * height;
-				}
-				void setRadius(double r) {
-					radius = abs(r);
-				}
-				double getRadius() {
-					return radius;
-				}
-				void setHeight(double h) {
-					height = abs(h);
-				}
-				double getHeight() {
-					return height;
-				}
-		};
-		
-		int main() {
-			Cylinder cindy = Cylinder();
-			cindy.setRadius(-1.2);
-			cindy.setHeight(-4.3);
-			cout << cindy.getRadius() << endl;
-			cout << cindy.getHeight() << endl;
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		1.2
-		4.3
-	</code></pre>
-	<p>
-		Above, we wrote a separate class, <var>Maths</var>, which provides a method
-		called <var>abs</var>. We then call that method in <var>Cylinder</var> to
-		ensure the values set for <var>Radius</var> and <var>Height</var> are
-		positive only.
-	</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
+			
+			class Cylinder {
+				double pi = 3.14;
+				double radius;
+				double height;
+				public:
+					double surfaceArea() {
+						return 2 * pi * radius * (radius + height);
+					}
+					double volume() {
+						return pi * radius * radius * height;
+					}
+					void setRadius(double r) {
+						radius = r; // remember you don't need a return for void return types
+					}
+					void setHeight(double h) {
+						height = h;
+					}
+			};
+			
+			int main() {
+				Cylinder cindy = Cylinder();
+				cindy.setRadius(3.2);
+				cindy.setHeight(8.6);
+				cout << cindy.surfaceArea() << endl;
+				cout << cindy.volume() << endl;
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			237.133
+			276.521
+		</code></pre>
+		<p>
+			Great. It works. Unfortunately, we can't directly access
+			<var>radius</var> and <var>height</var> because they're still set to
+			<var>private</var>. But what if we need the <var>radius</var> and
+			<var>height</var>? Well, we'll just write another
+			<var>public</var> method, one that retrieves <var>radius</var> and
+			<var>height</var>:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
+			
+			class Cylinder {
+				double pi = 3.14;
+				double radius;
+				double height;
+				public:
+					double surfaceArea() {
+						return 2 * pi * radius * (radius + height);
+					}
+					double volume() {
+						return pi * radius * radius * height;
+					}
+					void setRadius(double r) {
+						radius = r; // remember you don't need a return for void return types
+					}
+					double getRadius() {
+						return radius;
+					}
+					void setHeight(double h) {
+						height = h;
+					}
+					double getHeight() {
+						return height;
+					}
+			};
+			
+			int main() {
+				Cylinder cindy = Cylinder();
+				cindy.setRadius(3.2);
+				cindy.setHeight(8.6);
+				cout << cindy.getRadius() << endl;
+				cout << cindy.getHeight() << endl;
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			3.2
+			8.6
+		</code></pre>
+		<p>
+			Above, we wrote two new functions,
+			<var>getRadius()</var> and <var>getHeight()</var>, both of which are of
+			type <var>double</var>, since they return a <var>double</var>. Let's think
+			a little more carefully about what this means. The methods
+			<var>getRadius()</var> and <var>getHeight()</var> are one way streets. We
+			can only <i>retrieve</i> the values assigned to the properties
+			<var>radius</var> and <var>height</var>, but in no way can we use them to
+			<i>modify</i> the values assigned. This effectively ensures that
+			<var>radius</var> and <var>height</var> remain <var>private</var>; we
+			cannot modify them, we can only read them. Hence the term
+			<i>access modifier</i>, rather than something like &#8220;visibility
+			modifier.&#8221; In other words, the access modifier only restricts the
+			ability to write; it doesn't necessarily restrict the ability to read.
+		</p>
+		<p>
+			The methods <var>setRadius()</var> and <var>setHeight()</var> are examples
+			of what we call <b>setters</b>. Setters are methods for
+			<i>initializing</i>
+			properties in a class definition. The methods
+			<var>getRadius()</var> and <var>getHeight()</var> are examples of
+			<b>getters</b>: methods that <i>retrieve</i>, or <i>read</i>, the values
+			assigned to properties in a class definition.<sup></sup>
+		</p>
+		<div class="note">
+			<p>
+				Getters are also called <i>accessors</i>, and setters are also called
+				<i>mutators</i>. These methods are more broadly called
+				<i>property functions</i>.
+			</p>
+		</div>
+		<p>
+			With getters and setters, we can now be more elaborate in how class
+			properties are initialized. For example, there's a troubling aspect to our
+			properties and methods: What if the user sets a property to negative? That
+			would make no sense mathematically, because the lengths, widths, heights,
+			radii, volumes, etc. of geometric figures cannot be negative. Accordingly,
+			we should ensure that these values are always positive:
+		</p>
+		<pre class="language-cpp"><code>
+			#include &lt;iostream&gt;
+			using namespace std;
+			
+			class Maths {
+				public:
+					template&lt;class T&gt;
+					T abs(T x) {
+						if (x < 0) { return -1 * x; }
+						else { return x; }
+					}
+			};
+			
+			class Cylinder {
+				double pi = 3.14;
+				double radius;
+				double height;
+				public:
+					double surfaceArea() {
+						return 2 * pi * radius * (radius + height);
+					}
+					double volume() {
+						return pi * radius * radius * height;
+					}
+					void setRadius(double r) {
+						radius = abs(r);
+					}
+					double getRadius() {
+						return radius;
+					}
+					void setHeight(double h) {
+						height = abs(h);
+					}
+					double getHeight() {
+						return height;
+					}
+			};
+			
+			int main() {
+				Cylinder cindy = Cylinder();
+				cindy.setRadius(-1.2);
+				cindy.setHeight(-4.3);
+				cout << cindy.getRadius() << endl;
+				cout << cindy.getHeight() << endl;
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			1.2
+			4.3
+		</code></pre>
+		<p>
+			Above, we wrote a separate class, <var>Maths</var>, which provides a
+			method called <var>abs</var>. We then call that method in
+			<var>Cylinder</var> to ensure the values set for <var>Radius</var> and
+			<var>Height</var> are positive only.
+		</p>
+	</section>
 </section>
 
 <section id="constructors">
@@ -2085,6 +2086,81 @@
 		supported in the language. There are, however, some significant differences
 		between inheritance in C++ and inheritance in a language like Java.
 	</p>
+	<p>
+		Inhertiance allows us to design generic classes that can later be
+		specialized to more particular classes. For example, in a video game, we
+		might have a class called <var>Being</var>, from which more particular
+		classes are derived &mdash; <var>Mortal</var> and <var>Immortal</var>. In
+		C++, we would write:
+	</p>
+	<pre class="language-cpp"><code>
+		class Being {};
+		class Mortal : public Being {};
+		class Immortal : public Being {};
+	</code></pre>
+	<p>
+		Let's add a few properties and member functions to the
+		<var>Being</var> class:
+	</p>
+	<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+		#include &lt;string&gt;
+
+		typedef std::string string;
+
+		class Being {
+			string name;
+			int age;
+			void printName() {
+				std::cout &lt;&lt; name &lt;&lt; std::endl;
+			}
+		};
+		class Mortal : public Being {};
+		class Immortal : public Being {};
+	</code></pre>
+	<p>
+		All of the properties and methods of <var>Being</var> are
+		<var>private</var> by default. However, they all exist in
+		<var>Mortal</var> and <var>Immortal</var>.<sup></sup>
+	</p>
+	<div class="note">
+		<p>Inheritance allows us to avoid writing:</p>
+		<pre class="language-pseudo"><code>
+			#include &lt;iostream&gt;
+			#include &lt;string&gt;
+	
+			typedef std::string string;
+	
+			class Being {
+				string name;
+				int age;
+				void printName() {
+					std::cout &lt;&lt; name;
+				}
+			};
+			class Mortal : public Being {
+				string name;
+				int age;
+				void printName() {
+					std::cout &lt;&lt; name;
+				}
+			};
+			class Immortal : public Being {
+				string name;
+				int age;
+				void printName() {
+					std::cout &lt;&lt; name;
+				}
+			};
+		</code></pre>
+	</div>
+	<p>
+		By writing <var>Mortal : public Being</var>, we instruct C++ that the class
+		<var>Mortal</var> inhertis from <var>Being</var>. The keyword
+		<var>public</var> specifies <i>public inheritance</i>. We will examine
+		different types of inheritance.
+	</p>
+	<p></p>
 </section>
 
 <section id="pointers_to_objects">
