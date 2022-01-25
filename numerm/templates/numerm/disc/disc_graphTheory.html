@@ -961,6 +961,208 @@
 			always have minimum weight matchings &mdash; just pull out ignore some or
 			all of the nodes.
 		</p>
+		<p>For example, consider the following graph:</p>
+		<figure>
+			<img
+				src="{% static 'images/weighted_edges2.svg' %}"
+				alt="weighted edges"
+				loading="lazy"
+				width="100px"
+				height="100px"
+			/>
+			<figcaption>A weighted graph with perfect matchings.</figcaption>
+		</figure>
+		<p>
+			What's the weight of the minimum weight matching for the graph above? By
+			our definition, its ${20.}$ The prefect matchings are ${(B-J)}$ and
+			${(C-A).}$ Both of these matchings have a weight of ${10.}$
+		</p>
+		<p>
+			A more interesting form of weight matching is <b>preference matching</b>.
+			The idea is simple: Suppose each of the nodes in Figure 9 are individuals
+			with preferences for mates. We represent these preferences by labelling
+			each of the edges:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/weighted_edges3.svg' %}"
+				alt="weighted edges"
+				loading="lazy"
+				width="100px"
+				height="100px"
+			/>
+			<figcaption>A prefered graph.</figcaption>
+		</figure>
+		<p>
+			With preference graphs, we encapsulate a variety of propositions. For
+			example, ${B}$ prefers ${A}$ first, and ${J}$ second. ${A}$ prefers ${B}$
+			first and ${C}$ second. ${B}$ prefers ${J}$ second, but ${J}$ prefers
+			${B}$ first, and so on.
+		</p>
+		<p>
+			Now, what happens if we placed ${B,}$ ${J,}$ ${C,}$ and ${A}$ on a desert
+			island, with ${C}$ married to ${A}$ and ${B}$ married to ${J?}$ Well, we'd
+			have a problem. ${B}$ and ${A}$ have the hots for each other, with ${C}$
+			left to his unrequited love for ${A.}$ In mathematics, we say that ${A}$
+			and ${B}$ are a
+			<b>rogue couple</b>.
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Definition.</span> Given a matching ${M,}$ ${x}$
+					and ${y}$ form a <i>rouge couple</i> if they prefer each other, over
+					their mates in ${M.}$
+				</p>
+			</div>
+		</figure>
+		<p>
+			Rogue couples create instability in the matchings. In mathematics, we
+			define <b>stability</b> as follows:
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Definition.</span> A matching is <i>stable</i> if
+					the matching ${M}$ contains no rogue couples.
+				</p>
+			</div>
+		</figure>
+		<p>
+			For many graph problems, the goal is to find a stable perfect matching.
+			For our desert island couples, the stable perfect matching is ${B-A,}$
+			${J-C.}$ Note that this has nothing to do with <q>happiness.</q> Clearly
+			${C}$ and ${J}$ are unhappy. But, it's stable because ${A}$ and ${B}$ are
+			staying together.
+		</p>
+		<p>
+			Can we always find a stable perfect matching?<sup></sup> It turns out that
+			if we allow members of the same sex to like one another, it is impossible
+			to always have stable perfect matchings. However, if only members of the
+			opposite sex liked one another, then it is possible to always find stable
+			perfect matchings.
+		</p>
+		<div class="note">
+			<p>Are we pessimists to say no? Optimists to say yes?</p>
+		</div>
+		<p>To illustrate, consider the following graph:</p>
+		<figure>
+			<img
+				src="{% static 'images/weighted_edges4.svg' %}"
+				alt="weighted edges"
+				loading="lazy"
+				width="200px"
+				height="200px"
+			/>
+			<figcaption>A love triangle.</figcaption>
+		</figure>
+		<p>
+			Above, we have a love triangle between the males ${L,}$ ${M,}$ and ${N.}$
+			${N}$ has the hots for ${L,}$ ${L}$ has the hots for ${M,}$ and ${M}$ has
+			the hots for ${N.}$ And then there's ${E.}$ Assume that ${E}$'s
+			preferences are irrelevant &mdash; none of the other three men have the
+			hots for him.
+		</p>
+		<p>
+			Here's a claim: There is no stable matching ${M}$ for the graph above. To
+			prove this proposition, we use proof-by-contradiction. First, we assume
+			there is a stable matching ${M.}$
+		</p>
+		<p>
+			Now, if there's a stable matching, then ${E}$ must be matched with one of
+			${L,}$ ${M,}$ or ${N.}$ Without loss of generality,<sup></sup> suppose
+			${E}$ is matched with ${L.}$ If ${E}$ is matched with ${L,}$ then ${N}$ is
+			matched with ${M.}$ Between ${L}$ and ${M,}$ ${N}$ prefers ${L.}$ And
+			between ${E}$ and ${N,}$ ${L}$ prefers ${N.}$ Thus, ${L}$ and ${N}$ prefer
+			each other to their mates. Thus, we have a <i>rogue couple</i>.
+		</p>
+		<div class="note">
+			<p>
+				This is another way of saying, <q>by symmetry.</q> In our case, this
+				means <q>No matter who ${E}$ is matched with.</q> Note that we must
+				always be careful about using this phrase. There are situations where
+				making a particular choice <i>does</i> lead to a loss of generality.
+			</p>
+		</div>
+		<p>
+			Given that there is a rogue couple, the matching ${M}$ is
+			<em>not</em> stable. This contradicts our original assumption &mdash; that
+			there is a stable matching ${M.}$ Thus, the negation of our original
+			assumption must be true: There is no stable matching ${M}$ for the graph
+			above.
+		</p>
+	</section>
+
+	<section id="stable_marriage">
+		<h3>The Stable Marriage Problem</h3>
+		<p>
+			If, however, we restricted matchings to only be between men and women, we
+			would always find a stable matching. This proposition is presented in the
+			<b>stable marriage problem</b>.
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Definition: Stable Marriage Problem.</span>
+					Suppose the following: There are ${N}$ men and ${N}$ women. Each man
+					has his own ranked preference list of all the women, and each woman
+					has her own ranked preference list of all the men. Both lists are
+					complete, and there are no ties. Is there a perfect matching without
+					rogue couples?
+				</p>
+			</div>
+		</figure>
+		<p>
+			Suppose the following preferences in the table below. Each number in the
+			man column is a unique male individual, and each letter in the woman
+			column is a unique female individual. The preferences are then provided,
+			in order from most preferred to least preferred. The man's preferences are
+			immediately to the right, and the woman's preferences immediately to the
+			left.
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Man</th>
+				<th>Preference</th>
+				<th>Preference</th>
+				<th>Woman</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>C, B, E, A, D</td>
+					<td>3, 5, 2, 1, 4</td>
+					<td>A</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>A, B, E, C, D</td>
+					<td>5, 2, 1, 4, 3</td>
+					<td>B</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>D, C, B, A, E</td>
+					<td>4, 3, 5, 1, 2</td>
+					<td>C</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>A, C, D, B, E</td>
+					<td>1, 2, 3, 4, 5</td>
+					<td>D</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>A, B, D, E, C</td>
+					<td>2, 3, 4, 1, 5</td>
+					<td>E</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			What algorithm can we use to determine if there's a stable matching here?
+		</p>
 	</section>
 </section>
 {% endblock %}

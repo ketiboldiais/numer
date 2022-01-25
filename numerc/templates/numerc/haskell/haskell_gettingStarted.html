@@ -441,7 +441,216 @@
 </section>
 
 <section id="strings_in_haskell">
-	<h2>Strings</h2>
-	<p></p>
+	<h2>Strings & Main</h2>
+	<p>
+		In Haskell, strings are associated with two data types:
+		<var>Char</var> (corresponding to characters), and
+		<var>String</var> (corresponding to strings). More generally, data types in
+		Haskell are a means of categorizing values. And given that every expression
+		reduces to some value, types provide a means of categorizing expressions. We
+		can determine the type of a value, expression, or function with the
+		<var><mark>:type</mark></var> command.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			The symbol <var>::</var> (a double colon) is read <q>has the type.</q>
+		</p>
+	</div>
+	<pre class="language-bash"><code>
+		Prelude> :type 'z'
+		'z' :: Char
+	</code></pre>
+	<p>
+		<var>Char</var> type data are enclosed with single quotes (allowing Haskell
+		to distinguish a variable from a character). Consider this output:
+	</p>
+	<pre class="language-bash"><code>
+		Prelude> :type "foo"
+		"foo" :: [Char]
+	</code></pre>
+	<p>
+		Above, we see the type <var>[Char]</var>. The square brackets indicate that
+		this is a <i>list</i> of <var>Char</var>. This tells us that the type
+		<var>String</var> is, in actuality, a list of <var>Char</var>.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			As we'll see later, <var>String</var> is really a <i>type alias</i> for
+			<var>[Char]</var>.
+		</p>
+	</div>
+	<p>We can print strings in Haskell in various ways:</p>
+	<pre class="language-bash"><code>
+		Prelude> print "Hello"
+		"Hello"
+		Prelude> putStrLn "Hi"
+		Hi
+		Prelude> putStr "Hey"
+		HeyPrelude>
+	</code></pre>
+	<p>
+		Of the functions above, <var>print</var> can be used for different types of
+		data, while <var>putStrLn</var> and <var>putStr</var> are specific to
+		strings. Notice that <var>putStrLn</var> places a string on a new line,
+		while <var>putStr</var> does not.
+	</p>
+	<p>
+		Let's use the <var>putStrLn</var> function in a source code file called
+		<var>hello.hs</var>:
+	</p>
+	<pre class="language-haskell"><code>
+		module Hello where
+
+		main :: IO ()
+		main = putStrLn "Hello, world!"
+	</code></pre>
+	<p>Then, loading our file in the Repl:</p>
+	<pre class="language-bash"><code>
+		Prelude> :load print1.hs
+		[1 of 1] Compiling Hello           ( hello.hs, interpreted )
+		Ok, one module loaded.
+		*Hello> main
+		Hello, world!
+		*Hello>
+	</code></pre>
+	<p>
+		Let's take a moment to examine this output. The <var>Prelude></var> prompt
+		changed because we've loaded a different module. Going forward, we'll use
+		the lambda symbol for our REPL:
+	</p>
+	<pre class="language-bash"><code>
+		Prelude> :set prompt "λ> "
+		λ>
+	</code></pre>
+	<p>
+		In Haskell, <var>main</var> is a container for the instructions to execute
+		when we build or run an executable in a REPL. Notice that we provided its
+		type:
+	</p>
+	<pre class="language-haskell"><code>
+		main :: IO ()
+	</code></pre>
+	<p>
+		The type <var>IO</var> corresponds to <i>Input/Output</i>. This is a special
+		type in Haskell, because it is what Haskell uses to wrap side-effects. I.e.,
+		when running a particular program involves effects beyond evaluating a
+		function or expression, we use the <var>IO</var> type.
+	</p>
+	<p>Here's another file:</p>
+	<pre class="language-haskell"><code>
+		module Hello where
+
+		main :: IO ()
+		main = do
+		 putStrLn "Numbers: "
+		 putStr " 1"
+		 putStr " 2"
+		 putStr " 3"
+		 putStrLn " 4!"
+	</code></pre>
+	<pre class="language-bash"><code>
+		Prelude> :load hello.hs
+		[1 of 1] Compiling Hello            ( hello.hs, interpreted )
+		Ok, one module loaded.
+		*Hello> main
+		Numbers:
+		1 2 3 4!
+		*Hello>
+	</code></pre>
+	<p>
+		Notice the keyword <var><mark>do</mark></var
+		>. This keyword tells Haskell to perform the the sequence of functions
+		thereafter. This keyword is not required, but it leads to greater
+		readability, which is heavily encouraged in Haskell.
+	</p>
+
+	<section id="string_concatenation">
+		<h3>Concatenating Strings</h3>
+		<p>
+			There are a few ways to concatenate strings in Haskell. Consider the code
+			below:
+		</p>
+		<pre class="language-haskell"><code>
+			module Concat where
+
+			message :: String
+			message = "Hello" ++ " world!"
+
+			hello :: String
+			hello = "hello"
+
+			world :: String
+			world = "world!"
+
+			main :: IO ()
+			main = do
+				putStrLn message
+				putStrLn greet
+				where greet = concat [hello, " ", world]
+		</code></pre>
+		<pre class="language-bash"><code>
+			Prelude> :load concat.hs
+			[1 of 1] Compiling Concat           ( concat.hs, interpreted )
+			Ok, one module loaded.
+			*Concat> main
+			Hello world!
+			hello world!
+			*Concat>
+		</code></pre>
+		<p>
+			Notice that we used the double colon <var>::</var> operator to specify the
+			types for each top-level expression. This is not necessary, but it's a
+			good habit.
+		</p>
+		<p>
+			In the code, we see that there are two ways to concatenate strings. One is
+			to use the <var><mark>++</mark></var> operator. Alternatively, we can
+			concatenate strings using <var>concat</var>, followed by a list of strings
+			to be concatenated.
+		</p>
+	</section>
+	<section id="top_v_local">
+		<h3>Top-level v. Local Declarations</h3>
+		<p>
+			In the program above, we defined values at the top level of the module,
+			namely, <var>message</var>, <var>hello</var>, <var>world</var>, and
+			<var>main</var>. We can identify <b>top-level declarations</b> by the fact
+			that they aren't nested within anything else. Top-level declarations
+			visible throughout the module. In contrast, <b>local declarations</b> are
+			those nested in some other expression. Because they are nested in some
+			other expressin, local declarations are visible only within that
+			expression.
+		</p>
+		<p>Consider the following:</p>
+		<pre class="language-haskell"><code>
+			module TopVLocal where
+
+			topLevelFunc :: Integer -> Integer
+			topLevelFunc x =
+				x + y + topLevelVal
+				where y :: Integer 
+										y = 10
+
+			topLevelVal :: Integer
+			topLevelVal = 5
+		</code></pre>
+		<pre class="language-bash"><code>
+			Prelude> :load TopVLocal.hs
+			[1 of 1] Compiling TopVLocal        ( TopVLocal.hs, interpreted )
+			Ok, one module loaded.
+			*TopVLocal> topLevelFunc 5
+			20
+			*TopVLocal>
+		</code></pre>
+		<p>
+			Examining the code above, <var>topLevelFunc</var> and
+			<var>topLevelVal</var> are accessible to everything else in the module.
+			Moreover, we can import and use <var>topLevelFunc</var> and
+			<var>topLevelVal</var> in another module. The variable <var>y</var> in
+			<var>topLevelFunc</var>, however, is invisible outside of
+			<var>topLevelFunc</var>. It's existence is strictly within
+			<var>topLevelFunc</var>; nowhere else.
+		</p>
+	</section>
 </section>
 {% endblock %}

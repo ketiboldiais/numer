@@ -38,4 +38,232 @@
 	</p>
 </section>
 
+<section id="variables">
+	<h2>Variables</h2>
+	<p>Let's rewrite our previous program as follows:</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let message = "Hello world!";
+			println!("{}", message);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		$ rustc hellor.s
+		$ ./hello
+		Hello world!
+	</code></pre>
+	<p>
+		Notice that the keyword <var><mark>let</mark></var
+		>. This is how we declare variables in Rust. Moreover, observe the use of
+		<var>"{}"</var> inside the <var>println!()</var> call. This is similar to
+		how <var>printf()</var> calls are made in C.
+	</p>
+
+	<section id="mutability">
+		<h3>Mut Variables</h3>
+		<p>
+			In Rust, variables are, by default, <i>immutable</i>. Consider the
+			following:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let message = "Hello world!";
+				println!("{}", message);
+				message = "Bye world!";
+				println!("{}", message);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			error[E0384]: cannot assign twice to immutable variable `message`
+			--> main.rs:4:2
+				|
+			2 |     let message = "Hello world!";
+				|         -------
+				|         |
+				|         first assignment to `message`
+				|         help: consider making this binding mutable: `mut message`
+			3 |     println!("{}", message);
+			4 |     message = "Bye world!";
+				|     ^^^^^^^^^^^^^^^^^^^^^^ cannot assign twice to immutable variable
+
+			error: aborting due to previous error
+
+			For more information about this error, try `rustc --explain E0384`.
+		</code></pre>
+		<p>
+			We're getting the compiler warning because we're attempting to mutate the
+			value bound to the variable <var>message</var>, when in fact, we cannot.
+			To actually change <var>message</var>, we must use the keyword
+			<var>mut</var>:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let mut message = "Hello world!";
+				println!("{}", message);
+				message = "Bye world!";
+				println!("{}", message);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Hello world!
+			Bye world!
+		</code></pre>
+	</section>
+</section>
+
+<section id="cargo">
+	<h2>Cargo</h2>
+	<p>
+		Cargo is the Rust package manager, similar to how JavaScript has NPM. To
+		determine if Cargo is installed, we run the command:
+	</p>
+	<pre class="language-bash"><code>
+		cargo --version
+	</code></pre>
+	<p>
+		If a version identifier is returned, then Cargo is installed. With Cargo
+		installed, we can create a new Cargo package for our project by writing the
+		following:
+	</p>
+	<pre class="language-bash"><code>
+		cargo init
+	</code></pre>
+	<p>
+		Running the command above, we should see a new file called
+		<var><mark>Cargo.toml</mark></var
+		>. The extension <var>.toml</var> is just a file format for configuration
+		files.<sup></sup> If we look inside <var>toml</var> file, we see:
+	</p>
+	<div class="note">
+		<p>
+			<var>.toml</var> is short for
+			<q>Tom's Obvious, Minimal Language,</q> after its creator, Tom
+			Preston-Werner, the founder and former CEO of GitHub.
+		</p>
+	</div>
+	<pre class="language-bash"><code>
+		[package]
+		name = "lab"
+		version = "0.1.0"
+		edition = "2021"
+
+		# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+		[dependencies]
+
+		[[bin]]
+		name = "lab"
+		path = "main.rs"
+	</code></pre>
+	<p>
+		The file is straightforward. We the package's name is called
+		<var>lab</var> (the name of the folder <var>cargo init</var> was run in), a
+		version number, and an edition year. We also see a header for
+		<var>dependencies</var>, and another header for binaries.
+	</p>
+	<p>
+		Once we have a Cargo package, we no longer need to run files manually (i.e.,
+		running <var>rustc main.rs</var> then running <var>./main</var>). Instead,
+		all we have to do is execute:
+	</p>
+	<pre class="language-bash"><code>
+		$ cargo run
+				Compiling lab v0.1.0 (/Users/ketiboldiais/My Drive/prj/rust/snake)
+				Finished dev [unoptimized + debuginfo] target(s) in 4.17s
+				Running `target/debug/lab`
+		Hello world!
+		Bye world!
+	</code></pre>
+	<p>
+		In Rust, the individual packages comprising the Cargo package are called
+		<b>crates</b>. Rust maintains a large registry of crates made by Rustaceans
+		on <a href="https://crates.io/" target="_blank">crates.io</a>.
+	</p>
+</section>
+
+<section id="functions">
+	<h2>Functions</h2>
+	<p>Here's a simple function in Rust:</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let message = "Hello world!";
+			greet_user(message);
+		}
+		
+		fn greet_user(text: &str) {
+			println!("{}", text);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		Hello world!
+	</code></pre>
+	<p>
+		This is similar to writing functions in C and C++, with a few key
+		differences. First, we can define the function anywhere. In this case, we've
+		defined it after <var>main()</var>. We could have also defined it before
+		<var>main()</var>. Second, notice the syntax:
+	</p>
+	<ul class="syntax">
+		<li>fn ${n}$(${p}$: ${t}$) { ${body}$ };</li>
+	</ul>
+	<p>
+		Above, ${n}$ is the function's name. Note that in Rust, the convention is to
+		use pothole casing (separating multiple words with underscores). Next, the
+		variable ${p}$ is a function parameter. That parameter is followed by a
+		colon, then the parameter's type. We'll discuss types later. Finally, the
+		function's ${body}$ is enclosed in curly braces.
+	</p>
+	<p>
+		The syntax above is how we write functions with no returns. For functions
+		with returns, we use the following syntax:
+	</p>
+	<ul class="syntax">
+		<li>fn ${n}$(${p}$: ${t}$) -> ${r_t}$ { ${body}$ };</li>
+	</ul>
+	<p>
+		The only difference here is the use of <var>-> ${r_t}$</var>, where ${r_t}$
+		is the return type. For example, the <var>square()</var> function below
+		squares its argument:
+	</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let x = 2;
+			let y = square(x);
+			println!("{}", y);
+		}
+
+		fn square(num: i32) -> i32 {
+			let b = num * num;
+			return b;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		4
+	</code></pre>
+	<p>
+		A more common way to write the <var>square()</var> function is to omit the
+		<var>return</var> keyword:
+	</p>
+	<pre class="language-rust"><code>
+		fn square(num: i32) -> i32 {
+			let b = num * num;
+			b
+		}
+	</code></pre>
+	<p>
+		Importantly, if this approach is taken, we must also omit the semicolon.
+		Otherwise, Rust will not interpret it as an implicit return. That said, the
+		Rust programmer is more likely to just write:
+	</p>
+	<pre class="language-rust"><code>
+		fn square(num: i32) -> i32 {
+			num * num
+		}
+	</code></pre>
+</section>
+
+<section id="primitive_types">
+	<h2>Primitive Types</h2>
+</section>
+
 {% endblock %}

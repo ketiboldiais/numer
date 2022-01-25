@@ -447,10 +447,10 @@
 		The variables <var>i</var> and <var>j</var> are variables storing
 		<var>17</var> and <var>32</var> respectively. The variables
 		<var>*p</var> and <var>*q</var>, however, are pointers. They store the
-		addresses of <var>i</var> and <var>j</var> respectively. The start symbol,
-		<var>*</var>, is what we use to tell the compiler that a variable is a
-		pointer. Thus, whenever the compiler comes across a variable prepended with
-		<var>*</var>, it goes,
+		addresses of <var>i</var> and <var>j</var> respectively.<sup></sup> The star
+		symbol, <var>*</var>, is what we use to tell the compiler that a variable is
+		a pointer. Thus, whenever the compiler comes across a variable prepended
+		with <var>*</var>, it goes,
 		<q>Oh, this is a pointer. There's going to be an address in here.</q> The
 		ampersand symbol, <var>&</var>, is what we use to obtain the address of a
 		variable. Thus, when the compiler sees a variable prepended with
@@ -461,6 +461,21 @@
 		>
 		<sup></sup>
 	</p>
+	<div class="note">
+		<p>
+			Whenever we see <var>*p</var>, it's helpful to read it as
+			<q>content of <var>p</var>.</q> For example:
+		</p>
+		<pre class="language-pseudo"><code>
+			int a;
+			int *p = &amp;a;
+		</code></pre>
+		<p>
+			can be read as
+			<q>The content of <var>p</var> is the address of <var>a.</var></q> When we
+			see <var>p</var> alone, we read it as, <q>The address in <var>p</var>.</q>
+		</p>
+	</div>
 	<div class="note">
 		<p>
 			Remember, variables are just names for addresses. We could imagine a world
@@ -483,8 +498,27 @@
 		<var>0x1001</var>, <var>0x1002</var>, and <var>0x1003</var>. Then, for
 		<var>32</var>, assigned to <var>j</var>, occupies the addresses
 		<var>0x1004</var>, <var>0x1005</var>, <var>0x1006</var>, and
-		<var>0x1007</var>.
+		<var>0x1007</var>.<sup></sup>
 	</p>
+	<div class="note">
+		<p>
+			When examining pointers, it's helpful to read them backwards. For example:
+		</p>
+		<pre class="language-pseudo"><code>
+			int *p;
+		</code></pre>
+		<p>
+			can be read <q><var>p</var> is a pointer to an <var>int</var>.</q> The
+			code:
+		</p>
+		<pre class="language-pseudo"><code>
+			char **cPtr;
+		</code></pre>
+		<p>
+			can be read
+			<q><var>cPtr</var> is a pointer to a pointer to a <var>char</var>.</q>
+		</p>
+	</div>
 	<p>
 		Pointers, again for this machine, occupy 8 bytes of memory. Thus, the
 		pointer <var>p</var> occupies the addresses from <var>0x1008</var> through
@@ -1054,13 +1088,22 @@
 			dereferencing the uninitialized pointer, such dereferences lead to runtime
 			errors. This is even worse than using an uninitialized non-pointer
 			variable. Uninitialized pointers effectively point to anywhere in memory,
-			and that memory could be in use by another program. This will more than
-			likely lead to segmentation fault, causing our program to crash. That's
-			the best case scenario. The worst case scenario is if C, for whatever
-			reason, allows us to touch the value in that random address, thereby
-			modifying &mdash; and potentially crashing &mdash; an entirely unrelated
-			program.
+			and that memory could be in use by another function in our program.<sup
+			></sup> This will more than likely lead to segmentation fault, causing our
+			program to crash. That's the best case scenario. The worst case scenario
+			is if C, for whatever reason, allows us to touch the value in that random
+			address, thereby modifying &mdash; and potentially crashing &mdash; an
+			entirely unrelated program.
 		</p>
+		<div class="note">
+			<p>
+				A common belief with respect to pointers is that failure to use them
+				properly could crash another program. This is true for older machines,
+				but on modern systems, programs are usually separated strictly, so as to
+				avoid such collisions. Of course, this is not intended to downplay the
+				dangers of dangling pointers.
+			</p>
+		</div>
 		<p>
 			For this reason, whenever we work with pointers, it is best practice to
 			strictly follow these rules:
@@ -2457,6 +2500,123 @@
 			${f}$ has been popped off the stock. Thus, it is imperative that we always
 			call <var>free()</var> after we've finished using the allocated memory.
 		</p>
+		<p>For example:</p>
+		<pre class="language-c"><code>
+			int *p = malloc(sizeof(int));
+			*p = 17;
+		</code></pre>
+		<p>
+			This code allocates enough memory for an <var>int</var>, and returns a
+			pointer to that address (essentially, the address itself). We then assign
+			that address to <var>*p</var>, a pointer:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/free.svg' %}"
+				alt="free function"
+				loading="lazy"
+				width="200px"
+				height="200px"
+			/>
+		</figure>
+		<p>Once we're done using <var>p</var>, we must write:</p>
+		<pre class="language-c"><code>
+			free(p);
+		</code></pre>
+		<p>
+			This ensures that the allocated space (the grey box above), is
+			<i>free to use</i>. Question: What happens to the actual pointer
+			<var>p</var>? It turns out, nothing &mdash; <var>p</var> will still point
+			at the address <var>0x200</var>. What happens if we write one of the lines
+			below:
+		</p>
+		<div class="compare">
+			<figure>
+				<pre class="language-c"><code>
+					printf("%d\n", *p)
+				</code></pre>
+				<figcaption>Line 1</figcaption>
+			</figure>
+			<figure>
+				<pre class="language-c"><code>
+					*p = 35;
+				</code></pre>
+				<figcaption>Line 2</figcaption>
+			</figure>
+			<figure>
+				<pre class="language-c"><code>
+					free(p)
+				</code></pre>
+				<figcaption>Line 3</figcaption>
+			</figure>
+		</div>
+		<p>
+			In actuality, we can write any of the lines above, and our code will
+			compile. The trouble is, whatever's inside the address
+			<var>0x200</var> could be anything. This is because after we wrote
+			<var>free(p)</var> in the previous block, we revoked our claims to it
+			&mdash; any other process on the computer was free to use it. Thus, line 1
+			will give us some garbage value, line 2 will overwrite whatever is in the
+			address <var>0x200</var>, and line 3 will revoke whatever property claim a
+			process has on the address <var>0x200</var>.
+		</p>
+		<p>
+			Line 3 is particularly deceiving, in that it's very easy to accidentally
+			free the same pointer twice. The last line below is a <b>nit</b> &mdash;
+			code that almost certainly will lead to a bug.
+		</p>
+		<pre class="language-c"><code>
+			int *p = malloc(sizeof(int));
+			*p = 17;
+			int *q = p;
+			free(p);
+			free(q); // nit
+		</code></pre>
+		<p>
+			Above, both <var>p</var> and <var>q</var> both point at the same block of
+			memory. When we call <var>free(p)</var>, we free that block of memory. And
+			when we call <var>free(q)</var>, we free it again.
+		</p>
+		<p>
+			This is a key point to understand with the <var>free()</var> function. In
+			the diagram above, <var>free()</var> does not change the contents of the
+			white box labeled <var>p</var>. That box will still contain the address
+			<var>0x200</var>. However, the pointer <var>p</var> no longer knows what's
+			inside the contents of <var>0x200</var>. It could be anything.
+		</p>
+		<p>
+			What happens if we never call <var>free()</var> on our pointers? Well, we
+			get something called a <b>memory leak</b>. Without calling
+			<var>free()</var>, the memory allocated through <var>malloc()</var> or
+			<var>calloc()</var> is treated as occupied. And if it's treated as
+			occupied, neither <var>malloc()</var> nor <var>calloc()</var> can touch it
+			when it's looking for memory to allocate. As the number of unfreed
+			pointers increases, we'll eventually run out of memory to allocate, or,
+			alternatively, we'll encounter a <i>heap overflow</i> &mdash; the heap
+			grows so large it crashes into the stack, causing unexpected behavior.
+		</p>
+		<p>
+			Along side the examples above, here are the five most common errors with
+			using the <var>free()</var> function:
+		</p>
+		<ol>
+			<li>Freeing a stack-allocated array:</li>
+			<pre class="language-c"><code>
+				int a[10];
+				free(a);
+			</code></pre>
+			<li>Freeing an uninitialized pointer:</li>
+			<pre class="language-c"><code>
+				int *a;
+				free(a);
+			</code></pre>
+			<li>Freeing-in-part (attempting to free only some bytes of the allocated memory):</li>
+			<pre class="language-c"><code>
+				int *a;
+				a = malloc(sizeof(int)*5);
+				free(a+1);
+			</code></pre>
+		</ol>
 	</section>
 </section>
 
@@ -2689,6 +2849,26 @@
 		sizeof(arr) = 20 bytes
 	</code></pre>
 
+	<section id="stack_v_heap_arrays">
+		<h3>Stack v. Heap Arrays</h3>
+		<p>
+			As we've seen, there are two regions of memory for storing arrays: The
+			<i>stack</i> and the <i>heap</i>. With the stack, allocated memory is
+			automatically cleaned up. It's also cheap, low cost, in the sense that its
+			efficient to allocate and deallocate memory.
+		</p>
+		<p>
+			On the other hand, with heap arrays, we have no automatic clean up &mdash;
+			we're responsible for cleaning up after ourselves. The upside to this is
+			that we have more precise control over when memory is deallocated, which
+			in turn gives us greater freedom in our memory usage.
+		</p>
+		<p>
+			When to use one or the other? The general rule of thumb is: Use the stack
+			whenever possible, use the heap when necessary.
+		</p>
+	</section>
+
 	<section id="arrays_as_function_arguments">
 		<h3>Arrays as Function Arguments</h3>
 		<p>
@@ -2872,4 +3052,11 @@
 		</div>
 	</figure>
 </section>
+
+<!-- <figure>
+			<div class="ptrDemo1"></div>
+		</figure> -->
+
+<!-- <script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerc/networkGraph.js"></script> -->
 {% endblock %}

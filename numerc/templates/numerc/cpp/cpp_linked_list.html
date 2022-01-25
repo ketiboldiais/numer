@@ -134,6 +134,78 @@
 			class="thirty-p"
 		/>
 	</figure>
+	<p>
+		<span class="topic">Notation.</span> In these materials, we use a particular
+		syntax to refer to individual nodes. Suppose we had the following linked
+		list:
+	</p>
+	<ul class="linkedlist">
+		<ul class="head">
+			<li>
+				<div>root</div>
+				<div>0x100</div>
+				<div>0x050</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>7</div>
+				<div>0x200</div>
+				<div>0x100</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>0x300</div>
+				<div>0x200</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>0x400</div>
+				<div>0x300</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>1</div>
+				<div>0</div>
+				<div>0x400</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		When we write ${r,}$ we are referring to the pointer to the first node in
+		the list. When we write ${h,}$ or ${n_1,}$ we are referring to the first
+		node in the list. And when we write ${t,}$ or ${n_\ell,}$ we are referring
+		to the last node in the list, the tailend.
+	</p>
+	<p>
+		When we refer to the data value of a particular node, say the second node,
+		we write:
+	</p>
+	<figure>
+		<div>
+			<p>${\large (n \mid D:5)}$</p>
+		</div>
+	</figure>
+	<p>or, alternatively:</p>
+	<figure>
+		<div>
+			<p>${\large (n_2 \mid D)}$</p>
+		</div>
+	</figure>
+	<p>
+		When we're referring to the node's pointee &mdash; the address inside the
+		particular node's <var>next</var> field &mdash; we write:
+	</p>
+	<figure>
+		<div>
+			<p>${\large (n_2 \mid N)}$</p>
+		</div>
+	</figure>
 </section>
 
 <section id="linked_list_data_structure">
@@ -5073,6 +5145,2617 @@
 			</div>
 		</div>
 	</section>
+</section>
+
+<section id="sort_test">
+	<h2>Sorted Test</h2>
+	<p>
+		Many algorithms on linked lists depend on whether a given linked list is
+		sorted. By sorted linked list, we mean a linked list whose data fields are
+		sorted according to a particular criteria. Most often, that criteria is
+		numeric. For example, the following linked list is sorted:
+	</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>3</div>
+				<div>0x200</div>
+				<div>0x100</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>0x300</div>
+				<div>0x200</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x400</div>
+				<div>0x300</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>12</div>
+				<div>0x500</div>
+				<div>0x400</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>16</div>
+				<div>0</div>
+				<div>0x500</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		To determine if a linked list is sorted, we use a <b>sorted test</b>. The
+		procedure is as follows:
+	</p>
+	<ol>
+		<li>
+			<p>
+				First, we have a pointer to the first node, and some variable ${m,}$ set
+				to the smallest possible valube for the linked list's type. For example,
+				with <var>int</var>, the smallest possible value is <var>-32768</var>.
+				With a pointer on the first node, we check if ${m < n[3]?}$
+			</p>
+			<ul class="linkedlist">
+				<ul class="rhl">
+					<li>
+						<div>3</div>
+						<div>0x200</div>
+						<div><span class="redText">p</span></div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>5</div>
+						<div>0x300</div>
+						<div>0x200</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>8</div>
+						<div>0x400</div>
+						<div>0x300</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>12</div>
+						<div>0x500</div>
+						<div>0x400</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>16</div>
+						<div>0</div>
+						<div>0x500</div>
+					</li>
+				</ul>
+			</ul>
+		</li>
+		<li>
+			<p>
+				Clearly yes. So, we change ${m = 3,}$ move the pointer to the next node,
+				and test, ${3 < n[5]?}$
+			</p>
+			<ul class="linkedlist">
+				<ul>
+					<li>
+						<div>3</div>
+						<div>0x200</div>
+						<div>0x100</div>
+					</li>
+				</ul>
+				<ul class="rhl">
+					<li>
+						<div>5</div>
+						<div>0x300</div>
+						<div><span class="redText">p</span></div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>8</div>
+						<div>0x400</div>
+						<div>0x300</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>12</div>
+						<div>0x500</div>
+						<div>0x400</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>16</div>
+						<div>0</div>
+						<div>0x500</div>
+					</li>
+				</ul>
+			</ul>
+		</li>
+		<li>
+			<p>
+				Once more, yes. We mutate ${m}$ to ${m = 5,}$ and we move to the next
+				node. Test again: Is ${5 < n[8]?}$
+			</p>
+			<ul class="linkedlist">
+				<ul>
+					<li>
+						<div>3</div>
+						<div>0x200</div>
+						<div>0x100</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>5</div>
+						<div>0x300</div>
+						<div>0x200</div>
+					</li>
+				</ul>
+				<ul class="rhl">
+					<li>
+						<div>8</div>
+						<div>0x400</div>
+						<div><span class="redText">p</span></div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>12</div>
+						<div>0x500</div>
+						<div>0x400</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>16</div>
+						<div>0</div>
+						<div>0x500</div>
+					</li>
+				</ul>
+			</ul>
+		</li>
+		<li>
+			<p>
+				Once again, yes. We modify ${m}$ to ${m = 8,}$ and we move to the next
+				node. Test: ${8 < 12?}$
+			</p>
+			<ul class="linkedlist">
+				<ul>
+					<li>
+						<div>3</div>
+						<div>0x200</div>
+						<div>0x100</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>5</div>
+						<div>0x300</div>
+						<div>0x200</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>8</div>
+						<div>0x400</div>
+						<div>0x300</div>
+					</li>
+				</ul>
+				<ul class="rhl">
+					<li>
+						<div>12</div>
+						<div>0x500</div>
+						<div><span class="redText">p</span></div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>16</div>
+						<div>0</div>
+						<div>0x500</div>
+					</li>
+				</ul>
+			</ul>
+		</li>
+		<li>
+			<p>Yes. Now ${m = 12.}$ Move to the next and test: ${12 < 16?}$</p>
+			<ul class="linkedlist">
+				<ul>
+					<li>
+						<div>3</div>
+						<div>0x200</div>
+						<div>0x100</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>5</div>
+						<div>0x300</div>
+						<div>0x200</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>8</div>
+						<div>0x400</div>
+						<div>0x300</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>12</div>
+						<div>0x500</div>
+						<div>0x400</div>
+					</li>
+				</ul>
+				<ul class="rhl">
+					<li>
+						<div>16</div>
+						<div>0</div>
+						<div><span class="redText">p</span></div>
+					</li>
+				</ul>
+			</ul>
+			<p>
+				Yes. We've reached the end of the list, so we can determine the list is
+				sorted. If any point we found that ${m \nleq n[d],}$ we would have
+				concluded that the list is not sorted.
+			</p>
+		</li>
+	</ol>
+	<p>In pseudocode:</p>
+	<figure>
+		<ol class="alg">
+			<li>fn isSorted(Node* head) -> boolean</li>
+			<ol>
+				<li>int currentMin = MIN_INT;</li>
+				<li>Node* p = head;</li>
+				<li>while (p != NULL):</li>
+				<ol>
+					<li>if (p->data < currentMin):</li>
+					<ol>
+						<li>return false;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>currentMin = p->data;</li>
+						<li>p = p->next;</li>
+					</ol>
+				</ol>
+				<li>return true;</li>
+			</ol>
+		</ol>
+	</figure>
+	<div class="demo">
+		<button>C++</button>
+		<div class="implementation">
+			<p>Here's an implementation in C++:</p>
+			<pre class="language-cpp"><code>
+				bool isSorted() {
+					int min = INT_MIN;
+					Node* p = head;
+					while (p != NULL) {
+						if (p->data < min) {
+							return false;
+						} else {
+							min = p->data;
+							p = p->next;
+						}
+					}
+					return true;
+			</code></pre>
+			<p>Testing this implementation:</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+				#include &lt;stdbool.h&gt;
+				
+				struct Node {
+					int data;
+					Node* next;
+					Node() {
+						data = 0;
+						next = NULL;
+					}
+					Node(int newData) {
+						data = newData;
+						next = NULL;
+					}
+				};
+				
+				class List {
+					Node* head;
+					Node* foot;
+					public:
+						List() {
+							head = new Node();
+							foot = head;
+						}
+						List(int data) {
+							head = new Node(data);
+							foot = head;
+						}
+						List(int arr[], int size) {
+							head = new Node(arr[0]);
+							foot = head;
+							for (int i = 1; i < size; i++) {
+								Node* freshNode = new Node(arr[i]);
+								foot->next = freshNode;
+								foot = freshNode;
+							}
+						}
+						bool isSorted() {
+							int min = INT_MIN;
+							Node* p = head;
+							while (p != NULL) {
+								if (p->data < min) {
+									return false;
+								} else {
+									min = p->data;
+									p = p->next;
+								}
+							}
+							return true;
+						}
+						void print() {
+							Node* p = NULL;
+							std::cout << "( ";
+							if (head != NULL) {
+								p = head;
+								while (p->next != NULL) {
+									std::cout << p->data << " ";
+									p = p->next;
+								}
+							} else {
+								std::cout << "empty";
+							}
+							std::cout << ")\n";
+						}
+				};
+				
+				int main() {
+					int arr1[] = {1,2,3,4,5};
+					int arr2[] = {1,2,8,4,5};
+					List aList = List(arr1, 5);
+					List bList = List(arr2, 5);
+					aList.print();
+					bList.print();
+					std::cout << "Sorted: " << aList.isSorted() << std::endl;
+					std::cout << "Sorted: " << bList.isSorted() << std::endl;
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				( 1 2 3 4 )
+				( 1 2 8 4 )
+				Sorted: 1
+				Sorted: 0
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="deleting_from_a_sorted_list">
+	<h2>Dedupe a Sorted List</h2>
+	<p>Suppose we have the following linked list:</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>2</div>
+				<div>0x200</div>
+				<div>0x100</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x300</div>
+				<div>0x200</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x400</div>
+				<div>0x300</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x500</div>
+				<div>0x400</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x600</div>
+				<div>0x500</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0</div>
+				<div>0x600</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		Notice that the list above is sorted, but we have duplicates: ${4}$ and
+		${8.}$ Many procedures require us to <b>dedupe</b> (<q>deduplicate</q>) this
+		list &mdash; removing nodes with duplicate values in their data fields.
+		Post-dedupe, we have the list:
+	</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>2</div>
+				<div>0x10</div>
+				<div>0x05</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x15</div>
+				<div>0x10</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0</div>
+				<div>0x15</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		The most straightforward way to dedupe a linked list is to start with two
+		pointers, one pointing to the list's head, the other pointing the node
+		immediately after:
+	</p>
+	<ul class="linkedlist">
+		<ul class="rhl">
+			<li>
+				<div>2</div>
+				<div>0x200</div>
+				<div><span class="redText">t</span></div>
+			</li>
+		</ul>
+		<ul class="ghl">
+			<li>
+				<div>4</div>
+				<div>0x300</div>
+				<div><span class="greenText">d</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x400</div>
+				<div>0x300</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x500</div>
+				<div>0x400</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x600</div>
+				<div>0x500</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0</div>
+				<div>0x600</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		Once there, we ask: ${v(d) = v(d)?}$ Where ${v}$ is a function returning the
+		data value of the pointee node. If it does not match, then we move
+		<var>d</var> to its next node, and <var>t</var> its next node. With the
+		pointers <var>d</var> and <var>t</var> positioned, we check again, ${v(d) =
+		v(t)?}$
+	</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>2</div>
+				<div>0x200</div>
+				<div>0x100</div>
+			</li>
+		</ul>
+		<ul class="rhl">
+			<li>
+				<div>4</div>
+				<div>0x300</div>
+				<div><span class="redText">t</span></div>
+			</li>
+		</ul>
+		<ul class="ghl">
+			<li>
+				<div>4</div>
+				<div>0x400</div>
+				<div><span class="greenText">d</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x500</div>
+				<div>0x400</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x600</div>
+				<div>0x500</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0</div>
+				<div>0x600</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		Here, we see that ${v(d) = v(t),}$ since ${v(n_2) = 4 = v(n_3) = 4.}$ If the
+		nodes match, we want to delete <var>d</var>'s pointee.<sup></sup> To do so,
+		we have <var>t</var>'s <var>next</var> field point to <var>d</var>'s next
+		field. Then, we <var>delete</var> <var>d</var>'s pointee. Then, we make
+		<var>d</var>'s <var>next</var> point to <var>t</var>'s next. More explicitly
+		with pseudocode:
+	</p>
+	<div class="note">
+		<p>
+			We can delete either <var>t</var>'s pointee or <var>d</var>'s pointee; it
+			makes no difference.
+		</p>
+	</div>
+	<figure>
+		<ol class="alg">
+			<li>fn dedupeSorted() -> void :</li>
+			<ol>
+				<li>Node* t = head;</li>
+				<li>Node* d = head->next;</li>
+				<li>while (d != NULL):</li>
+				<ol>
+					<li>if (t->data != d->data):</li>
+					<ol>
+						<li>t = d;</li>
+						<li>d = d->next;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>t->next = d->next;</li>
+						<li>delete d;</li>
+						<li>d = t->next;</li>
+					</ol>
+				</ol>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		With this implementation, we must scan through the entire list of ${n}$
+		nodes to dedupe. As such, this approach has a time complexity of ${O(n)}$
+		&mdash; linear time. Because the procedure must <em>always</em> traverse the
+		entire linked list to dedupe, the time complexity is always ${O(n).}$
+	</p>
+	<div class="demo">
+		<button>C</button>
+		<div class="implementation">
+			<p>Here's an implementation in C:</p>
+			<pre class="language-c"><code>
+				void dedupe(struct Node **head) {
+					struct Node *t = *head;
+					struct Node *d = (**head).next;
+					while (d != NULL) {
+						if ((*t).data != (*d).data) {
+							t = d;
+							d = (*d).next;
+						} else {
+							(*t).next = (*d).next;
+							free(d);
+							d = (*t).next;
+						}
+					}
+				}
+
+				// The function call:
+				dedupe(&list);
+			</code></pre>
+			<p>
+				Here's a line by line analysis of what's going on in the function above:
+			</p>
+			<table class="alg">
+				<thead>
+					<th>Statement</th>
+					<th>Description</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td><var>void dedupe(struct Node **head)</var></td>
+						<td>
+							The function header provides that <var>dedupe()</var> returns
+							nothing, and takes as an argument the memory address of a pointer.
+							The identifier <var>head</var> is a pointer to a pointer. In this
+							case, <var>**head = &list = &(Node *${p}$)</var>, where ${p}$ is
+							the pointer to some node.
+						</td>
+					</tr>
+					<tr>
+						<td><var>struct Node *t = *head;</var></td>
+						<td>
+							The contents of <var>head</var>, i.e., the address stored in
+							<var>head</var>, is stored in <var>t</var>. In other words,
+							<var>t</var> points to the address stored in <var>head</var>,
+							which is <var>&list</var>.
+						</td>
+					</tr>
+					<tr>
+						<td><var>struct Node *d = (**head).next</var></td>
+						<td>
+							The pointer <var>d</var> points to the address stored in
+							<var>head</var>'s <var>next</var> field. This is the next field of
+							the original list's head.
+						</td>
+					</tr>
+					<tr>
+						<td><var>while (d != NULL)</var></td>
+						<td>
+							<q>As long as <var>d</var>'s pointee is a valid address.</q>
+						</td>
+					</tr>
+					<tr>
+						<td><var>if ((*t).data != (*d).data)</var></td>
+						<td>
+							<q
+								>If the data in <var>t</var> (the data in the original list's
+								head) is not equal to the data in <var>d</var> (in the original
+								list, the node immediately after the head).</q
+							>
+						</td>
+					</tr>
+					<tr>
+						<td><var>t = d</var></td>
+						<td>
+							The address in <var>d</var> is now the address in <var>t</var>.
+							I.e., the pointer <var>t</var> now points to the node immediately
+							after its previous pointee.
+						</td>
+					</tr>
+					<tr>
+						<td><var>d = (*d).next</var></td>
+						<td>
+							The address stored in <var>d</var>'s next field is now the address
+							of <var>d</var>.
+						</td>
+					</tr>
+					<tr>
+						<td><var>(*t).next = (*d).next</var></td>
+						<td>
+							If the data in <var>t</var> is not equal to the data in
+							<var>d</var>, then the address in <var>d</var>'s next field
+							becomes the address in <var>t</var>'s next field.
+						</td>
+					</tr>
+					<tr>
+						<td><var>free(d)</var></td>
+						<td>Free the memory <var>d</var> points to.</td>
+					</tr>
+					<tr>
+						<td><var>d = (*t).next</var></td>
+						<td>
+							The address in <var>t</var>'s next field becomes the address in
+							<var>d</var>.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>Testing the implementation above:</p>
+			<pre class="language-c"><code>
+				#include &lt;stdlib.h&gt;
+				#include &lt;stdio.h&gt;
+				
+				struct Node {
+					int data;
+					struct Node *next;
+				};
+				
+				struct Node *newNode(int newData) {
+					struct     Node *newNode = malloc(sizeof(struct Node));
+					(*newNode).data          = newData;
+					(*newNode).next          = NULL;
+					return newNode;
+				}
+				
+				struct Node *List(int arr[], int arrSize) {
+					if (arrSize <= 0) {
+						return NULL;
+					} else {
+						struct Node* head = newNode(arr[0]);
+						struct Node* foot = head;
+						for (int i = 1; i < arrSize; i++) {
+							struct Node* freshNode = newNode(arr[i]);
+							       foot->next      = freshNode;
+							       foot            = freshNode;
+						}
+						return head;
+					}
+				}
+				
+				void print(struct Node *headRef) {
+					struct Node* foot = headRef;
+					printf("( ");
+					while (foot != NULL) {
+						printf("%d ", foot->data);
+						foot = foot->next;
+					}
+					printf(")\n");
+				}
+				
+				void dedupe(struct Node **head) {
+					struct Node *t = *head;
+					struct Node *d = (**head).next;
+					while (d != NULL) {
+						if ((*t).data != (*d).data) {
+							t = d;
+							d = (*d).next;
+						} else {
+							(*t).next = (*d).next;
+							free(d);
+							d = (*t).next;
+						}
+					}
+				}
+				
+				int main() {
+					int    size       = 6;
+					int    arr[]      = {1,3,3,8,8,8};
+					struct Node *list = List(arr, size);
+					print(list);
+					dedupe(&list);
+					print(list);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				( 1 3 3 8 8 8 )
+				( 1 3 8 )
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="reversing_a_linked_list">
+	<h2>List Reversal</h2>
+	<p>Suppose we have the following linked list:</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		When we perform a <b>list reversal</b>, we end up with the following list:
+	</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		As we can see, list reversals are useful for quickly reorienting data. If we
+		have a list whose numeric data are sorted in increasing order, reversing the
+		list the data sorted in decreasing order, and vice versa.
+	</p>
+	<p>There are two ways to reverse a linked list:</p>
+	<ol>
+		<li><i>list reversal by element</i>, or</li>
+		<li><i>list reversal by link</i>.</li>
+	</ol>
+	<p>
+		Let's consider the first approahch, reversing by element. To reverse by
+		element, we start by focusing on the head and the foot:
+	</p>
+	<ul class="linkedlist">
+		<ul class="ghl">
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul class="ghl">
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>Then, we swap the values stored in the two nodes's data fields:</p>
+	<ul class="linkedlist">
+		<ul class="ghl">
+			<li>
+				<div><span class="redText">8</span></div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul class="ghl">
+			<li>
+				<div><span class="redText">2</span></div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>After doing so, we move to the next nodes:</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul class="ghl">
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul class="ghl">
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>Once more we swap the values stored in the two nodes's data fields:</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul class="ghl">
+			<li>
+				<div><span class="redText">6</span></div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul class="ghl">
+			<li>
+				<div><span class="redText">4</span></div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>This yields our desired result:</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		To implement this procedure, we need a way to store the data values
+		swapping. The most straightforward way is to use an array. We traverse the
+		linked list, and initialize the array's elements with the current node's
+		data value. First, we declare an array whose size equals the number of nodes
+		in the list:
+	</p>
+	<div class="compare">
+		<ol class="alg">
+			<li>int size = List.length();</li>
+			<li>int arr[size];</li>
+		</ol>
+		<ol class="array">
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>&ThickSpace;</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>&ThickSpace;</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>&ThickSpace;</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>&ThickSpace;</li>
+				</ul>
+			</li>
+		</ol>
+	</div>
+	<p>
+		Next, we have a pointer <var>p</var> point to the head of the list, and
+		assign the data value stored in the head to the first index in the array:
+	</p>
+	<div class="compare">
+		<ol class="alg">
+			<li>int size = List.length();</li>
+			<li>int arr[size];</li>
+			<li>Node* p = head;</li>
+			<li>p->next = arr[0]</li>
+		</ol>
+
+		<ul class="linkedlist">
+			<ul class="rhl">
+				<li>
+					<div>2</div>
+					<div>&ThickSpace;</div>
+					<div><span class="redText">p</span></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>4</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>6</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>8</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+		</ul>
+
+		<ol class="array">
+			<li>
+				<ul>
+					<li>2</li>
+					<li>0</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>&ThickSpace;</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>&ThickSpace;</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>&ThickSpace;</li>
+				</ul>
+			</li>
+		</ol>
+	</div>
+
+	<p>To completely fill the array, we iterate:</p>
+
+	<div class="compare">
+		<ol class="alg">
+			<li>int size = List.length();</li>
+			<li>int arr[size];</li>
+			<li>int i = 0;</li>
+			<li>Node* p = head;</li>
+			<li>while (p != NULL):</li>
+			<ol>
+				<li>arr[i] = p->data;</li>
+				<li>p = p->next;</li>
+				<li>i++;</li>
+			</ol>
+		</ol>
+
+		<ul class="linkedlist">
+			<ul class="rhl">
+				<li>
+					<div>2</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul class="rhl">
+				<li>
+					<div>4</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul class="rhl">
+				<li>
+					<div>6</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul class="rhl">
+				<li>
+					<div>8</div>
+					<div>&ThickSpace;</div>
+					<div><span class="redText">p</span></div>
+				</li>
+			</ul>
+		</ul>
+
+		<ol class="array">
+			<li>
+				<ul>
+					<li>2</li>
+					<li>0</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>4</li>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>6</li>
+					<li>2</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>8</li>
+					<li>3</li>
+				</ul>
+			</li>
+		</ol>
+	</div>
+	<p>
+		Once we've finished initializing all of the array's elements, we bring
+		<var>p</var> back to the first node:
+	</p>
+	<div class="compare">
+		<ol class="alg">
+			<li>int size = List.length();</li>
+			<li>int arr[size];</li>
+			<li>int i = 0;</li>
+			<li>Node* p = head;</li>
+			<li>while (p != NULL):</li>
+			<ol>
+				<li>arr[i] = p->data;</li>
+				<li>p = p->next;</li>
+				<li>i++;</li>
+			</ol>
+			<li>p = head;</li>
+		</ol>
+
+		<ul class="linkedlist">
+			<ul>
+				<li>
+					<div>2</div>
+					<div>&ThickSpace;</div>
+					<div><span class="redText">p</span></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>4</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>6</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>8</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+		</ul>
+		<ol class="array">
+			<li>
+				<ul>
+					<li>2</li>
+					<li>0</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>4</li>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>6</li>
+					<li>2</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>8</li>
+					<li>3</li>
+				</ul>
+			</li>
+		</ol>
+	</div>
+	<p>
+		Then, we want to decrement <var>i</var> (our while-loop resulted in
+		<var>i = 4</var>), and use another while-loop to assign the contents in the
+		auxiliary array to the list:
+	</p>
+	<div class="compare">
+		<ol class="alg">
+			<li>int size = List.length();</li>
+			<li>int arr[size];</li>
+			<li>int i = 0;</li>
+			<li>Node* p = head;</li>
+			<li>while (p != NULL):</li>
+			<ol>
+				<li>arr[i] = p->data;</li>
+				<li>p = p->next;</li>
+				<li>i++;</li>
+			</ol>
+			<li>p = head;</li>
+			<li>i--;</li>
+			<li>while (p != NULL):</li>
+			<ol>
+				<li>p->data = A[i];</li>
+				<li>i--;</li>
+				<li>p = p->next;</li>
+			</ol>
+		</ol>
+
+		<ul class="linkedlist">
+			<ul class="ghl">
+				<li>
+					<div>8</div>
+					<div>&ThickSpace;</div>
+					<div><span class="redText"></span></div>
+				</li>
+			</ul>
+			<ul class="ghl">
+				<li>
+					<div>6</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul class="ghl">
+				<li>
+					<div>4</div>
+					<div>&ThickSpace;</div>
+					<div>&ThickSpace;</div>
+				</li>
+			</ul>
+			<ul class="ghl">
+				<li>
+					<div>2</div>
+					<div>&ThickSpace;</div>
+					<div><span class="redText">p</span></div>
+				</li>
+			</ul>
+		</ul>
+		<ol class="array">
+			<li>
+				<ul>
+					<li>2</li>
+					<li>0</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>4</li>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>6</li>
+					<li>2</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>8</li>
+					<li>3</li>
+				</ul>
+			</li>
+		</ol>
+	</div>
+	<p>
+		We have several costs with this approach. First, we need additional memory
+		for the auxiliary array, equal to the number nodes ${n}$ in the linked list.
+		Accordingly, the procedure above has a space complexity of ${O(n).}$ And in
+		terms of time, we must traverse the linked list twice, yielding a running
+		time function of roughly ${T(2n).}$ Asymptotically, this yields a time
+		complexity of ${O(n).}$
+	</p>
+	<p>
+		Next, let's consider reversing by link. With this approach, we just switch
+		the direction of each node's next pointer. ${n[8]}$'s next pointer points to
+		${n[6]}$ (rather than <var>NULL</var>), ${n[6]}$'s next pointer points to
+		${n[4]}$ (rather than ${n[8]}$), and ${n[4]'s}$ pointer points ${n[2]}$
+		(rather than ${n[6].}$) Doing so also results in our desired result:
+	</p>
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		Two reverse a list by link, we must use the technique of
+		<b>pointer sliding</b>. The idea is as such: We start with four pointers.
+		One pointing at the head called <var>h</var>, and three other pointers,
+		<var>d</var>, <var>t1</var>, and <var>t2</var>. The driver pointer
+		<var>d</var> initially points to the head, while <var>t1</var> and
+		<var>t2</var> are initially <var>NULL</var>:
+	</p>
+	<ul class="linkedlist">
+		<ul class="ptr">
+			<li>
+				<div>t2</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul class="ptr">
+			<li>
+				<div>t1</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div>h d</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		Then, as long as <var>d != NULL</var>, we want to <i>slide</i> the pointers
+		forward: <var>t2</var> points to <var>t1,</var> <var>t1</var> points to the
+		<var>p</var>, and <var>p</var> points to its <var>next</var> address. And
+		each time we slide, <var>t1</var>'s <var>next</var> pointer should point to
+		<var>t2</var>:
+	</p>
+	<ul class="linkedlist reversed">
+		<ul class="ptr">
+			<li>
+				<div><span class="blueText">t2</span></div>
+				<div>&ThickSpace;</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>t2 = NULL</div>
+				<div>0x100 h <span class="greenText">&uparrow; t1</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div>0x200 <span class="redText">&uparrow; d</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>0x300</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>0x400</div>
+			</li>
+		</ul>
+	</ul>
+	<p>Given that <var>d != NULL</var>, we slide forward again:</p>
+	<ul class="linkedlist reversed">
+		<ul>
+			<li>
+				<div>2</div>
+				<div>NULL</div>
+				<div>0x100 h <span class="blueText">&uparrow; t2</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x100</div>
+				<div>0x200 <span class="greenText">&uparrow; t1</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div>0x300 <span class="redText">&uparrow; d</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>0x400</div>
+			</li>
+		</ul>
+	</ul>
+	<p>Since <var>d</var> is not <var>NULL</var>, we slide forward once more:</p>
+	<ul class="linkedlist reversed">
+		<ul>
+			<li>
+				<div>2</div>
+				<div>NULL</div>
+				<div>0x100 h</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x100</div>
+				<div>0x200 <span class="blueText">&uparrow; t2</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>0x200</div>
+				<div>0x300 <span class="greenText">&uparrow; t1</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>&ThickSpace;</div>
+				<div>0x400 <span class="redText">&uparrow; d</span></div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		Since <var>d</var> is still not <var>NULL</var>, we slide one last time:
+	</p>
+	<ul class="linkedlist reversed">
+		<ul>
+			<li>
+				<div>2</div>
+				<div>NULL</div>
+				<div>0x100 h</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x100</div>
+				<div>0x200</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>0x200</div>
+				<div>0x300 <span class="blueText">&uparrow; t2</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x300</div>
+				<div>0x400 <span class="greenText">&uparrow; t1</span></div>
+			</li>
+		</ul>
+		<ul class="ptr">
+			<li>
+				<div>&ThickSpace;</div>
+				<div>d</div>
+				<div>&ThickSpace;</div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		The end result? A reversed linked list. Writing this procedure in
+		pseudocode:
+	</p>
+	<ol class="alg">
+		<li>d = head;</li>
+		<li>t1 = NULL;</li>
+		<li>t2 = NULL;</li>
+		<li>while (d != NULL):</li>
+		<ol>
+			<li>t2 = t1;</li>
+			<li>t1 = d;</li>
+			<li>d = d => next;</li>
+			<li>t1->next = t2;</li>
+		</ol>
+		<li>head = q;</li>
+	</ol>
+	<p>
+		As we can see, reversing links is the preferred approach for list reversal.
+		Why? Because reversing-by-link consumes far less memory. We just need three
+		more pointers. Compare that with reverse-by-element, which requires an
+		entire array. With our examples, we've been using <var>int</var>. But the
+		data field for each node in the linked list could very well contain arrays,
+		or even larger data structures. This would lead to an even larger memory
+		consumption.
+	</p>
+	<p>
+		Although both approaches take ${O(n)}$ time &mdash; since we must traverse
+		the linked list &mdash; reverse-by-link consumes much less memory. In fact,
+		whenever we're called to move nodes in a linked list, our first
+		consideration should always be to manipulate links, rather than data fields.
+	</p>
+	<section id="recursive_reverse">
+		<h3>Recursive List Reversal</h3>
+		<p>
+			With recursive list reversal, we want to reverse the link of each node as
+			we're returning from the function call:
+		</p>
+		<ol class="alg">
+			<li>fn reverse(struct Node **head) -> void :</li>
+			<ol>
+				<li>fn reverseLink(struct Node *q, struct Node *p) -> void:</li>
+				<ol>
+					<li>if (p != NULL):</li>
+					<ol>
+						<li>reverseLink(p, p->next);</li>
+						<li>p->next = q;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>*head = q;</li>
+					</ol>
+				</ol>
+				<li>reverseLink(NULL, *head);</li>
+			</ol>
+		</ol>
+		<p>The function's call would be written as:</p>
+		<ol class="alg">
+			<li>reverse(&list)</li>
+		</ol>
+		<p>
+			To understand how this function works, it's helpful to trace the
+			operations. Suppose we called it on this list:
+		</p>
+		<ul class="linkedlist">
+			<ul class="head">
+				<li>
+					<div>list</div>
+					<div>0x1</div>
+					<div>0x5</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>0x2</div>
+					<div>0x1</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>0x3</div>
+					<div>0x2</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>NULL</div>
+					<div>0x4</div>
+				</li>
+			</ul>
+		</ul>
+		<p>Calling <var>reverse()</var> results in the following:</p>
+
+		<ol class="alg">
+			<li>**head = &list</li>
+		</ol>
+		<ul class="linkedlist reversed">
+			<ul class="head">
+				<li>
+					<div>list</div>
+					<div>0x1</div>
+					<div>head->0x5</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>0x2</div>
+					<div>0x1</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>0x3</div>
+					<div>0x2</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>NULL</div>
+					<div>0x4</div>
+				</li>
+			</ul>
+		</ul>
+
+		<p>
+			Inside <var>reverse()</var>, we call <var>reverseLink()</var>. This
+			results in <var>q</var> pointing to nowhere and <var>p</var> pointing to
+			the the pointer <var>head</var> points to.
+		</p>
+
+		<ol class="alg">
+			<li>reverse:</li>
+			<ol>
+				<li>**head = &list</li>
+				<li>reverseLink:</li>
+				<ol>
+					<li>struct Node *q = NULL;</li>
+					<li>struct Node *p = *head</li>
+				</ol>
+			</ol>
+		</ol>
+		<ul class="linkedlist reversed">
+			<ul class="ptr">
+				<li>
+					<div>q</div>
+					<div>&ThinSpace;</div>
+					<div>&ThinSpace;</div>
+				</li>
+			</ul>
+			<ul class="head">
+				<li>
+					<div>list</div>
+					<div>0x1</div>
+					<div>head->0x5 <span class="redText">&uparrow; p</span></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>0x2</div>
+					<div>0x1</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>0x3</div>
+					<div>0x2</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>NULL</div>
+					<div>0x4</div>
+				</li>
+			</ul>
+		</ul>
+
+		<p>
+			Once these pointers are initialized, we branch. If <var>p != NULL</var>,
+			we execute the if-block. Otherwise, we execute the else-block. Here,
+			<var>p</var> is a nonnull pointer, so we make the recursive call
+			<var>reverseLink(p, p->next)</var>.
+		</p>
+
+		<ol class="alg">
+			<li>reverse:</li>
+			<ol>
+				<li>**head = &list</li>
+				<li>reverseLink:</li>
+				<ol>
+					<li>struct Node *q = NULL;</li>
+					<li>struct Node *p = *head</li>
+					<li>reverseLink:</li>
+					<ol>
+						<li>struct Node *q = p</li>
+						<li>struct Node *p = p->next</li>
+					</ol>
+				</ol>
+			</ol>
+		</ol>
+		<ul class="linkedlist reversed">
+			<ul class="ptr">
+				<li>
+					<div>q</div>
+					<div>&ThinSpace;</div>
+					<div>&ThinSpace;</div>
+				</li>
+			</ul>
+			<ul class="head">
+				<li>
+					<div>list</div>
+					<div>0x1</div>
+					<div>
+						head->0x5 <span class="greyText">&uparrow; p</span>
+						<span class="redText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>0x2</div>
+					<div><span class="redText">&uparrow; p</span></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>0x3</div>
+					<div>0x2</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>NULL</div>
+					<div>0x4</div>
+				</li>
+			</ul>
+		</ul>
+		<p>
+			We again check our test condition. Once more, <var>p != NULL</var>, so we
+			make another recursive call:
+		</p>
+		<ol class="alg">
+			<li>reverse:</li>
+			<ol>
+				<li>**head = &list</li>
+				<li>reverseLink:</li>
+				<ol>
+					<li>struct Node *q = NULL;</li>
+					<li>struct Node *p = *head</li>
+					<li>reverseLink:</li>
+					<ol>
+						<li>struct Node *q = p</li>
+						<li>struct Node *p = p->next</li>
+						<li>reverseLink:</li>
+						<ol>
+							<li>struct Node *q = p</li>
+							<li>struct Node *p = p->next</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</ol>
+		<ul class="linkedlist reversed">
+			<ul class="ptr">
+				<li>
+					<div>q</div>
+					<div>&ThinSpace;</div>
+					<div>&ThinSpace;</div>
+				</li>
+			</ul>
+			<ul class="head">
+				<li>
+					<div>list</div>
+					<div>0x1</div>
+					<div>
+						head->0x5 <span class="greyText">&uparrow; p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>0x2</div>
+					<div>
+						<span class="greyText">&uparrow; p</span>
+						<span class="redText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>0x3</div>
+					<div><span class="redText">&uparrow; p</span></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>NULL</div>
+					<div>0x4</div>
+				</li>
+			</ul>
+		</ul>
+		<p>
+			We again check our test condition, and find that <var>p</var> is the
+			nonnull pointer, so we make another recursive call:
+		</p>
+		<ol class="alg">
+			<li>reverse:</li>
+			<ol>
+				<li>**head = &list</li>
+				<li>reverseLink:</li>
+				<ol>
+					<li>struct Node *q = NULL;</li>
+					<li>struct Node *p = *head</li>
+					<li>reverseLink:</li>
+					<ol>
+						<li>struct Node *q = p</li>
+						<li>struct Node *p = p->next</li>
+						<li>reverseLink:</li>
+						<ol>
+							<li>struct Node *q = p</li>
+							<li>struct Node *p = p->next</li>
+							<li>reverseLink:</li>
+							<ol>
+								<li>struct Node *q = p</li>
+								<li>struct Node *p = p->next</li>
+							</ol>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</ol>
+		<ul class="linkedlist reversed">
+			<ul class="ptr">
+				<li>
+					<div>q</div>
+					<div>&ThinSpace;</div>
+					<div>&ThinSpace;</div>
+				</li>
+			</ul>
+			<ul class="head">
+				<li>
+					<div>list</div>
+					<div>0x1</div>
+					<div>
+						head->0x5 <span class="greyText">&uparrow; p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>0x2</div>
+					<div>
+						<span class="greyText">&uparrow; p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>0x3</div>
+					<div>
+						<span class="greyText">&uparrow; p</span>
+						<span class="redText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>NULL</div>
+					<div><span class="redText">&uparrow; p</span></div>
+				</li>
+			</ul>
+		</ul>
+		<p>
+			Once more we test whether <var>p != NULL</var>. Again, it is not. So we
+			make one last recursive call:
+		</p>
+		<ol class="alg">
+			<li>reverse:</li>
+			<ol>
+				<li>**head = &list</li>
+				<li>reverseLink:</li>
+				<ol>
+					<li>struct Node *q = NULL;</li>
+					<li>struct Node *p = *head</li>
+					<li>reverseLink:</li>
+					<ol>
+						<li>struct Node *q = p</li>
+						<li>struct Node *p = p->next</li>
+						<li>reverseLink:</li>
+						<ol>
+							<li>struct Node *q = p</li>
+							<li>struct Node *p = p->next</li>
+							<li>reverseLink:</li>
+							<ol>
+								<li>struct Node *q = p</li>
+								<li>struct Node *p = p->next</li>
+								<li>reverseLink:</li>
+								<ol>
+									<li>struct Node *q = p</li>
+									<li>struct Node *p = p->next</li>
+								</ol>
+							</ol>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</ol>
+		<ul class="linkedlist reversed">
+			<ul class="ptr">
+				<li>
+					<div>q</div>
+					<div>&ThinSpace;</div>
+					<div>&ThinSpace;</div>
+				</li>
+			</ul>
+			<ul class="head">
+				<li>
+					<div>list</div>
+					<div>0x1</div>
+					<div>
+						head->0x5 <span class="greyText">&uparrow; p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>0x2</div>
+					<div>
+						<span class="greyText">&uparrow; p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>0x3</div>
+					<div>
+						<span class="greyText">&uparrow; p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>NULL</div>
+					<div>
+						<span class="greyText">&uparrow; p</span>
+						<span class="redText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul class="ptr">
+				<li>
+					<div>p</div>
+					<div>&ThinSpace;</div>
+					<div>&ThinSpace;</div>
+				</li>
+			</ul>
+		</ul>
+		<p>
+			With this last call, <var>p</var> is now the null pointer, so we execute
+			the line <var>p->next = q</var>.
+		</p>
+		<ol class="alg">
+			<li>reverse:</li>
+			<ol>
+				<li>**head = &list</li>
+				<li>reverseLink:</li>
+				<ol>
+					<li>struct Node *q = NULL;</li>
+					<li>struct Node *p = *head</li>
+					<li>reverseLink:</li>
+					<ol>
+						<li>struct Node *q = p</li>
+						<li>struct Node *p = p->next</li>
+						<li>reverseLink:</li>
+						<ol>
+							<li>struct Node *q = p</li>
+							<li>struct Node *p = p->next</li>
+							<li>reverseLink:</li>
+							<ol>
+								<li>struct Node *q = p</li>
+								<li>struct Node *p = p->next</li>
+								<li>reverseLink:</li>
+								<ol>
+									<li>struct Node *q = p</li>
+									<li>struct Node *p = p->next</li>
+									<li>p->next = q;</li>
+								</ol>
+							</ol>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</ol>
+		<p>This causes a cascade:</p>
+		<ul class="linkedlist reversed">
+			<ul class="ptr">
+				<li>
+					<div>q</div>
+					<div>&ThinSpace;</div>
+					<div>&ThinSpace;</div>
+				</li>
+			</ul>
+			<ul class="head">
+				<li>
+					<div>list</div>
+					<div>0x1</div>
+					<div>
+						<span class="redText"><-- p</span>
+						head
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>0x2</div>
+					<div>
+						<span class="redText"><-- p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>0x3</div>
+					<div>
+						<span class="redText"><-- p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>NULL</div>
+					<div>
+						<span class="redText"><-- p</span>
+						<span class="greyText">&uparrow; q</span>
+					</div>
+				</li>
+			</ul>
+			<ul class="ptr">
+				<li>
+					<div><-- p</div>
+					<div>&ThinSpace;</div>
+					<div>&ThinSpace;</div>
+				</li>
+			</ul>
+		</ul>
+		<p>
+			With the last return call, we have <var>p == NULL</var>, so we execute the
+			else block: <var>*head = q</var>.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>
+					Below is an implementation in C. Note that because C does not allow
+					nested functions, the helper function <var>reverseLink()</var> must be
+					written separately:
+				</p>
+				<pre class="language-c"><code>
+					void reverseLink(struct Node **head, struct Node *q, struct Node *p) {
+						if (p != NULL) {
+							reverseLink(head, p, (*p).next);
+							(*p).next = q;
+						} else {
+							*head = q;
+						}
+					}
+					
+					void reverse(struct Node **head) {
+						reverseLink(head, NULL, *head);
+					}
+				</code></pre>
+				<p>Testing:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdio.h&gt;
+					
+					struct Node {
+						int data;
+						struct Node *next;
+					};
+					
+					struct Node *newNode(int newData) {
+						struct       Node *freshNode = malloc(sizeof(struct Node));
+						(*freshNode).data            = newData;
+						(*freshNode).next            = NULL;
+						return freshNode;
+					}
+					
+					struct Node *list(int arr[], int size) {
+						struct Node *head = newNode(arr[0]);
+						struct Node *foot = head;
+						for (int i = 1; i < size; i++) {
+							struct  Node *freshNode = newNode(arr[i]);
+							(*foot).next            = freshNode;
+							        foot            = freshNode;
+						}
+						return head;
+					} 
+					
+					void print(struct Node *headPtr) {
+						printf("(  ");
+						if (headPtr == NULL) {
+							printf("empty \n");
+						} else {
+							while (headPtr != NULL) {
+								printf("%'d  ", (*headPtr).data);
+								headPtr = (*headPtr).next;
+							}
+						}
+						printf(")\n");
+					}
+					
+					void reverseLink(struct Node **head, struct Node *q, struct Node *p) {
+						if (p != NULL) {
+							reverseLink(head, p, (*p).next);
+							(*p).next = q;
+						} else {
+							*head = q;
+						}
+					}
+					
+					void reverse(struct Node **head) {
+						reverseLink(head, NULL, *head);
+					}
+					
+					
+					int main() {
+						int    size        = 5;
+						int    arr[]       = {1,2,3,4,5};
+						struct Node* aList = list(arr, size);
+						print(aList);
+						reverse(&aList);
+						print(aList);
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					(  1  2  3  4  5  )
+					(  5  4  3  2  1  )
+				</code></pre>
+			</div>
+		</div>
+	</section>
+</section>
+
+<section id="concatenating_lists">
+	<h2>Concatenating Lists</h2>
+	<p>Say we had the following lists:</p>
+	<div class="compare">
+		<ul class="linkedlist">
+			<ul class="head">
+				<li>
+					<div>list1</div>
+					<div>&ThickSpace;</div>
+					<div></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>1</div>
+					<div>&ThickSpace;</div>
+					<div></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>2</div>
+					<div>&ThickSpace;</div>
+					<div></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>3</div>
+					<div>&ThickSpace;</div>
+					<div></div>
+				</li>
+			</ul>
+		</ul>
+		<ul class="linkedlist">
+			<ul class="head">
+				<li>
+					<div>list2</div>
+					<div>&ThickSpace;</div>
+					<div></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>4</div>
+					<div>&ThickSpace;</div>
+					<div></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>5</div>
+					<div>&ThickSpace;</div>
+					<div></div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<div>6</div>
+					<div>&ThickSpace;</div>
+					<div></div>
+				</li>
+			</ul>
+		</ul>
+	</div>
+	<p>
+		We want to take these one of these two lists, and <i>concatenate</i> it with
+		the other. Suppose the function is called <var>concat()</var>. If we call
+		<var>concat(list1, list2)</var>, we get:
+	</p>
+	<ul class="linkedlist">
+		<ul class="head">
+			<li>
+				<div>list1</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>1</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+	</ul>
+	<p>And if we call <var>concat(list2, list1)</var>, we get:</p>
+	<ul class="linkedlist">
+		<ul class="head">
+			<li>
+				<div>list2</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>1</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+	</ul>
+	<p>
+		The procedure here is straightforward. If we call
+		<var>concat(list1, list2)</var> the <var>next</var> pointer for
+		<var>list1</var>'s foot should point to <var>list2</var>'s head. Hence, all
+		that's required is to have a pointer on the first list argument's foot. One
+		way to do so is to initialize a pointer <var>p</var> initially at
+		<var>list1</var>'s head, then traverse the list to the foot. Once there, we
+		have <var>p</var>'s pointee point to <var>list2</var>'s head:
+	</p>
+	<ol class="alg">
+		<li>fn concat(*Node list1, Node* list2) -> void:</li>
+		<ol>
+			<li>Node* p = list1;</li>
+			<li>while (p -> next != NULL):</li>
+			<ol>
+				<li>p = p->next;</li>
+			</ol>
+			<li>p->next = list2;</li>
+		</ol>
+	</ol>
+	<p>
+		Because we must traverse the list to find the first argument's foot, the
+		procedure above has a time complexity of ${O(n).}$ We can, of course, reduce
+		this to ${O(1)}$ if we ensure that every list we create contains pointers to
+		the foot and pointers to the head. In that case, all that's required is to
+		have the first list's foot's pointee's <var>next</var> field point to the
+		second list's head.
+	</p>
+	<div class="demo">
+		<button>C</button>
+		<div class="implementation">
+			<p>Here's an implementation in C:</p>
+			<pre class="language-c"><code>
+				struct Node *concat(struct Node *list1, struct Node *list2) {
+					struct Node *ptr;
+					if (list1 == NULL) {
+						list1 = list2;
+						return list1;
+					}
+					if (list2 == NULL) {
+						return list1;
+					}
+					ptr = list1;
+					while ((*ptr).next != NULL) {
+						ptr = (*ptr).next;
+					}
+					(*ptr).next = list2;
+					return list1;
+				}
+			</code></pre>
+			<p>Testing the implementation above:</p>
+			<pre class="language-c"><code>
+				#include &lt;stdlib.h&gt;
+				#include &lt;stdio.h&gt;
+
+				struct Node {
+					int data;
+					struct Node *next;
+				};
+
+				struct Node *newNode(int newData) {
+					struct Node* freshNode = malloc(sizeof(struct Node));
+					(*freshNode).data = newData;
+					(*freshNode).next = NULL;
+					return freshNode;
+				}
+
+				struct Node *List(int arr[], int size) {
+					struct Node *head = newNode(arr[0]);
+					struct Node *foot = head; 
+					for (int i = 1; i < size; i++) {
+						struct Node *freshNode = newNode(arr[i]);
+						(*foot).next = freshNode;
+						foot = freshNode;
+					}
+					return head;
+				} 
+
+				void print(struct Node *p) {
+					printf("( ");
+					if (p != NULL) {
+						while (p != NULL) {
+							printf("%d ", (*p).data);
+							p = (*p).next;
+						}
+					} else {
+						printf("empty ");
+					}
+					printf(")\n");
+				}
+
+				struct Node *concat(struct Node *list1, struct Node *list2) {
+					struct Node *ptr;
+					if (list1 == NULL) {
+						list1 = list2;
+						return list1;
+					}
+					if (list2 == NULL) {
+						return list1;
+					}
+					ptr = list1;
+					while ((*ptr).next != NULL) {
+						ptr = (*ptr).next;
+					}
+					(*ptr).next = list2;
+					return list1;
+				}
+
+				int main() {
+					int arr1[] = {1,2,3};
+					int arr2[] = {6,7,8};
+					int arrSize = 3;
+					struct Node* aList = List(arr1, arrSize);
+					print(aList);
+					struct Node* bList = List(arr2, arrSize);
+					print(bList);
+					struct Node* cList = concat(aList, bList);
+					print(aList);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				( 1 2 3 )
+				( 6 7 8 )
+				( 1 2 3 6 7 8 )
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="merging_lists">
+	<h2>Merging Lists</h2>
 </section>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>

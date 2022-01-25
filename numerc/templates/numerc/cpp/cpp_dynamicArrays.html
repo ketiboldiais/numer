@@ -36,8 +36,9 @@
 	</div>
 </section>
 
-<section id="static_lists">
-	<h2>Sequences: Basic Operations</h2>
+<section id="array_basic_operations">
+	<h2>Tuples: Basic Operations</h2>
+
 	<p>
 		We turn our attention first to the tuple. Because tuples are of fixed size,
 		whenever we talk about tuples, we talk about some ${n-}$tuple. For example,
@@ -46,6 +47,7 @@
 		<span class="italicsText">quadruple</span>, and so on. Because tuples are of
 		fixed size, they necessarily have a smaller API.
 	</p>
+
 	<p>
 		Examining these data and properties, we proceed to examining implementation
 		approaches. The first implementation approach we consider is the
@@ -54,192 +56,373 @@
 		data structures depend on arrays, so we spend a considerable amount of time
 		exploring them in depth.
 	</p>
-	<section id="creating_an_array">
-		<h3>Creating an Array</h3>
+
+	<section id="auxiliary_functions">
+		<h3>Auxiliary Functions</h3>
 		<p>
-			There are two ways to create arrays: dynamically or statically. Let's
-			consider the dynamic approach. The first step is to declare a pointer. For
-			now, let's stick to
-			<var>int</var> type data:
+			Implementing our tuple ADT as a class, there are a few auxiliary functions
+			that we will use as helpers for more complex procedures. These helper
+			functions are explained below.
 		</p>
-		<ol class="alg">
-			<li>int* arr;</li>
-		</ol>
-		<p>Next, we dynamically allocate memory:</p>
-		<ol class="alg">
-			<li>int* arr = new int[size];</li>
-		</ol>
+
+		<section id="array_constructor">
+			<h4>Tuple Constructor</h4>
+			<p>
+				To construct a tuple, we must create an array. There are two ways to
+				create arrays: dynamically or statically. Let's consider the dynamic
+				approach. The first step is to declare a pointer. For now, let's stick
+				to
+				<var>int</var> type data:
+			</p>
+			<ol class="alg">
+				<li>int* arr;</li>
+			</ol>
+			<p>Next, we dynamically allocate memory:</p>
+			<ol class="alg">
+				<li>int* arr = new int[size];</li>
+			</ol>
+			<p>
+				Now, in some languages like C++, we want more genericism. This means
+				using a <b>template</b>:
+			</p>
+			<ol class="alg">
+				<li>template&lt;class ${t}$&gt;</li>
+				<li>int* arr = new int[size];</li>
+			</ol>
+			<p>
+				By using a template, we can create more general arrays, rather than
+				using a specific data type like <var>int</var>:
+			</p>
+			<ol class="alg">
+				<li>template&lt;class ${t}$&gt;</li>
+			</ol>
+			<p>
+				By writing the code above, we've now created a
+				<b>generic array</b> &mdash; an array whose type is determined at
+				<i>runtime</i>.
+			</p>
+			<p>
+				Now, because the array has no members upon allocation, we say that the
+				array has a length of ${0}$ initially:
+			</p>
+			<ol class="alg">
+				<li>template&lt;class ${t}$&gt;</li>
+				<li>${t}$* arr = new ${t}$[size];</li>
+				<li>arr.length = 0;</li>
+			</ol>
+		</section>
+
+		<section id="array_destructor">
+			<h4>Tuple Destructor</h4>
+			<p>
+				Alongside the tuple's constructor, we also want a destructor. This
+				serves as a way of cleaning up whatever memory we've allocated for our
+				tuple.
+			</p>
+		</section>
+
+		<section id="is_full">
+			<h4>Full-capacity Tester</h4>
+			<p>
+				Given that arrays have a fixed size, our tuple ADT should also include a
+				<b>capacity tester</b>. This returns <var>true</var> if we've reached
+				the maximum possible size for the array, and <var>false</var> otherwise.
+				We'll call this function <var>isFull()</var>.
+			</p>
+		</section>
+
+		<section id="is_empty">
+			<h4>Empty Tester</h4>
+			<p>
+				Similar to <var>isFull()</var>, it's also helpful to know if the array
+				is empty. We'll call this function <var>isEmpty()</var>. The function
+				returns <var>true</var> if the array is empty; otherwise
+				<var>false</var>.
+			</p>
+		</section>
+
+		<section id="get_size">
+			<h4>Size Getter</h4>
+			<p>
+				Related to the full-capacity tester, we'll want a function that returns
+				the size of the array. Note that this is separate from the
+				<i>length</i> property, discussed below. We'll call size getter
+				<var>sizeOf()</var>. This will return the <i>maximum size</i> of the
+				array.
+			</p>
+		</section>
+
+		<section id="get_length">
+			<h4>Length Getter</h4>
+			<p>
+				The length of an array is distinguised from its size. In this case, an
+				array's <i>length</i> corresponds to the current number of elements in
+				the array. In these materials, <var>size</var> does not always equal
+				<var>length</var>. To illustrate, an array of
+				<var>size = 4</var> results in the following:
+			</p>
+			<div class="compare">
+				<ol class="array">
+					<li>
+						<ul>
+							<li>&ThickSpace;</li>
+							<li>0</li>
+						</ul>
+					</li>
+					<li>
+						<ul>
+							<li>&ThickSpace;</li>
+							<li>1</li>
+						</ul>
+					</li>
+					<li>
+						<ul>
+							<li>&ThickSpace;</li>
+							<li>2</li>
+						</ul>
+					</li>
+					<li>
+						<ul>
+							<li>&ThickSpace;</li>
+							<li>3</li>
+						</ul>
+					</li>
+				</ol>
+			</div>
+			<p>
+				This array has a size of four, but a length of ${0}$ &mdash; there are
+				no elements in the array. If, however, we initialized some of the
+				spaces:
+			</p>
+			<div class="compare">
+				<ol class="array">
+					<li>
+						<ul>
+							<li>2</li>
+							<li>0</li>
+						</ul>
+					</li>
+					<li>
+						<ul>
+							<li>3</li>
+							<li>1</li>
+						</ul>
+					</li>
+					<li>
+						<ul>
+							<li>4</li>
+							<li>2</li>
+						</ul>
+					</li>
+					<li>
+						<ul>
+							<li>&ThickSpace;</li>
+							<li>3</li>
+						</ul>
+					</li>
+				</ol>
+			</div>
+			<p>
+				Now we have an array of size ${4}$ with a length of ${3.}$ The size of
+				an array is static, but the length may increase or decrease.
+			</p>
+		</section>
+
+		<section id="print_an_array">
+			<h4>Print</h4>
+			<p>
+				First, the <span class="monoText">print()</span> operation. To print a
+				tuple, we must iterate over each of the tuple's element, displaying each
+				element to the console (i.e., with something lik
+				<span class="monoText">cout</span> or
+				<span class="monoText">printf</span>). Because we're iterating over each
+				element, the <span class="monoText">print()</span> operation has a time
+				complexity of ${O(n)}$ given the ${n-}$tuple. This is linear time.
+			</p>
+		</section>
+
+		<section id="appending_an_element">
+			<h4>Appending</h4>
+			<p>
+				Second, the
+				<span class="monoText">append(${x}$)</span> operation, where ${x}$ is an
+				element. To append an element ${x,}$ we insert the element ${x}$ at the
+				very end of the tuple. In other words, &#8220;Insert this element ${x}$
+				at the first instance of free space.&#8221; Thus, given an array of
+				length 10 and size 5,
+				<span class="monoText">append(${x}$)</span> inserts the element ${x}$ at
+				${i = 6.}$ For <span class="monoText">append(${x}$)</span>, we can think
+				of this as performing three distinct operations &mdash; accessing the
+				array at ${i = \textit{length},}$ assigning the element ${x}$ to that
+				particular index, and updating the ${\textit{length}}$ property. Hence,
+				${O(3).}$ Applying complexity analysis, this is really ${f(n) = 3.}$
+				Rewriting this as ${f(n) = 3n^0,}$ we have ${O(n^0),}$ which reduces to
+				${O(1).}$ I.e., constant time.
+			</p>
+		</section>
+
+		<section id="inserting_an_element">
+			<h4>Inserting</h4>
+			<p>
+				With the
+				<span class="monoText">insert(${i}$, ${x}$)</span> operation, we're
+				inserting an element ${x}$ at the index ${i.}$ For example, suppose we
+				have the tuple ${(0, 1, 2, 3, 4, \_, \_, \_).}$ This is a tuple of size
+				8, with length 5. If we write
+				<span class="monoText">insert(${2}$, ${9}$)</span>, we would have the
+				tuple ${(0, 9, 1, 2, 3, 4, \_, \_).}$ Notice that this causes a shift.
+				To perform this shift, have to use a loop. In pseudocode:
+			</p>
+			<figure class="math-display">
+				<div>
+					<pre class="language-pseudo"><code>
+						insert(index, x) {
+							for (i = length; i > index, i--) {
+								A[i] = A[i - 1];
+							}
+							A[index] = x;
+							length++;
+						}
+					</code></pre>
+				</div>
+			</figure>
+			<p>
+				The operation of inserting an element into a tuple provides an
+				opportunity to examine the different forms of complexity analysis. If we
+				insert the element at the very end of the tuple &mdash;
+				<span class="monoText">insert(${length}$, ${x}$)</span> &mdash; no
+				shifting occurs. Accordingly, this operation has a time complexity of
+				order ${O(1),}$ constant time. However, if we insert the element at the
+				very beginning &mdash;
+				<span class="monoText">insert(${0}$, ${x}$)</span> &mdash; then we must
+				shift <span class="underlineText">all</span> the elements. Given a tuple
+				of length ${n,}$ this operation would require iterating over all ${n}$
+				elements. This operation's time complexity is of order ${O(n).}$
+			</p>
+			<p>
+				Examining these possibilities, we have a best-case scenario and a
+				worst-case scenario. The best-case scenario is ${\Omega(1),}$ constant
+				time, which occurs only if we insert at the very end. The worst-case
+				scenario is ${O(n),}$ linear time, which occurs if we insert at the
+				origin, ${i = 0.}$
+			</p>
+		</section>
+
+		<section id="deleting_an_element">
+			<h4>Deletion</h4>
+			<p>
+				The operation
+				<span class="monoText">deleteElementAt(${i}$)</span> deletes, or
+				removes, an element at the index ${i.}$ Suppose we have the array ${(1,
+				5, 8, 3, 2, \_, \_, \_).}$ In this example, there are three cases for
+				deletion: <span class="monoText">deleteElementAt(${0}$)</span>,
+				<span class="monoText">deleteElementAt(${\textit{length}}$)</span>, and
+				<span class="monoText">deleteElementAt(${n}$)</span>, where ${0 < n <
+				\textit{length}.}$ The two problematic cases are the first and the
+				third. They are problematic because if we delete an element other than
+				the last, then we would have gaps in the array:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>
+						<span class="monoText">deleteElementAt(0)</span> ${ \implies (\_, 5,
+						8, 3, 2, \_, \_, \_)}$
+					</p>
+					<p>
+						<span class="monoText">deleteElementAt(3)</span> ${ \implies (0, 5,
+						8, \_, 2, \_, \_, \_)}$
+					</p>
+				</div>
+			</figure>
+			<p>
+				These gaps lead to all sorts of problems, particularly with respect to
+				iteration. One way to avoid these problems is to manually check if a
+				given index has an element. This is not a good approach. The better
+				approach is to get right to the root of the problem &mdash;
+				&#8220;holes&#8221; in the array. We can prevent these holes by shifting
+				elements to the right whenever one of the two cases above occurs. Thus:
+			</p>
+			<figure class="math-display">
+				<div>
+					<p>
+						<span class="monoText">deleteElementAt(3)</span> ${ \implies (0, 5,
+						8, \_, 2, \_, \_, \_) \implies (0, 5, 8, 2, \_, \_, \_, \_)}$
+					</p>
+				</div>
+			</figure>
+			<p>
+				To understand how to perform this shifting, we consider the example
+				<span class="monoText">deleteElementAt(3)</span>. Here, ${i = 3.}$ So,
+				we start by removing the element at ${i = 3,}$ then shift the element at
+				${i + 1}$ to ${i = 3.}$ This creates a hole at ${i = 4,}$ so we set ${i
+				= 4,}$ then shift the element at ${i + 1}$ to ${i = 4.}$ This creates a
+				hole at ${i = 5,}$ so we shift the element at ${i + 1}$ to ${i = 6,}$
+				and so on, up until we reach the value of ${i = \textit{length} - 1}$
+				(the second to last element). In pseudocode:
+			</p>
+			<figure class="math-display">
+				<div>
+					<pre class="language-pseudo"><code>
+						deleteElementAt(index):
+							element = A[index];
+							for (i = index; i < array.length - 1; i++):
+								A[i] = A[i + 1];
+							length--;
+					</code></pre>
+				</div>
+			</figure>
+			<p>
+				The time complexity for this algorithm depends on the value of
+				<span class="monoText">index</span>. If
+				<span class="monoText">index = length</span>, then no shifting occurs,
+				in which case we only have to perform two operations: Initializing
+				<span class="monoText">element</span> and decrementing
+				<span class="monoText">length</span>. This yields a complexity of
+				${O(2),}$ or simply ${O(1)}$ &mdash; constant time.
+			</p>
+			<p>
+				If, however, <span class="monoText">index = 0</span>, then we have to
+				perform ${n}$ shifts. This yields ${O(n + 2),}$ or ${O(n).}$ This is
+				linear time. Accordingly, deleting an element from a array, in the best
+				case scenario, is ${\Omega(1),}$ and in the worst case scenario,
+				${O(n).}$
+			</p>
+		</section>
+
 		<p>
-			Now, in some languages like C++, we want more genericism. This means using
-			a <b>template</b>:
+			Putting all of the properties above together, we have the following class in pseudocode:
 		</p>
+
 		<ol class="alg">
-			<li>template&lt;class ${t}$&gt;</li>
-			<li>int* arr = new int[size];</li>
+			<li>class Array:</li>
+			<ol>
+				<li>private:</li>
+				<ol>
+					<li>int *array;</li>
+					<li>int size;</li>
+					<li>int length;</li>
+				</ol>
+				<li>public:</li>
+				<ol>
+					<li>Array(int arraySize = 10)</li>
+					<li>~Array()</li>
+					<li>bool isFull();</li>
+					<li>bool isEmpty();</li>
+					<li>int sizeOf();</li>
+					<li>int length();</li>
+					<li>void append();</li>
+					<li>void insertAt();</li>
+					<li>void deleteAt();</li>
+				</ol>
+			</ol>
 		</ol>
-		<p>
-			By using a template, we can create more general arrays, rather than using
-			a specific data type like <var>int</var>:
-		</p>
-		<ol class="alg">
-			<li>template&lt;class ${t}$&gt;</li>
-		</ol>
-		<p>
-			By writing the code above, we've now created a
-			<b>generic array</b> &mdash; an array whose type is determined at
-			<i>runtime</i>.
-		</p>
-		<p>
-			Now, because the array has no members upon allocation, we say that the
-			array has a length of ${0}$ initially:
-		</p>
-		<ol class="alg">
-			<li>template&lt;class ${t}$&gt;</li>
-			<li>${t}$* arr = new ${t}$[size];</li>
-			<li>arr.length = 0;</li>
-		</ol>
+		<div class="demo">
+			<button>C++</button>
+			<div class="implementation">
+				<p>Here is an implementation of the classes above:</p>
+			</div>
+		</div>
 	</section>
-	<p>
-		<span class="topic">Printing an Array.</span>
-		First, the <span class="monoText">print()</span> operation. To print a
-		tuple, we must iterate over each of the tuple's element, displaying each
-		element to the console (i.e., with something lik
-		<span class="monoText">cout</span> or <span class="monoText">printf</span>).
-		Because we're iterating over each element, the
-		<span class="monoText">print()</span> operation has a time complexity of
-		${O(n)}$ given the ${n-}$tuple. This is linear time.
-	</p>
-	<p>
-		<span class="topic">Appending an Element to an Array.</span> Second, the
-		<span class="monoText">append(${x}$)</span> operation, where ${x}$ is an
-		element. To append an element ${x,}$ we insert the element ${x}$ at the very
-		end of the tuple. In other words, &#8220;Insert this element ${x}$ at the
-		first instance of free space.&#8221; Thus, given an array of length 10 and
-		size 5, <span class="monoText">append(${x}$)</span> inserts the element
-		${x}$ at ${i = 6.}$ For <span class="monoText">append(${x}$)</span>, we can
-		think of this as performing three distinct operations &mdash; accessing the
-		array at ${i = \textit{length},}$ assigning the element ${x}$ to that
-		particular index, and updating the ${\textit{length}}$ property. Hence,
-		${O(3).}$ Applying complexity analysis, this is really ${f(n) = 3.}$
-		Rewriting this as ${f(n) = 3n^0,}$ we have ${O(n^0),}$ which reduces to
-		${O(1).}$ I.e., constant time.
-	</p>
-	<p>
-		<span class="topic">Inserting an Element to an Array.</span> With the
-		<span class="monoText">insert(${i}$, ${x}$)</span> operation, we're
-		inserting an element ${x}$ at the index ${i.}$ For example, suppose we have
-		the tuple ${(0, 1, 2, 3, 4, \_, \_, \_).}$ This is a tuple of size 8, with
-		length 5. If we write <span class="monoText">insert(${2}$, ${9}$)</span>, we
-		would have the tuple ${(0, 9, 1, 2, 3, 4, \_, \_).}$ Notice that this causes
-		a shift. To perform this shift, have to use a loop. In pseudocode:
-	</p>
-	<figure class="math-display">
-		<div>
-			<pre class="language-pseudo"><code>
-				insert(index, x) {
-					for (i = length; i > index, i--) {
-						A[i] = A[i - 1];
-					}
-					A[index] = x;
-					length++;
-				}
-			</code></pre>
-		</div>
-	</figure>
-	<p>
-		The operation of inserting an element into a tuple provides an opportunity
-		to examine the different forms of complexity analysis. If we insert the
-		element at the very end of the tuple &mdash;
-		<span class="monoText">insert(${length}$, ${x}$)</span> &mdash; no shifting
-		occurs. Accordingly, this operation has a time complexity of order ${O(1),}$
-		constant time. However, if we insert the element at the very beginning
-		&mdash; <span class="monoText">insert(${0}$, ${x}$)</span> &mdash; then we
-		must shift <span class="underlineText">all</span> the elements. Given a
-		tuple of length ${n,}$ this operation would require iterating over all ${n}$
-		elements. This operation's time complexity is of order ${O(n).}$
-	</p>
-	<p>
-		Examining these possibilities, we have a best-case scenario and a worst-case
-		scenario. The best-case scenario is ${\Omega(1),}$ constant time, which
-		occurs only if we insert at the very end. The worst-case scenario is
-		${O(n),}$ linear time, which occurs if we insert at the origin, ${i = 0.}$
-	</p>
-	<p>
-		<span class="topic">Deleting an Element from an Array.</span> The operation
-		<span class="monoText">deleteElementAt(${i}$)</span> deletes, or removes, an
-		element at the index ${i.}$ Suppose we have the array ${(1, 5, 8, 3, 2, \_,
-		\_, \_).}$ In this example, there are three cases for deletion:
-		<span class="monoText">deleteElementAt(${0}$)</span>,
-		<span class="monoText">deleteElementAt(${\textit{length}}$)</span>, and
-		<span class="monoText">deleteElementAt(${n}$)</span>, where ${0 < n <
-		\textit{length}.}$ The two problematic cases are the first and the third.
-		They are problematic because if we delete an element other than the last,
-		then we would have gaps in the array:
-	</p>
-	<figure class="math-display">
-		<div>
-			<p>
-				<span class="monoText">deleteElementAt(0)</span> ${ \implies (\_, 5, 8,
-				3, 2, \_, \_, \_)}$
-			</p>
-			<p>
-				<span class="monoText">deleteElementAt(3)</span> ${ \implies (0, 5, 8,
-				\_, 2, \_, \_, \_)}$
-			</p>
-		</div>
-	</figure>
-	<p>
-		These gaps lead to all sorts of problems, particularly with respect to
-		iteration. One way to avoid these problems is to manually check if a given
-		index has an element. This is not a good approach. The better approach is to
-		get right to the root of the problem &mdash; &#8220;holes&#8221; in the
-		array. We can prevent these holes by shifting elements to the right whenever
-		one of the two cases above occurs. Thus:
-	</p>
-	<figure class="math-display">
-		<div>
-			<p>
-				<span class="monoText">deleteElementAt(3)</span> ${ \implies (0, 5, 8,
-				\_, 2, \_, \_, \_) \implies (0, 5, 8, 2, \_, \_, \_, \_)}$
-			</p>
-		</div>
-	</figure>
-	<p>
-		To understand how to perform this shifting, we consider the example
-		<span class="monoText">deleteElementAt(3)</span>. Here, ${i = 3.}$ So, we
-		start by removing the element at ${i = 3,}$ then shift the element at ${i +
-		1}$ to ${i = 3.}$ This creates a hole at ${i = 4,}$ so we set ${i = 4,}$
-		then shift the element at ${i + 1}$ to ${i = 4.}$ This creates a hole at ${i
-		= 5,}$ so we shift the element at ${i + 1}$ to ${i = 6,}$ and so on, up
-		until we reach the value of ${i = \textit{length} - 1}$ (the second to last
-		element). In pseudocode:
-	</p>
-	<figure class="math-display">
-		<div>
-			<pre class="language-pseudo"><code>
-				deleteElementAt(index):
-					element = A[index];
-					for (i = index; i < array.length - 1; i++):
-						A[i] = A[i + 1];
-					length--;
-			</code></pre>
-		</div>
-	</figure>
-	<p>
-		The time complexity for this algorithm depends on the value of
-		<span class="monoText">index</span>. If
-		<span class="monoText">index = length</span>, then no shifting occurs, in
-		which case we only have to perform two operations: Initializing
-		<span class="monoText">element</span> and decrementing
-		<span class="monoText">length</span>. This yields a complexity of ${O(2),}$
-		or simply ${O(1)}$ &mdash; constant time.
-	</p>
-	<p>
-		If, however, <span class="monoText">index = 0</span>, then we have to
-		perform ${n}$ shifts. This yields ${O(n + 2),}$ or ${O(n).}$ This is linear
-		time. Accordingly, deleting an element from a array, in the best case
-		scenario, is ${\Omega(1),}$ and in the worst case scenario, ${O(n).}$
-	</p>
 
 	<section id="searching_an_array">
 		<h3>Searching an Array</h3>
