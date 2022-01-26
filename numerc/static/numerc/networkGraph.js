@@ -1,74 +1,122 @@
-const body = d3.select("body");
-const ptrDemo1Container = document.querySelector("div.ptrDemo1");
-const ptrDemo1 = body.selectAll("div.ptrDemo1");
-const dimensions = {
-	width: 300,
-	height: 300,
+const demo1 = {
+	id: "#ptrDemo1",
+	dataset: {
+		nodes: [
+			{ name: "8" },
+			{ name: "5" },
+			{ name: "4" },
+			{ name: "7" },
+			{ name: "3" },
+			{ name: "9" },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 2 },
+		],
+	},
+};
+const demo2 = {
+	id: "#ptrDemo2",
+	dataset: {
+		nodes: [
+			{ name: "8" },
+			{ name: "5" },
+			{ name: "4" },
+			{ name: "7" },
+			{ name: "3" },
+			{ name: "9" },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+		],
+	},
 };
 
-const ptrDemo1SVG = ptrDemo1
-	.append("svg")
-	.attr("width", dimensions.width)
-	.attr("height", dimensions.height);
+render(demo1);
+render(demo2);
 
-const dataset = {
-	nodes: [
-		{ name: "n1" },
-		{ name: "n2" },
-		{ name: "n3" },
-	],
-	edges: [
-		{ source: 0, target: 1 },
-		{ source: 1, target: 2 },
-	],
-};
+function render(demoObj) {
+	const main = d3.select("body");
+	const demoContainer = main.selectAll(demoObj.id);
+	const dimensions = {
+		width: 400,
+		height: 200,
+	};
+	const svg = demoContainer
+		.append("svg")
+		.attr("width", dimensions.width)
+		.attr("height", dimensions.height);
+	svg
+		.append("svg:defs")
+		.selectAll("marker")
+		.data(["end"])
+		.enter()
+		.append("svg:marker")
+		.attr("id", String)
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", 20)
+		.attr("refY", 0)
+		.attr("markerWidth", 4)
+		.attr("markerHeight", 20)
+		.attr("orient", "auto")
+		.append("svg:path")
+		.attr("d", "M0,-5L10,0L0,5");
 
-const force = d3
-	.forceSimulation(dataset.nodes)
-	.force("charge", d3.forceManyBody())
-	.force("link", d3.forceLink(dataset.edges).distance(100))
-	.force(
-		"center",
-		d3
-			.forceCenter()
-			.x(dimensions.width / 2)
-			.y(dimensions.height / 2)
-	);
+	const force = d3
+		.forceSimulation(demoObj.dataset.nodes)
+		.force("charge", d3.forceManyBody())
+		.force("link", d3.forceLink(demoObj.dataset.edges).distance(40))
+		.force(
+			"center",
+			d3
+				.forceCenter()
+				.x(dimensions.width / 2)
+				.y(dimensions.height / 2)
+		);
 
-const edges = ptrDemo1SVG
-	.selectAll("line")
-	.data(dataset.edges)
-	.enter()
-	.append("line")
-	.style("stroke", "#ccc")
-	.style("stroke-width", 2);
+	const edges = svg
+		.selectAll("line")
+		.data(demoObj.dataset.edges)
+		.enter()
+		.append("line")
+		.style("stroke", "#000")
+		.style("stroke-width", 2)
+		.attr("marker-end", "url(#end)");
 
-const nodeGroup = ptrDemo1SVG
-	.selectAll("g")
-	.data(dataset.nodes)
-	.enter()
-	.append("g");
+	const nodeGroup = svg
+		.selectAll("g")
+		.data(demoObj.dataset.nodes)
+		.enter()
+		.append("g");
 
-const pointerBox = nodeGroup
-	.append("rect")
-	.attr("width", 50)
-	.attr("height", 20)
-	.attr("stroke", "grey")
-	.style("fill", "white");
+	const node = nodeGroup
+		.append("circle")
+		.attr("r", 9)
+		.attr("stroke", "goldenrod")
+		.style("fill", "#FAFAD2");
 
-const nodes = nodeGroup
-	.append("rect")
-	.attr("width", 40)
-	.attr("height", 20)
-	.attr("stroke", "grey")
-	.style("fill", "white");
+	const nodeLabel = nodeGroup
+		.append("text")
+		.text((d) => d.name)
+		.attr("text-anchor", "middle")
+		.style("font-family", "monospace")
+		.style("font-size", "12px");
 
-force.on("tick", function () {
-	edges
-		.attr("x1", (d) => d.source.x)
-		.attr("y1", (d) => d.source.y)
-		.attr("x2", (d) => d.target.x)
-		.attr("y2", (d) => d.target.y);
-	nodes.attr("x", (d) => d.x).attr("y", (d) => d.y);
-	pointerBox.attr("x", (d) => d.x).attr("y", (d) => d.y);
-});
+	force.on("tick", function () {
+		edges
+			.attr("x1", (d) => d.source.x)
+			.attr("y1", (d) => d.source.y)
+			.attr("x2", (d) => d.target.x)
+			.attr("y2", (d) => d.target.y);
+		node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+		nodeLabel.attr("x", (d) => d.x).attr("y", (d) => d.y + 3);
+	});
+}

@@ -1,6 +1,3 @@
-/* -------------------------------------------------------------------------- */
-/*                              Linked List Demo                              */
-/* -------------------------------------------------------------------------- */
 const body = d3.select("body");
 const linkedList = body.selectAll("ul.linkedlist").selectAll("ul");
 const linkedListChild = document.querySelector("ul.linkedlist ul li");
@@ -44,21 +41,5 @@ node
 	.attr("stroke", linkedListColors.arrowColor)
 	.attr("stroke-width", "1px");
 
-// node
-// 	.append("line")
-// 	.attr("class", "arrowLeft")
-// 	.attr("x1", 0)
-// 	.attr("y1", linkedListDimensions.height / 4)
-// 	.attr("x2", 5)
-// 	.attr("y2", linkedListDimensions.height / 4 + 2)
-// 	.attr("stroke", linkedListColors.arrowColor)
-// 	.attr("stroke-width", "1px");
-// node
-// 	.append("line")
-// 	.attr("class", "arrowLeft")
-// 	.attr("x1", 0)
-// 	.attr("y1", linkedListDimensions.height / 4)
-// 	.attr("x2", 5)
-// 	.attr("y2", linkedListDimensions.height / 4 - 2)
-// 	.attr("stroke", linkedListColors.arrowColor)
-// 	.attr("stroke-width", "1px");
+
+
