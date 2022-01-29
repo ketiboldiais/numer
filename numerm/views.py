@@ -24,9 +24,6 @@ def balg_realProperties(request):
 def balg_equations(request):
 	return render(request,"numerm/balg/balg_equations.html")
 
-def balg_quadratics(request):
-	return render(request,"numerm/balg/balg_quadratics.html")
-
 def balg_proportion(request):
 	return render(request,"numerm/balg/balg_proportion.html")
 

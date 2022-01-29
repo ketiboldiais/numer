@@ -1,55 +1,3 @@
-const demo1 = {
-	id: "#primeFactor1",
-	treeData: [
-		{ child: "100", parent: "" },
-		{ child: "2", parent: "100" },
-		{ child: "50", parent: "100" },
-	],
-};
-render(demo1);
-
-const demo2 = {
-	id: "#primeFactor2",
-	treeData: [
-		{ child: "100", parent: "" },
-		{ child: "2", parent: "100" },
-		{ child: "50", parent: "100" },
-		{ child: "2", parent: "50" },
-		{ child: "25", parent: "50" },
-	],
-};
-render(demo2);
-
-const demo3 = {
-	id: "#primeFactor3",
-	treeData: [
-		{ child: "100", parent: "" },
-		{ child: "2", parent: "100" },
-		{ child: "50", parent: "100" },
-		{ child: "2", parent: "50" },
-		{ child: "25", parent: "50" },
-		{ child: "5", parent: "25" },
-		{ child: "5", parent: "25" },
-	],
-};
-render(demo3);
-
-const demo4 = {
-	id: "#primeFactor4",
-	treeData: [
-		{ child: "100", parent: "" },
-		{ child: "2", parent: "100" },
-		{ child: "50", parent: "100" },
-		{ child: "2", parent: "50" },
-		{ child: "25", parent: "50" },
-		{ child: "5", parent: "25" },
-		{ child: "5 ", parent: "25" },
-		{ child: "1", parent: "5 " },
-		{ child: "5", parent: "5 " },
-	],
-};
-render(demo4);
-
 const iceCreamTree = {
 	id: "#iceCreamTree",
 	treeData: [
@@ -67,12 +15,25 @@ const iceCreamTree = {
 
 render(iceCreamTree);
 
+const iceCreamTree1 = {
+	id: "#iceCreamTree1",
+	treeData: [
+		{ child: "E", parent: "" },
+		{ child: "s", parent: "E" },
+		{ child: "v", parent: "E" },
+		{ child: "c", parent: "E" },
+		{ child: "w", parent: "s" },
+		{ child: "p", parent: "s" },
+		{ child: "w", parent: "v" },
+		{ child: "p", parent: "v" },
+		{ child: "w", parent: "c" },
+		{ child: "p", parent: "c" },
+	],
+};
+render(iceCreamTree1);
 
 function render(demoObj) {
 	const main = d3.select("body");
-	const viewPort = document.querySelector('div.content');
-	const viewPortWidth = viewPort.clientWidth;
-	const viewPortHeight = viewPort.clientHeight;
 	const demoContainer = main.selectAll(demoObj.id);
 	demoContainer.classed('demo-container', true);
 	const numberOfNodes = demoObj.treeData.length;
@@ -80,7 +41,7 @@ function render(demoObj) {
 		strokeColor: "#323232",
 		nodeStrokeColor: "#323232",
 		circleFillColor: d3.scaleOrdinal(d3.schemePastel1),
-		textColor: "black"
+		textColor: "black",
 	};
 	const margin = {
 		top: 20,
@@ -89,18 +50,26 @@ function render(demoObj) {
 		left: 20,
 	};
 	const dimensions = {
-		width: (numberOfNodes*40) - margin.left - margin.right,
-		height: (numberOfNodes*(viewPortHeight/450)) - margin.top - margin.bottom,
+		width: numberOfNodes * 30 - margin.left - margin.right,
+		height: numberOfNodes * 15 - margin.top - margin.bottom,
 		edgeStroke: 1,
 		strokeWidth: 1,
-		radius: '0.8rem',
-		fontSize: '0.85rem'
+		radius: "0.75rem",
+		fontSize: "0.85rem",
 	};
 	// SVG rendering
 	const svg = demoContainer
+		.append("div")
+		.classed("svg-container", true)
 		.append("svg")
-		.attr("width", dimensions.width + margin.left + margin.right)
-		.attr("height", dimensions.height + margin.top + margin.bottom)
+		.attr("preserveAspectRatio", "xMinYMin meet")
+		.attr(
+			"viewBox",
+			`0 0 ${dimensions.width + margin.left + margin.right} ${
+				dimensions.height + margin.top + margin.bottom
+			}`
+		)
+		.classed('svg-content-responsive', true)
 		.append("g")
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -133,7 +102,7 @@ function render(demoObj) {
 		.data(root.descendants())
 		.enter()
 		.append("circle")
-		.attr('class', 'treeNode')
+		.attr("class", "treeNode")
 		.attr("cx", (d) => d.x)
 		.attr("cy", (d) => d.y)
 		.attr("r", dimensions.radius)
@@ -149,10 +118,11 @@ function render(demoObj) {
 		.enter()
 		.append("text")
 		.text((d) => d.id)
-		.attr("x", (d) => d.x)
-		.attr("y", (d) => d.y + 5)
+		.attr("x", (d) => d.x - 1)
+		.attr("y", (d) => d.y + 4)
 		.attr("text-anchor", "middle")
-		.attr('fill', colors.textColor)
-		.style('font-family', 'CMU')
-		.style("font-size", dimensions.fontSize)
+		.attr("fill", colors.textColor)
+		.style("font-family", "CMU")
+		.style("font-style", "italic")
+		.style("font-size", dimensions.fontSize);
 }

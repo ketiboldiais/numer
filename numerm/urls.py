@@ -17,8 +17,6 @@ urlpatterns = [
 
 	path("balg_proportion", views.balg_proportion, name="balg_proportion"),
 
-	path("balg_quadratics", views.balg_quadratics, name="balg_quadratics"),
-
 	path("balg_rationalExpressions", views.balg_rationalExpressions, name="balg_rationalExpressions"),
 
 	path("balg_absoluteValue", views.balg_absoluteValue, name="balg_absoluteValue"),

@@ -1,0 +1,393 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on probability." />
+{% endblock %} {% block title %}
+<title>Probability</title>
+{% endblock %} {% block content %}
+<h1>Probability</h1>
+<section id="intro">
+	<p>
+		<span class="drop">I</span>n this section, we examine some key concepts from
+		probability. Probability is the foundation of statistics, and statistics is
+		the driver of modern analytical thinking. What do we think of when we hear
+		the word <q>probability?</q> Typically, mathematics, gambling, risk
+		analysis, physics, economics, and so on. Probability, however, also finds
+		itself in the humanities. Statisticians Frederick Mosteller and David
+		Wallace employed probability to determine which of James Madison or
+		Alexander Hamilton wrote each of the disputed Federalist papers.
+	</p>
+	<p>
+		The historical roots of probability, however, lie in gambling. Moreover,
+		while humans have attempted to <q>game</q> systems for a millenia, the
+		formalization of probability as a mathematical field is relatively recent
+		development. The sixteenth century mathematician Gerolamo Cardano was among
+		the first to introduce a few basic axioms, but more rigorous treatment
+		occurred about a century later, in correspondence letters between Pierre de
+		Fermat and Blaise Pascal.<sup></sup> These long correspondence letters
+		focused primarily on the probabilities of various gambling games at the
+		time.
+	</p>
+	<div class="note">
+		<p>
+			Outside of mathematics, Pascal is known for <i>Pascal's Wager</i>, an
+			argument for believing in God's existence. The argument is
+			straightforward: If we believe God exists, and it turns out God does
+			exist, then we gain entry to heaven. If it turns out God does not exist,
+			then nothing happens. However, if we do not believe God exists, and it
+			turns out God does exist, then we face brimstone and fire. But if we do
+			not believe God exists, and God turns out not to exist, then nothing
+			happens. According to Pascal, the rational choice, therefore, is to
+			believe God exists.
+		</p>
+		<p>
+			Needless to say, it's easy to think of numerous counter-arguments to
+			Pascal. Given how the argument's been beat to a pulp for centuries, we
+			won't spend anymore time addressing them here.
+		</p>
+	</div>
+	<p>
+		As probability developed further in the modern era, it gave birth to an
+		entirely separate science &mdash; statistics. We can think of statistics as
+		the other side of logic's coin. Where mathematics is the science of
+		<i>certainty</i>, statistics is the science of <i>uncertainty</i>. As
+		examine probability, we will eventually see bridges to statistics. To
+		quantify uncertainty, we must cross those bridges and employ various
+		propositions in statistics.
+	</p>
+</section>
+<section id="sample_space">
+	<h2>Sample Space</h2>
+	<p>
+		A <b>sample space</b> is the set of all possible outcomes of some
+		experiment. Alongside the sample space, we have a notion of <i>events</i>.
+		An <b>event</b> is a subset of the sample space.
+	</p>
+	<div class="compare">
+		<div id="venn1"></div>
+	</div>
+	<p>
+		For example, consider the experiment of rolling two dice. Because a die has
+		six sides, there 36 possible outcomes. Accordingly, we have a sample space
+		of size 36. Once we have the sample size, we can use the
+		<i>naive definition of probability</i>:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Naive Definition of Probability.</span> Suppose
+				${A}$ is some event in the sample space ${S.}$ Given a sample space of
+				size ${n(S),}$ the probability of the event ${A}$ occurring is:
+			</p>
+			<figure>
+				<div>
+					<p>${ \mathit{P}(A) = \dfrac{n(F)}{n(S)} }$</p>
+				</div>
+			</figure>
+			<p>where ${n(F)}$ is the number of outcomes favorable to ${A.}$</p>
+		</div>
+	</figure>
+	<p>
+		In the definition aobve, we denote the probability of the event ${A}$
+		occurring with ${\mathit{P}(A).}$ For example, considering flipping a coin
+		twice. This experiment has four possible outcomes:
+	</p>
+	<div id="coinToss"></div>
+	<p>
+		Now suppose someone asks, what is the probability of both tosses ending in
+		heads? According to the naive definition, the probability is:
+	</p>
+	<figure>
+		<div>
+			<p>${\mathit{P}(HH) = \dfrac{1}{4}}$</p>
+		</div>
+	</figure>
+	<p>
+		What are some shortcomings with this analysis? Well, for starters, we're
+		assuming that the tosser isn't doing anything mischievous like using a
+		weighted coin. In other words, we're assuming that all outcomes in the
+		sample space are <i>equally likely</i>. We're also assuming that there are
+		finitely many outcomes. I.e., the sample space is a <i>finite set</i>.<sup
+		></sup>
+	</p>
+	<div class="note">
+		<p>
+			This is a particularly critical assumption. If we used some magical coin
+			whose side could be any real number, then our sample space would be an
+			infinite set. And if our sample space is an infinite set, then the
+			denominator of the naive definition, ${\dfrac{n(F)}{n(S)},}$ would be
+			infinity. This in turn renders the naive definition meaningless.
+		</p>
+	</div>
+	<p>
+		The assumption of equal likelihood is a <em>very strong assumption</em>.
+		It's a reasonable assumption in some problems &mdash; those with some form
+		of symmetry &mdash; but certainly not all. For example, a die is a cube with
+		six faces, and we might say that rolling a particular face has a probability
+		of ${1/6.}$ That only be true if we assume the die is not loaded.
+	</p>
+	<p>
+		The naive definition also lends itself to abuse, most commonly by news
+		outlets. Here's a question: What is the probability of life on the sun?
+		Well, there are only two outcomes. (1) There's life on the sun, or (2)
+		There's no life on the sun. Because the sample space is ${2,}$ the
+		probability of there being life on venus is ${1/2,}$ or ${50\%.}$ Clearly,
+		this is ridiculous. We're assuming both outcomes are equally likely, but we
+		have no reasons for making that assumption.
+	</p>
+	<p>
+		If we're still not convinced by why this is a problem, consider a follow-up
+		question: What is the probability of there being a human on the sun? Again,
+		by our naive definition, it's ${50\%.}$ There's either a human, or there
+		isn't. But does this make sense? Shouldn't the probability of there being a
+		human on the sun be lower than there being life at all? The naive definition
+		doesn't capture this, and the media industry has abused this deficiency
+		remarkably well.
+	</p>
+	<p>
+		Despite its deficiency, the naive definition is one of the earliest steps
+		towards formalizing probability, so it's worth spending some time
+		familiarizing ourselves with it. We begin by quickly reviewing the
+		mathematics of <i>counting</i>.
+	</p>
+</section>
+
+<section id="counting">
+	<h2>Counting</h2>
+	<p>The naive definition has two key components:</p>
+	<ol>
+		<li>The number of favorable outcomes, ${n(F),}$ and</li>
+		<li>the number of possible outcomes, ${n(S).}$</li>
+	</ol>
+	<p>
+		Many problems concerning the naive definition require us to
+		<i>count</i> these outcomes. And to count those outcomes, we must use
+		counting principles.
+	</p>
+
+	<section id="multiplicationRule">
+		<h3>The Multiplication Rule</h3>
+		<p>
+			Suppose we perform an experiment ${E_1}$ with ${n_1}$ outcomes. After
+			performing ${E_1,}$ we perform a second experiment ${E_2,}$ with ${n_2}$
+			outcomes. Suppose we continue performing ${r}$ experiments, such that for
+			each experiment ${E_r,}$ there are ${n_r}$ outcomes. Then overall, there
+			are:
+		</p>
+		<figure>
+			<div>
+				<p>${n_1 \times n_2 \times \ldots \times n_r}$</p>
+			</div>
+		</figure>
+		<p>
+			possible outcomes. We can visualize the multiplication rule with a
+			dendogram (i.e., a tree diagram). Suppose we had three ice cream flavors:
+			strawberry, vanilla, and chocolate. Suppose further that we had two types
+			of cones: waffle and pretzel. What are the possible ice cream cones we can
+			get? We can suppose the first experiment is selecting a cone, and the
+			second experiment is selecting a flavor. In which case we have:
+		</p>
+		<div id="iceCreamTree"></div>
+		<p>
+			Counting the tree's <i>leaves</i> (nodes without children), we see that
+			there are ${6}$ total possibilities, or ${6}$ total possible ice cream
+			cones. This corresponds to the multiplication rule:
+		</p>
+		<figure>
+			<div>
+				<p>
+					${(2 \text{ possible cones}) \times (3 \text{ possible flavors}) = 6
+					\text{ possible arrangements}}$
+				</p>
+			</div>
+		</figure>
+		<p>Note that we could've also picked a flavor first, followed by a cone:</p>
+		<div id="iceCreamTree1"></div>
+		<p>
+			Doing so does not change the result &mdash; we still have six
+			possibilities. Examining the multiplication rule from the perspective of a
+			tree diagram, we can see that the number of possibilities grows
+			exponentially. If we had ${10}$ ice cream flavors, we would have ${2^{10}
+			= 1024}$ possible ice cream cones. This tells us that experiments
+			following the multiplication rule grow very, very quickly.
+		</p>
+	</section>
+	<section id="binomial_coefficient">
+		<h3>The Binomial Coefficient</h3>
+		<p>
+			Here's another example. Using the naive definition, what is the
+			probability of a full house in a game of poker? First, we make the
+			following assumptions: (1) The deck consists of 52 unique cards; (2) a
+			poker hand consists of five cards; and (3) the deck is shuffled such that
+			the five cards comprising a hand are all equally likely. With these
+			assumptions, we can begin analyzing.
+		</p>
+		<p>
+			First, we denote the ${5}$ cards chosen as a <b>binomial coefficient</b>:
+		</p>
+		<figure>
+			<div>
+				<p>${\dbinom{52}{5}}$</p>
+			</div>
+		</figure>
+		<p>
+			We read the notation above as <q>Fifty-two choose five.</q><sup></sup> In
+			other words, given ${52}$ cards, take ${5}$ cards. Recall that the
+			binomial coefficient is defined as follows:
+		</p>
+		<div class="note">
+			<p>
+				These materials assume familiarity with the binomial theorem and
+				binomial coefficients, so we won't delve into them deeply. For a review,
+				see
+				<a href="{% url 'numerm:balg_equations' %}#binomial_coefficients"
+					><strong>Classical Algebra: Binomial Coefficients</strong>.</a
+				>
+			</p>
+		</div>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Definition: Binomial Coefficient.</span> Where
+					${n}$ and ${k}$ are nonnegative integers, the
+					<i>binomial coefficient</i> is defined as follows:
+				</p>
+				<figure>
+					$$ \dbinom{n}{k} = \begin{cases} \dfrac{n!}{k!(n-k)!} &\text{ if } ~~k
+					\leq n \\[2em] 0 &\text{ else } \end{cases} $$
+				</figure>
+			</div>
+		</figure>
+		<p>
+			The binomial coefficient represents the following proposition:
+			<q
+				>Given ${n}$ choices, how many ways can we choose ${k}$ out of ${n.}$</q
+			>
+			In other words, choose a subset of ${n}$ of size ${k,}$ where order does
+			not matter. Accordingly, when we write ${\dbinom{n}{k},}$ we are denoting
+			the size of a particular set. In this case, the subset of ${n}$ of size
+			${k,}$ with the condition that order is irrelevant.
+		</p>
+		<p>
+			From the definition above, it follows that if ${k > n}$ (the
+			else-condition in the definition above) then the set ${\dbinom{n}{k}}$
+			must be zero, because if we have ${k}$ choices, we can't choose more than
+			${k.}$ I.e., if we have ${10}$ applicants for a job position, we can't
+			choose ${11}$ applicants. We make this proposition explicit:
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Lemma.</span> Given two nonnegative integers ${n}$
+					and ${k,}$ the following proposition is true:
+				</p>
+				<figure>
+					<div>
+						<p>${k > n \implies \dbinom{n}{k} = 0}$</p>
+					</div>
+				</figure>
+			</div>
+		</figure>
+		<p>
+			That said, let's return to our full house problem. In poker, a full house
+			is defined as three cards of one rank and two of another. For example,
+			three ${7}$s and two Jacks, or three Kings and two ${4}$s.
+		</p>
+		<p>Generalizing the hand, we have:</p>
+		<figure>
+			<div>
+				<p>${((3,r_1),~(2,r_2))}$</p>
+			</div>
+		</figure>
+		<p>
+			Let's consider the first part of the hand, the three cards. What can we
+			have three of? Well, there are ${13}$ ranks, so there are ${13}$
+			possibilities. In other words, <q>${13}$ choose ${1.}$</q> Applying the
+			binomial coefficient, our formula looks thus far as:
+		</p>
+		<figure>$$ \dfrac{\dbinom{13}{1}}{\dbinom{52}{5}} $$</figure>
+		<p>
+			This takes care of choosing the rank for the first part of the hand. Now
+			we apply the multiplication rule. Suppose we chose as a rank King. There
+			are four Kings in a deck of cards, and we must choose three out of the
+			four. Accordingly, we have:
+		</p>
+		<figure>
+			$$ \dfrac{\dbinom{13}{1} \cdot \dbinom{4}{3} }{\dbinom{52}{5}} $$
+		</figure>
+		<p>
+			Now we must handle the second part of the hand, the two cards. Both of
+			these cards must be the same rank, and that rank must be different from
+			the rank we just chose. Because we just chose a rank, there are twelve
+			ranks remaining &mdash; ${12}$ choose ${1.}$ Accordingly, we have:
+		</p>
+		<figure>
+			$$ \dfrac{\dbinom{13}{1} \cdot \dbinom{4}{3} \cdot \dbinom{12}{1}
+			}{\dbinom{52}{5}} $$
+		</figure>
+		<p>Then, we need two of this chosen rank:</p>
+		<figure>
+			$$ \dfrac{\dbinom{13}{1} \cdot \dbinom{4}{3} \cdot \dbinom{12}{1} \cdot
+			\dbinom{4}{2} }{\dbinom{52}{5}} $$
+		</figure>
+		<p>Simplifying this, we have:</p>
+		<figure>
+			$$ \begin{aligned} \dfrac{\dbinom{13}{1} \cdot \dbinom{4}{3} \cdot
+			\dbinom{12}{1} \cdot \dbinom{4}{2} }{\dbinom{52}{5}} &= \dfrac{13 \cdot
+			\dbinom{4}{3} \cdot 12 \cdot \dbinom{4}{2} }{\dbinom{52}{5}} \\[3em] &=
+			\dfrac{13 \cdot 4 \cdot 12 \cdot 6}{2~598~960} \\[2em] &=
+			\dfrac{3744}{2~598~960} \\[2em] &= \dfrac{3744}{2~598~960} \\[2em] &=
+			\dfrac{6}{4165} \\[2em] &\approx 0.1441\% \\[2em] \end{aligned} $$
+		</figure>
+	</section>
+
+	<section id="sampling_table">
+		<h3>Sampling Tables</h3>
+		<p>
+			Having examined the rule's above, we can summarize outcome counting as
+			follows. When we are told to choose ${k}$ objects out of ${n,}$ there are
+			two questions we should always ask:
+		</p>
+		<ol>
+			<li>Does order matter?</li>
+			<li>Are we replacing?</li>
+		</ol>
+		<p>
+			When we say that order matters, we mean that choices are unique in terms
+			of the order they're made in. For example, choosing John then Alice is
+			distinct from choosing Alice then John. If order does not matter, then
+			choosing John then Alice is the same as choosing Alice then John.
+		</p>
+		<p>
+			Next, whether we're allowed to replace impacts how much we can count. By
+			replacement, we mean that, if we choose between ${Mango}$ and ${Kiwi,}$ we
+			can choose: ${(Mango, Mango)}$, ${(Mango, Kiwi)}$, ${(Kiwi, Kiwi)}$,
+			${(Kiwi, Mango).}$
+		</p>
+		<p>We can summarize these findings in a <b>sample table</b>:</p>
+		<table class="punnett">
+			<thead>
+				<th></th>
+				<th>order relevant</th>
+				<th>order irrelevant</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>replacement permissible</td>
+					<td>${\Large n^k}$</td>
+					<td>${\large \dbinom{n + k - 1}{k}}$</td>
+				</tr>
+				<tr>
+					<td>replacement impermissible</td>
+					<td>${\large n(n-1)(n-2)\ldots(n-(k-1))}$</td>
+					<td>${\large \dbinom{n}{k}}$</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerm/venn.min.js"></script>
+<script src="../../../static/numerm/bubblePack.js"></script>
+<script src="../../../static/numerm/setTheory.js"></script>
+<script src="../../../static/numerm/tree.js"></script>
+{% endblock %}

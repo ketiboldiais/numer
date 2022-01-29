@@ -144,7 +144,7 @@
 	}
 	section section {
 		padding: 0;
-		margin: 0;
+		margin: 4% 0;
 		width: 100%;
 	}
 	section.problems {
@@ -338,6 +338,7 @@
 	main {counter-reset: fn;}
 	sup {
 		counter-increment: fn 1;
+		line-height: 0;
 	}
 	sup:hover {
 		cursor: pointer;
@@ -546,7 +547,7 @@
 	section h4 + p, 
 	section h5 + p, 
 	section h6 + p {
-		margin-top: 0; 
+		margin-top: 0.2em; 
 		padding-top: 0;
 	}
 /* Drop cap */
@@ -680,6 +681,41 @@
 		margin: 0;
 		padding: 0;
 	}
+/* Pascal Triangle - Flex List */ 
+	ul.flex {
+		list-style-type: none;
+		padding: 5px 0;
+		margin: 0 auto;
+		width: fit-content;
+		font-family: "CMU";
+	}
+	ul.flex li div {
+		padding: 0;
+		font-size: 0.75rem;
+		margin: 1px;
+		width: 23px;
+		height: 22px;
+		text-align: center;
+		line-height: 1.8;
+		background-color: rgb(255, 116, 92);
+		box-shadow: 
+			0 2px 2px 0px rgba(161, 0, 0, 0.4), 
+			0 2px 2px 0 rgba(161,0,0,0.4);
+		color: white;
+		border-radius: 50%;
+		transition: 0.3s;
+	}
+	ul.flex li div:hover {
+		cursor: pointer;
+		box-shadow: none;
+		transform: translate3d(0, 0.3em, -0.5em);
+	}
+	ul.flex li {
+		margin: 0;
+		padding: 0;
+		display: flex;
+		justify-content:center;
+	}
 /* Function i/o */
 	div.func {
 		margin: 0 auto;
@@ -780,7 +816,7 @@
 		padding:0;
 		text-decoration: none;
 		border-bottom: 1px solid #ccc;
-		color: #000;
+		color: inherit;
 	}
 	section p a {
 		border-bottom: thin dotted rgb(71, 71, 71);
@@ -995,22 +1031,21 @@
 	}
 /* Special divs */
 	div.compare {
-		margin: 1% 0;
-		display: grid;
-		grid-auto-columns: 1fr;
-		column-gap: 1ch;
-		grid-auto-flow: column;
+		margin: 5% 0;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
 	}
-	div.compare > figure,
-	div.compare p {
-		display:block;
-		margin:0;
+	div.compare figure {
+		margin: 0 2px;
+		flex-grow: 1;
+	}
+	div.compare figure pre {
+		height: 100%;
+	}
+	div.compare div {
 		width: fit-content;
-	}
-	div.compare > figure > figcaption {
-		display:block;
-		text-align: center;
-		font-size: 0.7rem;
+		height: fit-content;
 	}
 	div.rule {
 		padding: 0.3em;
@@ -1171,14 +1206,16 @@
 	table.punnett td, 
 	table.punnett th {
 		text-align: center;
-		font-family: "CMU";
 		max-width: fit-content;
 		padding: 0.2em 0.4em;
 	}
 	table.punnett th { border-top: none; }
 	table.punnett th:first-child { border-left: none; }
 	table.punnett th:last-child { border-right: none; }
-	table.punnett tr td:first-child { border-left: none; }
+	table.punnett tr td:first-child { 
+		border-left: none; 
+		font-weight: bold;
+	}
 	table.punnett tr td:last-child { border-right: none; }
 	table.punnett tr:last-child td {border-bottom: none}
 /* proof styles */
@@ -1259,6 +1296,30 @@
 		display: block;
 		margin-right: 5px;
 		font-size: 0.63rem;
+	}
+/* SVG */
+	.demo-container {
+		display: flex;
+		margin: 2% 0;
+		justify-content: center;
+	}
+	.svg-container {
+		display: inline-block;
+		position: relative;
+		width: 50%;
+		padding-bottom: 25%; /* aspect ratio */
+		vertical-align: top;
+		overflow: hidden;
+	}
+	.bubblePack {
+		width: 60%;
+		padding-bottom: 40%; /* aspect ratio */
+	}
+	.svg-content-responsive {
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		left: 0;
 	}
 /* Question Sets / <details> Styling */
 	/* Question sets are styled with masonry */
@@ -1392,26 +1453,37 @@
 	/* Table for counting operations - algorithmic analysis */
 	table.alg {
 		border: none;
+		width: fit-content;
 	}
+	div.alg {
+		overflow-x: auto;
+	}
+	table.alg pre {
+		padding: 0.4em;
+	}
+	table.alg pre code {
+		font-size: 0.9em;
+	}
+	table.alg ul.linkedlist {
+		margin: 0;
+	} 
 	table.alg th, table.alg td {
 		border: none;
-		font-family: "CMU";
-		text-align: center;
-		font-size: 0.8rem;
-		padding: 0.3em;
+		text-align: left;
+		font-size: 0.75rem;
+		padding: 0.2em 0.3em;
 	}
-	table.alg th { font-size: 0.68rem; }
+	table.alg th {
+		font-size: 0.68rem;
+		padding: 0.5em;
+		padding-bottom: 0;
+	}
 	table.alg tr td {
-		border-top: solid thin grey;
+		border-top: solid thin var(--lightGrey);
 		border-bottom: none;
 	}
 	table.alg tr td + td {
-		border-left: solid thin grey;
-		border-right: solid thin grey;
-	}
-	table.alg tr td:last-child {
-		text-align: left;
-		border-right: none;
+		border-left: solid thin var(--lightGrey);
 	}
 /* Media Queries */
 	@media (max-width: 600px) { html {font-size: 9px;} }
@@ -1514,7 +1586,6 @@
 			transform: translateX(-120%);
 		}
 		@media (max-width: 900px) {
-			div.compare {display: block;}
 			figure.table {overflow-x: auto;}
 			
 		}
@@ -1540,7 +1611,6 @@
 		}
 	} */
 	@media (max-width: 900px) {
-		div.compare {display: block;}
 		figure.table {overflow-x: auto;}
 	}
 	@media (max-width: 900px) {

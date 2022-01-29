@@ -55,8 +55,8 @@ function render(demoObj) {
 		.append("svg")
 		.attr("width", dimensions.width)
 		.attr("height", dimensions.height);
-	svg
-		.append("svg:defs")
+	const svgDefs = svg.append("svg:defs");
+	svgDefs
 		.selectAll("marker")
 		.data(["end"])
 		.enter()
@@ -70,6 +70,29 @@ function render(demoObj) {
 		.attr("orient", "auto")
 		.append("svg:path")
 		.attr("d", "M0,-5L10,0L0,5");
+	
+	const radialGradients = svgDefs
+		.append('radialGradient')
+		.attr('id', 'gradient1')
+	radialGradients 
+		.append('stop')
+		.attr('offset', '0%')
+		.attr('stop-color', "#F3F1F5")
+	radialGradients 
+		.append('stop')
+		.attr('offset', '50%')
+		.attr('stop-color', "#DDF5F7")
+	radialGradients 
+		.attr('id', 'gradient1')
+		.append('stop')
+		.attr('offset', '80%')
+		.attr('stop-color', "#C0D9E5")
+	radialGradients 
+		.attr('id', 'gradient1')
+		.append('stop')
+		.attr('offset', '100%')
+		.attr('stop-color', "#44679F")
+	
 
 	const force = d3
 		.forceSimulation(demoObj.dataset.nodes)
@@ -101,8 +124,7 @@ function render(demoObj) {
 	const node = nodeGroup
 		.append("circle")
 		.attr("r", 9)
-		.attr("stroke", "goldenrod")
-		.style("fill", "#FAFAD2");
+		.style("fill", "url(#gradient1)");
 
 	const nodeLabel = nodeGroup
 		.append("text")
