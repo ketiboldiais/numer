@@ -19,6 +19,7 @@ const demo1 = {
 		],
 	},
 };
+render(demo1);
 
 const demo2 = {
 	id: "#ptrDemo2",
@@ -40,21 +41,359 @@ const demo2 = {
 		],
 	},
 };
-
-render(demo1);
 render(demo2);
+
+const circular1 = {
+	id: "#circular1",
+	dataset: {
+		nodes: [
+			{ name: "8" },
+			{ name: "2" },
+			{ name: "9" },
+			{ name: "6" },
+			{ name: "3" },
+			{ name: "7" },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 0 },
+		],
+	},
+};
+render(circular1);
+
+const circularList1 = {
+	id: "#circularList1",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "6" },
+			{ name: "9" },
+			{ name: "8" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 1 },
+		],
+	},
+};
+render(circularList1);
+
+const circularList2 = {
+	id: "#circularList2",
+	dataset: {
+		nodes: [{ name: "1" }, { name: "4" }, { name: "5" }, { name: "2" }],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 0 },
+		],
+	},
+};
+render(circularList2);
+
+const circularList3 = {
+	id: "#circularList3",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "p", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 2 },
+		],
+	},
+};
+render(circularList3);
+
+const circularList4 = {
+	id: "#circularList4",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "p", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 3 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 2 },
+		],
+	},
+};
+render(circularList4);
+
+const circularList5 = {
+	id: "#circularList5",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "p", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 4 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 2 },
+		],
+	},
+};
+render(circularList5);
+
+const circularList6 = {
+	id: "#circularList6",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "p", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 5 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 2 },
+		],
+	},
+};
+render(circularList6);
+
+const circularList7 = {
+	id: "#circularList7",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "p", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 2 },
+		],
+	},
+};
+render(circularList7);
+
+const circularInsertion = {
+	id: "#circularInsertion",
+	dataset: {
+		nodes: [
+			{ name: "1" },
+			{ name: "4" },
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 0 },
+		],
+	},
+};
+render(circularInsertion);
+
+const circularInsertHead = {
+	id: "#circularInsertHead",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 1 },
+		],
+	},
+};
+render(circularInsertHead);
+
+const circularInsertHead2 = {
+	id: "#circularInsertHead2",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "t", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 6 },
+			{ source: 6, target: 2 },
+		],
+	},
+};
+render(circularInsertHead2);
+
+const circularInsertHead3 = {
+	id: "#circularInsertHead3",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "t", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 6 },
+			{ source: 6, target: 1 },
+		],
+	},
+};
+render(circularInsertHead3);
+
+const circularInsertHead4 = {
+	id: "#circularInsertHead4",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "t", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2", annotate: "foot" },
+			{ name: "p", annotate: "ptr" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 6 },
+			{ source: 6, target: 2 },
+			{ source: 7, target: 6 },
+		],
+	},
+};
+render(circularInsertHead4);
+
+const circularInsertHead5 = {
+	id: "#circularInsertHead5",
+	dataset: {
+		nodes: [
+			{ name: "h", annotate: "ptr" },
+			{ name: "t", annotate: "ptr" },
+			{ name: "1", annotate: "head" },
+			{ name: "4" },
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2", annotate: "foot" },
+			{ name: "p", annotate: "ptr" },
+		],
+		edges: [
+			{ source: 0, target: 2 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 6 },
+			{ source: 6, target: 1 },
+			{ source: 7, target: 6 },
+		],
+	},
+};
+render(circularInsertHead5);
 
 function render(demoObj) {
 	const main = d3.select("body");
 	const demoContainer = main.selectAll(demoObj.id);
+	demoContainer.classed("demo-container", true);
+	const numberOfNodes = demoObj.dataset.nodes.length;
+	const margin = {
+		top: numberOfNodes * 2,
+		right: numberOfNodes * 2,
+		bottom: numberOfNodes * 2,
+		left: numberOfNodes * 2,
+	};
 	const dimensions = {
-		width: 400,
-		height: 200,
+		width: numberOfNodes * 50 - margin.left - margin.right,
+		height: numberOfNodes * 32 - margin.top - margin.bottom,
 	};
 	const svg = demoContainer
+		.append("div")
+		.classed("svg-container", true)
+		.classed("networkGraph", true)
 		.append("svg")
-		.attr("width", dimensions.width)
-		.attr("height", dimensions.height);
+		.attr("preserveAspectRatio", "xMinYMin meet")
+		.attr(
+			"viewBox",
+			`0 0 ${dimensions.width + margin.left + margin.right} ${
+				dimensions.height + margin.top + margin.bottom
+			}`
+		)
+		.classed("svg-content-responsive", true)
+		.append("g")
+		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 	const svgDefs = svg.append("svg:defs");
 	svgDefs
 		.selectAll("marker")
@@ -63,41 +402,18 @@ function render(demoObj) {
 		.append("svg:marker")
 		.attr("id", String)
 		.attr("viewBox", "0 -5 10 10")
-		.attr("refX", 20)
+		.attr("refX", 23)
 		.attr("refY", 0)
-		.attr("markerWidth", 4)
-		.attr("markerHeight", 20)
+		.attr("markerWidth", 6)
+		.attr("markerHeight", 8)
 		.attr("orient", "auto")
 		.append("svg:path")
 		.attr("d", "M0,-5L10,0L0,5");
-	
-	const radialGradients = svgDefs
-		.append('radialGradient')
-		.attr('id', 'gradient1')
-	radialGradients 
-		.append('stop')
-		.attr('offset', '0%')
-		.attr('stop-color', "#F3F1F5")
-	radialGradients 
-		.append('stop')
-		.attr('offset', '50%')
-		.attr('stop-color', "#DDF5F7")
-	radialGradients 
-		.attr('id', 'gradient1')
-		.append('stop')
-		.attr('offset', '80%')
-		.attr('stop-color', "#C0D9E5")
-	radialGradients 
-		.attr('id', 'gradient1')
-		.append('stop')
-		.attr('offset', '100%')
-		.attr('stop-color', "#44679F")
-	
 
 	const force = d3
 		.forceSimulation(demoObj.dataset.nodes)
-		.force("charge", d3.forceManyBody())
-		.force("link", d3.forceLink(demoObj.dataset.edges).distance(40))
+		.force("charge", d3.forceManyBody().strength(-100))
+		.force("link", d3.forceLink(demoObj.dataset.edges).distance(30))
 		.force(
 			"center",
 			d3
@@ -112,7 +428,7 @@ function render(demoObj) {
 		.enter()
 		.append("line")
 		.style("stroke", "#000")
-		.style("stroke-width", 2)
+		.style("stroke-width", 1)
 		.attr("marker-end", "url(#end)");
 
 	const nodeGroup = svg
@@ -124,14 +440,27 @@ function render(demoObj) {
 	const node = nodeGroup
 		.append("circle")
 		.attr("r", 9)
-		.style("fill", "url(#gradient1)");
+		.attr("class", (d, i) => {
+			if (d.annotate == "ptr") {
+				return "pointer";
+			}
+			if (i == 0 || d.annotate == "head") {
+				return "headNode";
+			}
+			if (i == demoObj.dataset.nodes.length - 1 || d.annotate == "foot") {
+				return "footNode";
+			} else {
+				return "listNode";
+			}
+		});
 
 	const nodeLabel = nodeGroup
 		.append("text")
 		.text((d) => d.name)
 		.attr("text-anchor", "middle")
-		.style("font-family", "monospace")
-		.style("font-size", "12px");
+		.style("font-family", "Fira")
+		.style("fill", "white")
+		.style("font-size", "9px");
 
 	force.on("tick", function () {
 		edges

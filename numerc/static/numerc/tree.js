@@ -137,7 +137,7 @@ function render(demoObj) {
 		.attr("cx", (d) => d.x)
 		.attr("cy", (d) => d.y)
 		.attr("r", dimensions.radius)
-		.attr("fill", (d) => colors.circleFillColor(d))
+		.attr("fill", (d) => colors.circleFillColor(d.depth))
 		.attr("stroke", colors.nodeStrokeColor)
 		.attr("stroke-width", dimensions.strokeWidth);
 

@@ -28,7 +28,10 @@ function render(obj) {
 	const svgContainer = body.selectAll(obj.id);
 	svgContainer.classed('demo-container', true);
 	const numberOfSets = obj.data.length;
-	const colors = d3.scaleOrdinal(d3.schemePastel1);
+	// const colors = d3.scaleOrdinal(d3.schemePastel1);
+	const colors = d3.scaleOrdinal()
+		.domain(obj.data)
+		.range([ 'rgb(252, 253, 188)', 'rgb(253, 189, 130)'])
 	const margin = {
 		top: numberOfSets*5,
 		right: numberOfSets*5,
@@ -77,7 +80,7 @@ function render(obj) {
 		.attr("r", (d) => d.r)
 		.attr("stroke", "#323232")
 		.attr("stroke-width", "1")
-		.attr("fill", (d) => colors(d));
+		.attr("fill", (d) => colors(d.depth));
 
 	nodes
 		.filter((d) => !d.children)
