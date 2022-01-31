@@ -3,7 +3,7 @@
 {% endblock %} {% block title %}
 <title>Intro to Rust</title>
 {% endblock %} {% block content %}
-<h1>Rust: Basic Data</h1>
+<h1>Rust Basics</h1>
 <section id="intro">
 	<p>In this essay, we explore the Rust programming language.</p>
 </section>
@@ -264,6 +264,286 @@
 
 <section id="primitive_types">
 	<h2>Primitive Types</h2>
+	<p>
+		Rust has several primitive types. The <b>primitives</b> are divided into two
+		categories: <b>scalar types</b> and <b>compound types</b>.
+	</p>
+
+	<section id="signed_int">
+		<h3>Signed Integers</h3>
+		<p>
+			Most languages have something along the lines of a generic
+			<var>int</var> type. Not Rust &mdash; we're specific about memory. In this
+			case, there are five <i>signed integer types</i> to choose from:
+			<var>i8</var>, <var>i16</var>, <var>i32</var>, <var>i64</var>,
+			<var>i128</var>, and <var>isize</var>:
+		</p>
+		<figure>
+			<table class="api">
+				<thead>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Remark</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<var><mark>i8</mark></var>
+						</td>
+						<td>8-bit integer type</td>
+						<td>Minimum value of ${-128,}$ maximum value of ${127.}$</td>
+					</tr>
+					<tr>
+						<td>
+							<var><mark>i16</mark></var>
+						</td>
+						<td>16-bit integer type</td>
+						<td>Minimum value of ${-32~768,}$ maximum value of ${32~767.}$</td>
+					</tr>
+					<tr>
+						<td>
+							<var><mark>i32</mark></var>
+						</td>
+						<td>32-bit integer type</td>
+						<td>
+							Minimum value of ${-2~147~483~648,}$ maximum value of
+							${2~147~483~647.}$
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<var><mark>i64</mark></var>
+						</td>
+						<td>64-bit integer type</td>
+						<td>
+							Minimum value of ${-9~223~372~036~854~775~808,}$ maximum value of
+							${9~223~372~036~854~775~807.}$
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<var><mark>i128</mark></var>
+						</td>
+						<td>128-bit integer type</td>
+						<td>
+							Minimum value of
+							${-170~141~183~460~469~231~731~687~303~715~884~105~728,}$ maximum
+							value of ${170~141~183~460~469~231~731~687~303~715~884~105~727.}$
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			The table above isn't all that surprising. The ranges are computed with
+			the equation ${[-(2^{n-1}), 2^{n-1}-1].}$ If we're working with algorithms
+			requiring the use of a type's minimum or maximum value, we can do so with
+			the functions <var><mark>min_value()</mark></var> and
+			<var><mark>max_value()</mark></var
+			>. For example, <var>i8::max_value()</var> returns <var>127</var>.
+		</p>
+		<pre class="language-rust"><code>
+			let n = 5; // defaults to i32
+			let m: i32 = 15; 
+		</code></pre>
+	</section>
+
+	<section id="unsigned_int">
+		<h3>Unsigned Integers</h3>
+		<p>
+			Alongside the signed integers, we have the <b>unsigned integer types</b>.
+			Because unsigned integers are just integers with the sign bit free to use,
+			the ranges are determined as ${[0, 2^{n}-1].}$
+		</p>
+		<figure>
+			<table class="api">
+				<thead>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Remark</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<var><mark>u8</mark></var>
+						</td>
+						<td>8-bit unsigned integer</td>
+						<td>Minimum value of ${0,}$ maximum value of ${255.}$</td>
+					</tr>
+					<tr>
+						<td>
+							<var><mark>u16</mark></var>
+						</td>
+						<td>16-bit unsigned integer</td>
+						<td>Minimum value of ${0,}$ maximum value of ${65~535.}$</td>
+					</tr>
+					<tr>
+						<td>
+							<var><mark>u32</mark></var>
+						</td>
+						<td>32-bit unsigned integer</td>
+						<td>Minimum value of ${0,}$ maximum value of ${4~294~967~295.}$</td>
+					</tr>
+					<tr>
+						<td>
+							<var><mark>u64</mark></var>
+						</td>
+						<td>64-bit unsigned integer</td>
+						<td>
+							Minimum value of ${0,}$ maximum value of
+							${18~446~744~073~709~551~615.}$
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<var><mark>u128</mark></var>
+						</td>
+						<td>128-bit unsigned integer</td>
+						<td>
+							Minimum value of ${0,}$ maximum value of
+							${340~282~366~920~938~463~463~374~607~431~768~211~455.}$
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			A common question asked by newcomers: Which integer type should we use?
+			The truth is, there's no single right answer. It depends on what we're
+			trying to do. This presents an opportunity for planning our work. What
+			integer values might we expect? How important is memory? If this kind of
+			planning can't be done, defaulting to <var>i32</var>, as Rust does
+			automatically, or, if we know we're only working with positive values,
+			<var>u32</var>. Either or, always keep the minimum and maximum values for
+			the types when making a selection.
+		</p>
+		<pre class="language-rust"><code>
+			let a = 100       // defaults to i32
+			let b: u32 = 100  // explicit u32
+		</code></pre>
+	</section>
+
+	<section id="isize_usize">
+		<h3>isize & usize</h3>
+		<p>
+			The datatypes
+			<var><mark>isize</mark></var> and <var><mark>usize</mark></var> are used
+			for pointers. These are integer types, but they're more specifically
+			<b>pointer size types</b>. Actual bit sizes depends on the compiler's
+			targeted computer architecture. For example, if we're compiling for a
+			32-bit platform, <var>isize</var> is the same as <var>i32</var>. For a
+			64-bit platform, it's the same as <var>i64</var>. And for a 128-bit
+			platform, it's the same as <var>i128</var>.
+		</p>
+		<p>
+			The same idea extends to <var>usize</var>. The difference between
+			<var>usize</var> and <var>isize</var>: <var>isize</var> can be negative,
+			while <var>usize</var> is always zero or positive. Negative pointer size
+			values (represented with <var>isize</var>) are useful for operations like
+			offsets to addresses, positions, indices, or lengths. In comparison,
+			because <var>usize</var> cannot be negative, it is generally used for
+			memory addresses, positions, indices, lengths, or sizes.
+		</p>
+	</section>
+
+	<section id="number_formats">
+		<p>
+			<span class="topic">Number Formats.</span> There are a number of ways to
+			format numbers in Rust. Consider this code's output:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let separated_num = 2_124_393;
+				let hex_num = 0xfa;
+				let bin_num = 0b0010_1011;
+				let byte_num = b'E';
+				
+				println!("{}", separated_num);
+				println!("{}", hex_num);
+				println!("{}", bin_num);
+				println!("{}", byte_num);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			2124393
+			250
+			43
+			69
+		</code></pre>
+		<p>
+			With the first number, <var>2_124_393</var>, the underscore merely acts as
+			a separator. Using underscores as separators traces its roots all the way
+			back to Ada in 1979, and is present in Perl, C#, D, Haskell, Java, Kotlin,
+			OCaml, Perl, Python, PHP, Ruby, Go, Rust, Julia, and Swift. Those coming
+			from C++ can think of the underscore as akin to apostrophes
+			(<var>2'124'393</var>).<sup></sup>
+		</p>
+		<div class="note">
+			<p>
+				Languages like Fortran are the true winners in this game; white spaces
+				are entirely ignored in all contexts, so we can write things like
+				<var>2 124 393</var>.
+			</p>
+		</div>
+		<p></p>
+	</section>
+
+	<section id="floats">
+		<h3>Floating Point Types.</h3>
+		<p>
+			Rust has two floating point types, <var><mark>f32</mark></var> and
+			<var><mark>f64</mark></var
+			>. Following the pattern we've seen, <var>f32</var> corresponds to 32-bit
+			floating point numbers, and <var>f64</var> corresponds to 64-bit floating
+			point numbers (similar to a <var>double</var> in other languages).
+		</p>
+		<p>
+			Unlike the integer types, we generally do not want to use <var>f32</var>,
+			unless we're doing very low-level optimization or targetting architectures
+			that do not support 64-bit floats. Following this convention, Rust
+			defaults to <var>f64</var> if a type is not explicitly stated.
+		</p>
+		<pre class="language-rust"><code>
+			let x = 3.14;       // default to f64
+			let y: f64 = 2.17;  // explicitly stated
+		</code></pre>
+	</section>
+
+	<section id="bool">
+		<h3>Booleans.</h3>
+		<p>
+			Boolean values in Rust are represented with the type
+			<var><mark>bool</mark></var
+			>:
+		</p>
+		<pre class="language-rust"><code>
+			let p = true;
+			let q: bool = false;
+		</code></pre>
+		<p>
+			If we're coming from a language like C or C++, one habit we'll need to
+			break away from is using <var>1</var> or <var>0</var> for Booleans. Rust
+			is strict about what it considers a Boolean type &mdash; it's either
+			<var><mark>true</mark></var> or <var><mark>false</mark></var
+			>. It's not <var>1</var>, <var>0</var>, <var>TRUE</var>, <var>FALSE</var>,
+			<var>True</var>, or <var>False</var>.
+		</p>
+	</section>
+
+	<section id="char">
+		<h3>Characters.</h3>
+		<p>
+			Single characters in Rust are represented by the
+			<var><mark>char</mark></var> datatype. As a modern language, Rust uses a
+			single Unicode scalar value to represent characters. Following other
+			languages like Java and C, Rust differentiates <var>char</var> values from
+			strings with single quotes:
+		</p>
+		<pre class="language-rust"><code>
+			let n = 'n';
+			let allClear: char = '😎';
+		</code></pre>
+	</section>
 </section>
 
 {% endblock %}
