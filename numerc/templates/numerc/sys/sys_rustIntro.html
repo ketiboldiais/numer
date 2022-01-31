@@ -3,12 +3,32 @@
 {% endblock %} {% block title %}
 <title>Intro to Rust</title>
 {% endblock %} {% block content %}
-<h1>Rust Basics</h1>
+<h1>Introduction to Rust</h1>
 <section id="intro">
-	<p>In this essay, we explore the Rust programming language.</p>
+	<p>
+		<span class="drop">I</span>n this essay, we explore the Rust programming
+		language. While most of the materials in this volume will use the C
+		language, we will also use Rust to explore more high level concepts. We can
+		think of Rust as the modern approach to low-level programming. We have
+		low-level constructs like pointers, as well as high-level constructs like
+		pattern matching. In a sense, where the C programmer is an Olympic gymnast,
+		her Rust counterpart is a Cirque du Soleil performer with protective gear.
+	</p>
+	<p>
+		Because Rust provides many protections for low-level programming &mdash;
+		without taking away too much control on our part &mdash; we can focus more
+		on concepts rather than implementation details. For example, automatic
+		freeing of heap-allocated memory. Moreover, Rust's type system is partly
+		inspired by the Hindley-Milner type system, similar to the type systems
+		behind ML and OCaml. For example, Rust provides generics. And while they are
+		not as expressive as Haskell (e.g., there is no higher-kinded polymorphism),
+		they allow us to concisely write constructs like generalized functions with
+		pointer parameters. All that said, let's proceed.
+	</p>
 </section>
 
 <section id="first_program">
+	<h2>First Program</h2>
 	<p>As always, here is our first Rust program:</p>
 	<pre class="language-rust"><code>
 		// This is a comment.
@@ -485,11 +505,27 @@
 				<var>2 124 393</var>.
 			</p>
 		</div>
-		<p></p>
+		<p>
+			Next, the value <var>0xfa</var> is a hexadecimal number. To denote
+			hexadecimals, we prepend to each number the symbol
+			<var><mark>0x</mark></var
+			>. The same goes for binary numbers &mdash; prepend a
+			<var><mark>0b</mark></var
+			>. Notice that with binary numbers, we can use underscores to as
+			separators. Following some conventions in computer science academia, we
+			separate every four binary digits.
+		</p>
+		<p>
+			Last but not least, we can denote byte numbers by prepending a
+			<var><mark>b</mark></var
+			>, followed by an ASCII character in single quotes. Because a byte number
+			consists of eight bits, byte numbers allow us to represent the numbers
+			${0}$ to ${256}$ with ASCII characters (a base-256 number system).
+		</p>
 	</section>
 
 	<section id="floats">
-		<h3>Floating Point Types.</h3>
+		<h3>Floating Point Types</h3>
 		<p>
 			Rust has two floating point types, <var><mark>f32</mark></var> and
 			<var><mark>f64</mark></var
@@ -510,7 +546,7 @@
 	</section>
 
 	<section id="bool">
-		<h3>Booleans.</h3>
+		<h3>Booleans</h3>
 		<p>
 			Boolean values in Rust are represented with the type
 			<var><mark>bool</mark></var
@@ -531,7 +567,7 @@
 	</section>
 
 	<section id="char">
-		<h3>Characters.</h3>
+		<h3>Characters</h3>
 		<p>
 			Single characters in Rust are represented by the
 			<var><mark>char</mark></var> datatype. As a modern language, Rust uses a
@@ -544,6 +580,199 @@
 			let allClear: char = '😎';
 		</code></pre>
 	</section>
+</section>
+
+<section id="tuples">
+	<h2>Tuples</h2>
+	<p>
+		The previous types we saw are called <b>scalar types</b>. Like many other
+		languages, half of the primitives in Rust are scalars, while the other half
+		consists of <b>compound types</b>. There are two primitive compound types in
+		Rust: <b>tuples</b> and <b>arrays</b>. We consider the tuple first.
+	</p>
+	<p>
+		The tuple data type, denoted with the keyword <var><mark>tup</mark></var
+		>, is a general way of grouping various instances of a particular type into
+		a single collection. Tuples are defined by the following properties:
+	</p>
+	<ol>
+		<li>
+			Tuples are of fixed size. Once declared, they cannot grow or shrink.
+		</li>
+		<li>
+			Tuples are initialized by writing a comma-separated list of values within
+			parentheses.
+		</li>
+		<li>Each element in the tuple can be of any type.</li>
+		<li>
+			Each position in the tuple has a type and an index, starting at zero.
+		</li>
+	</ol>
+	<p>For example, here is a tuple:</p>
+	<pre class="language-rust"><code>
+		let tup = (100, 5.2, 'a');
+	</code></pre>
+	<p>
+		The tuple above consists of an <var>i32</var>, a <var>f64</var>, and a
+		<var>char</var>. We can also explicitly state the types:
+	</p>
+	<pre class="language-rust"><code>
+		let tup: (i32, f64, char) = (100, 5.2, 'a');
+	</code></pre>
+	<p>
+		Because tuples have indices, we can access each element by index. This is
+		done with the syntax, <var><mark>${t}$.${i}$</mark></var
+		>, where ${t}$ is the tuple's name and ${i}$ is a valid index:
+	</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let tup = (100, 5.2, 'a');
+			
+			println!("{}", tup.0);
+			println!("{}", tup.1);
+			println!("{}", tup.2);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		100
+		5.2
+		a
+	</code></pre>
+	<p>
+		Alternatively, we can give each of the tuple's elements an identifier, or
+		name, through <b>destructuring</b>:
+	</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let tup = (100, 5.2, 'a');
+			let (x, y, z) = tup;
+		
+			println!("{}", x);
+			println!("{}", y);
+			println!("{}", z);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		100
+		5.2
+		a
+	</code></pre>
+	<p>
+		In the example above, we <i>destructure</i> the tuple <var>tup</var> into
+		three separate variables: <var>x</var> is bound to <var>100</var>,
+		<var>y</var> is bound to <var>5.2</var>, and <var>z</var> is bound to
+		<var>'a'</var>. This is an example of <b>pattern-matching</b>, and is found
+		in many functional languages like ML and Haskell.
+	</p>
+	<p>
+		Those coming from a functional programming background like ML will find that
+		Rust also has the <b>unit type</b>, with the single value
+		<var><mark>()</mark></var
+		>, called the <b>unit value</b>. Expressions in Rust implicitly return the
+		unit value if no value is returned.
+	</p>
+</section>
+
+<section id="array">
+	<h2>Arrays</h2>
+	<p>
+		The other primitive compound type is the <b>array</b>. Like the tuple, the
+		array provides a means of grouping different values into a single
+		collection. However, unlike the tuple, each value in the array must be of
+		the same type. Alongside this property, there are a few others:
+	</p>
+	<ol>
+		<li>Arrays are of fixed length. They cannot grow or shrink.</li>
+		<li>
+			Arrays are initialized by writing a comma-separated list of values within
+			parentheses.
+		</li>
+		<li>Each element in the array must be of the same type.</li>
+		<li>Each position in the array has an index, starting at zero.</li>
+	</ol>
+	<p>Illustrating, here is an array in Rust:</p>
+	<pre class="language-rust"><code>
+		let arr = [1,2,3,4,5];
+	</code></pre>
+	<p>We can als explicitly provide a type annotation:</p>
+	<pre class="language-rust"><code>
+		let arr: [i32; 5] = [1,2,3,4,5];
+	</code></pre>
+	<p>
+		The type annotation tells us that the array <var>arr</var> has the type
+		<var>[i32; 5]</var>, meaning &mdash; an array (denoted by the square
+		brackets), with five elements (denoted by the <var>5</var>), each element of
+		type <var>i32</var> (denoted by the <var>i32</var>).
+	</p>
+	<p>
+		Some algorithms require initializing an array where each element in the
+		array is set to <var>0</var>. For example, an array of size ten, each
+		element zero, can be written concisely in Rust as follows:
+	</p>
+	<pre class="language-rust"><code>
+		let arr = [0; 10];
+	</code></pre>
+	<p>The initialization above expands to:</p>
+	<pre class="language-rust"><code>
+		let arr = [0,0,0,0,0,0,0,0,0,0];
+	</code></pre>
+	<p>
+		To access each element in the array <var>arr</var>, we use square bracket
+		syntax, much like other languages:
+	</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let arr = [1,2,3,4,5];
+		
+			println!("{}", arr[0]);
+			println!("{}", arr[1]);
+			println!("{}", arr[2]);
+			println!("{}", arr[3]);
+			println!("{}", arr[4]);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		1
+		2
+		3
+		4
+		5
+	</code></pre>
+	<p>
+		<span class="topic">Invalid Indices.</span> What happens when we enter an
+		invalid index? Well, let's try it:
+	</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let arr = [1,2,3];
+		
+			println!("{}", arr[0]);
+			println!("{}", arr[1]);
+			println!("{}", arr[2]);
+			println!("{}", arr[3]);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		error: this operation will panic at runtime
+		--> main.rs:7:17
+			|
+		7 |     println!("{}", arr[3]);
+			|                    ^^^^^^ index out of bounds: the length is 3 but the index is 3
+			|
+			= note: `#[deny(unconditional_panic)]` on by default
+	</code></pre>
+	<p>
+		Above, we got a <b>out-of-bounds error</b>. This is a compiler error. If the
+		array was initialized through user input at runtime, we would get a
+		<i>runtime error</i>. Unlike other languages, however, Rust goes the extra
+		step not to execute any further lines the moment it encounters a runtime
+		error. This is one of the hallmarks of Rust's memory safety principles. Many
+		other languages like C and C++ do not provide this kind of check at runtime.
+	</p>
+</section>
+
+<section id="control_flow">
+	<h2>Control Flow</h2>
 </section>
 
 {% endblock %}
