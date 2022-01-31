@@ -375,25 +375,142 @@
 			${(Kiwi, Mango).}$
 		</p>
 		<p>We can summarize these findings in a <b>sample table</b>:</p>
-		<table class="punnett">
-			<thead>
-				<th></th>
-				<th>order relevant</th>
-				<th>order irrelevant</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td>replacement permissible</td>
-					<td>${\Large n^k}$</td>
-					<td>${\large \dbinom{n + k - 1}{k}}$</td>
-				</tr>
-				<tr>
-					<td>replacement impermissible</td>
-					<td>${\large n(n-1)(n-2)\ldots(n-(k-1))}$</td>
-					<td>${\large \dbinom{n}{k}}$</td>
-				</tr>
-			</tbody>
-		</table>
+		<figure style="margin: 0">
+			<table class="punnett">
+				<thead>
+					<th></th>
+					<th>order matters</th>
+					<th>order does not matter</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>can replace</td>
+						<td>${\Large n^k}$</td>
+						<td>
+							${\left( \dbinom{n}{k} \right) = \dbinom{n + k - 1}{k} = \dfrac{(n
+							+ k - 1)!}{k!(n-1)!}}$
+						</td>
+					</tr>
+					<tr>
+						<td>cannot replace</td>
+						<td>${n(n-1)(n-2)\ldots(n-(k-1)) = n!}$</td>
+						<td>${\dbinom{n}{k} = \dfrac{n!}{k!(n-k)!}}$</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			For the sake of conciseness, we use the following terms to denote each of
+			the sampling conditions above.
+		</p>
+		<figure>
+			<div class="rule">
+				<p>
+					<span class="topic">Definition.</span> Suppose ${n}$ things are taken
+					${k}$ at a time, then:
+				</p>
+				<ul>
+					<li>
+						If <span class="greenText">order matters</span> and
+						<span class="redText">replacement is not allowed</span>, each
+						sampling is called a <b>permutation</b>.
+					</li>
+					<li>
+						If <span class="greenText">order matters</span> and
+						<span class="blueText">replacement is allowed</span>, each sampling
+						is called a <b>${k}$-tuple</b>, or simply <b>tuple</b>.
+					</li>
+					<li>
+						If <span class="purpleText">order does not matter</span> and
+						<span class="redText">replacement is not allowed</span>, each
+						sampling is called a <b>combination</b>.
+					</li>
+					<li>
+						If <span class="purpleText">order does not matter</span> and
+						<span class="blueText">replacement is allowed</span>, each sampling
+						is called a <b>${k}$-multicombination</b>, or simply
+						<b>multicombination</b>.
+					</li>
+				</ul>
+			</div>
+		</figure>
+		<p>
+			The table's entries are consistent with what we've seen so far. The one
+			exception is the scenario where order is irrelevant, and replacement is
+			permissible. In this case, we have:
+		</p>
+		<figure>
+			<div>
+				<p>${\dbinom{n + k - 1}{k}}$</p>
+			</div>
+		</figure>
+		<p>
+			This is peculiar result, and it's not immediately clear why this is the
+			case. Let's clarify this result.
+		</p>
+		<p>
+			To begin, we should be clear about what it is we're doing. We want to pick
+			something ${k}$ times from a set of ${n}$ objects, with the conditions
+			that: (1) order does not matter, and (2) we can replace. In other words,
+			we pick some object, put it back, pick another, put it back, pick another,
+			put it back, &hellip;, ${k}$ times. But in doing so, our selections aren't
+			unique in terms of order. Thus, picking ${A-A-B}$ is no different from
+			${A-B-A}$ or ${B-A-A.}$
+		</p>
+		<p>
+			The formula provides that the number of possible selections is given by
+			${n + k - 1}$ choose ${k.}$ Let's consider the edge cases. The simplest
+			edge case is ${k = 0.}$
+		</p>
+		<figure>
+			$$ \begin{aligned} \dbinom{n + k - 1}{k} &= \dbinom{n + (0) - 1}{0}
+			\\[1em] &= \dbinom{n - 1}{0} \\[1em] &= 1 \\[1em] \end{aligned} $$
+		</figure>
+		<p>
+			Indeed, there is only one way to chose ${0}$ objects from ${n}$ objects
+			with replacement and disregarding order &mdash; do nothing. If there are
+			${n}$ toppings for a hotdog and and no one is there to order the toppings,
+			there is only one way to order toppings &mdash; do not order toppings.
+			There is exactly one way to do nothing.
+		</p>
+		<p>What if ${k = 1?}$ In this case (using our same spices), we have:</p>
+		<figure>
+			<div>
+				$$ \begin{aligned} \dbinom{n + k - 1}{k} &= \dbinom{n + 1 - 1}{1}
+				\\[1em] &= \dbinom{n}{1} \\[1em] &= n \end{aligned} $$
+			</div>
+			<p>
+				This makes sense. If we're only picking once, it's irrelevant whether
+				we're replacing or taking things in order.
+			</p>
+			<p>
+				Now let's consider the <i>simplest non-trivial case</i>. Here, it's ${n
+				= 2.}$ If ${n = 2,}$ then we have:
+			</p>
+			<figure>
+				$$ \begin{aligned} \dbinom{n + k - 1}{k} &= \dbinom{2 + k - 1}{k}
+				\\[1em] &= \dbinom{k + 1}{k} \end{aligned} $$
+			</figure>
+			<p>
+				Given that ${C_{k+1}^{n}}$ is the same as ${C_{1}^{k+1},}$ when ${n =
+				2,}$ we have:
+			</p>
+			<figure>$$ \dbinom{k + 1}{1} = k + 1 $$</figure>
+			<p>
+				This too makes sense. If we have two objects, then since replacement is
+				permissible and order is irrelevant, we have ${k + 1}$
+				multicombinations. For example, if the two objects are cheddar and
+				gouda, and we're told to make three selections, then we can pick:
+			</p>
+			<figure>
+				<div>
+					<p>cheddar, cheddar, cheddar</p>
+					<p>gouda, gouda, gouda</p>
+					<p>cheddar, gouda, cheddar</p>
+					<p>cheddar, cheddar, gouda</p>
+				</div>
+			</figure>
+		</figure>
 	</section>
 </section>
 

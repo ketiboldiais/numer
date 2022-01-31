@@ -177,7 +177,7 @@
 	}
 	div.content {
 		overflow-x: hidden;
-		margin-bottom: 5vh;
+		margin-bottom: 5rem;
 		background-color: var(--page);
 	}
 	section {
@@ -467,6 +467,7 @@
 		padding: 0;
 		margin: 0;
 		margin-top: 1em;
+		margin-bottom: -0.8em;
 	}
 	h1 var, h2 var, h3 var, h4 var, h5 var, h6 var, span.topic var {
 		font-family: monospace, 'Courier New', Courier;
@@ -609,14 +610,6 @@
 	section > p {
 		line-height: calc(1ex / 0.32);
 		margin: calc(0.7ex / 0.32) 0;
-	}
-	section h2 + p, 
-	section h3 + p, 
-	section h4 + p, 
-	section h5 + p, 
-	section h6 + p {
-		margin-top: 0; 
-		padding-top: 0;
 	}
 /* PopUp - Class names are used in JavaScript code */
 	.pop {
@@ -1366,7 +1359,6 @@
 		background-color: rgb(246, 248, 250);
 		counter-reset: lineNumber;
 		list-style: none;
-		width: fit-content;
 		margin: 0 auto;
 		padding: 0.1em 0;
 		border-top: solid thin var(--lightGrey);
@@ -1531,6 +1523,13 @@
 	div.compare figure {
 		margin: 0 2px;
 		flex-grow: 1;
+	}
+	div.compare div.trace {
+		margin: 0 1%;
+	}
+	div.compare > p {
+		width: 50%;
+		margin-top: 0;
 	}
 	div.compare figure pre {
 		height: 100%;
@@ -2865,8 +2864,6 @@
 		font-family: "Fira";
 		font-size: 0.7rem;
 		flex-direction: row;
-		width: 100%;
-		max-width: max-content;
 		margin: 5% 0;
 		overflow-x: auto;
 		overflow-y: hidden;
@@ -2986,7 +2983,72 @@
 	ul.linkedlist.null ul.nonnull svg {
 		visibility: visible;
 	}
-/* Binary Tree */
+/* Trace Analysis */
+	div.trace {
+		/* border: solid thin var(--lightGrey); */
+		display: flex;
+		justify-content: space-evenly;
+		column-gap: 2px;
+		font-family: 'Fira';
+		font-size: 0.7rem;
+		width: 80%;
+		margin: 5% auto;
+		padding: 0.4em;
+	}
+	div.trace ul {
+		list-style-type: none;
+		display: flex;
+		margin: 3px 0;
+		padding: 0;
+	}
+	div.trace ul li {
+		padding: 2px 0.4em;
+		border: solid thin var(--lightGrey);
+	}
+	div.trace ul li + li {
+		border-left: none;
+	}
+	/* div.trace ul li:nth-child(2) {
+		border-left: solid thin grey;
+		border-bottom: solid thin grey;
+	} */
+	div.heap {
+		background-color: rgb(255, 230, 226);
+		border: solid thin rgb(214, 180, 174);
+	}
+	div.stack {
+		background-color: rgb(228, 255, 253);
+		border: solid thin rgb(176, 204, 202);
+	}
+	div.stack, div.heap {
+		width: 100%;
+		padding: 5px;
+		display: flex;
+		flex-direction: column;
+	}
+	div.call {
+		background-color: var(--page);
+		padding: 0.5em;
+		margin: 0.5% 0;
+		border: solid thin var(--lightGrey);
+	}
+	div.stack div.call {
+		display: flex;
+		flex-direction: column-reverse;
+	}
+	div.call > span {
+		display: block;
+		text-align: right;
+		padding-bottom: 0.5em;
+	}
+	div.stack::before {
+		content: 'STACK';
+		margin-top: 3px;
+	}
+	div.heap::before {
+		content: 'HEAP';
+		margin-top: 3px;
+	}
 /* Code annotation styling */
 	span.code-annotation {
 		font-size: 0.8rem;
@@ -3026,6 +3088,13 @@
 		vertical-align: top;
 		overflow: hidden;
 	}
+	.svg-content-responsive {
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+/* Circular Linked Lists */
 	circle.pointer {
 		fill: rgb(241, 162, 15);
 		-webkit-filter: drop-shadow( 0px 2px 0 rgb(197, 128, 0));
@@ -3046,11 +3115,10 @@
 		-webkit-filter: drop-shadow( 0px 2px 0 rgb(194, 0, 0));
 		filter: drop-shadow( 0px 2px 0 rgb(194, 0, 0));
 	}
-	.svg-content-responsive {
-		display: inline-block;
-		position: absolute;
-		top: 0;
-		left: 0;
+	circle.focus {
+		fill: rgb(223, 96, 255);
+		-webkit-filter: drop-shadow( 0px 2px 0 rgb(149, 0, 194));
+		filter: drop-shadow( 0px 2px 0 rgb(149, 0, 194));
 	}
 /* Katex Styles */
 	.katex {
@@ -3198,9 +3266,30 @@
 				transform: translateX(-120%);
 			}
 		}
+		@media (min-width: 1000px) {
+			div.twoColumn {
+				display: grid;
+				grid-template-columns: 50% 50%;
+				column-gap: 2%;
+			}
+		}
 		@media (max-width: 900px) {
 			.grid {
 				display: block;
+			}
+			div.compare div.trace {
+				margin: 1% auto;
+			}
+			div.compare {
+				display: block;
+			}
+			div.compare p {
+				width: 100%;
+			}
+			div.compare ol.alg,
+			div.compare ul.linkedlist,
+			div.compare ol.array {
+				margin: 1em auto;
 			}
 		}
 		@media (min-width: 0px) and (max-width: 600px) {

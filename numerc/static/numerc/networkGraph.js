@@ -364,6 +364,33 @@ const circularInsertHead5 = {
 };
 render(circularInsertHead5);
 
+const deleteCircular1 = {
+	id: "#deleteCircular1",
+	dataset: {
+		nodes: [
+			{ name: "4" },
+			{ name: "3" },
+			{ name: "7" },
+			{ name: "9", annotate: 'focus'},
+			{ name: "5" },
+			{ name: "8", annotate: 'foot'},
+			{ name: "t", annotate: 'ptr'},
+			{ name: "d", annotate: 'ptr'},
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 0 },
+			{ source: 6, target: 2 },
+			{ source: 7, target: 3 },
+		],
+	},
+};
+render(deleteCircular1);
+
 function render(demoObj) {
 	const main = d3.select("body");
 	const demoContainer = main.selectAll(demoObj.id);
@@ -443,6 +470,9 @@ function render(demoObj) {
 		.attr("class", (d, i) => {
 			if (d.annotate == "ptr") {
 				return "pointer";
+			}
+			if (d.annotate == "focus") {
+				return "focus";
 			}
 			if (i == 0 || d.annotate == "head") {
 				return "headNode";

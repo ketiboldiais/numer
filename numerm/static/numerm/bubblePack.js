@@ -33,14 +33,14 @@ function render(obj) {
 		.domain(obj.data)
 		.range([ 'rgb(252, 253, 188)', 'rgb(253, 189, 130)'])
 	const margin = {
-		top: numberOfSets*5,
-		right: numberOfSets*5,
-		bottom: numberOfSets*5,
-		left: numberOfSets*5,
+		top: numberOfSets*15,
+		right: numberOfSets*15,
+		bottom: numberOfSets*15,
+		left: numberOfSets*15,
 	};
 	const dimensions = {
 		width: (numberOfSets*100) - margin.left - margin.right,
-		height: (numberOfSets*70) - margin.top - margin.bottom,
+		height: (numberOfSets*80) - margin.top - margin.bottom,
 	};
 	const stratify = d3
 		.stratify()
@@ -88,7 +88,7 @@ function render(obj) {
 		.attr("text-anchor", "middle")
 		.attr("dy", "0.3em")
 		.attr("fill", "black")
-		.style("font-size", (d) => d.r / (d.value*1.5))
+		.style("font-size", (d) => d.r - (d.id.length*5))
 		.text((d) => d.data.name);
 
 	nodes
@@ -97,6 +97,6 @@ function render(obj) {
 		.attr("text-anchor", "middle")
 		.attr("dy", (d) => -d.r - 10)
 		.attr("fill", "#323232")
-		.style("font-size", (d) => d.r/d.value)
+		.style("font-size", (d) => d.depth+25)
 		.text((d) => d.data.name);
 }

@@ -1,7 +1,6 @@
 const body = d3.select("body");
 const linkedList = body.selectAll("ul.linkedlist").selectAll("ul");
 const linkedListChild = document.querySelector("ul.linkedlist ul li");
-console.log(linkedListChild);
 const linkedListColors = {
 	arrowColor: "#747578",
 };

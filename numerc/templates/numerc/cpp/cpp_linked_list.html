@@ -9711,14 +9711,14 @@
 			print the circular linked list with a recursive approach. In pseudocode:
 		</p>
 		<ol class="alg">
-			<li>fn print(Node *p) -> void:</li>
+			<li>fn display(Node *p) -> void:</li>
 			<ol>
 				<li>static int flag = 0;</li>
 				<li>if (p != head OR flag == 0):</li>
 				<ol>
 					<li>flag = 1;</li>
 					<li>print(p->data);</li>
-					<li>print(p->next);</li>
+					<li>display(p->next);</li>
 				</ol>
 				<li>flag = 0;</li>
 			</ol>
@@ -9726,12 +9726,12 @@
 		<p>
 			Let's go over how this procedure works. First, like the iterative
 			approach, the pointer <var>p</var> points to <var>head</var>'s pointee.
-			Each time the recursive <var>print()</var> calls itself, <var>p</var>'s
+			Each time the recursive <var>display()</var> calls itself, <var>p</var>'s
 			next pointee is passed as an argument. As the calls are made,
 			<var>p</var> moves along the circular linked list, printing its pointee's
 			data field value. At some point, <var>p</var> will reach <var>head</var>'s
-			pointee again. In that scenario, we must provide <var>print()</var> a way
-			to determine if it's at <var>head</var>'s pointee a second time.
+			pointee again. In that scenario, we must provide <var>display()</var> a
+			way to determine if it's at <var>head</var>'s pointee a second time.
 		</p>
 		<p>
 			This is done by using the variable <var>flag</var>. Initially,
@@ -9764,8 +9764,623 @@
 			<var>flag</var> that all subsequent calls use. This is ensured by
 			declaring <var>flag</var> as a static variable. And because
 			<var>flag</var> is a static variable, we must set it <var>0</var> once
-			we've finished calling <var>print()</var> as a whole.
+			we've finished calling <var>display()</var> as a whole.
 		</p>
+		<p>
+			To put all of this together, it's helpful to trace the recursive function.
+			Suppose the circular list is ${(1,2,3),}$ and the code is as follows. The
+			function <var>List()</var> creates a new list by creating new instances of
+			<var>struct Node</var> in the heap, with the identifier
+			<var>list</var> pointing to the first node. Suppose further that every
+			<var>list</var> has a pointer to its first node called <var>head</var>.
+		</p>
+		<ol class="alg">
+			<li>fn display(Node *p) -> void:</li>
+			<ol>
+				<li>static int flag = 0;</li>
+				<li>if (p != head OR flag == 0):</li>
+				<ol>
+					<li>flag = 1;</li>
+					<li>print(p->data);</li>
+					<li>display(p->next);</li>
+				</ol>
+				<li>flag = 0;</li>
+			</ol>
+			<li>fn main():</li>
+			<ol>
+				<li>List list = new List(1,2,3);</li>
+				<li>display(list);</li>
+			</ol>
+		</ol>
+
+		<p>
+			We begin by executing the first line in <var>main()</var>, line 9. This
+			results in:
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<span>main()</span>
+					<ul>
+						<li>list</li>
+						<li>0x100</li>
+					</ul>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Then, we reach the <var>display()</var> function on line 10. Notice that
+			the <var>static int flag = 0</var> lies above all else in the stack. In
+			languages like C, static variables remain in memory so long as the program
+			runs. Contrast this with regular variables, which disappear once its
+			parent function's stack frame is popped off the stack.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>0</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Inside <var>display()</var>, we see that <var>flag == 0</var>, so we
+			proceed. In this case, <var>flag</var> is changed to <var>1</var>, and
+			remains <var>1</var> thereafter:
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Then, we call <var>print(p->data)</var>, which outputs <var>1</var> to the
+			console. Thereafter, we call <var>display(p->next)</var>.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Then, because <var>p</var> is no longer equal to <var>head</var>, we
+			proceed with the if-block.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			We print the data of <var>p</var>'s current pointee, and call
+			<var>display(p->next)</var>:
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x300</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			And because <var>p</var> is not equal to <var>head</var>, we again proceed
+			with the if-block.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x300</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Because <var>p</var> is not equal to <var>head</var>, we again print
+			<var>p</var>'s pointee's data, and call <var>display(p->next)</var>.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x300</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			At this point, <var>p</var> is now equal to <var>head</var>. Given that
+			<var>flag == 1</var>, the if-block's condition is <var>false</var>, so we
+			stop the recursive calls. We then set <var>flag = 0</var>, and the stack
+			frames resulting from <var>display()</var> are popped off the stack:
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>0</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
 	</section>
 
 	<section id="inserting_circular_list">
@@ -10322,12 +10937,123 @@
 			</p>
 			<p>Implementing the procedure in pseudocode:</p>
 			<ol class="alg">
-				<li>fn prepend(Node* head, int data) -> void:</li>
+				<li>fn prepend(Node* head, int newData) -> void:</li>
 				<ol>
-					<li></li>
+					<li>Node* t = new Node();</li>
+					<li>t->data = newData;</li>
+					<li>t->next = head;</li>
+					<li>Node* p = head;</li>
+					<li>while (p->next != head):</li>
+					<ol>
+						<li>p = p->next;</li>
+					</ol>
+					<li>p->next = t;</li>
+					<li>head = t;</li>
 				</ol>
 			</ol>
 		</section>
+
+		<section id="general_insertion">
+			<h4>General Insertion</h4>
+			<div class="twoColumn">
+				<div>
+					<p>
+						Now that we've covered the two cases, we can implement a more
+						general function for insertion. Note that the code does not include
+						a guard against invalid position values. When implementing the
+						procedure above, it's imperative that we provide a guard. If the
+						user passed an index of say, ${-1,}$ we would enter an infinite
+						loop, forever traversing the circular list.
+					</p>
+					<p>
+						The time complexity for this procedure is no different from what we
+						saw earlier. In the best case scenario, we're inserting immediately
+						after <var>head</var>'s pointee. In the worst case scenario, we're
+						inserting immediately before <var>head</var>'s pointee. In the
+						former we have a time complexity of ${O(1),}$ and in the latter we
+						have a time complexity of ${O(n).}$
+					</p>
+				</div>
+				<ol class="alg">
+					<li>fn insert(int position, int newData) -> void:</li>
+					<ol>
+						<li>Node* t;</li>
+						<li>Node* p;</li>
+
+						<li>if (position == 0):</li>
+						<ol>
+							<li>t = new Node();</li>
+							<li>t->data = newData;</li>
+							<li>if (head == NULL):</li>
+							<ol>
+								<li>head = t;</li>
+								<li>head->next = head;</li>
+							</ol>
+							<li>else:</li>
+							<ol>
+								<li>p = head;</li>
+								<li>while (p -> next != head):</li>
+								<ol>
+									<li>p = p->next;</li>
+								</ol>
+							</ol>
+							<li>p->next = t;</li>
+							<li>t->next = head;</li>
+							<li>head = t;</li>
+						</ol>
+						<li>else:</li>
+						<ol>
+							<li>p = head;</li>
+							<li>for (int i = 0; i < position - 1; i++):</li>
+							<ol>
+								<li>p = p->next;</li>
+							</ol>
+							<li>t = new Node();</li>
+							<li>t->data = x;</li>
+							<li>t->next = p->next;</li>
+							<li>p->next = t;</li>
+						</ol>
+					</ol>
+				</ol>
+			</div>
+		</section>
+	</section>
+
+	<section id="deletion">
+		<h3>Deletion on Circular Lists</h3>
+		<p>
+			Alongside insertion, we next consider how to delete nodes in a circular
+			list. Like insertion, there are two cases of deletion:
+		</p>
+		<ol>
+			<li>Deleting the <var>head</var>'s pointee node, or</li>
+			<li>deleting a node at any other given position.</li>
+		</ol>
+		<p>
+			Suppose we had the linked list below, and we want to delete the node
+			containing <var>9</var>. Call it the <i>delete target</i>. To delete this
+			node, we must have a pointer to the node immediately before the delete
+			target, and a pointer to the delete target itself:
+		</p>
+		<div id="deleteCircular1"></div>
+		<p>
+			The pseudocode representation is presented below. Notice that this is
+			substantially the same as deleting from a linear linked list.
+		</p>
+		<ol class="alg">
+			<li>fn delete(int position) -> void:</li>
+			<ol>
+				<li>Node* p = head;</li>
+				<li>Node* q;</li>
+				<li>for (i = 0; i &lt; position - 2; i++):</li>
+				<ol>
+					<li>p = p->next;</li>
+				</ol>
+				<li>q = p->next;</li>
+				<li>p = p->next;</li>
+				<li>delete q;</li>
+			</ol>
+		</ol>
 	</section>
 </section>
 
