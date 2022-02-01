@@ -391,6 +391,77 @@ const deleteCircular1 = {
 };
 render(deleteCircular1);
 
+const deleteCircularHead = {
+	id: "#deleteCircularHead",
+	dataset: {
+		nodes: [
+			{ name: "1" },
+			{ name: "8", annotate: 'focus'},
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2" },
+			{ name: "7" },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 0 },
+		],
+	},
+};
+render(deleteCircularHead);
+
+const deleteCircularHead1 = {
+	id: "#deleteCircularHead1",
+	dataset: {
+		nodes: [
+			{ name: "1" },
+			{ name: "8", annotate: 'focus'},
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2" },
+			{ name: "7", annotate: 'foot' },
+			{ name: "p", annotate: 'ptr' },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 5 },
+			{ source: 5, target: 1 },
+			{ source: 6, target: 5 },
+		],
+	},
+};
+render(deleteCircularHead1);
+
+const deleteCircularHead2 = {
+	id: "#deleteCircularHead2",
+	dataset: {
+		nodes: [
+			{ name: "8" },
+			{ name: "3" },
+			{ name: "5" },
+			{ name: "2" },
+			{ name: "7", annotate: 'foot' },
+			{ name: "p", annotate: 'ptr' },
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 4, target: 0 },
+			{ source: 5, target: 4 },
+		],
+	},
+};
+render(deleteCircularHead2);
+
 function render(demoObj) {
 	const main = d3.select("body");
 	const demoContainer = main.selectAll(demoObj.id);

@@ -148,7 +148,7 @@
 		turn.
 	</p>
 	<section id="exect">
-		<h3>The <var>exec()</var> Method</h3>
+		<h3>The Exec Method</h3>
 		<p>Consider the output of the following code:</p>
 		<pre class="language-javascript"><code>
 			const text       = "CS lessons always have a 'hello world' snippet.";
@@ -197,17 +197,200 @@
 			beginning of the match is at index <var>32</var>.
 		</p>
 	</section>
+</section>
 
-	<section id="string_methods">
-		<h3>String Methods</h3>
+<section id="string_methods">
+	<h2>String Methods</h2>
+	<p>
+		Whenever we create strings in JavaScript, the strings are produced with a
+		<var>string</var> object wrapper. This object wrapper provides several
+		<i>string methods</i>, four of which can be used with regex objects.
+	</p>
+
+	<section id="match">
+		<h3>The Match Method</h3>
+		<p>The match method has the following syntax:</p>
+		<ul class="syntax">
+			<li>${s}$.match(${regex}$)</li>
+		</ul>
 		<p>
-			Whenever we create strings in JavaScript, the strings are produced with a
-			<var>string</var> object wrapper. This object wrapper provides several
-			<i>string methods</i>, four of which can be used with regex objects.
+			where ${s}$ is a string value, and ${regex}$ is a regular expression. This
+			method works like the <var>exec()</var> method. It returns an array
+			containing the match (if any), as well as a few other helpful bits of
+			information:
 		</p>
-		<section id="match">
-			<h4>The <var>match()</var> Method</h4>
-		</section>
+		<pre class="language-javascript"><code>
+			const text = "Toshiro Mifune";
+			const regex = /Mifune/;
+			const result = text.match(regex);
+
+			console.log(result);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ 'Mifune', index: 8, input: 'Toshiro Mifune', groups: undefined ]
+		</code></pre>
+	</section>
+
+	<section id="search">
+		<h3>The Search Method</h3>
+		<p>
+			Alongside the <var>match()</var> method, the string object wrapper also
+			provides the <var><mark>search()</mark></var> method. The syntax is the
+			same as <var>match()</var>:
+		</p>
+		<ul class="syntax">
+			<li>${s}$.search(${regex}$)</li>
+		</ul>
+		<p>
+			In contrast to <var>match()</var>, <var>search()</var> merely returns the
+			index of the matched regex:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "Toshiro Mifune";
+			const regex = /Mifune/;
+			const result = text.match(regex);
+
+			console.log(result);
+		</code></pre>
+		<pre class="language-bash"><code>
+			8
+		</code></pre>
+		<p>
+			Notice that this is the same <var>8</var> we saw from <var>match()</var>'s
+			output. It's the index where the regex first occurs.
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "Toshiro Mifune";
+			const regex = /Mifune/;
+			const result = text.search(regex);
+			console.log(result);
+			console.log('text[8] = %s', text[8]);
+		</code></pre>
+		<pre class="language-bash"><code>
+			8
+			text[8] = M
+		</code></pre>
+		<p>If no match is found, <var>search()</var> returns <var>-1</var>:</p>
+		<pre class="language-javascript"><code>
+			const text = "Toshiro Mifune";
+			const regex = /Maru/;
+			const result = text.search(regex);
+			console.log(result);
+		</code></pre>
+		<pre class="language-bash"><code>
+			-1
+		</code></pre>
+	</section>
+
+	<section id="replace">
+		<h3>The Replace Method</h3>
+		<p>
+			Suppose we want to replace a matching substring with a particular string
+			value. We can do so with the <var>replace()</var> method. The general
+			syntax:
+		</p>
+		<ul class="syntax">
+			<li>${s_p}$.replace(${regex}$, ${s_n}$)</li>
+		</ul>
+		<p>
+			Where ${s_p}$ is an existing string, ${regex}$ is the regular expression
+			to match, and ${s_n}$ is the string we want to replace the matching
+			${regex}$ with. For example:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "strawberry pie";
+			console.log(text);
+			const regex = /pie/;
+			const result = text.replace(regex, "cake");
+			console.log(result);
+			console.log(text);
+		</code></pre>
+		<pre class="language-bash"><code>
+			strawberry pie
+			strawberry cake
+			strawberry pie
+		</code></pre>
+		<p>
+			Notice how the matching substring <var>pie</var> was replace with
+			<var>cake</var>. Importantly, the <var>replace()</var> method does not
+			mutate the original string. If we want to use the modified string, we must
+			bind it to a variable.
+		</p>
+		<p>
+			Moreover, with the way we're using <var>replace()</var> at the moment, the
+			method will only replace the first match it encounters:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "strawberry pie pie";
+			console.log(text);
+			const regex = /pie/;
+			const result = text.replace(regex, "cake");
+			console.log(result);
+			console.log(text);
+		</code></pre>
+		<pre class="language-bash"><code>
+			strawberry pie pie
+			strawberry cake pie
+			strawberry pie pie
+		</code></pre>
+		<p>
+			In later sections, we will see how to replace <em>all</em> instances of a
+			regex-matched substring.
+		</p>
+	</section>
+
+	<section id="split">
+		<h3>The Split Method</h3>
+		<p>
+			Earlier in this volume, we saw the <var><mark>split()</mark></var> method:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "mango, lychee, rambutan";
+			const arr = text.split(', ');
+			console.log(arr);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ 'mango', 'lychee', 'rambutan' ]
+		</code></pre>
+		<p>
+			Using the separator <var>, </var> (a commma followed by a space) we can
+			store each substring separated by a commoa and a space in the string
+			<var>text</var> as an element in an array. Notice what happens when we use
+			a regular expression as a separator:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "010";
+			const regex = /1/;
+			const arr = text.split(regex);
+			console.log(arr);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ '0', '0' ]
+		</code></pre>
+		<p>
+			This output conforms with how <var>split()</var> works. By passing a
+			regular expression as a separator, the array returned does not include the
+			regex-matched substring, since the regex is used as a separator.
+		</p>
+		<p>
+			While ones and zeros are nice, a much more common use of regular
+			expressions is to break down a sentence into an array of words. To do so,
+			we use the regular expression syntax for a space &mdash;
+			<var><mark>\s</mark></var> (backward slash s):
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "One man's constant is another man's variable.";
+			const regex = /\s/;
+			const arr = text.split(regex);
+			console.log(arr);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ 'One', "man's", 'constant', 'is', 'another', "man's", 'variable.' ]
+		</code></pre>
+		<p>
+			Now we're talking. We turned the string <var>text</var> into an array of
+			words. That's very cool.
+		</p>
 	</section>
 </section>
 
