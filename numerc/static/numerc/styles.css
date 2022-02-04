@@ -72,7 +72,7 @@
 	--paleGrey: rgb(224, 224, 224);
 	--lightGrey: rgb(202, 202, 202);
 	--textColor: #333;
-	--licorice: rgb(102, 102, 102);
+	--licorice: rgb(68, 68, 68);
 	--greyBorder: rgb(222, 222, 222);
 	--blackBG: #EFF2EF;
 	--sky: rgb(252, 253, 255);
@@ -1356,7 +1356,7 @@
 		background-color: rgb(246, 248, 250);
 		counter-reset: lineNumber;
 		list-style: none;
-		margin: 5px auto;
+		margin: 5px 0;
 		padding: 0.1em 0;
 		border-top: solid thin var(--lightGrey);
 		border-bottom: solid thin var(--lightGrey);
@@ -1413,6 +1413,7 @@
 	} 
 	table.alg th, table.alg td {
 		border: none;
+		vertical-align: top;
 		text-align: left;
 		font-size: 0.8rem;
 		padding: 0.2em 0.3em;
@@ -1427,6 +1428,10 @@
 	}
 	table.alg tr td + td {
 		border-left: solid thin var(--lightGrey);
+	}
+	table.alg td p {
+		font-size: 0.8rem;
+		padding-bottom: 0.5em;
 	}
 /* Special div elements */
 	div.example {
@@ -1533,8 +1538,14 @@
 	}
 	div.compare ol.alg,
 	div.compare ul.linkedlist,
-	div.compare ol.array {
+	div.compare ol.array,
+	div.compare div.ds-stack {
 		margin: 0;
+	}
+	div.split {
+		display: flex;
+		justify-content: space-around;
+		flex-wrap: wrap;
 	}
 /* Aside */
 	aside {
@@ -2819,9 +2830,11 @@
 	ol.array {
 		list-style: none;
 		display: flex;
+		padding: 0;
 		justify-content: center;
 		font-family: "Fira";
 		width: fit-content;
+		margin: 0 auto;
 	}
 	ol.array ul {
 		list-style: none;
@@ -2996,7 +3009,6 @@
 		margin: 0;
 		display: flex;
 	}
-	
 	div.dbLL>ul>li {
 		border: solid thin var(--lightGrey);
 		background-color: var(--page);
@@ -3172,6 +3184,81 @@
 		-webkit-filter: drop-shadow( 0px 2px 0 rgb(149, 0, 194));
 		filter: drop-shadow( 0px 2px 0 rgb(149, 0, 194));
 	}
+/* Stack Data Structure */
+	div.ds-stack {
+		display: flex;
+		justify-content: center;
+	}
+	div.ds-stack ol {
+		list-style: none;
+		margin: 0 1px;
+		display: flex;
+		width: fit-content;
+		flex-direction: column-reverse;
+		align-items: center;
+		padding: 6px 6px 3px 6px;
+		background-color: rgb(109, 109, 109);
+		box-shadow: inset 0.063rem 0 2px #474747, inset -2px -1px 3px rgb(53, 53, 53);	
+		border: solid 3px grey;
+		border-radius: 1px;
+		border-top: none;
+		counter-reset: stackIndex -1;
+	}
+	div.ds-stack ol.positioned {
+		flex-direction: column;
+	}
+	div.ds-stack li {
+		border: solid thin var(--darkRed);
+		border-radius: 3px;
+		background-color: tomato;
+		color: white;
+		padding: 0;
+		margin: 2px 0;
+		text-align: center;
+		font-family: "Fira";
+		font-size: 0.75rem;
+		width: 10em;
+		box-shadow: 0 3px 0px 0 rgba(190, 0, 0, 0.9);
+		transition: 0.3s;
+	}
+	div.ds-stack ol.numd li::before {
+		content: counter(stackIndex);
+		counter-increment: stackIndex;
+		padding: 0;
+		margin: 0;
+		font-size: 0.7rem;
+		color: black;
+	}
+	div.ds-stack ol.empty li,
+	div.ds-stack li.empty {
+		border: solid thin rgb(90, 90, 90);
+		background-color: rgb(109, 109, 109);
+		box-shadow: inset 0.063rem 0 2px #474747, inset -2px -1px 3px rgb(53, 53, 53);	
+		color: var(--commentGrey);
+	}
+	div.ds-stack li.top,
+	ol.array ul li.top {
+		border: solid thin rgb(0, 107, 0) !important;
+		box-shadow: 0 3px 0px 0 rgb(0, 107, 0) !important;
+		background-color: var(--darkGreen) !important;
+		color: white !important;
+	}
+	div.ds-stack li.grey {
+		border: solid thin var(--licorice) !important;
+		box-shadow: 0 3px 0px 0 var(--licorice) !important;
+		background-color: var(--commentGrey) !important;
+	}
+	div.ds-stack ol:not(.empty) li:not(.empty):hover {
+		cursor:default;
+		transform: translate3d(0, 0.3em, -0.5em);
+		box-shadow: none;
+	}
+	div.ds-stack ol.out li {
+		background-color: var(--darkBlue);
+		box-shadow: 0 3px 0px 0 rgb(0, 82, 158);
+		border: solid thin rgb(0, 82, 158);
+		color: white;
+	}
 /* Katex Styles */
 	.katex {
 		font-size: 1em !important;
@@ -3188,6 +3275,25 @@
 	.mord.texttt {
 		font-family: var(--mono) !important;
 		font-size: 0.85em !important;
+	}
+/* Definitions/Theorems/Lemmas */
+	dfn {
+		font-style: normal;
+		display: block;
+		width: 65%;
+		margin: 2% auto;
+		padding: 0;
+	}
+	dfn p:nth-child(1) {
+		margin: 0; 
+		padding: 0;
+	}
+	dfn span.topic {
+		display: block;
+		float: left;
+		clear: both;
+		font-variant: small-caps;
+		margin-top: 0;
 	}
 /* Question Sets / <details> Styling */
 	/* Question sets are styled with masonry */
@@ -3341,7 +3447,7 @@
 			div.compare ol.alg,
 			div.compare ul.linkedlist,
 			div.compare ol.array {
-				margin: 1em auto;
+				margin: 1em 0;
 			}
 		}
 		@media (min-width: 0px) and (max-width: 600px) {

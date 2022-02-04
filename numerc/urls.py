@@ -241,6 +241,12 @@ urlpatterns = [
 
 	path("cpp_linked_list", views.cpp_linked_list, name="cpp_linked_list"),
 
+	path("cpp_circular_linked_lists", views.cpp_circular_linked_lists, name="cpp_circular_linked_lists"),
+
+	path("cpp_doubly_linked_list", views.cpp_doubly_linked_list, name="cpp_doubly_linked_list"),
+
+	path("cpp_stack", views.cpp_stack, name="cpp_stack"),
+
 
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),
@@ -278,6 +284,8 @@ urlpatterns = [
 	path("sys_os", views.sys_os, name="sys_os"),
 
 	path("sys_pointers", views.sys_pointers, name="sys_pointers"),
+
+	path("sys_design", views.sys_design, name="sys_design"),
 
 	# Software Design
 	path("des_index", views.des_index, name="des_index"),

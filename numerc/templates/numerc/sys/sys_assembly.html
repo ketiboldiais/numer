@@ -6,55 +6,56 @@
 <h1>Assembly</h1>
 <section id="intro">
 	<p>
-		In this module, we examine some basic ideas in assembly language. This will
-		provide much of the foundations for later discussions. To do so, we will use
-		the <b>6502 Assembly Language</b>, as employed on the Atari 2600 (<q
-			>the 2600</q
-		>) platform. Such a simple platform is used for several reasons: (1) It
-		allows us to avoid having to address the enormous stretches of complexity on
-		modern devices, and (2) it captures most, if not all, of the most important
-		ideas in assembly and computer architecture concisely.
+		In this module, we examine some basic ideas in assembly language. This
+		will provide much of the foundations for later discussions. To do so,
+		we will use the <b>6502 Assembly Language</b>, as employed on the Atari
+		2600 (<q>the 2600</q>) platform. Such a simple platform is used for
+		several reasons: (1) It allows us to avoid having to address the
+		enormous stretches of complexity on modern devices, and (2) it captures
+		most, if not all, of the most important ideas in assembly and computer
+		architecture concisely.
 	</p>
 	<p>The Atari 2600's hardware at a glance:</p>
 	<ul>
 		<li>
-			The 2600 uses a 6507 processor, running at ${1.19~\text{MHz}}$ (${1.19
-			\times 10^6}$ instructions per second). Atari originally selected the 6502
-			processor, but in production, the cheaper version, 6507, was used. Both
-			architectures are similar, but we'll note a few differences as we proceed.
-			Of note, the 6502 powered many computers: the Apple II, various Commodore
-			machines, the Tamagotchi, NES, and Bender from <i>Futurama</i>.
+			The 2600 uses a 6507 processor, running at ${1.19~\text{MHz}}$
+			(${1.19 \times 10^6}$ instructions per second). Atari originally
+			selected the 6502 processor, but in production, the cheaper version,
+			6507, was used. Both architectures are similar, but we'll note a few
+			differences as we proceed. Of note, the 6502 powered many computers:
+			the Apple II, various Commodore machines, the Tamagotchi, NES, and
+			Bender from <i>Futurama</i>.
 		</li>
 		<li>
-			For audio and video, the 2600 uses a TIA (Television Interface Adapter)
-			chip.
+			For audio and video, the 2600 uses a TIA (Television Interface
+			Adapter) chip.
 		</li>
 		<li>
-			In terms of RAM (<q>Read-Access Memory</q>), the 2600 employs a 6532 RIOT
-			(<q>RAM Input Output Timer</q>) Chip, capable of storing &mdash; wait for
-			it &mdash; 128 bytes. Yes, that's all we get.
+			In terms of RAM (<q>Read-Access Memory</q>), the 2600 employs a 6532
+			RIOT (<q>RAM Input Output Timer</q>) Chip, capable of storing &mdash;
+			wait for it &mdash; 128 bytes. Yes, that's all we get.
 		</li>
 		<li>
-			In terms of ROM (<q>Read-Only Memory,</q> i.e., the game catridge), we
-			have ${4~\text{kB}}$ to work with. The ROM is where we will read our
-			instructins from for the 2600's processor.
+			In terms of ROM (<q>Read-Only Memory,</q> i.e., the game catridge),
+			we have ${4~\text{kB}}$ to work with. The ROM is where we will read
+			our instructins from for the 2600's processor.
 		</li>
 		<li>
 			For input, we're working with two controller ports, connecting some
 			non-keyboard peripheral &mdash; e.g., a joystick.
 		</li>
 		<li>
-			For output, the 2600 uses a <b>cathode-ray tube (CRT) television</b>. Note
-			that <i>CRT TVs</i> are different from <i>CRT Monitors</i>. We're
-			operating under the assumption of working with a CRT TV, not a CRT
-			monitor.
+			For output, the 2600 uses a <b>cathode-ray tube (CRT) television</b>.
+			Note that <i>CRT TVs</i> are different from <i>CRT Monitors</i>.
+			We're operating under the assumption of working with a CRT TV, not a
+			CRT monitor.
 		</li>
 	</ul>
 	<p>
 		We should now see why the Atari 2600 is an ideal medium for exploring
-		assembly programming. We're working with extremely tight constraints: The
-		processor can only do so much; audio and video have to be manually taken
-		care of; the set of possible user inputs is small; and memory is
+		assembly programming. We're working with extremely tight constraints:
+		The processor can only do so much; audio and video have to be manually
+		taken care of; the set of possible user inputs is small; and memory is
 		unquestionably scarce.
 	</p>
 </section>
@@ -62,8 +63,8 @@
 <section id="6502_processor">
 	<h2>Overview of the 6502</h2>
 	<p>
-		Below is a pinout diagram of the 6502 processor. Let's go over some of the
-		key features of the pinout.
+		Below is a pinout diagram of the 6502 processor. Let's go over some of
+		the key features of the pinout.
 	</p>
 	<figure>
 		<img
@@ -75,92 +76,51 @@
 		/>
 	</figure>
 	<p>
-		First, all of the pins above have specific purposes that we'll go over in
-		due time. For example, pin 1 is labeled <var>RDY</var>. This is the
+		First, all of the pins above have specific purposes that we'll go over
+		in due time. For example, pin 1 is labeled <var>RDY</var>. This is the
 		<b>ready pin</b>. It receives signals &mdash; called
-		<i>ready signals</i> &mdash; indicating that something has happened (e.g.,
-		the television set is ready, the joystick is ready, etc.). At pin 4, there's
-		a label ${\overline{\texttt{IRQ}}.}$ This pin receives
-		<b>interruption requests</b>. Working with assembly, we'll be turning back
-		to this diagram repeatedly for reference.
+		<i>ready signals</i> &mdash; indicating that something has happened
+		(e.g., the television set is ready, the joystick is ready, etc.). At
+		pin 4, there's a label ${\overline{\texttt{IRQ}}.}$ This pin receives
+		<b>interruption requests</b>. Working with assembly, we'll be turning
+		back to this diagram repeatedly for reference.
 	</p>
 	<p>
 		Importantly, there are two large swathes of pins called the
-		<b>address bus</b> and the <b>data bus</b>. Notice that the data bus region
-		consists of eight pins. This corresponds to the fact that there
-		<em>${8}$ bits</em> for the data bus. These eight bits are responsible for
-		moving values to and from the <b>processor registers</b>.
+		<b>address bus</b> and the <b>data bus</b>. Notice that the data bus
+		region consists of eight pins. This corresponds to the fact that there
+		<em>${8}$ bits</em> for the data bus. These eight bits are responsible
+		for moving values to and from the <b>processor registers</b>.
 	</p>
 	<p>
-		What are processor registers? We can think of them as small places inside
-		the processor that store bits &mdash; zeroes and ones. On the 2600, each
-		register in the processor can only hold eight bits at any given time. These
-		days, most machines run on 64-bit processors &mdash; processors whose
-		registers can hold sixty-four bits.
+		What are processor registers? We can think of them as small places
+		inside the processor that store bits &mdash; zeroes and ones. On the
+		2600, each register in the processor can only hold eight bits at any
+		given time. These days, most machines run on 64-bit processors &mdash;
+		processors whose registers can hold sixty-four bits.
 	</p>
 	<p>
-		In addition to the data bus, we have a region called the <b>address bus</b>.
-		The pins comprising the address bus are responsible for storing
-		<b>memory addresses</b>. We can think of them as trackers. They're job is to
-		always know where things are at any given time. Notice that there are 16
-		pins. This is why the 2600 has ${16}$ bits &mdash; ${2}$ bytes &mdash; to
-		store a memory address.
+		In addition to the data bus, we have a region called the
+		<b>address bus</b>. The pins comprising the address bus are responsible
+		for storing <b>memory addresses</b>. We can think of them as trackers.
+		They're job is to always know where things are at any given time.
+		Notice that there are 16 pins. This is why the 2600 has ${16}$ bits
+		&mdash; ${2}$ bytes &mdash; to store a memory address.
 	</p>
 	<p>
-		So, that's the 6502. What about the 6507? Well, the 6507 is essentially the
-		6502 with just a few differences: (1) The pins <var>A13</var>,
+		So, that's the 6502. What about the 6507? Well, the 6507 is essentially
+		the 6502 with just a few differences: (1) The pins <var>A13</var>,
 		<var>A14</var>, <var>A15</var>, and a few interruption lines are
 		inaccessible.
 	</p>
 	<p>
-		The 6507 processes ${1.19}$ million instructions per second. We can think of
-		this as though the CPU were a clock, ticking ${1.19}$ million times per
-		second. In fact, that analogy wouldn't be too far off &mdash; formally, each
+		The 6507 processes ${1.19}$ million instructions per second. We can
+		think of this as though the CPU were a clock, ticking ${1.19}$ million
+		times per second. In fact, that analogy wouldn't be too far off &mdash;
+		formally, each
 		<q>tick</q> is called a <b>clock cycle</b>.
 	</p>
-	<p>
-		Inside the 6507 &mdash; and processors more generally &mdash; is a component
-		called the <b>ALU (Arithmetic Logic Unit) </b>. The ALU is responsible for
-		the CPU's computations. These computations are addition, subtraction, and
-		comparison. That's it. What about multiplication? The ALU must add several
-		times. Division? The ALU must subtract several times.
-	</p>
-	<p>
-		The 6507 also has six addressable <b>registers</b>. These six registers have
-		special names:
-	</p>
-	<ol>
-		<li>
-			<p>
-				<span class="topic">PC (Program Counter) Register</span>. The program
-				counter's job is to store the address of the next instruction the CPU
-				must execute.
-			</p>
-		</li>
-		<li>
-			<p>
-				<span class="topic">SP (Stack Pointer) Register</span>. The stack
-				pointer's job is to point to the current top frame at the top of
-				<i>stack</i> in memory.
-			</p>
-		</li>
-		<li>
-			<p>
-				<span class="topic">P (Processor Flags) Register</span>. The P
-				register's job is store information about what happened in the
-				processor's last computation. For example, whether the result of the
-				last computation was negative, ${0,}$ or an overflow.
-			</p>
-		</li>
-		<li>
-			<span class="topic">X, Y, & A (Accumulator) Registers.</span> These three
-			registers are essentially general-purpose registers. We can use them to
-			store any kind of value to make our lives easier. For example, these
-			registers can be used to keep track of some loop-counter. The A register
-			in particular is what we must use if we want to perform computations with
-			the ALU.
-		</li>
-	</ol>
+	<p>We will explore the processor more deeply in a later section.</p>
 </section>
 
 <section id="numbers">
@@ -170,34 +130,445 @@
 		information is represented in a computer.
 	</p>
 	<p>
-		We've heard time and time again &mdash; computers only understand ones and
-		zeroes. Now that we're working at such a low level, it's worth asking, do
-		they actually? It turns out no. They do not. The ones and zeroes are just
-		abstractions to aid in representing a binary system &mdash; on or off, yes
-		or no, true or false, <i>one</i> or <i>zero</i>. What a computer really
-		understands is just that &mdash; two opposite states. Or more concretely,
-		two opposite <i>impulses</i>.
+		We've heard time and time again &mdash; computers only understand ones
+		and zeroes. Now that we're working at such a low level, it's worth
+		asking, do they actually? It turns out no. They do not. The ones and
+		zeroes are just abstractions to aid in representing a binary system
+		&mdash; on or off, yes or no, true or false, <i>one</i> or <i>zero</i>.
+		What a computer really understands is just that &mdash; two opposite
+		states. Or more concretely, two opposite <i>impulses</i>.
 	</p>
 	<p>
-		The impulses can come in a variety of forms. Sometimes, they're electric
-		impulses: In the processor, we have a
-		<i>low voltage</i> or a <i>high voltage</i>. In other cases, they're light
-		impulses: On a CD, the impulses are generated by lasers. If the laser's
-		light bounces off of the CD, we have a ${1,}$ if it does not, we have a
-		${0.}$ And yet in others, they're magnetic: On a hard disk drive, if the
-		driver's lever is magnetically attracted to some area of the disk, we have a
-		${0,}$ and if it's magnetically repelled, we have a ${1.}$ We call the
-		abstractions of ${1}$ and ${0}$ <b>bits</b>.
+		The impulses can come in a variety of forms. Sometimes, they're
+		electric impulses: In the processor, we have a
+		<i>low voltage</i> or a <i>high voltage</i>. In other cases, they're
+		light impulses: On a CD, the impulses are generated by lasers. If the
+		laser's light bounces off of the CD, we have a ${1,}$ if it does not,
+		we have a ${0.}$ And yet in others, they're magnetic: On a hard disk
+		drive, if the driver's lever is magnetically attracted to some area of
+		the disk, we have a ${0,}$ and if it's magnetically repelled, we have a
+		${1.}$ We call the abstractions of ${1}$ and ${0}$ <b>bits</b>.
 	</p>
 	<p>
-		Now, how do numbers come in? Well, thanks to some very clever electrical
-		engineers, we can group bits together. The ability to group bits together is
-		what allows us to represent the many numbers we work with on a daily basis.
+		Now, how do numbers come in? Well, thanks to some very clever
+		electrical engineers, we can group bits together. The ability to group
+		bits together is what allows us to represent the many numbers we work
+		with on a daily basis.
 	</p>
 </section>
 
+<section id="registers">
+	<h2>A Closer Look at the Processor</h2>
+	<p>
+		The 6507 processor uses a 28-pin configuration, running at ${1.19
+		\text{MHz},}$ or <q>ticking</q> at ${1.19}$ million times per second
+		(each tick is called a <b>clock cycle</b>). There are ${13}$ address
+		pins and ${8}$ data pins. This means there are ${8}$ bits for data, and
+		${13}$ bits for addressing. This totals ${21}$ pins. What about the
+		other ${7}$ pins? They're used for the CPU's power, timing clock, rest,
+		request bus wait states (e.g., the RDY pin), and read/write commands to
+		memory from the CPU (these pins determine whether we're reading or
+		writing to memory at any given moment).
+	</p>
+	<p>
+		Importantly, unlike the 6502, we don't get IRQ (interruption request)
+		or NMI (non-maskable interrupt) pins. Because these pins are
+		unavailable, we cannot perform interrupts on the Atari 2600. This isn't
+		pertinent at the moment, but we mention it now to clarify the
+		differences between the 6507 and 6502.
+	</p>
+	<p>
+		There are seven main parts to both the 6502 and 6507 processor. A rough
+		diagram of the processor is as follows:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/CPU.svg' %}"
+			alt="6502 processor"
+			loading="lazy"
+			width="300px"
+			height="300px"
+		/>
+	</figure>
+	<p>
+		The dark area above is the processor &mdash; it communicates with both
+		the data bus and the address bus. The data bus transfers data to and
+		from memory, while the address bus passes an address, sent from the
+		CPU, to the ram &mdash; memory.
+	</p>
+	<p>
+		We also have a component called the <b>ALU (Arithmetic Logic Unit)</b>.
+		It goes without saying that the processor must perform basic
+		computations &mdash; addition, subtraction, determining whether a value
+		is less than, greater than, or equal to another, as well as the logical
+		deductions from logical operations like AND and OR. Thes are the core
+		arithmetic and logical computations, and the ALU, which resides in the
+		processor, is responsible for them.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			More accurately, the ALU only performs bitwise operations on integer
+			binary numbers. The notion of arithmetic and logic are simply
+			abstractions for the ALU's manipulation of zeroes and ones.
+		</p>
+	</div>
+	<p>
+		Next, we have the <b>registers</b>. The 6502 has six addressable
+		registers. These registers are:
+	</p>
+	<ol>
+		<li>
+			The <b>program counter (PC)</b>, which is responsible for storing the
+			address of the next instruction that must be executed. For example,
+			if one of our instructions is to load the integer <var>2</var> in
+			memory, that instruction will have an address, stored by the PC
+			register.
+		</li>
+		<li>
+			The <b>stack pointer (SP)</b>, which points to the top of the
+			<i>stack</i>. We've heard of the stack and the heap often; the stack
+			pointer always holds the memory address of the current top-most frame
+			in the RAM's stack memory.
+		</li>
+		<li>
+			The <b>processor flag register (P)</b> is responsible for storing
+			data about what happened in the processor's last execution. For
+			example, whether the last computation resulted in an overflow,
+			returned negative, or zero.
+		</li>
+		<li>
+			<b>X, Y, & A (Accumulator) Registers.</b> These three registers are
+			essentially general-purpose registers. We can use them to store any
+			kind of value to make our lives easier. For example, these registers
+			can be used to keep track of some loop-counter. The accumulator
+			register in particular is what we must use if we want to perform
+			computations with the ALU.
+		</li>
+	</ol>
+	<p>
+		Because the 6507/6502 is an 8-bit processor, each of the registers
+		consists of <em>eight bits</em>. There are, however, two registers that
+		are slighly different &mdash; the stack pointer and program counter.
+		Because these two registers must keep track of memory addresses, the
+		stack pointer and the program counter require ${16}$ bits.
+	</p>
+	<p>
+		Next, the processor status register (the <i>P register</i>), has the
+		following layout for its eight bits:
+	</p>
+	<div class="compare">
+		<ol class="array">
+			<li>
+				<ul>
+					<li>n</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>v</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>b</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>d</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>i</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>z</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>c</li>
+				</ul>
+			</li>
+		</ol>
+	</div>
+	<p>
+		The <b>c</b> flag stands for <b>carry</b>. If that bit contains a
+		<var>1</var>, then the last execution contained a carry.
+	</p>
+	<p>
+		The <b>z</b> flag stands for <b>zero</b>. If that bit contains a
+		<var>1</var>, then the last execution resulted in a zero.
+	</p>
+	<p>
+		The <b>i</b> flag stands for <b>IRQ disabled</b>. If the bit is
+		<var>1</var>, then the last execution disabled an interrup (i.e.,
+		ignoring messages from some hardware). Note that we won't concern
+		ourselves with this particular flag since we do not have interrupts.
+	</p>
+	<p>
+		The <b>d</b> flag stands for <b>decimal mode</b>. This particular flag
+		will be explored in a section on to itself. In short, the processor can
+		perform its executions in either binary or in
+		<i>binary-coded decimal</i> (BCD). Performing executions in BCD leads
+		to more accurate computations, but it is much slower than performing
+		executions in binary.
+	</p>
+	<p>
+		The <b>b</b> flag stands for <b>break instruction</b>. This flag
+		indicates that the last execution was interrupted, per another
+		instruction.
+	</p>
+	<p>
+		The <b>v</b> flag stands for <b>overflow</b>. A <var>1</var> in this
+		bit indicates that the last instruction resulted in an overflow. For
+		example, adding two values that resulted in overflowing the ${8}$ bits
+		available.
+	</p>
+	<p>
+		The <b>n</b> flag stands for <b>negative</b>. A <var>1</var> in this
+		bit indicates that the last execution's result was negative.
+	</p>
+	<p>
+		Notice that there's one idle bit. It's unclear why this bit was left
+		unused, but it's more than likely the result of a manufacturing
+		decision after price negotiations.
+	</p>
+</section>
+
+<section id="carry_flag">
+	<h2>Processor Status Flags</h2>
+	<p>
+		Because of how useful processor flags are, we explore them a little
+		more deeply. As we know, we only have eight bits to work with. Say we
+		load the integer ${255}$ in memory. This results in:
+	</p>
+	<div class="compare">
+		<ol class="array">
+			<li>
+				<ul>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>1</li>
+				</ul>
+			</li>
+		</ol>
+	</div>
+	<p>
+		In other words, we're using all ${8}$ bits. Now say we add a ${1}$ to
+		this number. In binary, if we add a ${1}$ to this number, we get the
+		following:
+	</p>
+	<figure>
+		$$ \begin{aligned} & 1 & 1 & 1 & 1 & 1 & 1 & 1 & & \\ & 1 & 1 & 1 & 1 &
+		1 & 1 & 1 & 1 \\ + & & & & & & & & 1 \\ \hline 1 & 0 & 0 & 0 & 0 & 0 &
+		0 & 0 & 0 \end{aligned} $$
+	</figure>
+	<p>
+		We keep carrying over and over until we reach the last available bit.
+		But what happens to that carryover bit? It gets sent to the
+		<i>P register</i>'s <var>c</var> flag:
+	</p>
+	<div class="compare">
+		<ol class="array">
+			<li>
+				<ul>
+					<li>0</li>
+					<li>n</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>0</li>
+					<li>v</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>0</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>0</li>
+					<li>b</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>0</li>
+					<li>d</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>0</li>
+					<li>i</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>0</li>
+					<li>z</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li><span class="blueText">1</span></li>
+					<li>c</li>
+				</ul>
+			</li>
+		</ol>
+	</div>
+	<p>
+		This is what we mean by a <i>carry</i>, in terms of the processor
+		flags. Before consider the other flags, we briefly detour into the
+		issue of representing negative numbers in a computer.
+	</p>
+
+	<section id="negatives">
+		<h3>Representing Negative Numbers</h3>
+		<p>
+			To represent numbers, computers begin with a foundational premise:
+		</p>
+		<figure>
+			<div>
+				<p>All numbers are one of two states: positive or negative.</p>
+			</div>
+		</figure>
+		<p>
+			Clearly, this departs from mathematics. We know zero is neither
+			positive nor negative, and there are nonreal numbers, i.e., imaginary
+			numbers. Computers, however, aren't that smart. They're fast, but
+			they aren't Gausses or Eulers.
+		</p>
+		<p>
+			Because of the premise above, one way to represent negative nubers is
+			to reserve the last bit to represent the <i>sign</i> of a number.
+			This bit is called the <b>sign bit</b>:
+		</p>
+		<div class="compare">
+			<ol class="array">
+				<li>
+					<ul>
+						<li><span class="redText">0</span></li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+					</ul>
+				</li>
+			</ol>
+		</div>
+		<p>
+			On most computers &mdash; the 6502/07 included &mdash; a
+			<var>0</var> maps to a positive, and a <var>1</var> to a negative.
+		</p>
+		<p>
+			As always, there's a cost to using the sign bit. Because we lose that
+			bit, we now only have ${7}$ bits to work with. And given that we only
+			have ${7}$ bits, we can only represent numbers in the range
+			${(-2^7-1, 2^7-1).}$ In other words, ${-127}$ to ${127.}$
+		</p>
+		<p>
+			This approach to negative number representation is called
+			<b>sign-and-magnitude</b>. It is <em>not</em> how most computers
+			represent negatives. The most obvious problem with this approach is
+			that we end up with two values for zero:
+		</p>
+		<figure>
+			$$ \begin{aligned} \texttt{+0 = 0 0 0 0 0 0 0 0} \\ \texttt{-0 = 1 0
+			0 0 0 0 0 0} \\ \end{aligned} $$
+		</figure>
+		<p>
+			Moreover, sign-and-magnitude is cumbersome to implement. Adding and
+			subtracting, very basic operations, are needlessly tedious under this
+			approach.
+		</p>
+		<p>
+			A much better &mdash; and more clever &mdash; take is
+			<b>two's complement</b>.
+		</p>
+	</section>
+</section>
+
 <section id="assembler_flow">
-	<h2>The Assembly Flow</h2>
-	<p>Suppose </p>
+	<h2>The Assembler Flow</h2>
+	<p>
+		At low levels, a program is nothing more than a sequence of
+		instructions to the processor.
+	</p>
 </section>
 {% endblock %}

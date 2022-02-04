@@ -42,6 +42,15 @@ function addCheckBoxToCheckList() {
     checkList[i].prepend(checkbox);
   }
 }
+
+class Proof extends HTMLElement { 
+  constructor() { 
+    super();
+  }
+}
+customElements.define('math-proof', Proof);
+
+
 // Main
 (function () {
   showNav();

@@ -6,28 +6,38 @@
 <h1>Linked Lists</h1>
 <section id="intro">
 	<p>
-		In the previous sections, we worked exclusively with arrays. Arguably, the
-		largest limitation we saw with arrays is the fact that they were of fixed
-		size. Whenever we create an array, we must provide a size. And if we do not,
-		the compiler will do so for us. Once set, the array's size is fixed &mdash;
-		we cannot lengthen or shorten the array.
+		In the previous sections, we worked exclusively with arrays. Arguably,
+		the largest limitation we saw with arrays is the fact that they were of
+		fixed size. Whenever we create an array, we must provide a size. And if
+		we do not, the compiler will do so for us. Once set, the array's size
+		is fixed &mdash; we cannot lengthen or shorten the array.
 	</p>
 	<p>
-		Because of the length limitation, we cannot modify the array at runtime.
-		This makes it prohibitively difficult to work with sequences whose sizes are
-		unknown at the time of writing. Of course, we could always just initialize
-		massive arrays, hoping that our sequences can fit. But this is clearly
-		inefficient &mdash; it's a waste of memory. And even if we went with this
-		approach, there's no guarantee that our sequence would fit the monolithic
-		array.
+		Because of the length limitation, we cannot modify the array at
+		runtime. This makes it prohibitively difficult to work with sequences
+		whose sizes are unknown at the time of writing. Of course, we could
+		always just initialize massive arrays, hoping that our sequences can
+		fit. But this is clearly inefficient &mdash; it's a waste of memory.
+		And even if we went with this approach, there's no guarantee that our
+		sequence would fit the monolithic array.
 	</p>
 	<p>
 		The linked list corresponds to the abstract data type <b>list</b>.<sup
 		></sup> A list has the following traits:
 	</p>
+	<div class="note">
+		<p>
+			In these materials, we make a distinction between the abstract data
+			type
+			<i>list</i> and the abstract data type <i>sequence</i>. The static
+			arrays we worked with earlier correspond to the abstract data type
+			<i>sequence</i>.
+		</p>
+	</div>
 	<ol>
 		<li>
-			A list can store any given number of elements of a given data type ${t.}$
+			A list can store any given number of elements of a given data type
+			${t.}$
 		</li>
 		<li>A list's elements can be written or modified in place.</li>
 		<li>A list has a specified data type ${L_t.}$</li>
@@ -35,27 +45,24 @@
 		<li>A list can be traversed.</li>
 		<li>Elements in a list can be enumerated.</li>
 		<li>The empty list has a size of ${0.}$</li>
-		<li>An element can be inserted at <em>any</em> position in the list.</li>
-		<li>An element can be removed at <em>any</em> position in the list.</li>
+		<li>
+			An element can be inserted at <em>any</em> position in the list.
+		</li>
+		<li>
+			An element can be removed at <em>any</em> position in the list.
+		</li>
 	</ol>
 	<p>
 		The first seven properties above are all properties present in the
-		<i>sequence</i> ADT. It is the last two properties that differentiate lists
-		from sequences. Sequences are implemented as static arrays. And as static
-		arrays, they have a <em>fixed size</em>. The list, however, has a
-		<i>dynamic size</i>. They can grow and shrink as we please.
+		<i>sequence</i> ADT. It is the last two properties that differentiate
+		lists from sequences. Sequences are implemented as static arrays. And
+		as static arrays, they have a <em>fixed size</em>. The list, however,
+		has a <i>dynamic size</i>. They can grow and shrink as we please.
 	</p>
-	<div class="note">
-		<p>
-			In these materials, we make a distinction between the abstract data type
-			<i>list</i> and the abstract data type <i>sequence</i>. The static arrays
-			we worked with earlier correspond to the abstract data type
-			<i>sequence</i>.
-		</p>
-	</div>
 	<p>
-		Comparing arrays and linked lists, it's helpful to visualize how they might
-		be stored in memory. Suppose we had the following sequence:<sup></sup>
+		Comparing arrays and linked lists, it's helpful to visualize how they
+		might be stored in memory. Suppose we had the following sequence:<sup
+		></sup>
 	</p>
 	<div class="note">
 		<p>With sequences, we used the notation:</p>
@@ -93,9 +100,9 @@
 			height="200px"
 		/>
 		<figcaption>
-			Comparing the static array, the dynamic array, and the linked list. The
-			grey regions represent the heap, while the white regions represent the
-			stack. The variable <var>p</var> is a pointer.
+			Comparing the static array, the dynamic array, and the linked list.
+			The grey regions represent the heap, while the white regions
+			represent the stack. The variable <var>p</var> is a pointer.
 		</figcaption>
 	</figure>
 	<!-- <p>
@@ -111,12 +118,13 @@
 		/>
 	</figure>
 	<p>
-		In the diagram above, each of the boxes are called <b>nodes</b>. A linked
-		list node consists of two parts: (1) substantive data and (2) procedural
-		data. The <b>substantive data</b> consists of the actual data we want to
-		work with. This could be some literal, an array, or some instance of an
-		abstract data type. The <b>procedural data</b> consists of a <i>pointer</i>.
-		That pointer points to the next node. Note what this means:
+		In the diagram above, each of the boxes are called <b>nodes</b>. A
+		linked list node consists of two parts: (1) substantive data and (2)
+		procedural data. The <b>substantive data</b> consists of the actual
+		data we want to work with. This could be some literal, an array, or
+		some instance of an abstract data type. The
+		<b>procedural data</b> consists of a <i>pointer</i>. That pointer
+		points to the next node. Note what this means:
 	</p>
 	<figure>
 		<div>
@@ -124,7 +132,8 @@
 		</div>
 	</figure>
 	<p>
-		Recognizing this point, a node is itself a data structure, albeit simple:
+		Recognizing this point, a node is itself a data structure, albeit
+		simple:
 	</p>
 	<figure>
 		<img
@@ -135,9 +144,9 @@
 		/>
 	</figure>
 	<p>
-		<span class="topic">Notation.</span> In these materials, we use a particular
-		syntax to refer to individual nodes. Suppose we had the following linked
-		list:
+		<span class="topic">Notation.</span> In these materials, we use a
+		particular syntax to refer to individual nodes. Suppose we had the
+		following linked list:
 	</p>
 	<ul class="linkedlist">
 		<ul class="head">
@@ -177,14 +186,14 @@
 		</ul>
 	</ul>
 	<p>
-		When we write ${r,}$ we are referring to the pointer to the first node in
-		the list. When we write ${h,}$ or ${n_1,}$ we are referring to the first
-		node in the list. And when we write ${t,}$ or ${n_\ell,}$ we are referring
-		to the last node in the list, the tailend.
+		When we write ${r,}$ we are referring to the pointer to the first node
+		in the list. When we write ${h,}$ or ${n_1,}$ we are referring to the
+		first node in the list. And when we write ${t,}$ or ${n_\ell,}$ we are
+		referring to the last node in the list, the tailend.
 	</p>
 	<p>
-		When we refer to the data value of a particular node, say the second node,
-		we write:
+		When we refer to the data value of a particular node, say the second
+		node, we write:
 	</p>
 	<figure>
 		<div>
@@ -198,8 +207,8 @@
 		</div>
 	</figure>
 	<p>
-		When we're referring to the node's pointee &mdash; the address inside the
-		particular node's <var>next</var> field &mdash; we write:
+		When we're referring to the node's pointee &mdash; the address inside
+		the particular node's <var>next</var> field &mdash; we write:
 	</p>
 	<figure>
 		<div>
@@ -212,8 +221,8 @@
 	<h2>The Linked List Data Structure</h2>
 	<p>
 		Before we examine linked list algorithms, we must first understand the
-		linked list data structure. We will do so by investigating the mechanics
-		behind implementing a linked list.
+		linked list data structure. We will do so by investigating the
+		mechanics behind implementing a linked list.
 	</p>
 	<section id="node_implementation">
 		<h3>Implementing the Node Data Structure</h3>
@@ -236,23 +245,27 @@
 		</code></pre>
 		<p>
 			A linked list's data field determines its type. Thus,
-			<var>int data</var> indicates a linked list of type <var>int</var>, and
-			<var>int data</var> a linked list of type <var>char</var>. A linked list's
-			data type, however, is distinct from its nodes's data type.
+			<var>int data</var> indicates a linked list of type <var>int</var>,
+			and <var>int data</var> a linked list of type <var>char</var>. A
+			linked list's data type, however, is distinct from its nodes's data
+			type.
 		</p>
 		<p>
-			A linked list <i>node</i> is of type <var>Node</var>. The type node is a
+			A linked list <i>node</i> is of type <var>Node</var>. The type node
+			is a
 			<a
 				href="{% url 'numerc:ml_customDataTypes' %}#recursive_types"
 				target="_blank"
 				><i>recursive sum type</i></a
 			>
-			${N.}$ It consists of a type ${t,}$ <em>and</em> a type ${N^*}$ &mdash; a
-			pointer to a value of type ${N.}$ Notice this self-referential structure;
-			linked lists provide great opportunities for recursion, as we'll soon see.
+			${N.}$ It consists of a type ${t,}$ <em>and</em> a type ${N^*}$
+			&mdash; a pointer to a value of type ${N.}$ Notice this
+			self-referential structure; linked lists provide great opportunities
+			for recursion, as we'll soon see.
 		</p>
 		<p>
-			Let's get a bit of terminology out of the way. Examine the diagram below:
+			Let's get a bit of terminology out of the way. Examine the diagram
+			below:
 		</p>
 		<img
 			src="{% static 'images/headTail.svg' %}"
@@ -260,24 +273,25 @@
 			loading="lazy"
 		/>
 		<p>
-			Above, ${n}$ represents some node. Each node ${n}$ consists of two parts,
-			a <i>data field</i>, containing of some data value ${v,}$ and a
-			<i>next field</i>, containing a pointer to some heap memory address ${h.}$
-			Notice that each node stores the address ${h}$ of the next node.
+			Above, ${n}$ represents some node. Each node ${n}$ consists of two
+			parts, a <i>data field</i>, containing of some data value ${v,}$ and
+			a <i>next field</i>, containing a pointer to some heap memory address
+			${h.}$ Notice that each node stores the address ${h}$ of the next
+			node.
 		</p>
 		<p>
-			Every linked list has a <b>root</b>. This is a pointer to the first node
-			of the list, called the <b>head</b>. All nodes that are <em>not</em> the
-			head comprise the list's <b>tail</b>. The last node of the list is called
-			the <b>foot</b>. Finally, all nodes between the head and the tailend
-			constitute the <b>trunk</b>.
+			Every linked list has a <b>root</b>. This is a pointer to the first
+			node of the list, called the <b>head</b>. All nodes that are
+			<em>not</em> the head comprise the list's <b>tail</b>. The last node
+			of the list is called the <b>foot</b>. Finally, all nodes between the
+			head and the tailend constitute the <b>trunk</b>.
 		</p>
 		<p>
-			Question: How much memory does the node data structure take? Well, we know
-			that there are two parts to the node; the substantive data and the
-			pointer. We'll denote the substantive data ${d,}$ and the pointer ${p.}$
-			We'll also denote the amount of memory a given node consumes as the
-			function ${N:}$
+			Question: How much memory does the node data structure take? Well, we
+			know that there are two parts to the node; the substantive data and
+			the pointer. We'll denote the substantive data ${d,}$ and the pointer
+			${p.}$ We'll also denote the amount of memory a given node consumes
+			as the function ${N:}$
 		</p>
 		<figure>
 			<div>
@@ -285,11 +299,11 @@
 			</div>
 		</figure>
 		<p>
-			Focusing on the variable ${d}$ first, the amount of memory consumed by
-			${d}$ is a function of its type, and number of instances of ${d.}$ We'll
-			denote the amount of memory consumed by a value of type ${d}$ as
-			${S(t_d),}$ and the number of instances as ${n.}$ Thus, ${d = n \cdot
-			t_d.}$ Placing this in our equation:
+			Focusing on the variable ${d}$ first, the amount of memory consumed
+			by ${d}$ is a function of its type, and number of instances of ${d.}$
+			We'll denote the amount of memory consumed by a value of type ${d}$
+			as ${S(t_d),}$ and the number of instances as ${n.}$ Thus, ${d = n
+			\cdot t_d.}$ Placing this in our equation:
 		</p>
 		<figure>
 			<div>
@@ -297,11 +311,11 @@
 			</div>
 		</figure>
 		<p>
-			Now let's think about ${p.}$ For any given compiler, the memory consumed
-			by ${p}$ depends on the data type of the value the pointer points to. For
-			example, if an <var>int</var> value <var>x</var> takes ${2}$ bytes, a
-			pointer <var>p</var> to <var>x</var> would take ${2}$ bytes. Thus, we
-			have:
+			Now let's think about ${p.}$ For any given compiler, the memory
+			consumed by ${p}$ depends on the data type of the value the pointer
+			points to. For example, if an <var>int</var> value <var>x</var> takes
+			${2}$ bytes, a pointer <var>p</var> to <var>x</var> would take ${2}$
+			bytes. Thus, we have:
 		</p>
 		<figure>
 			<div>
@@ -317,9 +331,9 @@
 				<p>${N = S(t_d) \cdot (n + 1)}$</p>
 			</div>
 			<figcaption>
-				Where ${t_d}$ is the data type of the substantive data value, ${n}$ is
-				the number of substantive data values stored in a single node, and
-				${S(t_d)}$ is the size of the data type ${t_d.}$
+				Where ${t_d}$ is the data type of the substantive data value, ${n}$
+				is the number of substantive data values stored in a single node,
+				and ${S(t_d)}$ is the size of the data type ${t_d.}$
 			</figcaption>
 		</figure>
 		<p>
@@ -337,8 +351,8 @@
 	<section id="instantiating_node">
 		<h3>Instantiating the Node</h3>
 		<p>
-			After creating the node data structure, we want to begin the linking of
-			different nodes. To do so, we employ the following fact:
+			After creating the node data structure, we want to begin the linking
+			of different nodes. To do so, we employ the following fact:
 		</p>
 		<figure>
 			<div>
@@ -349,8 +363,8 @@
 			</div>
 		</figure>
 		<p>
-			Thus, to instantiate a node, we must first have a pointer to the node. In
-			C, this would be implemented as:
+			Thus, to instantiate a node, we must first have a pointer to the
+			node. In C, this would be implemented as:
 		</p>
 		<pre class="language-c"><code>
 			struct Node {
@@ -376,16 +390,17 @@
 			}
 		</code></pre>
 		<p>
-			Above, we've instantiated a <var>Node*</var> pointer, currently pointing
-			to nowhere (the list is empty). Importantly, the pointer we've just
-			initialized lives in the stack. This is a necessary feature of the linked
-			list because we cannot access heap memory ourselves. The pointer
-			<var>p</var> serves as our link to the heap. We can't go to the heap, but
-			we can use <var>p</var> to control what we've created there.
+			Above, we've instantiated a <var>Node*</var> pointer, currently
+			pointing to nowhere (the list is empty). Importantly, the pointer
+			we've just initialized lives in the stack. This is a necessary
+			feature of the linked list because we cannot access heap memory
+			ourselves. The pointer <var>p</var> serves as our link to the heap.
+			We can't go to the heap, but we can use <var>p</var> to control what
+			we've created there.
 		</p>
 		<p>
-			Now that we've got a head, let's create our first node in the heap. In C,
-			we write:
+			Now that we've got a head, let's create our first node in the heap.
+			In C, we write:
 		</p>
 		<pre class="language-c"><code>
 			#include &lt;stdio.h&gt;
@@ -413,9 +428,9 @@
 		</figure>
 		<p>
 			The <var>malloc()</var> function takes allocates the requested memory
-			${d_t,}$ and returns a pointer to the address of the memory allocated in
-			the <em>heap</em>. That pointer, however, is a <em>void pointer</em>.
-			Thus, we must type cast:
+			${d_t,}$ and returns a pointer to the address of the memory allocated
+			in the <em>heap</em>. That pointer, however, is a
+			<em>void pointer</em>. Thus, we must type cast:
 		</p>
 		<pre class="language-c"><code>
 			#include &lt;stdio.h&gt;
@@ -438,11 +453,11 @@
 			</code></pre>
 		</figure>
 		<p>
-			We perform the following operations: (1) Allocate enough heap memory for
-			the size of a <var>Node.</var> (2) Type cast the returned
+			We perform the following operations: (1) Allocate enough heap memory
+			for the size of a <var>Node.</var> (2) Type cast the returned
 			<var>void*</var> pointer to a <var>Node*</var> pointer. Assign that
-			pointer to <var>temp</var>. The code thus far looks like the following in
-			memory:
+			pointer to <var>temp</var>. The code thus far looks like the
+			following in memory:
 		</p>
 		<figure>
 			<img
@@ -453,7 +468,8 @@
 			/>
 		</figure>
 		<p>
-			Now that we have a node, we can initialize its fields by dereferencing
+			Now that we have a node, we can initialize its fields by
+			dereferencing
 			<var>temp</var>:
 		</p>
 		<pre class="language-c"><code>
@@ -480,9 +496,11 @@
 			/>
 		</figure>
 		<p>
-			Note that both C and C++ provide syntactic sugar for dereferencing object
-			pointers through the arrow operator. Furthermore, in C++, instead of using
-			<var>malloc()</var>, we can use the <var><mark>new</mark></var> operator:
+			Note that both C and C++ provide syntactic sugar for dereferencing
+			object pointers through the arrow operator. Furthermore, in C++,
+			instead of using
+			<var>malloc()</var>, we can use the
+			<var><mark>new</mark></var> operator:
 		</p>
 		<pre class="language-cpp"><code>
 			struct Node {
@@ -499,9 +517,9 @@
 			}
 		</code></pre>
 		<p>
-			In the pseudocode illustrations, we will use C++'s more concise syntax.
-			Now, all that's left to do is write the address of the newly created node
-			to our head:<sup></sup>
+			In the pseudocode illustrations, we will use C++'s more concise
+			syntax. Now, all that's left to do is write the address of the newly
+			created node to our head:<sup></sup>
 		</p>
 		<div class="note">
 			<p>Alternatively, in C++:</p>
@@ -537,11 +555,11 @@
 			}
 		</code></pre>
 		<p>
-			Writing the code above results in the diagram below. Suppose the allocated
-			memory in the heap has the address <var>200</var>. The pointer
-			<var>p</var> resides in the stack, and its address is <var>100</var>. The
-			address <var>200</var>, returned from <var>malloc()</var>, is stored in
-			<var>p</var>.
+			Writing the code above results in the diagram below. Suppose the
+			allocated memory in the heap has the address <var>200</var>. The
+			pointer <var>p</var> resides in the stack, and its address is
+			<var>100</var>. The address <var>200</var>, returned from
+			<var>malloc()</var>, is stored in <var>p</var>.
 		</p>
 		<figure>
 			<img
@@ -552,8 +570,8 @@
 			/>
 		</figure>
 		<p>
-			Great, we've made our first linked list. Let's make a linked list with
-			three nodes:
+			Great, we've made our first linked list. Let's make a linked list
+			with three nodes:
 		</p>
 		<pre class="language-cpp"><code>
 			struct Node {
@@ -627,8 +645,8 @@
 		</code></pre>
 		<p>
 			Well, <var>q</var> is just a pointer, so assigning it the value
-			<var>p</var> assigns it the address <var>0x200</var>. This means that the
-			linked list now has <i>two</i> heads, since <var>p</var> and
+			<var>p</var> assigns it the address <var>0x200</var>. This means that
+			the linked list now has <i>two</i> heads, since <var>p</var> and
 			<var>q</var> both point to <var>n</var>, the first node.<sup></sup>
 		</p>
 		<div class="note">
@@ -645,14 +663,17 @@
 			Well, we know that <var>p</var> stores the address <var>0x200</var>.
 			That's the address of <var>n</var>. Thus, by writing the above,
 			<var>q</var> now stores the address in <var>n->next</var>, which is
-			<var>0x210</var>. This is the address of the node <var>m</var>.<sup></sup>
+			<var>0x210</var>. This is the address of the node <var>m</var>.<sup
+			></sup>
 		</p>
 		<div class="note">
 			<p>Expanding:</p>
 			<pre class="language-pseudo"><code>
 				q = p->next = &n->next = &amp;m;
 			</code></pre>
-			<p>It can also be helpful to think in terms of dereferencing in C:</p>
+			<p>
+				It can also be helpful to think in terms of dereferencing in C:
+			</p>
 			<pre class="language-pseudo"><code>
 				q = (*p).next = &n.next = &amp;m;
 			</code></pre>
@@ -663,12 +684,13 @@
 		</code></pre>
 		<p>
 			Writing the line above, we assign to <var>p</var> the address
-			<var>p->next</var>. This is the address of <var>m</var>. Thus, the pointer
-			<var>p</var> ceases pointing at <var>n</var>, and instead points at
-			<var>m</var>.<sup></sup> This statement is particularly useful &mdash; it
-			allows us to move from the current node to the next node. And if we can
-			move from the current node to the next node, we can <i>iterate</i> through
-			a list. Because of how useful it is, we state it more explicitly:
+			<var>p->next</var>. This is the address of <var>m</var>. Thus, the
+			pointer <var>p</var> ceases pointing at <var>n</var>, and instead
+			points at <var>m</var>.<sup></sup> This statement is particularly
+			useful &mdash; it allows us to move from the current node to the next
+			node. And if we can move from the current node to the next node, we
+			can <i>iterate</i> through a list. Because of how useful it is, we
+			state it more explicitly:
 		</p>
 		<div class="note">
 			<p>Expanding:</p>
@@ -693,8 +715,8 @@
 					</div>
 				</figure>
 				<p>
-					More generally, given a pointer ${P}$ pointing to some node ${n_i,}$
-					to move to ${n_{i+1},}$ we write:
+					More generally, given a pointer ${P}$ pointing to some node
+					${n_i,}$ to move to ${n_{i+1},}$ we write:
 				</p>
 				<figure>
 					<div>
@@ -743,26 +765,26 @@
 				</figure>
 			</div>
 			<p>
-				In Program 1, the pointer <var>p</var> is the null pointer. In Program
-				2, the pointer <var>p</var> points to the address of
+				In Program 1, the pointer <var>p</var> is the null pointer. In
+				Program 2, the pointer <var>p</var> points to the address of
 				<var>n</var> (suppose it's <var>0x200</var>).
 			</p>
 			<p>
 				Whether a pointer is the null address or otherwise corresponds to
-				Boolean values. In Program 1, the pointer <var>p</var> has the value
-				<var>0</var>. In Program 2, the pointer <var>p</var> has a non-zero
-				value. In C and its descendants &mdash; e.g., C++ &mdash; zero
-				corresponds to <var>false</var> and non-zero values correspond to
-				<var>true</var>. Thus, if some pointer ${p}$ is not pointing on any
-				node, then it is <i>false</i>. Otherwise, it is <i>true</i>. Because of
-				this fact, we have the following:
+				Boolean values. In Program 1, the pointer <var>p</var> has the
+				value <var>0</var>. In Program 2, the pointer <var>p</var> has a
+				non-zero value. In C and its descendants &mdash; e.g., C++ &mdash;
+				zero corresponds to <var>false</var> and non-zero values correspond
+				to <var>true</var>. Thus, if some pointer ${p}$ is not pointing on
+				any node, then it is <i>false</i>. Otherwise, it is <i>true</i>.
+				Because of this fact, we have the following:
 			</p>
 			<figure>
 				<div class="rule">
 					<p>
-						<span class="topic">Null Pointer Test.</span> A pointer ${p}$ is the
-						<i>null pointer</i> &mdash; a pointer pointing nowhere &mdash; if
-						and only if the following expressions are true:
+						<span class="topic">Null Pointer Test.</span> A pointer ${p}$
+						is the <i>null pointer</i> &mdash; a pointer pointing nowhere
+						&mdash; if and only if the following expressions are true:
 					</p>
 					<figure>
 						<div>
@@ -777,9 +799,10 @@
 			<figure>
 				<div class="rule">
 					<p>
-						<span class="topic">Nonnull Pointer Test.</span> A pointer ${p}$ is
-						the <i>nonnull pointer</i> &mdash; a pointer pointing to a valid
-						address &mdash; if and only if the following expressions are true:
+						<span class="topic">Nonnull Pointer Test.</span> A pointer
+						${p}$ is the <i>nonnull pointer</i> &mdash; a pointer pointing
+						to a valid address &mdash; if and only if the following
+						expressions are true:
 					</p>
 					<figure>
 						<div>
@@ -795,19 +818,19 @@
 		<section id="last_node_check">
 			<h4>Foot Test</h4>
 			<p>
-				Many operations involving linked lists require to test whether a given
-				node ${n}$ is the <b>tailend</b> &mdash; the last node in the list. If a
-				given node ${n}$ is the <b>tailend</b>, then there are no other nodes
-				after it. If a given node ${n}$ is <em>not</em> the <b>tailend</b>, then
-				there are nodes after the node ${n}$ &mdash; node ${n}$ is a
-				<b>parent node</b>. The test:
+				Many operations involving linked lists require to test whether a
+				given node ${n}$ is the <b>tailend</b> &mdash; the last node in the
+				list. If a given node ${n}$ is the <b>tailend</b>, then there are
+				no other nodes after it. If a given node ${n}$ is <em>not</em> the
+				<b>tailend</b>, then there are nodes after the node ${n}$ &mdash;
+				node ${n}$ is a <b>parent node</b>. The test:
 			</p>
 			<figure>
 				<div class="rule">
 					<p>
 						<span class="topic">Tailend Test.</span> The node ${n}$ is the
-						<i>tailend</i> &mdash; the last node in the linked list &mdash; if
-						and only if:
+						<i>tailend</i> &mdash; the last node in the linked list &mdash;
+						if and only if:
 					</p>
 					<figure>
 						<div>
@@ -871,12 +894,13 @@
 			</ul>
 
 			<p>
-				Now suppose we want to traverse the linked list &mdash; i.e., visiting
-				all of the nodes one at a time. To do so, we employ the facts: First, we
-				note that the pointer <var>p</var> has the pointee <var>0x200</var>.
-				This is the address of the first node storing <var>8</var>. The next
-				node, storing <var>3</var>, has the address <var>0x210</var>, which is
-				the pointee of the first node's <var>next</var> field.
+				Now suppose we want to traverse the linked list &mdash; i.e.,
+				visiting all of the nodes one at a time. To do so, we employ the
+				facts: First, we note that the pointer <var>p</var> has the pointee
+				<var>0x200</var>. This is the address of the first node storing
+				<var>8</var>. The next node, storing <var>3</var>, has the address
+				<var>0x210</var>, which is the pointee of the first node's
+				<var>next</var> field.
 			</p>
 			<p>
 				From the previous section, we know that the first node's
@@ -905,9 +929,9 @@
 				</div>
 			</figure>
 			<p>
-				<span class="topic">Printing a Linked List.</span> Now that we know how
-				to iterate through a linked list, we can perform the simple operating of
-				printing the linked list's data fields. In C:
+				<span class="topic">Printing a Linked List.</span> Now that we know
+				how to iterate through a linked list, we can perform the simple
+				operating of printing the linked list's data fields. In C:
 			</p>
 			<pre class="language-cpp"><code>
 				while(p != 0) {
@@ -956,12 +980,14 @@
 				3
 			</code></pre>
 			<p>
-				Note how we used a variable <var>p</var> to iterate through the linked
-				list. We need the temporary pointer <var>p</var> because using
-				<var>root</var> directly would cause losing the address to the head.
+				Note how we used a variable <var>p</var> to iterate through the
+				linked list. We need the temporary pointer <var>p</var> because
+				using <var>root</var> directly would cause losing the address to
+				the head.
 			</p>
 			<p>
-				This is a pretty useful procedure. Let's encapsulate it in a function:
+				This is a pretty useful procedure. Let's encapsulate it in a
+				function:
 			</p>
 			<pre class="language-cpp"><code>
 				#include &lt;iostream&gt;
@@ -1008,8 +1034,8 @@
 			<h3>Traversing a Linked List Recursively</h3>
 			<p>
 				Because of the linked list's self-referential nature, we can also
-				traverse a linked list recursively. Suppose we had the following linked
-				list:
+				traverse a linked list recursively. Suppose we had the following
+				linked list:
 			</p>
 
 			<ul class="linkedlist">
@@ -1068,10 +1094,10 @@
 				</div>
 			</figure>
 			<p>
-				As we know, if <var>p</var> is not the tail, then there's data to print.
-				And after printing that data, we should move on to the next node
-				<i>recursively</i>. Thus, <var>printList()</var> will call itself by
-				passing the next node's pointer:
+				As we know, if <var>p</var> is not the tail, then there's data to
+				print. And after printing that data, we should move on to the next
+				node <i>recursively</i>. Thus, <var>printList()</var> will call
+				itself by passing the next node's pointer:
 			</p>
 			<figure>
 				<div>
@@ -1126,8 +1152,8 @@
 				3
 			</code></pre>
 			<p>
-				Very cool. Comparing the iterative approach and the recursive approach
-				side by side:
+				Very cool. Comparing the iterative approach and the recursive
+				approach side by side:
 			</p>
 			<div class="compare">
 				<figure>
@@ -1154,22 +1180,24 @@
 				</figure>
 			</div>
 			<p>
-				The time complexity for either of these approaches is linear &mdash;
-				${O(n).}$ This is because we're iterating through ${n}$ nodes, and
-				outputting to the console and the <var>p != 0</var> comparison are basic
-				steps.
+				The time complexity for either of these approaches is linear
+				&mdash; ${O(n).}$ This is because we're iterating through ${n}$
+				nodes, and outputting to the console and the
+				<var>p != 0</var> comparison are basic steps.
 			</p>
 			<p>
-				The space complexity, however, is a different story. With the iterative
-				approach, we're only calling the function once. And because each
-				function call takes one stack frame, the iterative approach has constant
-				space complexity &mdash; ${O(1).}$ In contrast, the recursive approach
-				makes ${n+1}$ calls, given ${n}$ nodes. As such, the recursive approach
-				is of linear space complexity &mdash; ${O(n).}$
+				The space complexity, however, is a different story. With the
+				iterative approach, we're only calling the function once. And
+				because each function call takes one stack frame, the iterative
+				approach has constant space complexity &mdash; ${O(1).}$ In
+				contrast, the recursive approach makes ${n+1}$ calls, given ${n}$
+				nodes. As such, the recursive approach is of linear space
+				complexity &mdash; ${O(n).}$
 			</p>
 			<p>
 				<span class="topic">Printing in Reverse.</span> With the recursive
-				approach, printing in reverse is just a matter of changing the order:
+				approach, printing in reverse is just a matter of changing the
+				order:
 			</p>
 			<pre class="language-cpp"><code>
 				void printList(Node* p)  {
@@ -1185,8 +1213,8 @@
 	<section id="creating_node_function">
 		<h3>Node Constructor</h3>
 		<p>
-			In our previous code examples, we've had some fairly repetitive code. The
-			first of which is the way we've been creating new nodes:
+			In our previous code examples, we've had some fairly repetitive code.
+			The first of which is the way we've been creating new nodes:
 		</p>
 		<pre class="language-pseudo"><code>
 			n       = new Node();
@@ -1194,7 +1222,8 @@
 			n->next = m;
 		</code></pre>
 		<p>
-			To make our lives easier, we should write a function for this procedure:
+			To make our lives easier, we should write a function for this
+			procedure:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -1208,11 +1237,12 @@
 			</ol>
 		</figure>
 		<p>
-			This constructor takes an <var>int</var> value as a parameter, creates a
-			new <var>Node</var>, and returns a pointer to that node. Note that all
-			this constructor does is create a new node. Nothing more. We will see
-			later how to insert nodes into a linked list. For now, we'll use the
-			<var>newNode()</var> constructor to clean up our code a bit.
+			This constructor takes an <var>int</var> value as a parameter,
+			creates a new <var>Node</var>, and returns a pointer to that node.
+			Note that all this constructor does is create a new node. Nothing
+			more. We will see later how to insert nodes into a linked list. For
+			now, we'll use the <var>newNode()</var> constructor to clean up our
+			code a bit.
 		</p>
 		<div class="demo">
 			<button>C++</button>
@@ -1234,8 +1264,8 @@
 			</div>
 			<div class="implementation">
 				<p>
-					The C implementation is similar to the C++ implementation. The only
-					difference is we must use the keyword <var>struct</var>:
+					The C implementation is similar to the C++ implementation. The
+					only difference is we must use the keyword <var>struct</var>:
 				</p>
 				<pre class="language-c"><code>
 					#include &lt;stdlib.h&gt;
@@ -1264,10 +1294,10 @@
 	<section id="linked_list_creator_from_array">
 		<h3>Constructing a List from an Array</h3>
 		<p>
-			For efficiency's sake, we want to create linked lists quickly. One way to
-			do so is to construct a linked list from an array argument. Now that we
-			have a node constructor, our job is a little easier. First, suppose we
-			have the following array (in pseudocode):
+			For efficiency's sake, we want to create linked lists quickly. One
+			way to do so is to construct a linked list from an array argument.
+			Now that we have a node constructor, our job is a little easier.
+			First, suppose we have the following array (in pseudocode):
 		</p>
 		<figure>
 			<ol class="alg">
@@ -1281,8 +1311,8 @@
 			</ol>
 		</figure>
 		<p>
-			to produce the linked list ${(1, 2, 3).}$ To do so, assume we have our
-			node constructor:
+			to produce the linked list ${(1, 2, 3).}$ To do so, assume we have
+			our node constructor:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -1296,10 +1326,10 @@
 			</ol>
 		</figure>
 		<p>
-			With that, we can now write our list constructor. This function takes as
-			an argument an array of type ${t}$ (we'll stick with <var>int</var> for
-			now), and a size of type <var>int</var>. It will then return a pointer to
-			a node:
+			With that, we can now write our list constructor. This function takes
+			as an argument an array of type ${t}$ (we'll stick with
+			<var>int</var> for now), and a size of type <var>int</var>. It will
+			then return a pointer to a node:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -1319,8 +1349,8 @@
 			</ol>
 		</figure>
 		<p>
-			Let's also create another node pointer for the list's tailend (the last
-			node in the list):
+			Let's also create another node pointer for the list's tailend (the
+			last node in the list):
 		</p>
 		<figure>
 			<ol class="alg">
@@ -1333,8 +1363,8 @@
 		</figure>
 		<p>
 			Finally, we want to ensure the <var>tailend</var> is initially at the
-			<var>head</var>. The <var>tailend</var> will move as the list grows, and
-			we need it to start from somewhere:
+			<var>head</var>. The <var>tailend</var> will move as the list grows,
+			and we need it to start from somewhere:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -1374,8 +1404,8 @@
 			</ol>
 		</figure>
 		<p>
-			This creates a new node, <var>freshNode</var>, whose data field contains
-			<var>A[i]</var>. Next, we wrote:
+			This creates a new node, <var>freshNode</var>, whose data field
+			contains <var>A[i]</var>. Next, we wrote:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -1384,8 +1414,8 @@
 		</figure>
 		<p>
 			Recall that the <var>tailend</var> was initially pointing to the
-			<var>head</var>. Writing the above, <var>tailend</var>'s next pointer now
-			points at <var>freshNode</var>. Then, we wrote:
+			<var>head</var>. Writing the above, <var>tailend</var>'s next pointer
+			now points at <var>freshNode</var>. Then, we wrote:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -1438,11 +1468,12 @@
 			</ol>
 		</figure>
 		<p>
-			Specific implementations are provided below. Going forward, we will use
-			the <var>arrayToList()</var> function to create linked lists. In terms
-			complexity, the <var>arrayToList()</var> function's time complexity
-			depends on the size of the array. Given an array of ${n}$ elements, the
-			function will take linear time to execute &mdash; ${O(n).}$
+			Specific implementations are provided below. Going forward, we will
+			use the <var>arrayToList()</var> function to create linked lists. In
+			terms complexity, the <var>arrayToList()</var> function's time
+			complexity depends on the size of the array. Given an array of ${n}$
+			elements, the function will take linear time to execute &mdash;
+			${O(n).}$
 		</p>
 		<div class="demo">
 			<button>C</button>
@@ -1504,8 +1535,8 @@
 	<h2>Length of a Linked List</h2>
 	<p>
 		One particularly useful operation is to count the number of nodes in a
-		linked list. This will return the <b>length</b> of a linked list. Say we had
-		the following linked list:
+		linked list. This will return the <b>length</b> of a linked list. Say
+		we had the following linked list:
 	</p>
 	<ul class="linkedlist">
 		<ul class="head">
@@ -1584,12 +1615,12 @@
 		}
 	</code></pre>
 	<p>
-		There are five nodees in the linked list. Thus, we should expect our count
-		to return 5.
+		There are five nodees in the linked list. Thus, we should expect our
+		count to return 5.
 	</p>
 	<p>
-		Counting the number of nodes in a linked list is similar to counting the
-		number of elements in an array. We can do so iteratively with a
+		Counting the number of nodes in a linked list is similar to counting
+		the number of elements in an array. We can do so iteratively with a
 		<b>count</b> variable:
 	</p>
 	<pre class="language-cpp"><code>
@@ -1603,14 +1634,14 @@
 		}
 	</code></pre>
 	<p>
-		The time complexity for this procedure is straightforward. We're traversing
-		through ${n}$ nodes, incrementing <var>count</var>. Hence, we have a time
-		complexity of ${O(n).}$
+		The time complexity for this procedure is straightforward. We're
+		traversing through ${n}$ nodes, incrementing <var>count</var>. Hence,
+		we have a time complexity of ${O(n).}$
 	</p>
 	<p>
-		And the space complexity? Constant. This is a single function call, and each
-		of the variables used take a fixed amount of memory. Accordingly, this
-		approach has a space complexity of ${O(1).}$
+		And the space complexity? Constant. This is a single function call, and
+		each of the variables used take a fixed amount of memory. Accordingly,
+		this approach has a space complexity of ${O(1).}$
 	</p>
 	<p>
 		<span class="topic">Recursive Implementation.</span> As always, we can
@@ -1626,26 +1657,27 @@
 		}
 	</code></pre>
 	<p>
-		As with all recursive functions, we start with a base case. The base case is
-		a list of length ${0}$ &mdash; ${P(0),}$ the empty list. If the list
-		contains one element, then it is a list of length ${1}$ &mdash; ${P(1) =
-		P(0) + 1.}$ And if the list contains two elements, then it is a list of
-		length ${2}$ &mdash; ${P(2) = P(1) + 1 = (P(0) + 1) + 1.}$
+		As with all recursive functions, we start with a base case. The base
+		case is a list of length ${0}$ &mdash; ${P(0),}$ the empty list. If the
+		list contains one element, then it is a list of length ${1}$ &mdash;
+		${P(1) = P(0) + 1.}$ And if the list contains two elements, then it is
+		a list of length ${2}$ &mdash; ${P(2) = P(1) + 1 = (P(0) + 1) + 1.}$
 	</p>
 	<p>
-		The function above captures this induction. If the <var>next</var> field is
-		${0,}$ then we've reached the end of a list; the list of length ${0.}$
-		However, if the <var>next</var> field is not ${0,}$ then the list is not
-		empty. In which case we must continue until we reach the end of the list.
+		The function above captures this induction. If the
+		<var>next</var> field is ${0,}$ then we've reached the end of a list;
+		the list of length ${0.}$ However, if the <var>next</var> field is not
+		${0,}$ then the list is not empty. In which case we must continue until
+		we reach the end of the list.
 	</p>
 </section>
 
 <section id="sum_all_elements">
 	<h2>Sum of All Elements</h2>
 	<p>
-		Just as we saw with arrays, given a linked list of numeric type, we can find
-		the sum of all its elements through iteration. Suppose we had the following
-		linked list:
+		Just as we saw with arrays, given a linked list of numeric type, we can
+		find the sum of all its elements through iteration. Suppose we had the
+		following linked list:
 	</p>
 	<ul class="linkedlist">
 		<ul class="head">
@@ -1715,9 +1747,9 @@
 		}
 	</code></pre>
 	<p>
-		To sum all of the elements, we use a variable <var>sum</var>, set initially
-		to zero. Then, we iterate through the linked list, incrementing
-		<var>sum</var> by each element's <var>data</var> field:
+		To sum all of the elements, we use a variable <var>sum</var>, set
+		initially to zero. Then, we iterate through the linked list,
+		incrementing <var>sum</var> by each element's <var>data</var> field:
 	</p>
 	<pre class="language-cpp"><code>
 		int listSum(Node* p) {
@@ -1777,12 +1809,13 @@
 		19
 	</code></pre>
 	<p>
-		The time complexity for this function is linear, and the space complexity is
-		constant. We're iterating through ${n}$ nodes, and the operations of
-		<var>==</var> and <var>+=</var> are basic steps. Accordingly, the function
-		has a time complexity of ${O(n).}$ With respect to space, only a single
-		function call is made, and each of the variables take a fixed amount of
-		memory. Hence, the space complexity is ${O(1).}$
+		The time complexity for this function is linear, and the space
+		complexity is constant. We're iterating through ${n}$ nodes, and the
+		operations of
+		<var>==</var> and <var>+=</var> are basic steps. Accordingly, the
+		function has a time complexity of ${O(n).}$ With respect to space, only
+		a single function call is made, and each of the variables take a fixed
+		amount of memory. Hence, the space complexity is ${O(1).}$
 	</p>
 	<p>
 		<span class="topic">Recursive Approach.</span> The same function can be
@@ -1798,28 +1831,29 @@
 		}
 	</code></pre>
 	<p>
-		With the recursive approach, the time complexity is ${O(n),}$ just as we saw
-		with the iterative approach. The space complexity, however, is ${O(n),}$
-		given that ${n+1}$ calls must be made.
+		With the recursive approach, the time complexity is ${O(n),}$ just as
+		we saw with the iterative approach. The space complexity, however, is
+		${O(n),}$ given that ${n+1}$ calls must be made.
 	</p>
 </section>
 
 <section id="find_max">
 	<h2>Peak Finder</h2>
 	<p>
-		As we saw with arrays, a <b>peak finder</b> is an algorithm for finding the
-		maximum element in a given collection. In this case, the maximum element in
-		a linked list.
+		As we saw with arrays, a <b>peak finder</b> is an algorithm for finding
+		the maximum element in a given collection. In this case, the maximum
+		element in a linked list.
 	</p>
 	<p>
-		<strong>Procedure.</strong> Suppose ${n_0}$ is the head, and it contains the
-		peak, ${v_0,}$ in its data field. Iterating through the linked list, compare
-		${v_0}$ against ${v_1,}$ the value in the data field of the second node,
-		${n_1.}$ If ${v_0 &lt; v_1,}$ then ${n_1}$ contains the peak. Otherwise,
-		${v_0}$ is the peak, and we compare it against ${v_2,}$ the value in the
-		data field of the third node. The process until we reach the foot of the
-		list: If ${v_i &lt; v_{i+1},}$ then ${v_{i+1}}$ is the maximum element.
-		Otherwise, compare ${v_i}$ against ${v_{i+2 \ldots k}.}$
+		<strong>Procedure.</strong> Suppose ${n_0}$ is the head, and it
+		contains the peak, ${v_0,}$ in its data field. Iterating through the
+		linked list, compare ${v_0}$ against ${v_1,}$ the value in the data
+		field of the second node, ${n_1.}$ If ${v_0 &lt; v_1,}$ then ${n_1}$
+		contains the peak. Otherwise, ${v_0}$ is the peak, and we compare it
+		against ${v_2,}$ the value in the data field of the third node. The
+		process until we reach the foot of the list: If ${v_i &lt; v_{i+1},}$
+		then ${v_{i+1}}$ is the maximum element. Otherwise, compare ${v_i}$
+		against ${v_{i+2 \ldots k}.}$
 	</p>
 	<p>Implementing this procedure:</p>
 	<pre class="language-cpp"><code>
@@ -1875,8 +1909,8 @@
 	</ul>
 
 	<p>
-		The diagram shows that ${319}$ is the maximum element, so we should expect
-		to see ${319}$ as the output. Testing:
+		The diagram shows that ${319}$ is the maximum element, so we should
+		expect to see ${319}$ as the output. Testing:
 	</p>
 	<pre class="language-cpp"><code>
 		#include &lt;iostream&gt;
@@ -1979,9 +2013,10 @@
 <section id="valley_finder">
 	<h2>Valley Finder</h2>
 	<p>
-		In contrast to peak finding, the <b>valley finder</b> is an algorithm for
-		finding the mimimum element. The implementation is similar to the peak
-		finder; the only difference is we're looking for the smallest element.
+		In contrast to peak finding, the <b>valley finder</b> is an algorithm
+		for finding the mimimum element. The implementation is similar to the
+		peak finder; the only difference is we're looking for the smallest
+		element.
 	</p>
 	<pre class="language-cpp"><code>
 		int findMin(Node* p) {
@@ -2051,12 +2086,13 @@
 	<h2>Searching a Linked List</h2>
 	<p>
 		As we saw with arrays, we can search through a linked list. The catch,
-		however, is that we cannot employ binary search. This is because with the
-		linked list, we do not have indices. There are only pointers. The only way
-		for us to know when we've reached some element is by traversing. And because
-		we have no choice but to traverse, we cannot access the
-		<q>middle node</q> in constant time. As such, binary search on a linked list
-		is no better than a linear search.
+		however, is that we cannot employ binary search. This is because with
+		the linked list, we do not have indices. There are only pointers. The
+		only way for us to know when we've reached some element is by
+		traversing. And because we have no choice but to traverse, we cannot
+		access the
+		<q>middle node</q> in constant time. As such, binary search on a linked
+		list is no better than a linear search.
 	</p>
 	<p>That said, suppose we had the following linked list:</p>
 
@@ -2106,10 +2142,10 @@
 	</ul>
 
 	<p>
-		Now suppose our query is <var>2</var>. From the linked list above, that's
-		the fourth node. Searching for our query is similar to linear searching
-		through an array &mdash; we just have to pass the value we want found, and a
-		pointer to the linked list.
+		Now suppose our query is <var>2</var>. From the linked list above,
+		that's the fourth node. Searching for our query is similar to linear
+		searching through an array &mdash; we just have to pass the value we
+		want found, and a pointer to the linked list.
 	</p>
 	<pre class="language-cpp"><code>
 		Node* linearSearch(Node* p, int query) {
@@ -2123,11 +2159,11 @@
 		}
 	</code></pre>
 	<p>
-		With the implementation above, we're returning a pointer to the query if
-		it's found. Otherwise, we return <var>0</var>, in which case the pointer to
-		the query is null. This, of course, is entirely arbitrary. We could return
-		<var>true</var>, <var>false</var>, <var>1</var>, <var>0</var>, or print some
-		output to the console.
+		With the implementation above, we're returning a pointer to the query
+		if it's found. Otherwise, we return <var>0</var>, in which case the
+		pointer to the query is null. This, of course, is entirely arbitrary.
+		We could return <var>true</var>, <var>false</var>, <var>1</var>,
+		<var>0</var>, or print some output to the console.
 	</p>
 	<p>Testing with the diagram above:</p>
 	<pre class="language-cpp"><code>
@@ -2180,16 +2216,17 @@
 	</code></pre>
 	<p>
 		As we saw with arrays, however, we can improve linear search through
-		<i>transposition</i> or <i>move-to-head</i>. Recall that with transposition,
-		whenever we search for a particular element, the element moves closer to the
-		beginning. And with move-to-head, the element containing the key moves
-		immediately to the head after a successful search.
+		<i>transposition</i> or <i>move-to-head</i>. Recall that with
+		transposition, whenever we search for a particular element, the element
+		moves closer to the beginning. And with move-to-head, the element
+		containing the key moves immediately to the head after a successful
+		search.
 	</p>
 	<p>
 		It turns out that transposition isn't a very good idea, but before we
-		address why, let's consider move-to-head, the preferred approach with linked
-		lists. To start, let's consider the following linked list, supposing the key
-		we're searching for is <var>7</var>:
+		address why, let's consider move-to-head, the preferred approach with
+		linked lists. To start, let's consider the following linked list,
+		supposing the key we're searching for is <var>7</var>:
 	</p>
 
 	<ul class="linkedlist">
@@ -2231,18 +2268,20 @@
 	</ul>
 
 	<p>
-		This is the third node, and we want to make it the list's head. As we saw
-		with our implementation of linear search earlier, we used a temporary
-		pointer to traverse the linked list, so as to check for equality to our key.
-		Thus, conducting linear search on our linked list, the temporary pointer, at
-		some point, reaches the node storing <var>7</var>. As such, once we reach
-		the node storing <var>7</var>, we want to bring the node to the head.
+		This is the third node, and we want to make it the list's head. As we
+		saw with our implementation of linear search earlier, we used a
+		temporary pointer to traverse the linked list, so as to check for
+		equality to our key. Thus, conducting linear search on our linked list,
+		the temporary pointer, at some point, reaches the node storing
+		<var>7</var>. As such, once we reach the node storing <var>7</var>, we
+		want to bring the node to the head.
 	</p>
 	<p>
-		To do so, we must modify the second node, since the third node will move. In
-		this case, the second node &mdash; the node right before our key &mdash;
-		should point the third node &mdash; the node right after our key. To do so,
-		we must have a pointer on the node immediately before our key as well.
+		To do so, we must modify the second node, since the third node will
+		move. In this case, the second node &mdash; the node right before our
+		key &mdash; should point the third node &mdash; the node right after
+		our key. To do so, we must have a pointer on the node immediately
+		before our key as well.
 	</p>
 	<ul class="linkedlist">
 		<ul class="head">
@@ -2282,17 +2321,17 @@
 		</ul>
 	</ul>
 	<p>
-		How do we get a pointer on the previous node? By using a second pointer.
-		Thus, our linear search will use two pointers &mdash; <var>p</var>, the
-		<b>traverser</b>, and <var>q</var>, the <b>tailer</b>, that follows
-		immediately behind <var>p</var>. Then, the two pointers work together as
-		follows:
+		How do we get a pointer on the previous node? By using a second
+		pointer. Thus, our linear search will use two pointers &mdash;
+		<var>p</var>, the <b>traverser</b>, and <var>q</var>, the
+		<b>tailer</b>, that follows immediately behind <var>p</var>. Then, the
+		two pointers work together as follows:
 	</p>
 	<ol>
 		<li>
-			<var>p</var> begins traversing, starting at the first node. If the key is
-			there, stop. Return the node's address. Otherwise, proceed to the next
-			step. In this case, it is not:
+			<var>p</var> begins traversing, starting at the first node. If the
+			key is there, stop. Return the node's address. Otherwise, proceed to
+			the next step. In this case, it is not:
 			<ul class="linkedlist">
 				<ul class="head">
 					<li>
@@ -2333,8 +2372,8 @@
 			</ul>
 		</li>
 		<li>
-			Since the first node is not the key, <var>p</var> moves to the second node
-			<em>and</em> <var>q</var> points to the first node.
+			Since the first node is not the key, <var>p</var> moves to the second
+			node <em>and</em> <var>q</var> points to the first node.
 			<ul class="linkedlist">
 				<ul class="head">
 					<li>
@@ -2376,8 +2415,8 @@
 		</li>
 		<li>
 			Once again, we found no match, so <var>p</var> moves to the next node
-			&mdash; the third node &mdash; and <var>q</var> moves to the next node,
-			the second node. At this point we've found our key:
+			&mdash; the third node &mdash; and <var>q</var> moves to the next
+			node, the second node. At this point we've found our key:
 			<ul class="linkedlist">
 				<ul class="head">
 					<li>
@@ -2419,9 +2458,9 @@
 		</li>
 	</ol>
 	<p>
-		Notice the end result. We have a pointer to the node just before the node
-		containing the key, and a pointer to the node containing the key. This is
-		exactly where we want to be. The implementation:
+		Notice the end result. We have a pointer to the node just before the
+		node containing the key, and a pointer to the node containing the key.
+		This is exactly where we want to be. The implementation:
 	</p>
 	<pre class="language-cpp"><code>
 		Node* linearSearch(Node* root, int key) {
@@ -2526,19 +2565,22 @@
 		helpful to write procedures for inserting new nodes to existing linked
 		lists.
 	</p>
-	<p>As with any linear data structure, there are three types of insertions:</p>
+	<p>
+		As with any linear data structure, there are three types of insertions:
+	</p>
 	<ul>
 		<li>
-			<b>Prepending</b> &mdash; inserting to the list's head (i.e., inserting a
-			new node as the first node).
+			<b>Prepending</b> &mdash; inserting to the list's head (i.e.,
+			inserting a new node as the first node).
 		</li>
 		<li>
-			<b>Interposing</b> &mdash; inserting to the list's trunk (i.e., inserting
-			a new node somewhere between the first node and the last node).
+			<b>Interposing</b> &mdash; inserting to the list's trunk (i.e.,
+			inserting a new node somewhere between the first node and the last
+			node).
 		</li>
 		<li>
-			<b>Appending</b> &mdash; inserting to the list's foot (i.e., inserting a
-			new node as the last node).
+			<b>Appending</b> &mdash; inserting to the list's foot (i.e.,
+			inserting a new node as the last node).
 		</li>
 	</ul>
 	<p>For example, suppose we have the following linked list:</p>
@@ -2574,8 +2616,8 @@
 	</ul>
 	<p>
 		With arrays, the compiler provided indices for us to work with. Linked
-		lists, however, do not have such indices. But nothing stops us from adding
-		indices of our own:
+		lists, however, do not have such indices. But nothing stops us from
+		adding indices of our own:
 	</p>
 	<ul class="linkedlist">
 		<ul class="head">
@@ -2608,8 +2650,8 @@
 		</ul>
 	</ul>
 	<p>
-		Once we have indices for the existing nodes, we can create an abstraction
-		for the indices of insertions:
+		Once we have indices for the existing nodes, we can create an
+		abstraction for the indices of insertions:
 	</p>
 	<ul class="linkedlist">
 		<ul class="head">
@@ -2675,19 +2717,20 @@
 		<li>Inserting after a given position ${i.}$</li>
 	</ol>
 	<p>
-		For the first case, all we must pass as an argument to some function is ${i
-		= 0.}$ In doing so, the node is inserted at the very beginning. This is a
-		special case because the head of the list has a unique role &mdash; it is
-		the only node which is always pointed to from the stack. Lose that
-		connection, and the linked list is lost.
+		For the first case, all we must pass as an argument to some function is
+		${i = 0.}$ In doing so, the node is inserted at the very beginning.
+		This is a special case because the head of the list has a unique role
+		&mdash; it is the only node which is always pointed to from the stack.
+		Lose that connection, and the linked list is lost.
 	</p>
 	<p>
-		For the second case, insertion is merely a matter of passing the index. If
-		we pass as an index ${1,}$ then we're inserting after the first node. If we
-		pass as an index ${3,}$ then we're inserting after the third node. More
-		generally: Given a list of ${n}$ nodes, where the first node has an index
-		${i = 1}$ and the last node has an index ${i = n,}$ passing as an insertion
-		index ${k}$ will insert the element at ${i = i + 1.}$
+		For the second case, insertion is merely a matter of passing the index.
+		If we pass as an index ${1,}$ then we're inserting after the first
+		node. If we pass as an index ${3,}$ then we're inserting after the
+		third node. More generally: Given a list of ${n}$ nodes, where the
+		first node has an index ${i = 1}$ and the last node has an index ${i =
+		n,}$ passing as an insertion index ${k}$ will insert the element at ${i
+		= i + 1.}$
 	</p>
 	<p>All that said, let's now consider the specific procedures.</p>
 	<section id="prepending">
@@ -2728,16 +2771,16 @@
 			<li>linkedList([8, 3, 9]);</li>
 		</ol>
 		<p>
-			To prepend a new node, we want to insert to the beginning of the list.
-			Thus, we first create a new node:
+			To prepend a new node, we want to insert to the beginning of the
+			list. Thus, we first create a new node:
 		</p>
 		<ol class="alg">
 			<li>linkedList([8, 3, 9]);</li>
 			<li>Node* n = newNode(data: 7, next: 0);</li>
 		</ol>
 		<p>
-			Second, we have <var>n</var>'s next field point to the first node in the
-			list:
+			Second, we have <var>n</var>'s next field point to the first node in
+			the list:
 		</p>
 		<ol class="alg">
 			<li>linkedList([8, 3, 9]);</li>
@@ -2792,18 +2835,19 @@
 			</ul>
 		</ul>
 		<p>
-			Examining this procedure, we see that each of these steps is a basic step
-			&mdash; they each take constant time. And because each step takes constant
-			time, prepending a new node has time complexity of ${O(1)}$ &mdash;
-			constant time.
+			Examining this procedure, we see that each of these steps is a basic
+			step &mdash; they each take constant time. And because each step
+			takes constant time, prepending a new node has time complexity of
+			${O(1)}$ &mdash; constant time.
 		</p>
 	</section>
 
 	<section id="interposing">
 		<h3>Interposing a New Node</h3>
 		<p>
-			To insert a new node at a given position other than the head or the foot,
-			the procedure is similar. Using the same linked list from earlier:
+			To insert a new node at a given position other than the head or the
+			foot, the procedure is similar. Using the same linked list from
+			earlier:
 		</p>
 		<ul class="linkedlist">
 			<ul class="head">
@@ -2840,18 +2884,19 @@
 			<li>linkedList([8, 3, 9]);</li>
 		</ol>
 		<p>
-			We want to insert a new node after position ${3}$ (resulting in a linked
-			list where the new node is at position ${4}$). The first step, as always,
-			is to have a new node:
+			We want to insert a new node after position ${3}$ (resulting in a
+			linked list where the new node is at position ${4}$). The first step,
+			as always, is to have a new node:
 		</p>
 		<ol class="alg">
 			<li>linkedList([8, 3, 9]);</li>
 			<li>Node* n = newNode(data: 4, next: 0)</li>
 		</ol>
 		<p>
-			Next, we need two pointers. A pointer to the element immediately before
-			the insertion position, and a pointer to the element immediately after.
-			For example, suppose the insertion position is represented by the variable
+			Next, we need two pointers. A pointer to the element immediately
+			before the insertion position, and a pointer to the element
+			immediately after. For example, suppose the insertion position is
+			represented by the variable
 			<var>i</var>:
 		</p>
 		<ol class="alg">
@@ -2861,9 +2906,9 @@
 			<li>Node* pointer @ Node[i+1];</li>
 		</ol>
 		<p>
-			Once we have these two pointers, <var>n</var>'s next field should point to
-			<var>Node[i+1]</var>, and <var>Node[i]</var>'s pointer should point at
-			<var>n</var>:
+			Once we have these two pointers, <var>n</var>'s next field should
+			point to <var>Node[i+1]</var>, and <var>Node[i]</var>'s pointer
+			should point at <var>n</var>:
 		</p>
 		<ol class="alg">
 			<li>linkedList([8, 3, 9]);</li>
@@ -2874,22 +2919,23 @@
 			<li>p->next = n;</li>
 		</ol>
 		<p>
-			Note that <var>n</var>'s pointer must first point to <var>q</var> before
-			we assign <var>p</var>'s pointer to <var>n</var>. If we assigned
-			<var>p</var>'s pointer to <var>n</var> before assigning <var>n</var>'s
-			pointer to <var>q</var>, we would lose <var>q</var>'s address.
+			Note that <var>n</var>'s pointer must first point to
+			<var>q</var> before we assign <var>p</var>'s pointer to <var>n</var>.
+			If we assigned <var>p</var>'s pointer to <var>n</var> before
+			assigning <var>n</var>'s pointer to <var>q</var>, we would lose
+			<var>q</var>'s address.
 		</p>
 		<p>
 			In our pseudocode, we wrote <var>pointer @ Node[i]</var> and
-			<var>pointer @ Node[i+1]</var>. Let's flesh these expressions out. How do
-			we get two pointers to point on these particular nodes? After all, we
-			don't have indices. Once again, because we do not have indices with linked
-			lists, we must traverse the linked list.
+			<var>pointer @ Node[i+1]</var>. Let's flesh these expressions out.
+			How do we get two pointers to point on these particular nodes? After
+			all, we don't have indices. Once again, because we do not have
+			indices with linked lists, we must traverse the linked list.
 		</p>
 		<p>
-			In our function, we will pass a particular argument, <var>i</var>, as an
-			abstraction for some index. This is what we use to keep track of how many
-			times a particular pointer will move.
+			In our function, we will pass a particular argument, <var>i</var>, as
+			an abstraction for some index. This is what we use to keep track of
+			how many times a particular pointer will move.
 		</p>
 		<p>To illustrate:</p>
 		<ol class="alg">
@@ -2907,31 +2953,32 @@
 			</ol>
 		</ol>
 		<p>
-			Let's go over the procedure carefully. First, we pass as an argument the
-			pointer <var>listPtr</var>. This pointer points to the list we want to
-			insert into. Next, we passed <var>int data</var>. This is what will be
-			used to initialize the new node's data field. Then, we passed as an
-			argument <var>int position</var>. We use this argument to indicate where
-			in the list we want to insert the new node. Recall that if we pass the
-			argument <var>3</var>, the new node is inserted after the existing node at
-			position three.
+			Let's go over the procedure carefully. First, we pass as an argument
+			the pointer <var>listPtr</var>. This pointer points to the list we
+			want to insert into. Next, we passed <var>int data</var>. This is
+			what will be used to initialize the new node's data field. Then, we
+			passed as an argument <var>int position</var>. We use this argument
+			to indicate where in the list we want to insert the new node. Recall
+			that if we pass the argument <var>3</var>, the new node is inserted
+			after the existing node at position three.
 		</p>
 		<p>
-			Inside the body, we create a new node, <var>n</var>. This node has its
-			data field initialized with the argument <var>int data</var>, and a
-			<var>next</var> field of <var>0</var> (it points nowhere at
+			Inside the body, we create a new node, <var>n</var>. This node has
+			its data field initialized with the argument <var>int data</var>, and
+			a <var>next</var> field of <var>0</var> (it points nowhere at
 			initialization).
 		</p>
 		<p>
-			After initializing the new node, we then iterate. Notice the loop's head.
-			We start at <var>int i = 0</var>, and we continue iterating so long as
-			<var>i</var> is less than <var>position - 1</var>. Thus, if we passed as
-			an argument <var>position = 3</var>, the loop executes: ${\lang 0, 1, 2
-			\rang}$ &mdash; three times. At each iteration, we move the pointer
-			<var>p</var> forward.
+			After initializing the new node, we then iterate. Notice the loop's
+			head. We start at <var>int i = 0</var>, and we continue iterating so
+			long as <var>i</var> is less than <var>position - 1</var>. Thus, if
+			we passed as an argument <var>position = 3</var>, the loop executes:
+			${\lang 0, 1, 2 \rang}$ &mdash; three times. At each iteration, we
+			move the pointer <var>p</var> forward.
 		</p>
 		<p>
-			For example, say we're inserting into the following linked list, where
+			For example, say we're inserting into the following linked list,
+			where
 			<var>position = 3</var>.
 		</p>
 		<ul class="linkedlist">
@@ -2978,7 +3025,9 @@
 				</li>
 			</ul>
 		</ul>
-		<p>Initially, the pointer <var>p</var> points to the head of the list:</p>
+		<p>
+			Initially, the pointer <var>p</var> points to the head of the list:
+		</p>
 		<ul class="linkedlist">
 			<ul class="head">
 				<li>
@@ -3025,8 +3074,8 @@
 		</ul>
 		<p>
 			Then, we enter the for-loop. We start with <var>int i = 0</var>. The
-			condition is then checked: Is <var>i < position - 1</var>? Yes, ${0 < 2.}$
-			So, we move the pointer <var>p</var> to the next node:
+			condition is then checked: Is <var>i < position - 1</var>? Yes, ${0 <
+			2.}$ So, we move the pointer <var>p</var> to the next node:
 		</p>
 		<ul class="linkedlist">
 			<ul class="head">
@@ -3073,9 +3122,10 @@
 			</ul>
 		</ul>
 		<p>
-			We increment our variable <var>i</var>. Now we have <var>i = 1.</var> We
-			check the condition again. Is <var>i < position - 1</var>? Yes, ${0 < 1.}$
-			So we move the pointer <var>p</var> once more:
+			We increment our variable <var>i</var>. Now we have
+			<var>i = 1.</var> We check the condition again. Is
+			<var>i < position - 1</var>? Yes, ${0 < 1.}$ So we move the pointer
+			<var>p</var> once more:
 		</p>
 		<ul class="linkedlist">
 			<ul class="head">
@@ -3122,9 +3172,9 @@
 			</ul>
 		</ul>
 		<p>
-			Once more we increment <var>i</var>. Now <var>i = 2</var>. The condition
-			is checked. Is <var>i < 2</var>? NO. ${2 \nless 2.}$ So we stop, leaving
-			position <var>p</var> right where we want it:
+			Once more we increment <var>i</var>. Now <var>i = 2</var>. The
+			condition is checked. Is <var>i < 2</var>? NO. ${2 \nless 2.}$ So we
+			stop, leaving position <var>p</var> right where we want it:
 		</p>
 		<ul class="linkedlist">
 			<ul class="head">
@@ -3178,25 +3228,26 @@
 			<li>n->next = p->next</li>
 		</ol>
 		<p>
-			In doing so, we now have <var>n</var> pointing to the node immediately
-			after <var>p</var>. This means there are now two pointers to the node
-			immediately after <var>p</var>. <var>p->next</var>, and
+			In doing so, we now have <var>n</var> pointing to the node
+			immediately after <var>p</var>. This means there are now two pointers
+			to the node immediately after <var>p</var>. <var>p->next</var>, and
 			<var>n->next</var>. Now <var>p</var> comes back into play. We wrote:
 		</p>
 		<ol class="alg">
 			<li>p->next = n;</li>
 		</ol>
 		<p>
-			In doing so, <var>p->next</var> now points to <var>n</var>, the new node.
-			This completes the linking. <var>p->next</var> points <var>n</var>, and
-			<var>n</var> points to the node that was previously <var>p->next</var>'s
-			pointee. We've successfully inserted the node.
+			In doing so, <var>p->next</var> now points to <var>n</var>, the new
+			node. This completes the linking. <var>p->next</var> points
+			<var>n</var>, and <var>n</var> points to the node that was previously
+			<var>p->next</var>'s pointee. We've successfully inserted the node.
 		</p>
 		<section id="appending">
 			<p>
-				<span class="topic">Appending.</span> Note that the above procedure also
-				applies to <i>appending</i> a node. For example, say we want to append a
-				node <var>n</var> with the data <var>5</var> to the following list:
+				<span class="topic">Appending.</span> Note that the above procedure
+				also applies to <i>appending</i> a node. For example, say we want
+				to append a node <var>n</var> with the data <var>5</var> to the
+				following list:
 			</p>
 			<ul class="linkedlist">
 				<ul class="head">
@@ -3222,9 +3273,10 @@
 				</ul>
 			</ul>
 			<p>
-				We use the same procedure. Here, there are two existing nodes, so we
-				<var>position = 2.</var> The pointer <var>p</var> initially points at
-				the first node:
+				We use the same procedure. Here, there are two existing nodes, so
+				we
+				<var>position = 2.</var> The pointer <var>p</var> initially points
+				at the first node:
 			</p>
 			<ul class="linkedlist">
 				<ul class="head">
@@ -3251,8 +3303,8 @@
 			</ul>
 			<p>
 				Our loop counter <var>i</var> is initially zero. This satisfies our
-				guard clause: ${(\texttt{i} = 0) < (\texttt{position} - 1) = 1.}$ So,
-				the pointer moves to the next node:
+				guard clause: ${(\texttt{i} = 0) < (\texttt{position} - 1) = 1.}$
+				So, the pointer moves to the next node:
 			</p>
 			<ul class="linkedlist">
 				<ul class="head">
@@ -3278,12 +3330,12 @@
 				</ul>
 			</ul>
 			<p>
-				We increment our looper counter, resulting in <var>i = 1</var>. This
-				violates our guard clause &mdash; ${2 \nless 1.}$ This leaves our
-				pointer <var>p</var> in the correct place. We then have
-				<var>n</var> pointer to <var>p->next</var>, which is <var>0</var>. And
-				from there, we have <var>p->next = n</var>. This completes our linking
-				&mdash; the procedure applies to appending as well.
+				We increment our looper counter, resulting in <var>i = 1</var>.
+				This violates our guard clause &mdash; ${2 \nless 1.}$ This leaves
+				our pointer <var>p</var> in the correct place. We then have
+				<var>n</var> pointer to <var>p->next</var>, which is <var>0</var>.
+				And from there, we have <var>p->next = n</var>. This completes our
+				linking &mdash; the procedure applies to appending as well.
 			</p>
 			<div class="demo">
 				<button>C++</button>
@@ -3397,8 +3449,9 @@
 						}
 					</code></pre>
 					<p>
-						We could write a more generalized function, <var>insert()</var>,
-						which can insert at any given position in the linked list:
+						We could write a more generalized function,
+						<var>insert()</var>, which can insert at any given position in
+						the linked list:
 					</p>
 					<pre class="language-cpp"><code>
 						Node* insert(Node* p, int data, int position) {
@@ -3502,7 +3555,8 @@
 	<section id="creating_a_linkedList">
 		<h3>Creating a Linked List by Insertion</h3>
 		<p>
-			Suppose we want to create a linked list by simply writing the following:
+			Suppose we want to create a linked list by simply writing the
+			following:
 		</p>
 		<pre class="language-pseudo"><code>
 			insert(0, 3);
@@ -3580,9 +3634,9 @@
 		</ul>
 		<p>
 			This would be a very helpful function for creating linked lists. But
-			before we consider how that would be implemented, let's consider a simpler
-			case: Building a linked list by continuously inserting to the last
-			position. For example, suppose we had the following linked list:
+			before we consider how that would be implemented, let's consider a
+			simpler case: Building a linked list by continuously inserting to the
+			last position. For example, suppose we had the following linked list:
 		</p>
 		<ul class="linkedlist">
 			<ul class="head">
@@ -3661,9 +3715,10 @@
 		</ul>
 		<p>
 			We can implement this procedure by using an additional pointer to the
-			list's <i>foot</i>, or <i>tailend</i> &mdash; the last node in the list.
-			We'll call the tailend's pointer <var>t</var>, the head's pointer
-			<var>h</var> and consider the simplest case &mdash; the empty list.
+			list's <i>foot</i>, or <i>tailend</i> &mdash; the last node in the
+			list. We'll call the tailend's pointer <var>t</var>, the head's
+			pointer <var>h</var> and consider the simplest case &mdash; the empty
+			list.
 		</p>
 		<p>With the empty list, we have the following:</p>
 		<ul class="linkedlist">
@@ -3678,14 +3733,14 @@
 			</ul>
 		</ul>
 		<p>
-			Notice that both the head pointer <var>h</var> and the tailend pointer
-			<var>t</var> point to the same node. Why? Because the node in the list
-			above is both the head and the foot.
+			Notice that both the head pointer <var>h</var> and the tailend
+			pointer <var>t</var> point to the same node. Why? Because the node in
+			the list above is both the head and the foot.
 		</p>
 		<p>
-			Once we append a new node, the tailend pointer <var>t</var> changes its
-			pointee to the new node, but the head pointer <var>h</var> remains the
-			same:
+			Once we append a new node, the tailend pointer <var>t</var> changes
+			its pointee to the new node, but the head pointer
+			<var>h</var> remains the same:
 		</p>
 		<ul class="linkedlist">
 			<ul>
@@ -3733,11 +3788,12 @@
 		</ul>
 		<p>
 			Now, because the head pointer <var>h</var> and the tailend pointer
-			<var>t</var> are additional pointers for a given list, we must ensure that
-			if the list is empty &mdash; a list with no nodes &mdash; <var>h</var> and
-			<var>t</var> should both be null pointers. To ensure this, they must both
-			be initially assigned <var>0</var>. Only when the list is made non-empty
-			&mdash; a new node is inserted &mdash; do they become nonnull pointers.
+			<var>t</var> are additional pointers for a given list, we must ensure
+			that if the list is empty &mdash; a list with no nodes &mdash;
+			<var>h</var> and <var>t</var> should both be null pointers. To ensure
+			this, they must both be initially assigned <var>0</var>. Only when
+			the list is made non-empty &mdash; a new node is inserted &mdash; do
+			they become nonnull pointers.
 		</p>
 		<pre class="language-pseudo"><code>
 			Node* h = 0;
@@ -3745,10 +3801,11 @@
 		</code></pre>
 		<p>
 			Let's implement this function in pseudocode. First, we'll call this
-			function <var>append()</var>. What might this function's signature look
-			like? Well, it doesn't return anything, because it's directly inserting
-			into a particular list. But, it does create a new node. For now, we'll
-			focus on <var>int</var> lists. Hence, our function signature looks like:
+			function <var>append()</var>. What might this function's signature
+			look like? Well, it doesn't return anything, because it's directly
+			inserting into a particular list. But, it does create a new node. For
+			now, we'll focus on <var>int</var> lists. Hence, our function
+			signature looks like:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -3756,8 +3813,8 @@
 			</ol>
 		</figure>
 		<p>
-			With that out of the way, we can now think about how to implement this
-			function. First, we need to create a new node, with its
+			With that out of the way, we can now think about how to implement
+			this function. First, we need to create a new node, with its
 			<var>data</var> field assigned the argument <var>x</var>, and its
 			<var>next</var> field initially zero:
 		</p>
@@ -3770,14 +3827,14 @@
 			</ol>
 		</figure>
 		<p>
-			Now we have to consider the cases. Is the list we want to append to the
-			empty or non-empty list? An implicit corollary question: How do we
-			determine if a list is empty or non-empty? Well, suppose that every linked
-			list we create has a pointer called <var>h</var>, pointing to the list's
-			head. It follows then that if <var>h = 0</var>, then we have an empty
-			list. Otherwise, we have a non-empty list. Why? Because if
-			<var>h = 0</var>, then the list has no head. And if the list has no head,
-			then it is the empty list.
+			Now we have to consider the cases. Is the list we want to append to
+			the empty or non-empty list? An implicit corollary question: How do
+			we determine if a list is empty or non-empty? Well, suppose that
+			every linked list we create has a pointer called <var>h</var>,
+			pointing to the list's head. It follows then that if
+			<var>h = 0</var>, then we have an empty list. Otherwise, we have a
+			non-empty list. Why? Because if <var>h = 0</var>, then the list has
+			no head. And if the list has no head, then it is the empty list.
 		</p>
 		<p>Thus, we have two cases:</p>
 		<figure>
@@ -3787,8 +3844,8 @@
 			</ol>
 		</figure>
 		<p>
-			Now, if the list is empty &mdash; <var>h == 0</var> &mdash; then we should
-			have <var>h</var> and <var>t</var> point to the new node:
+			Now, if the list is empty &mdash; <var>h == 0</var> &mdash; then we
+			should have <var>h</var> and <var>t</var> point to the new node:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -3825,7 +3882,8 @@
 			</ol>
 		</figure>
 		<p>
-			That completes our function. See below for a more specific implementation.
+			That completes our function. See below for a more specific
+			implementation.
 		</p>
 		<div class="demo">
 			<button>C++</button>
@@ -3952,17 +4010,17 @@
 			</ul>
 		</ul>
 		<p>
-			Notice that the elements in this list are sorted. Say we wanted to insert
-			a node with the data <var>18</var>. When we insert into a sorted list, we
-			usually want to maintain the list's sorted nature. We call this a
-			<i>sorted insertion</i>. In this case, we want ${n[18]}$ to come after
-			${n[15]}$ and before ${n[20].}$ If we want to insert ${n[10],}$ it should
-			come after ${n[9]}$ and before ${n[15].}$
+			Notice that the elements in this list are sorted. Say we wanted to
+			insert a node with the data <var>18</var>. When we insert into a
+			sorted list, we usually want to maintain the list's sorted nature. We
+			call this a <i>sorted insertion</i>. In this case, we want ${n[18]}$
+			to come after ${n[15]}$ and before ${n[20].}$ If we want to insert
+			${n[10],}$ it should come after ${n[9]}$ and before ${n[15].}$
 		</p>
 		<p>
-			Implementing this procedure is fairly straightforward. Let's say we're
-			inserting the node ${n[18].}$ We go to the first node, ${n[3],}$ and ask,
-			is ${n[3] < n[18]?}$
+			Implementing this procedure is fairly straightforward. Let's say
+			we're inserting the node ${n[18].}$ We go to the first node,
+			${n[3],}$ and ask, is ${n[3] < n[18]?}$
 		</p>
 		<ul class="linkedlist">
 			<ul class="head">
@@ -4190,11 +4248,12 @@
 		</ul>
 		<p>
 			Finally, we get back a <var>true</var>. And since we get back
-			<var>true</var>, we want to insert ${n[18]}$ after ${n[15]}$ and before
-			${n[20].}$ Now, recall that to insert a new node into a linked list, we
-			need two pointers &mdash; the <i>driver</i>, denoted <var>d</var>, and the
-			<i>tailer</i>, denoted <var>t</var>. And given that we have need two
-			pointers, we have to move the pointers' pointees around in our iteration:
+			<var>true</var>, we want to insert ${n[18]}$ after ${n[15]}$ and
+			before ${n[20].}$ Now, recall that to insert a new node into a linked
+			list, we need two pointers &mdash; the <i>driver</i>, denoted
+			<var>d</var>, and the <i>tailer</i>, denoted <var>t</var>. And given
+			that we have need two pointers, we have to move the pointers'
+			pointees around in our iteration:
 		</p>
 		<div class="alg">
 			<table class="alg">
@@ -4250,8 +4309,8 @@
 							</ul>
 						</td>
 						<td>
-							The pointer <var>d</var> has been initialized and points nowhere
-							(<var>t = NULL</var>).
+							The pointer <var>d</var> has been initialized and points
+							nowhere (<var>t = NULL</var>).
 						</td>
 					</tr>
 					<tr>
@@ -4298,8 +4357,8 @@
 							</ul>
 						</td>
 						<td>
-							The pointer <var>d</var> moves to the second node, and the pointer
-							<var>t</var> moves to the first node.
+							The pointer <var>d</var> moves to the second node, and the
+							pointer <var>t</var> moves to the first node.
 						</td>
 					</tr>
 					<tr>
@@ -4346,8 +4405,8 @@
 							</ul>
 						</td>
 						<td>
-							The pointer <var>d</var> moves to the third node, and the pointer
-							<var>t</var> moves to the second node.
+							The pointer <var>d</var> moves to the third node, and the
+							pointer <var>t</var> moves to the second node.
 						</td>
 					</tr>
 					<tr>
@@ -4394,8 +4453,8 @@
 							</ul>
 						</td>
 						<td>
-							The pointer <var>d</var> moves to the fourth node, and the pointer
-							<var>t</var> moves to the third node.
+							The pointer <var>d</var> moves to the fourth node, and the
+							pointer <var>t</var> moves to the third node.
 						</td>
 					</tr>
 					<tr>
@@ -4442,18 +4501,18 @@
 							</ul>
 						</td>
 						<td>
-							The pointer <var>d</var> moves to the fifth node, and the pointer
-							<var>t</var> moves to the fourth node.
+							The pointer <var>d</var> moves to the fifth node, and the
+							pointer <var>t</var> moves to the fourth node.
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		<p>
-			Notice that once we get <var>d</var> and <var>t</var> place, to insert the
-			new node ${n[18],}$ all we must do is have ${n[18]}$ point to
-			<var>p</var> and <var>t</var>'s pointee point to ${n[18].}$ The function
-			generally:
+			Notice that once we get <var>d</var> and <var>t</var> place, to
+			insert the new node ${n[18],}$ all we must do is have ${n[18]}$ point
+			to <var>p</var> and <var>t</var>'s pointee point to ${n[18].}$ The
+			function generally:
 		</p>
 		<ol class="alg">
 			<li>fn sortedInsert(Node* p, int dVal):</li>
@@ -4473,10 +4532,10 @@
 		</ol>
 		<p>
 			With this approach, the time it takes to link the nodes is constant
-			&mdash; ${O(1).}$ But, the time it takes for the driver and the tailer to
-			reach their respective positions is ${O(n)}$ &mdash; linear. This is
-			because both <var>d</var> and <var>t</var> must traverse the list to reach
-			their correct destinations.
+			&mdash; ${O(1).}$ But, the time it takes for the driver and the
+			tailer to reach their respective positions is ${O(n)}$ &mdash;
+			linear. This is because both <var>d</var> and <var>t</var> must
+			traverse the list to reach their correct destinations.
 		</p>
 		<div class="demo">
 			<button>C</button>
@@ -4559,7 +4618,8 @@
 			</div>
 			<div class="implementation">
 				<p>
-					Here is an implementation of what we have so far as a class in C++:
+					Here is an implementation of what we have so far as a class in
+					C++:
 				</p>
 				<pre class="language-cpp"><code>
 					#include &lt;iostream&gt;
@@ -4685,7 +4745,9 @@
 				</li>
 			</ul>
 		</ul>
-		<p>To lop this list, we want to remove the list's head, resulting in:</p>
+		<p>
+			To lop this list, we want to remove the list's head, resulting in:
+		</p>
 		<ul class="linkedlist">
 			<ul>
 				<li>
@@ -4703,29 +4765,31 @@
 			</ul>
 		</ul>
 		<p>
-			This is a special case of deletion because if we remove the list's head,
-			then the node immediately after the head must become the head post-lop.
-			Otherwise, we lose the linked list.
+			This is a special case of deletion because if we remove the list's
+			head, then the node immediately after the head must become the head
+			post-lop. Otherwise, we lose the linked list.
 		</p>
 		<p>
-			To remove the head, we must have the pointer to the former-head move to
-			the next node. Once we move this pointer, we no longer have access to the
-			former-head. It's somewhere in heap memory. And because it's still
-			somewhere in heap memory, we must <i>free</i> the allocated space. To do
-			so, we must have a pointer to the former-head. Thus, lopping a list
-			requires two pointers to the head. One to move to the next node, and
-			another for deletion.
+			To remove the head, we must have the pointer to the former-head move
+			to the next node. Once we move this pointer, we no longer have access
+			to the former-head. It's somewhere in heap memory. And because it's
+			still somewhere in heap memory, we must <i>free</i> the allocated
+			space. To do so, we must have a pointer to the former-head. Thus,
+			lopping a list requires two pointers to the head. One to move to the
+			next node, and another for deletion.
 		</p>
 		<p>
-			Illustrating this in pseudocode, first we ensure there's a pointer to the
-			head:
+			Illustrating this in pseudocode, first we ensure there's a pointer to
+			the head:
 		</p>
 		<figure>
 			<ol class="alg">
 				<li>Node* p = head;</li>
 			</ol>
 		</figure>
-		<p>Then, we have the <var>head</var> pointer point to the next node:</p>
+		<p>
+			Then, we have the <var>head</var> pointer point to the next node:
+		</p>
 		<figure>
 			<ol class="alg">
 				<li>Node* p = head;</li>
@@ -4741,8 +4805,9 @@
 			</ol>
 		</figure>
 		<p>
-			As we can see, this procedure consists of just three basic steps. Hence,
-			the algorithm has a time complexity of ${O(1)}$ &mdash; constant time.
+			As we can see, this procedure consists of just three basic steps.
+			Hence, the algorithm has a time complexity of ${O(1)}$ &mdash;
+			constant time.
 		</p>
 		<div class="demo">
 			<button>C++</button>
@@ -4813,11 +4878,11 @@
 	<section id="deleting_anywhere">
 		<h3>Tail Node Deletion</h3>
 		<p>
-			Recall that a <i>tail node</i> is any node other than the head. Deleting a
-			tail node is the second case for deletion. We'll call the tail node
-			deletion function <var>deleteNodeAt(${i}$)</var>, where ${i}$ is the
-			position of the node, starting at ${1.}$ For example, if we have the
-			linked list:
+			Recall that a <i>tail node</i> is any node other than the head.
+			Deleting a tail node is the second case for deletion. We'll call the
+			tail node deletion function <var>deleteNodeAt(${i}$)</var>, where
+			${i}$ is the position of the node, starting at ${1.}$ For example, if
+			we have the linked list:
 		</p>
 		<ul class="linkedlist">
 			<ul>
@@ -4860,9 +4925,9 @@
 			</ul>
 		</ul>
 		<p>
-			The procedure here is fairly straightforward. To delete ${n_2,}$ we must
-			have two pointers. A pointer to ${n_2,}$ and a pointer immediately before
-			${n_2,}$ the node ${n_1:}$
+			The procedure here is fairly straightforward. To delete ${n_2,}$ we
+			must have two pointers. A pointer to ${n_2,}$ and a pointer
+			immediately before ${n_2,}$ the node ${n_1:}$
 		</p>
 		<ul class="linkedlist">
 			<ul>
@@ -4888,9 +4953,9 @@
 			</ul>
 		</ul>
 		<p>
-			The two pointers are necessary because we must delete the allocated space
-			used for ${n_2,}$ the node we seek to delete. This is similar to our
-			earlier genertal insertion method:
+			The two pointers are necessary because we must delete the allocated
+			space used for ${n_2,}$ the node we seek to delete. This is similar
+			to our earlier genertal insertion method:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -4909,12 +4974,12 @@
 			</ol>
 		</figure>
 		<p>
-			The time complexity for this approach depends on which node in the list
-			we're deleting. If we're deleting the second node, then the time is
-			constant &mdash; ${O(1).}$ If, however, we're deleting anywhere else, then
-			we must traverse over ${n}$ nodes to position our driver and tailer
-			pointers. As such, the minimimum running time complexity is ${O(1),}$ and
-			maximum time complexity is ${O(n).}$
+			The time complexity for this approach depends on which node in the
+			list we're deleting. If we're deleting the second node, then the time
+			is constant &mdash; ${O(1).}$ If, however, we're deleting anywhere
+			else, then we must traverse over ${n}$ nodes to position our driver
+			and tailer pointers. As such, the minimimum running time complexity
+			is ${O(1),}$ and maximum time complexity is ${O(n).}$
 		</p>
 		<div class="demo">
 			<button>C++</button>
@@ -4991,9 +5056,10 @@
 		<h3>General Deletion</h3>
 		<p>
 			We can encapsulate tail node deletion and lopping into the single
-			procedure of <i>general deletion</i>. Doing so is a matter of conditional
-			branching. We'll call this function <var>deleteNode(${p}$)</var>, where
-			${p}$ is an <var>int</var> argument corresponding to position:
+			procedure of <i>general deletion</i>. Doing so is a matter of
+			conditional branching. We'll call this function
+			<var>deleteNode(${p}$)</var>, where ${p}$ is an
+			<var>int</var> argument corresponding to position:
 		</p>
 		<figure>
 			<ol class="alg">
@@ -5150,10 +5216,10 @@
 <section id="sort_test">
 	<h2>Sorted Test</h2>
 	<p>
-		Many algorithms on linked lists depend on whether a given linked list is
-		sorted. By sorted linked list, we mean a linked list whose data fields are
-		sorted according to a particular criteria. Most often, that criteria is
-		numeric. For example, the following linked list is sorted:
+		Many algorithms on linked lists depend on whether a given linked list
+		is sorted. By sorted linked list, we mean a linked list whose data
+		fields are sorted according to a particular criteria. Most often, that
+		criteria is numeric. For example, the following linked list is sorted:
 	</p>
 	<ul class="linkedlist">
 		<ul>
@@ -5193,16 +5259,17 @@
 		</ul>
 	</ul>
 	<p>
-		To determine if a linked list is sorted, we use a <b>sorted test</b>. The
-		procedure is as follows:
+		To determine if a linked list is sorted, we use a <b>sorted test</b>.
+		The procedure is as follows:
 	</p>
 	<ol>
 		<li>
 			<p>
-				First, we have a pointer to the first node, and some variable ${m,}$ set
-				to the smallest possible valube for the linked list's type. For example,
-				with <var>int</var>, the smallest possible value is <var>-32768</var>.
-				With a pointer on the first node, we check if ${m < n[3]?}$
+				First, we have a pointer to the first node, and some variable
+				${m,}$ set to the smallest possible valube for the linked list's
+				type. For example, with <var>int</var>, the smallest possible value
+				is <var>-32768</var>. With a pointer on the first node, we check if
+				${m < n[3]?}$
 			</p>
 			<ul class="linkedlist">
 				<ul class="rhl">
@@ -5244,51 +5311,8 @@
 		</li>
 		<li>
 			<p>
-				Clearly yes. So, we change ${m = 3,}$ move the pointer to the next node,
-				and test, ${3 < n[5]?}$
-			</p>
-			<ul class="linkedlist">
-				<ul>
-					<li>
-						<div>3</div>
-						<div>0x200</div>
-						<div>0x100</div>
-					</li>
-				</ul>
-				<ul class="rhl">
-					<li>
-						<div>5</div>
-						<div>0x300</div>
-						<div><span class="redText">p</span></div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>8</div>
-						<div>0x400</div>
-						<div>0x300</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>12</div>
-						<div>0x500</div>
-						<div>0x400</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>16</div>
-						<div>0</div>
-						<div>0x500</div>
-					</li>
-				</ul>
-			</ul>
-		</li>
-		<li>
-			<p>
-				Once more, yes. We mutate ${m}$ to ${m = 5,}$ and we move to the next
-				node. Test again: Is ${5 < n[8]?}$
+				Clearly yes. So, we change ${m = 3,}$ move the pointer to the next
+				node, and test, ${3 < n[5]?}$
 			</p>
 			<ul class="linkedlist">
 				<ul>
@@ -5298,6 +5322,49 @@
 						<div>0x100</div>
 					</li>
 				</ul>
+				<ul class="rhl">
+					<li>
+						<div>5</div>
+						<div>0x300</div>
+						<div><span class="redText">p</span></div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>8</div>
+						<div>0x400</div>
+						<div>0x300</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>12</div>
+						<div>0x500</div>
+						<div>0x400</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>16</div>
+						<div>0</div>
+						<div>0x500</div>
+					</li>
+				</ul>
+			</ul>
+		</li>
+		<li>
+			<p>
+				Once more, yes. We mutate ${m}$ to ${m = 5,}$ and we move to the
+				next node. Test again: Is ${5 < n[8]?}$
+			</p>
+			<ul class="linkedlist">
+				<ul>
+					<li>
+						<div>3</div>
+						<div>0x200</div>
+						<div>0x100</div>
+					</li>
+				</ul>
 				<ul>
 					<li>
 						<div>5</div>
@@ -5330,8 +5397,8 @@
 		</li>
 		<li>
 			<p>
-				Once again, yes. We modify ${m}$ to ${m = 8,}$ and we move to the next
-				node. Test: ${8 < 12?}$
+				Once again, yes. We modify ${m}$ to ${m = 8,}$ and we move to the
+				next node. Test: ${8 < 12?}$
 			</p>
 			<ul class="linkedlist">
 				<ul>
@@ -5411,9 +5478,9 @@
 				</ul>
 			</ul>
 			<p>
-				Yes. We've reached the end of the list, so we can determine the list is
-				sorted. If any point we found that ${m \nleq n[d],}$ we would have
-				concluded that the list is not sorted.
+				Yes. We've reached the end of the list, so we can determine the
+				list is sorted. If any point we found that ${m \nleq n[d],}$ we
+				would have concluded that the list is not sorted.
 			</p>
 		</li>
 	</ol>
@@ -5597,9 +5664,9 @@
 	</ul>
 	<p>
 		Notice that the list above is sorted, but we have duplicates: ${4}$ and
-		${8.}$ Many procedures require us to <b>dedupe</b> (<q>deduplicate</q>) this
-		list &mdash; removing nodes with duplicate values in their data fields.
-		Post-dedupe, we have the list:
+		${8.}$ Many procedures require us to <b>dedupe</b> (<q>deduplicate</q>)
+		this list &mdash; removing nodes with duplicate values in their data
+		fields. Post-dedupe, we have the list:
 	</p>
 	<ul class="linkedlist">
 		<ul>
@@ -5625,9 +5692,9 @@
 		</ul>
 	</ul>
 	<p>
-		The most straightforward way to dedupe a linked list is to start with two
-		pointers, one pointing to the list's head, the other pointing the node
-		immediately after:
+		The most straightforward way to dedupe a linked list is to start with
+		two pointers, one pointing to the list's head, the other pointing the
+		node immediately after:
 	</p>
 	<ul class="linkedlist">
 		<ul class="rhl">
@@ -5674,11 +5741,12 @@
 		</ul>
 	</ul>
 	<p>
-		Once there, we ask: ${v(d) = v(d)?}$ Where ${v}$ is a function returning the
-		data value of the pointee node. If it does not match, then we move
+		Once there, we ask: ${v(d) = v(d)?}$ Where ${v}$ is a function
+		returning the data value of the pointee node. If it does not match,
+		then we move
 		<var>d</var> to its next node, and <var>t</var> its next node. With the
-		pointers <var>d</var> and <var>t</var> positioned, we check again, ${v(d) =
-		v(t)?}$
+		pointers <var>d</var> and <var>t</var> positioned, we check again,
+		${v(d) = v(t)?}$
 	</p>
 	<ul class="linkedlist">
 		<ul>
@@ -5725,17 +5793,17 @@
 		</ul>
 	</ul>
 	<p>
-		Here, we see that ${v(d) = v(t),}$ since ${v(n_2) = 4 = v(n_3) = 4.}$ If the
-		nodes match, we want to delete <var>d</var>'s pointee.<sup></sup> To do so,
-		we have <var>t</var>'s <var>next</var> field point to <var>d</var>'s next
-		field. Then, we <var>delete</var> <var>d</var>'s pointee. Then, we make
-		<var>d</var>'s <var>next</var> point to <var>t</var>'s next. More explicitly
-		with pseudocode:
+		Here, we see that ${v(d) = v(t),}$ since ${v(n_2) = 4 = v(n_3) = 4.}$
+		If the nodes match, we want to delete <var>d</var>'s pointee.<sup
+		></sup> To do so, we have <var>t</var>'s <var>next</var> field point to
+		<var>d</var>'s next field. Then, we <var>delete</var> <var>d</var>'s
+		pointee. Then, we make <var>d</var>'s <var>next</var> point to
+		<var>t</var>'s next. More explicitly with pseudocode:
 	</p>
 	<div class="note">
 		<p>
-			We can delete either <var>t</var>'s pointee or <var>d</var>'s pointee; it
-			makes no difference.
+			We can delete either <var>t</var>'s pointee or <var>d</var>'s
+			pointee; it makes no difference.
 		</p>
 	</div>
 	<figure>
@@ -5763,9 +5831,10 @@
 	</figure>
 	<p>
 		With this implementation, we must scan through the entire list of ${n}$
-		nodes to dedupe. As such, this approach has a time complexity of ${O(n)}$
-		&mdash; linear time. Because the procedure must <em>always</em> traverse the
-		entire linked list to dedupe, the time complexity is always ${O(n).}$
+		nodes to dedupe. As such, this approach has a time complexity of
+		${O(n)}$ &mdash; linear time. Because the procedure must
+		<em>always</em> traverse the entire linked list to dedupe, the time
+		complexity is always ${O(n).}$
 	</p>
 	<div class="demo">
 		<button>C</button>
@@ -5791,7 +5860,8 @@
 				dedupe(&list);
 			</code></pre>
 			<p>
-				Here's a line by line analysis of what's going on in the function above:
+				Here's a line by line analysis of what's going on in the function
+				above:
 			</p>
 			<table class="alg">
 				<thead>
@@ -5803,9 +5873,10 @@
 						<td><var>void dedupe(struct Node **head)</var></td>
 						<td>
 							The function header provides that <var>dedupe()</var> returns
-							nothing, and takes as an argument the memory address of a pointer.
-							The identifier <var>head</var> is a pointer to a pointer. In this
-							case, <var>**head = &list = &(Node *${p}$)</var>, where ${p}$ is
+							nothing, and takes as an argument the memory address of a
+							pointer. The identifier <var>head</var> is a pointer to a
+							pointer. In this case,
+							<var>**head = &list = &(Node *${p}$)</var>, where ${p}$ is
 							the pointer to some node.
 						</td>
 					</tr>
@@ -5822,8 +5893,8 @@
 						<td><var>struct Node *d = (**head).next</var></td>
 						<td>
 							The pointer <var>d</var> points to the address stored in
-							<var>head</var>'s <var>next</var> field. This is the next field of
-							the original list's head.
+							<var>head</var>'s <var>next</var> field. This is the next
+							field of the original list's head.
 						</td>
 					</tr>
 					<tr>
@@ -5836,25 +5907,25 @@
 						<td><var>if ((*t).data != (*d).data)</var></td>
 						<td>
 							<q
-								>If the data in <var>t</var> (the data in the original list's
-								head) is not equal to the data in <var>d</var> (in the original
-								list, the node immediately after the head).</q
+								>If the data in <var>t</var> (the data in the original
+								list's head) is not equal to the data in <var>d</var> (in
+								the original list, the node immediately after the head).</q
 							>
 						</td>
 					</tr>
 					<tr>
 						<td><var>t = d</var></td>
 						<td>
-							The address in <var>d</var> is now the address in <var>t</var>.
-							I.e., the pointer <var>t</var> now points to the node immediately
-							after its previous pointee.
+							The address in <var>d</var> is now the address in
+							<var>t</var>. I.e., the pointer <var>t</var> now points to
+							the node immediately after its previous pointee.
 						</td>
 					</tr>
 					<tr>
 						<td><var>d = (*d).next</var></td>
 						<td>
-							The address stored in <var>d</var>'s next field is now the address
-							of <var>d</var>.
+							The address stored in <var>d</var>'s next field is now the
+							address of <var>d</var>.
 						</td>
 					</tr>
 					<tr>
@@ -5872,8 +5943,8 @@
 					<tr>
 						<td><var>d = (*t).next</var></td>
 						<td>
-							The address in <var>t</var>'s next field becomes the address in
-							<var>d</var>.
+							The address in <var>t</var>'s next field becomes the address
+							in <var>d</var>.
 						</td>
 					</tr>
 				</tbody>
@@ -5987,7 +6058,8 @@
 		</ul>
 	</ul>
 	<p>
-		When we perform a <b>list reversal</b>, we end up with the following list:
+		When we perform a <b>list reversal</b>, we end up with the following
+		list:
 	</p>
 	<ul class="linkedlist">
 		<ul>
@@ -6020,9 +6092,9 @@
 		</ul>
 	</ul>
 	<p>
-		As we can see, list reversals are useful for quickly reorienting data. If we
-		have a list whose numeric data are sorted in increasing order, reversing the
-		list the data sorted in decreasing order, and vice versa.
+		As we can see, list reversals are useful for quickly reorienting data.
+		If we have a list whose numeric data are sorted in increasing order,
+		reversing the list the data sorted in decreasing order, and vice versa.
 	</p>
 	<p>There are two ways to reverse a linked list:</p>
 	<ol>
@@ -6125,7 +6197,9 @@
 			</li>
 		</ul>
 	</ul>
-	<p>Once more we swap the values stored in the two nodes's data fields:</p>
+	<p>
+		Once more we swap the values stored in the two nodes's data fields:
+	</p>
 	<ul class="linkedlist">
 		<ul>
 			<li>
@@ -6189,10 +6263,10 @@
 	</ul>
 	<p>
 		To implement this procedure, we need a way to store the data values
-		swapping. The most straightforward way is to use an array. We traverse the
-		linked list, and initialize the array's elements with the current node's
-		data value. First, we declare an array whose size equals the number of nodes
-		in the list:
+		swapping. The most straightforward way is to use an array. We traverse
+		the linked list, and initialize the array's elements with the current
+		node's data value. First, we declare an array whose size equals the
+		number of nodes in the list:
 	</p>
 	<div class="compare">
 		<ol class="alg">
@@ -6228,7 +6302,8 @@
 	</div>
 	<p>
 		Next, we have a pointer <var>p</var> point to the head of the list, and
-		assign the data value stored in the head to the first index in the array:
+		assign the data value stored in the head to the first index in the
+		array:
 	</p>
 	<div class="compare">
 		<ol class="alg">
@@ -6449,8 +6524,8 @@
 	</div>
 	<p>
 		Then, we want to decrement <var>i</var> (our while-loop resulted in
-		<var>i = 4</var>), and use another while-loop to assign the contents in the
-		auxiliary array to the list:
+		<var>i = 4</var>), and use another while-loop to assign the contents in
+		the auxiliary array to the list:
 	</p>
 	<div class="compare">
 		<ol class="alg">
@@ -6532,19 +6607,20 @@
 		</ol>
 	</div>
 	<p>
-		We have several costs with this approach. First, we need additional memory
-		for the auxiliary array, equal to the number nodes ${n}$ in the linked list.
-		Accordingly, the procedure above has a space complexity of ${O(n).}$ And in
-		terms of time, we must traverse the linked list twice, yielding a running
-		time function of roughly ${T(2n).}$ Asymptotically, this yields a time
-		complexity of ${O(n).}$
+		We have several costs with this approach. First, we need additional
+		memory for the auxiliary array, equal to the number nodes ${n}$ in the
+		linked list. Accordingly, the procedure above has a space complexity of
+		${O(n).}$ And in terms of time, we must traverse the linked list twice,
+		yielding a running time function of roughly ${T(2n).}$ Asymptotically,
+		this yields a time complexity of ${O(n).}$
 	</p>
 	<p>
-		Next, let's consider reversing by link. With this approach, we just switch
-		the direction of each node's next pointer. ${n[8]}$'s next pointer points to
-		${n[6]}$ (rather than <var>NULL</var>), ${n[6]}$'s next pointer points to
-		${n[4]}$ (rather than ${n[8]}$), and ${n[4]'s}$ pointer points ${n[2]}$
-		(rather than ${n[6].}$) Doing so also results in our desired result:
+		Next, let's consider reversing by link. With this approach, we just
+		switch the direction of each node's next pointer. ${n[8]}$'s next
+		pointer points to ${n[6]}$ (rather than <var>NULL</var>), ${n[6]}$'s
+		next pointer points to ${n[4]}$ (rather than ${n[8]}$), and ${n[4]'s}$
+		pointer points ${n[2]}$ (rather than ${n[6].}$) Doing so also results
+		in our desired result:
 	</p>
 	<ul class="linkedlist">
 		<ul>
@@ -6578,11 +6654,11 @@
 	</ul>
 	<p>
 		Two reverse a list by link, we must use the technique of
-		<b>pointer sliding</b>. The idea is as such: We start with four pointers.
-		One pointing at the head called <var>h</var>, and three other pointers,
-		<var>d</var>, <var>t1</var>, and <var>t2</var>. The driver pointer
-		<var>d</var> initially points to the head, while <var>t1</var> and
-		<var>t2</var> are initially <var>NULL</var>:
+		<b>pointer sliding</b>. The idea is as such: We start with four
+		pointers. One pointing at the head called <var>h</var>, and three other
+		pointers, <var>d</var>, <var>t1</var>, and <var>t2</var>. The driver
+		pointer <var>d</var> initially points to the head, while
+		<var>t1</var> and <var>t2</var> are initially <var>NULL</var>:
 	</p>
 	<ul class="linkedlist">
 		<ul class="ptr">
@@ -6629,11 +6705,11 @@
 		</ul>
 	</ul>
 	<p>
-		Then, as long as <var>d != NULL</var>, we want to <i>slide</i> the pointers
-		forward: <var>t2</var> points to <var>t1,</var> <var>t1</var> points to the
-		<var>p</var>, and <var>p</var> points to its <var>next</var> address. And
-		each time we slide, <var>t1</var>'s <var>next</var> pointer should point to
-		<var>t2</var>:
+		Then, as long as <var>d != NULL</var>, we want to <i>slide</i> the
+		pointers forward: <var>t2</var> points to <var>t1,</var>
+		<var>t1</var> points to the <var>p</var>, and <var>p</var> points to
+		its <var>next</var> address. And each time we slide, <var>t1</var>'s
+		<var>next</var> pointer should point to <var>t2</var>:
 	</p>
 	<ul class="linkedlist reversed">
 		<ul class="ptr">
@@ -6703,7 +6779,9 @@
 			</li>
 		</ul>
 	</ul>
-	<p>Since <var>d</var> is not <var>NULL</var>, we slide forward once more:</p>
+	<p>
+		Since <var>d</var> is not <var>NULL</var>, we slide forward once more:
+	</p>
 	<ul class="linkedlist reversed">
 		<ul>
 			<li>
@@ -6735,7 +6813,8 @@
 		</ul>
 	</ul>
 	<p>
-		Since <var>d</var> is still not <var>NULL</var>, we slide one last time:
+		Since <var>d</var> is still not <var>NULL</var>, we slide one last
+		time:
 	</p>
 	<ul class="linkedlist reversed">
 		<ul>
@@ -6792,25 +6871,26 @@
 		<li>head = q;</li>
 	</ol>
 	<p>
-		As we can see, reversing links is the preferred approach for list reversal.
-		Why? Because reversing-by-link consumes far less memory. We just need three
-		more pointers. Compare that with reverse-by-element, which requires an
-		entire array. With our examples, we've been using <var>int</var>. But the
-		data field for each node in the linked list could very well contain arrays,
-		or even larger data structures. This would lead to an even larger memory
-		consumption.
+		As we can see, reversing links is the preferred approach for list
+		reversal. Why? Because reversing-by-link consumes far less memory. We
+		just need three more pointers. Compare that with reverse-by-element,
+		which requires an entire array. With our examples, we've been using
+		<var>int</var>. But the data field for each node in the linked list
+		could very well contain arrays, or even larger data structures. This
+		would lead to an even larger memory consumption.
 	</p>
 	<p>
-		Although both approaches take ${O(n)}$ time &mdash; since we must traverse
-		the linked list &mdash; reverse-by-link consumes much less memory. In fact,
-		whenever we're called to move nodes in a linked list, our first
-		consideration should always be to manipulate links, rather than data fields.
+		Although both approaches take ${O(n)}$ time &mdash; since we must
+		traverse the linked list &mdash; reverse-by-link consumes much less
+		memory. In fact, whenever we're called to move nodes in a linked list,
+		our first consideration should always be to manipulate links, rather
+		than data fields.
 	</p>
 	<section id="recursive_reverse">
 		<h3>Recursive List Reversal</h3>
 		<p>
-			With recursive list reversal, we want to reverse the link of each node as
-			we're returning from the function call:
+			With recursive list reversal, we want to reverse the link of each
+			node as we're returning from the function call:
 		</p>
 		<ol class="alg">
 			<li>fn reverse(struct Node **head) -> void :</li>
@@ -6906,8 +6986,8 @@
 
 		<p>
 			Inside <var>reverse()</var>, we call <var>reverseLink()</var>. This
-			results in <var>q</var> pointing to nowhere and <var>p</var> pointing to
-			the the pointer <var>head</var> points to.
+			results in <var>q</var> pointing to nowhere and <var>p</var> pointing
+			to the the pointer <var>head</var> points to.
 		</p>
 
 		<ol class="alg">
@@ -6960,10 +7040,10 @@
 		</ul>
 
 		<p>
-			Once these pointers are initialized, we branch. If <var>p != NULL</var>,
-			we execute the if-block. Otherwise, we execute the else-block. Here,
-			<var>p</var> is a nonnull pointer, so we make the recursive call
-			<var>reverseLink(p, p->next)</var>.
+			Once these pointers are initialized, we branch. If
+			<var>p != NULL</var>, we execute the if-block. Otherwise, we execute
+			the else-block. Here, <var>p</var> is a nonnull pointer, so we make
+			the recursive call <var>reverseLink(p, p->next)</var>.
 		</p>
 
 		<ol class="alg">
@@ -7023,8 +7103,8 @@
 			</ul>
 		</ul>
 		<p>
-			We again check our test condition. Once more, <var>p != NULL</var>, so we
-			make another recursive call:
+			We again check our test condition. Once more, <var>p != NULL</var>,
+			so we make another recursive call:
 		</p>
 		<ol class="alg">
 			<li>reverse:</li>
@@ -7167,8 +7247,8 @@
 			</ul>
 		</ul>
 		<p>
-			Once more we test whether <var>p != NULL</var>. Again, it is not. So we
-			make one last recursive call:
+			Once more we test whether <var>p != NULL</var>. Again, it is not. So
+			we make one last recursive call:
 		</p>
 		<ol class="alg">
 			<li>reverse:</li>
@@ -7258,8 +7338,8 @@
 			</ul>
 		</ul>
 		<p>
-			With this last call, <var>p</var> is now the null pointer, so we execute
-			the line <var>p->next = q</var>.
+			With this last call, <var>p</var> is now the null pointer, so we
+			execute the line <var>p->next = q</var>.
 		</p>
 		<ol class="alg">
 			<li>reverse:</li>
@@ -7352,16 +7432,16 @@
 			</ul>
 		</ul>
 		<p>
-			With the last return call, we have <var>p == NULL</var>, so we execute the
-			else block: <var>*head = q</var>.
+			With the last return call, we have <var>p == NULL</var>, so we
+			execute the else block: <var>*head = q</var>.
 		</p>
 		<div class="demo">
 			<button>C</button>
 			<div class="implementation">
 				<p>
-					Below is an implementation in C. Note that because C does not allow
-					nested functions, the helper function <var>reverseLink()</var> must be
-					written separately:
+					Below is an implementation in C. Note that because C does not
+					allow nested functions, the helper function
+					<var>reverseLink()</var> must be written separately:
 				</p>
 				<pre class="language-c"><code>
 					void reverseLink(struct Node **head, struct Node *q, struct Node *p) {
@@ -7517,9 +7597,9 @@
 		</ul>
 	</div>
 	<p>
-		We want to take these one of these two lists, and <i>concatenate</i> it with
-		the other. Suppose the function is called <var>concat()</var>. If we call
-		<var>concat(list1, list2)</var>, we get:
+		We want to take these one of these two lists, and <i>concatenate</i> it
+		with the other. Suppose the function is called <var>concat()</var>. If
+		we call <var>concat(list1, list2)</var>, we get:
 	</p>
 	<ul class="linkedlist">
 		<ul class="head">
@@ -7627,11 +7707,12 @@
 	<p>
 		The procedure here is straightforward. If we call
 		<var>concat(list1, list2)</var> the <var>next</var> pointer for
-		<var>list1</var>'s foot should point to <var>list2</var>'s head. Hence, all
-		that's required is to have a pointer on the first list argument's foot. One
-		way to do so is to initialize a pointer <var>p</var> initially at
-		<var>list1</var>'s head, then traverse the list to the foot. Once there, we
-		have <var>p</var>'s pointee point to <var>list2</var>'s head:
+		<var>list1</var>'s foot should point to <var>list2</var>'s head. Hence,
+		all that's required is to have a pointer on the first list argument's
+		foot. One way to do so is to initialize a pointer
+		<var>p</var> initially at <var>list1</var>'s head, then traverse the
+		list to the foot. Once there, we have <var>p</var>'s pointee point to
+		<var>list2</var>'s head:
 	</p>
 	<ol class="alg">
 		<li>fn concat(*Node list1, Node* list2) -> void:</li>
@@ -7645,12 +7726,12 @@
 		</ol>
 	</ol>
 	<p>
-		Because we must traverse the list to find the first argument's foot, the
-		procedure above has a time complexity of ${O(n).}$ We can, of course, reduce
-		this to ${O(1)}$ if we ensure that every list we create contains pointers to
-		the foot and pointers to the head. In that case, all that's required is to
-		have the first list's foot's pointee's <var>next</var> field point to the
-		second list's head.
+		Because we must traverse the list to find the first argument's foot,
+		the procedure above has a time complexity of ${O(n).}$ We can, of
+		course, reduce this to ${O(1)}$ if we ensure that every list we create
+		contains pointers to the foot and pointers to the head. In that case,
+		all that's required is to have the first list's foot's pointee's
+		<var>next</var> field point to the second list's head.
 	</p>
 	<div class="demo">
 		<button>C</button>
@@ -7832,10 +7913,10 @@
 		</ul>
 	</ul>
 	<p>
-		We want to take <var>list1</var> and <var>list2</var>, and <i>merge</i> them
-		into a single list, where each node is sorted in increasing order.
-		<b>Merging</b> is the process of combining two sorted lists into a single
-		sorted list. Recall that when we
+		We want to take <var>list1</var> and <var>list2</var>, and
+		<i>merge</i> them into a single list, where each node is sorted in
+		increasing order. <b>Merging</b> is the process of combining two sorted
+		lists into a single sorted list. Recall that when we
 		<a
 			href="{% url 'numerc:cpp_dynamicArrays' %}#merging_arrays"
 			target="_blank"
@@ -7846,9 +7927,9 @@
 	</p>
 	<p>
 		To merge two lists, we need two more pointers, will call one of them
-		<var>h</var> and the other <var>t</var>. The pointer <var>h</var> will point
-		to the merged list's head, and the pointer <var>t</var> will point to the
-		merged list's tailend.
+		<var>h</var> and the other <var>t</var>. The pointer <var>h</var> will
+		point to the merged list's head, and the pointer <var>t</var> will
+		point to the merged list's tailend.
 	</p>
 	<ul class="linkedlist">
 		<ul class="ptr">
@@ -7933,7 +8014,8 @@
 	</ul>
 	<p>
 		The procedure is as follows: First, compare the data value stored in
-		<var>list1</var>'s head with the data value stored <var>list2</var>'s head.
+		<var>list1</var>'s head with the data value stored <var>list2</var>'s
+		head.
 	</p>
 	<ul class="linkedlist">
 		<ul class="ptr">
@@ -8018,8 +8100,8 @@
 	</ul>
 	<p>
 		Between the two data values, the node containing the smaller data value
-		becomes the pointee of both <var>h</var> and <var>t</var>. Here, that node
-		is <var>list1</var>'s head:
+		becomes the pointee of both <var>h</var> and <var>t</var>. Here, that
+		node is <var>list1</var>'s head:
 	</p>
 	<ul class="linkedlist">
 		<ul class="head">
@@ -8098,7 +8180,9 @@
 			</li>
 		</ul>
 	</ul>
-	<p>Then, we move the head pointer of <var>list1</var> to the next node:</p>
+	<p>
+		Then, we move the head pointer of <var>list1</var> to the next node:
+	</p>
 	<ul class="linkedlist">
 		<ul class="rhl">
 			<li>
@@ -8170,8 +8254,8 @@
 		</ul>
 	</ul>
 	<p>
-		Then, we go to the node <var>h</var> and <var>t</var> point to, and sets its
-		<var>next</var> field <var>NULL</var>:
+		Then, we go to the node <var>h</var> and <var>t</var> point to, and
+		sets its <var>next</var> field <var>NULL</var>:
 	</p>
 	<ul class="linkedlist">
 		<ul class="rhl null">
@@ -8318,11 +8402,11 @@
 		</ul>
 	</ul>
 	<p>
-		Here, we see that <var>list2</var>'s pointee stores a lesser data value that
-		<var>list1</var>'s pointee. Because of this fact, we go to the node that
-		<var>h</var> and <var>t</var> point to, and make its <var>next</var> pointer
-		point to <var>list2</var>. After doing so, we bring <var>t</var>
-		<var>list2</var>'s pointee:
+		Here, we see that <var>list2</var>'s pointee stores a lesser data value
+		that <var>list1</var>'s pointee. Because of this fact, we go to the
+		node that <var>h</var> and <var>t</var> point to, and make its
+		<var>next</var> pointer point to <var>list2</var>. After doing so, we
+		bring <var>t</var> <var>list2</var>'s pointee:
 	</p>
 	<ul class="linkedlist">
 		<ul class="null">
@@ -8395,7 +8479,9 @@
 			</li>
 		</ul>
 	</ul>
-	<p>Then, we'll have <var>list2</var> point to its <var>next</var> pointee:</p>
+	<p>
+		Then, we'll have <var>list2</var> point to its <var>next</var> pointee:
+	</p>
 	<ul class="linkedlist">
 		<ul>
 			<li>
@@ -8603,8 +8689,8 @@
 		</ul>
 	</ul>
 	<p>
-		Here, <var>list2</var>'s pointee is smaller. So, we move <var>t</var> to
-		<var>list2</var>'s pointee:
+		Here, <var>list2</var>'s pointee is smaller. So, we move
+		<var>t</var> to <var>list2</var>'s pointee:
 	</p>
 	<ul class="linkedlist">
 		<ul>
@@ -8742,7 +8828,8 @@
 	</ul>
 	<p>
 		Followed by moving <var>t</var> to <var>list2</var>'s
-		<var>next</var> pointee, and <var>list2</var> thereafter to <var>t</var>'s
+		<var>next</var> pointee, and <var>list2</var> thereafter to
+		<var>t</var>'s
 		<var>next</var>
 	</p>
 	<ul class="linkedlist">
@@ -8878,13 +8965,14 @@
 		</ul>
 	</ul>
 	<p>
-		We continue the procedure above so long as the pointers <var>list1</var> and
-		<var>list2</var> are nonnull pointers. Otherwise, we stop. Continuing the
-		procedure above, we will eventually get to a point where <var>list2</var> is
-		<var>NULL</var> before <var>list1</var>. When this occurs, we have
-		<var>t</var> pointing to the last node in <var>list2</var>. All we must do
-		in this case is to have <var>t</var>'s pointee point to <var>list1</var>'s
-		pointee. In doing so, we have the following:
+		We continue the procedure above so long as the pointers
+		<var>list1</var> and <var>list2</var> are nonnull pointers. Otherwise,
+		we stop. Continuing the procedure above, we will eventually get to a
+		point where <var>list2</var> is <var>NULL</var> before
+		<var>list1</var>. When this occurs, we have <var>t</var> pointing to
+		the last node in <var>list2</var>. All we must do in this case is to
+		have <var>t</var>'s pointee point to <var>list1</var>'s pointee. In
+		doing so, we have the following:
 	</p>
 	<ul class="linkedlist">
 		<ul>
@@ -8978,12 +9066,13 @@
 		</ol>
 	</ol>
 	<p>
-		As we can see, linked lists are suitable for merging. This is because we do
-		not require so much additional space, as we see with merging arrays. Merging
-		with both linked lists and arrays takes linear time &mdash; ${O(n)}$ &mdash;
-		since we must traverse the lists or arrays (or, more accurately, ${O(m + n)
-		}$). As such, between the two, linked lists have the upper-hand for merging,
-		given the reduced amount of space consumed.
+		As we can see, linked lists are suitable for merging. This is because
+		we do not require so much additional space, as we see with merging
+		arrays. Merging with both linked lists and arrays takes linear time
+		&mdash; ${O(n)}$ &mdash; since we must traverse the lists or arrays
+		(or, more accurately, ${O(m + n) }$). As such, between the two, linked
+		lists have the upper-hand for merging, given the reduced amount of
+		space consumed.
 	</p>
 	<div class="demo">
 		<button>C</button>
@@ -9099,41 +9188,44 @@
 	<p>Consider the following linked list:</p>
 	<div id="ptrDemo1"></div>
 	<p>
-		Unlike the other linked lists we've seen, this linked list employs a loop.
-		If we follow the arrows, we see that ${(n \mid 8)}$ is connected to ${(n
-		\mid 5),}$ which is connected to ${(n \mid 4),}$ which is connected to ${(n
-		\mid 7),}$ then ${(n \mid 3),}$ then the foot, ${(n \mid 9.)}$ The foot,
-		however, has a nonnull next pointer &mdash; it points to ${(n \mid 4).}$
+		Unlike the other linked lists we've seen, this linked list employs a
+		loop. If we follow the arrows, we see that ${(n \mid 8)}$ is connected
+		to ${(n \mid 5),}$ which is connected to ${(n \mid 4),}$ which is
+		connected to ${(n \mid 7),}$ then ${(n \mid 3),}$ then the foot, ${(n
+		\mid 9.)}$ The foot, however, has a nonnull next pointer &mdash; it
+		points to ${(n \mid 4).}$
 	</p>
 	<p>
-		In graph theory, we say that this linked list contains a <b>loop</b>. With
-		linked lists, a loop occurs when the last node in the linked list &mdash;
-		the foot &mdash; points to a node in the linked list. When a linked list
-		contains a loop, we say that the linked list is <b>non-linear</b>.
-		Otherwise, the linked list is <b>linear</b>. For example, if the linked list
-		above was linear, we would have:
+		In graph theory, we say that this linked list contains a <b>loop</b>.
+		With linked lists, a loop occurs when the last node in the linked list
+		&mdash; the foot &mdash; points to a node in the linked list. When a
+		linked list contains a loop, we say that the linked list is
+		<b>non-linear</b>. Otherwise, the linked list is <b>linear</b>. For
+		example, if the linked list above was linear, we would have:
 	</p>
 	<div id="ptrDemo2"></div>
 	<p>
-		Many algorithms depend on the assumption that the linked list it operates on
-		is linear or non-linear. Accordingly, it's helpful to have a
-		<b>loop detector</b> &mdash; an algorithm that determines whether or not a
-		linked list contains a loop.
+		Many algorithms depend on the assumption that the linked list it
+		operates on is linear or non-linear. Accordingly, it's helpful to have
+		a
+		<b>loop detector</b> &mdash; an algorithm that determines whether or
+		not a linked list contains a loop.
 	</p>
 	<p>
-		Determining whether a given list is linear is simple. We just have to check
-		whether the foot's <var>next</var> field is the null pointer. This approach,
-		however, does not allow us to immediately conclude if the list is
-		non-linear. Why? Because we would need to use a loop to traverse the array.
-		So far, we've been terminating those loops by relying on the assumption that
-		the foot's <var>next</var> pointer is the null pointer. We do not have that
-		benefit here. If the foot's <var>next</var> pointer points to some node in
-		the list, we enter an infinite loop. As such, we must think of another
-		approach to loop detection.
+		Determining whether a given list is linear is simple. We just have to
+		check whether the foot's <var>next</var> field is the null pointer.
+		This approach, however, does not allow us to immediately conclude if
+		the list is non-linear. Why? Because we would need to use a loop to
+		traverse the array. So far, we've been terminating those loops by
+		relying on the assumption that the foot's <var>next</var> pointer is
+		the null pointer. We do not have that benefit here. If the foot's
+		<var>next</var> pointer points to some node in the list, we enter an
+		infinite loop. As such, we must think of another approach to loop
+		detection.
 	</p>
 	<p>
-		One approach is to use two pointers, <var>d</var> and <var>t</var>, both
-		initially at the list's head:
+		One approach is to use two pointers, <var>d</var> and <var>t</var>,
+		both initially at the list's head:
 	</p>
 	<div class="compare">
 		<ul class="linkedlist">
@@ -9185,7 +9277,8 @@
 		</ul>
 	</div>
 	<p>
-		With the pointers set, we enter a while loop: At each iteration, we move
+		With the pointers set, we enter a while loop: At each iteration, we
+		move
 		<var>t</var> by one node, and <var>d</var> by two nodes:
 	</p>
 	<div class="compare">
@@ -9235,8 +9328,8 @@
 		</ul>
 	</div>
 	<p>
-		So long as <var>d</var> and <var>t</var> are not pointing at the same node,
-		we continue the movement:
+		So long as <var>d</var> and <var>t</var> are not pointing at the same
+		node, we continue the movement:
 	</p>
 	<div class="compare">
 		<ul class="linkedlist">
@@ -9385,9 +9478,10 @@
 		</ul>
 	</div>
 	<p>
-		With this last movement, we've reached a point where both <var>d</var> and
-		<var>t</var> point to the same node. And if that occurs, we know we're
-		dealing with a non-linear list &mdash; there's a loop.
+		With this last movement, we've reached a point where both
+		<var>d</var> and <var>t</var> point to the same node. And if that
+		occurs, we know we're dealing with a non-linear list &mdash; there's a
+		loop.
 	</p>
 	<p>The procedure:</p>
 	<ol class="alg">
@@ -9418,16 +9512,16 @@
 		</ol>
 	</ol>
 	<p>
-		Examining this approach, we can see that the procedure has a time complexity
-		of ${O(n).}$ We must traverse ${n}$ nodes to determine whether the given
-		linked list is linear or non-linear.<sup></sup>
+		Examining this approach, we can see that the procedure has a time
+		complexity of ${O(n).}$ We must traverse ${n}$ nodes to determine
+		whether the given linked list is linear or non-linear.<sup></sup>
 	</p>
 	<div class="note">
 		<p>
-			As usual, we can perform a loop detection in ${O(1)}$ time if we maintain
-			a pointer to the foot of every list we create. In that situation, all we
-			must do is check if that pointer is equal to <var>NULL</var>. The
-			tradeoff, however, is in memory consumption.
+			As usual, we can perform a loop detection in ${O(1)}$ time if we
+			maintain a pointer to the foot of every list we create. In that
+			situation, all we must do is check if that pointer is equal to
+			<var>NULL</var>. The tradeoff, however, is in memory consumption.
 		</p>
 	</div>
 	<div class="demo">
@@ -9515,2086 +9609,12 @@
 				0
 			</code></pre>
 			<p>
-				If we comment out the last link, <var>(*n5).next = n5</var>, we will see
-				<var>1</var> as the output &mdash; <var>list1</var> is linear.
+				If we comment out the last link, <var>(*n5).next = n5</var>, we
+				will see <var>1</var> as the output &mdash; <var>list1</var> is
+				linear.
 			</p>
 		</div>
 	</div>
-</section>
-
-<section id="circular_linked_lists">
-	<h2>Circular Linked Lists</h2>
-	<p>
-		Having examined loop checks, we now turn to <i>circular linked lists</i>.
-		Circular linked lists implement the abstract data type of a
-		<b>circular list</b>. Most notably, the data structure has the defining
-		characterstic of its foot pointing to its head. This in turn implies that
-		the circular linked list contains no null pointers (i.e., all the nodes in
-		the linked list have nonnull next pointers). For example, consider the
-		linked list:
-	</p>
-	<div id="circular1"></div>
-	<p>
-		In the linked list above, the foot node, colored red, points to the head
-		node, colored green. Because circular linked lists are connected in a loop,
-		there is no <q>first node.</q> To ensure we have some starting point for our
-		algorithms, we generally maintain a <var>head</var> pointer to some node in
-		the list. In the linked list above, we've opted for ${(n \mid 8)}$ as the
-		head.
-	</p>
-	<p>
-		Question: Why do we need circular lists? In other words, what are the use
-		cases for a circular list? It turns out there are several:
-	</p>
-	<ol>
-		<li>
-			Keeping track of whose turn it is in a particular process. For example, in
-			a game of poker &mdash; or more generally, any game with multiple players
-			&mdash; there's usually a set order for players to act. Circular lists
-			allow us to ensure the order of actions remains correct.
-		</li>
-		<li>
-			Circular lists allow us to implement round <b>round robin algorithms</b>.
-			These are algorithms that allocate time or other resources alternately
-			between actors. For example, in a timesharing environment, the operating
-			system allocates slices of CPU time between present users in a specified
-			order.
-		</li>
-		<li>
-			Circular lists can be used to implement repetitive procedures on a finite
-			set of objects. For example, an audio player's feature of repeating a
-			particular playlist.
-		</li>
-	</ol>
-	<p>
-		All of the algorithms we've discussed so far can be applied to circular
-		linked lists, with a few modifications. Before we examine these
-		modifications, we must delve a little deeper into the properties of circular
-		linked lists.
-	</p>
-	<p>
-		First, a circular linked list with only one node has the following property:
-		The lone node points to itself. This is where we encounter a problem. If the
-		circular linked list contains no nodes, then the pointer <var>head</var> is
-		NULL. And if the <var>head</var> pointer is NULL, how do we determine if a
-		particular linked list is circular? The answer is, we cannot. There's no way
-		to prove that a particular linked list is circular if the list is empty.
-		Accordingly, we adopt the following axiom with respect to circular linked
-		lists:
-	</p>
-	<figure>
-		<div class="rule">
-			<p>
-				<span class="topic">Axiom.</span> An empty list is a circular linked
-				list.
-			</p>
-		</div>
-	</figure>
-	<p>
-		Because of the axiom above, a circular linked list is has a special
-		necessary condition: It does not contain null pointers. Because of this
-		condition, a variety of linked lists qualify as circular linked lists. For
-		example, consider this linked list:
-	</p>
-	<div id="circularList1"></div>
-	<p>
-		In the circular list above, there are in fact only four nodes. The node
-		<var>h</var> is a pointer to the <q>first node</q> in the list, in this
-		case, the node ${(n \mid 6).}$ From this observation, we have two ways to
-		implement circular linked lists:
-	</p>
-	<ol>
-		<li>
-			Designate a node in the list as the head, and have the foot point to that
-			node, or
-		</li>
-		<li>
-			create a node called head, that is not itself a node in the list, and have
-			the foot point to the head's pointee.
-		</li>
-	</ol>
-	<p>
-		The more common approach is the option (1) above. Either or, there's not
-		much of a difference, other than the additional memory needed to allocate a
-		new node <var>head</var> in option (2).
-	</p>
-
-	<section id="looping_circular_list">
-		<h3>Iterating On a Circular List</h3>
-		<p>Consider the following linked list:</p>
-		<div class="compare">
-			<ul class="linkedlist">
-				<ul class="head">
-					<li>
-						<div>head</div>
-						<div>0x200</div>
-						<div>0x100</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>1</div>
-						<div>0x300</div>
-						<div>0x200</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>4</div>
-						<div>0x400</div>
-						<div>0x300</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>5</div>
-						<div>0x500</div>
-						<div>0x400</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>2</div>
-						<div>NULL</div>
-						<div>0x500</div>
-					</li>
-				</ul>
-			</ul>
-		</div>
-		<p>
-			As we saw previously, we can iterate on this linked list because the
-			foot's next pointer is NULL. This property of linear linked lists provides
-			a guard clause for stopping a loop. But with the circular linked list, we
-			have no such pointer:
-		</p>
-		<div id="circularList2"></div>
-		<p>
-			The question then is, how do we stop a loop on a circular linked list? The
-			answer: We rely on the <var>h</var> pointer, and a second pointer,
-			<var>p</var>, for iterating over the list. First, both <var>h</var> and
-			<var>p</var> point to the same node:
-		</p>
-		<div id="circularList3"></div>
-		<p>
-			Then, we begin iterating. The pointer <var>p</var> will move, while the
-			pointer <var>h</var> remains as is; <var>p</var> continues so long as it
-			does not point to <var>h</var>'s pointee. The first iteration:
-		</p>
-		<div id="circularList4"></div>
-		<p>Then the second:</p>
-		<div id="circularList5"></div>
-		<p>Then the third:</p>
-		<div id="circularList6"></div>
-		<p>And on the fourth, we're back at <var>h</var>'s pointee:</p>
-		<div id="circularList7"></div>
-		<p>Based on this analysis, we can implement the procedure as follows:</p>
-		<ol class="alg">
-			<li>fn print(Node* list) -> void:</li>
-			<ol>
-				<li>do:</li>
-				<ol>
-					<li>print(p->data);</li>
-					<li>p = p->next;</li>
-					<li>while (p != head);</li>
-				</ol>
-			</ol>
-		</ol>
-		<p>
-			Notice how we're using a do-while-loop. This is because the test condition
-			is <var>p != head</var>. If we used the standard while-loop, the test
-			condition would be false to start with, so we'd never commence the
-			iteration. By using a do-while-loop, we execute the block at least once,
-			which moves the pointer <var>p</var> forward. This starts the iteration.
-		</p>
-		<p>
-			<span class="topic">Recursive Implementation.</span> Alternatively, we can
-			print the circular linked list with a recursive approach. In pseudocode:
-		</p>
-		<ol class="alg">
-			<li>fn display(Node *p) -> void:</li>
-			<ol>
-				<li>static int flag = 0;</li>
-				<li>if (p != head OR flag == 0):</li>
-				<ol>
-					<li>flag = 1;</li>
-					<li>print(p->data);</li>
-					<li>display(p->next);</li>
-				</ol>
-				<li>flag = 0;</li>
-			</ol>
-		</ol>
-		<p>
-			Let's go over how this procedure works. First, like the iterative
-			approach, the pointer <var>p</var> points to <var>head</var>'s pointee.
-			Each time the recursive <var>display()</var> calls itself, <var>p</var>'s
-			next pointee is passed as an argument. As the calls are made,
-			<var>p</var> moves along the circular linked list, printing its pointee's
-			data field value. At some point, <var>p</var> will reach <var>head</var>'s
-			pointee again. In that scenario, we must provide <var>display()</var> a
-			way to determine if it's at <var>head</var>'s pointee a second time.
-		</p>
-		<p>
-			This is done by using the variable <var>flag</var>. Initially,
-			<var>flag</var> is set to <var>0</var>. However, inside the if-block,
-			<var>flag</var> is set to <var>1</var>. On the first call,
-			<var>flag = 0</var>, so the if-block's guard clause, an or-condition, is
-			satisfied. This executes the if-block.
-		</p>
-		<p>
-			Inside the if-block, <var>flag</var> is set to <var>1</var>, and
-			<var>p</var>'s pointee's data is printed. Then, we make the second call, a
-			recursive call. In this second call, <var>flag = 1</var>, but
-			<var>p != head</var>. As such, the if-block's guard clause is again
-			satisfied, and we proceed, making the third call.
-		</p>
-		<p>
-			This process continues until we've made it back to <var>head</var>'s
-			pointee. At this point, <var>p == head</var>, and <var>flag == 1</var>.
-			This violates the if-block's guard clause, so we stop. The function call
-			has finished.
-		</p>
-		<p>
-			In the implementation above, noticed that we declared <var>flag</var> has
-			a <i>static variable</i>. With each recursive call, a new instance of
-			<var>flag</var> and the pointer <var>p</var> is created in the stack.
-			Thus, for each recursive call, <var>flag</var> is set to <var>0</var>.
-			This is not what we want &mdash; if <var>flag</var> is <var>0</var> for
-			each recursive call, we never reach the case where the if-block's guard
-			clause is violated. To remedy this, we must have an instance of
-			<var>flag</var> that all subsequent calls use. This is ensured by
-			declaring <var>flag</var> as a static variable. And because
-			<var>flag</var> is a static variable, we must set it <var>0</var> once
-			we've finished calling <var>display()</var> as a whole.
-		</p>
-		<p>
-			To put all of this together, it's helpful to trace the recursive function.
-			Suppose the circular list is ${(1,2,3),}$ and the code is as follows. The
-			function <var>List()</var> creates a new list by creating new instances of
-			<var>struct Node</var> in the heap, with the identifier
-			<var>list</var> pointing to the first node. Suppose further that every
-			<var>list</var> has a pointer to its first node called <var>head</var>.
-		</p>
-		<ol class="alg">
-			<li>fn display(Node *p) -> void:</li>
-			<ol>
-				<li>static int flag = 0;</li>
-				<li>if (p != head OR flag == 0):</li>
-				<ol>
-					<li>flag = 1;</li>
-					<li>print(p->data);</li>
-					<li>display(p->next);</li>
-				</ol>
-				<li>flag = 0;</li>
-			</ol>
-			<li>fn main():</li>
-			<ol>
-				<li>List list = new List(1,2,3);</li>
-				<li>display(list);</li>
-			</ol>
-		</ol>
-
-		<p>
-			We begin by executing the first line in <var>main()</var>, line 9. This
-			results in:
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<span>main()</span>
-					<ul>
-						<li>list</li>
-						<li>0x100</li>
-					</ul>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<p>
-			Then, we reach the <var>display()</var> function on line 10. Notice that
-			the <var>static int flag = 0</var> lies above all else in the stack. In
-			languages like C, static variables remain in memory so long as the program
-			runs. Contrast this with regular variables, which disappear once its
-			parent function's stack frame is popped off the stack.
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<ul>
-						<li>static flag</li>
-						<li>0</li>
-					</ul>
-					<div class="call">
-						<span>main()</span>
-						<ul>
-							<li>list</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<p>
-			Inside <var>display()</var>, we see that <var>flag == 0</var>, so we
-			proceed. In this case, <var>flag</var> is changed to <var>1</var>, and
-			remains <var>1</var> thereafter:
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<ul>
-						<li>static flag</li>
-						<li>1</li>
-					</ul>
-					<div class="call">
-						<span>main()</span>
-						<ul>
-							<li>list</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<p>
-			Then, we call <var>print(p->data)</var>, which outputs <var>1</var> to the
-			console. Thereafter, we call <var>display(p->next)</var>.
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<ul>
-						<li>static flag</li>
-						<li>1</li>
-					</ul>
-					<div class="call">
-						<span>main()</span>
-						<ul>
-							<li>list</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x200</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<p>
-			Then, because <var>p</var> is no longer equal to <var>head</var>, we
-			proceed with the if-block.
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<ul>
-						<li>static flag</li>
-						<li>1</li>
-					</ul>
-					<div class="call">
-						<span>main()</span>
-						<ul>
-							<li>list</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x200</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<p>
-			We print the data of <var>p</var>'s current pointee, and call
-			<var>display(p->next)</var>:
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<ul>
-						<li>static flag</li>
-						<li>1</li>
-					</ul>
-					<div class="call">
-						<span>main()</span>
-						<ul>
-							<li>list</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x200</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x300</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<p>
-			And because <var>p</var> is not equal to <var>head</var>, we again proceed
-			with the if-block.
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<ul>
-						<li>static flag</li>
-						<li>1</li>
-					</ul>
-					<div class="call">
-						<span>main()</span>
-						<ul>
-							<li>list</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x200</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x300</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<p>
-			Because <var>p</var> is not equal to <var>head</var>, we again print
-			<var>p</var>'s pointee's data, and call <var>display(p->next)</var>.
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<ul>
-						<li>static flag</li>
-						<li>1</li>
-					</ul>
-					<div class="call">
-						<span>main()</span>
-						<ul>
-							<li>list</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x200</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x300</li>
-						</ul>
-					</div>
-					<div class="call">
-						<span>display()</span>
-						<ul>
-							<li>*p</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-
-		<p>
-			At this point, <var>p</var> is now equal to <var>head</var>. Given that
-			<var>flag == 1</var>, the if-block's condition is <var>false</var>, so we
-			stop the recursive calls. We then set <var>flag = 0</var>, and the stack
-			frames resulting from <var>display()</var> are popped off the stack:
-		</p>
-		<div class="trace">
-			<div class="stack">
-				<div class="call">
-					<ul>
-						<li>static flag</li>
-						<li>0</li>
-					</ul>
-					<div class="call">
-						<span>main()</span>
-						<ul>
-							<li>list</li>
-							<li>0x100</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="heap">
-				<div class="call">
-					<ul>
-						<li>0x100</li>
-						<li>
-							<ul>
-								<li>1</li>
-								<li>0x200</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>2</li>
-								<li>0x300</li>
-							</ul>
-						</li>
-					</ul>
-					<ul>
-						<li>0x200</li>
-						<li>
-							<ul>
-								<li>3</li>
-								<li>0x100</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<section id="inserting_circular_list">
-		<h3>Circular List Insertion</h3>
-		<p>
-			Now that we know how to iterate over a circular linked list, we consider
-			circular list insertion. Consider the following circular linked list:
-		</p>
-		<div id="circularInsertion"></div>
-		<p>Let's imagine the linked list as follows:</p>
-		<div class="compare">
-			<ul class="linkedlist">
-				<ul>
-					<li>
-						<div>1</div>
-						<div>0x1</div>
-						<div>0x0</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>4</div>
-						<div>0x2</div>
-						<div>0x1</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>3</div>
-						<div>0x3</div>
-						<div>0x2</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>5</div>
-						<div>0x4</div>
-						<div>0x3</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>2</div>
-						<div>0x0</div>
-						<div>0x4</div>
-					</li>
-				</ul>
-			</ul>
-		</div>
-		<p>
-			We can pretend that each node in the linked list, and each space between
-			the nodes, has an index.
-		</p>
-		<div class="compare">
-			<ul class="linkedlist null">
-				<ul class="whl">
-					<li>
-						<div>&ThickSpace;</div>
-						<div>&ThickSpace;</div>
-						<div>0</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>1</div>
-						<div>0x1</div>
-						<div>1</div>
-					</li>
-				</ul>
-				<ul class="whl">
-					<li>
-						<div>&ThickSpace;</div>
-						<div>&ThickSpace;</div>
-						<div>1</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>4</div>
-						<div>0x2</div>
-						<div>2</div>
-					</li>
-				</ul>
-				<ul class="whl">
-					<li>
-						<div>&ThickSpace;</div>
-						<div>&ThickSpace;</div>
-						<div>2</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>3</div>
-						<div>0x3</div>
-						<div>3</div>
-					</li>
-				</ul>
-				<ul class="whl">
-					<li>
-						<div>&ThickSpace;</div>
-						<div>&ThickSpace;</div>
-						<div>3</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>5</div>
-						<div>0x4</div>
-						<div>4</div>
-					</li>
-				</ul>
-				<ul class="whl">
-					<li>
-						<div>&ThickSpace;</div>
-						<div>&ThickSpace;</div>
-						<div>4</div>
-					</li>
-				</ul>
-				<ul>
-					<li>
-						<div>2</div>
-						<div>0x0</div>
-						<div>5</div>
-					</li>
-				</ul>
-				<ul class="whl">
-					<li>
-						<div>&ThickSpace;</div>
-						<div>&ThickSpace;</div>
-						<div>5</div>
-					</li>
-				</ul>
-			</ul>
-		</div>
-		<p>
-			Recall that with linear linked lists, we had two cases: Inserting before
-			the first node, or inserting at any other given position. Similarly for
-			circular linked lists, we have two cases:
-		</p>
-		<ol>
-			<li>Inserting before <var>head</var>, or</li>
-			<li>inserting before any other given position.</li>
-		</ol>
-		<p>
-			Let's consider the second case, inserting before a position other than the
-			head.
-		</p>
-
-		<section id="inserting_into_any_given_position">
-			<h4>Inserting Into any Given Position</h4>
-			<p>
-				Say we wanted to insert at the index ${4}$ the node ${(n \mid 8),}$
-				called <var>t</var>.
-			</p>
-			<div class="compare">
-				<ul class="linkedlist null">
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>0</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>1</div>
-							<div>0x1</div>
-							<div>1</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>1</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>4</div>
-							<div>0x2</div>
-							<div>2</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>2</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>3</div>
-							<div>0x3</div>
-							<div>3</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>3</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>5</div>
-							<div>0x4</div>
-							<div>4</div>
-						</li>
-					</ul>
-					<ul class="rhl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div><span class="redText">4</span></div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>2</div>
-							<div>0x0</div>
-							<div>5</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>5</div>
-						</li>
-					</ul>
-				</ul>
-			</div>
-			<p>
-				To insert at ${4,}$ we need a pointer to the node just before it, ${(n
-				\mid 5).}$ Thus, we start with a pointer at <var>head</var>, then move
-				it three times to ${(n \mid 5):}$
-			</p>
-			<div class="compare">
-				<ul class="linkedlist null">
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>0</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>1</div>
-							<div>0x1</div>
-							<div>1</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>1</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>4</div>
-							<div>0x2</div>
-							<div>2</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>2</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>3</div>
-							<div>0x3</div>
-							<div>3</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>3</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>5</div>
-							<div>0x4</div>
-							<div><span class="blueText">&uparrow;p</span> 4</div>
-						</li>
-					</ul>
-					<ul class="rhl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div><span class="redText">4</span></div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>2</div>
-							<div>0x0</div>
-							<div>5</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>5</div>
-						</li>
-					</ul>
-				</ul>
-			</div>
-			<p>
-				Once we have the pointer <var>p</var> in place, we can have
-				<var>t</var>'s next pointer point to <var>p</var>'s next pointee.
-			</p>
-			<div class="compare">
-				<ul class="linkedlist null">
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>0</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>1</div>
-							<div>0x1</div>
-							<div>1</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>1</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>4</div>
-							<div>0x2</div>
-							<div>2</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>2</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>3</div>
-							<div>0x3</div>
-							<div>3</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>3</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>5</div>
-							<div>0x4</div>
-							<div><span class="blueText">&uparrow;p</span> 4</div>
-						</li>
-					</ul>
-					<ul class="rhl nonnull">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div><span class="redText">t</span></div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>2</div>
-							<div>0x0</div>
-							<div>5</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>5</div>
-						</li>
-					</ul>
-				</ul>
-			</div>
-			<p>Then, we have <var>p</var>'s current pointee point to <var>t</var>:</p>
-			<div class="compare">
-				<ul class="linkedlist null">
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>0</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>1</div>
-							<div>0x1</div>
-							<div>1</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>1</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>4</div>
-							<div>0x2</div>
-							<div>2</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>2</div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>3</div>
-							<div>0x3</div>
-							<div>3</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>3</div>
-						</li>
-					</ul>
-					<ul class="nonnull">
-						<li>
-							<div>5</div>
-							<div>0x4</div>
-							<div><span class="blueText">&uparrow;p</span> 4</div>
-						</li>
-					</ul>
-					<ul class="rhl nonnull">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div><span class="redText">t</span></div>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<div>2</div>
-							<div>0x0</div>
-							<div>5</div>
-						</li>
-					</ul>
-					<ul class="whl">
-						<li>
-							<div>&ThickSpace;</div>
-							<div>&ThickSpace;</div>
-							<div>5</div>
-						</li>
-					</ul>
-				</ul>
-			</div>
-			<p>In pseudocode:</p>
-			<ol class="alg">
-				<li>fn insert(Node* head, int d, int position) -> void:</li>
-				<ol>
-					<li>Node* p = head;</li>
-					<li>for (int i = 0; i < position - 1; i++):</li>
-					<ol>
-						<li>p = p->next;</li>
-					</ol>
-					<li>Node* t = new Node(d);</li>
-					<li>t->next = p->next;</li>
-					<li>p->next = t;</li>
-				</ol>
-			</ol>
-			<p>
-				The time complexity of inserting into any given position depends on two
-				cases. First, inserting into the position immediately after the head is
-				the best case scenario. In this case, the for-loop never executes, and
-				we simply perform the remaining basic operations. As such, the time
-				complexity in the best case scenario is ${O(1).}$
-			</p>
-			<p>
-				Second, inserting after the last node is the worst case scenario. In
-				that situation, we must iterate over ${n - 1}$ nodes for
-				<var>p</var> to reach the node immediately before <var>head</var> (the
-				<q>last node</q>). Hence, inserting after the last node has a time
-				complexity of ${O(n).}$
-			</p>
-		</section>
-
-		<section id="inserting_before_the_head">
-			<h4>Prepending a Circular List</h4>
-			<p>Say we had the following circular linked list:</p>
-			<div id="circularInsertHead"></div>
-			<p>
-				Suppose we wanted to insert just before head. To do so, we create a new
-				node <var>t</var> with some data, and have it point to <var>h</var>'s
-				pointee:
-			</p>
-			<div id="circularInsertHead2"></div>
-			<p>
-				Once <var>t</var> is linked, we must have the foot point to
-				<var>t</var>:
-			</p>
-			<div id="circularInsertHead3"></div>
-			<p>
-				Because of this step, we must manipulate the foot. Accordingly, we need
-				a third pointer, <var>p</var>, to iterate over the list until
-				<var>p->next == head</var>. Once that condition is reached, we have a
-				pointer <var>p</var> pointing to the foot:
-			</p>
-			<div id="circularInsertHead4"></div>
-			<p>
-				Once we have <var>p</var> properly position at the foot, we have
-				<var>p->next</var> point to the new node <var>t</var>:
-			</p>
-			<div id="circularInsertHead5"></div>
-			<p>
-				Here's a question: Should we have the head pointer <var>h</var> point to
-				this new node <var>t</var>? We could, but there isn't any reason to do
-				so. The notions of <q>first,</q> <q>last,</q> <q>head,</q> and
-				<q>foot</q> are purely abstractions to aid us in thinking about circular
-				linked lists. There is no <q>first</q> or <q>last</q> node in a circular
-				list. Accordingly, we refrain from changing the head pointer because
-				it's an unnecessary additional operation.
-			</p>
-			<p>Implementing the procedure in pseudocode:</p>
-			<ol class="alg">
-				<li>fn prepend(Node* head, int newData) -> void:</li>
-				<ol>
-					<li>Node* t = new Node();</li>
-					<li>t->data = newData;</li>
-					<li>t->next = head;</li>
-					<li>Node* p = head;</li>
-					<li>while (p->next != head):</li>
-					<ol>
-						<li>p = p->next;</li>
-					</ol>
-					<li>p->next = t;</li>
-					<li>head = t;</li>
-				</ol>
-			</ol>
-		</section>
-
-		<section id="general_insertion">
-			<h4>General Insertion</h4>
-			<div class="twoColumn">
-				<div>
-					<p>
-						Now that we've covered the two cases, we can implement a more
-						general function for insertion. Note that the code does not include
-						a guard against invalid position values. When implementing the
-						procedure above, it's imperative that we provide a guard. If the
-						user passed an index of say, ${-1,}$ we would enter an infinite
-						loop, forever traversing the circular list.
-					</p>
-					<p>
-						The time complexity for this procedure is no different from what we
-						saw earlier. In the best case scenario, we're inserting immediately
-						after <var>head</var>'s pointee. In the worst case scenario, we're
-						inserting immediately before <var>head</var>'s pointee. In the
-						former we have a time complexity of ${O(1),}$ and in the latter we
-						have a time complexity of ${O(n).}$
-					</p>
-				</div>
-				<ol class="alg">
-					<li>fn insert(int position, int newData) -> void:</li>
-					<ol>
-						<li>Node* t;</li>
-						<li>Node* p;</li>
-
-						<li>if (position == 0):</li>
-						<ol>
-							<li>t = new Node();</li>
-							<li>t->data = newData;</li>
-							<li>if (head == NULL):</li>
-							<ol>
-								<li>head = t;</li>
-								<li>head->next = head;</li>
-							</ol>
-							<li>else:</li>
-							<ol>
-								<li>p = head;</li>
-								<li>while (p -> next != head):</li>
-								<ol>
-									<li>p = p->next;</li>
-								</ol>
-							</ol>
-							<li>p->next = t;</li>
-							<li>t->next = head;</li>
-							<li>head = t;</li>
-						</ol>
-						<li>else:</li>
-						<ol>
-							<li>p = head;</li>
-							<li>for (int i = 0; i < position - 1; i++):</li>
-							<ol>
-								<li>p = p->next;</li>
-							</ol>
-							<li>t = new Node();</li>
-							<li>t->data = x;</li>
-							<li>t->next = p->next;</li>
-							<li>p->next = t;</li>
-						</ol>
-					</ol>
-				</ol>
-			</div>
-		</section>
-	</section>
-
-	<section id="deletion">
-		<h3>Deletion on Circular Lists</h3>
-		<p>
-			Alongside insertion, we next consider how to delete nodes in a circular
-			list. Like insertion, there are two cases of deletion:
-		</p>
-		<ol>
-			<li>Deleting the <var>head</var>'s pointee node, or</li>
-			<li>deleting a node at any other given position.</li>
-		</ol>
-		<p>
-			Suppose we had the linked list below, and we want to delete the node
-			containing <var>9</var>. Call it the <i>delete target</i>. To delete this
-			node, we must have a pointer to the node immediately before the delete
-			target, and a pointer to the delete target itself:
-		</p>
-		<div id="deleteCircular1"></div>
-		<p>
-			The pseudocode representation is presented below. Notice that this is
-			substantially the same as deleting from a linear linked list.
-		</p>
-		<ol class="alg">
-			<li>fn delete(int position) -> void:</li>
-			<ol>
-				<li>Node* t = head;</li>
-				<li>Node* d;</li>
-				<li>for (i = 0; i &lt; position - 2; i++):</li>
-				<ol>
-					<li>t = t->next;</li>
-				</ol>
-				<li>d = t->next;</li>
-				<li>t -> next = d->next;</li>
-				<li>delete d;</li>
-			</ol>
-		</ol>
-		<p>
-			Why is it <var>position - 2</var>? Because we start the pointer
-			<var>t</var> at head (which we're pretending has an index of
-			<var>1</var>), and we want to stop it just before the delete target. In
-			this case, we're trying to delete the fourth node, so
-			<var>position = 4</var>. Thus, the for-loop's guard clause is
-			<var>i &lt; 4 - 2 = 2.</var> At <var>i = 0</var>, the condition is
-			satisfied, so we move <var>t</var> to the second node, and increment
-			<var>i</var>. At <var>i = 1</var>, the condition is again satisfied, so we
-			move <var>t</var> to the third node, and increment. At <var>i = 2</var>,
-			the for-loop's guard clause is not satisfied, so we break. This leaves
-			<var>t</var> at the correct position.
-		</p>
-		<p>
-			Once we've position <var>t</var>, we initialize the second pointer,
-			<var>d</var>, to <var>t</var>'s next pointee. This places <var>d</var> on
-			the fourth node, the delete target. Once that is done, we assign as
-			<var>t</var>'s next pointee the next pointee of <var>d</var>. In this
-			case, <var>t</var>'s next pointee becomes the fifth node. Then we free the
-			memory allocated for <var>d</var>'s pointee, the delete target.
-		</p>
-	</section>
-
-	<section id="deleting_head">
-		<h4>Deleting the Circular List's Head</h4>
-		<p>
-			What if we want to delete the head? Consider the following linked list:
-		</p>
-		<div id="deleteCircularHead"></div>
-		<p>
-			To delete the head, colored green, we must perform the following: (1) the
-			node just after the head, colored purple, must become the new head, then
-			(2) the foot's next pointee must point to the new head.
-		</p>
-		<p>
-			This procedure is done by first moving a pointer <var>p</var> to the foot.
-			Once there, we use <var>p</var> to change the foot's next pointee to the
-			current <var>head</var>'s next pointee:
-		</p>
-		<div id="deleteCircularHead1"></div>
-		<p>
-			This effectively separates the current head from the circular list, while
-			still maintaining a link. As such, all that's left to do is to delete
-			<var>head</var> and make <var>p</var>'s next pointee, the former second
-			node, as the <var>head</var>:
-		</p>
-		<div id="deleteCircularHead2"></div>
-		<p>The procedure in pseudocode:</p>
-		<ol class="alg">
-			<li>fn deleteHead(Node* head) -> void:</li>
-			<ol>
-				<li>Node* p = head;</li>
-				<li>while (p->next != head):</li>
-				<ol>
-					<li>p = p -> next;</li>
-				</ol>
-				<li>p->next = head->next;</li>
-				<li>delete head;</li>
-				<li>head = p->next;</li>
-			</ol>
-		</ol>
-	</section>
-
-	<section id="general_deletion">
-		<h4>General Deletion</h4>
-		<p>
-			As we saw with insertion, we can implement deletion into a single general
-			function:
-		</p>
-		<ol class="alg">
-			<li>fn delete(Node* head, int position) -> void:</li>
-			<ol>
-				<li>Node* p;</li>
-				<li>Node* q;</li>
-				<li>if (position == 1):</li>
-				<ol>
-					<li>p = head;</li>
-					<li>while (p->next != head):</li>
-					<ol>
-						<li>p = p->next;</li>
-					</ol>
-					<li>if (p == head):</li>
-					<ol>
-						<li>delete head;</li>
-						<li>head = NULL;</li>
-					</ol>
-					<li>else:</li>
-					<ol>
-						<li>p->next = head->next;</li>
-						<li>delete head;</li>
-						<li>head = p->next;</li>
-					</ol>
-				</ol>
-				<li>else:</li>
-				<ol>
-					<li>p = head;</li>
-					<li>for (int i = 0; i &lt; position - 2; i++):</li>
-					<ol>
-						<li>p = p->next;</li>
-					</ol>
-					<li>q = p->next;</li>
-					<li>delete q;</li>
-				</ol>
-			</ol>
-		</ol>
-		<p>
-			The time complexity for deleting on a circular linked list depends on
-			where we're deleting. If we're deleting the second node &mdash; the node
-			immediately after the current head &mdash; then <var>position = 2</var>,
-			and the steps executed are all basic. This yields a time complexity of
-			${O(1).}$ For all other positions, however, our time complexity is
-			${O(n).}$
-		</p>
-	</section>
-</section>
-
-<section id="doubly_linked_lists">
-	<h2>Doubly Linked Lists</h2>
-	<p>
-		All of the linked lists we've seen have been
-		<b>singly-linked lists</b> &mdash; linked lists whose nodes are linked with
-		a single link. We now examine <b>doubly-linked lists</b>. These are lists
-		whose nodes are linked with <em>two</em> links.
-	</p>
-	<figure>
-		<div class="dbLL">
-			<ul>
-				<li>0</li>
-				<li>6</li>
-				<li>0x2</li>
-			</ul>
-			<ul>
-				<li>0x1</li>
-				<li>3</li>
-				<li>0x3</li>
-			</ul>
-			<ul>
-				<li>0x2</li>
-				<li>9</li>
-				<li>0x4</li>
-			</ul>
-			<ul>
-				<li>0x3</li>
-				<li>7</li>
-				<li>0x5</li>
-			</ul>
-			<ul>
-				<li>0x4</li>
-				<li>5</li>
-				<li>0</li>
-			</ul>
-		</div>
-	</figure>
-	<p>
-		In a singly-linked list, every node has a pointer to the next node. With
-		double linked lists, each node has a pointer to the next node, as well as
-		the previous node. And since we have links to the next node and to the
-		previous node, we can move forward <em>and</em> backward.
-	</p>
-	<p>Doubly linked lists are used for a variety of applications:</p>
-	<ol>
-		<li>
-			Implementing navigation systems where a forward and back feature is
-			desired. For example, on the browser, we can move forward and back in our
-			history.
-		</li>
-		<li>
-			Executing past and future procedures. Most interactive programs like text
-			editors have an <i>undo</i> and <i>redo</i> function. That function
-			requires going forward and back on the timeline of changes.
-		</li>
-		<li>
-			Recording data associated with time. For example, manipulating cache data
-			in terms of most-recently-used or least-recently-used requires going
-			forward and back.
-		</li>
-		<li>
-			Thread scheduling. Some operating systems implement a
-			<i>thread scheduler</i> with a doubly linked list, allowing the system to
-			determine which process must run at a particular time.
-		</li>
-	</ol>
-	<p>
-		Implementing the doubly-linked list is not that much of a departure from
-		implementing the singly-linked list. The key difference is that the node
-		structure changes. Where the singly-linked list node consists of a record
-		with just two fields <var>data</var> and <var>next</var>, the doubly-linked
-		list node is comprised of a record with three fields: <var>prev</var> (a
-		pointer to the previous node), <var>data</var> (the data stored in the
-		node), and <var>next</var> (a pointer to the next node):
-	</p>
-	<figure>
-		<div class="dbLL">
-			<ul>
-				<li>prev</li>
-				<li>data</li>
-				<li>next</li>
-			</ul>
-		</div>
-	</figure>
-	<p>Accordingly, in C, the record would look like:</p>
-	<pre class="language-c"><code>
-		struct Node {
-			struct Node* prev;
-			int data;
-			struct Node* next;
-		};
-	</code></pre>
-	<p>We can then write a function for instantiating new nodes:</p>
-	<pre class="language-c"><code>
-		struct Node* newNode(int newData) {
-			struct Node* node = malloc(sizeof(struct Node));
-			(*node).prev = NULL;
-			(*node).data = newData;
-			(*node).next = NULL;
-			return node;
-		} 
-	</code></pre>
-	<p>
-		With the function above, we can begin creating new nodes. The next step is
-		to link them. Suppose we want to implement the doubly-linked list
-		${(1,2,3)_d}$.<sup></sup> So, we create three nodes, using the code above:
-	</p>
-	<div class="note">
-		<p>
-			Now that we're covering doubly-linked lists, we introduce some new
-			notation. When we refer to doubly-linked lists in text, we will write:
-		</p>
-		<figure>$$ (n_1, n_2, \ldots, n_i)_d $$</figure>
-		<p>
-			Where ${n}$ is a node, and ${i}$ is its position. When we refer to a
-			singly-linked list in text, we will write:
-		</p>
-		<figure>$$ (n_1, n_2, \ldots, n_i)_s $$</figure>
-		<p>
-			The differentiating symbol being, ${d}$ for double, and ${s}$ for single.
-			For circular singly-linked lists and circular doubly-linked lists, we
-			write:
-		</p>
-		<figure>
-			$$ (n_1, n_2, \ldots, n_i)_s^{\circ} \\[1em] (n_1, n_2, \ldots,
-			n_i)_d^{\circ} $$
-		</figure>
-	</div>
-	<pre class="language-c"><code>
-		int main() {
-			struct Node* root = NULL;
-			struct Node* n1 = newNode(1);
-			struct Node* n2 = newNode(2);
-			struct Node* tailend = newNode(3);
-			return 0;
-		}
-	</code></pre>
-	<p>Then, we link the nodes:</p>
-	<pre class="language-c"><code>
-		int main() {
-			struct Node* root = NULL;
-			struct Node* n1 = newNode(1);
-			struct Node* n2 = newNode(2);
-			struct Node* tailend = newNode(3);
-		
-			// linking
-			root = n1;
-			(*n1).next = n2;
-			(*n2).prev = n1;
-			(*n2).next = tailend;
-			(*tailend).prev = n2; 
-		}
-	</code></pre>
-	<p>
-		To test whether this works, let's write two functions,
-		<var>printForward()</var> and <var>printBackward()</var>:
-	</p>
-	<div class="compare">
-		<figure>
-			<pre class="language-c"><code>
-				void printForward(struct Node* p) {
-					printf("( ");
-					while(p != NULL) {
-						printf("%d ", (*p).data);
-						p = (*p).next;
-					}
-					printf(")\n");
-				}
-			</code></pre>
-			<figcaption>
-				The <var>printForward()</var> function prints the list's elements from
-				the first to last.
-			</figcaption>
-		</figure>
-		<figure>
-			<pre class="language-c"><code>
-				void printBackward(struct Node *p) {
-					printf("( ");
-					while(p != NULL) {
-						printf("%d ", (*p).data);
-						p = (*p).prev;
-					}
-					printf(")\n");
-				}
-			</code></pre>
-			<figcaption>
-				The <var>printBackward()</var> function prints the list's elements from
-				last to first.
-			</figcaption>
-		</figure>
-	</div>
-	<p>Using all of the code above and calling the two functions:</p>
-	<pre class="language-c"><code>
-		#include &lt;stdio.h&gt;
-		#include &lt;stdlib.h&gt;
-		
-		struct Node {
-			struct Node* prev;
-			int data;
-			struct Node* next;
-		};
-		
-		struct Node* newNode(int newData) {
-			struct Node* node = malloc(sizeof(struct Node));
-			(*node).prev = NULL;
-			(*node).data = newData;
-			(*node).next = NULL;
-			return node;
-		} 
-		
-		void printForward(struct Node* p) {
-			printf("( ");
-			while(p != NULL) {
-				printf("%d ", (*p).data);
-				p = (*p).next;
-			}
-			printf(")\n");
-		}
-		
-		void printBackward(struct Node *p) {
-			printf("( ");
-			while(p != NULL) {
-				printf("%d ", (*p).data);
-				p = (*p).prev;
-			}
-			printf(")\n");
-		}
-		
-		int main() {
-			struct Node* root = NULL;
-			struct Node* n1 = newNode(1);
-			struct Node* n2 = newNode(2);
-			struct Node* tailend = newNode(3);
-		
-			// linking
-			root = n1;
-			(*n1).next = n2;
-			(*n2).prev = n1;
-			(*n2).next = tailend;
-			(*tailend).prev = n2; 
-		
-			printForward(root);
-			printBackward(tailend);
-			return 0;
-		}
-	</code></pre>
-	<pre class="language-bash"><code>
-		( 1 2 3 )
-		( 3 2 1 )
-	</code></pre>
-	<p>
-		Look at that, it works. As we saw with singly linked lists, instantiating
-		and linking nodes manually is pretty tedious. For the pseudocode in the rest
-		of this section, we'll use a function called <var>newDList()</var> that
-		returns a pointer to a <var>DList</var> struct. The <var>DList</var> struct
-		consists of a node pointer called <var>head</var> (a pointer to the first
-		node), and a node pointer called <var>foot</var> (a pointer to the last
-		node). The <var>newDList()</var> function allows us to implement the doubly
-		linked list ${(1,2,3)_d}$ in pseudocode as:
-	</p>
-	<ol class="alg">
-		<li>DList* dlist = newDList([1,2,3]);</li>
-	</ol>
-	<p>For language specific-implementations, see below.</p>
-	<div class="demo">
-		<button>C</button>
-		<div class="implementation">
-			<p>Below is an implementation in C.</p>
-			<pre class="language-c"><code>
-				#include &lt;stdio.h&gt;
-				#include &lt;stdlib.h&gt;
-
-				// The node data structure.
-				struct Node { 
-					struct Node* prev; // Pointer to the previous node.
-					int data; // The data stored in the node.
-					struct Node* next; // Pointer to the next node.
-				};
-
-				// Function: Creates a new node, and returns a pointer to the new node.
-				struct Node* newNode(int newData) {
-					struct Node* node = malloc(sizeof(struct Node)); // Make space for a new node.
-					(*node).prev = NULL; // Pointer to previous node is NULL by default
-					(*node).data = newData; // store newData in the data field.
-					(*node).next = NULL; // Pointer to next node is NULL by default.
-					return node;
-				}
-
-				// The doubly-linked list data structure. It consists of two pointers:
-				struct DList {
-					struct Node* head; // Pointer to the first node in the list.
-					struct Node* foot; // Pointer to the last node in the list.
-				};
-
-				// Function: Creates a new instance of DList.
-				// It takes an array and returns a doubly-linked list.
-				struct DList* newDList(int arr[], int size) {
-					struct DList* DList = malloc(sizeof(struct DList)); // Make space for a DList.
-					(*DList).head = newNode(arr[0]); // List head points to a node with arr[0] as data.
-					(*DList).foot = (*DList).head; // List foot starts at the same place as head.
-					for (int i = 1; i < size; i++) { // Loop: start at the second element.
-						struct Node* t = newNode(arr[i]); // Create new node storing arr[i] as data.
-						(*t).next = (*(*DList).foot).next; // New node's next points to foot's next (NULL by default).
-						(*t).prev = (*DList).foot; // New node's prev points to list's foot.
-						(*(*DList).foot).next = t; // Foot's next points to the new node.
-						(*DList).foot = t; // List's foot points to the new node.
-					}
-					return DList;
-				}
-
-				// Function: Prints the DList's data from first (head) to last (foot).
-				void printForward(struct DList* p) {
-					struct Node* t = (*p).head;
-					printf("( ");
-					while (t != NULL) {
-						printf("%d ", (*t).data);
-						t = (*t).next;
-					}
-					printf(")\n");
-				}
-
-				// Function: Prints the DList's data from last (foot) to first (head).
-				void printBackward(struct DList* p) {
-					struct Node* t = (*p).foot;
-					printf("( ");
-					while (t != NULL) {
-						printf("%d ", (*t).data);
-						t = (*t).prev;
-					}
-					printf(")\n");
-				}
-
-				int main() {
-					int arr[] = {1,2,3};
-					int arrSize = 3;
-					struct DList* list1 = newDList(arr, arrSize);
-					printForward(list1);
-					printBackward(list1);
-					return 0;
-				}
-			</code></pre>
-		</div>
-	</div>
-	<p>
-		Now that we can implement doubly-linked lists, we have the ability to move
-		forward and back. This ability opens up a wide variety of procedures that
-		would be slower to execute on singly-linked lists or tedious to implement.
-		Importantly, we can perform all of the procedures we've seen with
-		singly-linked lists, the only difference being we can now move forward and
-		back. To see how this changes things, let's consider a few basic operations.
-	</p>
-
-	<section id="insertion">
-		<h3>Insertion: Doubly-linked Lists</h3>
-		<p>Suppose we had the following linked list:</p>
-		<figure>
-			<div class="dbLL">
-				<ul>
-					<li></li>
-					<li>6</li>
-					<li></li>
-				</ul>
-				<ul>
-					<li></li>
-					<li>9</li>
-					<li></li>
-				</ul>
-				<ul>
-					<li></li>
-					<li>1</li>
-					<li></li>
-				</ul>
-				<ul>
-					<li></li>
-					<li>5</li>
-					<li></li>
-				</ul>
-			</div>
-		</figure>
-		<p>
-			To insert a new node into this linked list, it's helpful to pretend each
-			node, and space between each node, has an index, just as we saw with
-			singly-linked lists (the grey numbers denote an index, rather than an
-			address):
-		</p>
-		<figure>
-			<div class="dbLL">
-				<ul>
-					<li>0</li>
-				</ul>
-				<ul>
-					<li>1</li>
-					<li>6</li>
-					<li></li>
-				</ul>
-				<ul>
-					<li>1</li>
-				</ul>
-				<ul>
-					<li>2</li>
-					<li>9</li>
-					<li></li>
-				</ul>
-				<ul>
-					<li>2</li>
-				</ul>
-				<ul>
-					<li>3</li>
-					<li>1</li>
-					<li></li>
-				</ul>
-				<ul>
-					<li>3</li>
-				</ul>
-				<ul>
-					<li>4</li>
-					<li>5</li>
-					<li></li>
-				</ul>
-				<ul>
-					<li>4</li>
-				</ul>
-			</div>
-		</figure>
-	</section>
 </section>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>

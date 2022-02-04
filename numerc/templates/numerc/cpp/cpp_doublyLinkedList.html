@@ -1,0 +1,888 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on linked lists" />
+{% endblock %} {% block title %}
+<title>Doubly Linked Lists</title>
+{% endblock %} {% block content %}
+<h1>Doubly Linked Lists</h1>
+<section id="doubly_linked_lists">
+	<p>
+		All of the linked lists we've seen have been
+		<b>singly-linked lists</b> &mdash; linked lists whose nodes are linked
+		with a single link. We now examine <b>doubly-linked lists</b>. These
+		are lists whose nodes are linked with <em>two</em> links.
+	</p>
+	<figure>
+		<div class="dbLL">
+			<ul>
+				<li>0</li>
+				<li>6</li>
+				<li>0x2</li>
+			</ul>
+			<ul>
+				<li>0x1</li>
+				<li>3</li>
+				<li>0x3</li>
+			</ul>
+			<ul>
+				<li>0x2</li>
+				<li>9</li>
+				<li>0x4</li>
+			</ul>
+			<ul>
+				<li>0x3</li>
+				<li>7</li>
+				<li>0x5</li>
+			</ul>
+			<ul>
+				<li>0x4</li>
+				<li>5</li>
+				<li>0</li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		In a singly-linked list, every node has a pointer to the next node.
+		With double linked lists, each node has a pointer to the next node, as
+		well as the previous node. And since we have links to the next node and
+		to the previous node, we can move forward <em>and</em> backward.
+	</p>
+	<p>Doubly linked lists are used for a variety of applications:</p>
+	<ol>
+		<li>
+			Implementing navigation systems where a forward and back feature is
+			desired. For example, on the browser, we can move forward and back in
+			our history.
+		</li>
+		<li>
+			Executing past and future procedures. Most interactive programs like
+			text editors have an <i>undo</i> and <i>redo</i> function. That
+			function requires going forward and back on the timeline of changes.
+		</li>
+		<li>
+			Recording data associated with time. For example, manipulating cache
+			data in terms of most-recently-used or least-recently-used requires
+			going forward and back.
+		</li>
+		<li>
+			Thread scheduling. Some operating systems implement a
+			<i>thread scheduler</i> with a doubly linked list, allowing the
+			system to determine which process must run at a particular time.
+		</li>
+	</ol>
+	<p>
+		Implementing the doubly-linked list is not that much of a departure
+		from implementing the singly-linked list. The key difference is that
+		the node structure changes. Where the singly-linked list node consists
+		of a record with just two fields <var>data</var> and <var>next</var>,
+		the doubly-linked list node is comprised of a record with three fields:
+		<var>prev</var> (a pointer to the previous node), <var>data</var> (the
+		data stored in the node), and <var>next</var> (a pointer to the next
+		node):
+	</p>
+	<figure>
+		<div class="dbLL">
+			<ul>
+				<li>prev</li>
+				<li>data</li>
+				<li>next</li>
+			</ul>
+		</div>
+	</figure>
+	<p>Accordingly, in C, the record would look like:</p>
+	<pre class="language-c"><code>
+		struct Node {
+			struct Node* prev;
+			int data;
+			struct Node* next;
+		};
+	</code></pre>
+	<p>We can then write a function for instantiating new nodes:</p>
+	<pre class="language-c"><code>
+		struct Node* newNode(int newData) {
+			struct Node* node = malloc(sizeof(struct Node));
+			(*node).prev = NULL;
+			(*node).data = newData;
+			(*node).next = NULL;
+			return node;
+		} 
+	</code></pre>
+	<p>
+		With the function above, we can begin creating new nodes. The next step
+		is to link them. Suppose we want to implement the doubly-linked list
+		${(1,2,3)_d}$.<sup></sup> So, we create three nodes, using the code
+		above:
+	</p>
+	<div class="note">
+		<p>
+			Now that we're covering doubly-linked lists, we introduce some new
+			notation. When we refer to doubly-linked lists in text, we will
+			write:
+		</p>
+		<figure>$$ (n_1, n_2, \ldots, n_i)_d $$</figure>
+		<p>
+			Where ${n}$ is a node, and ${i}$ is its position. When we refer to a
+			singly-linked list in text, we will write:
+		</p>
+		<figure>$$ (n_1, n_2, \ldots, n_i)_s $$</figure>
+		<p>
+			The differentiating symbol being, ${d}$ for double, and ${s}$ for
+			single. For circular singly-linked lists and circular doubly-linked
+			lists, we write:
+		</p>
+		<figure>
+			$$ (n_1, n_2, \ldots, n_i)_s^{\circ} \\[1em] (n_1, n_2, \ldots,
+			n_i)_d^{\circ} $$
+		</figure>
+	</div>
+	<pre class="language-c"><code>
+		int main() {
+			struct Node* root = NULL;
+			struct Node* n1 = newNode(1);
+			struct Node* n2 = newNode(2);
+			struct Node* tailend = newNode(3);
+			return 0;
+		}
+	</code></pre>
+	<p>Then, we link the nodes:</p>
+	<pre class="language-c"><code>
+		int main() {
+			struct Node* root = NULL;
+			struct Node* n1 = newNode(1);
+			struct Node* n2 = newNode(2);
+			struct Node* tailend = newNode(3);
+		
+			// linking
+			root = n1;
+			(*n1).next = n2;
+			(*n2).prev = n1;
+			(*n2).next = tailend;
+			(*tailend).prev = n2; 
+		}
+	</code></pre>
+	<p>
+		To test whether this works, let's write two functions,
+		<var>printForward()</var> and <var>printBackward()</var>:
+	</p>
+	<div class="compare">
+		<figure>
+			<pre class="language-c"><code>
+				void printForward(struct Node* p) {
+					printf("( ");
+					while(p != NULL) {
+						printf("%d ", (*p).data);
+						p = (*p).next;
+					}
+					printf(")\n");
+				}
+			</code></pre>
+			<figcaption>
+				The <var>printForward()</var> function prints the list's elements
+				from the first to last.
+			</figcaption>
+		</figure>
+		<figure>
+			<pre class="language-c"><code>
+				void printBackward(struct Node *p) {
+					printf("( ");
+					while(p != NULL) {
+						printf("%d ", (*p).data);
+						p = (*p).prev;
+					}
+					printf(")\n");
+				}
+			</code></pre>
+			<figcaption>
+				The <var>printBackward()</var> function prints the list's elements
+				from last to first.
+			</figcaption>
+		</figure>
+	</div>
+	<p>Using all of the code above and calling the two functions:</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		#include &lt;stdlib.h&gt;
+		
+		struct Node {
+			struct Node* prev;
+			int data;
+			struct Node* next;
+		};
+		
+		struct Node* newNode(int newData) {
+			struct Node* node = malloc(sizeof(struct Node));
+			(*node).prev = NULL;
+			(*node).data = newData;
+			(*node).next = NULL;
+			return node;
+		} 
+		
+		void printForward(struct Node* p) {
+			printf("( ");
+			while(p != NULL) {
+				printf("%d ", (*p).data);
+				p = (*p).next;
+			}
+			printf(")\n");
+		}
+		
+		void printBackward(struct Node *p) {
+			printf("( ");
+			while(p != NULL) {
+				printf("%d ", (*p).data);
+				p = (*p).prev;
+			}
+			printf(")\n");
+		}
+		
+		int main() {
+			struct Node* root = NULL;
+			struct Node* n1 = newNode(1);
+			struct Node* n2 = newNode(2);
+			struct Node* tailend = newNode(3);
+		
+			// linking
+			root = n1;
+			(*n1).next = n2;
+			(*n2).prev = n1;
+			(*n2).next = tailend;
+			(*tailend).prev = n2; 
+		
+			printForward(root);
+			printBackward(tailend);
+			return 0;
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		( 1 2 3 )
+		( 3 2 1 )
+	</code></pre>
+	<p>
+		Look at that, it works. As we saw with singly linked lists,
+		instantiating and linking nodes manually is pretty tedious. For the
+		pseudocode in the rest of this section, we'll use a function called
+		<var>newDList()</var> that returns a pointer to a
+		<var>DList</var> struct. The <var>DList</var> struct consists of a node
+		pointer called <var>head</var> (a pointer to the first node), and a
+		node pointer called <var>foot</var> (a pointer to the last node). The
+		<var>newDList()</var> function allows us to implement the doubly linked
+		list ${(1,2,3)_d}$ in pseudocode as:
+	</p>
+	<ol class="alg">
+		<li>DList* dlist = newDList([1,2,3]);</li>
+	</ol>
+	<p>For language specific-implementations, see below.</p>
+	<div class="demo">
+		<button>C</button>
+		<div class="implementation">
+			<p>Below is an implementation in C.</p>
+			<pre class="language-c"><code>
+				#include &lt;stdio.h&gt;
+				#include &lt;stdlib.h&gt;
+
+				// The node data structure.
+				struct Node { 
+					struct Node* prev; // Pointer to the previous node.
+					int data; // The data stored in the node.
+					struct Node* next; // Pointer to the next node.
+				};
+
+				// Function: Creates a new node, and returns a pointer to the new node.
+				struct Node* newNode(int newData) {
+					struct Node* node = malloc(sizeof(struct Node)); // Make space for a new node.
+					(*node).prev = NULL; // Pointer to previous node is NULL by default
+					(*node).data = newData; // store newData in the data field.
+					(*node).next = NULL; // Pointer to next node is NULL by default.
+					return node;
+				}
+
+				// The doubly-linked list data structure. It consists of two pointers:
+				struct DList {
+					struct Node* head; // Pointer to the first node in the list.
+					struct Node* foot; // Pointer to the last node in the list.
+				};
+
+				// Function: Creates a new instance of DList.
+				// It takes an array and returns a doubly-linked list.
+				struct DList* newDList(int arr[], int size) {
+					struct DList* DList = malloc(sizeof(struct DList)); // Make space for a DList.
+					(*DList).head = newNode(arr[0]); // List head points to a node with arr[0] as data.
+					(*DList).foot = (*DList).head; // List foot starts at the same place as head.
+					for (int i = 1; i < size; i++) { // Loop: start at the second element.
+						struct Node* t = newNode(arr[i]); // Create new node storing arr[i] as data.
+						(*t).next = (*(*DList).foot).next; // New node's next points to foot's next (NULL by default).
+						(*t).prev = (*DList).foot; // New node's prev points to list's foot.
+						(*(*DList).foot).next = t; // Foot's next points to the new node.
+						(*DList).foot = t; // List's foot points to the new node.
+					}
+					return DList;
+				}
+
+				// Function: Prints the DList's data from first (head) to last (foot).
+				void printForward(struct DList* p) {
+					struct Node* t = (*p).head;
+					printf("( ");
+					while (t != NULL) {
+						printf("%d ", (*t).data);
+						t = (*t).next;
+					}
+					printf(")\n");
+				}
+
+				// Function: Prints the DList's data from last (foot) to first (head).
+				void printBackward(struct DList* p) {
+					struct Node* t = (*p).foot;
+					printf("( ");
+					while (t != NULL) {
+						printf("%d ", (*t).data);
+						t = (*t).prev;
+					}
+					printf(")\n");
+				}
+
+				int main() {
+					int arr[] = {1,2,3};
+					int arrSize = 3;
+					struct DList* list1 = newDList(arr, arrSize);
+					printForward(list1);
+					printBackward(list1);
+					return 0;
+				}
+			</code></pre>
+		</div>
+	</div>
+	<p>
+		Now that we can implement doubly-linked lists, we have the ability to
+		move forward and back. This ability opens up a wide variety of
+		procedures that would be slower to execute on singly-linked lists or
+		tedious to implement. Importantly, we can perform all of the procedures
+		we've seen with singly-linked lists, the only difference being we can
+		now move forward and back. To see how this changes things, let's
+		consider a few basic operations.
+	</p>
+</section>
+
+<section id="insertion">
+	<h2>Insertion: Doubly-linked Lists</h2>
+	<p>Suppose we had the following linked list:</p>
+	<figure>
+		<div class="dbLL">
+			<ul>
+				<li></li>
+				<li>6</li>
+				<li></li>
+			</ul>
+			<ul>
+				<li></li>
+				<li>9</li>
+				<li></li>
+			</ul>
+			<ul>
+				<li></li>
+				<li>1</li>
+				<li></li>
+			</ul>
+			<ul>
+				<li></li>
+				<li>5</li>
+				<li></li>
+			</ul>
+		</div>
+	</figure>
+	<p>
+		To insert a new node into this linked list, it's helpful to pretend
+		each node, and space between each node, has an index, just as we saw
+		with singly-linked lists, we can pretend each node has an index, and
+		that there's an index between each node:
+	</p>
+	<figure>
+		$$ \begin{matrix}
+		(&&&\textcolor{red}{6}&&&\textcolor{red}{9}&&&\textcolor{red}{1}&&&
+		\textcolor{red}{5}&&&)\\ &&&1&&&2&&&3&&&4&&& \\ &0&&&1&&&2&&&3&&&4& \\
+		\end{matrix} $$
+	</figure>
+	<p>
+		Thus, given a doubly-linked list of size ${4,}$ there are ${5}$
+		possible positions for insertion. Let's consider insertion before the
+		first node, or <b>prepending</b> a doubly-linked list.
+	</p>
+
+	<section id="prepending">
+		<h3>Prepending</h3>
+		<p>Given the doubly linked list:</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^h~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid 1)_{x=n_4}~^{p = n_3}(n_4 \mid
+			5)_{x=\varnothing}^t $$
+		</figure>
+		<p>Prepending a new node ${N}$ containing data ${d}$ results in:</p>
+		<figure>
+			$$ ^{p = \varnothing}(N \mid d)_{x=n_1}^h~^{p = N}(n_1 \mid
+			6)_{x=n_1}~^{p=h}(n_2 \mid 9)_{x=n_3}~^{p=n_1}(n_3 \mid
+			1)_{x=n_4}~^{p = n_2}(n_4 \mid 5)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			The first step is to create a new node, say ${N}$, and assigning a
+			data value for it. Say, ${8.}$ Because we're working with
+			doubly-linked lists, there are a total of two links to modify. Why
+			two? Because we have a new node, ${N}$, with a
+			<var>prev</var> pointer ${p}$ and a <var>next</var> pointer ${x,}$
+			both initially NULL:
+		</p>
+		<figure>$$ ^{p = \varnothing}(N \mid 8)_{x = \varnothing} $$</figure>
+		<p>
+			And at the head of the list is also a node with a
+			<var>prev</var> and <var>next</var> pointer. This node also has the
+			special pointer ${h,}$ which indicates it as the head.
+		</p>
+		<figure>$$ ^{p = \varnothing}(n_1 \mid 6)_{x = n_1}^h $$</figure>
+		<p>
+			Once ${N}$ is instantiated, we must have set its
+			<var>next</var> pointer to ${h}$'s pointee, ${n_1}$:
+		</p>
+		<figure>$$ ^{p = \varnothing}(N \mid 8)_{x = h} $$</figure>
+		<p>
+			And once we've modified ${N}$'s
+			<var>next</var> pointer, we must then have ${h}$'s
+			<var>prev</var> pointer point to ${N:}$
+		</p>
+		<figure>$$ ^{p = N}(n_1 \mid 6)_{x = n_1}^h $$</figure>
+		<p>This results in:</p>
+		<figure>
+			$$ ^{p = \varnothing}(N \mid 8)_{x=n_1}~^{p = N}(n_1 \mid
+			6)_{x=n_1}^h~^{p=h}(n_2 \mid 9)_{x=n_3}~^{p=n_1}(n_3 \mid
+			1)_{x=n_4}~^{p = n_2}(n_4 \mid 5)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Because ${N}$ is now the first node in the list, we should have the
+			<var>head</var> pointer point to it:
+		</p>
+		<figure>
+			$$ ^{p = \varnothing}(N \mid 8)_{x=n_1}^h~^{p = N}(n_1 \mid
+			6)_{x=n_1}~^{p=h}(n_2 \mid 9)_{x=n_3}~^{p=n_1}(n_3 \mid
+			1)_{x=n_4}~^{p = n_2}(n_4 \mid 5)_{x=\varnothing}^t $$
+		</figure>
+		<p>The procedure in pseudocode:</p>
+		<ol class="alg">
+			<li>fn prepend(Node* head) -> void:</li>
+			<ol>
+				<li>Node* N = new Node(d);</li>
+				<li>N->prev = NULL;</li>
+				<li>N->next = head;</li>
+				<li>head->prev = N;</li>
+				<li>head = N;</li>
+			</ol>
+		</ol>
+		<p>
+			Notice that these are all basic operations. Prepending to a
+			doubly-linked list is a constant time operation &mdash; ${O(1).}$
+		</p>
+	</section>
+
+	<section id="appending">
+		<h3>Appending to a Doubly Linked List</h3>
+		<p>Referring to the same doubly linked list:</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^h~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid 1)_{x=n_4}~^{p = n_3}(n_4 \mid
+			5)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Let's say we wanted to insert a new node, ${(N \mid 4)}$ just before
+			the last node:
+		</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^h~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid
+			1)_{x=n_4}~~~~\textcolor{red}{(~~)}~~~~^{p = n_3}(n_4 \mid
+			5)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Referring to our index diagram, we would be inserting at position
+			${3.}$
+		</p>
+		<figure>
+			$$ \begin{matrix}
+			(&&&\textcolor{red}{n_1}&&&\textcolor{red}{_n2}&&&\textcolor{red}{n_3}&&&
+			\textcolor{red}{n_4}&&&)\\ &&&1&&&2&&&3&&&4&&& \\ &0&&&1&&&2&&&3&&&4&
+			\\ \end{matrix} $$
+		</figure>
+		<p>To begin, we start with a pointer ${q}$ on the head:</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid
+			6)_{x=n_1}^{h~\textcolor{green}{q}}~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid
+			1)_{x=n_4}~~~~\textcolor{red}{(~~)}~~~~^{p = n_3}(n_4 \mid
+			5)_{x=\varnothing}^t $$
+		</figure>
+		<p>Then we begin moving it. We move once:</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}^{~\textcolor{green}{q}}~^{p=n_2}(n_3 \mid
+			1)_{x=n_4}~~~~\textcolor{red}{(~~)}~~~~^{p = n_3}(n_4 \mid
+			5)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Then again to reach the node just before the position we want to
+			append to:
+		</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid
+			1)_{x=n_4}^{~\textcolor{green}{q}}~~~~\textcolor{red}{(~~)}~~~~^{p =
+			n_3}(n_4 \mid 5)_{x=\varnothing}^t $$
+		</figure>
+		<p>Now we go back to our new node, ${N:}$</p>
+		<figure>
+			$$ \Large ^{p = \varnothing }(N \mid 4)_{x = \varnothing} $$
+		</figure>
+		<p>
+			We set it's <var>next</var> pointer to point to the last node, which
+			is the <var>next</var> pointee of ${q}$:
+		</p>
+		<figure>$$\Large ^{p = \varnothing }(N \mid 4)_{x = q_x} $$</figure>
+		<p>This results in:</p>
+		<figure style="margin: 0">
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid 1)_{x=n_4}^{~\textcolor{green}{q}}~^{p =
+			\varnothing }(N \mid 4)_{x = q_x = n_4}~ ^{p = n_3}(n_4 \mid
+			5)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Notice, however, that ${N}$'s <var>prev pointer</var> is still NULL.
+			Thus, we must modify this pionter to point to <var>q</var>:
+		</p>
+		<figure>$$\Large ^{p = q}(N \mid 4)_{x = q_x} $$</figure>
+		<p>The result:</p>
+		<figure style="margin: 0">
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid 1)_{x=n_4}^{~\textcolor{green}{q}}~^{p =
+			q}(N \mid 4)_{x = q_x = n_4}~ ^{p = n_3}(n_4 \mid
+			5)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Next, notice that the last node's <var>prev</var> pointer is ${n_3,}$
+			which is ${q}$'s pointee. Accordingly, we must have ${n_4}$'s
+			<var>prev</var> point to the new node ${N:}$
+		</p>
+		<figure>$$\Large ^{p = N}(n_4 \mid 5)_{x = \varnothing}^t $$</figure>
+		<p>Applying the change:</p>
+		<figure style="margin: 0">
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid 1)_{x=n_4}^{~\textcolor{green}{q}}~^{p =
+			q}(N \mid 4)_{x = q_x = n_4}~ ^{p = N}(n_4 \mid 5)_{x=\varnothing}^t
+			$$
+		</figure>
+		<p>
+			Finally, ${q}$'s pointee still has its <var>next</var> pointer
+			pointing to ${n_4:}$
+		</p>
+		<figure>$$\Large ^{p = n_2}(n_3 \mid 1)_{x = n_4} $$</figure>
+		<p>We must change this so it points to ${N,}$ the new node:</p>
+		<figure>$$\Large ^{p = n_2}(n_3 \mid 1)_{x = N}$$</figure>
+		<p>The result:</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 6)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			9)_{x=n_2}~^{p=n_2}(n_3 \mid 1)_{x=N}^{~\textcolor{green}{q}}~^{p =
+			q}(N \mid 4)_{x = n_4}~ ^{p = N}(n_4 \mid 5)_{x=\varnothing}^t $$
+		</figure>
+		<p>The algorithm:</p>
+		<ol class="alg">
+			<li>Node* N = new Node(int data);</li>
+			<li>Node* q = head;</li>
+			<li>for (int i = 0; i &lt; position-1; i++):</li>
+			<ol>
+				<li>q = q->next;</li>
+			</ol>
+			<li>N->next = q->next;</li>
+			<li>N->prev = q;</li>
+			<li>if (q->next):</li>
+			<ol>
+				<li>q->next->prev = N;</li>
+			</ol>
+			<li>q->next = N;</li>
+		</ol>
+		<p>Notice that last three lines above:</p>
+		<ol class="alg">
+			<li>if (q->next):</li>
+			<ol>
+				<li>q->next->prev = N;</li>
+			</ol>
+			<li>q->next = N;</li>
+		</ol>
+		<p>
+			We include the if-expression because we must handle the special case
+			of appending to the end of the list. If <var>q</var> points to the
+			last node, then it's <var>next</var> pointer is NULL. In that case,
+			we should'nt be trying to assign <var>q</var>'s next pointee's
+			<var>prev</var> pointee, since <var>q</var> has no next pointee.
+		</p>
+		<p>
+			With this algorithm, we must iterate over ${n - 1}$ nodes, where
+			${n}$ is the position we want to index into. This means that this
+			algorithm has a time complexity of ${O(n).}$ This is only if we're
+			inserting to a position other than the head.
+		</p>
+	</section>
+</section>
+
+<section id="deletion">
+	<h2>Deletion</h2>
+	<p>Say we had the following doubly-linked list:</p>
+	<figure>
+		<div class="dbLL">
+			<ul>
+				<li>0</li>
+				<li>3</li>
+				<li>0x2</li>
+			</ul>
+			<ul>
+				<li>0x1</li>
+				<li>8</li>
+				<li>0x3</li>
+			</ul>
+			<ul>
+				<li>0x2</li>
+				<li>2</li>
+				<li>0x4</li>
+			</ul>
+			<ul>
+				<li>0x3</li>
+				<li>7</li>
+				<li>0x5</li>
+			</ul>
+			<ul>
+				<li>0x4</li>
+				<li>6</li>
+				<li>0</li>
+			</ul>
+		</div>
+	</figure>
+	<p>Denoting this in our symbolic notation:</p>
+	<figure>
+		$$ ^{p = \varnothing}(n_1 \mid 3)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+		8)_{x=n_3}~^{p=n_2}(n_3 \mid 2)_{x=n_4}~^{p = n_3}(n_4 \mid 7)_{x =
+		n_5}~ ^{p = n_4}(n_5 \mid 6)_{x=\varnothing}^t $$
+	</figure>
+	<p>
+		Just as we saw with linear linked lists, there are two cases for
+		deletion:
+	</p>
+	<ol>
+		<li>Deleting the head.</li>
+		<li>Deleting any node other than the head.</li>
+	</ol>
+	<p>We consider each in turn.</p>
+
+	<section id="deleting_the_head">
+		<h3>Head Deletion</h3>
+		<p>
+			Using the same linked list earlier, say we wanted to delete the head:
+		</p>
+		<figure>
+			$$ \textcolor{firebrick}{^{p = \varnothing}(n_1 \mid
+			3)_{x=n_1}^{h}~}^{p=n_1}(n_2 \mid 8)_{x=n_3}~^{p=n_2}(n_3 \mid
+			2)_{x=n_4}~^{p = n_3}(n_4 \mid 7)_{x = n_5}~ ^{p = n_4}(n_5 \mid
+			6)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			If we delete the head, then the node immediately after the head
+			should become the first node:
+		</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid
+			3)_{x=n_1}^{h}~\textcolor{teal}{^{p=n_1}(n_2 \mid
+			8)_{x=n_3}~}^{p=n_2}(n_3 \mid 2)_{x=n_4}~^{p = n_3}(n_4 \mid 7)_{x =
+			n_5}~ ^{p = n_4}(n_5 \mid 6)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			This is the key fact to keep in mind when deleting the head. So, to
+			start, we need a pointer ${P}$ on the first node:
+		</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 3)_{x=n_1}^{h
+			\textcolor{red}{P}}~^{p=n_1}(n_2 \mid 8)_{x=n_3}~^{p=n_2}(n_3 \mid
+			2)_{x=n_4}~^{p = n_3}(n_4 \mid 7)_{x = n_5}~ ^{p = n_4}(n_5 \mid
+			6)_{x=\varnothing}^t $$
+		</figure>
+		<p>Then, we move the head pointer ${h}$ to the next node:</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid
+			3)_{x=n_1}^{\textcolor{red}{P}}~^{p=n_1}(n_2 \mid
+			8)_{x=n_3}^{\textcolor{purple}{h}}~^{p=n_2}(n_3 \mid 2)_{x=n_4}~^{p =
+			n_3}(n_4 \mid 7)_{x = n_5}~ ^{p = n_4}(n_5 \mid 6)_{x=\varnothing}^t
+			$$
+		</figure>
+		<p>
+			Now that we've moved the head, we can simply delete ${P}$'s pointee:
+		</p>
+		<figure>
+			$$ \cancel{^{p = \varnothing}(n_1 \mid
+			3)_{x=n_1}^{\textcolor{red}{P}}}~^{p=n_1}(n_2 \mid
+			8)_{x=n_3}^{\textcolor{purple}{h}}~^{p=n_2}(n_3 \mid 2)_{x=n_4}~^{p =
+			n_3}(n_4 \mid 7)_{x = n_5}~ ^{p = n_4}(n_5 \mid 6)_{x=\varnothing}^t
+			$$
+		</figure>
+		<p>This leaves us with the list:</p>
+		<figure>
+			$$ ^{p=n_1}(n_2 \mid 8)_{x=n_3}^{\textcolor{purple}{h}}~^{p=n_2}(n_3
+			\mid 2)_{x=n_4}~^{p = n_3}(n_4 \mid 7)_{x = n_5}~ ^{p = n_4}(n_5 \mid
+			6)_{x=\varnothing}^t $$
+		</figure>
+		<p>While we've successfully deleted the head, notice the new head:</p>
+		<figure>
+			$$ \large ^{p=n_1}(n_2 \mid 8)_{x=n_3}^{\textcolor{purple}{h}} $$
+		</figure>
+		<p>
+			the new head's <var>prev</var> pointer is still pointing to ${n_1,}$
+			which is the node we just deleted. Accordingly, we must change
+			${n_1}$'s <var>prev</var> pointer to <var>NULL</var>:
+		</p>
+		<figure>
+			$$ \large ^{p=\varnothing}(n_2 \mid
+			8)_{x=n_3}^{\textcolor{purple}{h}} $$
+		</figure>
+		<p>
+			Importantly, when we change ${n_2}$'s <var>prev</var> pointee, we
+			must take care to check that ${h}$ actually points to some node. If
+			we deleted the head of a doubly-linked list with only one node, then
+			${h}$ would become the null pointer.
+		</p>
+		<p>The implementation:</p>
+		<ol class="alg">
+			<li>fn deletedHead(node* head) -> void:</li>
+			<ol>
+				<li>p = head;</li>
+				<li>head = head->next;</li>
+				<li>delete p;</li>
+				<li>if (head != NULL):</li>
+				<ol>
+					<li>head->prev = NULL;</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			The procedure above consists of constant steps. As such, this
+			operation takes constant time &mdash; ${O(1).}$ Needless to say,
+			deleting a doubly-linked list's head is an efficient operation.
+			Contrast this with deleting a node at a given index, explored in the
+			next section.
+		</p>
+	</section>
+
+	<section id="deleting_a_given_index">
+		<h3>Tail Node Deletion</h3>
+		<p>
+			We have the following doubly-linked list, and we want to delete the
+			fourth node, colored red:
+		</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 3)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			8)_{x=n_3}~^{p=n_2}(n_3 \mid 2)_{x=n_4}~\textcolor{firebrick}{^{p =
+			n_3}(n_4 \mid 7)_{x = n_5}~}^{p = n_4}(n_5 \mid 6)_{x=\varnothing}^t
+			$$
+		</figure>
+		<p>
+			To delete the fourth node, we must have the third node, ${n_3}$ point
+			to the fifth node, ${n_5:}$
+		</p>
+		<figure>
+			$$ \large ^{p=n_2}(n_3 \mid 2)_{\textcolor{firebrick}{x=n_5}} $$
+		</figure>
+		<p>And the fifth node should point on the third node:</p>
+		<figure>
+			$$ \large ^{\textcolor{firebrick}{p = n_3}}(n_5 \mid
+			6)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			However, before we change these pointers' pointees, we must ensure we
+			have a pointer to the delete target. If we changed the pointees
+			before doing so, we would no longer have a way to access the delete
+			target:
+		</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 3)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			8)_{x=n_3}~^{p=n_2}(n_3 \mid
+			2)_{\textcolor{firebrick}{x=n_5}}~\textcolor{firebrick}{^{p =
+			n_3}(n_4 \mid 7)_{x = n_5}~}^{\textcolor{firebrick}{p = n_3}}(n_5
+			\mid 6)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Hence, we need a pointer ${P}$ on the target node. So, we start by
+			initializing a pointer ${P}$ initially at the head of the list:
+		</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 3)_{x=n_1}^{h
+			\textcolor{teal}{P}}~^{p=n_1}(n_2 \mid 8)_{x=n_3}~^{p=n_2}(n_3 \mid
+			2)_{x=n_4}~\textcolor{firebrick}{^{p = n_3}(n_4 \mid 7)_{x =
+			n_5}~}^{p = n_4}(n_5 \mid 6)_{x=\varnothing}^t $$
+		</figure>
+		<p>Then, with a for-loop, move ${P}$ to delete target:</p>
+		<figure>
+			$$ ^{p = \varnothing}(n_1 \mid 3)_{x=n_1}^{h}~^{p=n_1}(n_2 \mid
+			8)_{x=n_3}~^{p=n_2}(n_3 \mid 2)_{x=n_4}~\textcolor{firebrick}{^{p =
+			n_3}(n_4 \mid 7)_{x = n_5}^{\textcolor{teal}{P}}}~^{p = n_4}(n_5 \mid
+			6)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Once ${P}$ is in place, all we have to do is modify ${n_3}$ and
+			${n_5}$'s pointees through ${P}$:
+		</p>
+		<figure>$$ \Large P_{p_x} \coloneqq P_x $$</figure>
+		<p>The expression above reduces to:</p>
+		<figure>
+			$$ \Large \begin{aligned} P_{p_x} &\coloneqq P_x \\ {n_4}_{p_x}
+			&\coloneqq {n_4}_x \\ {n_3}_{x} &\coloneqq {n_5} \end{aligned} $$
+		</figure>
+		<p>
+			Thus, writing ${P_{p_x} \coloneqq P_x}$ effecitvely modifies
+			${n_3}$'s <var>next</var> pointer:
+		</p>
+		<figure>
+			$$ \large ^{p=n_2}(n_3 \mid 2)_{\textcolor{firebrick}{x=n_5}} $$
+		</figure>
+		<p>
+			With ${n_3}$'s <var>next</var> pointer pointing to ${n_5,}$ we want
+			to have ${n_5}$'s <var>prev</var> pointer pointing to ${n_3:}$
+		</p>
+		<figure>$$ \Large P_{x_p} \coloneqq P_p $$</figure>
+		<p>The expression above reduces to:</p>
+		<figure>
+			$$ \Large \begin{aligned} P_{x_p} &\coloneqq P_p \\ {n_4}_{x_p}
+			&\coloneqq {n_4}_p \\ {n_5}_{p} &\coloneqq n_3 \end{aligned} $$
+		</figure>
+		<p>This modifies ${n_5}$'s <var>prev</var> pointer:</p>
+		<figure>
+			$$ \large ^{\textcolor{firebrick}{p = n_3}}(n_5 \mid
+			6)_{x=\varnothing}^t $$
+		</figure>
+		<p>
+			Importantly, when we write ${P_{x_p} \coloneqq P_p,}$ we must ensure
+			that ${P_{x_p}}$ actually exists. In other words, we must check
+			whether there is, in fact, a node after ${P}$'s pointee. Otherwise,
+			we would be attempting to dereference an area of memory we shouldn't
+			be dereferencing.
+		</p>
+		<p>Implementing:</p>
+		<ol class="alg">
+			<li>fn delete(Node* head, int position):</li>
+			<ol>
+				<li>Node* p = head;</li>
+				<li>for (int i = 0; i < position - 1; i++):</li>
+				<ol>
+					<li>p = p->next;</li>
+				</ol>
+				<li>p->prev->next = p->next;</li>
+				<li>if (p->next):</li>
+				<ol>
+					<li>p->next->prev = p->prev;</li>
+				</ol>
+				<li>delete p;</li>
+			</ol>
+		</ol>
+	</section>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerc/dbLinkedList.js"></script>
+<script src="../../../static/numerc/networkGraph.js"></script>
+{% endblock %}

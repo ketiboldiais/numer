@@ -419,6 +419,15 @@ def cpp_stringAlgorithms(request):
 def cpp_linked_list(request):
 	return render(request, "numerc/cpp/cpp_linked_list.html")
 
+def cpp_circular_linked_lists(request):
+	return render(request, "numerc/cpp/cpp_circularLinkedLists.html")
+
+def cpp_doubly_linked_list(request):
+	return render(request, "numerc/cpp/cpp_doublyLinkedList.html")
+
+def cpp_stack(request):
+	return render(request, "numerc/cpp/cpp_stack.html")
+
 
 
 #! C# Views (cshv)
@@ -474,6 +483,9 @@ def sys_pointers(request):
 
 def sys_rustIntro(request):
 	return render(request, "numerc/sys/sys_rustIntro.html")
+
+def sys_design(request):
+	return render(request, "numerc/sys/sys_design.html")
 
 #! Software Design Views (desv)
 def des_index(request):

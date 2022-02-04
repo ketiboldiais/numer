@@ -1,0 +1,1682 @@
+{% extends '../layout.html' %}
+{% load static %}
+{% block description %}
+<meta name="description" content="Notes on circular linked lists">
+{% endblock %}
+{% block title %}
+<title>Circular Linked Lists</title>
+{% endblock %}
+{% block content %}
+<h1>Circular Linked Lists</h1>
+<section id="circular_linked_lists">
+	<h2>Circular Linked Lists</h2>
+	<p>
+		Having examined loop checks, we now turn to
+		<i>circular linked lists</i>. Circular linked lists implement the
+		abstract data type of a <b>circular list</b>. Most notably, the data
+		structure has the defining characterstic of its foot pointing to its
+		head. This in turn implies that the circular linked list contains no
+		null pointers (i.e., all the nodes in the linked list have nonnull next
+		pointers). For example, consider the linked list:
+	</p>
+	<div id="circular1"></div>
+	<p>
+		In the linked list above, the foot node, colored red, points to the
+		head node, colored green. Because circular linked lists are connected
+		in a loop, there is no <q>first node.</q> To ensure we have some
+		starting point for our algorithms, we generally maintain a
+		<var>head</var> pointer to some node in the list. In the linked list
+		above, we've opted for ${(n \mid 8)}$ as the head.
+	</p>
+	<p>
+		Question: Why do we need circular lists? In other words, what are the
+		use cases for a circular list? It turns out there are several:
+	</p>
+	<ol>
+		<li>
+			Keeping track of whose turn it is in a particular process. For
+			example, in a game of poker &mdash; or more generally, any game with
+			multiple players &mdash; there's usually a set order for players to
+			act. Circular lists allow us to ensure the order of actions remains
+			correct.
+		</li>
+		<li>
+			Circular lists allow us to implement round
+			<b>round robin algorithms</b>. These are algorithms that allocate
+			time or other resources alternately between actors. For example, in a
+			timesharing environment, the operating system allocates slices of CPU
+			time between present users in a specified order.
+		</li>
+		<li>
+			Circular lists can be used to implement repetitive procedures on a
+			finite set of objects. For example, an audio player's feature of
+			repeating a particular playlist.
+		</li>
+	</ol>
+	<p>
+		All of the algorithms we've discussed so far can be applied to circular
+		linked lists, with a few modifications. Before we examine these
+		modifications, we must delve a little deeper into the properties of
+		circular linked lists.
+	</p>
+	<p>
+		First, a circular linked list with only one node has the following
+		property: The lone node points to itself. This is where we encounter a
+		problem. If the circular linked list contains no nodes, then the
+		pointer <var>head</var> is NULL. And if the <var>head</var> pointer is
+		NULL, how do we determine if a particular linked list is circular? The
+		answer is, we cannot. There's no way to prove that a particular linked
+		list is circular if the list is empty. Accordingly, we adopt the
+		following axiom with respect to circular linked lists:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>
+				<span class="topic">Axiom.</span> An empty list is a circular
+				linked list.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Because of the axiom above, a circular linked list is has a special
+		necessary condition: It does not contain null pointers. Because of this
+		condition, a variety of linked lists qualify as circular linked lists.
+		For example, consider this linked list:
+	</p>
+	<div id="circularList1"></div>
+	<p>
+		In the circular list above, there are in fact only four nodes. The node
+		<var>h</var> is a pointer to the <q>first node</q> in the list, in this
+		case, the node ${(n \mid 6).}$ From this observation, we have two ways
+		to implement circular linked lists:
+	</p>
+	<ol>
+		<li>
+			Designate a node in the list as the head, and have the foot point to
+			that node, or
+		</li>
+		<li>
+			create a node called head, that is not itself a node in the list, and
+			have the foot point to the head's pointee.
+		</li>
+	</ol>
+	<p>
+		The more common approach is the option (1) above. Either or, there's
+		not much of a difference, other than the additional memory needed to
+		allocate a new node <var>head</var> in option (2).
+	</p>
+
+	<section id="looping_circular_list">
+		<h3>Iterating On a Circular List</h3>
+		<p>Consider the following linked list:</p>
+		<div class="compare">
+			<ul class="linkedlist">
+				<ul class="head">
+					<li>
+						<div>head</div>
+						<div>0x200</div>
+						<div>0x100</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>1</div>
+						<div>0x300</div>
+						<div>0x200</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>4</div>
+						<div>0x400</div>
+						<div>0x300</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>5</div>
+						<div>0x500</div>
+						<div>0x400</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>2</div>
+						<div>NULL</div>
+						<div>0x500</div>
+					</li>
+				</ul>
+			</ul>
+		</div>
+		<p>
+			As we saw previously, we can iterate on this linked list because the
+			foot's next pointer is NULL. This property of linear linked lists
+			provides a guard clause for stopping a loop. But with the circular
+			linked list, we have no such pointer:
+		</p>
+		<div id="circularList2"></div>
+		<p>
+			The question then is, how do we stop a loop on a circular linked
+			list? The answer: We rely on the <var>h</var> pointer, and a second
+			pointer, <var>p</var>, for iterating over the list. First, both
+			<var>h</var> and <var>p</var> point to the same node:
+		</p>
+		<div id="circularList3"></div>
+		<p>
+			Then, we begin iterating. The pointer <var>p</var> will move, while
+			the pointer <var>h</var> remains as is; <var>p</var> continues so
+			long as it does not point to <var>h</var>'s pointee. The first
+			iteration:
+		</p>
+		<div id="circularList4"></div>
+		<p>Then the second:</p>
+		<div id="circularList5"></div>
+		<p>Then the third:</p>
+		<div id="circularList6"></div>
+		<p>And on the fourth, we're back at <var>h</var>'s pointee:</p>
+		<div id="circularList7"></div>
+		<p>
+			Based on this analysis, we can implement the procedure as follows:
+		</p>
+		<ol class="alg">
+			<li>fn print(Node* list) -> void:</li>
+			<ol>
+				<li>do:</li>
+				<ol>
+					<li>print(p->data);</li>
+					<li>p = p->next;</li>
+					<li>while (p != head);</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			Notice how we're using a do-while-loop. This is because the test
+			condition is <var>p != head</var>. If we used the standard
+			while-loop, the test condition would be false to start with, so we'd
+			never commence the iteration. By using a do-while-loop, we execute
+			the block at least once, which moves the pointer
+			<var>p</var> forward. This starts the iteration.
+		</p>
+		<p>
+			<span class="topic">Recursive Implementation.</span> Alternatively,
+			we can print the circular linked list with a recursive approach. In
+			pseudocode:
+		</p>
+		<ol class="alg">
+			<li>fn display(Node *p) -> void:</li>
+			<ol>
+				<li>static int flag = 0;</li>
+				<li>if (p != head OR flag == 0):</li>
+				<ol>
+					<li>flag = 1;</li>
+					<li>print(p->data);</li>
+					<li>display(p->next);</li>
+				</ol>
+				<li>flag = 0;</li>
+			</ol>
+		</ol>
+		<p>
+			Let's go over how this procedure works. First, like the iterative
+			approach, the pointer <var>p</var> points to <var>head</var>'s
+			pointee. Each time the recursive <var>display()</var> calls itself,
+			<var>p</var>'s next pointee is passed as an argument. As the calls
+			are made, <var>p</var> moves along the circular linked list, printing
+			its pointee's data field value. At some point, <var>p</var> will
+			reach <var>head</var>'s pointee again. In that scenario, we must
+			provide <var>display()</var> a way to determine if it's at
+			<var>head</var>'s pointee a second time.
+		</p>
+		<p>
+			This is done by using the variable <var>flag</var>. Initially,
+			<var>flag</var> is set to <var>0</var>. However, inside the if-block,
+			<var>flag</var> is set to <var>1</var>. On the first call,
+			<var>flag = 0</var>, so the if-block's guard clause, an or-condition,
+			is satisfied. This executes the if-block.
+		</p>
+		<p>
+			Inside the if-block, <var>flag</var> is set to <var>1</var>, and
+			<var>p</var>'s pointee's data is printed. Then, we make the second
+			call, a recursive call. In this second call, <var>flag = 1</var>, but
+			<var>p != head</var>. As such, the if-block's guard clause is again
+			satisfied, and we proceed, making the third call.
+		</p>
+		<p>
+			This process continues until we've made it back to <var>head</var>'s
+			pointee. At this point, <var>p == head</var>, and
+			<var>flag == 1</var>. This violates the if-block's guard clause, so
+			we stop. The function call has finished.
+		</p>
+		<p>
+			In the implementation above, noticed that we declared
+			<var>flag</var> has a <i>static variable</i>. With each recursive
+			call, a new instance of <var>flag</var> and the pointer
+			<var>p</var> is created in the stack. Thus, for each recursive call,
+			<var>flag</var> is set to <var>0</var>. This is not what we want
+			&mdash; if <var>flag</var> is <var>0</var> for each recursive call,
+			we never reach the case where the if-block's guard clause is
+			violated. To remedy this, we must have an instance of
+			<var>flag</var> that all subsequent calls use. This is ensured by
+			declaring <var>flag</var> as a static variable. And because
+			<var>flag</var> is a static variable, we must set it
+			<var>0</var> once we've finished calling <var>display()</var> as a
+			whole.
+		</p>
+		<p>
+			To put all of this together, it's helpful to trace the recursive
+			function. Suppose the circular list is ${(1,2,3),}$ and the code is
+			as follows. The function <var>List()</var> creates a new list by
+			creating new instances of <var>struct Node</var> in the heap, with
+			the identifier <var>list</var> pointing to the first node. Suppose
+			further that every <var>list</var> has a pointer to its first node
+			called <var>head</var>.
+		</p>
+		<ol class="alg">
+			<li>fn display(Node *p) -> void:</li>
+			<ol>
+				<li>static int flag = 0;</li>
+				<li>if (p != head OR flag == 0):</li>
+				<ol>
+					<li>flag = 1;</li>
+					<li>print(p->data);</li>
+					<li>display(p->next);</li>
+				</ol>
+				<li>flag = 0;</li>
+			</ol>
+			<li>fn main():</li>
+			<ol>
+				<li>List list = new List(1,2,3);</li>
+				<li>display(list);</li>
+			</ol>
+		</ol>
+
+		<p>
+			We begin by executing the first line in <var>main()</var>, line 9.
+			This results in:
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<span>main()</span>
+					<ul>
+						<li>list</li>
+						<li>0x100</li>
+					</ul>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Then, we reach the <var>display()</var> function on line 10. Notice
+			that the <var>static int flag = 0</var> lies above all else in the
+			stack. In languages like C, static variables remain in memory so long
+			as the program runs. Contrast this with regular variables, which
+			disappear once its parent function's stack frame is popped off the
+			stack.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>0</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Inside <var>display()</var>, we see that <var>flag == 0</var>, so we
+			proceed. In this case, <var>flag</var> is changed to <var>1</var>,
+			and remains <var>1</var> thereafter:
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Then, we call <var>print(p->data)</var>, which outputs
+			<var>1</var> to the console. Thereafter, we call
+			<var>display(p->next)</var>.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Then, because <var>p</var> is no longer equal to <var>head</var>, we
+			proceed with the if-block.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			We print the data of <var>p</var>'s current pointee, and call
+			<var>display(p->next)</var>:
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x300</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			And because <var>p</var> is not equal to <var>head</var>, we again
+			proceed with the if-block.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x300</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			Because <var>p</var> is not equal to <var>head</var>, we again print
+			<var>p</var>'s pointee's data, and call <var>display(p->next)</var>.
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>1</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x200</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x300</li>
+						</ul>
+					</div>
+					<div class="call">
+						<span>display()</span>
+						<ul>
+							<li>*p</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			At this point, <var>p</var> is now equal to <var>head</var>. Given
+			that <var>flag == 1</var>, the if-block's condition is
+			<var>false</var>, so we stop the recursive calls. We then set
+			<var>flag = 0</var>, and the stack frames resulting from
+			<var>display()</var> are popped off the stack:
+		</p>
+		<div class="trace">
+			<div class="stack">
+				<div class="call">
+					<ul>
+						<li>static flag</li>
+						<li>0</li>
+					</ul>
+					<div class="call">
+						<span>main()</span>
+						<ul>
+							<li>list</li>
+							<li>0x100</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="heap">
+				<div class="call">
+					<ul>
+						<li>0x100</li>
+						<li>
+							<ul>
+								<li>1</li>
+								<li>0x200</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>2</li>
+								<li>0x300</li>
+							</ul>
+						</li>
+					</ul>
+					<ul>
+						<li>0x200</li>
+						<li>
+							<ul>
+								<li>3</li>
+								<li>0x100</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="inserting_circular_list">
+		<h3>Circular List Insertion</h3>
+		<p>
+			Now that we know how to iterate over a circular linked list, we
+			consider circular list insertion. Consider the following circular
+			linked list:
+		</p>
+		<div id="circularInsertion"></div>
+		<p>Let's imagine the linked list as follows:</p>
+		<div class="compare">
+			<ul class="linkedlist">
+				<ul>
+					<li>
+						<div>1</div>
+						<div>0x1</div>
+						<div>0x0</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>4</div>
+						<div>0x2</div>
+						<div>0x1</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>3</div>
+						<div>0x3</div>
+						<div>0x2</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>5</div>
+						<div>0x4</div>
+						<div>0x3</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>2</div>
+						<div>0x0</div>
+						<div>0x4</div>
+					</li>
+				</ul>
+			</ul>
+		</div>
+		<p>
+			We can pretend that each node in the linked list, and each space
+			between the nodes, has an index.
+		</p>
+		<div class="compare">
+			<ul class="linkedlist null">
+				<ul class="whl">
+					<li>
+						<div>&ThickSpace;</div>
+						<div>&ThickSpace;</div>
+						<div>0</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>1</div>
+						<div>0x1</div>
+						<div>1</div>
+					</li>
+				</ul>
+				<ul class="whl">
+					<li>
+						<div>&ThickSpace;</div>
+						<div>&ThickSpace;</div>
+						<div>1</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>4</div>
+						<div>0x2</div>
+						<div>2</div>
+					</li>
+				</ul>
+				<ul class="whl">
+					<li>
+						<div>&ThickSpace;</div>
+						<div>&ThickSpace;</div>
+						<div>2</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>3</div>
+						<div>0x3</div>
+						<div>3</div>
+					</li>
+				</ul>
+				<ul class="whl">
+					<li>
+						<div>&ThickSpace;</div>
+						<div>&ThickSpace;</div>
+						<div>3</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>5</div>
+						<div>0x4</div>
+						<div>4</div>
+					</li>
+				</ul>
+				<ul class="whl">
+					<li>
+						<div>&ThickSpace;</div>
+						<div>&ThickSpace;</div>
+						<div>4</div>
+					</li>
+				</ul>
+				<ul>
+					<li>
+						<div>2</div>
+						<div>0x0</div>
+						<div>5</div>
+					</li>
+				</ul>
+				<ul class="whl">
+					<li>
+						<div>&ThickSpace;</div>
+						<div>&ThickSpace;</div>
+						<div>5</div>
+					</li>
+				</ul>
+			</ul>
+		</div>
+		<p>
+			Recall that with linear linked lists, we had two cases: Inserting
+			before the first node, or inserting at any other given position.
+			Similarly for circular linked lists, we have two cases:
+		</p>
+		<ol>
+			<li>Inserting before <var>head</var>, or</li>
+			<li>inserting before any other given position.</li>
+		</ol>
+		<p>
+			Let's consider the second case, inserting before a position other
+			than the head.
+		</p>
+
+		<section id="inserting_into_any_given_position">
+			<h4>Inserting Into any Given Position</h4>
+			<p>
+				Say we wanted to insert at the index ${4}$ the node ${(n \mid 8),}$
+				called <var>t</var>.
+			</p>
+			<div class="compare">
+				<ul class="linkedlist null">
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>0</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>1</div>
+							<div>0x1</div>
+							<div>1</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>1</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>4</div>
+							<div>0x2</div>
+							<div>2</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>2</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>3</div>
+							<div>0x3</div>
+							<div>3</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>3</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>5</div>
+							<div>0x4</div>
+							<div>4</div>
+						</li>
+					</ul>
+					<ul class="rhl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div><span class="redText">4</span></div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>2</div>
+							<div>0x0</div>
+							<div>5</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>5</div>
+						</li>
+					</ul>
+				</ul>
+			</div>
+			<p>
+				To insert at ${4,}$ we need a pointer to the node just before it,
+				${(n \mid 5).}$ Thus, we start with a pointer at <var>head</var>,
+				then move it three times to ${(n \mid 5):}$
+			</p>
+			<div class="compare">
+				<ul class="linkedlist null">
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>0</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>1</div>
+							<div>0x1</div>
+							<div>1</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>1</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>4</div>
+							<div>0x2</div>
+							<div>2</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>2</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>3</div>
+							<div>0x3</div>
+							<div>3</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>3</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>5</div>
+							<div>0x4</div>
+							<div><span class="blueText">&uparrow;p</span> 4</div>
+						</li>
+					</ul>
+					<ul class="rhl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div><span class="redText">4</span></div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>2</div>
+							<div>0x0</div>
+							<div>5</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>5</div>
+						</li>
+					</ul>
+				</ul>
+			</div>
+			<p>
+				Once we have the pointer <var>p</var> in place, we can have
+				<var>t</var>'s next pointer point to <var>p</var>'s next pointee.
+			</p>
+			<div class="compare">
+				<ul class="linkedlist null">
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>0</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>1</div>
+							<div>0x1</div>
+							<div>1</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>1</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>4</div>
+							<div>0x2</div>
+							<div>2</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>2</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>3</div>
+							<div>0x3</div>
+							<div>3</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>3</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>5</div>
+							<div>0x4</div>
+							<div><span class="blueText">&uparrow;p</span> 4</div>
+						</li>
+					</ul>
+					<ul class="rhl nonnull">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div><span class="redText">t</span></div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>2</div>
+							<div>0x0</div>
+							<div>5</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>5</div>
+						</li>
+					</ul>
+				</ul>
+			</div>
+			<p>
+				Then, we have <var>p</var>'s current pointee point to <var>t</var>:
+			</p>
+			<div class="compare">
+				<ul class="linkedlist null">
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>0</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>1</div>
+							<div>0x1</div>
+							<div>1</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>1</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>4</div>
+							<div>0x2</div>
+							<div>2</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>2</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>3</div>
+							<div>0x3</div>
+							<div>3</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>3</div>
+						</li>
+					</ul>
+					<ul class="nonnull">
+						<li>
+							<div>5</div>
+							<div>0x4</div>
+							<div><span class="blueText">&uparrow;p</span> 4</div>
+						</li>
+					</ul>
+					<ul class="rhl nonnull">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div><span class="redText">t</span></div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<div>2</div>
+							<div>0x0</div>
+							<div>5</div>
+						</li>
+					</ul>
+					<ul class="whl">
+						<li>
+							<div>&ThickSpace;</div>
+							<div>&ThickSpace;</div>
+							<div>5</div>
+						</li>
+					</ul>
+				</ul>
+			</div>
+			<p>In pseudocode:</p>
+			<ol class="alg">
+				<li>fn insert(Node* head, int d, int position) -> void:</li>
+				<ol>
+					<li>Node* p = head;</li>
+					<li>for (int i = 0; i < position - 1; i++):</li>
+					<ol>
+						<li>p = p->next;</li>
+					</ol>
+					<li>Node* t = new Node(d);</li>
+					<li>t->next = p->next;</li>
+					<li>p->next = t;</li>
+				</ol>
+			</ol>
+			<p>
+				The time complexity of inserting into any given position depends on
+				two cases. First, inserting into the position immediately after the
+				head is the best case scenario. In this case, the for-loop never
+				executes, and we simply perform the remaining basic operations. As
+				such, the time complexity in the best case scenario is ${O(1).}$
+			</p>
+			<p>
+				Second, inserting after the last node is the worst case scenario.
+				In that situation, we must iterate over ${n - 1}$ nodes for
+				<var>p</var> to reach the node immediately before
+				<var>head</var> (the <q>last node</q>). Hence, inserting after the
+				last node has a time complexity of ${O(n).}$
+			</p>
+		</section>
+
+		<section id="inserting_before_the_head">
+			<h4>Prepending a Circular List</h4>
+			<p>Say we had the following circular linked list:</p>
+			<div id="circularInsertHead"></div>
+			<p>
+				Suppose we wanted to insert just before head. To do so, we create a
+				new node <var>t</var> with some data, and have it point to
+				<var>h</var>'s pointee:
+			</p>
+			<div id="circularInsertHead2"></div>
+			<p>
+				Once <var>t</var> is linked, we must have the foot point to
+				<var>t</var>:
+			</p>
+			<div id="circularInsertHead3"></div>
+			<p>
+				Because of this step, we must manipulate the foot. Accordingly, we
+				need a third pointer, <var>p</var>, to iterate over the list until
+				<var>p->next == head</var>. Once that condition is reached, we have
+				a pointer <var>p</var> pointing to the foot:
+			</p>
+			<div id="circularInsertHead4"></div>
+			<p>
+				Once we have <var>p</var> properly position at the foot, we have
+				<var>p->next</var> point to the new node <var>t</var>:
+			</p>
+			<div id="circularInsertHead5"></div>
+			<p>
+				Here's a question: Should we have the head pointer
+				<var>h</var> point to this new node <var>t</var>? We could, but
+				there isn't any reason to do so. The notions of <q>first,</q>
+				<q>last,</q> <q>head,</q> and <q>foot</q> are purely abstractions
+				to aid us in thinking about circular linked lists. There is no
+				<q>first</q> or <q>last</q> node in a circular list. Accordingly,
+				we refrain from changing the head pointer because it's an
+				unnecessary additional operation.
+			</p>
+			<p>Implementing the procedure in pseudocode:</p>
+			<ol class="alg">
+				<li>fn prepend(Node* head, int newData) -> void:</li>
+				<ol>
+					<li>Node* t = new Node();</li>
+					<li>t->data = newData;</li>
+					<li>t->next = head;</li>
+					<li>Node* p = head;</li>
+					<li>while (p->next != head):</li>
+					<ol>
+						<li>p = p->next;</li>
+					</ol>
+					<li>p->next = t;</li>
+					<li>head = t;</li>
+				</ol>
+			</ol>
+		</section>
+
+		<section id="general_insertion">
+			<h4>General Insertion</h4>
+			<div class="twoColumn">
+				<div>
+					<p>
+						Now that we've covered the two cases, we can implement a more
+						general function for insertion. Note that the code does not
+						include a guard against invalid position values. When
+						implementing the procedure above, it's imperative that we
+						provide a guard. If the user passed an index of say, ${-1,}$ we
+						would enter an infinite loop, forever traversing the circular
+						list.
+					</p>
+					<p>
+						The time complexity for this procedure is no different from
+						what we saw earlier. In the best case scenario, we're inserting
+						immediately after <var>head</var>'s pointee. In the worst case
+						scenario, we're inserting immediately before <var>head</var>'s
+						pointee. In the former we have a time complexity of ${O(1),}$
+						and in the latter we have a time complexity of ${O(n).}$
+					</p>
+				</div>
+				<ol class="alg">
+					<li>fn insert(int position, int newData) -> void:</li>
+					<ol>
+						<li>Node* t;</li>
+						<li>Node* p;</li>
+
+						<li>if (position == 0):</li>
+						<ol>
+							<li>t = new Node();</li>
+							<li>t->data = newData;</li>
+							<li>if (head == NULL):</li>
+							<ol>
+								<li>head = t;</li>
+								<li>head->next = head;</li>
+							</ol>
+							<li>else:</li>
+							<ol>
+								<li>p = head;</li>
+								<li>while (p -> next != head):</li>
+								<ol>
+									<li>p = p->next;</li>
+								</ol>
+							</ol>
+							<li>p->next = t;</li>
+							<li>t->next = head;</li>
+							<li>head = t;</li>
+						</ol>
+						<li>else:</li>
+						<ol>
+							<li>p = head;</li>
+							<li>for (int i = 0; i < position - 1; i++):</li>
+							<ol>
+								<li>p = p->next;</li>
+							</ol>
+							<li>t = new Node();</li>
+							<li>t->data = x;</li>
+							<li>t->next = p->next;</li>
+							<li>p->next = t;</li>
+						</ol>
+					</ol>
+				</ol>
+			</div>
+		</section>
+	</section>
+
+	<section id="deletion">
+		<h3>Deletion on Circular Lists</h3>
+		<p>
+			Alongside insertion, we next consider how to delete nodes in a
+			circular list. Like insertion, there are two cases of deletion:
+		</p>
+		<ol>
+			<li>Deleting the <var>head</var>'s pointee node, or</li>
+			<li>deleting a node at any other given position.</li>
+		</ol>
+		<p>
+			Suppose we had the linked list below, and we want to delete the node
+			containing <var>9</var>. Call it the <i>delete target</i>. To delete
+			this node, we must have a pointer to the node immediately before the
+			delete target, and a pointer to the delete target itself:
+		</p>
+		<div id="deleteCircular1"></div>
+		<p>
+			The pseudocode representation is presented below. Notice that this is
+			substantially the same as deleting from a linear linked list.
+		</p>
+		<ol class="alg">
+			<li>fn delete(int position) -> void:</li>
+			<ol>
+				<li>Node* t = head;</li>
+				<li>Node* d;</li>
+				<li>for (i = 0; i &lt; position - 2; i++):</li>
+				<ol>
+					<li>t = t->next;</li>
+				</ol>
+				<li>d = t->next;</li>
+				<li>t -> next = d->next;</li>
+				<li>delete d;</li>
+			</ol>
+		</ol>
+		<p>
+			Why is it <var>position - 2</var>? Because we start the pointer
+			<var>t</var> at head (which we're pretending has an index of
+			<var>1</var>), and we want to stop it just before the delete target.
+			In this case, we're trying to delete the fourth node, so
+			<var>position = 4</var>. Thus, the for-loop's guard clause is
+			<var>i &lt; 4 - 2 = 2.</var> At <var>i = 0</var>, the condition is
+			satisfied, so we move <var>t</var> to the second node, and increment
+			<var>i</var>. At <var>i = 1</var>, the condition is again satisfied,
+			so we move <var>t</var> to the third node, and increment. At
+			<var>i = 2</var>, the for-loop's guard clause is not satisfied, so we
+			break. This leaves <var>t</var> at the correct position.
+		</p>
+		<p>
+			Once we've position <var>t</var>, we initialize the second pointer,
+			<var>d</var>, to <var>t</var>'s next pointee. This places
+			<var>d</var> on the fourth node, the delete target. Once that is
+			done, we assign as <var>t</var>'s next pointee the next pointee of
+			<var>d</var>. In this case, <var>t</var>'s next pointee becomes the
+			fifth node. Then we free the memory allocated for <var>d</var>'s
+			pointee, the delete target.
+		</p>
+	</section>
+
+	<section id="deleting_head">
+		<h4>Deleting the Circular List's Head</h4>
+		<p>
+			What if we want to delete the head? Consider the following linked
+			list:
+		</p>
+		<div id="deleteCircularHead"></div>
+		<p>
+			To delete the head, colored green, we must perform the following: (1)
+			the node just after the head, colored purple, must become the new
+			head, then (2) the foot's next pointee must point to the new head.
+		</p>
+		<p>
+			This procedure is done by first moving a pointer <var>p</var> to the
+			foot. Once there, we use <var>p</var> to change the foot's next
+			pointee to the current <var>head</var>'s next pointee:
+		</p>
+		<div id="deleteCircularHead1"></div>
+		<p>
+			This effectively separates the current head from the circular list,
+			while still maintaining a link. As such, all that's left to do is to
+			delete
+			<var>head</var> and make <var>p</var>'s next pointee, the former
+			second node, as the <var>head</var>:
+		</p>
+		<div id="deleteCircularHead2"></div>
+		<p>The procedure in pseudocode:</p>
+		<ol class="alg">
+			<li>fn deleteHead(Node* head) -> void:</li>
+			<ol>
+				<li>Node* p = head;</li>
+				<li>while (p->next != head):</li>
+				<ol>
+					<li>p = p -> next;</li>
+				</ol>
+				<li>p->next = head->next;</li>
+				<li>delete head;</li>
+				<li>head = p->next;</li>
+			</ol>
+		</ol>
+	</section>
+
+	<section id="general_deletion">
+		<h4>General Deletion</h4>
+		<p>
+			As we saw with insertion, we can implement deletion into a single
+			general function:
+		</p>
+		<ol class="alg">
+			<li>fn delete(Node* head, int position) -> void:</li>
+			<ol>
+				<li>Node* p;</li>
+				<li>Node* q;</li>
+				<li>if (position == 1):</li>
+				<ol>
+					<li>p = head;</li>
+					<li>while (p->next != head):</li>
+					<ol>
+						<li>p = p->next;</li>
+					</ol>
+					<li>if (p == head):</li>
+					<ol>
+						<li>delete head;</li>
+						<li>head = NULL;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>p->next = head->next;</li>
+						<li>delete head;</li>
+						<li>head = p->next;</li>
+					</ol>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>p = head;</li>
+					<li>for (int i = 0; i &lt; position - 2; i++):</li>
+					<ol>
+						<li>p = p->next;</li>
+					</ol>
+					<li>q = p->next;</li>
+					<li>delete q;</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			The time complexity for deleting on a circular linked list depends on
+			where we're deleting. If we're deleting the second node &mdash; the
+			node immediately after the current head &mdash; then
+			<var>position = 2</var>, and the steps executed are all basic. This
+			yields a time complexity of ${O(1).}$ For all other positions,
+			however, our time complexity is ${O(n).}$
+		</p>
+	</section>
+</section>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerc/linkedList.js"></script>
+<script src="../../../static/numerc/networkGraph.js"></script>
+{% endblock %}

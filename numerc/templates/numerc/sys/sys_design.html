@@ -1,0 +1,277 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on system design." />
+{% endblock %} {% block title %}
+<title>System Design</title>
+{% endblock %} {% block content %}
+<h1>System Design</h1>
+<section id="intro">
+	<p>
+		Having examined the low level details of computer organization, we'll
+		now launch into orbit and look at <b>system design</b>.
+	</p>
+</section>
+
+<section id="tiers">
+	<h2>Tiers</h2>
+	<p>
+		Software applications are classified in <b>tiers</b>. Some applications
+		are <i>single-tier</i> (or <i>1-tier</i>), some are
+		<i>two-tier</i> (<i>2-tier</i>), others are
+		<i>three-tier</i> (<i>3-tier</i>) &mdash; more generally, software
+		applications are class by some ${n}$-tier, where ${n}$ is the number of
+		tiers.
+	</p>
+	<p>
+		But what is a tier? A <b>tier</b> is a logical separation between a
+		system's <b>components</b>. We can also think of it as a
+		<q>layer.</q> The number ${n}$ in the term ${n}$-tier corresponds to
+		the number of tiers. The system itself can have a wide variety of
+		components:
+	</p>
+	<ol>
+		<li>a database,</li>
+		<li>a backend application server,</li>
+		<li>a user interface,</li>
+		<li>a messaging server,</li>
+		<li>a cache server,</li>
+	</ol>
+	<p>
+		and so on. The list above contains ${5}$ items. If we separated all of
+		the components above into programs that run separate machines, we would
+		have a ${5}$-tier system. If we kept the backend server, messaging
+		server, and cache server on machine ${1,}$ the database on machine
+		${2,}$ and the user interface on machine ${3,}$ then would have a
+		${3}$-tier system. We examine each of these terms in turn.
+	</p>
+	<p>
+		Many creators approach their applications with three pieces in mind:
+		The <i>interface</i> (the code implementing whatever the user sees and
+		interacts with), <i>logic</i> (the code implementing the application's
+		decision-making process), and <i>data</i> (the code implementing how
+		the application organizes and moves data). These are generalizations,
+		however, and we'll find that there are many ways to create tiers.
+	</p>
+
+	<section id="single_tier">
+		<h3>Single-tier Systems</h3>
+		<p>
+			In a <b>single-tier system</b>, the frontend (user interface),
+			backend (business and program logic), and the database are all
+			bundled together on the same machine. A few examples of single-tier
+			applications:
+		</p>
+		<ol>
+			<li><i>Mac's TextEdit</i></li>
+			<li><i>Vim</i></li>
+			<li><i>Emacs</i></li>
+			<li><i>Gimp</i></li>
+			<li><i>VLC</i></li>
+			<li><i>QuickTime</i></li>
+		</ol>
+		<p>
+			There are several benefits to implementing a system as single-tier.
+		</p>
+		<figure>
+			<table class="alg">
+				<thead>
+					<th>Benefits</th>
+					<th>Costs</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							No network latency, since every component is located on the
+							same machine. This increases performance.
+						</td>
+						<td>
+							Increased performance is heavily dependant on the hardware.
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Data is readily available for the user to request; this makes
+							for quick response times.
+						</td>
+						<td>
+							Security risk is highest with single-tier applications.
+							Because all components reside on the same machine, the
+							creator must spend resources on ensuring high levels of
+							security.
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							Once the creator ships out the system, she has no control
+							over instances of that system (i.e, copies of the
+							application). This means the creator cannot truly exterminate
+							the system's bugs unless the user actually updates the
+							software. This also means that the creator has no control
+							over someone tweaking and reverse-engineering the system.
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							Depending on how the application is designed, single-tier
+							systems can result in inconsistent user interfaces because
+							they're tied to a single machine.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+	</section>
+
+	<section id="two_tier">
+		<h3>Two-tier System</h3>
+		<p>
+			A <b>two-tier system</b>, also called a <b>client-server system</b>,
+			is a software application that consists of two tiers:
+		</p>
+		<ol>
+			<li>
+				A <b>client</b> &mdash; which bundles the <i>user interface</i> and
+				the <i>business logic</i> in a single machine.
+			</li>
+			<li>
+				And a <b>server</b> or <b>backend server</b> &mdash; which contains
+				the <i>database</i> on a separate machine.
+			</li>
+		</ol>
+		<p>
+			A common example of a two-tier system is a reminder application. The
+			logic and the user interface exist on the same machine, but if the
+			application provides some mechanism for allowing data to
+			<i>persist</i> (e.g., allow the user to see her reminders across
+			different machines), the user's data is stored in some backend
+			server, likely a <i>database server</i>.
+		</p>
+		<p>
+			A few other examples: Mobile games with persistent state. The user
+			downloads the system's user interface and logic once. And to save
+			game states, network calls are made to the database server.
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Benefits</th>
+				<th>Costs</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						Because the business logic and the user interface are kept on
+						the same machine, there are fewer network calls to the backend
+						server. This keeps latency low, but not as low as a single-tier
+						application.
+					</td>
+					<td>
+						Like the single-tier system, once the creator ships the system,
+						UI and logic bugs can only be exterminated if the user decides
+						to update.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Easy to develop, implement, and optimize. Because there are
+						only two tiers, we just need to handle two separate areas.
+					</td>
+					<td>
+						Because the system's logic is on the client side, it can be
+						difficult to reuse logic, as clients have different machines.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Low cost of deployment. Because there are only two tiers,
+						resources for development and management only have to be
+						divided into two budgets: client (the user interface and
+						logic), and server (database).
+					</td>
+					<td>
+						<p>
+							Increased cost of database maintenance. Because all of the
+							deployed applications share database servers, more resources
+							must be spent to ensure database servers do not fragment
+							users (i.e., some users access a server one way, other users
+							access another, some users have access, others do not).
+						</p>
+						<p>
+							There's also an increased cost of database usage overall. As
+							the user population increases, the number of requests made to
+							the database also increases, which either (a) increases
+							database usage fees or (b) slows down database performance.
+						</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+	<section id="three_tier">
+		<h3>Three-tier System</h3>
+		<p>
+			Websites like blogs and news sites are <b>three-tier systems</b>. In
+			a three-tier system, the <i>user interface</i>,
+			<i>business logic</i>, and <i>database</i> each exist on different
+			machines, physically separated. This creates three tiers, per its
+			name. For example, a news site where users can create accounts and
+			post articles or comments: The user interface is likely written using
+			HTML, JavaScript, and CSS (perhaps all through some framework like
+			React), the logic is likely handled on an Apache server, and the
+			database in MySQL.
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Benefits</th>
+				<th>Costs</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						Creator has increased control over shipped systems. Logic and
+						database related bugs can now be remedied.
+					</td>
+					<td>
+						Increased latency. With a three-tier system, there are three
+						places that must be visited &mdash; the user interface, the
+						logic, and the database.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+	<section id="n_tier_applications">
+		<h3>${n}$-tier Applications</h3>
+		<p>
+			Almost all applications with gargantuan user populations &mdash;
+			<i>Instagram</i>, <i>Facebook</i>, <i>TikTok</i>, <i>Uber</i>,
+			<i>Airbnb</i>, <i>Instacart</i>, <i>Grubhub</i>, <i>Hinge</i>,
+			<i>Pokemon Go</i>, <i>Starcraft</i>, <i>YouTube</i>,
+			<i>Snapchat</i> &mdash; are <b>${n}$-tier systems</b>. These are
+			systems with more than the three components of a user interface,
+			backend server, or database. Some examples of such components:
+		</p>
+		<ol>
+			<li>
+				A <i>cache component</i> &mdash; code implementing the procedures
+				for reading, writing, organizing, and saving cache data.
+			</li>
+			<li>
+				A <i>messaging component</i> &mdash; code implementing how
+				different components of the application communicate to one another.
+			</li>
+			<li>
+				<i>Load balancer</i> &mdash; code implementing procedures for
+				directing network traffic across servers.
+			</li>
+			<li>
+				<i>Search servers</i> &mdash; code implementing procedures for
+				processing queries, indices, and returning results.
+			</li>
+		</ol>
+	</section>
+	<p>There are many more components.</p>
+</section>
+{% endblock %}
