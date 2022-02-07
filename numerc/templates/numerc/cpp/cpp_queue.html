@@ -1,0 +1,630 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on the queue data structure." />
+{% endblock %} {% block title %}
+<title>Queue</title>
+{% endblock %} {% block content %}
+<h1>The Queue</h1>
+<section id="intro">
+	<p>
+		In this section, we discuss the <b>queue</b> data structure. Like the
+		stack, the queue is a logical data structure premised on an
+		foundational operating principle &mdash;
+		<b>first-in-first-out (FIFO)</b>. For example, in the diagram below,
+		suppose <var>A</var> enters first, then <var>B</var>, then
+		<var>C</var>, then <var>D</var>:
+	</p>
+	<div id="queueIntro"></div>
+	<p>
+		The first to exit is <var>A</var>. The second is <var>B</var>. The
+		third is <var>C</var>. And the fourth is <var>D</var>. We call the
+		entities in a queue &mdash; e.g., <var>A</var>, <var>B</var>,
+		<var>C</var>, and <var>D</var> above &mdash; <b>queuers</b> or
+		<b>elements</b>. The name <i>queue</i> is fitting &mdash; it's like
+		standing in a line at the bank, waiting for the next available teller.
+	</p>
+	<p>
+		The queue has two special positions, the <b>front</b> (denoted below as
+		<var>f</var>), and the <b>rear</b> (denoted below as <var>r</var>).
+	</p>
+	<div id="queueFrontRear"></div>
+	<p>
+		Consistent with a queue in real life, to delete a queuer from the
+		queue, we remove the element currently occupying the <i>front</i>:
+	</p>
+	<div id="queueDequeue"></div>
+	<p>
+		And to insert a queuer into the queue, we append an element to the
+		<i>rear:</i>
+	</p>
+	<div id="queueEnqueue"></div>
+	<p>
+		By convention, inserting a queuer is called
+		<b>enqueue</b>, and removing a queuer is called <b>dequeue</b>.
+	</p>
+</section>
+
+<section id="implementations">
+	<h2>Implementations</h2>
+	<p>
+		Like we saw with the stack, there are two kinds of queues: the
+		<b>bounded queue</b>, implemented with a <i>static array</i>, and the
+		<b>unbounded queue</b>, implemented with a <i>linked list</i>. We
+		consider each below.
+	</p>
+	<p>
+		For both bounded queues and unbounded queues, we want the following
+		properties and operations:
+	</p>
+	<ol>
+		<li>
+			A <var><mark>length</mark></var> property, representing the current
+			number of queuers in the queue.
+		</li>
+		<li>
+			An <var><mark>isEmpty()</mark></var> operation, returning
+			<var>true</var> if the queue contains no queuers and
+			<var>false</var> if it does.
+		</li>
+		<li>
+			An <var><mark>enqueue()</mark></var> operation, for inserting a
+			queuer.
+		</li>
+		<li>
+			A <var><mark>dequeue()</mark></var> operation, for removing a queuer.
+		</li>
+		<li>
+			A <var><mark>peek()</mark></var> operation, for retrieving the value
+			a queuer holds.
+		</li>
+	</ol>
+</section>
+
+<section id="static_queue">
+	<h2>Bounded Queue</h2>
+	<p>
+		Implementing the bounded queue with an array is simple. In the diagram
+		below, the static array implementation is presented to the right, and
+		the bounded queue is presented to the left.
+	</p>
+	<div class="split">
+		<ol class="array">
+			<li>
+				<ul>
+					<li>2</li>
+					<li>0</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>3</li>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>7</li>
+					<li>2</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>5</li>
+					<li>3</li>
+				</ul>
+			</li>
+		</ol>
+		<div id="staticQueue1"></div>
+	</div>
+	<p>
+		With the static queue, we implement all of the properties mentioned in
+		the preceding section, with two additional properties and operations:
+	</p>
+	<ol>
+		<li>
+			A <var><mark>capacity</mark></var> property, representing the maximum
+			number of queuers the queue can hold.
+		</li>
+		<li>
+			A <var><mark>availableSpace()</mark></var> operation, which returns
+			how much available space there is in the queue.
+		</li>
+		<li>
+			An <var><mark>isFull()</mark></var> operation, returning
+			<var>true</var> if the queue's capacity has been reached; otherwise
+			<var>false</var>.
+		</li>
+	</ol>
+	<p>
+		To implement the properties and operations above, we must first answer
+		the following question:
+	</p>
+	<dfn>
+		<p>
+			Do we want one pointer for the queue's rear, or two pointers, one for
+			the front and one for the rear?
+		</p>
+	</dfn>
+	<p>
+		Generally, we want two pointers. But, there may be situations where a
+		single pointer to the rear suffices. For conciseness, we call the
+		single pointer implementation the <b>rear-pointed (RP) queue</b>, and
+		the two pointer approach the <b>front-rear-pointed (FRP) queue</b>. We
+		consider both in tandem.
+	</p>
+	<p>
+		For both the RP approach and the FRP approach, an implementation in C
+		can be done with a <var>struct</var>.
+	</p>
+	<div class="split">
+		<figure>
+			<pre class="language-c"><code>
+				struct Queue {
+					int capacity;
+					int length;
+					int rear;
+					int* Q;
+				}
+			</code></pre>
+			<figcaption>RP approach</figcaption>
+		</figure>
+		<figure>
+			<pre class="language-c"><code>
+				struct Queue {
+					int capacity;
+					int length;
+					int rear;
+					int front;
+					int* Q; 
+				};
+			</code></pre>
+			<figcaption>FRP approach</figcaption>
+		</figure>
+	</div>
+	<p>
+		The only difference between the RP approach and the FRP approach in is
+		that we only have one pointer to the queue with the RP approach &mdash;
+		<var>rear</var>. Other than that, we have the properties examined
+		earlier. The <var>int</var> pointer <var>Q</var> is a pointer to an
+		array in the heap, which is the data structure implementing the bounded
+		queue.
+	</p>
+	<p>
+		<span class="topic">Constructor.</span> For both RP bounded queues and
+		FRP bounded queues, the constructors are similar. In C:
+	</p>
+	<div class="split">
+		<figure>
+			<pre class="language-c"><code>
+				struct Queue* newQueue(int maxSize) {
+					struct Queue* queue = malloc(sizeof(struct Queue));
+					(*queue).capacity = maxSize;
+					(*queue).length = 0;
+					(*queue).rear = -1;
+					(*queue).Q = malloc(sizeof(int) * maxSize);
+					return queue;
+				}
+			</code></pre>
+			<figcaption>RP approach</figcaption>
+		</figure>
+		<figure>
+			<pre class="language-c"><code>
+				struct Queue* newQueue(int maxSize) {
+					struct Queue* queue = malloc(sizeof(struct Queue));
+					(*queue).capacity = maxSize;
+					(*queue).length = 0;
+					(*queue).rear = -1;
+					(*queue).front = 0;
+					(*queue).Q = malloc(sizeof(int) * maxSize);
+					return queue;
+				}
+			</code></pre>
+			<figcaption>FRP approach</figcaption>
+		</figure>
+	</div>
+	<p>
+		This is not that different from what we saw with stacks. With the
+		constructor in place, we can now consider the various properties and
+		methods.
+	</p>
+
+	<section id="is_full">
+		<h3>Capacity Guard</h3>
+		<p>
+			Because the bounded queue has maximum number of queuers it can store,
+			we need a capacity guard for the other operations to use. Using the C
+			code as a base for our pseudocode examples, a capacity guard might
+			look like the following:
+		</p>
+		<ol class="alg">
+			<li>fn isFull(Queue* queue) -> bool:</li>
+			<ol>
+				<li>return (*queue).length == (*queue).capacity;</li>
+			</ol>
+		</ol>
+		<p>
+			The implementation relies on the queue's properties
+			<var>length</var> and capacity. If the queue's length equals its
+			capacity, the queue has reached its limit, and we can't enqueue any
+			further.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>
+					Here's an implementation in C. Note that this relies on the
+					<var>stdbool.h</var> header file.
+				</p>
+				<pre class="language-c"><code>
+					bool isFull(struct Queue* queue) {
+						return (*queue).height == (*queue).capacity;
+					}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="is_empty">
+		<h3>Empty Guard</h3>
+		<p>
+			Alongside the capacity guard, we also want an <i>empty guard</i>.
+			This allows us ensure we aren't dequeuing an empty queue:
+		</p>
+		<ol class="alg">
+			<li>fn isEmpty(Queue* queue) -> bool:</li>
+			<ol>
+				<li>return (*queue).length == 0;</li>
+			</ol>
+		</ol>
+		<p>
+			Like the capacity guard, the empty guard relies on the queue's
+			<var>length</var> property to determine if the queue is empty. If the
+			queue's length is ${0,}$ then we know that the queue is empty and we
+			should be trying to perform operations like dequeuing.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>
+					Here's an implementation in C. Again, this relies on the
+					<var>stdbool.h</var> header file. Of course, we can just return
+					<var>0</var> for false and <var>1</var> for true. We use the
+					<var>stdbool.h</var> header file purely for readability and
+					semantics.
+				</p>
+				<pre class="language-c"><code>
+					bool isEmpty(struct Queue* queue) {
+						return (*queue).height == 0;
+					}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="space_available">
+		<h3>Space Count</h3>
+		<p>
+			This isn't a necessary operation for bounded queues, but it's a
+			nice-to-have. The <var>availableSpace()</var> operation returns how
+			many spots in the queue we have left for use:
+		</p>
+		<ol class="alg">
+			<li>fn spaceAvailable(Queue* queue) -> int:</li>
+			<ol>
+				<li>return (*queue).capacity - (*queue).height;</li>
+			</ol>
+		</ol>
+		<p>
+			The procedure is simple: Compute the difference between the queue's
+			capacity and the current height.
+		</p>
+		<p>
+			With these basic operations and properties implemented, we can now
+			consider the core operations for the bounded queue,
+			<var><mark>enqueue()</mark></var> and
+			<var><mark>dequeue()</mark></var
+			>.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>
+					Here's an implementation in C. Not all that different from the
+					pseudocode:
+				</p>
+				<pre class="language-c"><code>
+					int availableSpace(struct Queue* queue) {
+						return (*queue).capacity - (*queue).height;
+					}
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="enqueue">
+		<h3>Bounded Queue: Enqueue</h3>
+		<p>
+			To enqueue with the bounded queue, we must first have a pointer
+			<var>r</var>, corresponding to the queue's rear. Initially,
+			<var>r = -1</var>. To insert a new element into the queue &mdash;
+			enqueue &mdash; we move <var>r</var> to the next location (i.e.,
+			increment <var>r</var>).
+		</p>
+		<p>For example, suppose we had a static queue of size 5:</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>0</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>3</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>4</li>
+					</ul>
+				</li>
+			</ol>
+			<div id="staticQueueInsert"></div>
+		</div>
+		<p>
+			We begin by moving the pointer <var>r</var> to the first index in the
+			array:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>0</li>
+						<li>r</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>3</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>4</li>
+					</ul>
+				</li>
+			</ol>
+			<div id="staticQueueInsert"></div>
+		</div>
+		<p>Then, we insert the relevant data, say <var>2</var>:</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>2</li>
+						<li>0</li>
+						<li>r</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>3</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>4</li>
+					</ul>
+				</li>
+			</ol>
+			<div id="staticQueueInsert1"></div>
+		</div>
+		<p>
+			If we want to add another element, we just increment <var>r</var> and
+			continue. In pseudocode:
+		</p>
+		<ol class="alg">
+			<li>fn enqueue(Queue* queue) -> void:</li>
+			<ol>
+				<li>if (isFull(queue)):</li>
+				<ol>
+					<li>printf("Enqueue prohibited: Queue is full.")</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>(*queue).rear++;</li>
+					<li>(*queue).Q[ (*queue).rear ] = data;</li>
+					<li>(*queue).height++;</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			The enqueue procedure is the same for both the RP bounded queue and
+			FRP bounded queue. We just need to increment the
+			<var>rear</var> pointer, assign the data, and increment the
+			<var>height</var> property.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>Below is an implementation in C:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdio.h&gt;
+					#include &lt;stdbool.h&gt;
+					
+					<details><summary>struct Queue </summary>{
+						int capacity;
+						int height;
+						int rear;
+						int* Q; 
+					};</details>
+					<details><summary>struct Queue* newQueue(int maxSize) </summary>{
+						struct Queue* queue = malloc(sizeof(struct Queue));
+						(*queue).capacity = maxSize;
+						(*queue).height = 0;
+						(*queue).rear = -1;
+						(*queue).Q = malloc(sizeof(int) * maxSize);
+						return queue;
+					}</details>
+					<details><summary>bool isFull(struct Queue* queue) </summary>{
+						return (*queue).height == (*queue).capacity;
+					}</details>
+					<details><summary>bool isEmpty(struct Queue* queue) </summary>{
+						return (*queue).height == 0;
+					}</details>
+					<details><summary>int availableSpace(struct Queue* queue) </summary>{
+						return (*queue).capacity - (*queue).height;
+					}</details>
+
+					void enqueue(struct Queue* queue, int data) {
+						if (isFull(queue)) {
+							printf("Enqueue prohibitied: Queue is full.\n");
+						} else {
+							(*queue).rear++;
+							(*queue).Q[(*queue).rear] = data;
+							(*queue).height++;
+						}
+					}
+				</code></pre>
+			</div>
+		</div>
+
+		<section id="rushing">
+			<p>
+				<span class="topic">Rush-in.</span> As an aside, a useful operation
+				to have with queues is the <b>rush-in</b>. Essentially, enqueuing
+				multiple elements into the queue with a loop:
+			</p>
+			<ol class="alg">
+				<li>fn rushIn(Queue* queue, int array[], int arraySize):</li>
+				<ol>
+					<li>if (arraySize > availableSpace(queue)):</li>
+					<ol>
+						<li>print "Insufficient space to rush into queue.";</li>
+					</ol>
+					<li>else if (arraySize < 0):</li>
+					<ol>
+						<li>print "Invalid array size: Negative number.";</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>for (int i = 0; i < arraySize; i++):</li>
+						<ol>
+							<li>enqueue(queue, array[i])</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+			<p>
+				This is where the <var>availableSpace()</var> operation comes in
+				handy. If the size passed as an argument is greater than the amount
+				of available space, no enqueuing is performed.
+			</p>
+			<div class="demo">
+				<button>C</button>
+				<div class="implementation">
+					<p>Below is an implementation in C:</p>
+					<pre class="language-c"><code>
+						#include &lt;stdlib.h&gt;
+						#include &lt;stdio.h&gt;
+						#include &lt;stdbool.h&gt;
+						
+						<details><summary>struct Queue </summary>{
+							int capacity;
+							int height;
+							int rear;
+							int* Q; 
+						};</details>
+						<details><summary>struct Queue* newQueue(int maxSize) </summary>{
+							struct Queue* queue = malloc(sizeof(struct Queue));
+							(*queue).capacity = maxSize;
+							(*queue).height = 0;
+							(*queue).rear = -1;
+							(*queue).Q = malloc(sizeof(int) * maxSize);
+							return queue;
+						}</details>
+						<details><summary>bool isFull(struct Queue* queue) </summary>{
+							return (*queue).height == (*queue).capacity;
+						}</details>
+						<details><summary>bool isEmpty(struct Queue* queue) </summary>{
+							return (*queue).height == 0;
+						}</details>
+						<details><summary>int availableSpace(struct Queue* queue) </summary>{
+							return (*queue).capacity - (*queue).height;
+						}</details>
+						<details><summary>void enqueue(struct Queue* queue, int data) </summary>{
+							if (isFull(queue)) {
+								printf("Enqueue prohibitied: Queue is full.\n");
+							} else {
+								(*queue).rear++;
+								(*queue).Q[(*queue).rear] = data;
+								(*queue).height++;
+							}
+						}</details>
+						
+						void rushIn(struct Queue* queue, int dataArray[], int dataArraySize) {
+							if (dataArraySize > availableSpace(queue)) {
+								printf("Insufficient space to rush into queue.\n");
+							}
+							else if (dataArraySize < 0) {
+								printf("Invalid array size: Negative number.\n");
+							} 
+							else {
+								for (int i = 0; i < dataArraySize; i++) {
+									enqueue(queue, dataArray[i]);
+								}
+							}
+						}
+					</code></pre>
+				</div>
+			</div>
+		</section>
+	</section>
+</section>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerc/queue.js"></script>
+{% endblock %}

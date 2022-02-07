@@ -39,4 +39,3 @@ node
 	.attr("y2", linkedListDimensions.height / 4 - 2)
 	.attr("stroke", linkedListColors.arrowColor)
 	.attr("stroke-width", "1px");
-

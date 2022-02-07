@@ -428,6 +428,9 @@ def cpp_doubly_linked_list(request):
 def cpp_stack(request):
 	return render(request, "numerc/cpp/cpp_stack.html")
 
+def cpp_queue(request):
+	return render(request, "numerc/cpp/cpp_queue.html")
+
 
 
 #! C# Views (cshv)

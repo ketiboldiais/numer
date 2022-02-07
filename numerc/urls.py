@@ -247,6 +247,8 @@ urlpatterns = [
 
 	path("cpp_stack", views.cpp_stack, name="cpp_stack"),
 
+	path("cpp_queue", views.cpp_queue, name="cpp_queue"),
+
 
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),

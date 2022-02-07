@@ -134,909 +134,1392 @@
 	</ol>
 	<p>We now consider each implementation in turn.</p>
 </section>
-<section id="stack_as_array">
-	<h2>Array qua Stack: Static Stacks</h2>
-	<p>
-		We refer to the static array implementation of a stack as the
-		<b>array qua stack</b>, which represents the abstract data type of a
-		<b>static stack</b>. We say static stack because the array itself is
-		static &mdash; it has a fixed size, it cannot grow or shrink. Where the
-		array has a fixed <i>size</i>, the static stack has a fixed
-		<b>capacity</b>. And where the array has a variable <i>length</i>, the
-		static stack has a variable <b>height</b>.
-	</p>
-	<p>
-		For example, suppose we wanted to implement a new, empty stack of
-		capacity ${4.}$ Such a stack can be interpreted as:
-	</p>
-	<div class="ds-stack">
-		<ol class="empty">
-			<li>&ThickSpace;</li>
-			<li>&ThickSpace;</li>
-			<li>&ThickSpace;</li>
-			<li>&ThickSpace;</li>
-		</ol>
-	</div>
-	<p>But when implemented as an array:</p>
-	<div class="compare">
-		<ol class="array">
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>0</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>1</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>2</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>3</li>
-				</ul>
-			</li>
-		</ol>
-	</div>
-	<p>
-		Question: How do the array's indices relate to the stack? The indices
-		provide a helpful way for keeping track of the topmost frame. In these
-		materials, we interpret the array qua stack as follows:
-	</p>
-	<div class="split">
-		<ol class="array">
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>0</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>1</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>2</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>3</li>
-				</ul>
-			</li>
-		</ol>
-		<div class="ds-stack">
-			<ol class="numd empty">
-				<li>&ThickSpace;</li>
-				<li>&ThickSpace;</li>
-				<li>&ThickSpace;</li>
-				<li>&ThickSpace;</li>
-			</ol>
-		</div>
-	</div>
-	<p>
-		Here, we have a stack of <i>capacity</i> ${4}$ and a <i>height</i> of
-		${0.}$ Given the empty array, when we insert a new element into the
-		array by writing <var>array[0] = 2</var>, we are <i>pushing</i> a new
-		frame onto the stack:
-	</p>
-	<div class="split">
-		<ol class="array">
-			<li>
-				<ul>
-					<li>2</li>
-					<li>0</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>1</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>2</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>3</li>
-				</ul>
-			</li>
-		</ol>
-		<div class="ds-stack">
-			<ol class="numd">
-				<li>2</li>
-				<li class="empty">&ThickSpace;</li>
-				<li class="empty">&ThickSpace;</li>
-				<li class="empty">&ThickSpace;</li>
-			</ol>
-		</div>
-	</div>
-	<p>
-		The stack's capacity is still ${4,}$ but now its height is ${1.}$
-		Pushing another frame on the stack, say ${(F \mid 9),}$ we write
-		<var>array[1] = 9</var>:
-	</p>
-	<div class="split">
-		<ol class="array">
-			<li>
-				<ul>
-					<li>2</li>
-					<li>0</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>9</li>
-					<li>1</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>2</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>3</li>
-				</ul>
-			</li>
-		</ol>
-		<div class="ds-stack">
-			<ol class="numd">
-				<li>2</li>
-				<li>9</li>
-				<li class="empty">&ThickSpace;</li>
-				<li class="empty">&ThickSpace;</li>
-			</ol>
-		</div>
-	</div>
-	<p>
-		Now the height is ${2,}$ but the capacity is still ${4.}$ Writing
-		<var>array[2] = 1</var>, we push yet another frame:
-	</p>
-	<div class="split">
-		<ol class="array">
-			<li>
-				<ul>
-					<li>2</li>
-					<li>0</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>9</li>
-					<li>1</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>1</li>
-					<li>2</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>&ThickSpace;</li>
-					<li>3</li>
-				</ul>
-			</li>
-		</ol>
-		<div class="ds-stack">
-			<ol class="numd">
-				<li>2</li>
-				<li>9</li>
-				<li>1</li>
-				<li class="empty">&ThickSpace;</li>
-			</ol>
-		</div>
-	</div>
-	<p>
-		The capacity is still ${4,}$ but the height is now ${3.}$ Once we push
-		another frame on the stack, say <var>array[3] = 8</var>, we have:
-	</p>
-	<div class="split">
-		<ol class="array">
-			<li>
-				<ul>
-					<li>2</li>
-					<li>0</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>9</li>
-					<li>1</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>1</li>
-					<li>2</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>8</li>
-					<li>3</li>
-				</ul>
-			</li>
-		</ol>
-		<div class="ds-stack">
-			<ol class="numd">
-				<li>2</li>
-				<li>9</li>
-				<li>1</li>
-				<li>8</li>
-			</ol>
-		</div>
-	</div>
-	<p>
-		At this point, we say that the stack is <b>full</b> &mdash; the stack's
-		height equals its capacity, and we can push no further frames.
-	</p>
-	<p>
-		Examining the diagrams above, we see that pushing a frame onto the
-		stack is done by inserting elements into the array from left to right.
-		In other words, from ${0}$ to ${S-1,}$ where ${S}$ is the size of the
-		array. This means that the right-most element in the array is
-		equivalent to the topmost frame in the stack:
-	</p>
-	<div class="split">
-		<ol class="array">
-			<li>
-				<ul>
-					<li>2</li>
-					<li>0</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>9</li>
-					<li>1</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>1</li>
-					<li>2</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li class="top">8</li>
-					<li>3</li>
-				</ul>
-			</li>
-		</ol>
-		<div class="ds-stack">
-			<ol class="numd">
-				<li>2</li>
-				<li>9</li>
-				<li>1</li>
-				<li class="top">8</li>
-			</ol>
-		</div>
-	</div>
-	<p>
-		Because of how important the topmost frame is, we want to always have a
-		pointer <var>top</var> pointing at this frame:
-	</p>
-	<div class="split">
-		<ol class="array">
-			<li>
-				<ul>
-					<li>2</li>
-					<li>0</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>9</li>
-					<li>1</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li>1</li>
-					<li>2</li>
-				</ul>
-			</li>
-			<li>
-				<ul>
-					<li class="top">8</li>
-					<li>3</li>
-					<li><span class="redText">${\uparrow}$top</span></li>
-				</ul>
-			</li>
-		</ol>
-		<div class="ds-stack">
-			<ol class="numd">
-				<li>2</li>
-				<li>9</li>
-				<li>1</li>
-				<li class="top">8</li>
-			</ol>
-		</div>
-	</div>
-	<p>
-		Putting all of this together, we want the following properties for the
-		static stack, just to start:
-	</p>
-	<ol>
-		<li>
-			A
-			<var
-				><var><mark>capacity</mark></var></var
-			>
-			property, which is an <var>int</var> value corresponding to the
-			maximum number of frames the stack can hold.
-		</li>
-		<li>
-			A
-			<var
-				><var><mark>height</mark></var></var
-			>
-			property, which is an <var>int</var> value corresponding to the
-			number of frames the stack currently holds.
-		</li>
-		<li>
-			A
-			<var
-				><var><mark>top</mark></var></var
-			>
-			property, which is a pointer to the topmost frame.
-		</li>
-		<li>
-			An
-			<var
-				><var><mark>S</mark></var></var
-			>
-			property, which is a pointer to the array implementing the stack.
-		</li>
-	</ol>
-	<p>In C, we can implement the above with a <var>struct</var>:</p>
-	<pre class="language-c"><code>
-		struct Stack {
-			int capacity;
-			int height;
-			int top;
-			int* S;
-		};
-	</code></pre>
-	<p>
-		Notice that the property <var>top</var> has the type
-		<var>int</var> rather than <var>int*</var>. This is not a typo. We will
-		see momentarily why we should have <var>top</var> be of type
-		<var>int</var>.
-	</p>
-</section>
 
-<section id="constructor">
-	<h2>Constructor</h2>
-	<p>
-		Following the <var>struct</var> implementation above, the first step is
-		to write a constructor for the static stack. In C, we can write the
-		constructor as follows:
-	</p>
-	<pre class="language-c"><code>
-		struct Stack* newStack(int maxSize) {
-			struct Stack* stack = malloc(sizeof(struct Stack));
-			(*stack).capacity = maxSize;
-			(*stack).height = 0;
-			(*stack).top = -1;
-			(*stack).S = malloc(sizeof(int)*maxSize);
-			return stack;
-		}
-	</code></pre>
-	<p>All of the code put together:</p>
-	<pre class="language-c"><code>
-		#include &lt;stdio.h&gt;
-		#include &lt;stdlib.h&gt;
-		
-		struct Stack {
-			int capacity;
-			int height;
-			int top;
-			int* S;
-		};
-		
-		struct Stack* newStack(int maxSize) {
-			struct Stack* stack = malloc(sizeof(struct Stack));
-			(*stack).capacity = maxSize;
-			(*stack).height = 0;
-			(*stack).top = -1;
-			(*stack).S = malloc(sizeof(int)*maxSize);
-			return stack;
-		}
-		
-		int main() {
-			struct Stack* stack = newStack(4);
-			return 0;
-		}
-	</code></pre>
-</section>
-
-<section id="pushing">
-	<h2>Pushing</h2>
-	<p>
-		The first fundamental operation to all stacks is <b>pushing</b>. The
-		implementation is straightforward. In pseudocode:
-	</p>
-	<ol class="alg">
-		<li>fn push(Stack* stack; int data) -> void:</li>
-		<ol>
-			<li>stack->top += 1;</li>
-			<li>stack->S[stack->top] = data;</li>
-			<li>stack->height += 1;</li>
-		</ol>
-	</ol>
-	<p>In the implementation above, we're working a record that provides:</p>
-	<ol class="alg">
-		<li>struct Stack:</li>
-		<ol>
-			<li>int capacity;</li>
-			<li>int height;</li>
-			<li>int top;</li>
-			<li>int* S;</li>
-			<li>constructor Stack(int maxSize) -> Stack*:</li>
-			<ol>
-				<li>Stack* stack = malloc(sizeof(stack));</li>
-				<li>stack.capacity = maxSize;</li>
-				<li>stack.height = 0;</li>
-				<li>stack.top = -1;</li>
-				<li>stack.S = malloc(sizeof(int) * maxSize);</li>
-				<li>return stack;</li>
-			</ol>
-		</ol>
-	</ol>
-	<p>
-		Following the code above, the <var><mark>push()</mark></var> function
-		takes two arguments &mdash; the address of some
-		<var>Stack</var> instance, and an <var>int</var> value, the data to be
-		stored. Say we called <var>push(myStack, 4)</var>. This results in:
-	</p>
-	<pre class="language-pseudo"><code>
-		Stack* stack = myStack;
-		int data = 4;
-	</code></pre>
-	<p>
-		On Line ${2}$ of <var>push()</var>, we increment the instance's
-		<var>top</var> property. Previously, <var>top = -1</var>. Incrementing,
-		we get <var>top = 0</var>. With <var>top = 0</var>, we can now use it
-		as an index. When we write:
-	</p>
-	<pre class="language-pseudo"><code>
-		stack->S[stack->top] = data;
-	</code></pre>
-	<p>We are actually writing:</p>
-	<pre class="language-pseudo"><code>
-		stack->S[0] = 4;
-	</code></pre>
-	<p>
-		This is why refer to <var>top</var> as a pointer, even though it's an
-		<var>int</var> value. The expression <var>S[0]</var> is simply a
-		pointer to the first element in the <var>S</var> array;
-		<var>S[1]</var> to the second element; <var>S[2]</var> to the third,
-		and so on.
-	</p>
-	<p>
-		Finally, the last step we performed is incrementing <var>height</var>.
-		This maintains the number of frames currently in the stack.
-	</p>
-	<p>
-		The function above, however, is not implemented well. Why? Because it
-		does not include a guard against pushing onto the stack beyond its
-		limit, the <var>capacity</var>. Accordingly, we need a
-		<b>capacity guard</b>.
-	</p>
-
-	<section id="capacity_test">
-		<h3>Capacity Guard</h3>
+<section id="static_stacks">
+	<h2>Static Stacks</h2>
+	<section id="foundations">
 		<p>
-			With static stacks, we must always be using a
-			<b>capacity guard</b> &mdash; a procedure that determines whether the
-			stack's capacity has been reached. We'll implement this procedure as
-			a function called <var><mark>isFull()</mark></var
-			>, which returns <var>true</var> if the stack's capacity has been
-			reached, and <var>false</var> otherwise. The procedure is
-			straightforward:
+			A <b>static stack</b> is a stack with a fixed capacity &mdash; the
+			maximum number of frames the stack can hold. Because there's an upper
+			bound on the number of frames, the stack cannot hold frames beyond
+			its given capacity. Static stacks are described as static because
+			they are implemented with <i>static arrays</i>. Where the static
+			array has a fixed <i>size</i>, the static stack has a fixed
+			<b>capacity</b>. And where the array has a variable <i>length</i>,
+			the static stack has a variable <b>height</b>.
 		</p>
-		<ol class="alg">
-			<li>isFull(struct Stack* stack) -> bool :</li>
-			<ol>
-				<li>return (stack->capacity) == (stack->height);</li>
+		<p>
+			For example, suppose we wanted to implement a new, empty stack of
+			capacity ${4.}$ Such a stack can be interpreted as:
+		</p>
+		<div class="ds-stack">
+			<ol class="empty">
+				<li>&ThickSpace;</li>
+				<li>&ThickSpace;</li>
+				<li>&ThickSpace;</li>
+				<li>&ThickSpace;</li>
 			</ol>
+		</div>
+		<p>But when implemented as an array:</p>
+		<ol class="array">
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>0</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>2</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>&ThickSpace;</li>
+					<li>3</li>
+				</ul>
+			</li>
 		</ol>
 		<p>
-			In the procedure above, we determine if a static stack is full by
-			testing if it's <var>capacity</var> equals its <var>height</var>. To
-			illustrate why this works, suppose we instantiated a new static stack
-			called <var>myStack</var>, of capacity <var>3</var>. The stack and
-			its properties:
+			Question: How do the array's indices relate to the stack? The indices
+			provide a helpful way for keeping track of the topmost frame. In
+			these materials, we interpret the array qua stack as follows:
 		</p>
 		<div class="split">
-			<ol class="alg">
-				<li>capacity = 3</li>
-				<li>height = 0;</li>
+			<ol class="array">
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>0</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>3</li>
+					</ul>
+				</li>
 			</ol>
 			<div class="ds-stack">
 				<ol class="numd empty">
 					<li>&ThickSpace;</li>
 					<li>&ThickSpace;</li>
 					<li>&ThickSpace;</li>
+					<li>&ThickSpace;</li>
 				</ol>
 			</div>
 		</div>
 		<p>
-			Using our previous push function, when we call
-			<var>push(myStack, 3)</var>, we get:
+			Here, we have a stack of <i>capacity</i> ${4}$ and a <i>height</i> of
+			${0.}$ Given the empty array, when we insert a new element into the
+			array by writing <var>array[0] = 2</var>, we are <i>pushing</i> a new
+			frame onto the stack:
 		</p>
 		<div class="split">
-			<ol class="alg">
-				<li>capacity = 3</li>
-				<li>height = <span class="redText">1</span>;</li>
+			<ol class="array">
+				<li>
+					<ul>
+						<li>2</li>
+						<li>0</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>3</li>
+					</ul>
+				</li>
 			</ol>
 			<div class="ds-stack">
 				<ol class="numd">
-					<li>3</li>
+					<li>2</li>
+					<li class="empty">&ThickSpace;</li>
+					<li class="empty">&ThickSpace;</li>
+					<li class="empty">&ThickSpace;</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			The stack's capacity is still ${4,}$ but now its height is ${1.}$
+			Pushing another frame on the stack, say ${(F \mid 9),}$ we write
+			<var>array[1] = 9</var>:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>2</li>
+						<li>0</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>9</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>3</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack">
+				<ol class="numd">
+					<li>2</li>
+					<li>9</li>
 					<li class="empty">&ThickSpace;</li>
 					<li class="empty">&ThickSpace;</li>
 				</ol>
 			</div>
 		</div>
 		<p>
-			Notice that in doing so, the <var>height</var> is now <var>1</var>.
-			If we push another by calling <var>push(myStack, 7)</var>, we get:
+			Now the height is ${2,}$ but the capacity is still ${4.}$ Writing
+			<var>array[2] = 1</var>, we push yet another frame:
 		</p>
 		<div class="split">
-			<ol class="alg">
-				<li>capacity = 3</li>
-				<li>height = <span class="redText">2</span>;</li>
+			<ol class="array">
+				<li>
+					<ul>
+						<li>2</li>
+						<li>0</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>9</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>&ThickSpace;</li>
+						<li>3</li>
+					</ul>
+				</li>
 			</ol>
 			<div class="ds-stack">
 				<ol class="numd">
-					<li>3</li>
-					<li>7</li>
+					<li>2</li>
+					<li>9</li>
+					<li>1</li>
 					<li class="empty">&ThickSpace;</li>
 				</ol>
 			</div>
 		</div>
 		<p>
-			Now we have <var>height = 2</var>. Then when we call
-			<var>push(myStack, 5)</var>:
+			The capacity is still ${4,}$ but the height is now ${3.}$ Once we
+			push another frame on the stack, say <var>array[3] = 8</var>, we
+			have:
 		</p>
 		<div class="split">
-			<ol class="alg">
-				<li>capacity = 3</li>
-				<li>height = <span class="redText">3</span>;</li>
+			<ol class="array">
+				<li>
+					<ul>
+						<li>2</li>
+						<li>0</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>9</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>8</li>
+						<li>3</li>
+					</ul>
+				</li>
 			</ol>
 			<div class="ds-stack">
 				<ol class="numd">
-					<li>3</li>
-					<li>7</li>
-					<li>5</li>
+					<li>2</li>
+					<li>9</li>
+					<li>1</li>
+					<li>8</li>
 				</ol>
 			</div>
 		</div>
 		<p>
-			Notice that <var>height</var> is now <var>3</var>, which is equal to
-			the <var>capacity</var>. Thus, when we call
-			<var>isFull(myStack)</var> at this point, we will get back
-			<var>true</var> &mdash; the stack is at capacity. Before this point,
-			<var>isFull(myStack)</var> returns false.
+			At this point, we say that the stack is <b>full</b> &mdash; the
+			stack's height equals its capacity, and we can push no further
+			frames.
 		</p>
 		<p>
-			Now that we have a function that can determine if a given stack is
-			full, we can revise our <var>push()</var> function:
+			Examining the diagrams above, we see that pushing a frame onto the
+			stack is done by inserting elements into the array from left to
+			right. In other words, from ${0}$ to ${S-1,}$ where ${S}$ is the size
+			of the array. This means that the right-most element in the array is
+			equivalent to the topmost frame in the stack:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>2</li>
+						<li>0</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>9</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li class="top">8</li>
+						<li>3</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack">
+				<ol class="numd">
+					<li>2</li>
+					<li>9</li>
+					<li>1</li>
+					<li class="top">8</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			Because of how important the topmost frame is, we want to always have
+			a pointer <var>top</var> pointing at this frame:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>2</li>
+						<li>0</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>9</li>
+						<li>1</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>1</li>
+						<li>2</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li class="top">8</li>
+						<li>3</li>
+						<li><span class="redText">${\uparrow}$top</span></li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack">
+				<ol class="numd">
+					<li>2</li>
+					<li>9</li>
+					<li>1</li>
+					<li class="top">8</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			Putting all of this together, we want the following properties for
+			the static stack, just to start:
+		</p>
+		<ol>
+			<li>
+				A
+				<var
+					><var><mark>capacity</mark></var></var
+				>
+				property, which is an <var>int</var> value corresponding to the
+				maximum number of frames the stack can hold.
+			</li>
+			<li>
+				A
+				<var
+					><var><mark>height</mark></var></var
+				>
+				property, which is an <var>int</var> value corresponding to the
+				number of frames the stack currently holds.
+			</li>
+			<li>
+				A
+				<var
+					><var><mark>top</mark></var></var
+				>
+				property, which is a pointer to the topmost frame.
+			</li>
+			<li>
+				A <var><mark>spaceRemaining</mark></var> property, which returns
+				the number of available frames, an <var>int</var> value.
+			</li>
+			<li>
+				An
+				<var
+					><var><mark>S</mark></var></var
+				>
+				property, which is a pointer to the array implementing the stack.
+			</li>
+		</ol>
+		<p>In C, we can implement the above with a <var>struct</var>:</p>
+		<pre class="language-c"><code>
+			struct Stack {
+				int capacity;
+				int height;
+				int top;
+				int spaceRemaining;
+				int* S;
+			};
+		</code></pre>
+		<p>
+			Notice that the property <var>top</var> has the type
+			<var>int</var> rather than <var>int*</var>. This is not a typo. We
+			will see momentarily why we should have <var>top</var> be of type
+			<var>int</var>.
+		</p>
+	</section>
+
+	<section id="constructor">
+		<h3>Constructor</h3>
+		<p>
+			Following the <var>struct</var> implementation above, the first step
+			is to write a constructor for the static stack. In C, we can write
+			the constructor as follows:
+		</p>
+		<pre class="language-c"><code>
+			struct Stack* newStack(int maxSize) {
+				struct Stack* stack = malloc(sizeof(struct Stack));
+				(*stack).capacity = maxSize;
+				(*stack).height = 0;
+				(*stack).top = -1;
+				(*stack).spaceRemaining = maxSize;
+				(*stack).S = malloc(sizeof(int)*maxSize);
+				return stack;
+			}
+		</code></pre>
+		<p>All of the code put together:</p>
+		<pre class="language-c"><code>
+			#include &lt;stdio.h&gt;
+			#include &lt;stdlib.h&gt;
+			
+			struct Stack {
+				int capacity;
+				int height;
+				int top;
+				int space;
+				int* S;
+			};
+	
+			struct Stack* newStack(int maxSize) {
+				struct Stack* stack = malloc(sizeof(struct Stack));
+				(*stack).capacity = maxSize;
+				(*stack).top = -1;
+				(*stack).height = 0;
+				(*stack).space = maxSize;
+				(*stack).S = malloc(sizeof(int) * maxSize);
+				return stack;
+			};
+		</code></pre>
+	</section>
+
+	<section id="pushing">
+		<h3>Pushing</h3>
+		<p>
+			The first fundamental operation to all stacks is <b>pushing</b>. The
+			implementation is straightforward. In pseudocode:
 		</p>
 		<ol class="alg">
 			<li>fn push(Stack* stack; int data) -> void:</li>
 			<ol>
-				<li>if (isFull(stack)):</li>
-				<ol>
-					<li>print "Stack overflow";</li>
-				</ol>
-				<li>else:</li>
-				<ol>
-					<li>stack->top += 1;</li>
-					<li>stack->S[stack->top] = data;</li>
-					<li>stack->height += 1;</li>
-				</ol>
+				<li>stack->top += 1;</li>
+				<li>stack->S[stack->top] = data;</li>
+				<li>stack->height += 1;</li>
+				<li>stack->spaceRemaining -= 1;</li>
 			</ol>
 		</ol>
 		<p>
-			Above, we included the capacity guard <var>isFull(stack)</var>. If
-			the stack is full, then we print the message
-			<var>"Stack overflow"</var>. This prevents us from pushing any
-			further frames onto the stack. Otherwise, we can proceed with
-			pushing. See below for a language-specific implementation.
-		</p>
-		<p>
-			<span class="topic">Time Complexity.</span> The time complexity
-			examining the procedure above, we see that it consists entirely of
-			basic steps. This tells us that the time complexity of pushing an
-			element on the stack is ${O(1)}$ &mdash; constant time.
-		</p>
-	</section>
-
-	<div class="demo">
-		<button>C</button>
-		<div class="implementation">
-			<p>Here is a <i>capacity guard</i> implementation:</p>
-			<pre class="language-c"><code>
-				bool isFull(struct Stack* stack) {
-					return (*stack).capacity == (*stack).height;
-				};
-			</code></pre>
-			<p>And here is a <i>push</i> implementation:</p>
-			<pre class="language-c"><code>
-				void push(struct Stack* stack, int data) {
-					if (isFull(stack)) {
-						printf("Stack overflow\n");
-					} else {
-						(*stack).top++;
-						(*stack).S[(*stack).top] = data;
-						(*stack).height++;
-					}
-				}
-			</code></pre>
-			<p>And just to confirm that this works:</p>
-			<pre class="language-c"><code>
-				#include &lt;stdlib.h&gt;
-				#include &lt;stdio.h&gt;
-				#include &lt;stdbool.h&gt;
-				
-				struct Stack {
-					int capacity;
-					int height;
-					int top;
-					int* S;
-				};
-				
-				struct Stack* newStack(int maxSize) {
-					struct Stack* stack = malloc(sizeof(struct Stack));
-					(*stack).capacity = maxSize;
-					(*stack).height = 0;
-					(*stack).top = -1;
-					(*stack).S = malloc(sizeof(int) * maxSize);
-					return stack;
-				}
-				
-				bool isFull(struct Stack* stack) {
-					return (*stack).capacity == (*stack).height;
-				};
-				
-				void push(struct Stack* stack, int data) {
-					if (isFull(stack)) {
-						printf("Stack overflow\n");
-					} else {
-						(*stack).top++;
-						(*stack).S[(*stack).top] = data;
-						(*stack).height++;
-					}
-				}
-				
-				int main() {
-					int stackSize = 3;
-					struct Stack* stack = newStack(stackSize);
-					push(stack, 8);
-					push(stack, 3);
-					push(stack, 6);
-					for (int i = stackSize-1; i >= 0; i--) {
-						printf("%d\n", (*stack).S[i]);
-						printf("---\n");
-					};
-					push(stack, 7); // should print "Stack overflow"
-					return 0;
-				}
-			</code></pre>
-			<pre class="language-bash"><code>
-				6
-				---
-				3
-				---
-				8
-				---
-				Stack overflow
-			</code></pre>
-		</div>
-	</div>
-</section>
-
-<section id="popping">
-	<h2>Popping</h2>
-	<p>
-		Alongside <var>push()</var>, we also need a function that implements
-		<i>popping</i> &mdash; taking the topmost element off the stack.
-		Unsurprisingly, we'll call this function <var><mark>pop()</mark></var
-		>. It returns nothing, and takes as an argument the address of some
-		stack. The procedure is straightforward:
-	</p>
-	<ol>
-		<li>Decrement <var>top</var>.</li>
-		<li>Decrement <var>height</var>.</li>
-	</ol>
-	<p>
-		That's it. From a C perspective, notice we aren't performing any
-		operation like <var>free()</var> or <var>delete</var>. This is because
-		we <em>cannot</em> free or delete parts of an array. In C, we can only
-		<var>free()</var> the pointer we get back from <var>malloc()</var>,
-		which is a pointer to the first element in the array. Thus, to pop a
-		frame off the stack, the core operations are decrementing
-		<var>top</var> and <var>height</var>. In pseudocode:
-	</p>
-	<ol class="alg">
-		<li>fn pop(Stack* stack) -> void;</li>
-		<ol>
-			<li>stack->top -= 1;</li>
-			<li>stack->height -= 1;</li>
-		</ol>
-	</ol>
-	<p>
-		As we saw with <var>push()</var>, this function is incomplete. Without
-		more, we would be able to call this function on an empty stack. And we
-		do not want that &mdash; it makes no sense to remove something that
-		isn't there. Accordingly, we need an <i>empty guard</i>.
-	</p>
-
-	<section id="empty_guard">
-		<h3>Empty Guard</h3>
-		<p>
-			The <b>empty guard</b> is a procedure that determines if a given
-			stack is empty. The question then, is, when is a stack empty? When
-			its <var>height</var> is <var>0</var>. Needless to say, the
-			implementation is short:
+			In the implementation above, we're working a record that provides:
 		</p>
 		<ol class="alg">
-			<li>fn isEmpty(struct Stack* stack) -> bool:</li>
+			<li>struct Stack:</li>
 			<ol>
-				<li>return (stack->height) == 0;</li>
+				<li>int capacity;</li>
+				<li>int height;</li>
+				<li>int top;</li>
+				<li>int* S;</li>
+				<li>constructor Stack(int maxSize) -> Stack*:</li>
+				<ol>
+					<li>Stack* stack = malloc(sizeof(stack));</li>
+					<li>stack.capacity = maxSize;</li>
+					<li>stack.height = 0;</li>
+					<li>stack.top = -1;</li>
+					<li>stack.S = malloc(sizeof(int) * maxSize);</li>
+					<li>return stack;</li>
+				</ol>
 			</ol>
 		</ol>
 		<p>
-			To see that this works, suppose we had a stack <var>aStack</var> of
-			size <var>3</var>, initialized:
+			Following the code above, the <var><mark>push()</mark></var> function
+			takes two arguments &mdash; the address of some
+			<var>Stack</var> instance, and an <var>int</var> value, the data to
+			be stored. Say we called <var>push(myStack, 4)</var>. This results
+			in:
 		</p>
-		<div class="split">
-			<ol class="alg">
-				<li>capacity = 3</li>
-				<li>height = 3;</li>
-				<li>top = 2;</li>
-			</ol>
-			<div class="ds-stack">
-				<ol class="numd">
-					<li>2</li>
-					<li>7</li>
-					<li class="top">1</li>
-				</ol>
-			</div>
-		</div>
-		<p>When we call <var>pop(aStack)</var>, we get:</p>
-		<div class="split">
-			<ol class="alg">
-				<li>capacity = 3</li>
-				<li>height = <span class="redText">2</span>;</li>
-				<li>top = <span class="blueText">1</span>;</li>
-			</ol>
-			<div class="ds-stack">
-				<ol class="numd">
-					<li>2</li>
-					<li class="top">7</li>
-					<li class="empty">1</li>
-				</ol>
-			</div>
-		</div>
+		<pre class="language-pseudo"><code>
+			Stack* stack = myStack;
+			int data = 4;
+		</code></pre>
 		<p>
-			Notice that the value occupying <var>S[2]</var> doesn't disappear.
-			It's still there, it's just that the <var>top</var> has changed. And
-			because the <var>top</var> has changed, <var>S[2]</var> can be
-			overwritten later. Because of this fact, <var>S[2]</var> been popped
-			off the stack for all functional purposes.
+			On Line ${2}$ of <var>push()</var>, we increment the instance's
+			<var>top</var> property. Previously, <var>top = -1</var>.
+			Incrementing, we get <var>top = 0</var>. With <var>top = 0</var>, we
+			can now use it as an index. When we write:
 		</p>
-		<p>When we call <var>pop(aStack)</var> again, we get:</p>
-		<div class="split">
-			<ol class="alg">
-				<li>capacity = 3</li>
-				<li>height = <span class="redText">1</span>;</li>
-				<li>top = <span class="blueText">0</span>;</li>
-			</ol>
-			<div class="ds-stack">
-				<ol class="numd">
-					<li class="top">2</li>
-					<li class="empty">7</li>
-					<li class="empty">1</li>
-				</ol>
-			</div>
-		</div>
-		<p>And when we call <var>pop(aStack)</var> one more time:</p>
-		<div class="split">
-			<ol class="alg">
-				<li>capacity = 3</li>
-				<li>height = <span class="redText">0</span>;</li>
-				<li>top = <span class="blueText">-1</span>;</li>
-			</ol>
-			<div class="ds-stack">
-				<ol class="numd">
-					<li class="empty">2</li>
-					<li class="empty">7</li>
-					<li class="empty">1</li>
-				</ol>
-			</div>
-		</div>
+		<pre class="language-pseudo"><code>
+			stack->S[stack->top] = data;
+		</code></pre>
+		<p>We are actually writing:</p>
+		<pre class="language-pseudo"><code>
+			stack->S[0] = 4;
+		</code></pre>
 		<p>
-			At this point, the <var>aStack</var> is effectively empty, identified
-			by a particular property of its current state: <var>height = 0</var>.
+			This is why refer to <var>top</var> as a pointer, even though it's an
+			<var>int</var> value. The expression <var>S[0]</var> is simply a
+			pointer to the first element in the <var>S</var> array;
+			<var>S[1]</var> to the second element; <var>S[2]</var> to the third,
+			and so on.
 		</p>
 		<p>
-			Now that we have an empty guard, we can rewrite our
-			<var>pop()</var> function:
+			Finally, the last step we performed is incrementing
+			<var>height</var>. This maintains the number of frames currently in
+			the stack.
+		</p>
+		<p>
+			The function above, however, is not implemented well. Why? Because it
+			does not include a guard against pushing onto the stack beyond its
+			limit, the <var>capacity</var>. Accordingly, we need a
+			<b>capacity guard</b>.
+		</p>
+
+		<section id="capacity_test">
+			<h4>Capacity Guard</h4>
+			<p>
+				With static stacks, we must always be using a
+				<b>capacity guard</b> &mdash; a procedure that determines whether
+				the stack's capacity has been reached. We'll implement this
+				procedure as a function called <var><mark>isFull()</mark></var
+				>, which returns <var>true</var> if the stack's capacity has been
+				reached, and <var>false</var> otherwise. The procedure is
+				straightforward:
+			</p>
+			<ol class="alg">
+				<li>isFull(struct Stack* stack) -> bool :</li>
+				<ol>
+					<li>return (stack->capacity) == (stack->height);</li>
+				</ol>
+			</ol>
+			<p>
+				Alternatively, we could implement the guard using the
+				<var>spaceRemaining</var> property:
+			</p>
+			<ol class="alg">
+				<li>isFull(struct Stack* stack) -> bool :</li>
+				<ol>
+					<li>return (stack->spaceRemaining) == 0;</li>
+				</ol>
+			</ol>
+			<p>
+				In the procedure above, we determine if a static stack is full by
+				testing if it's <var>capacity</var> equals its <var>height</var>.
+				To illustrate why this works, suppose we instantiated a new static
+				stack called <var>myStack</var>, of capacity <var>3</var>. The
+				stack and its properties:
+			</p>
+			<div class="split">
+				<ol class="alg">
+					<li>capacity = 3</li>
+					<li>height = 0;</li>
+					<li>spaceRemaining = 3;</li>
+				</ol>
+				<div class="ds-stack">
+					<ol class="numd empty">
+						<li>&ThickSpace;</li>
+						<li>&ThickSpace;</li>
+						<li>&ThickSpace;</li>
+					</ol>
+				</div>
+			</div>
+			<p>
+				Using our previous push function, when we call
+				<var>push(myStack, 3)</var>, we get:
+			</p>
+			<div class="split">
+				<ol class="alg">
+					<li>capacity = 3</li>
+					<li>height = <span class="redText">1</span>;</li>
+					<li>spaceRemaining = <span class="redText">2</span>;</li>
+				</ol>
+				<div class="ds-stack">
+					<ol class="numd">
+						<li>3</li>
+						<li class="empty">&ThickSpace;</li>
+						<li class="empty">&ThickSpace;</li>
+					</ol>
+				</div>
+			</div>
+			<p>
+				Notice that in doing so, the <var>height</var> is now <var>1</var>.
+				If we push another by calling <var>push(myStack, 7)</var>, we get:
+			</p>
+			<div class="split">
+				<ol class="alg">
+					<li>capacity = 3</li>
+					<li>height = <span class="redText">2</span>;</li>
+					<li>spaceRemaining = <span class="redText">1</span>;</li>
+				</ol>
+				<div class="ds-stack">
+					<ol class="numd">
+						<li>3</li>
+						<li>7</li>
+						<li class="empty">&ThickSpace;</li>
+					</ol>
+				</div>
+			</div>
+			<p>
+				Now we have <var>height = 2</var>. Then when we call
+				<var>push(myStack, 5)</var>:
+			</p>
+			<div class="split">
+				<ol class="alg">
+					<li>capacity = 3</li>
+					<li>height = <span class="redText">3</span>;</li>
+					<li>spaceRemaining = <span class="redText">0</span>;</li>
+				</ol>
+				<div class="ds-stack">
+					<ol class="numd">
+						<li>3</li>
+						<li>7</li>
+						<li>5</li>
+					</ol>
+				</div>
+			</div>
+			<p>
+				Notice that <var>height</var> is now <var>3</var>, which is equal
+				to the <var>capacity</var>. Thus, when we call
+				<var>isFull(myStack)</var> at this point, we will get back
+				<var>true</var> &mdash; the stack is at capacity. Before this
+				point, <var>isFull(myStack)</var> returns false.
+			</p>
+			<p>
+				Now that we have a function that can determine if a given stack is
+				full, we can revise our <var>push()</var> function:
+			</p>
+			<ol class="alg">
+				<li>fn push(Stack* stack; int data) -> void:</li>
+				<ol>
+					<li>if (isFull(stack)):</li>
+					<ol>
+						<li>print "Stack overflow";</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>stack->top += 1;</li>
+						<li>stack->S[stack->top] = data;</li>
+						<li>stack->height += 1;</li>
+					</ol>
+				</ol>
+			</ol>
+			<p>
+				Above, we included the capacity guard <var>isFull(stack)</var>. If
+				the stack is full, then we print the message
+				<var>"Stack overflow"</var>. This prevents us from pushing any
+				further frames onto the stack. Otherwise, we can proceed with
+				pushing. See below for a language-specific implementation.
+			</p>
+			<p>
+				<span class="topic">Time Complexity.</span> The time complexity
+				examining the procedure above, we see that it consists entirely of
+				basic steps. This tells us that the time complexity of pushing an
+				element on the stack is ${O(1)}$ &mdash; constant time.
+			</p>
+		</section>
+
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>Here is a <i>capacity guard</i> implementation:</p>
+				<pre class="language-c"><code>
+					bool isFull(struct Stack* stack) {
+						return (*stack).spaceRemaining == 0;
+					};
+				</code></pre>
+				<p>And here is a <i>push</i> implementation:</p>
+				<pre class="language-c"><code>
+					void push(struct Stack* stack, int data) {
+						if (isFull(stack)) {
+							printf("Stack overflow\n");
+						} else {
+							(*stack).top++;
+							(*stack).S[(*stack).top] = data;
+							(*stack).height++;
+						}
+					}
+				</code></pre>
+				<p>And just to confirm that this works:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdio.h&gt;
+					#include &lt;stdbool.h&gt;
+					
+					struct Stack {
+						int capacity;
+						int height;
+						int top;
+						int spaceRemaining;
+						int* S;
+					};
+					
+					struct Stack* newStack(int maxSize) {
+						struct Stack* stack = malloc(sizeof(struct Stack));
+						(*stack).capacity = maxSize;
+						(*stack).height = 0;
+						(*stack).top = -1;
+						(*stack).spaceRemaining = maxSize;
+						(*stack).S = malloc(sizeof(int) * maxSize);
+						return stack;
+					}
+					
+					bool isFull(struct Stack* stack) {
+						return (*stack).capacity == (*stack).height;
+					};
+					
+					void push(struct Stack* stack, int data) {
+						if (isFull(stack)) {
+							printf("Stack overflow\n");
+						} else {
+							(*stack).top++;
+							(*stack).S[(*stack).top] = data;
+							(*stack).height++;
+							(*stack).spaceRemaining--;
+						}
+					}
+					
+					int main() {
+						int stackSize = 3;
+						struct Stack* stack = newStack(stackSize);
+						push(stack, 8);
+						push(stack, 3);
+						push(stack, 6);
+						for (int i = stackSize-1; i >= 0; i--) {
+							printf("%d\n", (*stack).S[i]);
+							printf("---\n");
+						};
+						push(stack, 7); // should print "Stack overflow"
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					6
+					---
+					3
+					---
+					8
+					---
+					Stack overflow
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="popping">
+		<h3>Popping</h3>
+		<p>
+			Alongside <var>push()</var>, we also need a function that implements
+			<i>popping</i> &mdash; taking the topmost element off the stack.
+			Unsurprisingly, we'll call this function <var><mark>pop()</mark></var
+			>. It returns nothing, and takes as an argument the address of some
+			stack. The procedure is straightforward:
+		</p>
+		<ol>
+			<li>Decrement <var>top</var>.</li>
+			<li>Decrement <var>height</var>.</li>
+		</ol>
+		<p>
+			That's it. From a C perspective, notice we aren't performing any
+			operation like <var>free()</var> or <var>delete</var>. This is
+			because we <em>cannot</em> free or delete parts of an array. In C, we
+			can only <var>free()</var> the pointer we get back from
+			<var>malloc()</var>, which is a pointer to the first element in the
+			array. Thus, to pop a frame off the stack, the core operations are
+			decrementing <var>top</var> and <var>height</var>. In pseudocode:
 		</p>
 		<ol class="alg">
 			<li>fn pop(Stack* stack) -> void;</li>
 			<ol>
-				<li>if (isEmpty(stack)):</li>
-				<ol>
-					<li>print "Stack underflow";</li>
-				</ol>
-				<li>else:</li>
-				<ol>
-					<li>stack->top -= 1;</li>
-					<li>stack->height -= 1;</li>
-				</ol>
+				<li>stack->top -= 1;</li>
+				<li>stack->height -= 1;</li>
 			</ol>
 		</ol>
 		<p>
-			With the function above, if the user attempts to call
-			<var>pop()</var> on an empty stack, the function returns an error
-			message <var>"Stack underflow"</var>. Otherwise, the popping
-			proceeds.
+			As we saw with <var>push()</var>, this function is incomplete.
+			Without more, we would be able to call this function on an empty
+			stack. And we do not want that &mdash; it makes no sense to remove
+			something that isn't there. Accordingly, we need an
+			<i>empty guard</i>.
+		</p>
+
+		<section id="empty_guard">
+			<h4>Empty Guard</h4>
+			<p>
+				The <b>empty guard</b> is a procedure that determines if a given
+				stack is empty. The question then, is, when is a stack empty? When
+				its <var>height</var> is <var>0</var>. Needless to say, the
+				implementation is short:
+			</p>
+			<ol class="alg">
+				<li>fn isEmpty(struct Stack* stack) -> bool:</li>
+				<ol>
+					<li>return (stack->height) == 0;</li>
+				</ol>
+			</ol>
+			<p>
+				To see that this works, suppose we had a stack <var>aStack</var> of
+				size <var>3</var>, initialized:
+			</p>
+			<div class="split">
+				<ol class="alg">
+					<li>capacity = 3</li>
+					<li>height = 3;</li>
+					<li>top = 2;</li>
+				</ol>
+				<div class="ds-stack">
+					<ol class="numd">
+						<li>2</li>
+						<li>7</li>
+						<li class="top">1</li>
+					</ol>
+				</div>
+			</div>
+			<p>When we call <var>pop(aStack)</var>, we get:</p>
+			<div class="split">
+				<ol class="alg">
+					<li>capacity = 3</li>
+					<li>height = <span class="redText">2</span>;</li>
+					<li>top = <span class="blueText">1</span>;</li>
+				</ol>
+				<div class="ds-stack">
+					<ol class="numd">
+						<li>2</li>
+						<li class="top">7</li>
+						<li class="empty">1</li>
+					</ol>
+				</div>
+			</div>
+			<p>
+				Notice that the value occupying <var>S[2]</var> doesn't disappear.
+				It's still there, it's just that the <var>top</var> has changed.
+				And because the <var>top</var> has changed, <var>S[2]</var> can be
+				overwritten later. Because of this fact, <var>S[2]</var> been
+				popped off the stack for all functional purposes.
+			</p>
+			<p>When we call <var>pop(aStack)</var> again, we get:</p>
+			<div class="split">
+				<ol class="alg">
+					<li>capacity = 3</li>
+					<li>height = <span class="redText">1</span>;</li>
+					<li>top = <span class="blueText">0</span>;</li>
+				</ol>
+				<div class="ds-stack">
+					<ol class="numd">
+						<li class="top">2</li>
+						<li class="empty">7</li>
+						<li class="empty">1</li>
+					</ol>
+				</div>
+			</div>
+			<p>And when we call <var>pop(aStack)</var> one more time:</p>
+			<div class="split">
+				<ol class="alg">
+					<li>capacity = 3</li>
+					<li>height = <span class="redText">0</span>;</li>
+					<li>top = <span class="blueText">-1</span>;</li>
+				</ol>
+				<div class="ds-stack">
+					<ol class="numd">
+						<li class="empty">2</li>
+						<li class="empty">7</li>
+						<li class="empty">1</li>
+					</ol>
+				</div>
+			</div>
+			<p>
+				At this point, the <var>aStack</var> is effectively empty,
+				identified by a particular property of its current state:
+				<var>height = 0</var>.
+			</p>
+			<p>
+				Now that we have an empty guard, we can rewrite our
+				<var>pop()</var> function:
+			</p>
+			<ol class="alg">
+				<li>fn pop(Stack* stack) -> void;</li>
+				<ol>
+					<li>if (isEmpty(stack)):</li>
+					<ol>
+						<li>print "Stack underflow";</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>stack->top -= 1;</li>
+						<li>stack->height -= 1;</li>
+						<li>stack->spaceRemaining += 1;</li>
+					</ol>
+				</ol>
+			</ol>
+			<p>
+				With the function above, if the user attempts to call
+				<var>pop()</var> on an empty stack, the function returns an error
+				message <var>"Stack underflow"</var>. Otherwise, the popping
+				proceeds.
+			</p>
+			<p>
+				<span class="topic">Time Complexity.</span> Like pushing, popping
+				an element off the stack consists entirely of basic steps. As such,
+				the <var>pop()</var> function has time complexity of ${O(1)}$
+				&mdash; constant time.
+			</p>
+			<div class="demo">
+				<button>C</button>
+				<div class="implementation">
+					<p>
+						Here's an implementation of the <var>isEmpty()</var> function
+						in C:
+					</p>
+					<pre class="language-c"><code>
+						bool isEmpty(struct Stack* stack) {
+							return (*stack).height == 0;
+						}
+					</code></pre>
+					<p>And the <var>pop()</var> function's implementation:</p>
+					<pre class="language-c"><code>
+						void pop(struct Stack* stack) {
+							if (isEmpty(stack)) {
+								printf("Stack underflow\n");
+							} else {
+								(*stack).top--;
+								(*stack).height--;
+								(*stack).spaceRemaining++;
+							}
+						}
+					</code></pre>
+					<p>Testing:</p>
+					<pre class="language-c"><code>
+						#include &lt;stdio.h&gt;
+						#include &lt;stdlib.h&gt;
+						#include &lt;stdbool.h&gt;
+						
+						struct Stack {
+							int capacity;
+							int height;
+							int top;
+							int spaceRemaining;
+							int* S;
+						};
+						
+						struct Stack* newStack(int maxSize) {
+							struct Stack* stack = malloc(sizeof(struct Stack));
+							(*stack).capacity = maxSize;
+							(*stack).height = 0;
+							(*stack).top = -1;
+							(*stack).spaceRemaining = maxSize;
+							(*stack).S = malloc(sizeof(int) * maxSize);
+							return stack;
+						}
+						
+						bool isFull(struct Stack* stack) {
+							return (*stack).capacity == (*stack).height;
+						}
+						
+						bool isEmpty(struct Stack* stack) {
+							return (*stack).height == 0;
+						}
+						
+						void push(struct Stack* stack, int data) {
+							if (isFull(stack)) {
+								printf("Stack overflow\n");
+							} else {
+								(*stack).top++;
+								(*stack).S[(*stack).top] = data;
+								(*stack).height++;
+							}
+						}
+	
+						void pop(struct Stack* stack) {
+							if (isEmpty(stack)) {
+								printf("Stack underflow\n");
+							} else {
+								(*stack).top--;
+								(*stack).height--;
+								(*stack).spaceRemaining++;
+							}
+						}
+						
+						void print(struct Stack* stack) {
+							if (isEmpty(stack)) {
+								printf("Empty\n");
+							} else {
+								for (int i = (*stack).top; i >= 0; i--) {
+									printf("%d\n", (*stack).S[i]);
+									printf("---\n");
+								}
+							}
+						} 
+						
+						int main() {
+							struct Stack* aStack = newStack(3);
+							push(aStack, 1);
+							push(aStack, 8);
+							push(aStack, 4);
+							print(aStack);
+						
+							printf("\n");
+						
+							pop(aStack);
+							print(aStack);
+						
+							printf("\n");
+						
+							pop(aStack);
+							print(aStack);
+						
+							printf("\n");
+						
+							pop(aStack);
+							print(aStack);
+						
+							printf("\n");
+						
+							pop(aStack);
+							print(aStack);
+						
+							return 0;
+						}
+					</code></pre>
+					<pre class="language-bash"><code>
+						4
+						---
+						8
+						---
+						1
+						---
+	
+						8
+						---
+						1
+						---
+	
+						1
+						---
+	
+						Empty
+	
+						Stack underflow
+						Empty
+					</code></pre>
+				</div>
+			</div>
+		</section>
+	</section>
+
+	<section id="peeking">
+		<h3>Peeking</h3>
+		<p>
+			An operation commonly associated with stacks is the
+			<i>peek</i> operation. The peek operation returns the stack frame at
+			a given position ${i.}$ The operation is called
+			<i>peeking</i> because the topmost frame hides all of the frames
+			beneath it.
+		</p>
+		<p>Suppose we had the following stack:</p>
+		<div class="ds-stack">
+			<ol class="numd">
+				<li>9</li>
+				<li>2</li>
+				<li>4</li>
+				<li>7</li>
+			</ol>
+		</div>
+		<p>
+			The numbers to the right correspond to the indices of the array that
+			implements the stack:
+		</p>
+		<ol class="array">
+			<li>
+				<ul>
+					<li>9</li>
+					<li>0</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>2</li>
+					<li>1</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>4</li>
+					<li>2</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>7</li>
+					<li>3</li>
+				</ul>
+			</li>
+		</ol>
+		<p>
+			However, because we think of the stack as going from top to bottom,
+			we want to interpret the topmost frame as the <q>first</q> frame. In
+			other words, the frame with position ${0:}$
+		</p>
+		<div class="ds-stack">
+			<ol class="positioned numd">
+				<li>7</li>
+				<li>4</li>
+				<li>2</li>
+				<li>9</li>
+			</ol>
+		</div>
+		<p>
+			We can implement this interpretation by finding an equation that
+			expresses the position value in terms of <var>top</var> and the index
+			<var>i</var> that must be passed to <var>S[i]</var>. To do so, let's
+			compare the values in a table:
+		</p>
+		<table class="alg center no-row">
+			<thead>
+				<th><var>position</var></th>
+				<th><var>top</var></th>
+				<th><var>array index</var></th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>0</td>
+					<td>3</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>3</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>3</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>3</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+			<tbody></tbody>
+		</table>
+		<p>
+			Looking at these values, we can express the array index ${i}$ we must
+			use to obtain the position ${p}$ with the following formula:
+		</p>
+		<figure>$$ i = t - p $$</figure>
+		<p>
+			where ${i}$ is the index, ${t}$ is the value of <var>top</var>, and
+			${p}$ is the <var>position</var> argument passed. Implementing this
+			procedure:
+		</p>
+		<ol class="alg">
+			<li>fn peek(Stack* stack, int position) -> int :</li>
+			<ol>
+				<li>int frameVal = INT_MIN;</li>
+				<li>if (isEmpty(stack)):</li>
+				<ol>
+					<li>print "Stack is empty, returning INT_MIN";</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>if (0 <= position <= stack->top):</li>
+					<ol>
+						<li>int i = (stack->top) - position;</li>
+						<li>frameVal = stack->S[i];</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>print "Invalid index, returning INT_MIN";</li>
+					</ol>
+				</ol>
+				<li>return frameVal;</li>
+			</ol>
+		</ol>
+		<p>
+			In the implementation above, we included two guards. First, a guard
+			checking whether the stack is empty. If it is empty, we log an error
+			message and return a dummy frame value, <var>INT_MIN</var>. If the
+			stack is not empty, then we proceed to the else-branch.
 		</p>
 		<p>
-			<span class="topic">Time Complexity.</span> Like pushing, popping an
-			element off the stack consists entirely of basic steps. As such, the
-			<var>pop()</var> function has time complexity of ${O(1)}$ &mdash;
-			constant time.
+			Inside the else-branch, we encounter the second guard:
+			<var>0 <= position <= stack->top</var>. This guard ensures that a
+			valid <var>position</var> value was passed &mdash; the value must be
+			within the range of ${0}$ through <var>top</var>. Otherwise, we log
+			an error message and return the dummy frame value.
+		</p>
+		<p>
+			<span class="topic">Time Complexity.</span> Because the procedure
+			above consists entirely of basic steps, we have a time complexity of
+			${O(1)}$ &mdash; constant time.
 		</p>
 		<div class="demo">
 			<button>C</button>
 			<div class="implementation">
 				<p>
-					Here's an implementation of the <var>isEmpty()</var> function in
-					C:
+					Here's an implementation of the <var>peek()</var> function in C:
 				</p>
 				<pre class="language-c"><code>
+					int peek(struct Stack* stack, int position) {
+						int frameVal = INT8_MIN;
+						if (isEmpty(stack)) {
+							printf("Empty stack. Returning INT8_MIN.\n");
+						} else {
+							if (0 <= position && position <= (*stack).top) {
+								int i = (*stack).top - position;
+								frameVal = (*stack).S[i];
+							} else {
+								printf("Invalid index. Returning INT8_MIN.\n");
+							}
+						}
+						return frameVal;
+					}
+				</code></pre>
+				<p>Testing the code:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdio.h&gt;
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdbool.h&gt;
+					
+					struct Stack {
+						int capacity;
+						int height;
+						int top;
+						int space;
+						int* S;
+					};
+					
+					struct Stack* newStack(int maxSize) {
+						struct Stack* stack = malloc(sizeof(struct Stack));
+						(*stack).capacity = maxSize;
+						(*stack).top = -1;
+						(*stack).height = 0;
+						(*stack).space = maxSize;
+						(*stack).S = malloc(sizeof(int) * maxSize);
+						return stack;
+					};
+					
+					bool isFull(struct Stack* stack) {
+						return (*stack).height == (*stack).capacity;
+					}
+					
 					bool isEmpty(struct Stack* stack) {
 						return (*stack).height == 0;
 					}
-				</code></pre>
-				<p>And the <var>pop()</var> function's implementation:</p>
-				<pre class="language-c"><code>
-					void pop(struct Stack* stack) {
-						if (isEmpty(stack)) {
-							printf("Stack underflow\n");
+					
+					void push(struct Stack* stack, int datum) {
+						if (isFull(stack)) {
+							printf("Stack overflow\n");
 						} else {
-							(*stack).top--;
-							(*stack).height--;
+							(*stack).top++;
+							(*stack).S[(*stack).top] = datum;
+							(*stack).height++;
+							(*stack).space--;
+						}
+					};
+					
+					void pushArray(struct Stack* stack, int dataArray[], int arraySize) {
+						if (arraySize > (*stack).space) {
+							int diff = arraySize - (*stack).space;
+							printf("Stack overflow by %d element(s).\n", diff);
+						} else {
+							for (int i = 0; i < arraySize; i++) {
+								push(stack, dataArray[i]);
+							}
+						}
+					};
+					
+					int peek(struct Stack* stack, int position) {
+						int frameVal = INT8_MIN;
+						if (isEmpty(stack)) {
+							printf("Empty stack. Returning INT8_MIN.\n");
+						} else {
+							if (0 <= position && position <= (*stack).top) {
+								int i = (*stack).top - position;
+								frameVal = (*stack).S[i];
+							} else {
+								printf("Invalid index. Returning INT8_MIN.\n");
+							}
+						}
+						return frameVal;
+					}
+					
+					void print(struct Stack* stack) {
+						if (isEmpty(stack)) {
+							printf("Empty stack.\n");
+						} else {
+							for (int i = (*stack).top; i >= 0; i--) {
+								printf("%d\n", (*stack).S[i]);
+								printf("---\n");
+							}
+						}
+					}
+					
+					
+					int main() {
+						struct Stack* stack = newStack(5);
+						const int arrSize = 5;
+						int arr[arrSize] = {3,9,2,1,5};
+						pushArray(stack, arr, arrSize);
+						print(stack);
+						int peek0 = peek(stack, 0); 
+						printf("peek0: %d\n", peek0);
+						int peek4 = peek(stack, 4); 
+						printf("peek4: %d\n", peek4);
+						int peek6 = peek(stack, 6);
+						printf("peek6: %d\n", peek6);
+						return 0;
+					};
+				</code></pre>
+				<pre class="language-bash"><code>
+					5
+					---
+					1
+					---
+					2
+					---
+					9
+					---
+					3
+					---
+					peek0: 5
+					peek4: 3
+					Invalid index. Returning INT8_MIN.
+					peek6: -128
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="pulling">
+		<h3>Pulling</h3>
+		<p>
+			When we <b>pull</b> from a stack, we are retrieving the data value in
+			the topmost frame. Because the <var>top</var> pointer updates each
+			time we push and pop off the stack, the procedure is straightforward:
+		</p>
+		<ol class="alg">
+			<li>fn pull(Stack* stack) -> int:</li>
+			<ol>
+				<li>if (isEmpty(stack)):</li>
+				<ol>
+					<li>print "Stack is empty. Returning INT_MIN."</li>
+					<li>return INT_MIN</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>return (*stack).S[stack->top];</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			As usual, whenever we're trying to retrieve some data from the stack,
+			we want to ensury the stack is not empty. If it is, we log an error
+			message and return a dummy value <var>INT_MIN</var>. If it isn't then
+			we return the topmost frame's stored value.
+		</p>
+		<p>
+			<span class="topic">Complexity.</span> Because all of the steps in
+			the procedure above are basic steps, the time complexity for
+			<var>pull()</var> is constant &mdash; ${O(1).}$
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>Here's an implementation of <var>pull()</var> in C:</p>
+				<pre class="language-c"><code>
+					int pull(struct Stack* stack) {
+						if (isEmpty(stack)) {
+							printf("Stack is empty. Returning INT8_MIN.\n");
+							return INT8_MIN;
+						} else {
+							return (*stack).S[(*stack).top];
 						}
 					}
 				</code></pre>
@@ -1050,82 +1533,958 @@
 						int capacity;
 						int height;
 						int top;
+						int spaceRemaining;
 						int* S;
 					};
 					
 					struct Stack* newStack(int maxSize) {
 						struct Stack* stack = malloc(sizeof(struct Stack));
 						(*stack).capacity = maxSize;
-						(*stack).height = 0;
 						(*stack).top = -1;
+						(*stack).height = 0;
+						(*stack).spaceRemaining = maxSize;
 						(*stack).S = malloc(sizeof(int) * maxSize);
 						return stack;
-					}
+					};
 					
 					bool isFull(struct Stack* stack) {
-						return (*stack).capacity == (*stack).height;
+						return (*stack).height == (*stack).capacity;
 					}
 					
 					bool isEmpty(struct Stack* stack) {
 						return (*stack).height == 0;
 					}
 					
-					void push(struct Stack* stack, int data) {
+					void push(struct Stack* stack, int datum) {
 						if (isFull(stack)) {
-							printf("Stack overflow\n");
+							printf("Stack overflow.\n");
 						} else {
 							(*stack).top++;
-							(*stack).S[(*stack).top] = data;
+							(*stack).S[(*stack).top] = datum;
 							(*stack).height++;
+							(*stack).spaceRemaining--;
+						}
+					};
+					
+					void pushArray(struct Stack* stack, int dataArray[], int arraySize) {
+						if (arraySize > (*stack).spaceRemaining) {
+							int diff = arraySize - (*stack).spaceRemaining;
+							printf("Stack overflow by %d element(s).\n", diff);
+						} else {
+							for (int i = 0; i < arraySize; i++) {
+								push(stack, dataArray[i]);
+							}
+						}
+					};
+					
+					void pop(struct Stack* stack) {
+						if (isEmpty(stack)) {
+							printf("Empty stack.\n");
+						} else {
+							(*stack).top--;
+							(*stack).height--;
+							(*stack).spaceRemaining++;
+						}
+					}
+					
+					int peek(struct Stack* stack, int position) {
+						int frameVal = INT8_MIN;
+						if (isEmpty(stack)) {
+							printf("Empty stack. Returning INT8_MIN.\n");
+						} else {
+							if (0 <= position && position <= (*stack).top) {
+								int i = (*stack).top - position;
+								frameVal = (*stack).S[i];
+							} else {
+								printf("Invalid index. Returning INT8_MIN.\n");
+							}
+						}
+						return frameVal;
+					}
+					
+					int pull(struct Stack* stack) {
+						if (isEmpty(stack)) {
+							printf("Stack is empty. Returning INT8_MIN.\n");
+							return INT8_MIN;
+						} else {
+							return (*stack).S[(*stack).top];
 						}
 					}
 					
 					void print(struct Stack* stack) {
 						if (isEmpty(stack)) {
-							printf("Empty\n");
+							printf("Empty stack.\n");
 						} else {
 							for (int i = (*stack).top; i >= 0; i--) {
 								printf("%d\n", (*stack).S[i]);
 								printf("---\n");
 							}
 						}
-					} 
+					}
 					
+					
+					int main() {
+						struct Stack* stack = newStack(5);
+						const int arrSize = 5;
+						int arr[arrSize] = {3,9,2,1,5};
+						pushArray(stack, arr, arrSize);
+						print(stack);
+						int currentTop = pull(stack);
+						printf("Current top: %d\n", currentTop);
+						return 0;
+					};
+				</code></pre>
+				<pre class="language-bash"><code>
+					5
+					---
+					1
+					---
+					2
+					---
+					9
+					---
+					3
+					---
+					Current top: 5
+				</code></pre>
+			</div>
+		</div>
+	</section>
+</section>
+
+<section id="dynamic_stacks">
+	<h2>Dynamic Stacks</h2>
+	<p>
+		In contrast to static stacks, <b>dynamic stacks</b> are stacks that
+		have no set capacity. As long as we have memory available, we can store
+		as many stacks as we'd like. To realize this property, we implement
+		dynamic stacks with <i>linked lists</i> rather than arrays. Consider
+		the following dynamic stack:
+	</p>
+	<div class="ds-stack dynamic">
+		<ol class="numd">
+			<li class="top">3</li>
+			<li>8</li>
+			<li>5</li>
+			<li>1</li>
+		</ol>
+	</div>
+	<p>As a linked list:</p>
+	<div id="linkedList1"></div>
+	<p>
+		Notice that with the linked list implementation, the list's head serves
+		as the topmost frame, and the list's tailend serves as the bottom-most
+		frame. Contrast this with arrays, where the array's last element is the
+		topmost frame, and the array's first element is the bottom-most frame.
+	</p>
+	<p>
+		Why this difference? Because when used an array, inserting new elements
+		into the array would require <i>shifting</i> the elements. Given ${n}$
+		elements, this would take ${O(n).}$ By interpreting the last element as
+		the topmost element, we do not need to shifting; we simply append, and
+		that takes ${O(1)}$ time.
+	</p>
+	<p>
+		With the linked list, however, appending takes ${O(n)}$ time. Why?
+		Because to append to a linked list, we must traverse over ${n}$ nodes
+		to reach the tailend. If we interpreted the head as the topmost
+		element, then pushing an element onto the stack takes ${O(1)}$ time
+		&mdash; we just have to link the new node to the head, and change the
+		head to the newly prepended head.
+	</p>
+	<p>For example, suppose we wanted to implement the stack:</p>
+	<div class="ds-stack dynamic">
+		<ol class="numd">
+			<li class="top">3</li>
+			<li>2</li>
+			<li>7</li>
+		</ol>
+	</div>
+	<p>
+		The first frame in this stack is ${(F \mid 7).}$ Thus, this is the
+		first node in the list. When we prepend a node to the list, ${(F \mid
+		2),}$ that becomes the next frame. And when we prepend another, that
+		becomes the next frame. The end result:
+	</p>
+	<div id="linkedList2"></div>
+	<p>
+		Notice that the <var>head</var> pointer, denoted <var>h</var>, is
+		equivalent to the stack's <var>top</var> pointer. Let's implement the
+		base data structure.
+	</p>
+	<p>
+		To implement the linked list qua stack, we need a linked list data
+		structure. And to implement a linked list data structure, we need a
+		node data structure. Below is C code for implementing a node and its
+		constructor:
+	</p>
+	<pre class="language-c"><code>
+		#include &lt;stdio.h&gt;
+		#include &lt;stdlib.h&gt;
+		
+		struct Node {
+			int data;
+			struct Node* next;
+		};
+		
+		struct Node* newNode(int newData) {
+			struct Node* node = malloc(sizeof(struct Node));
+			(*node).data = newData;
+			(*node).next = NULL;
+			return node;
+		}
+	</code></pre>
+	<p>
+		Because we're working with stacks, however, we should use more
+		descriptive names:
+	</p>
+	<pre class="language-c"><code>
+		struct Frame {
+			int data;
+			struct Frame* next;
+		};
+		
+		struct Frame* newFrame(int newData) {
+			struct Frame* frame = malloc(sizeof(struct Frame));
+			(*frame).data = newData;
+			(*frame).next = NULL;
+			return frame;
+		}
+	</code></pre>
+	<p>
+		The only change here is using the word <q>frame</q> instead of
+		<q>stack.</q> This is a matter of personal style, but whenever we work
+		with abstract data types, we want to use names that allow us to think
+		in terms of the type.
+	</p>
+	<p>
+		Next, we'll want to implement some <var>struct</var> for the stack and
+		its constructor:
+	</p>
+	<pre class="language-c"><code>
+		struct Stack {
+			struct Frame* top;
+			int height;
+		};
+
+		struct Stack* newStack() {
+			struct Stack* stack = malloc(sizeof(stack));
+			(*stack).top = NULL;
+			(*stack).height = 0;
+			return stack;
+		}
+	</code></pre>
+	<p>
+		Notice that the <var>newStack()</var> constructor has its
+		<var>top</var> pointer initially set to <var>NULL</var>. We do so
+		because it makes logical sense &mdash; a new stack is initially empty;
+		it's <var>top</var> points to nothing. With the data structure in
+		place, we can begin implementing its operations.
+	</p>
+	<p>
+		We also include a <var>height</var> property. This allows us to keep
+		track of how high the stack has grown. We'll later see that this is a
+		useful property to have.
+	</p>
+	<section id="push">
+		<h3>Dynamic Stacks: Pushing</h3>
+		<p>Suppose we had the following existing stack:</p>
+		<div class="ds-stack dynamic">
+			<ol>
+				<li class="top">7</li>
+				<li>8</li>
+				<li>2</li>
+			</ol>
+		</div>
+		<p>As a linked list, the stack above looks like:</p>
+		<div id="linkedList3"></div>
+		<p>Now let's say we wanted to add the frame ${(F \mid 5):}$</p>
+		<div class="ds-stack dynamic">
+			<ol>
+				<li class="top">5</li>
+				<li>7</li>
+				<li>8</li>
+				<li>2</li>
+			</ol>
+		</div>
+		<p>
+			Now that we know that the <var>head</var> pointer is equivalent to
+			the <var>top</var> pointer, pushing the frame ${(F \mid 5)}$ to the
+			stack is equivalent to prepending a new node. So, we first create a
+			new node with some pointer <var>t</var>:
+		</p>
+		<div id="linkedList4"></div>
+		<p>
+			Then we have <var>t</var>'s pointee (the node we're about to prepend)
+			point to <var>h</var>'s pointee (the current head):
+		</p>
+		<div id="linkedList5"></div>
+		<p>
+			Then we have <var>t</var>'s pointee become the new <var>head</var>:
+		</p>
+		<div class="split">
+			<div class="ds-stack dynamic">
+				<ol>
+					<li class="top">5</li>
+					<li>7</li>
+					<li>8</li>
+					<li>2</li>
+				</ol>
+			</div>
+			<div id="linkedList6"></div>
+		</div>
+
+		<p>
+			Implementing <var>push()</var> for a dynamic stack is similar to to
+			implementing <var>push()</var> for a static stack. The key
+			difference, however, is that the dynamic stack has no set capacity
+			(we can, of course, impose such a limit). But, just because we don't
+			impose a set capacity doesn't mean the dynamic stack grows
+			infinitely. Memory is a finite resource, and at some point, we'll hit
+			a wall. Accordingly, we still need a <i>capacity guard</i> for
+			pushing:
+		</p>
+		<ol class="alg">
+			<li>fn push(Stack* stack, int data) -> void:</li>
+			<ol>
+				<li>Node* t = newNode(data);</li>
+				<li>if (*t == NULL):</li>
+				<ol>
+					<li>print "Stack overflow";</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>t->next = stack->top;</li>
+					<li>stack->top = t;</li>
+					<li>stack->height++;</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			In the code above, the capacity guard is <var>(*t == NULL)</var>.
+			This condition occurs if, and only if, we no longer have any memory
+			to work with. Most programs don't run into this issue, but because it
+			can occur &mdash; e.g., pushing with an accidental runaway recursive
+			function or too long of a loop &mdash; we always want to have this
+			guard in place.
+		</p>
+		<p>
+			Additionally, we also increment the stack's
+			<var>height</var> property, since adding a new frame grows the stack.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>
+					Below is an implementation of the <var>push()</var> function in
+					C:
+				</p>
+				<pre class="language-c"><code>
+					void push(struct Stack* stack, int data) {
+						struct Frame* frame = newFrame(data);
+						if (frame == NULL) {
+							printf("Stack overflow.");
+						} else {
+							(*frame).next = (*stack).top;
+							(*stack).top = frame;
+						}
+					}
+				</code></pre>
+				<p>For testing, we'll also want a <var>print()</var> function:</p>
+				<pre class="language-c"><code>
+					void print(struct Stack* stack) {
+						struct Frame* p = (*stack).top;
+						while (p != NULL) {
+							printf("%d\n", (*p).data);
+							printf("---\n");
+							p = (*p).next;
+						} 
+					}
+				</code></pre>
+				<p>The test:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdio.h&gt;
+					#include &lt;stdlib.h&gt;
+					
+					<details><summary>struct Frame</summary> {
+						int data;
+						struct Frame* next;
+					};
+					</details>
+					
+					<details><summary>struct Frame* newFrame(int newData)</summary> {
+						struct Frame* frame = malloc(sizeof(struct Frame));
+						(*frame).data = newData;
+						(*frame).next = NULL;
+						return frame;
+					}</details>
+					
+					<details><summary>struct Stack</summary> {
+						struct Frame* top;
+						int height;
+					};</details>
+					
+					<details><summary>struct Stack* newStack()</summary> {
+						struct Stack* stack = malloc(sizeof(stack));
+						(*stack).top = NULL;
+						(*stack).height = 0;
+						return stack;
+					}</details>
+					
+					<details><summary>void push(struct Stack* stack, int data)</summary> {
+						struct Frame* frame = newFrame(data);
+						if (frame == NULL) {
+							printf("Stack overflow.");
+						} else {
+							(*frame).next = (*stack).top;
+							(*stack).top = frame;
+							(*stack).height++;
+						}
+					}</details>
+					
+					<details><summary>void print(struct Stack* stack)</summary> {
+						struct Frame* p = (*stack).top;
+						while (p != NULL) {
+							printf("%d\n", (*p).data);
+							printf("---\n");
+							p = (*p).next;
+						} 
+					}</details>
+					
+					int main() {
+						struct Stack* stack = newStack();
+						push(stack, 3);
+						push(stack, 5);
+						push(stack, 2);
+						push(stack, 9);
+						print(stack);
+						push(stack, 3);
+						push(stack, 5);
+						printf("\n");
+						print(stack);
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					9
+					---
+					2
+					---
+					5
+					---
+					3
+					---
+
+					5
+					---
+					3
+					---
+					9
+					---
+					2
+					---
+					5
+					---
+					3
+					---
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="pop">
+		<h3>Popping</h3>
+		<p>
+			Suppose we had the following dynamic stack, implemented as the linked
+			list to the right:
+		</p>
+		<div class="split">
+			<div class="ds-stack dynamic">
+				<ol>
+					<li class="top">3</li>
+					<li>2</li>
+					<li>8</li>
+					<li>1</li>
+				</ol>
+			</div>
+			<div id="linkedList7"></div>
+		</div>
+		<p>
+			To pop the topmost frame in the dynamic stack, we must first have a
+			pointer <var>p</var> to <var>t</var>'s pointee, the topmost frame:
+		</p>
+		<div id="linkedList8"></div>
+		<p>
+			Then, we want to have <var>t</var> point to the frame immediately
+			below the topmost frame:
+		</p>
+		<div id="linkedList9"></div>
+		<p>
+			Positioned as such, we can then delete <var>p</var>'s pointee, the
+			former topmost frame:
+		</p>
+		<div id="linkedList10"></div>
+		<p>The pseudocode:</p>
+		<ol class="alg">
+			<li>fn: pop(Stack* stack) -> void:</li>
+			<ol>
+				<li>Node* p = stack->top;</li>
+				<li>p = (stack->top);</li>
+				<li>(stack->top) = (stack->top)->next;</li>
+				<li>free (p);</li>
+				<li>(stack->height)--</li>
+			</ol>
+		</ol>
+		<p>
+			As we saw with linked lists, this function is incomplete, because we
+			need an <i>empty guard</i>:
+		</p>
+		<ol class="alg">
+			<li>fn: isEmpty(Stack* stack) -> bool:</li>
+			<ol>
+				<li>(stack->top) == NULL;</li>
+			</ol>
+		</ol>
+		<p>
+			All we're doing here is checking if the stack argument's
+			<var>top</var> pointer is <var>NULL</var>. If it is, then the stack
+			is empty. Accordingly, our revised <var>pop()</var> function:
+		</p>
+		<ol class="alg">
+			<li>fn: pop(Stack* stack) -> void:</li>
+			<ol>
+				<li>if (isEmpty(stack)):</li>
+				<ol>
+					<li>print "Nothing to pop: empty stack."</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>Node* p = stack->top;</li>
+					<li>(stack->top) = (stack->top)->next;</li>
+					<li>free(p);</li>
+					<li>(stack->height)--;</li>
+				</ol>
+			</ol>
+		</ol>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>The <var>pop()</var> function in C:</p>
+				<pre class="language-c"><code>
 					void pop(struct Stack* stack) {
 						if (isEmpty(stack)) {
-							printf("Stack underflow\n");
+							printf("Nothing to pop: stack is empty.\n");
 						} else {
-							(*stack).top--;
+							struct Frame* p = (*stack).top;
+							(*stack).top = (*(*stack).top).next;
+							free(p);
+						}
+					}
+				</code></pre>
+				<p>The <var>isEmpty()</var> function:</p>
+				<pre class="language-c"><code>
+					bool isEmpty(struct Stack* stack) {
+						return (*stack).top == NULL;
+					}
+				</code></pre>
+				<p>
+					For convenience, we'll also use a function
+					<var>pushFromArray()</var> for pushing multiple frames onto the
+					stack:
+				</p>
+				<pre class="language-c"><code>
+					void pushFromArray(struct Stack* stack, int dataArray[], int arraySize) {
+						if (arraySize <= 0) {
+							printf("Invalid index.\n");
+						} else {
+							for (int i = 0; i < arraySize; i++) {
+								push(stack, dataArray[i]);
+							}
+						}
+					}
+				</code></pre>
+				<p>Testing:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdio.h&gt;
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdbool.h&gt;
+					<details><summary>struct Frame</summary> {
+						int data;
+						struct Frame* next;
+					}
+					</details>;
+					<details><summary>struct Frame* newFrame(int newData)</summary> {
+						struct Frame* frame = malloc(sizeof(struct Frame));
+						(*frame).data = newData;
+						(*frame).next = NULL;
+						return frame;
+					}
+					</details>
+					<details><summary>struct Stack</summary> {
+						struct Frame* top;
+						int height;
+					};
+					</details>
+					<details><summary>struct Stack* newStack()</summary> {
+						struct Stack* stack = malloc(sizeof(struct Stack)); 
+						(*stack).top = NULL;
+						(*stack).height = 0;
+						return stack;
+					}
+					</details>
+					<details><summary>bool isEmpty(struct Stack* stack)</summary> {
+						return (*stack).top == NULL;
+					}
+					</details>
+					<details><summary>void push(struct Stack* stack, int data)</summary> {
+						struct Frame* frame = newFrame(data);
+						if (frame == NULL) {
+							printf("Stack overflow.\n");
+						} else {
+							(*frame).next = (*stack).top;
+							(*stack).top = frame;
+							(*stack).height++;
+						}
+					}
+					</details>
+					<details><summary>void pushFromArray(struct Stack* stack, int dataArray[], int arraySize)</summary> {
+						if (arraySize <= 0) {
+							printf("Invalid index.\n");
+						} else {
+							for (int i = 0; i < arraySize; i++) {
+								push(stack, dataArray[i]);
+							}
+						}
+					}
+					</details>
+					<details><summary>void pop(struct Stack* stack)</summary> {
+						if (isEmpty(stack)) {
+							printf("Nothing to pop: stack is empty.\n");
+						} else {
+							struct Frame* p = (*stack).top;
+							(*stack).top = (*(*stack).top).next;
+							free(p);
 							(*stack).height--;
 						}
 					}
+					</details>
+					<details><summary>void print(struct Stack* stack)</summary> {
+						struct Frame* p = (*stack).top;
+						if (p == NULL) {
+							printf("Empty list.\n");
+						} else {
+							printf("\n");
+							while (p != NULL) {
+								printf("%d \n", (*p).data);
+								printf("---\n");
+								p = (*p).next;
+							}
+						}
+					}
+					</details>
 					
 					int main() {
-						struct Stack* aStack = newStack(3);
-						push(aStack, 1);
-						push(aStack, 8);
-						push(aStack, 4);
-						print(aStack);
+						const int arrSize = 2;
+						int arr[arrSize] = {1,2};
+						struct Stack* stack = newStack();
 					
-						printf("\n");
+						pushArray(stack, arr, arrSize);
+						print(stack);
 					
-						pop(aStack);
-						print(aStack);
+						push(stack, 3);
+						print(stack);
 					
-						printf("\n");
+						pop(stack);
+						print(stack);
 					
-						pop(aStack);
-						print(aStack);
+						pop(stack);
+						print(stack);
 					
-						printf("\n");
+						pop(stack);
+						print(stack);
 					
-						pop(aStack);
-						print(aStack);
+						pop(stack);
+						print(stack);
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					2 
+					---
+					1 
+					---
+
+					3 
+					---
+					2 
+					---
+					1 
+					---
+
+					2 
+					---
+					1 
+					---
+
+					1 
+					---
+					Empty list.
+					Nothing to pop: stack is empty.
+					Empty list.
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="peeking">
+		<h3>Peeking</h3>
+		<p>
+			Let's say we had the following dynamic stack, called
+			<var>stackA</var>:
+		</p>
+		<div class="split">
+			<div class="ds-stack dynamic">
+				<ol>
+					<li class="top">3</li>
+					<li>8</li>
+					<li>1</li>
+					<li>5</li>
+					<li>7</li>
+				</ol>
+			</div>
+			<div id="linkedListPeeking1"></div>
+		</div>
+		<p>
+			We want to retrieve the data in the frame just above the bottom-most
+			frame. To do so, we can interpret each frame in the stack as having
+			an index, starting at ${0:}$
+		</p>
+		<div class="split">
+			<div class="ds-stack dynamic">
+				<ol class="numd">
+					<li class="top">3</li>
+					<li>8</li>
+					<li>1</li>
+					<li>5</li>
+					<li>7</li>
+				</ol>
+			</div>
+			<div id="linkedListPeekingIndexed"></div>
+		</div>
+		<p>
+			Once we have this interpretation, we can implement a function
+			<var>peek()</var>, which takes a <var>position</var> argument,
+			corresponding to the interpreted index. In this case, to retrieve the
+			frame just above the bottom-most frame, we would call:
+			<var>peek(stackA, 3)</var>.
+		</p>
+		<p>Implementing the function in pseudocode:</p>
+		<ol class="alg">
+			<li>fn peek(Stack* stack, int position) -> int:</li>
+			<ol>
+				<li>if (isEmpty(stack)):</li>
+				<ol>
+					<li>print "Nothing to peek at. Returning MIN_INT."</li>
+					<li>return MIN_INT;</li>
+				</ol>
+				<li>else if ((stack->height) <= position < 0):</li>
+				<ol>
+					<li>print "Invalid position. Returning MIN_INT."</li>
+					<li>return MIN_INT;</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>Stack* p = stack->top;</li>
+					<li>for (int i = 0; i < position; i++):</li>
+					<ol>
+						<li>p = p->next;</li>
+					</ol>
+					<li>return p->data;</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			We have two guards with the procedure above. First, we need a guard
+			against peeking at an empty stack. If the stack has no frames,
+			there's nothing to peek at.
+		</p>
+		<p>
+			Second, we used the stack's <var>height</var> property and the value
+			${0}$ as a guard against peeking at something that isn't inside the
+			stack. If the <var>position</var> argument is either (a) greater than
+			or equal to the <var>height</var>,<sup></sup> or (b) less than ${0,}$
+			then the <var>position</var> argument is invalid. And if the
+			<var>position</var> argument is invalid, we log an error message and
+			return a dummy value, <var>MIN_INT</var>.
+		</p>
+		<div class="note">
+			<p>
+				Since we're indexing from ${0,}$ we have to offset by ${1.}$ This
+				means that if the <var>height</var> is, say, ${3,}$ then the valid
+				indices are ${0, 1, 2.}$
+			</p>
+		</div>
+		<p>
+			Only if the <var>position</var> is valid &mdash; i.e., it passes the
+			guards &mdash; do we proceed to the for-loop and traverse the frames
+			to the correct position. Once there, we return that frame's stored
+			data.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>
+					Below is an implementation in C. The <var>peek()</var> function:
+				</p>
+				<pre class="language-c"><code>
+					int peek(struct Stack* stack, int position) {
+						if (position >= (*stack).height || position < 0) {
+							printf("Invalid position entered. Returning INT8_MIN.\n");
+							return INT8_MIN;
+						} else {
+							struct Frame* p = (*stack).top;
+							for (int i = 0; i < position; i++) {
+								p = (*p).next;
+							}
+							return (*p).data;
+						}
+					}
+				</code></pre>
+				<p>
+					For convenience, we'll write a function called
+					<var>popMultiple()</var> for popping multiple elements off the
+					stack:
+				</p>
+				<pre class="language-c"><code>
+					void popMultiple(struct Stack* stack, int popCount) {
+						if (isEmpty(stack)) {
+							printf("Nothing to pop. Stack is empty.\n");
+						} else if (popCount > (*stack).height || popCount <= 0) {
+								printf("popCount invalid.\n");
+						} else {
+							for (int i = 0; i < popCount; i++) {
+								pop(stack);
+							}
+						}
+					}
+				</code></pre>
+				<p>Testing:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdio.h&gt;
+					#include &lt;stdbool.h&gt;
+					<details><summary>struct Frame </summary>{
+						int data;
+						struct Frame* next;
+					};</details>
+					<details><summary>struct Frame* newFrame(int newData)</summary> {
+						struct Frame* frame = malloc(sizeof(struct Frame));
+						(*frame).data = newData;
+						(*frame).next = NULL;
+						return frame;
+					}</details>
+					<details><summary>struct Stack </summary>{
+						struct Frame* top; 
+						int height;
+					};</details>
+					<details><summary>struct Stack* newStack() </summary>{
+						struct Stack* stack = malloc(sizeof(struct Stack));
+						(*stack).top = NULL;
+						(*stack).height = 0;
+						return stack;
+					}</details>
+					<details><summary>void push(struct Stack* stack, int newData) </summary>{
+						struct Frame* frame = newFrame(newData);
+						if (frame == NULL) {
+							printf("Stack overflow.\n");
+						} else {
+							(*frame).next = (*stack).top;
+							(*stack).top = frame;
+							(*stack).height++;
+						}
+					}</details>
+					<details><summary>void pushFromArray(struct Stack* stack, int dataArray[], int arraySize) </summary>{
+						if (arraySize <= 0) {
+							printf("Invalid index.\n");
+						} else {
+							for (int i = 0; i < arraySize; i++) {
+								push(stack, dataArray[i]);
+							}
+						}
+					}</details>
+					<details><summary>bool isEmpty(struct Stack* stack) </summary>{
+						return (*stack).top == NULL;
+					}</details>
+					<details><summary>void pop(struct Stack* stack) </summary>{
+						if (isEmpty(stack)) {
+							printf("Stack is empty.\n");
+						} else {
+							struct Frame* p = (*stack).top;
+							(*stack).top = (*(*stack).top).next;
+							(*stack).height--;
+							free(p);
+						}
+					}</details>
+					<details><summary>void popMultiple(struct Stack* stack, int popCount) </summary>{
+						if (isEmpty(stack)) {
+							printf("Nothing to pop. Stack is empty.\n");
+						} else if (popCount > (*stack).height || popCount <= 0) {
+								printf("popCount invalid.\n");
+						} else {
+							for (int i = 0; i < popCount; i++) {
+								pop(stack);
+							}
+						}
+					}</details>
+					<details><summary>int peek(struct Stack* stack, int position) </summary>{
+						if (isEmpty(stack)) {
+							printf("Nothing to peek at. Stack is empty. Returning INT8_MIN.\n");
+							return INT8_MIN;
+						} else if (position >= (*stack).height || position < 0) {
+							printf("Invalid position entered. Returning INT8_MIN.\n");
+							return INT8_MIN;
+						} else {
+							struct Frame* p = (*stack).top;
+							for (int i = 0; i < position; i++) {
+								p = (*p).next;
+							}
+							return (*p).data;
+						}
+					}</details>
+					<details><summary>void print(struct Stack* stack) </summary>{
+						struct Frame* p = (*stack).top;
+						if (p == NULL) {
+							printf("Empty stack.\n");
+						} else {
+							while (p != NULL) {
+								printf("%d\n", (*p).data);
+								printf("---\n");
+								p = (*p).next;
+							}
+						}
+					}</details>
+
+					int main() {
+						const int arrSize = 4;
+						int arr[arrSize] = {1,2,3,4};
+						struct Stack* stack = newStack();
+						pushFromArray(stack, arr, arrSize);
+						print(stack);
+						printf("Stack height: %d\n", (*stack).height);
 					
-						printf("\n");
+						int topFrame = peek(stack, 0);
+						printf("topFrame: %d\n", topFrame);
 					
-						pop(aStack);
-						print(aStack);
+						int bottomFrame = peek(stack, 3);
+						printf("bottomFrame: %d\n", bottomFrame);
+					
+						int someFrame = peek(stack, 4);
+						printf("someFrame: %d\n", someFrame);
+					
+						popMultiple(stack, 4);
+						print(stack);
+					
+						peek(stack, 1);
 					
 						return 0;
 					}
@@ -1133,89 +2492,683 @@
 				<pre class="language-bash"><code>
 					4
 					---
-					8
+					3
+					---
+					2
 					---
 					1
 					---
-
-					8
-					---
-					1
-					---
-
-					1
-					---
-
-					Empty
-
-					Stack underflow
-					Empty
+					Stack height: 4
+					topFrame: 4
+					bottomFrame: 1
+					Invalid position entered. Returning INT8_MIN.
+					someFrame: -128
+					Empty stack.
+					Nothing to peek at. Stack is empty. Returning INT8_MIN.
 				</code></pre>
 			</div>
 		</div>
 	</section>
 </section>
 
-<section id="peeking">
-	<h2>Peeking</h2>
+<section id="stack_applications">
+	<h2>Stack Use Cases</h2>
 	<p>
-		An operation commonly associated with stacks is the
-		<i>peek</i> operation. The peek operation returns the stack frame at a
-		given position ${i.}$ The operation is called <i>peeking</i> because
-		the topmost frame hides all of the frames beneath it.
+		Because of the stack's last-in-first-out nature, they are tremendously
+		useful for a wide variety of applications. In the sections below, we
+		examine some of the more common use cases.
 	</p>
-	<p>Suppose we had the following stack:</p>
-	<div class="ds-stack">
-		<ol class="numd">
-			<li>9</li>
-			<li>2</li>
-			<li>4</li>
-			<li>7</li>
+	<section id="parentheses_matching">
+		<h3>Parentheses Matching</h3>
+		<p>The program below is a sample program in Scheme:</p>
+		<pre class="language-scheme"><code>
+			(define (sqrt x)
+				(define (good-enough? guess x)
+					(< (abs (- (square guess) x)) 0.001))
+				(define (improve guess x)
+					(average guess (/ x guess)))
+				(define (sqrt-iter guess x)
+					(if (good-enough? guess x)
+							guess
+							(sqrt-iter (improve guess x) x)))
+				(define (average x y) 
+					(/ (+ x y) 2))
+				(define (square x)
+					(* x x))
+				(sqrt-iter 1.0 x))
+			(sqrt 2)
+		</code></pre>
+		<pre class="language-bash"><code>
+			1.4142156862745097
+		</code></pre>
+		<p>
+			Those who don't work with the Lisp-descendant languages almost always
+			say the same thing: <q><var>))))))</var></q
+			>. Accordingly, there are a whole host of text editors with various
+			<q>solutions</q> to the parentheses use.<sup></sup> Some editors take
+			the approach of coloring the matching parentheses.
+		</p>
+		<div class="note">
+			<p>
+				Slandering the Lisp descendant's use of parentheses is somewhat of
+				a pastime among the programming community. In reality, the
+				parentheses are really not that big of a deal; after a few
+				programming sessions in the language they're second nature.
+			</p>
+		</div>
+		<pre class="language-scheme"><code>
+			<span class="redText">(</span>sqrt 2<span class="redText">)</span>
+		</code></pre>
+		<p>
+			To color these parentheses, however, there must be a way to match
+			parentheses. This raises the question: How do we match parentheses?
+			It turns out the stack is a particularly useful data structure for
+			parentheses matching.
+		</p>
+		<p>
+			First, suppose we had the following parenthesized expression, a
+			string value:
+		</p>
+		<pre class="language-pseudo"><code>
+			"(a+b)"
+		</code></pre>
+		<p>
+			To determine if the parenthesis match, we'll use a dynamic stack,
+			performing the following:
+		</p>
+		<ol>
+			<li>Begin with an empty stack.</li>
+			<li>
+				Iterate over the string from ${0}$ to ${L,}$ where ${L}$ is the
+				length of the string.
+			</li>
+			<li>
+				If a <var>'('</var> is encountered, push <var>'('</var> character
+				onto the stack. Otherwise, continue.
+			</li>
+			<li>
+				If a <var>')'</var> is encountered, and the stack is not empty, pop
+				off the stack. If the stack is empty, the parenthesis do not match.
+				Otherwise, continue.
+			</li>
+			<li>Once all characters have been iterated over:</li>
+			<ol>
+				<li>If the stack is empty, the parenthesis match.</li>
+				<li>If the stack is not empty, the parenthesis do not match.</li>
+			</ol>
 		</ol>
-	</div>
-	<p>
-		The numbers to the right correspond to the indices of the array that
-		implements the stack:
-	</p>
-	<ol class="array">
-		<li>
-			<ul>
-				<li>9</li>
-				<li>0</li>
-			</ul>
-		</li>
-		<li>
-			<ul>
-				<li>2</li>
-				<li>1</li>
-			</ul>
-		</li>
-		<li>
-			<ul>
-				<li>4</li>
-				<li>2</li>
-			</ul>
-		</li>
-		<li>
-			<ul>
-				<li>7</li>
-				<li>3</li>
-			</ul>
-		</li>
-	</ol>
-	<p>
-		However, because we think of the stack as going from top to bottom, we
-		want to interpret the topmost frame as the <q>first</q> frame. In other
-		words, the frame with position ${0:}$
-	</p>
-	<div class="ds-stack">
-		<ol class="positioned numd">
-			<li>7</li>
-			<li>4</li>
-			<li>2</li>
-			<li>9</li>
+		<p>
+			To see that this works, let's consider our simple expression,
+			<var>(a+b)</var>. First, string values are really just arrays of
+			characters, with the last character being the string terminator.
+		</p>
+		<ol class="array">
+			<li>
+				<ul>
+					<li>(</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>a</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>+</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>b</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>)</li>
+				</ul>
+			</li>
+			<li>
+				<ul>
+					<li>\0</li>
+				</ul>
+			</li>
 		</ol>
-	</div>
+		<p>
+			We can thus iterate over this array. Starting with the first
+			character, we see that the character is a parenthesis, so we push it
+			onto our dynamic stack:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li class="gfocus">
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>a</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>+</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>b</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>)</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>\0</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack dynamic">
+				<ol>
+					<li>(</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			We go to the next character, and see that it isn't a parentheses so
+			we skip it:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li class="rfocus">
+					<ul>
+						<li>a</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>+</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>b</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>)</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>\0</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack dynamic">
+				<ol>
+					<li>(</li>
+				</ol>
+			</div>
+		</div>
+		<p>We skip the next character because it isn't a parenthesis:</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>a</li>
+					</ul>
+				</li>
+				<li class="rfocus">
+					<ul>
+						<li>+</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>b</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>)</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>\0</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack dynamic">
+				<ol>
+					<li>(</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			And again we skip the next character because it isn't a parenthesis:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>a</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>+</li>
+					</ul>
+				</li>
+				<li class="rfocus">
+					<ul>
+						<li>b</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>)</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>\0</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack dynamic">
+				<ol>
+					<li>(</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			When we get to the next character, it is a parenthesis, so we pop off
+			the stack:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>a</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>+</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>b</li>
+					</ul>
+				</li>
+				<li class="gfocus">
+					<ul>
+						<li>)</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>\0</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack dynamic">
+				<ol class="empty">
+					<li>&ThickSpace;</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			Since the stack is empty, the parentheses in this expression match.
+			To see when parentheses don't match, let's consider the expression
+			<var>((a + b)</var>. The first run:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li class="gfocus">
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>a</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>+</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>b</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>)</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>\0</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack dynamic">
+				<ol>
+					<li>(</li>
+				</ol>
+			</div>
+		</div>
+		<p>The second run:</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li class="gfocus">
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>a</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>+</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>b</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>)</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>\0</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack dynamic">
+				<ol>
+					<li>(</li>
+					<li>(</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			We skip the next three characters because they aren't parentheses.
+			When we get to <var>)</var>, we pop off the stack:
+		</p>
+		<div class="split">
+			<ol class="array">
+				<li>
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>(</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>a</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>+</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>b</li>
+					</ul>
+				</li>
+				<li class="gfocus">
+					<ul>
+						<li>)</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>\0</li>
+					</ul>
+				</li>
+			</ol>
+			<div class="ds-stack dynamic">
+				<ol>
+					<li>(</li>
+				</ol>
+			</div>
+		</div>
+		<p>
+			At the end, we see that the stack is not empty. The parenthesis do
+			not match. There's one more case where the parentheses do not match.
+			Consider the expression <var>(a + b))</var>. After the first
+			parentheses, we have:
+		</p>
+		<div class="ds-stack dynamic">
+			<ol>
+				<li>(</li>
+			</ol>
+		</div>
+		<p>And after the second parentheses:</p>
+		<div class="ds-stack dynamic">
+			<ol class="empty">
+				<li>(</li>
+			</ol>
+		</div>
+		<p>
+			When we get to the third parentheses, we attempt to pop off an empty
+			stack. This is where we immediately return <var>false</var> &mdash;
+			the parentheses do not match.
+		</p>
+		<p>Implementing this algorithm:</p>
+		<ol class="alg">
+			<li>fn parenMatch(String exp) -> bool:</li>
+			<ol>
+				<li>Stack* stack = newStack();</li>
+				<li>for (int i == 0; exp[i] != '\0'; i++):</li>
+				<ol>
+					<li>if (exp[i] == '('):</li>
+					<ol>
+						<li>push(stack, exp[i]);</li>
+					</ol>
+					<li>else if (exp[i] == ')'):</li>
+					<ol>
+						<li>if (isEmpty(stack)): return false;</li>
+						<li>else: pop(stack);</li>
+					</ol>
+				</ol>
+				<li>return isEmpty(stack);</li>
+			</ol>
+		</ol>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>
+					Below is an implementation in C. Recall that a
+					<var>char*</var> is simply a pointer to a character, and array
+					indices are just shorthand for pointers. The
+					<var>parenMatch()</var> function:
+				</p>
+				<pre class="language-c"><code>
+					bool parenMatch(char* exp) {
+						struct Stack* pStack = newStack();
+						for (int i = 0; exp[i] != '\0'; i++) {
+							if (exp[i] == '(') {
+								push(pStack, exp[i]);
+							} else if (exp[i] == ')') {
+								if (isEmpty(pStack)) {
+									return false;
+								} else {
+									pop(pStack);
+								}
+							}
+						}
+						bool result = isEmpty(pStack);
+						free(pStack);
+						return result;
+					}
+				</code></pre>
+				<p>
+					Notice how we're freeing <var>pStack</var> once we're done.
+					Because the stack is used purely to check if the parentheses in a
+					given expression match, it's imperative that we free that memory
+					once we're done.
+				</p>
+				<p>Testing the function:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdio.h&gt;
+					#include &lt;stdbool.h&gt;
+					
+					<details><summary>struct Frame </summary>{
+						char data;
+						struct Frame* next;
+					};</details>
+					<details><summary>struct Frame* newFrame(char newData) </summary>{
+						struct Frame* frame = malloc(sizeof(struct Frame));
+						(*frame).data = newData;
+						(*frame).next = NULL;
+						return frame;
+					};</details>
+					<details><summary>struct Stack </summary>{
+						struct Frame* top;
+						int height;
+					};</details>
+					<details><summary>struct Stack* newStack() </summary>{
+						struct Stack* stack = malloc(sizeof(struct Stack));
+						(*stack).top = NULL;
+						(*stack).height = 0;
+						return stack;
+					}</details>
+					<details><summary>bool isEmpty(struct Stack* stack) </summary>{
+						return (*stack).height == 0;
+					}</details>
+					<details><summary>void push(struct Stack* stack, char data) </summary>{
+						struct Frame* frame = newFrame(data);
+						if (frame == NULL) {
+							printf("Stack overflow.\n");
+						} else {
+							(*frame).next = (*stack).top;
+							(*stack).top = frame;
+							(*stack).height++;
+						}
+					}</details>
+					<details><summary>void pop(struct Stack* stack) </summary>{
+						if (isEmpty(stack)) {
+							printf("Nothing to pop. Stack is empty.\n");
+						} else {
+							struct Frame* p = (*stack).top;
+							(*stack).top = (*(*stack).top).next;
+							free(p);
+							(*stack).height--;
+						}
+					}</details>
+					<details><summary>bool parenMatch(char* exp) </summary>{
+						struct Stack* pStack = newStack();
+						for (int i = 0; exp[i] != '\0'; i++) {
+							if (exp[i] == '(') {
+								push(pStack, exp[i]);
+							} else if (exp[i] == ')') {
+								if (isEmpty(pStack)) {
+									return false;
+								} else {
+									pop(pStack);
+								}
+							}
+						}
+						bool result = isEmpty(pStack);
+						free(pStack);
+						return result;
+					}</details>
+					<details><summary>void printBool(bool val) </summary>{
+						if (val) {
+							printf("True\n");
+						} else {
+							printf("False\n");
+						}
+					}</details>
+					
+					int main() {
+						char exp1[] = "(a(b+c))";
+						char exp2[] = "(a(b+c)";
+						char exp3[] = ")(a)(b+c)";
+						char exp4[] = "(ab+)(c)";
+					
+						bool exp1Matched = parenMatch(exp1);
+						bool exp2Matched = parenMatch(exp2);
+						bool exp3Matched = parenMatch(exp3);
+						bool exp4Matched = parenMatch(exp4);
+					
+						printBool(exp1Matched);
+						printBool(exp2Matched);
+						printBool(exp3Matched);
+						printBool(exp4Matched);
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					True
+					False
+					False
+					True
+				</code></pre>
+			</div>
+		</div>
+	</section>
 </section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerc/linked_list.js"></script>
 
 {% endblock %}
