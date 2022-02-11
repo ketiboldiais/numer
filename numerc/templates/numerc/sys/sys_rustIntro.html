@@ -1232,6 +1232,40 @@
 		in the stack.
 	</p>
 	<p>
+		Keeping these ideas in mind, let's start with the a few basic rules:
+	</p>
+	<ol>
+		<li>Every value in Rust is <i>owned</i> by a variable.</li>
+		<li>A value's variable is called that values <i>owner</i>.</li>
+		<li>
+			Every value in Rust has one, and only one, owner, at any given time.
+		</li>
+		<li>
+			When a variable goes out of scope, the value is <b>dropped</b> (i.e.,
+			cleared from memory).<sup></sup>
+		</li>
+	</ol>
+	<div class="note">
+		<p>
+			The pattern of deallocating memory for a particular value after the
+			value's variable goes out of scope is also called
+			<b>resource acquisition is initialization (RAII)</b>. The pattern is
+			central to memory management in many languages, most notably C++.
+		</p>
+	</div>
+	<p>
+		A variable's <b>scope</b> sets the boundaries of where in the program
+		the owner is recognized as owning its value. For example:
+	</p>
+	<pre class="language-rust"><code>
+		// s does not own 1 here      
+				fn funct() {    // s does not own 1 here
+					let s = 1;    // s validly owns 1 here 
+												// s validly owns 1 here 
+				};              // s does not own 1 here
+		// s does not own 1 here
+	</code></pre>
+	<p>
 		When our code calls a function, the values passed into that function
 		(including pointer arguments to data on the heap) and that function's
 		local variables are <i>pushed</i> onto the stack. When the function
@@ -1448,38 +1482,59 @@
 		}
 	</code></pre>
 	<p>In memory, the stack actually looks more like:</p>
-	<div class="ram">
-		<div class="memoryGrid linear">
-			<ul>
-				<li>a</li>
-				<li class="rhl">2</li>
-			</ul>
-			<ul>
-				<li>b</li>
-				<li class="rhl">8</li>
-			</ul>
-			<ul>
-				<li>c</li>
-				<li class="rhl">64</li>
-			</ul>
-			<ul>
-				<li>x</li>
-				<li class="ghl">2</li>
-			</ul>
-			<ul>
-				<li>y</li>
-				<li class="ghl">8</li>
-			</ul>
-			<ul>
-				<li>n</li>
-				<li class="bhl">8</li>
-			</ul>
-			<ul>
-				<li>m</li>
-				<li class="bhl">64</li>
-			</ul>
-		</div>
-	</div>
+	<table class="ram">
+		<tbody>
+			<tr class="label">
+				<td colspan="3">main()</td>
+				<td colspan="2">cube()</td>
+				<td colspan="2">square()</td>
+			</tr>
+			<tr>
+				<td>
+					<ul>
+						<li>a</li>
+						<li class="rhl">2</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>b</li>
+						<li class="rhl">8</li>
+					</ul>
+				</td>
+				<td class="seg">
+					<ul>
+						<li>c</li>
+						<li class="rhl">64</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>x</li>
+						<li class="ghl">2</li>
+					</ul>
+				</td>
+				<td class="seg">
+					<ul>
+						<li>y</li>
+						<li class="ghl">8</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>n</li>
+						<li class="bhl">8</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>m</li>
+						<li class="bhl">64</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	<p>
 		Above, the red boxes belong to <var>main()</var>, the green boxes
 		belong to <var>cube()</var>, and the blue boxes belong to
@@ -1521,70 +1576,85 @@
 		}
 	</code></pre>
 	<p>
-		When we write <var>String::from("hi")</var>, we are create a
+		When we write <var>String::from("hi")</var>, we create a
 		<b>mutable string</b> &mdash; a string that can be modified; i.e.,
 		shortened, lengthened, characters swapped, or deleted entirely. The
 		memory appears as such:
 	</p>
-	<div class="ram">
-		<div class="memoryGrid linearStack">
-			<ul>
-				<li>a</li>
-				<li class="rhl">2</li>
-			</ul>
-			<ul>
-				<li>b</li>
-				<li class="rhl">8</li>
-			</ul>
-			<ul>
-				<li>c</li>
-				<li class="rhl">64</li>
-			</ul>
-			<ul>
-				<li>s</li>
-				<li>
+	<table class="ram">
+		<tbody>
+			<tr class="label">
+				<td colspan="6">main()</td>
+				<td colspan="2">cube()</td>
+				<td colspan="2">square()</td>
+			</tr>
+			<tr>
+				<td colspan="9">S</td>
+			</tr>
+			<tr>
+				<td>
+					<ul>
+						<li>a</li>
+						<li class="rhl">2</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>b</li>
+						<li class="rhl">8</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>c</li>
+						<li class="rhl">64</li>
+					</ul>
+				</td>
+				<td>
 					<ul>
 						<li>ptr</li>
 						<li class="rhl">0x100</li>
 					</ul>
+				</td>
+				<td>
 					<ul>
 						<li>capacity</li>
-						<li class="rhl" id="strCapacity">3</li>
+						<li class="rhl">3</li>
 					</ul>
+				</td>
+				<td class="seg">
 					<ul>
 						<li>length</li>
-						<li class="rhl" id="strLength">2</li>
+						<li class="rhl">2</li>
 					</ul>
-				</li>
-			</ul>
-			<ul>
-				<li>x</li>
-				<li class="ghl">2</li>
-			</ul>
-			<ul>
-				<li>y</li>
-				<li class="ghl">8</li>
-			</ul>
-			<ul>
-				<li>n</li>
-				<li class="bhl">8</li>
-			</ul>
-			<ul>
-				<li>m</li>
-				<li class="bhl">64</li>
-			</ul>
-		</div>
-		<div class="memoryGrid linearHeap strVal">
-			<ul>
-				<li>0x100</li>
-				<li class="hhl">'h'</li>
-			</ul>
-			<ul>
-				<li>0x101</li>
-				<li class="hhl">'i'</li>
-			</ul>
-		</div>
-	</div>
+				</td>
+				<td>
+					<ul>
+						<li>x</li>
+						<li class="ghl">2</li>
+					</ul>
+				</td>
+				<td class="seg">
+					<ul>
+						<li>y</li>
+						<li class="ghl">8</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>n</li>
+						<li class="bhl">8</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>m</li>
+						<li class="bhl">64</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	<p>
 		Look at the way <var>s</var> is allocated. The value we refer to as
 		<var>s</var>, a <var>string</var>, actually consists of three data
@@ -1606,58 +1676,78 @@
 		}
 	</code></pre>
 	<p>Writing the code above, we get the following in memory:</p>
-	<div class="ram">
-		<div class="memoryGrid linearStack">
-			<ul>
-				<li>a</li>
-				<li class="rhl">2</li>
-			</ul>
-			<ul>
-				<li>b</li>
-				<li>
+	<table class="ram">
+		<tbody>
+			<tr class="label">
+				<td colspan="8">main()</td>
+			</tr>
+			<tr>
+				<td colspan="4">b</td>
+				<td colspan="4">c</td>
+			</tr>
+			<tr>
+				<td class="seg">
+					<ul>
+						<li>a</li>
+						<li class="rhl">2</li>
+					</ul>
+				</td>
+				<td>
 					<ul>
 						<li>ptr</li>
 						<li class="rhl">0x100</li>
 					</ul>
+				</td>
+				<td>
 					<ul>
 						<li>capacity</li>
-						<li class="rhl" id="strCapacity">3</li>
+						<li class="rhl">3</li>
 					</ul>
+				</td>
+				<td class="seg">
 					<ul>
 						<li>length</li>
-						<li class="rhl" id="strLength">2</li>
+						<li class="rhl">2</li>
 					</ul>
-				</li>
-			</ul>
-			<ul>
-				<li>c</li>
-				<li>
+				</td>
+				<td>
 					<ul>
 						<li>ptr</li>
 						<li class="rhl">0x100</li>
 					</ul>
+				</td>
+				<td>
 					<ul>
 						<li>capacity</li>
-						<li class="rhl" id="strCapacity">3</li>
+						<li class="rhl">3</li>
 					</ul>
+				</td>
+				<td>
 					<ul>
 						<li>length</li>
-						<li class="rhl" id="strLength">2</li>
+						<li class="rhl">2</li>
 					</ul>
-				</li>
-			</ul>
-		</div>
-		<div class="memoryGrid linearHeap strVal">
-			<ul>
-				<li>0x100</li>
-				<li class="hhl">'h'</li>
-			</ul>
-			<ul>
-				<li>0x101</li>
-				<li class="hhl">'i'</li>
-			</ul>
-		</div>
-	</div>
+				</td>
+			</tr>
+			<tr>
+				<td>${\vdots}$</td>
+			</tr>
+			<tr>
+				<td>
+					<ul>
+						<li>0x100</li>
+						<li>'h'</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>0x101</li>
+						<li>'i'</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	<p>
 		Notice what's happening here. We're not actually copying the string
 		data value <var>"hi"</var>. Instead, we're copying the data components
@@ -1681,8 +1771,158 @@
 	<p>
 		In those languages, both the original and the clone remain in memory.
 		In languages like C and C++, both shallow and deep copying is a risky
-		venture.<sup></sup>
+		venture.<sup></sup> Why? Because with shallow copies, we can
+		unintentionally (a) deallocate memory with the original, which
+		deallocates the referent, and then (b) deallocate again with the copy.
+		In languages like C, that second deallocation is called a
+		<b>double free error</b>, and it's bad. We're deallocating memory
+		potentially used by another function in our program. This leads to a
+		whole host of issues like memory fragmentation. With deep copies, we
+		might deallocate the original but forget to deallocate the copy &mdash;
+		memory leaks.
 	</p>
+	<p>
+		Because of this risk, Rust takes an alternative approach. Consider the
+		output of the following code:
+	</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let str1 = String::from("hi");
+			let str2 = str1;
+			println!("{}", str1);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		error[E0382]: borrow of moved value: `str1`
+		--> main.rs:4:17
+			|
+		2 |     let str1 = String::from("hi");
+			|         ---- move occurs because `str1` has type `String`, which does not implement the `Copy` trait
+		3 |     let str2 = str1;
+			|                ---- value moved here
+		4 |     println!("{}", str1);
+			|                    ^^^^ value borrowed here after move
+	</code></pre>
+	<p>
+		Most languages would allow you to print <var>str1</var>. Why isn't Rust
+		letting us do it? It's because of a feature in Rust called
+		<b>moving</b>. When we first initialize <var>str1</var>, the memory
+		looks like:
+	</p>
+	<table class="ram">
+		<tbody>
+			<tr class="label">
+				<td colspan="3">main()</td>
+			</tr>
+			<tr>
+				<td colspan="3">str1</td>
+			</tr>
+			<tr>
+				<td>
+					<ul>
+						<li>ptr</li>
+						<li class="rhl">0x100</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>capacity</li>
+						<li class="rhl">3</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>length</li>
+						<li class="rhl">2</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td>${\vdots}$</td>
+			</tr>
+			<tr>
+				<td>
+					<ul>
+						<li>0x100</li>
+						<li>'h'</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>0x101</li>
+						<li>'i'</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>Then, when we initialize <var>str2</var>, the memory becomes:</p>
+	<table class="ram">
+		<tbody>
+			<tr class="label">
+				<td colspan="6">main()</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="deleted">str1</td>
+				<td colspan="3">str2</td>
+			</tr>
+			<tr>
+				<td class="deleted">
+					<ul>
+						<li>ptr</li>
+						<li class="rhl">0x100</li>
+					</ul>
+				</td>
+				<td class="deleted">
+					<ul>
+						<li>capacity</li>
+						<li class="rhl">3</li>
+					</ul>
+				</td>
+				<td class="deleted">
+					<ul>
+						<li>length</li>
+						<li class="rhl">2</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>ptr</li>
+						<li class="rhl">0x100</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>capacity</li>
+						<li class="rhl">3</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>length</li>
+						<li class="rhl">2</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td>${\vdots}$</td>
+			</tr>
+			<tr>
+				<td>
+					<ul>
+						<li>0x100</li>
+						<li>'h'</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>0x101</li>
+						<li>'i'</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	<div class="note">
 		<p>
 			Today, this is moreso the case with C than with C++. Modern C++ has a
@@ -1693,31 +1933,418 @@
 		</p>
 	</div>
 	<p>
-		Keeping these ideas in mind, let's start with the a few basic rules:
+		Notice that <var>str1</var> is blurred. This is because when we
+		initialized <var>str2</var> &mdash; what we might think of as a
+		<i>shallow copy</i> &mdash; Rust invalidates <var>str1</var>. The
+		variable <var>str2</var> becomes what's called a <b>move</b>. By
+		invalidating <var>str1</var>, Rust mitigates the risk of double
+		freeing. When <var>str2</var> goes out ot scope, <var>str2</var>'s heap
+		allocated memory is freed, and we don't have to worry about
+		<var>str1</var>.
 	</p>
-	<ol>
-		<li>Every value in Rust is <i>owned</i> by a variable.</li>
-		<li>A value's variable is called that values <i>owner</i>.</li>
-		<li>
-			Every value in Rust has one, and only one, owner, at any given time.
-		</li>
-		<li>
-			When a value's owner goes out of scope, the owner no longer owns that
-			value.
-		</li>
-	</ol>
 	<p>
-		A variable's <b>scope</b> sets the boundaries of where in the program
-		the owner is recognized as owning its value. For example:
+		Because of the concept of moving, Rust makes a critical design choice:
+		It will never automatically create deep copies of the programmer's
+		data. Whether we agree with this design choice or not, the impact is
+		clear: automatic copying in Rust is cheap in terms of runtime.
+	</p>
+	<p>
+		<span class="topic">Deep Copies.</span> But wait, does that mean we
+		cannot make deep copies in Rust? Of course not. Many problems are
+		better solved with deep copies, so Rust provides a method for doing so:
+		<var><mark>clone()</mark></var
+		>. Illustrating:
 	</p>
 	<pre class="language-rust"><code>
-		// s does not own 1 here      
-				fn funct() {    // s does not own 1 here
-					let s = 1;    // s validly owns 1 here 
-												// s validly owns 1 here 
-				};              // s does not own 1 here
-		// s does not own 1 here
+		fn main() {
+			let str1 = String::from("hi");
+			let str2 = str1.clone();
+			println!("str1 = {}, str2 = {}", str1, str2);
+		}
 	</code></pre>
+	<pre class="language-bash"><code>
+		str1 = hi, str2 = hi
+	</code></pre>
+	<p>
+		The code compiles just fine. As is the case in other languages, deep
+		copying is much more expensive than shallow copying. We have to make
+		new instances of the data <i>and</i> allocate memory for those
+		instances.
+	</p>
+	<table class="ram">
+		<tbody>
+			<tr class="label">
+				<td colspan="6">main()</td>
+			</tr>
+			<tr>
+				<td colspan="3">str1</td>
+				<td colspan="3">str2</td>
+			</tr>
+			<tr>
+				<td>
+					<ul>
+						<li>ptr</li>
+						<li class="rhl">0x100</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>capacity</li>
+						<li class="rhl">3</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>length</li>
+						<li class="rhl">2</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>ptr</li>
+						<li class="rhl">0x200</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>capacity</li>
+						<li class="rhl">3</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>length</li>
+						<li class="rhl">2</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td>${\vdots}$</td>
+			</tr>
+			<tr>
+				<td>
+					<ul>
+						<li>0x100</li>
+						<li>'h'</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>0x101</li>
+						<li>'i'</li>
+					</ul>
+				</td>
+				<td>${\ldots}$</td>
+				<td>
+					<ul>
+						<li>0x200</li>
+						<li>'h'</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						<li>0x201</li>
+						<li>'i'</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<section id="heap_data_inside_a_function">
+		<h3>Heap Data Inside a Function</h3>
+		<p>
+			In Rust, heap data inside a function follows the same scoping rules
+			for stack data <i>and</i> the concept of moving applies. Once the
+			variable owning the heap data goes out of the scope (e.g., the
+			function finishes executing), the heap data inside that function is
+			dropped. On top of this, the rules for moving apply.
+		</p>
+		<p>For example, consider the following code:</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let x = String::from("hi");
+				print(x);
+				println!("x = {}", x);
+			}
+			
+			fn print(a: String) {
+				println!("{}", a);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			error[E0382]: borrow of moved value: `x`
+			--> main.rs:4:21
+				|
+			2 |     let x = String::from("hi");
+				|         - move occurs because `x` has type `String`, which does not implement the `Copy` trait
+			3 |     print(x);
+				|           - value moved here
+			4 |     println!("x = {}", x);
+				|                        ^ value borrowed here after move
+		</code></pre>
+		<p>
+			We're getting this error because the value <var>x</var> is moved from
+			<var>main()</var> to <var>print()</var>. And once
+			<var>print()</var> finishes executing, <var>x</var>'s value is
+			dropped. This means that in every line of <var>main()</var> after
+			<var>print(x)</var>, <var>x</var> is invalid.
+		</p>
+	</section>
+	<section id="stack_copy">
+		<h3>Copying Data in the Stack</h3>
+		<p>
+			Making copies of data in the stack is different from making copies of
+			data in the heap. Consider the following output:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let x = 1;
+				let y = x;
+				println!("x = {}, y = {}", x, y);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			x = 1, y = 1
+		</code></pre>
+		<p>
+			Why is this behavior different? Because data inside the stack is of
+			fixed size. And since it's of fixed size, making copies is cheap,
+			which in turn means there's no reason to apply the same procedure for
+			heap data (other than consistency in the language). In memory, the
+			statements above are simple:
+		</p>
+		<table class="ram">
+			<tbody>
+				<tr class="label">
+					<td colspan="2">main()</td>
+					<td colspan="2">println!()</td>
+				</tr>
+				<tr>
+					<td>
+						<ul>
+							<li>x</li>
+							<li class="rhl">1</li>
+						</ul>
+					</td>
+					<td class="seg">
+						<ul>
+							<li>y</li>
+							<li class="rhl">1</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>x</li>
+							<li class="ghl">1</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>y</li>
+							<li class="ghl">1</li>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+	<section id="borrowing">
+		<h3>Borrowing</h3>
+		<p>Consider the following code's output:</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let x = String::from("hi");
+				let y = &amp;x;
+				println!("x={}, y={}", x, y);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			x = hi, y = hi
+		</code></pre>
+		<p>
+			That's odd. Why does this code work? After our previous discussion,
+			didn't the string value owned by <var>x</var> get moved to
+			<var>y</var>? How are we allowed to use <var>x</var>? The difference
+			is in that one character, the ampersand:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let x = String::from("hi");
+				let y = <var><mark>&amp;</mark></var>x;
+				println!("x={}, y={}", x, y);
+			}
+		</code></pre>
+		<p>
+			That character is actually an operator, called the
+			<b>reference operator</b>, and it returns the address of some
+			variable. To see that this is the case, let's look at some outputs:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let x = String::from("hi");
+				let y = &amp;x;
+				println!("Value owned by x: {}", x);
+				println!("Value borrowed by y: {}", y);
+				println!("Memory address of x: {:p}", &x);
+				println!("Memory address of y: {:p}", &y);
+				println!("Memory address IN y: {:p}", y);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			Value owned by x: hi
+			Value borrowed by y: hi
+			Memory address of x: 0x7ffee16b6a40
+			Memory address of y: 0x7ffee16b6a58
+			Memory address IN y: 0x7ffee16b6a40
+		</code></pre>
+		<p>
+			Don't worry too much about the new code <var>{:p}</var>, we'll get to
+			it when we discuss traits. For now, think of it as akin to format
+			specifiers in C. The more important point is the output. What the
+			output tells us is the following:
+		</p>
+		<ol>
+			<li>
+				<var><mark>&x -> 0x7ffee16b6a40</mark></var> The address of
+				<var>x</var> is some address ending in <var>a40</var>.
+			</li>
+			<li>
+				<var><mark>&y -> 0x7ffee16b6a58</mark></var> The address of
+				<var>y</var> is some address ending in <var>a58</var>.
+			</li>
+			<li>
+				<var><mark>y -> 0x7ffee16b6a40</mark></var> The address stored
+				inside <var>y</var> is the address of <var>x</var>, the address
+				ending in <var>a40</var>.
+			</li>
+		</ol>
+		<p>Putting these observations together, when we write:</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let x = String::from("hi");
+				let y = &amp;x;
+			}
+		</code></pre>
+		<p>The code is represented in memory as:</p>
+		<table class="ram">
+			<tbody>
+				<tr class="label">
+					<td colspan="4">main()</td>
+				</tr>
+				<tr>
+					<td colspan="3">x</td>
+				</tr>
+				<tr>
+					<td>
+						<ul>
+							<li>ptr</li>
+							<li class="rhl">0xf10</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>capacity</li>
+							<li class="rhl">3</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>length</li>
+							<li class="rhl">2</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>y</li>
+							<li class="bhl">0xa40</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td><span class="blueText">0xa40</span></td>
+					<td></td>
+					<td></td>
+					<td><span class="greenText">0xa58</span></td>
+				</tr>
+				<tr>
+					<td>${\vdots}$</td>
+				</tr>
+				<tr>
+					<td>
+						<ul>
+							<li>0xf10</li>
+							<li>'h'</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>0xf11</li>
+							<li>'i'</li>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			This means that <var>y</var> doesn't store a string, even if the
+			output looks like a string. Instead, <var>y</var> stores a
+			<b>reference</b>, which is the address of whatever variable we're
+			performing the reference operator on. References are what allow us to
+			refer to some value without having any ownership of it. Thus, when we
+			write:
+		</p>
+		<pre class="language-rust"><code>
+			let y = &amp;x;
+		</code></pre>
+		<p>
+			We are creating a reference to <var>x</var>, the reference being
+			<var>y</var>. In Rustacean, this is called <b>borrowing</b>. It's
+			similar to how we borrow things in the real world. Studying for an
+			exam at the library, if we forgot our textbook at home, we might
+			<i>borrow</i> the textbook from a friend. Now, if we were a bad
+			friend, we might do things the true owner doesn't like, such as
+			highlighting the textbook and making our own personal notes in the
+			margins. In fact, this is precisely what languages like C allow us to
+			do:
+		</p>
+		<pre class="language-c"><code>
+			#include &lt;stdio.h&gt;
+
+			int main() {
+				int x = 10;
+				printf("x = %d\n", x);
+				int *y = &amp;x;
+				*y = *y + 1;
+				printf("x = %d\n", x);
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			x = 10
+			x = 11
+		</code></pre>
+		<p>
+			Rust, however, sees this as just a bad thing to do. If you don't own
+			something, you shouldn't be doing things to it:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let x = String::from("hi");
+				let y = &amp;x;
+				y.push_str(" world!");
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			error[E0596]: cannot borrow `*y` as mutable, as it is behind a `&` reference
+			--> main.rs:4:2
+				|
+			3 |     let y = &amp;x;
+				|             -- help: consider changing this to be a mutable reference: `&mut x`
+			4 |     y.push_str(" world!");
+				|     ^^^^^^^^^^^^^^^^^^^^^ `y` is a `&` reference, so the data it refers to cannot be borrowed as mutable
+		</code></pre>
+	</section>
 </section>
 
 {% endblock %}

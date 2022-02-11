@@ -80,8 +80,6 @@ urlpatterns = [
 
 	path("java_fileProcessing", views.java_fileProcessing, name="java_fileProcessing"),
 
-	path("java_interfaces", views.java_interfaces, name="java_interfaces"),
-
 	path("java_dataStructuresAndAlgorithms", views.java_dataStructuresAndAlgorithms, name="java_dataStructuresAndAlgorithms"),
 
 	path("java_design_patterns", views.java_design_patterns, name="java_design_patterns"),
@@ -248,6 +246,8 @@ urlpatterns = [
 	path("cpp_stack", views.cpp_stack, name="cpp_stack"),
 
 	path("cpp_queue", views.cpp_queue, name="cpp_queue"),
+
+	path("cpp_tree", views.cpp_tree, name="cpp_tree"),
 
 
 	# C# paths

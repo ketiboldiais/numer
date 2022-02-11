@@ -75,6 +75,8 @@ urlpatterns = [
 
 	path("disc_graphTheory", views.disc_graphTheory, name="disc_graphTheory"),
 
+	path("disc_trees", views.disc_trees, name="disc_trees"),
+
 	path("disc_probability", views.disc_probability, name="disc_probability"),
 
 

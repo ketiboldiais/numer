@@ -1,0 +1,203 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on the tree data structure" />
+{% endblock %} {% block title %}
+<title>Trees</title>
+{% endblock %} {% block content %}
+<h1>Trees</h1>
+<section id="intro">
+	<p>
+		In this section, we examine the <b>tree</b> data structure. There are
+		many kinds of trees &mdash; <i>general trees</i>, <i>binary trees</i>,
+		special types of binary trees, and so on. Below is a diagram of some
+		tree.
+	</p>
+	<div id="introTree"></div>
+	<p>
+		A <i>tree</i> is a collection of <b>nodes</b> and <b>edges</b>; the
+		nodes being the colored circles, and the edges being the numbered
+		lines. The nodes need not be occupied by number, nor do the edges have
+		to be numbered. The diagram above is presented as such for
+		demonstration purposes.
+	</p>
+	<p>To refer to each node, we use the syntax:</p>
+	<figure>$$ \Large n_d $$</figure>
+	<p>
+		where ${d}$ is either the data contained in the node, or the index of
+		the node. For example, the first node, containing <var>1</var>, is
+		denoted:
+	</p>
+	<figure>$$ \Large n_1 $$</figure>
+	<p>For edges, we use the following notation:</p>
+	<figure>$$ \Large (n_i, n_j) $$</figure>
+	<p>
+		where ${n_i}$ is some node, and ${n_j}$ is a node connected to ${n_i}$
+		via <i>an</i> edge. For example, the edge connecting the node
+		containing <var>1</var> (${n_1}$) and the node containing
+		<var>4</var> (${n_4}$), is written as:
+	</p>
+	<figure>$$ \Large (n_1, n_4) $$</figure>
+	<p>
+		With this basic notation, we can now discuss terminology. Because of
+		how useful trees are, they have a rich lexicon:
+	</p>
+	<ul>
+		<li>
+			A <b>parent</b> is a node with at least one edge to a node below it.
+			For example, in the diagram above, the node ${n_2,}$ has the children
+			${n_5}$ and ${n_6.}$
+		</li>
+		<li>
+			A <b>child</b> is a node with at least one edge to a node above it.
+			In the diagram, the node ${n_8}$ is a child of ${n_4.}$
+		</li>
+		<li>
+			An <b>ancestor</b> is a node with edges to nodes below it. In the
+			diagram, the node ${n_8}$ is an ancestor of ${n_{12},}$ ${n_{14},}$
+			and ${n_{15}.}$ Importantly, an ancestor and all its descendants form
+			a <b>subtree</b> of the tree.
+		</li>
+		<li>
+			A <b>descendant</b> is a node edges to nodes nodes above it. In our
+			case, the node ${n_6}$ is a descendant of ${n_2,}$ and ${n_1.}$
+		</li>
+		<li>
+			A <b>sibling</b> is a node that shares a parent with another node.
+			E.g., the nodes ${n_7,}$ ${n_8,}$ and ${n_9}$ are all siblings of one
+			another, since they share the parent ${n_4.}$
+		</li>
+		<li>
+			A <b>root</b> is a node with at least one edge to a node below it,
+			but no edges to nodes above it (i.e., a node with a child, but no
+			parents, or, in some trees, the topmost node). In our case, we just
+			have one root &mdash; ${n_1.}$
+		</li>
+		<li>
+			The <b>degree of a node</b> is the number of the node's
+			<i>children</i> (not descendants). For example, the degree of ${n_4}$
+			is ${3.}$ We denote this fact by writing ${\text{deg}(n_4) = 3.}$
+		</li>
+		<li>
+			A <b>leaf</b> is a node with no edges to nodes below it (i.e., a node
+			with no child). Above, the nodes ${n_5,}$ ${n_7,}$ ${n_9,}$
+			${n_{13},}$ ${n_{14},}$ and ${n_{15}}$ are all leaves, because no
+			nodes stem from them. Alternatively, we can also define a leaf as a
+			node with a <i>degree of zero.</i> Leaves are also called
+			<i>external nodes</i>, <i>outer nodes</i>, or <i>terminal nodes</i>.
+		</li>
+		<li>
+			A <b>branch node</b> is a node with edges below it (i.e., a node with
+			at least one child). For example, the node ${n_{10}}$ is a branch
+			node, since it has the child ${n_{13}.}$ Branch nodes are also called
+			<i>internal nodes</i>, <i>inner nodes</i>, or <i>inodes</i>.
+		</li>
+		<li>
+			Trees consist of <b>levels</b> (in the diagram above, the numbers
+			along the left edge). We denote a level with the notation ${L = i,}$
+			where ${i}$ is the number of <i>nodes</i> along the <i>path.</i> In
+			our case, we have a tree with ${5}$ levels: ${n_1}$ (the root) on ${L
+			= 1.}$ We have ${L = 1}$ because there is only one node, the root. At
+			${L = 2,}$ we have two nodes along the path &mdash; it could be
+			${(n_1, n_2),}$ ${(n_1, n_3),}$ or ${(n_1, n_4).}$ On ${L = 3}$ we
+			have three nodes along the paths &mdash; it could be ${(n_1, n_2,
+			n_5),}$ ${(n_1, n_2, n_6),}$ ${(n_1, n_4, n_7),}$ ${(n_1, n_4,
+			n_8),}$ or ${(n_1, n_4, n_9).}$
+		</li>
+		<li>
+			From the concept of levels, we have the notion of <b>height</b> (in
+			the diagram above, the numbers along the right edge). The height of a
+			tree is the number of <i>edges</i> along the path. We denote a
+			particular height with the notation ${h = i,}$ where ${i}$ is the
+			number of edges to that particular node. For example, for the root,
+			we have ${h = 0,}$ since since there are no edges leading to the
+			root. For ${n_2,}$ we have ${h = 1;}$ there is exactly one edge along
+			the path to ${n_2.}$ For ${n_{12},}$ we have ${h = 3;}$ there are
+			exactly three edges leading to ${n_{12}.}$
+		</li>
+		<li>Finally, a collection of trees is called a <b>forest</b>.</li>
+	</ul>
+	<p>
+		If there are ${n}$ nodes, there are ${n-1}$ edges. Examining the tree
+		above, notice that there are ${15}$ total nodes, and ${14}$ edges. We
+		get ${n-1}$ edges because the very first node, called the <b>root</b>,
+		has no <b>parents</b> or <b>ancestors</b>.
+	</p>
+	<p>
+		With all the terminology in place, let's now move on to consider our
+		first kind of tree &mdash; the <i>binary tree</i>.
+	</p>
+</section>
+
+<section id="binary_trees">
+	<h2>Binary Trees</h2>
+	<p>
+		The <b>binary tree</b> is a tree of degree-${2}$ &mdash; a tree where
+		every node can have, at most, ${2}$ children. For example, below is a
+		binary tree consisting of fifteen nodes:
+	</p>
+	<div id="binaryTreeIntro"></div>
+	<p>
+		The binary tree above is an example of a
+		<b>perfect binary tree</b> &mdash; a binary tree where all branch nodes
+		have strictly two children, and every leaf is at the same level or
+		depth within the tree. Binary trees can be thought of in various shapes
+		and sizes. For example, this is a binary tree:
+	</p>
+	<div id="linearBinaryTree"></div>
+	<p>
+		Remember, the only requirement for a binary tree is that each node has,
+		<i>at most</i>, two children. The tree above is a special kind of
+		binary tree called a <b>degenerate binary tree</b> or a
+		<b>pathological binary tree</b>. When the degenerate tree skews left,
+		we call it a <b>left-skewed tree</b>.
+	</p>
+	<div id="skewLeftBinaryTree"></div>
+	<p>
+		And when the tree skews right, we call it a <b>right-skewed tree</b>:
+	</p>
+	<div id="skewRightBinaryTree"></div>
+
+	<section id="number_of_trees">
+		<h3>Forest Quantification</h3>
+		<p>
+			Suppose we have three nodes, ${n_1,}$ ${n_2,}$ and ${n_3}$ (i.e.,
+			${n(V) = 3}$). Suppose further that the nodes are
+			<b>unlabeled nodes</b> &mdash; the nodes do not contain any data or
+			associated labels. Just three empty nodes. How many different binary
+			trees can be generated with these three nodes? Well, we can draw each
+			of them:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/unlabeled_three_node_forest.svg' %}"
+				alt="binary tree iterations"
+				loading="lazy"
+				width="150px"
+				height="150px"
+			/>
+		</figure>
+		<p>
+			We see that there are ${5}$ possible nodes. What if we had ${4}$
+			nodes? I.e., ${n(V) = 4.}$ Again, each node is just a node &mdash; no
+			particular data or associated label. Four empty nodes. Once more, we
+			can draw each of them:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/binaryTreeIterations.svg' %}"
+				alt="binary tree iterations"
+				loading="lazy"
+				width="150px"
+				height="150px"
+			/>
+		</figure>
+		<p>Here, we see that there are ${14}$ possible trees.</p>
+	</section>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/CDemo.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/cpp_tree.js"
+></script>
+{% endblock %}

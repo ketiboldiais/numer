@@ -52,52 +52,353 @@
 			width="100px"
 			height="100px"
 		/>
-		<figcaption>A graph with 5 vertices and 8 edges.</figcaption>
+		<figcaption>A graph with 6 vertices and 5 edges.</figcaption>
 	</figure>
 	<p>
-		A graph is an object consisting of two objects: vertices and edges.
-		Each of the circles, or points, is called a
+		A graph is an object consisting of two kinds of objects: vertices and
+		edges. Each of the circles, or points, is called a
 		<b>vertex</b>, or <b>node</b> (we will use the term vertex; plural
 		<i>vertices</i>). Each of the lines connecting the circles is called an
 		<b>edge</b>. The graph above is called a <b>simple graph</b>. We will
 		elaborate further on what this distinction means in later sections. For
 		now, we will say that a simple graph has the following constraints:
 	</p>
+	<dfn>
+		<p>
+			<small>Constraint</small> An edge connects <em>only</em> a
+			<i>pair</i> of vertices. For example, in a simple graph, we cannot
+			have an edge connecting ${v_4}$ to itself; i.e., a loop.
+		</p>
+		<p>
+			<small>Constraint</small>
+			We cannot we have more than one edge connect two vertices. I.e., two
+			edges connecting ${v_3}$ and ${v_5.}$
+		</p>
+		<p>
+			<small>Constraint</small>
+			Edges have no direction; i.e., the fact that ${v_4}$ and ${v_1}$ are
+			connected by the edge ${e_4}$ does not imply that the edge goes from
+			${v_4}$ to ${v_1}$ or vice versa.
+		</p>
+	</dfn>
+	<p>For example, the graphs below are <em>not</em> simple graphs:</p>
 	<figure>
-		<div class="rule">
-			<ol>
-				<li>
-					An edge connects
-					<em>only</em> a <i>pair</i> of vertices. For example, in a simple
-					graph, we cannot have an edge connecting ${v_4}$ to itself; i.e.,
-					a loop.
-				</li>
-				<li>
-					We cannot we have more than one edge connect two vertices. I.e.,
-					two edges connecting ${v_3}$ and ${v_5.}$
-				</li>
-				<li>
-					Edges have no direction; i.e., the fact that ${v_4}$ and ${v_1}$
-					are connected by the edge ${e_4}$ does not imply that the edge
-					goes from ${v_4}$ to ${v_1}$ or vice versa.
-				</li>
-			</ol>
-		</div>
+		<img
+			src="{% static 'images/notSimple.svg' %}"
+			alt="non-simple graph"
+			loading="lazy"
+			width="100px"
+			height="100px"
+		/>
 	</figure>
-	<p>Having said all this, we now state our first definition formally:</p>
+	<p>
+		First, for the graph to the left, the edge ${v_1}$ connects the same
+		vertices as the edge ${v_2.}$ This violates
+		<cite>Constraint 2.</cite> For the graph to the right, the edge ${v_6}$
+		connects just one vertex. This violates <cite>Constraint 1.</cite>
+	</p>
+	<p>
+		The graph below is also not a simple graph. It's an example of a
+		<b>multigraph</b>.
+	</p>
 	<figure>
-		<div class="rule">
+		<img
+			src="{% static 'images/multiGraph.svg' %}"
+			alt=""
+			loading="lazy"
+			width="100px"
+			height="100px"
+		/>
+	</figure>
+	<p>
+		Simply put, a <i>multigraph</i> is a graph with at least one pair of
+		edges connecting the same two vertices. If the graph contains a
+		<b>loop</b> &mdash; an edge that connects a vertex to itself &mdash;
+		then we have a <b>pseudograph</b>:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/pseudoGraph.svg' %}"
+			alt=""
+			loading="lazy"
+			width="100px"
+			height="100px"
+		/>
+	</figure>
+	<p>
+		A <i>pseudograph</i> is a graph that includes loops as well as edges
+		connecting the same two vertices.
+	</p>
+	<p>
+		Graphs can also have <i>direction.</i> Such a graph is called a
+		<b>directed graph</b> &mdash; a graph where each edge is associated
+		with a pair of vertices:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/digraph.svg' %}"
+			alt=""
+			loading="lazy"
+			width="120px"
+			height="120px"
+		/>
+	</figure>
+	<p>
+		In the digraph above, we have the following edges: ${e_3 = (a, b),}$
+		${e_2 = (b, c),}$ and ${e_1 = (c, d).}$ Below is a brief summary of
+		various graphs:
+	</p>
+	<table class="alg">
+		<thead>
+			<th>Graph</th>
+			<th>Directed edges?</th>
+			<th>Multiple edges?</th>
+			<th>Loops?</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Simple graph</td>
+				<td>No</td>
+				<td>No</td>
+				<td>No</td>
+			</tr>
+			<tr>
+				<td>Multigraph</td>
+				<td>No</td>
+				<td>Yes</td>
+				<td>No</td>
+			</tr>
+			<tr>
+				<td>Pseudograph</td>
+				<td>No</td>
+				<td>Yes</td>
+				<td>Yes</td>
+			</tr>
+			<tr>
+				<td>Simple digraph</td>
+				<td>Yes</td>
+				<td>No</td>
+				<td>No</td>
+			</tr>
+			<tr>
+				<td>Multidigraph</td>
+				<td>Yes</td>
+				<td>Yes</td>
+				<td>No</td>
+			</tr>
+			<tr>
+				<td>Mixed graph</td>
+				<td>Yes</td>
+				<td>Yes</td>
+				<td>Yes</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		Any graph that is not a directed graph is called an
+		<b>undirected graph</b>. For undirected graphs, there are additional
+		pieces of terminology to be familiar with. We'll use the graph below
+		for reference.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/undirected_graph.svg' %}"
+			alt="undirected graph"
+			loading="lazy"
+			width="120px"
+			height="120px"
+		/>
+		<figcaption>The Graph ${U_g}$</figcaption>
+	</figure>
+	<p>
+		Vertices that are connected by an edge are said to be
+		<b>neighbors</b> of, or <b>adjcaent to</b>, one another. For example,
+		in the graph above, the vertex ${a}$ is a neighbor of ${b.}$
+	</p>
+	<p>
+		The <b>neighborhood</b> of a particular vertex ${v}$ is the set of all
+		vertices that are neighbors of ${v.}$ In our reference graph ${U_g,}$
+		the neighborhood of ${c}$ is denoted:
+	</p>
+	<figure>$$ \mathcal{N}(c) = \{ a, b, d \} $$</figure>
+	<p>
+		Similarly, an edge that connects two vertices is said to be
+		<b>incident</b> to both those vertices. In the graph above, the edge
+		${e_4}$ is incident to the vertices ${c}$ and ${b.}$
+	</p>
+	<p>
+		The <b>degree</b> of a vertex ${v}$ is the number of edges incident to
+		${v.}$) For example, the degree of the vertex ${a}$ in the graph
+		${U_g}$ has four edges connected to it (the loop counts twice), so we
+		write:
+	</p>
+	<figure>$$ \text{deg}(a) = 4 $$</figure>
+	<p>
+		In ${U_g,}$ the vertex ${d}$ has no edges connected to it, so it has a
+		degree of ${\text{deg}(d) = 0.}$ A vertex with a degree of zero is
+		called an <b>isolated vertex</b> or an <b>isolated node</b>.
+	</p>
+	<p>
+		Finally, the vertex ${g}$ is called a <b>pendant</b> &mdash; a vertex
+		with only one neighbor.
+	</p>
+	<section id="handshaking_theorem">
+		<h3>The Handshake Theorem</h3>
+		<p>Consider the following problem:</p>
+		<dfn>
+			<small>Handshake Problem</small>
 			<p>
-				<small>Definition: Graph.</small> A graph, denoted ${G,}$ is an
-				non-empty ordered pair ${(V, E).}$ I.e., ${G = (E, V).}$ The first
-				element of the pair, ${V,}$ is the set of <i>vertices</i>, or
-				<i>nodes</i>, of ${G.}$ The second element of the pair, ${E,}$ is
-				the set of <i>edges</i> of ${G.}$ Each edge has 1 or 2 vertices
-				associated with it, called the edge's <i>endpoints</i>. An edge
-				<i>connects</i> its endpoints.
+				Suppose there are ${6}$ people in a room. Each person must shake
+				hands with every other person. How many handshakes occur?
 			</p>
-		</div>
-	</figure>
+		</dfn>
+		<p>
+			At first, this problem appears difficult. But if we visualize the
+			problem with a graph, it's suddenly much more accessible:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/handshaking_theorem.svg' %}"
+				alt="Handshaking theorem"
+				loading="lazy"
+				width="150px"
+				height="150px"
+			/>
+		</figure>
+		<p>
+			Visualized as such, we just have to count the number of edges, with
+			the constraint the we shouldn't count handshakes that have already
+			occurred. Suppose we start the count with the vertex ${a.}$ Then
+			${a}$ shakes hands with a total of ${5}$ people: ${b,}$ ${c,}$ ${d,}$
+			${e,}$ and ${f.}$ If we then go to ${b,}$ we find that ${b}$ shook
+			hands with ${4}$ people (in actuality, ${b}$ shook hands with ${5}$
+			people, but since we already counted ${b}$ shaking hands with ${a,}$
+			we don't count it again). With ${c}$ we have ${3}$ people, with ${d}$
+			we have ${2}$ people, with ${e}$ ${1}$ person, and with ${f}$ zero.
+		</p>
+		<p>If we add all of the counted handshakes:</p>
+		<figure>$$ 5 + 4 + 3 + 2 + 1 = 15 $$</figure>
+		<p>
+			Not difficult, but what if we had ${1000}$ people in the room? We
+			wouldn't want to count the number of edges manually. Accordingly, we
+			want a formula that answers the more general, mathematical question:
+			Given a graph of ${n}$ vertices, each with a degree ${d,}$ how many
+			edges are there?
+		</p>
+		<p>
+			Well, let's consider our example with just ${6}$ people. If there are
+			${6}$ people and each person must shake hands with another of the
+			${6,}$ then: ${6 \times 5 = 30.}$ We know the answer is ${15.}$ Could
+			a more general formula be:
+		</p>
+		<figure>$$ 2m = \sum\limits_{n \in V} \text{deg}(n) $$</figure>
+		<p>
+			It would fit our case. If ${2m = 30,}$ then ${m = 15,}$ where ${m}$
+			is the number of edges. It turns out that this is, in fact, correct.
+			Why? Because of the operation of <i>double counting</i>. Given an
+			undirected graph with ${n}$ vertices, each edge contributes twice to
+			the total degree count of all vertices. Accordingly, both sides of
+			the equation must equal to twice the number of edges.
+		</p>
+		<p>As such, we have the following theorem:</p>
+		<dfn>
+			<small>Handshake Theorem</small>
+			<p>
+				Let ${G = (V, E)}$ be an undirected graph with ${m}$ edges. Then:
+			</p>
+			<figure>$$ 2m = \sum\limits_{v \in V} \text{deg}(v) $$</figure>
+		</dfn>
+	</section>
+
+	<section id="digraphs">
+		<h3>Directed Graphs</h3>
+		<p>
+			Next, le'ts go over a few terms related to directed graphs. We'll the
+			graph below, Graph ${G_d,}$ for reference.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/directed_graph1.svg' %}"
+				alt="A directed graph"
+				loading="lazy"
+				width="150px"
+				height="150px"
+			/>
+		</figure>
+		<p>
+			Directed graphs still use standard terms like <q>vertices</q> and
+			<q>edges.</q> The difference, however, is that we now care about
+			<i>order</i>. With the undirected graph, if the vertices ${a}$ and
+			${b}$ are connected by an edge, then the edge ${(a, b)}$ is the same
+			as the edge ${(b,a).}$ This may or may not be the case for the
+			undirected graph. It could very well be the case that the edge
+			${(a,b)}$ is <em>not</em> the same as ${(b,a).}$
+		</p>
+		<p>
+			For example, in ${G_d,}$ the vertices ${w}$ and ${x}$ are connected
+			by the edge ${(w, x).}$ The order here matters: Because of the arrow
+			along the edge, the edge is ${(w,x),}$ not ${(x,w).}$ Specifically,
+			when we see the edge ${(w, x)}$ on a digraph, we read it as one or
+			the other of the following:
+		</p>
+		<ol>
+			<li>
+				<q>${w}$ is <i>adjacent to</i> ${x,}$</q>&ThickSpace; or
+			</li>
+			<li>
+				<q>${x}$ is <i>adjacent from</i> ${w.}$</q>
+			</li>
+		</ol>
+		<p>
+			Focusing still on the edge ${(w,x),}$ the vertex ${w}$ is called the
+			<b>initial vertex</b> or <b>tail</b>, and the vertex ${x}$ is called
+			the <b>terminal vertex</b>, <b>end vertex</b>, or <b>head</b>.
+		</p>
+		<p>
+			Digraph vertices have two kinds of degrees: the <b>indegree</b> and
+			the <b>outdegree</b>. Suppose we had some vertex ${n}$ in a digraph.
+			The <i>indegree</i> of ${n}$ is the number of edges
+			<i>coming into</i> the vertex ${n.}$ We denote the indegree of ${n}$
+			by writing:
+		</p>
+		<figure>$$ \text{deg}^-(n) $$</figure>
+		<p>
+			The <i>outdegree</i> of ${n}$ is the number of edges
+			<i>going out</i> of ${n.}$ We denote the outdegree of ${n}$ by
+			writing:
+		</p>
+		<figure>$$ \text{deg}^+(n) $$</figure>
+		<p>
+			Digraphs have a very special property establishing a relationship
+			among its edges:
+		</p>
+		<dfn>
+			<small>Degree-sum Formula</small>
+			<p>
+				Given a directed graph ${G_d = (V, E),}$ the following is true:
+			</p>
+			$$ \sum\limits_{v \in V} \text{deg}^-(v) = \sum\limits_{v \in V}
+			\text{deg}^+(v) = n(E) $$
+		</dfn>
+		<p>
+			The degree-sum formula tells us that the sum of all the in-degrees is
+			equal to the sum of all the out-degrees, which is equal to the number
+			of edges in the given digraph.
+		</p>
+	</section>
+
+	<p>Having said all this, we now state our first definition formally:</p>
+	<dfn class="rule">
+		<small>Definition of a Graph</small>
+		<p>
+			A graph, denoted ${G,}$ is an non-empty ordered pair ${(V, E).}$
+			I.e., ${G = (V, E).}$ The first element of the pair, ${V,}$ is the
+			set of <i>vertices</i>, or <i>nodes</i>, of ${G.}$ The second element
+			of the pair, ${E,}$ is the set of <i>edges</i> of ${G.}$ Each edge
+			has 1 or 2 vertices associated with it, called the edge's
+			<i>endpoints</i>. An edge <i>connects</i> its endpoints.
+		</p>
+	</dfn>
 	<p>
 		Note that in the definition above, we specified that the ordered pair
 		must be non-empty. We place this condition to simplify many of the
@@ -2174,6 +2475,129 @@
 				</p>
 			</div>
 		</math-proof>
+		<p>
+			So, we know that the mating algorithm terminates. The next
+			proposition to determine: The mating algorithm always yields stable
+			matchings &mdash; i.e., no rogue couples. To do so, we use an
+			invariant:
+		</p>
+		<dfn>
+			<span class="topic">Invariant 1.</span>
+			<p>
+				Let ${P}$ be: If a woman ${W}$ rejected a man ${M,}$ then ${M}$ has
+				a suitor who she prefers to ${B.}$
+			</p>
+		</dfn>
+		<p>
+			To use this invariant, we must prove it is an invariant. To do this,
+			we must prove the lemma:
+		</p>
+		<dfn>
+			<span class="topic">Lemma 1.</span>
+			<p>${P}$ is an invariant for the mating algorithm.</p>
+		</dfn>
+		<p>
+			The lemma's proof is a proof by induction, and here, we're inducting
+			on time. The base case then, is, Day ${0.}$ Question: Is
+			<strong>Invariant 1</strong> true for the base case? Well, yes, but
+			in a strange way. It's <i>vacuously true</i>. Since no rejection is
+			ever made on Day ${0,}$ the sufficient condition in
+			<strong>Invariant 1</strong> is false, so
+			<strong>Invariant 1</strong> is true. Thus, we know that ${P(0)}$ is
+			true.
+		</p>
+		<p>Now we perform the inductive step:</p>
+		<dfn>
+			<span class="topic">Inductive Assumption.</span>
+			<p>Assume ${P}$ holds at the end of Day ${d.}$</p>
+		</dfn>
+		<p>
+			With the <strong>Inductive Assumption</strong> in place, we want to
+			prove that ${P}$ holds for Day ${d + 1.}$ If it's true up to Day
+			${d,}$ why is it true up to Day ${d+1?}$ Well, there are two cases:
+		</p>
+		<div class="split">
+			<dfn>
+				<span class="topic">Case 1.</span>
+				<p>A woman ${W}$ rejects a man ${M}$ <em>on</em> day ${d+1.}$</p>
+			</dfn>
+			<dfn>
+				<span class="topic">Case 2.</span>
+				<p>A woman ${W}$ rejects a man ${M}$ <em>before</em> ${d+1.}$</p>
+			</dfn>
+		</div>
+		<p>
+			Let's consider <strong>Case 1</strong>. If a woman ${W}$ rejects a
+			man ${M}$ on day ${d+1,}$ then there was a man ${N}$ that ${W}$
+			preferred over ${M.}$ This implies that ${P}$ is true on day ${d+1.}$
+			Similarly for <strong>Case 2</strong>, if a woman ${W}$ rejected a
+			man ${M}$ before day ${d+1,}$ then it must be true that there was a
+			man ${N}$ that ${W}$ preferred over ${M.}$
+		</p>
+		<p>
+			Because ${P}$ is true in both cases, we know that ${P}$ is true on
+			day ${d:}$ ${W}$ had a better suitor on day ${d.}$ Now the question
+			is, does ${P}$ hold for day ${d+1?}$ Well, this also consists of just
+			two cases: Either ${W}$ has the same suitor on day ${d+1}$ or a
+			better suitor comes along. This implies that ${P}$ is true on day
+			${d+1.}$
+		</p>
+		<p>
+			That takes care of our invariant. <strong>Invariant 1</strong> is, in
+			fact, an invariant of the mating algorithm. Now we can consider
+			<strong>Proposition 2</strong>: The mating algorithm yields a perfect
+			matching. To prove this, we use contradiction.
+		</p>
+		<dfn>
+			<span class="topic">Assumption 1.</span>
+			<p>
+				Assume that the mating algorithm does not yield a perfect matching
+				(i.e., not everyone is married).
+			</p>
+		</dfn>
+		<p>
+			This means that there is some man ${M}$ that is not paired with some
+			woman ${W.}$ If this is true, then ${M}$ was rejected by every woman
+			${W.}$ This in turn means that every woman ${W}$ has some man ${N}$
+			who is a better suitor than ${M.}$ But this cannot be true. If every
+			woman had some man who was a better suitor than ${M,}$ then every man
+			and woman should be married. Because there are an equal amount of men
+			and women, it cannot be the case that ${M}$ is left unmarried.
+		</p>
+		<p>
+			Now we must prove <strong>Proposition 3</strong>: The mating
+			algorithm produces a stable matching. First, supoose man ${M_1}$ and
+			${W_1}$ are any <i>pair</i> that are not married. If ${M_1}$ and
+			${W_1}$ are not married, then there are two cases for why ${M_1}$ and
+			${W_1}$ are not married:
+		</p>
+		<div class="split">
+			<p>
+				<span class="topic">Case 1.</span>
+				${W_1}$ rejected ${M_1.}$ If ${W_1}$ rejected ${M_1,}$ then ${W_1}$
+				has another suitor she prefers. This means that ${W_1}$ marries
+				someone she prefers over ${M_1,}$ by
+				<strong>Lemma 1</strong>. But if ${W_1}$ marries someone she
+				prefers over ${M_1,}$ then it cannot be true that ${M_1}$ and
+				${W_1}$ are a rogue couple. Therefore, there are no rogue couples
+				in <strong>Case 1.</strong>
+			</p>
+			<p>
+				<span class="topic">Case 2.</span>${W_1}$ never rejected ${M_1.}$
+				If ${W_1}$ never rejected ${M_1,}$ then ${M_1}$ never serenaded
+				${W_1,}$ since ${W_1}$ can only reject a suitor if the suitor
+				serenaded her. And if ${M_1}$ never serenaded ${W_1,}$ then ${M_1}$
+				was married before he reached ${W_1}$'s name on his list. Hence,
+				${M_1}$ married a woman he preferred over ${W_1.}$ Therefore, there
+				are no rogue couples in <strong>Case 2.</strong>
+			</p>
+		</div>
+		<p>
+			The cases above are the only two cases for rogue couples to occur.
+			And given that no rogue couples occur in those cases, we know the
+			mating algorithm produces a stable matching.
+		</p>
 	</section>
 </section>
+
 {% endblock %}

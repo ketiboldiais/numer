@@ -80,7 +80,7 @@
 </section>
 
 <section id="static_queue">
-	<h2>Bounded Queue</h2>
+	<h2>RP Bounded Queue</h2>
 	<p>
 		Implementing the bounded queue with an array is simple. In the diagram
 		below, the static array implementation is presented to the right, and
@@ -145,87 +145,60 @@
 		</p>
 	</dfn>
 	<p>
-		Generally, we want two pointers. But, there may be situations where a
-		single pointer to the rear suffices. For conciseness, we call the
-		single pointer implementation the <b>rear-pointed (RP) queue</b>, and
-		the two pointer approach the <b>front-rear-pointed (FRP) queue</b>. We
-		consider both in tandem.
+		Generally, with bounded queues, we want two pointers. But, there may be
+		situations where a single pointer to the rear suffices. For
+		conciseness, we call the single pointer implementation the
+		<b>rear-pointed (RP) queue</b>, and the two pointer approach the
+		<b>front-rear-pointed (FRP) queue</b>. We consider both in tandem.
 	</p>
 	<p>
 		For both the RP approach and the FRP approach, an implementation in C
-		can be done with a <var>struct</var>.
+		can be done with a <var>struct</var>. Below is the RP implementation.
 	</p>
-	<div class="split">
-		<figure>
-			<pre class="language-c"><code>
-				struct Queue {
-					int capacity;
-					int length;
-					int rear;
-					int* Q;
-				}
-			</code></pre>
-			<figcaption>RP approach</figcaption>
-		</figure>
-		<figure>
-			<pre class="language-c"><code>
-				struct Queue {
-					int capacity;
-					int length;
-					int rear;
-					int front;
-					int* Q; 
-				};
-			</code></pre>
-			<figcaption>FRP approach</figcaption>
-		</figure>
-	</div>
+	<pre class="language-c"><code>
+		struct Queue {
+			int capacity;
+			int length;
+			int rear;
+			int* Q;
+		}
+	</code></pre>
 	<p>
-		The only difference between the RP approach and the FRP approach in is
-		that we only have one pointer to the queue with the RP approach &mdash;
-		<var>rear</var>. Other than that, we have the properties examined
-		earlier. The <var>int</var> pointer <var>Q</var> is a pointer to an
-		array in the heap, which is the data structure implementing the bounded
-		queue.
+		Above, we see the properties examined earlier. The
+		<var>int</var> pointer <var>Q</var> is a pointer to an array in the
+		heap, which is the data structure implementing the bounded queue.
 	</p>
 	<p>
-		<span class="topic">Constructor.</span> For both RP bounded queues and
-		FRP bounded queues, the constructors are similar. In C:
+		<span class="topic">Constructor.</span> Below is a the RP bounded
+		approach's implementation in C:
 	</p>
-	<div class="split">
-		<figure>
-			<pre class="language-c"><code>
-				struct Queue* newQueue(int maxSize) {
-					struct Queue* queue = malloc(sizeof(struct Queue));
-					(*queue).capacity = maxSize;
-					(*queue).length = 0;
-					(*queue).rear = -1;
-					(*queue).Q = malloc(sizeof(int) * maxSize);
-					return queue;
-				}
-			</code></pre>
-			<figcaption>RP approach</figcaption>
-		</figure>
-		<figure>
-			<pre class="language-c"><code>
-				struct Queue* newQueue(int maxSize) {
-					struct Queue* queue = malloc(sizeof(struct Queue));
-					(*queue).capacity = maxSize;
-					(*queue).length = 0;
-					(*queue).rear = -1;
-					(*queue).front = 0;
-					(*queue).Q = malloc(sizeof(int) * maxSize);
-					return queue;
-				}
-			</code></pre>
-			<figcaption>FRP approach</figcaption>
-		</figure>
-	</div>
+	<pre class="language-c"><code>
+		struct Queue* newQueue(int maxSize) {
+			struct Queue* queue = malloc(sizeof(struct Queue));
+			(*queue).capacity = maxSize;
+			(*queue).length = 0;
+			(*queue).rear = -1;
+			(*queue).Q = malloc(sizeof(int) * maxSize);
+			return queue;
+		}
+	</code></pre>
 	<p>
 		This is not that different from what we saw with stacks. With the
 		constructor in place, we can now consider the various properties and
 		methods.
 	</p>
+
+	<p>
+		<span class="topic">Destructor.</span> For languages without automatic
+		memory management like C and C++, we'll also want a destructor:
+	</p>
+	<pre class="language-c"><code>
+		void freeQueue(struct Queue** queue) {
+			free((*(*queue)).Q);
+			free(*queue);
+			*queue = NULL;
+		}
+	</code></pre>
 
 	<section id="is_full">
 		<h3>Capacity Guard</h3>
@@ -341,7 +314,7 @@
 	</section>
 
 	<section id="enqueue">
-		<h3>Bounded Queue: Enqueue</h3>
+		<h3>Enqueuing an RP Bounded Queue</h3>
 		<p>
 			To enqueue with the bounded queue, we must first have a pointer
 			<var>r</var>, corresponding to the queue's rear. Initially,
@@ -605,7 +578,7 @@
 								(*queue).height++;
 							}
 						}</details>
-						
+
 						void rushIn(struct Queue* queue, int dataArray[], int dataArraySize) {
 							if (dataArraySize > availableSpace(queue)) {
 								printf("Insufficient space to rush into queue.\n");
@@ -624,7 +597,346 @@
 			</div>
 		</section>
 	</section>
+
+	<section id="dequeue">
+		<h3>Dequeuing an RP Bounded Queue</h3>
+		<p>
+			Where the RP and FRP approaches differ is with the
+			<var>dequeue()</var> operation. With just a single pointer to rear
+			&mdash; the RP approach &mdash; we must <i>left shift</i> the array's
+			elements. This is because dequeuing with an array implementation
+			effectively means removing the element at index ${0.}$ If performed
+			no left shift, then we'd have a gap in the array, we and we do not
+			want that. The RP implementation is thus:
+		</p>
+		<ol class="alg">
+			<li>fn dequeue(Queue* queue) -> void:</li>
+			<ol>
+				<li>if (isEmpty(queue)):</li>
+				<ol>
+					<li>println "Nothing to dequeue: Queue is empty.";</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>for (int i = 0; i < (*queue).height; i++):</li>
+					<ol>
+						<li>(*queue).Q[i] = (*queue).Q[i+1];</li>
+					</ol>
+					<li>(*queue).rear--;</li>
+					<li>(*queue).height--;</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			With the RP approach, dequeuing requires iterating over the array,
+			shifting the elements to the left. This takes ${O(n)}$ time. For such
+			a simple data structure like the queue, this is generally not
+			desired. For most applications, we instead want the FRP approach:
+			have two pointers, one for <var>front</var> and the other for
+			<var>rear</var>.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<p>
+					Here's an implementation of the <var>dequeue()</var> function for
+					an RP bounded queue:
+				</p>
+				<pre class="language-c"><code>
+					void dequeue(struct Queue* queue) {
+						if (isEmpty(queue)) {
+							printf("Nothing to dequeue: Queue is empty.\n");
+						} else {
+							for (int i = 0; i < (*queue).height; i++) {
+								(*queue).Q[i] = (*queue).Q[i+1];
+							}
+							(*queue).rear--;
+							(*queue).height--;
+						}
+					}
+				</code></pre>
+				<p>Testing this function:</p>
+				<pre class="language-c"><code>
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdio.h&gt;
+					#include &lt;stdbool.h&gt;
+					<details><summary>struct Queue </summary>{
+						int capacity;
+						int height;
+						int rear;
+						int* Q; 
+					};</details>
+					<details><summary>struct Queue* newQueue(int maxSize) </summary>{
+						struct Queue* queue = malloc(sizeof(struct Queue));
+						(*queue).capacity = maxSize;
+						(*queue).height = 0;
+						(*queue).rear = -1;
+						(*queue).Q = malloc(sizeof(int) * maxSize);
+						return queue;
+					}</details>
+					<details><summary>bool isFull(struct Queue* queue) </summary>{
+						return (*queue).height == (*queue).capacity;
+					}</details>
+					<details><summary>bool isEmpty(struct Queue* queue) </summary>{
+						return (*queue).height == 0;
+					}</details>
+					<details><summary>int availableSpace(struct Queue* queue) </summary>{
+						return (*queue).capacity - (*queue).height;
+					}</details>
+					<details><summary>void enqueue(struct Queue* queue, int data) </summary>{
+						if (isFull(queue)) {
+							printf("Enqueue prohibitied: Queue is full.\n");
+						} else {
+							(*queue).rear++;
+							(*queue).Q[(*queue).rear] = data;
+							(*queue).height++;
+						}
+					}</details>
+					<details><summary>void dequeue(struct Queue* queue) </summary>{
+						if (isEmpty(queue)) {
+							printf("Nothing to dequeue: Queue is empty.\n");
+						} else {
+							for (int i = 0; i < (*queue).height; i++) {
+								(*queue).Q[i] = (*queue).Q[i+1];
+							}
+							(*queue).rear--;
+							(*queue).height--;
+						}
+					}</details>
+					<details><summary>void rushIn(struct Queue* queue, int dataArray[], int dataArraySize) </summary>{
+						if (dataArraySize > availableSpace(queue)) {
+							printf("Insufficient space to rush into queue.\n");
+						}
+						else if (dataArraySize < 0) {
+							printf("Invalid array size: Negative number.\n");
+						} 
+						else {
+							for (int i = 0; i < dataArraySize; i++) {
+								enqueue(queue, dataArray[i]);
+							}
+						}
+					}</details>
+					<details><summary>void printQueue(struct Queue* queue) </summary>{
+						struct Queue* p = queue;
+						if (isEmpty(queue)) {
+							printf("Empty queue.\n");
+						} else {
+							printf("|");
+							for (int i = 0; i < (*queue).height; i++) {
+								printf(" %d |", (*p).Q[i]);
+							}
+							printf("\n");
+						}
+					}</details>
+					int main() {
+						const int size = 3;
+						int arr[] = {1,2,3};
+						struct Queue* queue = newQueue(size);
+						rushIn(queue, arr, 3);
+						printQueue(queue);
+						dequeue(queue);
+						printQueue(queue);
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					| 1 | 2 | 3 |
+					| 2 | 3 |
+				</code></pre>
+			</div>
+		</div>
+	</section>
 </section>
+
+<section id="frp_bounded_queue">
+	<h2>FRB Bounded Queue</h2>
+	<p>
+		With the FRP bounded queue, we have two pointers, <var>rear</var> and
+		<var>front</var>:
+	</p>
+	<ol class="alg">
+		<li>class Queue:</li>
+		<ol>
+			<li>&lt;T&gt; capacity;</li>
+			<li>&lt;T&gt; length;</li>
+			<li>&lt;T&gt; rear;</li>
+			<li>&lt;T&gt; front;</li>
+			<li>&lt;T&gt;* Q;</li>
+			<li>Queue(&lt;T&gt; size):</li>
+			<ol>
+				<li>&lt;T&gt; capacity = size;</li>
+				<li>&lt;T&gt; length = 0;</li>
+				<li>&lt;T&gt; rear = -1;</li>
+				<li>&lt;T&gt; front = -1;</li>
+				<li>&lt;T&gt;* Q = allocate(sizeof(&lt;T&gt;) * size)</li>
+			</ol>
+		</ol>
+	</ol>
+	<p>
+		To see why two pointers is useful, let's consider an example. Suppose
+		we had the following queue, alongside its array implementation:
+	</p>
+	<div class="split">
+		<div id="frpArray"></div>
+		<div id="frpQueue"></div>
+	</div>
+	<p>
+		There are two pointers, <var>r</var> (the <var>rear</var>) and
+		<var>f</var> (the <var>front</var>). The pointer <var>f</var> is not
+		displayed because initially, <var>f = -1</var>. Now let's say the first
+		queuer is dequeued:
+	</p>
+	<div class="split">
+		<div id="frpArrayDequeue0"></div>
+		<div id="frpQueueDequeue0"></div>
+	</div>
+	<p>
+		As we saw with the RP queue, dequeuing results in an empty space at the
+		front of the queue. And with the RP queue, the remedy for this is shift
+		all of the elements to the left, filling up newly emptied position,
+		much like how people in a line shift forward.
+	</p>
+	<p>
+		With people, it's not that big of a deal. A small step forward
+		miniscule. For computers, however, having so many queuers perform an
+		operation is inefficient. Is there a more efficient way to do this? It
+		turns out yes. Instead of having everyone in line at the bank shift
+		towards the teller, just have the teller shift towards the next
+		customer:
+	</p>
+	<div class="split">
+		<div id="frpArrayDequeue1"></div>
+		<div id="frpQueueDequeue1"></div>
+	</div>
+	<p>
+		Examining the diagram, we see that the <var>f</var> queuer will always
+		be <var>Q[f+1]</var>. For example, say we start with an empty queue of
+		capacity ${4:}$
+	</p>
+	<div class="split">
+		<div id="frpArray1_0"></div>
+		<div id="frpQueue1_0"></div>
+	</div>
+	<p>Now say we rush-in two queuers, ${5}$ and ${8:}$</p>
+	<div class="split">
+		<div id="frpArray1_1"></div>
+		<div id="frpQueue1_1"></div>
+	</div>
+	<p>
+		At no point in the rush-in do we increment <var>f</var>, which is
+		initially <var>f = -1</var>. The pointer <var>f</var> is incremented
+		only if we dequeue. As such, the front element is still
+		<var>Q[f+1]</var>, which in this case, is <var>Q[0]</var>.
+	</p>
+	<p>When we dequeue, <var>f</var> increments:</p>
+	<div class="split">
+		<div id="frpArray1_2"></div>
+		<div id="frpQueue1_2"></div>
+	</div>
+	<p>When we enqueue say, the new queuers ${2}$ and ${9,}$ we get:</p>
+	<div class="split">
+		<div id="frpArray1_3"></div>
+		<div id="frpQueue1_3"></div>
+	</div>
+	<p>Implementing the <var>dequeue()</var> procedure:</p>
+	<ol class="alg">
+		<li>fn dequeue(Queue* queue) -> void:</li>
+		<ol>
+			<li>if (isEmpty(queue)):</li>
+			<ol>
+				<li>println "Nothing to dequeue: Queue is empty.";</li>
+			</ol>
+			<li>else:</li>
+			<ol>
+				<li>(*queue).front++;</li>
+				<li>(*queue).height--;</li>
+			</ol>
+		</ol>
+	</ol>
+	<p>
+		Examining the procedure above, we see that the algorithm consists
+		entirely of basic steps &mdash; ${O(1)}$ time. Compare this with the RP
+		bounded queue, where it took ${O(n)}$ time to dequeue elements.
+	</p>
+	<p>
+		At this point, we might have a lot of questions. How does the impact
+		all of the other operations? What about the gaps? Didn't the RP bounded
+		queue employ a left-shift in the first place because of gaps in the
+		array implementation? These are all fair questions, and we now address
+		them in turn.
+	</p>
+
+	<section id="is_empty">
+		<h3>Empty Guard</h3>
+		<p>
+			The first question we should address is the empty guard; answers to
+			the other questions will build on the answer to this first question.
+			What condition should we test for when the FRP bounded queue is
+			empty? Well, let's consider an example.
+		</p>
+		<p>
+			Suppose we have the following queue and its array implementation:
+		</p>
+		<div class="split">
+			<div id="frpArray2_0"></div>
+			<div id="frpQueue2_0"></div>
+		</div>
+		<ol class="alg">
+			<li>f = 0;</li>
+			<li>r = 3</li>
+		</ol>
+		<p>As we can see, we've already dequeued once. If we dequeue again:</p>
+		<div class="split">
+			<div id="frpArray2_1"></div>
+			<div id="frpQueue2_1"></div>
+		</div>
+		<ol class="alg">
+			<li>f = 1;</li>
+			<li>r = 3</li>
+		</ol>
+		<p>And again:</p>
+		<div class="split">
+			<div id="frpArray2_2"></div>
+			<div id="frpQueue2_2"></div>
+		</div>
+		<ol class="alg">
+			<li>f = 2;</li>
+			<li>r = 3</li>
+		</ol>
+	</section>
+	<p>And dequeuing one more time:</p>
+	<div class="split">
+		<div id="frpArray2_3"></div>
+		<div id="frpQueue2_3"></div>
+	</div>
+	<ol class="alg">
+		<li>f = 3;</li>
+		<li>r = 3</li>
+	</ol>
+	<p>
+		Once we get to the point where <var>f == r</var> (the
+		<var>front</var> is the same as the <var>rear</var>), then we conclude
+		that the queue is emptied. The implementation:
+	</p>
+	<ol class="alg">
+		<li>fn isEmpty(*Queue queue) -> bool:</li>
+		<ol>
+			<li>return (*queue).front == (*queue).rear;</li>
+		</ol>
+	</ol>
+	<p>
+		Note that this is all a matter of interpretation. In a language like C,
+		the data is more than likely still inside the array. But even if it
+		was, it's essentially lost, because the only way we can interact with
+		the queue is through the front and rear pointers.
+	</p>
+</section>
+
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="../../../static/numerc/queue.js"></script>
+<script type="module" src="../../../static/numerc/CDemo.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/cpp_queue.js"
+></script>
 {% endblock %}

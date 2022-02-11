@@ -171,9 +171,6 @@ def java_objects(request):
 def java_fileProcessing(request):
 		return render(request, "numerc/java/java_fileProcessing.html")
 
-def java_interfaces(request):
-		return render(request, "numerc/java/java_interfaces.html")
-
 def java_dataStructuresAndAlgorithms(request):
 		return render(request, "numerc/java/java_dataStructuresAndAlgorithms.html")
 
@@ -430,6 +427,9 @@ def cpp_stack(request):
 
 def cpp_queue(request):
 	return render(request, "numerc/cpp/cpp_queue.html")
+
+def cpp_tree(request):
+	return render(request, "numerc/cpp/cpp_trees.html")
 
 
 

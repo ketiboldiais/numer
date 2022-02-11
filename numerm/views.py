@@ -108,6 +108,9 @@ def disc_algorithms(request):
 def disc_graphTheory(request):
 	return render(request, "numerm/disc/disc_graphTheory.html")
 
+def disc_trees(request):
+	return render(request, "numerm/disc/disc_trees.html")
+
 def disc_probability(request):
 	return render(request, "numerm/disc/disc_probability.html")
 
