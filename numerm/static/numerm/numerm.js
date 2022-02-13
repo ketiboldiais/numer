@@ -1,3 +1,33 @@
+// Table of contents
+const toc = {
+	classicalAlgebra: {
+		volumeNumber: 1,
+	},
+	logic: {
+		volumeNumber: 2,
+	},
+	geometry: {
+		volumeNumber: 3,
+	},
+	calculus: {
+		volumeNumber: 4,
+	},
+	discreteMathematics: {
+		volumeNumber: 5,
+	},
+	linearAlgebra: {
+		volumeNumber: 6,
+	},
+	sequencesAndSeries: {
+		volumeNumber: 7,
+	},
+	classicalMechanics: {
+		volumeNumber: 8,
+	},
+	microEconomics: {
+		volumeNumber: 9
+	},
+}
 // Margin notes
 function marginNote() {
 	const noteContent = document.querySelectorAll("div.note");
@@ -53,21 +83,33 @@ function numberPropositions() {
 	let postulateNumber = 0;
 	let axiomNumber = 0;
 	let propositionNumber = 0;
+	let exampleNumber = 0;
+	let conjectureNumber = 0;
+	let problemNumber = 0;
+	let constraintNumber = 0;
+	let formulaNumber = 0;
 	for (let i = 0; i < propositionList.length; i++) {
 		let proposition = propositionList[i];
 		let propositionText = clean(proposition.innerText);
 		console.log(propositionText);
 		if (propositionText == "theorem") addNumber(++theoremNumber);
-		if (propositionText == "axiom") addNumber(++axiomNumber);
-		if (propositionText == "proposition") addNumber(++propositionNumber);
-		if (propositionText == "corollary") addNumber(++corollaryNumber);
-		if (propositionText == "definition") addNumber(++definitionNumber);
-		if (propositionText == "lemma") addNumber(++lemmaNumber);
-		if (propositionText == "problem") addNumber(++lemmaNumber);
-		if (propositionText == "postulate") addNumber(++postulateNumber);
-		if (propositionText == "constraint") addNumber(++postulateNumber);
+		else if (propositionText == "axiom") addNumber(++axiomNumber);
+		else if (propositionText == "proposition") addNumber(++propositionNumber);
+		else if (propositionText == "corollary") addNumber(++corollaryNumber);
+		else if (propositionText == "definition") addNumber(++definitionNumber);
+		else if (propositionText == "lemma") addNumber(++lemmaNumber);
+		else if (propositionText == "problem") addNumber(++problemNumber);
+		else if (propositionText == "postulate") addNumber(++postulateNumber);
+		else if (propositionText == "constraint") addNumber(++constraintNumber);
+		else if (propositionText == "formula") addNumber(++formulaNumber);
+		else if (propositionText == "conjecture") addNumber(++conjectureNumber);
+		else if (propositionText == "example") addNumber(++exampleNumber);
 		function addNumber(j) {
-			proposition.innerText += ` ${j}`;
+			const index = document.createElement('span');
+			index.style.fontFamily = 'CMU';
+			index.style.fontSize = '0.8rem';
+			index.innerText = ` ${j}`;
+			proposition.appendChild(index);
 		}
 		function clean(word) {
 			const result = word.toLowerCase();

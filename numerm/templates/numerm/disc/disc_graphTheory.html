@@ -310,83 +310,6 @@
 		</dfn>
 	</section>
 
-	<section id="digraphs">
-		<h3>Directed Graphs</h3>
-		<p>
-			Next, le'ts go over a few terms related to directed graphs. We'll the
-			graph below, Graph ${G_d,}$ for reference.
-		</p>
-		<figure>
-			<img
-				src="{% static 'images/directed_graph1.svg' %}"
-				alt="A directed graph"
-				loading="lazy"
-				width="150px"
-				height="150px"
-			/>
-		</figure>
-		<p>
-			Directed graphs still use standard terms like <q>vertices</q> and
-			<q>edges.</q> The difference, however, is that we now care about
-			<i>order</i>. With the undirected graph, if the vertices ${a}$ and
-			${b}$ are connected by an edge, then the edge ${(a, b)}$ is the same
-			as the edge ${(b,a).}$ This may or may not be the case for the
-			undirected graph. It could very well be the case that the edge
-			${(a,b)}$ is <em>not</em> the same as ${(b,a).}$
-		</p>
-		<p>
-			For example, in ${G_d,}$ the vertices ${w}$ and ${x}$ are connected
-			by the edge ${(w, x).}$ The order here matters: Because of the arrow
-			along the edge, the edge is ${(w,x),}$ not ${(x,w).}$ Specifically,
-			when we see the edge ${(w, x)}$ on a digraph, we read it as one or
-			the other of the following:
-		</p>
-		<ol>
-			<li>
-				<q>${w}$ is <i>adjacent to</i> ${x,}$</q>&ThickSpace; or
-			</li>
-			<li>
-				<q>${x}$ is <i>adjacent from</i> ${w.}$</q>
-			</li>
-		</ol>
-		<p>
-			Focusing still on the edge ${(w,x),}$ the vertex ${w}$ is called the
-			<b>initial vertex</b> or <b>tail</b>, and the vertex ${x}$ is called
-			the <b>terminal vertex</b>, <b>end vertex</b>, or <b>head</b>.
-		</p>
-		<p>
-			Digraph vertices have two kinds of degrees: the <b>indegree</b> and
-			the <b>outdegree</b>. Suppose we had some vertex ${n}$ in a digraph.
-			The <i>indegree</i> of ${n}$ is the number of edges
-			<i>coming into</i> the vertex ${n.}$ We denote the indegree of ${n}$
-			by writing:
-		</p>
-		<figure>$$ \text{deg}^-(n) $$</figure>
-		<p>
-			The <i>outdegree</i> of ${n}$ is the number of edges
-			<i>going out</i> of ${n.}$ We denote the outdegree of ${n}$ by
-			writing:
-		</p>
-		<figure>$$ \text{deg}^+(n) $$</figure>
-		<p>
-			Digraphs have a very special property establishing a relationship
-			among its edges:
-		</p>
-		<dfn>
-			<small>Degree-sum Formula</small>
-			<p>
-				Given a directed graph ${G_d = (V, E),}$ the following is true:
-			</p>
-			$$ \sum\limits_{v \in V} \text{deg}^-(v) = \sum\limits_{v \in V}
-			\text{deg}^+(v) = n(E) $$
-		</dfn>
-		<p>
-			The degree-sum formula tells us that the sum of all the in-degrees is
-			equal to the sum of all the out-degrees, which is equal to the number
-			of edges in the given digraph.
-		</p>
-	</section>
-
 	<p>Having said all this, we now state our first definition formally:</p>
 	<dfn class="rule">
 		<small>Definition of a Graph</small>
@@ -2596,6 +2519,606 @@
 			The cases above are the only two cases for rogue couples to occur.
 			And given that no rogue couples occur in those cases, we know the
 			mating algorithm produces a stable matching.
+		</p>
+	</section>
+</section>
+
+<section id="special_graphs">
+	<h2>Special Simple Graphs</h2>
+	<p>
+		Certain kinds of simple graphs have special properties and appear
+		frequently enough to merit their own names. These graphs are presented
+		below.
+	</p>
+	<section id="complete_graphs">
+		<h3>Complete Graphs</h3>
+		<p>
+			A <b>complete graph</b> is a simple graph that contains exactly one
+			edge between each pair of distinct vertices. Given a complete graph
+			of ${n}$ vertices, we denote the graph by writing ${K_n.}$ Below are
+			the complete graphs of ${K_1,}$ ${K_2,}$ ${K_3,}$ ${K_4,}$ ${K_5,}$
+			and ${K_6.}$
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/complete_graphs.svg' %}"
+				alt="complete graphs"
+				loading="lazy"
+				width="300px"
+			/>
+		</figure>
+	</section>
+
+	<section id="cycles">
+		<h3>Cycles</h3>
+		<p>
+			A <b>cycle</b> is a graph with ${n \geq 3}$ vertices ${v_1, v_2, v_3,
+			\ldots, v_n,}$ and edges ${\{ v_1, v_2 \},}$ ${\{ v_2, v_3 \},}$
+			${\ldots}$ ${\{ v_{n-1}, v_n \},}$ and ${\{ v_n, v_1 \}.}$ Given a
+			graph of ${n \geq 3}$ vertices, if the graph constitutes a cycle, we
+			write ${C_n.}$ Below are some examples of cycles:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/cycle_graph.svg' %}"
+				alt="complete graphs"
+				loading="lazy"
+				width="300px"
+			/>
+		</figure>
+	</section>
+
+	<section id="wheels">
+		<h3>Wheels</h3>
+		<p>
+			A <b>wheel</b> is a cycle with a special modification: We add an
+			additional vertex, called the <b>universal vertex</b>, upon which all
+			the other vertices connect by edge. Given a graph with ${n \geq 3}$
+			nodes, if the graph constitutes a wheel, we denote the graph as
+			${W_n.}$
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/wheel_graph.svg' %}"
+				alt="complete graphs"
+				loading="lazy"
+				width="300px"
+			/>
+		</figure>
+	</section>
+</section>
+
+<section id="bipartite_graphs">
+	<h3>Bipartite Graphs</h3>
+	<p>
+		A <b>bipartite graph</b> is a graph whose vertex set can be divided
+		into disjoint subsets ${A}$ and ${B,}$ such that each ${v \in A}$ is
+		adjacent to a ${v \in B,}$ and each ${v \in B}$ is adjacent to a ${v
+		\in A.}$ A common way to think about bipartite graphs is to imagine a
+		game whose competitors are teams of father and son. One set of vertices
+		consists of fathers (call it ${F}$), and another set of vertices
+		consists of sons (call it ${S}$). Each father ${F}$ is then connected
+		to their son in ${S}$ and each son in ${S}$ is connected to their
+		father in ${F.}$
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/bipartite_graph.svg' %}"
+			alt="Bipartite graph"
+			loading="lazy"
+			height="150px"
+		/>
+	</figure>
+</section>
+
+<section id="digraphs">
+	<h2>Directed Graphs</h2>
+	<p>
+		Next, le'ts go over a few terms related to directed graphs. We'll the
+		graph below, Graph ${G_d,}$ for reference.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/directed_graph1.svg' %}"
+			alt="A directed graph"
+			loading="lazy"
+			width="150px"
+			height="150px"
+		/>
+	</figure>
+	<p>
+		Directed graphs still use standard terms like <q>vertices</q> and
+		<q>edges.</q> The difference, however, is that we now care about
+		<i>order</i>. With the undirected graph, if the vertices ${a}$ and
+		${b}$ are connected by an edge, then the edge ${(a, b)}$ is the same as
+		the edge ${(b,a).}$ This may or may not be the case for the undirected
+		graph. It could very well be the case that the edge ${(a,b)}$ is
+		<em>not</em> the same as ${(b,a).}$
+	</p>
+	<p>
+		For example, in ${G_d,}$ the vertices ${w}$ and ${x}$ are connected by
+		the edge ${(w, x).}$ The order here matters: Because of the arrow along
+		the edge, the edge is ${(w,x),}$ not ${(x,w).}$ Specifically, when we
+		see the edge ${(w, x)}$ on a digraph, we read it as one or the other of
+		the following:
+	</p>
+	<ol>
+		<li>
+			<q>${w}$ is <i>adjacent to</i> ${x,}$</q>&ThickSpace; or
+		</li>
+		<li>
+			<q>${x}$ is <i>adjacent from</i> ${w.}$</q>
+		</li>
+	</ol>
+	<p>
+		Focusing still on the edge ${(w,x),}$ the vertex ${w}$ is called the
+		<b>initial vertex</b> or <b>tail</b>, and the vertex ${x}$ is called
+		the <b>terminal vertex</b>, <b>end vertex</b>, or <b>head</b>.
+	</p>
+	<p>
+		Digraph vertices have two kinds of degrees: the <b>indegree</b> and the
+		<b>outdegree</b>. Suppose we had some vertex ${n}$ in a digraph. The
+		<i>indegree</i> of ${n}$ is the number of edges <i>coming into</i> the
+		vertex ${n.}$ We denote the indegree of ${n}$ by writing:
+	</p>
+	<figure>$$ \text{deg}^-(n) $$</figure>
+	<p>
+		The <i>outdegree</i> of ${n}$ is the number of edges
+		<i>going out</i> of ${n.}$ We denote the outdegree of ${n}$ by writing:
+	</p>
+	<figure>$$ \text{deg}^+(n) $$</figure>
+	<p>
+		Digraphs have a very special property establishing a relationship among
+		its edges:
+	</p>
+	<dfn>
+		<small>Degree-sum Formula</small>
+		<p>Given a directed graph ${G_d = (V, E),}$ the following is true:</p>
+		$$ \sum\limits_{v \in V} \text{deg}^-(v) = \sum\limits_{v \in V}
+		\text{deg}^+(v) = n(E) $$
+	</dfn>
+	<p>
+		The degree-sum formula tells us that the sum of all the in-degrees is
+		equal to the sum of all the out-degrees, which is equal to the number
+		of edges in the given digraph.
+	</p>
+</section>
+
+<section id="connectivity">
+	<h2>Connectivity</h2>
+	<p>
+		Many problems are best solved by thinking of them in terms of
+		<b>connectivity</b> &mdash; how various objects in the problem are
+		related to one another. To understand how to perform these models, we
+		begin by defining a few terms.
+	</p>
+	<p>
+		Consider the graph below. Suppose each of the vertices represents a
+		house, and each edge is a road.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/walk1.svg' %}"
+			alt="walk"
+			loading="lazy"
+			width="150px"
+		/>
+	</figure>
+	<p>
+		Suppose our friend Shimura asks,
+		<q>How do I get from house ${a}$ to house ${b}$?</q> Using the graph
+		above, we can specify the edges:
+		<q>Oh, just take ${e_3,}$ then ${e_5,}$ then ${e_7.}$</q> What we just
+		did there is specify a <b>walk</b>.
+	</p>
+	<dfn>
+		<small>Definition: Walk</small>
+		<p>
+			A <i>walk</i> is a finite sequence of linked edges. The walk begins
+			at an <i>initial vertex</i> and ends at a <i>final vertex</i>. The
+			<i>length</i> of the walk is the total number of times each edge in
+			the walk is traversed.
+		</p>
+	</dfn>
+	<p>
+		Following the definition above, there are numerous possible walks we
+		could've given Shimura:
+	</p>
+	<div class="compare">
+		$$ \begin{aligned} &(e_3, e_5, e_7) \\ &(e_2, e_7) \\ &(e_1, e_8) \\
+		&(e_3, e_5, e_6, e_8) \end{aligned} $$ $$ \begin{aligned} &(e_3, e_5,
+		e_6, e_8) \\ &(e_2, e_5, e_4, e_8) \\ &(e_2, e_5, e_3, e_2, e_7) \\
+		&(e_2, e_6, e_8) \end{aligned} $$
+	</div>
+	<p>
+		If we wanted Shimura to get a good look at the neighborhood or the
+		fastest way to get to ${f,}$ we would've given him a <b>trail</b>.
+	</p>
+	<dfn>
+		<small>Definition: Trail</small>
+		<p>
+			A <i>trail</i> is a walk where
+			<i>all of the edges are distinct</i> (i.e., no repeated edges).
+			Vertices may be visited multiple times, but once an edge has been
+			used it cannot be used again.
+		</p>
+	</dfn>
+	<p>For example, the following are all trails from ${a}$ to ${f:}$</p>
+	<div class="compare">
+		$$ \begin{aligned} &(e_{10}, e_{8}) \\ &(e_2, e_7) \\ &(e_3, e_4, e_8)
+		\\ \end{aligned}$$ $$ \begin{aligned} &(e_3, e_5, e_7) \\ &(e_2, e_5,
+		e_4, e_8) \\ &(e_1, e_{10}, e_2, e_7)\end{aligned} $$
+	</div>
+	<p>
+		If we wanted Shimura to see as many different houses as possible, we
+		would've given him a <b>path</b>:
+	</p>
+	<dfn>
+		<small>Definition: Path</small>
+		<p>A <i>path</i> is a walk where <i>all vertices are distinct</i>.</p>
+	</dfn>
+	<p>Below are all examples of paths:</p>
+	<div class="compare">
+		$$ \begin{aligned} &(e_3, e_4, e_8) \\ &(e_2, e_7) \\ &(e_1, e_8)
+		\end{aligned} $$ $$ \begin{aligned} &(e_{10}, e_8) \\ &(e_3, e_5, e_7)
+		\\ &(e_2, e_5, e_4, e_8) \end{aligned} $$
+	</div>
+	<p>
+		If there's a path between every pair of vertices in a graph, we say
+		that the graph is <b>connected</b>.
+	</p>
+	<dfn>
+		<small>Definition: Connected Graph</small>
+		<p>
+			A graph is <i>connected</i> if and only if there is a path between
+			each pair of vertices in the graph. I.e., if, and only if, every
+			vertex in the graph is connected to every other vertex in the graph,
+			then the graph is connected.
+		</p>
+	</dfn>
+	<p>
+		Note that from the definitions, all paths and trails are walks, all
+		paths are trails, but not all trails are paths, nor are all walks paths
+		or trails. For example, the walk ${(e_1, e_{10}, e_1)}$ is neither a
+		path nor a trail. The walk ${(e_1, e_{10})}$ is a trail, but it is not
+		a path.
+	</p>
+	<p>
+		If we start at one house and end up at the same house, we've performed
+		a <b>closed walk</b>. For example, the walk:
+	</p>
+	<figure>$$ (c, e_{10}, a, e_1, c, e_{10}, a, e_1, c) $$</figure>
+	<p>is a closed walk. We start at ${c}$ and end up at ${c.}$</p>
+	<dfn>
+		<small>Definition: Closed Walk</small>
+		<p>
+			A <i>closed walk</i> is a walk whose initial vertex is also its final
+			vertex.
+		</p>
+	</dfn>
+	<p>
+		Suppose we go on a walk with Shimura, starting at our house ${a,}$
+		walking different roads, before returning home. One way possible walk
+		would be:
+	</p>
+	<figure>
+		$$ (a, e_1, c, e_{10}, a, e_3, b, e_4, c, e_8, f, e_7, d, e_2, a) $$
+	</figure>
+	<p>
+		Because all of the edges are different, this is <i>closed trail</i>. We
+		call such a trail a <b>circuit</b>.
+	</p>
+	<dfn>
+		<small>Definition: Circuit</small>
+		<p>
+			A <i>circuit</i> is a trail whose initial vertex is also its final
+			vertex.
+		</p>
+	</dfn>
+	<p>
+		Before we go on our circuit with Shimura, he asks,
+		<q
+			>Could we set up our walk so I can see different houses along the
+			way?</q
+		>
+		Being a good friend, we set up our walk as:
+	</p>
+	<figure>$$ (a, e_3, b, e_4, c, e_8, f, e_7, d, e_2, a) $$</figure>
+	<p>
+		Notice that this is a circuit. It's a trail because all of the edges
+		are different, and it's a circuit because the initial vertex is the
+		final vertex. It also has an additional property: the only repeated
+		vertex is the initial and final vertex, ${a.}$ We call such a walk a
+		<b>cycle</b>.
+	</p>
+	<dfn>
+		<small>Definition: Cycle</small>
+		<p>
+			A <i>cycle</i> is a circuit with only one repeated vertex, which is
+			both the initial and final vertex.
+		</p>
+	</dfn>
+
+	<section id="eulerian_graphs">
+		<h3>Eulerian Graphs</h3>
+		<p>
+			One of the most difficult exams in the world is the licensing exam
+			for London's Black cab drivers. Test takers are expected to know the
+			labyrinthine city's ${25~000}$ strees and all businesses or landmarks
+			along them. Suppose we're coming up with a test for some small part
+			of the city that looks like the following:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/eulerianWalk1.svg' %}"
+				alt="walk"
+				loading="lazy"
+				height="200px"
+			/>
+		</figure>
+		<p>
+			Suppose we're told to come up with a walk that visits every edge
+			exactly once. Such a walk might be:
+		</p>
+		$$ (a, e_1, b, e_9, f, e_7, b, e_2, c, e_6, d, e_8, c, e_3, d, e_4, f,
+		e_5, g) $$
+		<p>
+			Notice that all of the edges are different, and we visit every edge
+			exactly once. Because all of the edges are different, this is a
+			trail. And because of the additional property that we visit every
+			edge in the graph exactly once, we call it an <b>Eulerian trail</b>.
+		</p>
+		<dfn>
+			<small>Definition: Eulerian Trail</small>
+			<p>
+				An <i>Eulerian trail</i> is a trail which uses every edge in the
+				graph exactly once. I.e., a walk where:
+			</p>
+			<ul>
+				<li>Every edge in the graph is visited, and</li>
+				<li>every edge is visited exactly once.</li>
+			</ul>
+			<p>
+				If such a trail exists, the graph is said to be <b>traversible</b>.
+			</p>
+		</dfn>
+		<p>Now suppose we're given another map:</p>
+		<figure>
+			<img
+				src="{% static 'images/eulerianCircuit.svg' %}"
+				alt="walk"
+				loading="lazy"
+				height="100px"
+			/>
+		</figure>
+		<p>
+			This time we're told to come up with walk where we visit every edge
+			exactly once, and return to our starting point. So we concoct this
+			walk:
+		</p>
+		<figure>
+			$$ (a, e_1, f, e_2, d, e_3, c, e_4, f, e_5, b, e_6, a) $$
+		</figure>
+		<p>
+			Here, we see that every edge is different, every edge is visited, and
+			both the initial vertex and the final vertex are the same. This is
+			called an <b>Eulerian circuit</b>.
+		</p>
+		<dfn>
+			<small>Definition: Eulerian Circuit</small>
+			<p>
+				An <i>Eulerian circuit</i> is an Eulerian trail which is a circuit.
+				I.e., a walk where:
+			</p>
+			<ul>
+				<li>Every edge in the graph is visited,</li>
+				<li>every edge is visited exactly once, and</li>
+				<li>the initial vertex is the final vertex.</li>
+			</ul>
+		</dfn>
+		<p>If we had the same instructions for this map:</p>
+		<figure>
+			<img
+				src="{% static 'images/eulerianCycle.svg' %}"
+				alt="walk"
+				loading="lazy"
+				height="100px"
+			/>
+		</figure>
+		<p>We would construct the walk:</p>
+		<figure>
+			$$ (a, e_1, b, e_2, c, e_3, d, e_4, f, e_5, g, e_6, a) $$
+		</figure>
+		<p>
+			Here, all of the edges are distinct, and the only repeated vertex is
+			${a,}$ which is both the initial and final vertex. Such a path is
+			called an <b>Eulerian cycle</b>.
+		</p>
+		<dfn>
+			<small>Definition: Eulerian Cycle</small>
+			<p>
+				An <i>Eulerian cycle</i> is an Eulerian circuit with only one
+				repeated vertex. I.e., a walk where:
+			</p>
+			<ul>
+				<li>Every edge in the graph is visited,</li>
+				<li>every edge is visited exactly once,</li>
+				<li>
+					there is exactly one repeated vertex, which is both the initial
+					vertex and final vertex.
+				</li>
+			</ul>
+		</dfn>
+		<p>Finally, if we had the following graph:</p>
+		<figure>
+			<img
+				src="{% static 'images/eulerianPath.svg' %}"
+				alt="walk"
+				loading="lazy"
+				height="100px"
+			/>
+		</figure>
+		<p>
+			visiting every edge in the graph, every edge exactly once, and ending
+			on different points, we get an <b>Eulerian path</b>. In this case,
+			the walk ${(a, e_1, b, e_2, c).}$
+		</p>
+		<dfn>
+			<small>Definition: Eulerian path</small>
+			<p>An Eulerian path is a walk where:</p>
+			<ul>
+				<li>Every edge in the graph is visited,</li>
+				<li>every edge in the graph is visited exatly once, and</li>
+				<li>all vertices in the walk are distinct.</li>
+			</ul>
+		</dfn>
+		<section id="bridges_of_konigsburg">
+			<h4>Bridges of Konigsburg</h4>
+			<p>
+				A famous problem in graph theory &mdash; arguably the one that
+				really started the field as we know it today &mdash; is the
+				<cite>Seven Bridges of Konigsburg</cite>.
+			</p>
+			<dfn>
+				<small>Problem: Seven Bridges of Konigsburg</small>
+				<div class="split">
+					<p>
+						Is there a walk that uses each of the edges in graph ${K}$
+						once, and only once?
+					</p>
+					<figure>
+						<img
+							src="{% static 'images/konigsbergBridges.svg' %}"
+							alt="walk"
+							loading="lazy"
+							height="100px"
+						/>
+						<figcaption>Graph ${K}$</figcaption>
+					</figure>
+				</div>
+			</dfn>
+			<p>
+				Euler famously proved no, there is no walk that visits each of the
+				edges in such a graph exactly once. To see why, we need a litle
+				more terminology.
+			</p>
+			<p>
+				First, we say that a vertex is an <b>odd vertex</b> if it has an
+				odd number of edges connected to it (i.e., a vertex whose degree is
+				an odd number). In contrast, we say that a vertex is an
+				<b>even vertex</b> if it has an even number of edges connected to
+				it (i.e., a vertex whose degree is an even number).
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/oddEvenVertex.svg' %}"
+					alt="walk"
+					loading="lazy"
+					height="100px"
+				/>
+			</figure>
+			<p>
+				To visit every edge in ${K}$ exactly once, we're essentially asked
+				to determine if the graph is Eulerian. A graph is Eulerian if, and
+				only if, it contains an Eulerian circuit. For a graph to contain an
+				Eulerian circuit, each edge must be visited exactly once. And for
+				each edge to be visited exactly once, each vertex must be reached
+				by an edge and left by another edge which is not a loop. Thus, if a
+				graph contains an odd vertex ${v_o,}$ then at least one edge from
+				${v_o}$ is unvisited, and the graph is not Eulerian.
+			</p>
+			<p>This leads to <cite>euler's graph theorem</cite>:</p>
+			<dfn>
+				<small>Euler's Graph Theorem</small>
+				<p>
+					If a connected graph contains <i>any</i> vertices of odd degree,
+					then the graph is not Eulerian.
+				</p>
+			</dfn>
+			<p>
+				Euler also proved the more difficult version of the theorem, the
+				converse:
+			</p>
+			<dfn>
+				<small>Euler's Graph Theorem: Converse</small>
+				<p>
+					A connected graph is Eulerian if and only if all of its vertices
+					are even.
+				</p>
+			</dfn>
+		</section>
+	</section>
+
+	<section id="hamiltonian_graphs">
+		<h3>Hamiltonian Graphs</h3>
+		<p>
+			Where Eulerian graphs are primarily concerned with edges,
+			<b>Hamiltonian graphs</b> are primarily concerned with vertices.
+		</p>
+		<dfn>
+			<small>Hamiltonian Graph</small>
+			<p>
+				A graph is <i>Hamiltonian</i> if, and only if, there exists a cycle
+				that passes through every vertex on the graph. Such a cyle is
+				called a <b>Hamiltonian cycle</b>.
+			</p>
+		</dfn>
+		<p>
+			In other words, we have a Hamiltonian graph if and only if the graph
+			contains a walk that:
+		</p>
+		<ol>
+			<li>visits every vertex in the graph,</li>
+			<li>has no repeated edges, and</li>
+			<li>the walk's initial vertex is also its final vertex.</li>
+		</ol>
+		<p>For example, below is a Hamiltonian graph:</p>
+		<figure>
+			<img
+				src="{% static 'images/hamiltonianGraph.svg' %}"
+				alt="hamiltonian graph"
+				loading="lazy"
+				height="100px"
+			/>
+		</figure>
+		<p>In this case, we have the Hamiltonian cycles:</p>
+		<figure>
+			$$ \begin{aligned} &(a, e_1, b, e_2, c, e_3, d, e_4, f, e_5, a) \\
+			&(d, e_3, c, e_2, b, e_1, a, e_5, f, e_4) \end{aligned} $$
+		</figure>
+		<p>
+			Notice the difference between the Hamiltonian graph and the Eulerian
+			graph. With the Hamiltonian graph, we don't have to use every edge.
+			As long as no edges are repeated, every vertex is visited, and we end
+			where we start, we have a Hamiltonian graph.
+		</p>
+		<p>
+			If we have a graph with a path that goes through every vertex exactly
+			once, then we have a <b>Hamiltonian path</b>. A graph with a
+			Hamiltonian path is said to be a <b>semi-Hamiltonian graph</b>. For
+			example, the graph below contains a Hamiltonian path:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/hamiltonian_path.svg' %}"
+				alt="hamiltonian graph"
+				loading="lazy"
+				height="100px"
+			/>
+		</figure>
+		<figcaption>${(a, e_1, b, e_2, c, e_3, d, e_4, f)}$</figcaption>
+		<p>
+			Earlier, we saw that there's an easy trick to ruling out the
+			possibility of a graph being Eulerian &mdash; if any vertex is an odd
+			vertex, it is not Eulerian. There is no such trick with Hamiltonian
+			graphs. In fact, determining whether Hamiltonian paths or cycles
+			exist is known as the
+			<cite>hamiltonian path problem</cite>, and it is NP-complete.
+		</p>
+		<p>
+			There are, however, a few sufficient conditions that we can rely on.
+			In other words, if the propositions below are true for a given graph
+			${G,}$ then we can conclude that ${G}$ is Hamiltonian.
 		</p>
 	</section>
 </section>

@@ -777,7 +777,242 @@
 
 <section id="character_sets">
 	<h2>Character Sets</h2>
-	<p></p>
+	<p>British and American spelling have recurring differences:</p>
+	<ol>
+		<li>
+			Words ending in <i>-or</i> in American English often ends with
+			<i>-our</i> in British English. For example, ${(color,~colour),}$
+			${(flavor,~flavour),}$ or ${(labor,~labour).}$
+		</li>
+		<li>
+			Words ending in <i>-er</i> in American English often end with
+			<i>-re</i> in British English. E.g., ${(center,~centre),}$
+			${(fiber,~fibre),}$ or ${(meter,~metre).}$
+		</li>
+		<li>
+			British English sometimes keeps a silent <i>e</i>, where American
+			English does not: ${(ageing,~aging)}$ or ${(routeing,~routing).}$
+		</li>
+	</ol>
+	<p>
+		The list goes on. One clear difference is the spelling for the color
+		<i>gray</i>. In British English, the more common spelling is
+		<i>grey</i>. Using this example, suppose we have the following string:
+	</p>
+	<pre class="language-javascript"><code>
+		const str = "The color grey is also gray."
+	</code></pre>
+	<p>
+		We want to find all instances of the color gray, but how? The trick is
+		to use a <b>character set</b>:
+	</p>
+	<pre class="language-javascript"><code>
+		let regex = /gr[ae]y/
+	</code></pre>
+	<p>
+		Notice the square brackets <var><mark>[]</mark></var
+		>. In regex, writing <var>/gr[ae]y</var> specifies the pattern:
+	</p>
+	<ol>
+		<li>The first character is <var>g</var>,</li>
+		<li>The second character is <var>r</var>,</li>
+		<li>
+			The third character is <em>one of</em>: <var>a</var> or <var>e</var>.
+		</li>
+		<li>The fourth character is <var>y</var>.</li>
+	</ol>
+	<p>Illustrating:</p>
+	<pre class="language-javascript"><code>
+		const text = "The color grey is also gray.";
+		const regex = /gr[ae]y/g;
+		const result = text.match(regex);
+		console.log(result);
+	</code></pre>
+	<pre class="language-bash"><code>
+		['grey', 'gray']
+	</code></pre>
+	<p>We can combine character sets for more tailored matches:</p>
+	<pre class="language-javascript"><code>
+		const text = "They marched there with their guns.";
+		const regex = /the[ir][re]/g;
+		const result = text.match(regex);
+		console.log(result);
+	</code></pre>
+	<pre class="language-bash"><code>
+		[ 'there', 'their' ]
+	</code></pre>
+	<p>
+		Importantly, metacharacters do not behave like metacharacter inside a
+		character set. For example:
+	</p>
+	<pre class="language-javascript"><code>
+		jsconst text = "3.1, 2.2, 1.9";
+		const regex = /[.].[.]/gi;
+		const result = text.match(regex);
+		console.log(result);
+	</code></pre>
+	<p>
+		In the regex above, we tried to use the wildcard metacharacter inside a
+		character set. This doesn't work because inside the character set, it's
+		treated as a period, not the wildcard metacharacter. We don't want to
+		use metacharacters inside character sets &mdash; that would defeat the
+		purpose of the character set. It's mean to specify characters, not to
+		act as a separator. Accordingly, we want to write:
+	</p>
+	<pre class="language-javascript"><code>
+		const text = "3.1, 2.2, 1.9";
+		const regex = /.\../gi;
+		const result = text.match(regex);
+		console.log(result);
+	</code></pre>
+	<pre class="language-bash"><code>
+		[ '3.1', '2.2', '1.9' ]
+	</code></pre>
+	<p>
+		One exception to the rule against using metacharacters inside character
+		sets, however, is the <i>range character</i>, denoted as a
+		<i>hyphen</i> (<var>-</var>).
+	</p>
+	<section id="ranges">
+		<h3>Specifying Ranges</h3>
+		<p>Suppose we had the following string:</p>
+		<pre class="language-javascript"><code>
+			const text = "(Bob, 1992), (Anne, 1993), (Jack, 1990), (Sam, 1990)";
+		</code></pre>
+		<p>
+			We want to find all of the years before <var>1993</var>. We could
+			manually write <var>[012]</var>, but a faster way would to just use
+			the range character:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "(Bob, 1992), (Anne, 1993), (Jack, 1990), (Sam, 1990)";
+			const regex = /199[0-2]/g;
+			const result = text.match(regex);
+			console.log(result);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ '1992', '1990', '1990' ]
+		</code></pre>
+		<p>
+			With ranges, we aren't just limited to numbers. We can also use
+			ranges of letters:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "Dan, Han, Ian, Jan";
+			const regex = /[a-h]an/gi;
+			const result = text.match(regex);
+			console.log(result);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ 'Dan', 'Han' ]
+		</code></pre>
+		<p>We can also combine numeric and textual ranges:</p>
+		<pre class="language-javascript"><code>
+			const text = "0xFFFF 0xA89F";
+			const regex = /0x[0-9A-F][0-9A-F][0-9A-F][0-9A-F]/g;
+			const result = text.match(regex);
+			console.log(result);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ '0xFFFF', '0xA89F' ]
+		</code></pre>
+	</section>
+	<section id="excluding_characters">
+		<h3>Excluding Characters</h3>
+		<p>
+			Sometimes, we want to exclude characters from a pattern. For example,
+			suppose we had the following string:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "1992, 1993, 1989, 1984, 1999";
+		</code></pre>
+		<p>
+			We want to find all of the matches to some year in the ${90}$s. To do
+			so, we can write:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "1992, 1993, 1989, 1984, 1999";
+			const regex = /19[^8][0-9]/g;
+			const result = text.match(regex);
+			console.log(result);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ '1992', '1993', '1999' ]
+		</code></pre>
+		<p>
+			If the string include years from the ${70}$s or ${60}$s, we can
+			exclude a range:
+		</p>
+		<pre class="language-javascript"><code>
+			const text = "1992, 1993, 1973, 1989, 1984, 1999";
+			const regex = /19[^0-8][0-9]/g;
+			const result = text.match(regex);
+			console.log(result);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ '1992', '1993', '1999' ]
+		</code></pre>
+	</section>
+
+	<section id="character_set_shorthands">
+		<h3>Character Set Shorthands</h3>
+		<p>
+			Characters are so often used that regular expression syntax provides
+			<b>character set shorthands</b> &mdash; shorter ways to denote a
+			particular character set. These shorthands are:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Shorthand Character</th>
+				<th>Character Set Denoted</th>
+				<th>Remark</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<var><mark>\d</mark></var>
+					</td>
+					<td><var>[0-9]</var></td>
+					<td>Matches <i>any one</i> digit character.</td>
+				</tr>
+				<tr>
+					<td>
+						<var><mark>\D</mark></var>
+					</td>
+					<td><var>[^0-9]</var></td>
+					<td>Matches <i>any one</i> non-digit character.</td>
+				</tr>
+				<tr>
+					<td>
+						<var><mark>\w</mark></var>
+					</td>
+					<td><var>[a-zA-Z0-9_]</var></td>
+					<td>Matches <i>any one</i> word character.</td>
+				</tr>
+				<tr>
+					<td>
+						<var><mark>\W</mark></var>
+					</td>
+					<td><var>[^a-zA-Z0-9_]</var></td>
+					<td>Matches <i>any one</i> non-word character.</td>
+				</tr>
+				<tr>
+					<td>
+						<var><mark>\s</mark></var>
+					</td>
+					<td><var>[ \n\r\t\f]</var></td>
+					<td>Matches <i>any one</i> space character.</td>
+				</tr>
+				<tr>
+					<td>
+						<var><mark>\S</mark></var>
+					</td>
+					<td><var>[^ \n\r\t\f]</var></td>
+					<td>Matches <i>any one</i> non-space character.</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
 </section>
 <script src="../../../static/numerc/staticArray.js"></script>
 

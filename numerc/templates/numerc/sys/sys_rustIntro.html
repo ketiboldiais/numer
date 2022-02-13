@@ -1781,6 +1781,15 @@
 		might deallocate the original but forget to deallocate the copy &mdash;
 		memory leaks.
 	</p>
+	<div class="note">
+		<p>
+			Today, this is moreso the case with C than with C++. Modern C++ has a
+			whole host of libraries for reference counting, and smart pointers
+			have made memory management safer. C, on the other hand, is a
+			language that's about as close as we can get to Assembly without
+			having to write Assembly &mdash; no hand-holding there.
+		</p>
+	</div>
 	<p>
 		Because of this risk, Rust takes an alternative approach. Consider the
 		output of the following code:
@@ -1923,15 +1932,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<div class="note">
-		<p>
-			Today, this is moreso the case with C than with C++. Modern C++ has a
-			whole host of libraries for reference counting, and smart pointers
-			have made memory management safer. C, on the other hand, is a
-			language that's about as close as we can get to Assembly without
-			having to write Assembly &mdash; no hand-holding there.
-		</p>
-	</div>
+
 	<p>
 		Notice that <var>str1</var> is blurred. This is because when we
 		initialized <var>str2</var> &mdash; what we might think of as a
@@ -2291,9 +2292,34 @@
 			output looks like a string. Instead, <var>y</var> stores a
 			<b>reference</b>, which is the address of whatever variable we're
 			performing the reference operator on. References are what allow us to
-			refer to some value without having any ownership of it. Thus, when we
-			write:
+			refer to some value without having any ownership of it.<sup
+			></sup> Thus, when we write:
 		</p>
+		<div class="note">
+			<p>
+				An important point: References are, in fact, pointers. Why not just
+				call them pointers? Because references are a very basic kind of
+				pointer. In Rust, they're pointers that do not actually own any
+				data. Consider the differences:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/pointer_v_reference.svg' %}"
+					alt="Pointer vs reference"
+					loading="lazy"
+					width="100px"
+					height="80px"
+				/>
+			</figure>
+			<p>
+				In Scenarios ${A}$ and ${B,}$ we have the usual pointers. In ${A,}$
+				we have <i>aliases</i> (multiple pointers to a single address
+				containing data), and in ${B}$ we have pointers to different
+				addresses, each with their own data. In ${C,}$ however, we have a
+				<i>reference</i> &mdash; a pointer to an address that actually owns
+				the data.
+			</p>
+		</div>
 		<pre class="language-rust"><code>
 			let y = &amp;x;
 		</code></pre>
@@ -2344,6 +2370,115 @@
 			4 |     y.push_str(" world!");
 				|     ^^^^^^^^^^^^^^^^^^^^^ `y` is a `&` reference, so the data it refers to cannot be borrowed as mutable
 		</code></pre>
+	</section>
+
+	<section id="mutable_borrow">
+		<h3>Mutable Borrowing</h3>
+		<p>Consider the code below:</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let m = String::from("hi");
+				let n: &String = &amp;m;
+				n.push_str(" world");
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			error[E0596]: cannot borrow `*n` as mutable, as it is behind a `&` reference
+			--> main.rs:4:2
+				|
+			3 |     let n: &String = &amp;m;
+				|                      -- help: consider changing this to be a mutable reference: `&mut m`
+			4 |     n.push_str(" world");
+				|     ^^^^^^^^^^^^^^^^^^^^ `n` is a `&` reference, so the data it refers to cannot be borrowed as mutable
+		</code></pre>
+		<p>
+			Notice how the output is telling us that we cannot modify the
+			original string, <var>m</var>, through the reference <var>n</var>. We
+			can, however, modify our code to allow for mutation:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let mut m = String::from("hi");
+				let n: &mut String = &mut m;
+				n.push_str(" world");
+				println!("{}", n);
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			hi world
+		</code></pre>
+		<p>The changes we made:</p>
+		<ol>
+			<li>Changing <var>&m</var> to <var>&mut m</var>.</li>
+			<li>
+				Changing the type from <var>&String</var> to
+				<var>&mut String</var>.
+			</li>
+		</ol>
+		<p>
+			In making the changes above, we effectively told Rust to treat
+			<var>m</var>'s data as mutable through <var>n</var>.
+		</p>
+	</section>
+
+	<section id="dereferencing">
+		<h3>Dereferencing</h3>
+		<p>
+			When we attempt to modify a non-mutable reference, we might have
+			noticed the following line in the resulting error message:
+		</p>
+		<pre class="language-bash"><code>
+			cannot borrow `*n` as mutable, as it is behind a `&` reference
+		</code></pre>
+		<p>
+			What does the <var>`*n`</var> mean? The <var>*</var> operator is the
+			<b>dereference operator</b>, similar to what we'd see in C. The
+			difference from C, however, is that Rust automatically dereferences
+			pointers for us. When we write:
+		</p>
+		<pre class="language-rust"><code>
+			let mut m = String::from("hi");
+			let n: &mut String = &mut m;
+			<mark>n.push_str(" world");</mark>
+		</code></pre>
+		<p>We are actually writing:</p>
+		<pre class="language-rust"><code>
+			let mut m = String::from("hi");
+			let n: &mut String = &mut m;
+			<mark>(*n).push_str(" world");</mark>
+		</code></pre>
+		<p>
+			This is similar to how dereferencing works in languages like C. When
+			we write, <var>*n</var>, we're saying,
+			<q
+				>Go to the address stored in <var>n</var>, and use the data that
+				address points to.</q
+			><sup></sup>
+		</p>
+		<div class="note">
+			<p>For comparison, consider the following C code and its output:</p>
+			<pre class="language-c"><code>
+				#include &lt;stdio.h&gt;
+
+				int main() {
+					int a = 10;
+					int* b = &amp;a;
+					printf("&a : %p\n", &a);
+					printf("&b : %p\n", &b);
+					printf("*b : %d\n", *b);
+					printf("a : %d\n", a);
+					printf("b : %p\n", b);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				&a : 0x7ffee4720188
+				&b : 0x7ffee4720180
+				*b : 10
+				a : 10
+				b : 0x7ffee4720188
+			</code></pre>
+		</div>
 	</section>
 </section>
 

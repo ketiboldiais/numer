@@ -1,7 +1,7 @@
 // Margin notes
 function marginNote() {
 	const noteContent = document.querySelectorAll("div.note");
-	const noteNumbers = document.querySelectorAll("p sup");
+	const noteNumbers = document.querySelectorAll("sup");
 	for (let i = 0; i < noteNumbers.length; i++) {
 		let noteText = noteContent[i];
 		let noteNumber = i + 1;
