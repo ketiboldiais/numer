@@ -70,6 +70,522 @@
 			element.
 		</p>
 	</div>
-	<p></p>
+</section>
+
+<section id="trees">
+	<h2>Trees</h2>
+	<p>Recall the definition of <i>connected</i> in graph theory:</p>
+	<dfn>
+		<small>Definition: Connected</small>
+		<p>
+			Two vertices ${u}$ and ${v}$ are <i>connected</i> if, and only if,
+			there is a path between ${u}$ and ${v.}$ A graph ${G}$ is
+			<i>connected</i> when every pair of vertices in the graph are
+			connected.
+		</p>
+	</dfn>
+	<p>Next, recall the definition of a <i>closed walk</i>:</p>
+	<dfn>
+		<small>Definition: Closed Walk</small>
+		<p>
+			A <i>closed walk</i> is a walk which starts and ends with the same
+			vertex.
+		</p>
+	</dfn>
+	<p>And the definition of a <i>cycle</i>:</p>
+	<dfn>
+		<small>Definition: Cycle</small>
+		<p>
+			A <i>cycle</i> is a closed walk of ${k \geq 3}$ vertices, where
+			${v_0, v_1, v_2, \ldots v_k}$ are all different.
+		</p>
+	</dfn>
+	<p>
+		From these two definitions, we have the definition of a <b>tree</b>:
+	</p>
+	<dfn>
+		<small>Tree</small>
+		<p>A <i>tree</i> is a connected and acyclic graph.</p>
+	</dfn>
+	<p>
+		In other words, if we have a graph all of its vertices are connected
+		and there are no cycles, then we have a <i>tree</i>. For example, the
+		graphs below are all trees:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/tree_examples.svg' %}"
+			alt=""
+			loading="lazy"
+			height="150px"
+		/>
+	</figure>
+	<p>
+		Because trees are a particularly special kind of graph, they have a
+		large lexicon. First, the notion of a <b>leaf</b>.
+	</p>
+	<dfn>
+		<small>Definition: Leaf</small>
+		<p>
+			Given a tree ${T,}$ a <i>leaf</i> is a node the tree with a degree of
+			${1.}$
+		</p>
+	</dfn>
+	<p>For example, in the tree below, the leaves are colored green:</p>
+	<figure>
+		<img
+			src="{% static 'images/leaf.svg' %}"
+			alt=""
+			loading="lazy"
+			height="150px"
+		/>
+	</figure>
+	<p>
+		Trees have a peculiar feature. If we pick any subgraph in the tree,
+		we'd find another tree, called a <b>subtree</b>:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/subtree.svg' %}"
+			alt=""
+			loading="lazy"
+			height="150px"
+		/>
+	</figure>
+	<p>We'll state this as a lemma:</p>
+	<dfn>
+		<small>Subtree Lemma</small>
+		<p>Any connected subgraph of a tree is a tree.</p>
+	</dfn>
+	<p>
+		Why is this lemma true? Because a graph is a tree if, and only if, it
+		has no cycles. Let ${T}$ be a tree with a connected subgraph ${t.}$
+		Suppose ${t}$ is not a tree. If ${t}$ is not a tree, then ${t}$
+		contains a cycle. But since ${t}$ is connected, then the cycle exists
+		in ${T.}$ In which case ${T}$ is not a tree. This contradicts our
+		initial proposition that ${T}$ is tree, so it must be true that ${t}$
+		is a tree. Therefore, any connected subgraph in ${T}$ is a tree.
+		${\blacksquare}$
+	</p>
+	<section id="trees_and_edges">
+		<h3>The Relationship Between Nodes and Edges in Trees</h3>
+		<p>
+			Another special property associated with trees is the elegant
+			relationship between edges and nodes.
+		</p>
+		<dfn>
+			<small>Node-edge Lemma</small>
+			<p>If a tree has ${n}$ nodes, then it must have ${n-1}$ edges.</p>
+		</dfn>
+		<p>
+			This lemma's proof is great illustration of induction. We begin with
+			our inductive hypothesis:
+		</p>
+		<dfn>
+			<p>
+				<small>hypothesis: ${P(n)}$</small>There are ${n-1}$ edges in any
+				${n}$-node tree.
+			</p>
+		</dfn>
+		<p>Then we have our base case:</p>
+		<dfn>
+			<p>
+				<small>base case: ${P(1)}$</small>There are ${0}$ edges in any
+				${1}$-node tree.
+			</p>
+		</dfn>
+		<p>
+			We know that ${P(1)}$ is true. If there is only one node, then there
+			are no edges, since an edge connects two nodes. Now we perform the
+			inductive step:
+		</p>
+		<dfn>
+			<p>
+				<small>inductive step</small>Assume ${P(n)}$ is true. Let ${T}$ be
+				a tree with ${n+1}$ nodes.
+			</p>
+		</dfn>
+		<p>
+			We want to use our <cite>hypothesis</cite> somehow, which involves
+			${n-1}$ edges. What nodes can we remove from the true such that the
+			tree still stays a tree? The leaves. Since a leaf only has a single
+			edge connected to it, removing a leaf from the tree does not change
+			the tree's classification as a tree. So we continue:
+		</p>
+		<dfn>
+			<p>
+				Assume ${P(n)}$ is true. Let ${T}$ be a tree with ${n+1}$ nodes.
+				Let ${v}$ be a leaf of ${T.}$ If we remove ${v,}$ then we have a
+				connected subgraph of ${T.}$ By the
+				<cite>subtree lemma</cite>, this connected subgraph is a tree. By
+				${P(n),}$ the connected subgraph has ${n-1}$ edges.
+			</p>
+		</dfn>
+		<p>
+			We're almost done. We've managed to prove that ${P(n)}$ is true for
+			the subgraph, but the lemma pertains to the tree as a whole. Thus,
+			what we now have to do is reconstruct the tree. Since we removed a
+			leaf, we must reattach the leaf:
+		</p>
+		<dfn>
+			<p>
+				Assume ${P(n)}$ is true. Let ${T}$ be a tree with ${n+1}$ nodes.
+				Let ${v}$ be a leaf of ${T.}$ If we remove ${v,}$ then we have a
+				connected subgraph ${t}$ of ${T.}$ By the
+				<cite>subtree lemma</cite>, ${t}$ is a tree. By ${P(n),}$ ${t}$ has
+				${n-1}$ edges.
+			</p>
+			<p>
+				Suppose ${v}$ is reattached. This adds an additional edge to ${t}$
+				and returns the original tree ${T.}$ Given that ${t}$ had ${n-1}$
+				edges, ${T}$ has: ${(n-1)+1 = n}$ edges.
+			</p>
+			<p>
+				Therefore, if a tree ${T}$ has ${n}$ nodes, then it must have
+				${n-1}$ edges. ${\blacksquare}$
+			</p>
+		</dfn>
+		<p>
+			This proves the <cite>node-edge lemma</cite>, a proposition that
+			turns out to be very useful when handling trees.
+		</p>
+	</section>
+
+	<section id="spanning_trees">
+		<h3>Spanning Trees</h3>
+		<p>
+			A <b>spanning tree</b> is a subgraph of a graph that <i>spans</i> all
+			the vertices within the graph. In other words, a tree that touches
+			every single vertex in the graph. For example, the
+			<i>grid graph</i> below contains a spanning tree:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/spanning_tree.svg' %}"
+				alt=""
+				loading="lazy"
+				height="100px"
+			/>
+		</figure>
+		<p>The definition:</p>
+		<dfn>
+			<small>Definition: Spanning Tree</small>
+			<p>
+				Let ${G}$ be a connected graph, and ${ST}$ be a subgraph of ${G.}$
+				If, and only if, ${ST}$ is:
+			</p>
+			<ol>
+				<li>a tree, and</li>
+				<li>has the same vertices as ${G,}$</li>
+			</ol>
+			<p>then ${ST}$ is a <i>spanning tree</i>.</p>
+		</dfn>
+		<p>
+			Another way to think about this is, if we can take a connected graph
+			${G}$ and reconstruct it as a tree using all of ${G}$'s vertices,
+			then ${G}$ has a spanning tree. As it happens, there's a powerful
+			theorem related to spanning trees:
+		</p>
+		<dfn>
+			<small>Spanning Tree Theorem</small>
+			<p>Any connected graph ${G}$ has a spanning tree.</p>
+		</dfn>
+		<p>
+			The proof for this theorem is done by contradiction. Suppose there
+			exists a connected graph ${G}$ with no spanning tree. Since ${G}$ is
+			a connected graph, ${G}$ contains a subgraph with the same nodes and
+			the smallest number of edges. Suppose that ${T}$ is such a graph: Let
+			${T}$ be a connected subgraph of ${G}$ with (1) the same nodes as
+			${G}$ and (2) the smallest number of edges. Since ${G}$ has no
+			spanning tree, ${T}$ is not a spanning tree. Because ${T}$ has the
+			same nodes as ${G}$ and the smallest number of edges, the fact that
+			${T}$ is not a spanning tree implies that ${T}$ contains a cycle.
+		</p>
+		<p>
+			Now suppose that an edge ${(n_0, n_1)}$ is removed from the graph
+			${G.}$ If some path ${(x, \ldots, y)}$ in ${G}$ does not contain the
+			edge ${(n_0, n_1),}$ then ${x}$ and ${y}$ remain connected. However,
+			even if the path ${(x, \ldots, y)}$ contained the edge ${(n_0,
+			n_1),}$ i.e., the path ${(x, \ldots, n_0, n_1, \ldots, y),}$ the
+			nodes ${x}$ and ${y}$ remain connected because ${G}$ contains a
+			cycle. Thus, even if some edge ${e_n}$ is removed from ${G,}$ all
+			vertices in ${G}$ remain connected.
+		</p>
+		<p>
+			This implies that ${G}$ contains a smaller subgraph than ${T,}$ which
+			contradicts the assumption that ${T}$ is the smallest subgraph.
+			Therefore, it cannot be true that ${T}$ is not a spanning tree, which
+			proves that every connected graph ${G}$ has a spanning tree.
+		</p>
+	</section>
+
+	<section id="weighted_minimum_spanning_trees">
+		<h3>Minimimum Weight Spanning Trees</h3>
+		<p>
+			Just as we saw with other graphs, we can assign weights to spanning
+			trees:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/weighted_spanning_tree.svg' %}"
+				alt=""
+				loading="lazy"
+				height="150px"
+			/>
+			<figcaption>Graph ${L}$</figcaption>
+		</figure>
+		<p>The spanning tree in ${L}$ is visualized as such:</p>
+		<figure>
+			<img
+				src="{% static 'images/weighted_spanning_tree1.svg' %}"
+				alt=""
+				loading="lazy"
+				height="150px"
+			/>
+			<figcaption>Spanning tree of ${L,}$ denoted ${L_{ST}}$</figcaption>
+		</figure>
+		<p>
+			The <b>spanning tree weight</b> is the weight of all the edges in the
+			spanning tree. In the case of ${L_{ST},}$ the graph ${L}$'s spanning
+			tree, we have:
+		</p>
+		<figure>
+			$$ \mathcal{W}(L_{ST}) = 2 + 2 + 3 + 1 + 1 + 3 + 7 = 19 $$
+		</figure>
+		<p>From these basic facts, we have the following problem:</p>
+		<dfn>
+			<small>Minimum Spanning Tree Problem</small>
+			<p>
+				Given a connected graph ${G,}$ how do we find a spanning tree of
+				${G}$ with the smallest weight possible?
+			</p>
+		</dfn>
+		<p>
+			For example, if we look at the original spanning tree we constructed,
+			we could have instead constructed:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/weighted_spanning_tree2.svg' %}"
+				alt=""
+				loading="lazy"
+				height="150px"
+			/>
+		</figure>
+		<p>
+			This replaces the edge with a weight ${2}$ with the edge of weight
+			${1,}$ which would then yield:
+		</p>
+		<figure>
+			$$ \mathcal{W}(L_{ST}) = 2 + 2 + 1 + 1 + 1 + 3 + 7 = 17 $$
+		</figure>
+		<p>
+			It turns out that ${17}$ is the smallest possible weight for
+			${L_{ST},}$ so we'll use a similar tree for illustration still of
+			weight ${17:}$
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/weighted_spanning_tree3.svg' %}"
+				alt=""
+				loading="lazy"
+				height="150px"
+			/>
+		</figure>
+		<p>Let's start with a definition:</p>
+		<dfn>
+			<small>Definition: Minimum Spanning Tree</small>
+			<p>
+				The <i>minimum spanning tree</i> of an edge-weighted graph ${G}$ is
+				the spanning tree of ${G}$ such that it has the smallest possible
+				sum of ${G}$'s edge weights.
+			</p>
+		</dfn>
+		<p>
+			We'll start with a simple greedy algorithm for finding a graph
+			${G}$'s minimum spanning tree:
+		</p>
+		<dfn>
+			<small>Greedy Minimum Spanning Tree Finder</small>
+			<p>
+				Let ${G}$ be an edge-weighted graph. To find ${G}$'s minimum
+				spanning tree, we grow a subgraph of ${G}$ one edge at a time, such
+				that each step, we add the minimum weight edge that keeps the
+				subgraph acyclic.
+			</p>
+		</dfn>
+		<p>
+			The greedy algorithm is straightforward. We start with any minimum
+			edge, say, the edge ${(c, b).}$ With just one edge, we're free to
+			choose any other edge. In this case, say we choose ${(x,y).}$ Doing
+			so again doesn't cause any problems. The edges ${(c,b)}$ and
+			${(x,y)}$ are disjoint, so there's no graph formation. Accordingly,
+			we have the following so far:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Edge Chosen</th>
+				<th>Weight</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${(c, b)}$</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>${(x, y)}$</td>
+					<td>1</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Since no graph has formed, we're free to pick any other edge. Say we
+			pick ${(d, b):}$
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Edge Chosen</th>
+				<th>Weight</th>
+				<th>Total Weight</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${(c, b)}$</td>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>${(x, y)}$</td>
+					<td>1</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>${(d, b)}$</td>
+					<td>1</td>
+					<td>3</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Now we have our first subgraph: ${(c, b, d).}$ We cannot use the edge
+			${(c, d),}$ since that would create a cycle, so let's say we chose
+			the edge ${(w, x):}$
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Edge Chosen</th>
+				<th>Weight</th>
+				<th>Total Weight</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${(c, b)}$</td>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>${(x, y)}$</td>
+					<td>1</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>${(b, d)}$</td>
+					<td>1</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>${(w, x)}$</td>
+					<td>2</td>
+					<td>5</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>Thus far, we now have two disconnected subgraphs:</p>
+		<figure>
+			$$ \begin{aligned} &(c, b, d) \\ &(w, x, y) \end{aligned} $$
+		</figure>
+		<p>Let's connect the two subgraphs by adding the edge ${(w, d):}$</p>
+		<table class="alg">
+			<thead>
+				<th>Edge Chosen</th>
+				<th>Weight</th>
+				<th>Total Weight</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${(c, b)}$</td>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>${(x, y)}$</td>
+					<td>1</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>${(b, d)}$</td>
+					<td>1</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>${(w, x)}$</td>
+					<td>2</td>
+					<td>5</td>
+				</tr>
+				<tr>
+					<td>${(w, d)}$</td>
+					<td>2</td>
+					<td>7</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>At this point we have a single subgraph:</p>
+		<figure>$$ (c, b, d, w, x, y) $$</figure>
+		<p>All that's remaining is to connect the nodes ${z}$ and ${a:}$</p>
+		<table class="alg">
+			<thead>
+				<th>Edge Chosen</th>
+				<th>Weight</th>
+				<th>Total Weight</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${(c, b)}$</td>
+					<td>1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>${(x, y)}$</td>
+					<td>1</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>${(b, d)}$</td>
+					<td>1</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>${(w, x)}$</td>
+					<td>2</td>
+					<td>5</td>
+				</tr>
+				<tr>
+					<td>${(w, d)}$</td>
+					<td>2</td>
+					<td>7</td>
+				</tr>
+				<tr>
+					<td>${(y, z)}$</td>
+					<td>3</td>
+					<td>10</td>
+				</tr>
+				<tr>
+					<td>${(b, a)}$</td>
+					<td>7</td>
+					<td>17</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
 </section>
 {% endblock %}

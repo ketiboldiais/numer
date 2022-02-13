@@ -7,6 +7,7 @@
 <section id="intro">
 	<p>In this section, we examine some applications of derivatives.</p>
 </section>
+
 <section id="linear_approximations">
 	<h2>Linear Approximations</h2>
 	<p>The primary formula we use for linear approximations:</p>
@@ -1417,13 +1418,213 @@
 		\left(\dfrac{1}{8}\right)^2 \\[1em] &= \dfrac{1}{64} + \dfrac{1}{64}
 		\\[1em] &= \dfrac{2}{64} \\[1em] &= \dfrac{1}{32} \end{aligned} $$
 	</figure>
+	<p>
+		And with that, we're done. We hand our results in, and two weeks later,
+		we get an email:
+		<q
+			>We used the measurements sent, and there has to be some mistake.
+			These are the tiniest squares we've ever made.</q
+		>
+		Confusion sets in. Did we do something wrong? We double-check our work,
+		and everything is right. We slowly realize, however, that we didn't
+		check the <i>end points</i>. Given our function ${A(x) = \dfrac{x}{4} +
+		\dfrac{1-x}{4},}$ we know that the domain is: ${0 &lt; x &lt; 1.}$ If
+		we examine the limits:
+	</p>
+	<figure>
+		$$ A(0^+) = 0 + \left(\dfrac{1}{4}\right)^2 = \dfrac{1}{16} \\[1em]
+		A(1^-) = \left(\dfrac{1}{4}\right)^2 + 0 = \dfrac{1}{16} $$
+	</figure>
+	<p>
+		At this point, it should be clear what we've just done. The critical
+		value we calculated is ${\dfrac{1}{32},}$ and the endpoints are
+		${\dfrac{1}{16}}$ and ${\dfrac{1}{16}.}$ So the graph actually looks
+		like:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/max_min_fail.svg' %}"
+			alt="max-min fail"
+			loading="lazy"
+			width="150px"
+		/>
+	</figure>
+	<p>
+		We didn't find the largest possible area; we found the <i>smallest</i>.
+		Not the max, but the min. This demonstrates a critical practice point
+		in solving solving optimization problems:
+	</p>
+	<dfn>
+		<small>Warning</small>
+		<p>
+			The maximum or minimum value does not always occur when the first
+			derviative is ${0.}$ The function's value at the endpoints of the
+			interval considered for global maxima and minima must always be
+			considered.
+		</p>
+		<img
+			src="{% static 'images/max_min_warning.svg' %}"
+			alt="warning on max min"
+			loading="lazy"
+			style="transform: scale(1.05)"
+		/>
+	</dfn>
+	<p>Let's consider another example:</p>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			Let ${b}$ be a box without a top. Find the least surface area for
+			${b}$ given a fixed a volume.
+		</p>
+	</dfn>
+	<p>Again we start with a diagram:</p>
+	<figure>
+		<img
+			src="{% static 'images/box_optimization.svg' %}"
+			alt="box"
+			loading="lazy"
+			height="150px"
+		/>
+	</figure>
+
+	<p>Next, we specify the formulas. For the volume, we have:</p>
+	<figure>$$ V_b = xyz $$</figure>
+	<p>For the surface area, we have one bottom and four sides:</p>
+	$$ A_b = xz + yx + yx + yz + yz = xz + 2yx + 2yz $$
+	<p>
+		This surface area formula is pretty ugly. It contains three spearate
+		variables in three separate terms. Is there any way to reduce the
+		number of variables present? Well, let's start by asking why we even
+		have three variables in the first place. We have three variables
+		because we don't know the length, width, or height of this box. But
+		couldn't the box have a square bottom? In which case we'd just have two
+		variables &mdash; ${x}$ and ${y.}$
+	</p>
+	<p>
+		That would certainly simplify the problem, but for us to take that
+		route, it must be true that a square bottom has a smaller perimeter
+		rather than a rectangular bottom. Otherwise we wouldn't have the
+		smallest possible surface area. Let's state the problem:
+	</p>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			Given a rectangle ${R}$'s perimeter ${P,}$ what are the smallest
+			possible dimensions of ${R?}$
+		</p>
+	</dfn>
+	<p>Once more we start with a diagram:</p>
+	<figure>
+		<img
+			src="{% static 'images/optimized_perimeter.svg' %}"
+			alt="optimized rectangle"
+			loading="lazy"
+			height="60px"
+		/>
+	</figure>
+	<p>Expressing the rectangle's perimeter as a formula:</p>
+	<figure>$$ P_R = 2x + 2y $$</figure>
+	<p>
+		We want to find the minimum perimeter, so we differentiate ${P}$ with
+		respect to ${x}$ and solve for ${\dfrac{dP_R}{dx} = 0.}$
+	</p>
+	<figure>
+		$$ \begin{aligned} \dfrac{dP_R}{dx} = 0 \\[1em] \dfrac{d}{dx}(2x + 2y)
+		= 0 \\[1em] \dfrac{d}{dx}2x + \dfrac{d}{dx}2y = 0 \\[1em] 1 +
+		\dfrac{dy}{dx} = 0 \\[1em] 1 + \left( - \dfrac{y}{x} \right) = 0
+		\\[1em] \dfrac{x - y}{x} = 0 \\[1em] x - y = 0 \\[1em] x = y
+		\end{aligned} $$
+	</figure>
+	<p>
+		Looking at that result, we see that a rectangle with the smallest
+		possible area is, in fact, a square, since ${x}$ (the width) is equal
+		to ${y}$ (the height). So, we can revise the diagram we started out
+		with:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/revised_box_optimization.svg' %}"
+			alt="box"
+			loading="lazy"
+			height="150px"
+		/>
+	</figure>
+	<p>
+		Now we just have two variables, and our equations are much simpler:
+	</p>
+	<figure>
+		$$ \begin{aligned} &V = x^2y\\[1em] &A = x^2 + 4xy \end{aligned} $$
+	</figure>
+	<p>
+		We still have several unknowns in our problem: ${x}$ and ${y.}$ This is
+		still a good amount of complexity. Fortunately, the problem contains a
+		<b>constraint</b> &mdash; the volume is fixed. This means that the
+		quantiy ${V = x^2y}$ never changes. This in turn means that we can
+		solve for ${y}$ through ${V:}$
+	</p>
+	<figure>
+		$$ \begin{aligned} V = x^2y \\[1em] y = \dfrac{V}{x^2} \end{aligned} $$
+	</figure>
+	<p>We can then substitute ${y}$ into the area formula:</p>
+	<figure>
+		$$ \begin{aligned} A &= x^2 + 4xy \\[1em] &= x^2 +
+		4x\left(\dfrac{V}{x^2}\right) \\[1em] &= x^2 + \dfrac{4V}{x}
+		\end{aligned} $$
+	</figure>
+	<p>Now we're in a good spot to differentiate:</p>
+	<figure>$$ A' = 2x - \dfrac{4V}{x^2} $$</figure>
+	<p>Setting ${A' = 0}$ and solving for ${x:}$</p>
+	<figure>
+		$$ \begin{aligned} 2x - \dfrac{4V}{x^2} &= 0 \\[1em] 2x &=
+		\dfrac{4V}{x^2} \\[1em] 2x^3 &= 4V \\[1em] x^3 &= 2V \\[1em] x &=
+		\sqrt[3]{2V} = 2^{\frac{1}{3}}V^{\frac{1}{3}} \end{aligned} $$
+	</figure>
+	<p>We now have our critical point:</p>
+	<figure>$$ x = 2^{\frac{1}{3}}V^{\frac{1}{3}} $$</figure>
+	<p>
+		As we saw earlier, we aren't done. We have no idea whether this
+		critical point corresponds to the maximum value or the minimum value.
+		So we have to check the endpoints. So what are the endpoints for ${x?}$
+		We know that it cannot be negative &mdash; a rectangle cannot have
+		negative dimensions:
+	</p>
+	<figure>$$ 0 &lt; x $$</figure>
+	<p>And the upperbound? It's ${+\infty;}$ ${x}$ could be anything:</p>
+	<figure>$$ 0 &lt; x &lt; +\infty $$</figure>
+	<p>Now that we have the endpoints, we can evalaute:</p>
+	<figure>
+		$$ \left. A(0^+) = x^2 + \dfrac{4V}{x} \right\vert_{x = 0^+} = +\infty
+		$$
+	</figure>
+	<p>
+		Ok, so at the lower endpoint, we get a box with infinite area. That's
+		not what we want, so let's consider the other upper endpoint:
+	</p>
+	<figure>
+		$$ \left. A(+\infty) = x^2 + \dfrac{4V}{x} \right\vert_{x = +\infty} =
+		+\infty $$
+	</figure>
+	<p>
+		This tells us that we've found a <i>minimum</i>. The critical point
+		we've found does, in fact, correspond to the smallest possible area:
+	</p>
+	<figure>
+		$$ \begin{aligned} x &= 2^{\frac{1}{3}}V^{\frac{1}{3}} \\[1em] x &=
+		\sqrt[3]{2(x^2y)} \\[1em] x^3 &= 2x^2y \\[1em] x &= 2y \\[1em]
+		\dfrac{x}{y} &= 2 \end{aligned} $$
+	</figure>
+	<p>
+		The smallest possible area of a lidless box with a fixed volume ${V}$
+		will have the bottom dimensions ${x}$ by ${x,}$ where ${x}$ is twice
+		the box's height. In other words, a ${2:1}$ box.
+	</p>
 	<p>With a function's sketch, it's easy to find maxima and minima:</p>
 	<figure>
 		<img
 			src="{% static 'images/max_min.svg' %}"
 			alt="max min"
 			loading="lazy"
-			width="400px"
+			height="300px"
 		/>
 	</figure>
 	<p>
@@ -1446,7 +1647,7 @@
 			src="{% static 'images/min_max2.svg' %}"
 			alt="max min"
 			loading="lazy"
-			width="500px"
+			width="400px"
 		/>
 	</figure>
 	<p>There are five possible places the minimum or maximum might be:</p>
@@ -1459,4 +1660,406 @@
 	</ol>
 	<p>Only one out of these five places is a critical point.</p>
 </section>
+
+<section id="related_rates">
+	<h2>Related Rates</h2>
+	<p>Consider the following problem:</p>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			A traffic enforcement camera lies thirty feet straight from the road.
+			A vehicle approaches the camera, and the camera's radar bounces off
+			the vehicle. The camera reads the vehicle as fifty feet away. The
+			camera also reads vehicle as travelling at eighty feet per second.
+			The speed limit is ninety feet per second (or sixty-five miles per
+			hour). Question: Is the vehicle speeding?
+		</p>
+	</dfn>
+	<p>
+		As usual, we begin by drawing a diagram. We know that the camera lies
+		thirty feet straight from the road, so it forms a right angle. And
+		since the camera reads the vehicle as fifty feet away, we have a
+		Heronian triangle,<sup></sup> specifically a ${3:4:5}$ triangle:
+	</p>
+	<div class="note">
+		<p>
+			A <i>Heronian triangle</i> is a triangle whose side lengths and area
+			are all integers, named after the Greek mathematician Hero of
+			Alexandria.
+		</p>
+	</div>
+	<figure>
+		<img
+			src="{% static 'images/speed_trap_related_rates.svg' %}"
+			alt=""
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		The next step is to <i>name</i> our quantities. We'll use ${t}$ for
+		time, measured in seconds.
+	</p>
+	<figure>
+		<p>${t \coloneqq}$ time ${~~(\text{s})}$</p>
+	</figure>
+	<p>Next, we want to denote some quantities directly on our diagram:</p>
+	<figure>
+		<img
+			src="{% static 'images/speed_trap_related_rates1.svg' %}"
+			alt=""
+			loading="lazy"
+		/>
+	</figure>
+	<p>In our diagram above, we made the following definitions:</p>
+	<ol>
+		<li>${x = 40}$ (the ${x}$ distance from the camera)</li>
+		<li>${D = 50}$ (the ${x}$ distance between the camera and vehicle)</li>
+		<li>
+			${\text{SL} = 90 \frac{\text{ft}}{\text{s}}}$ (the speed limit)
+		</li>
+		<li>
+			${\dfrac{dD}{dt} = 80 \frac{\text{ft}}{\text{s}}}$ (the approach
+			speed)
+		</li>
+	</ol>
+	<p>
+		Why did we denote ${x = 40?}$ Because the problem boils down to
+		determining whether this proposition is true:
+	</p>
+	<figure>$$ \dfrac{dx}{dt} &gt; (\text{SL} = 95) $$</figure>
+	<p>
+		We also denoted ${D = 50}$ because the dstiance between the camera and
+		the vehicle varies. This is all to show that whenever we deal with
+		variable quantities, we always want to give them variable names.
+		Constants, on the other hand, come down to personal style. In some
+		problems, we might want to give constants variable names to avoid
+		numeric distractions. In others, we might not want to give constants
+		separate names because numeric quantities can provide intuition.
+	</p>
+	<p>
+		Now, the first thing to note is that we're moving towards the camera.
+		This means that the approach speed is actually:
+	</p>
+	<figure>$$ \dfrac{dD}{dt} = -80 \frac{\text{ft}}{\text{s}} $$</figure>
+	<p>
+		In other words, the speed is decreasing at ${80
+		\frac{\text{ft}}{\text{s}}.}$ Returning to our diagram, we want to
+		express a relationship between the triangle's lengths. Here, we rely on
+		the <cite>pythagorean theorem</cite>:
+	</p>
+	<figure>$$ x^2 + 30^2 = D^2 $$</figure>
+	<p>
+		At this point, we'll want to differentiate. Here, the easiest approach
+		is to use implicit differentiation. We'll differentiate the entire
+		equation with respect to time. In doing so, we want to keep mind not to
+		just substitute ${40}$ into ${x.}$ Why? Because ${x}$ is variable.
+		Performing the implicit differentiation:
+	</p>
+	<figure>
+		$$ \begin{aligned} \dfrac{d}{dx} x^2 + \dfrac{d}{dx} 30^2 &=
+		\dfrac{d}{dx} D^2 \\[1em] 2x \dfrac{dx}{dt} + 0 &= 2D \dfrac{dD}{dt}
+		\\[1em] 2x \dfrac{dx}{dt} &= 2D \dfrac{dD}{dt} \end{aligned} $$
+	</figure>
+	<p>
+		With the derivative in place, now we can substitute ${x}$ for ${40:}$
+	</p>
+	<figure>
+		$$ \begin{aligned} 2(40) \dfrac{dx}{dt} &= 2(50)(-80) \\[1em] 80
+		\dfrac{dx}{dt} &= 2(50)(-80) \\[1em] \cancel{80} \dfrac{dx}{dt} &=
+		2(50)(-1)\cancel{(80)} \\[1em] \dfrac{dx}{dt} &= -100 \end{aligned} $$
+	</figure>
+	<p>This gives us our answer:</p>
+	<figure>
+		$$ \left(\left\lvert \dfrac{dx}{dt} \right\rvert = 100
+		\frac{\text{ft}}{\text{s}}\right) &gt; 90 \frac{\text{ft}}{\text{s}} $$
+	</figure>
+	<p>
+		So yes, the vehicle was, in fact, speeding. Assuming, of course, that
+		there were no calibration issues with the camera and all the necessary
+		elements of the traffic offense are met.
+	</p>
+	<p>Let's consider another problem:</p>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			A conical tank with a top radius of four feet and a depth of ten feet
+			is being filled with water at a rate of two cubic feet per minute.
+			How fast is the water rising when the water reaches a depth of five
+			feet?
+		</p>
+	</dfn>
+	<p>Once again, we begin by diagramming:</p>
+	<figure>
+		<img
+			src="{% static 'images/conic_tank_related_rates.svg' %}"
+			alt=""
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		Looking at our diagram, we see that the cross-section depicting the
+		water presents similar triangles. Thus:
+	</p>
+	<figure>$$ \dfrac{r}{h} = \dfrac{4}{10} $$</figure>
+	<p>
+		Next, we know from geometry that the volume of a cone is given by the
+		formula:
+	</p>
+	<figure>$$ V = \dfrac{1}{3}(\pi r^2)h $$</figure>
+	<p>
+		Next, we're told that the tank is being filled at a rate of two cubic
+		feet per minute, so we have:
+	</p>
+	<figure>$$ \dfrac{dV}{dt} = 2 ~\frac{\text{ft}^3}{\text{min}} $$</figure>
+	<p>Finally, we want to formulate our question:</p>
+	<figure>
+		<p>What is ${\dfrac{dh}{dt}}$ when ${h = 5?}$</p>
+	</figure>
+	<p>
+		From our ratio ${r/h = 4/10,}$ we can easily express ${r}$ as a
+		function of ${h:}$
+	</p>
+	<figure>$$ r = \dfrac{2}{5}h $$</figure>
+	<p>Substitute the expression into ${V:}$</p>
+	<figure>
+		$$ \begin{aligned} V &= \dfrac{1}{3} \pi \left(\dfrac{2}{5}h\right)^2 h
+		\end{aligned} $$
+	</figure>
+	<p>
+		At this point, we want to just implicitly differentiate. We don't want
+		to try and solve for ${h,}$ because just looking at that equation, we
+		can tell that we'll end up with a cubic root, and that can easily turn
+		nasty.
+	</p>
+	<figure>
+		$$ \begin{aligned} \dfrac{d}{dt} V &= \dfrac{d}{dt} \dfrac{1}{3} \pi
+		\left(\dfrac{2}{5}h\right)^2 h \\[1em] \dfrac{dV}{dt} &= \dfrac{\pi}{3}
+		\left( \dfrac{2}{5} \right)^2 \dfrac{d}{dt} h^3 \\[1em] \dfrac{dV}{dt}
+		&= \dfrac{\pi}{3} \left( \dfrac{2}{5} \right)^2 3h^2 \dfrac{dh}{dt}
+		\end{aligned} $$
+	</figure>
+	<p>Now we can plug in the numbers:</p>
+	<figure>
+		$$ \begin{aligned} 2 &= \dfrac{\pi}{3} \left( \dfrac{2}{5} \right)^2
+		(3)(5)^2 \dfrac{dh}{dt} \\[1em] 2 &= \dfrac{\pi}{3} \dfrac{2}{5}
+		\dfrac{2}{5} (3)(5)(5) \dfrac{dh}{dt} \\[1em] \cancel{2} &=
+		\dfrac{\pi}{\cancel{3}} \dfrac{\cancel{2}}{\cancel{5}}
+		\dfrac{2}{\cancel{5}} (\cancel{3})(\cancel{5})(\cancel{5})
+		\dfrac{dh}{dt} \\[1em] 1 &= 2 \pi \dfrac{dh}{dt} \\[1em] \dfrac{1}{2
+		\pi} &= \dfrac{dh}{dt} \end{aligned} $$
+	</figure>
+	<p>So, when ${h = 5,}$ we have:</p>
+	<figure>
+		$$ \dfrac{dh}{dt} = \dfrac{1}{2\pi} ~\frac{\text{ft}}{\text{min}} $$
+	</figure>
+</section>
+
+<section id="newtons_method">
+	<h2>Newton's Method</h2>
+	<p>
+		<cite>newton's method</cite> is one of the greatest examples of applied
+		differentiation. The method is best illustrated by way of example.
+	</p>
+	<dfn>
+		<small>Problem</small>
+		<p>Without a calculator, compute ${\sqrt{5}.}$</p>
+	</dfn>
+	<p>
+		The first step is to express the quantity ${\sqrt{5}}$ as an equation:
+	</p>
+	<figure>$$ x^2 = 5 $$</figure>
+	<p>Next, we'll want to abstract the equation as a function:</p>
+	<figure>$$ f(x) = x^2 - 5 $$</figure>
+	<p>Now the question is, what values of ${x}$ satisfy the following:</p>
+	<figure>$$ f(x) = x^2 - 5 = 0 $$</figure>
+	<p>
+		Plotting the function ${f(x) = x^2 - 5}$ is pretty easy, so let's take
+		a look at that:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/newton_method.svg' %}"
+			alt="newton's method"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		The idea now is to try and estimate ${\sqrt{5}.}$ ${\sqrt{5}}$ is close
+		to ${\sqrt{4},}$ which is ${2.}$ So our initial guess, call it ${x_0,}$
+		will be ${2:}$
+	</p>
+	<figure>$$ x_0 = 2 $$</figure>
+	<p>
+		The next step is to pretend that ${f(x)}$ is linear. We mark where
+		${f(2)}$ is, and draw a tangent line there. Where the tangent line
+		intersects the ${\text{$x$-axis}}$ is where our new guess will be:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/newton_method1.svg' %}"
+			alt="newton's method"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		Notice that by doing this, we've gotten closer to where ${f(x)}$
+		actually cross the ${\text{$x$-axis}.}$ This is the key idea behind
+		<cite>newton's method</cite>. We keep guessing, over and over again,
+		until we eventually reach the desired result.
+	</p>
+	<p>The equation of the tangent line is:</p>
+	<figure>$$ y - y_0 = m(x-x_0) $$</figure>
+	<p>
+		In our diagram above, the tangent line is the blue line. Where it
+		crosses the ${\text{$x$-axis}}$ is a point we'll call ${x_1.}$ We want
+		to find the value of ${x_1.}$ Easy: It's when ${y = 0.}$
+	</p>
+	<figure>
+		$$ \begin{aligned} 0 - y_0 &= m(x_1 - x_0) \\[1em] -\dfrac{y_0}{m} &=
+		x_1 - x_0 \end{aligned} $$
+	</figure>
+	<p>Now we can derive a formula for ${x_1:}$</p>
+	<figure>
+		$$ \begin{aligned} -\dfrac{y_0}{m} &= x_1 - x_0 \\[1em] x_0 -
+		\dfrac{y_0}{m} &= x_1 \end{aligned} $$
+	</figure>
+	<p>We have our formula for ${x_1:}$</p>
+	<figure>$$ x_1 = x_0 - \dfrac{y_0}{m} $$</figure>
+	<p>
+		Now, we know that ${y_0}$ is just the function ${f(x)}$ evaluated at
+		${x_0.}$ We also know that ${m}$ is the slope of ${f(x)}$ at ${x_0.}$
+		Thus, the formula, expanded, is:
+	</p>
+	<figure>$$ x_1 = x_0 - \dfrac{f(x_0)}{f'(x_0)} $$</figure>
+	<p>
+		The formula above is what allows us to calculate <em>any</em> root.
+		This formula is so important that we state it a little more formally:
+	</p>
+	<dfn>
+		<small>Newton's Method</small>
+		<p>
+			Let ${f(x)}$ be a function. If ${f(x)}$ is differentiable, then for
+			any point ${x_n}$ on ${f(x),}$ we may approximate ${f(x)}$ by the
+			tangent line to the graph of ${f(x)}$ at the point ${(x_n, f(x_n)).}$
+			That is,
+		</p>
+		$$ f(x) \approx f(x_n) + f'(x_n)(x - x_n) $$
+		<p>
+			Hence, if the tangent line is a good approximation to ${f}$ between
+			${x_n}$ and a zero of ${f(x),}$ then we may find an
+			<i>approximate</i> zero by solving for:
+		</p>
+		$$ 0 = f(x_{n+1}) \approx f(x_n) + f'(x_n)(x_{n+1} - x_n) $$
+		<p>giving:</p>
+		$$ x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)} $$
+	</dfn>
+	<p>
+		Let's apply the formula. We start with ${x_0 = 2,}$ and ${f(x) =
+		x^2-5.}$ Then, we have ${f'(x) = 2x.}$ Thus:
+	</p>
+	<figure>
+		$$ \begin{aligned} x_1 &= x_0 - \dfrac{x_0^2 - 5}{2x_0} \\[1em] &= x_0
+		- \dfrac{(x_0)(x_0) - 5}{2x_0} \\[1em] &= x_0 -
+		\dfrac{\cancel{(x_0)}(x_0) - 5}{2\cancel{x_0}} \\[1em] &= x_0 -
+		\dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \\[1em] &= \dfrac{1}{2}x_0 +
+		\dfrac{5}{2x_0} \end{aligned} $$
+	</figure>
+	<p>Plugging in ${x_0 = 2:}$</p>
+	<figure>
+		$$ \begin{aligned} x_1 &= \dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \\[1em] &=
+		\dfrac{1}{2}(2) + \dfrac{5}{2(2)} \\[1em] &= 1 + \dfrac{5}{4} \\[1em]
+		&= \dfrac{4}{4} + \dfrac{5}{4} \\[1em] &= \dfrac{9}{4} \end{aligned} $$
+	</figure>
+	<p>
+		Then we can solve for ${x_2}$ by plugging in ${x_1 = \dfrac{9}{4}:}$
+	</p>
+	<figure>
+		$$ \begin{aligned} x_2 &= \dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \\[1em] &=
+		\dfrac{1}{2} \cdot \dfrac{9}{4} + \dfrac{5}{2
+		\left(\dfrac{9}{4}\right)} \\[3em] &= \dfrac{1}{2} \cdot \dfrac{9}{4} +
+		\dfrac{5}{2} \cdot \dfrac{4}{9} \\[1em] &= \dfrac{9}{8} +
+		\dfrac{20}{18} \\[1em] &= \dfrac{9}{8} + \dfrac{10}{9} \\[1em] &=
+		\dfrac{(9)(9) + (10)(8)}{(9)(8)} \\[1em] &= \dfrac{81 + 80}{72} \\[1em]
+		&= \dfrac{161}{72} \\[1em] \end{aligned} $$
+	</figure>
+	<p>
+		Then we can solve for ${x_2}$ by plugging in ${x_1 = \dfrac{161}{72}:}$
+	</p>
+	<figure>
+		$$ \begin{aligned} x_2 &= \dfrac{1}{2}x_0 + \dfrac{5}{2x_0} \\[1em] &=
+		\dfrac{1}{2} \cdot \dfrac{161}{72} + \dfrac{5}{2
+		\left(\dfrac{161}{72}\right)} \\[3em] &= \dfrac{1}{2} \cdot
+		\dfrac{161}{72} + \dfrac{5}{2} \cdot \dfrac{72}{161} \\[1em] &=
+		\dfrac{161}{144} + \dfrac{360}{322} \end{aligned} $$
+	</figure>
+	<p>
+		On a calculator, ${\sqrt{5} \approx 2.2360679775.}$ Comparing our
+		approximations:
+	</p>
+	<table class="alg">
+		<thead>
+			<th>${n}$</th>
+			<th>${x_n}$</th>
+			<th>${E_n =\lvert \sqrt{5} - x_n \rvert}$</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${0}$</td>
+				<td>${2}$</td>
+				<td>${0.2360679775 \approx 2.4 \times 10^{-1}}$</td>
+			</tr>
+			<tr>
+				<td>${1}$</td>
+				<td>${\dfrac{9}{4}}$</td>
+				<td>${0.0139320225 \approx 1.4 \times 10^{-2}}$</td>
+			</tr>
+			<tr>
+				<td>${2}$</td>
+				<td>${\dfrac{161}{72}}$</td>
+				<td>${0.00004313361 \approx 4.3 \times 10^{-5}}$</td>
+			</tr>
+			<tr>
+				<td>${3}$</td>
+				<td>${\dfrac{161}{144} + \dfrac{360}{322}}$</td>
+				<td>${\approx 4.16 \times 10^{-10}}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		Looking at the table, once we're at the second iteration, we're already
+		at such a good approximation of ${\sqrt{5}}$ that we don't need to go
+		any further. In fact, most calculators won't even go to the third
+		iteration.
+	</p>
+	<p>Roughly speaking, the level of accuracy <i>doubles</i> at each iteration of applying the formula:</p>
+	<table class="alg">
+		<thead>
+			<th>${E_n}$</th>
+			<th>Error</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${E_0}$</td>
+				<td>${\approx 10^{-1}}$</td>
+			</tr>
+			<tr>
+				<td>${E_1}$</td>
+				<td>${\approx 10^{-2}}$</td>
+			</tr>
+			<tr>
+				<td>${E_2}$</td>
+				<td>${\approx 10^{-4}}$</td>
+			</tr>
+			<tr>
+				<td>${E_3}$</td>
+				<td>${\approx 10^{-8}}$</td>
+			</tr>
+			<tr>
+				<td>${E_4}$</td>
+				<td>${\approx 10^{-16}}$</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+
 {% endblock %}
