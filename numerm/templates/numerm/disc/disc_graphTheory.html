@@ -42,206 +42,269 @@
 </section>
 
 <section id="forray">
-	<h2>What is a graph?</h2>
-	<p>Informally, a graph is just a bunch of dots and lines:</p>
-	<figure>
-		<img
-			src="{% static 'images/graph1.svg' %}"
-			alt="A graph with 5 notes and 8 edges"
-			loading="lazy"
-			width="100px"
-			height="100px"
-		/>
-		<figcaption>A graph with 6 vertices and 5 edges.</figcaption>
-	</figure>
-	<p>
-		A graph is an object consisting of two kinds of objects: vertices and
-		edges. Each of the circles, or points, is called a
-		<b>vertex</b>, or <b>node</b> (we will use the term vertex; plural
-		<i>vertices</i>). Each of the lines connecting the circles is called an
-		<b>edge</b>. The graph above is called a <b>simple graph</b>. We will
-		elaborate further on what this distinction means in later sections. For
-		now, we will say that a simple graph has the following constraints:
-	</p>
-	<dfn>
+	<h2>Overview: What is a graph?</h2>
+
+	<section id="informally">
+		<p>Informally, a graph is just a bunch of dots and lines:</p>
+		<figure>
+			<img
+				src="{% static 'images/graph1.svg' %}"
+				alt="A graph with 5 notes and 8 edges"
+				loading="lazy"
+				width="100px"
+				height="100px"
+			/>
+			<figcaption>A graph with 6 vertices and 5 edges.</figcaption>
+		</figure>
 		<p>
-			<small>Constraint</small> An edge connects <em>only</em> a
-			<i>pair</i> of vertices. For example, in a simple graph, we cannot
-			have an edge connecting ${v_4}$ to itself; i.e., a loop.
+			Those dots and lines, however, can be given labels. And once they're
+			given labels, the graph can be used to describe how various things
+			&mdash; e.g., people, places, ingredients, stocks, numbers, anything
+			really &mdash; connect to one another. Road networks,
+			parent-subsidiary relationships, electrical grids, social networks,
+			and the internet can all be modeled as graphs. In this way, graphs
+			are <i>abstractions</i>.
 		</p>
 		<p>
-			<small>Constraint</small>
-			We cannot we have more than one edge connect two vertices. I.e., two
-			edges connecting ${v_3}$ and ${v_5.}$
+			A graph is an object consisting of two kinds of objects: vertices and
+			edges. Each of the circles, or points, is called a
+			<b>vertex</b>, or <b>node</b> (we will use the term vertex; plural
+			<i>vertices</i>). Each of the lines connecting the circles is called
+			an <b>edge</b>. The graph above is called a <b>simple graph</b>. We
+			will elaborate further on what this distinction means in later
+			sections. For now, we will say that a simple graph has the following
+			constraints:
+		</p>
+		<dfn>
+			<p>
+				<small>Constraint</small> An edge connects <em>only</em> a
+				<i>pair</i> of vertices. For example, in a simple graph, we cannot
+				have an edge connecting ${v_4}$ to itself; i.e., a loop.
+			</p>
+			<p>
+				<small>Constraint</small>
+				We cannot we have more than one edge connect two vertices. I.e.,
+				two edges connecting ${v_3}$ and ${v_5.}$
+			</p>
+			<p>
+				<small>Constraint</small>
+				Edges have no direction; i.e., the fact that ${v_4}$ and ${v_1}$
+				are connected by the edge ${e_4}$ does not imply that the edge goes
+				from ${v_4}$ to ${v_1}$ or vice versa.
+			</p>
+		</dfn>
+		<p>For example, the graphs below are <em>not</em> simple graphs:</p>
+		<figure>
+			<img
+				src="{% static 'images/notSimple.svg' %}"
+				alt="non-simple graph"
+				loading="lazy"
+				width="100px"
+				height="100px"
+			/>
+		</figure>
+		<p>
+			First, for the graph to the left, the edge ${v_1}$ connects the same
+			vertices as the edge ${v_2.}$ This violates
+			<cite>Constraint 2.</cite> For the graph to the right, the edge
+			${v_6}$ connects just one vertex. This violates
+			<cite>Constraint 1.</cite>
+		</p>
+	</section>
+
+	<section id="multigraph">
+		<h3>Multigraph</h3>
+		<p>
+			The graph below is not a simple graph. It's an example of a
+			<b>multigraph</b>.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/multiGraph.svg' %}"
+				alt=""
+				loading="lazy"
+				width="100px"
+				height="100px"
+			/>
+		</figure>
+		<p>
+			Simply put, a <i>multigraph</i> is a graph with at least one pair of
+			edges connecting the same two vertices.<sup></sup> If the graph
+			contains a <b>loop</b> &mdash; an edge that connects a vertex to
+			itself &mdash; then we have a <b>pseudograph</b>:
+		</p>
+		<div class="note">
+			<p>
+				I.e., a graph where a pair of vertices has multiple edges. In
+				computer science, a common example of the multigraph is the
+				doubly-linked list:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/multigraph_doubly-linked_list.svg' %}"
+					alt=""
+					loading="lazy"
+					width="200px"
+				/>
+			</figure>
+		</div>
+	</section>
+
+	<section id="pseudograph">
+		<p>
+			A <i>pseudograph</i> is a graph that includes loops as well as edges
+			connecting the same two vertices.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/pseudoGraph.svg' %}"
+				alt=""
+				loading="lazy"
+				width="100px"
+				height="100px"
+			/>
+		</figure>
+	</section>
+
+	<section id="hypergraphs">
+		<h3>Hypergraphs</h3>
+		<p>
+			If a graph contains an edge that connects more than two vertices,
+			then the graph is called a <b>hypergraph</b>:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/hypergraph.svg' %}"
+				alt="hypergraph"
+				loading="lazy"
+				height="150px"
+			/>
+		</figure>
+		<p>
+			In the graph above, the edge ${e_7}$ connects three vertices, namely
+			${f,}$ ${g,}$ and ${h.}$
+		</p>
+	</section>
+
+	<section id="digraph">
+		<h3>Digraph</h3>
+		<p>
+			Graphs can also have <i>direction.</i> Such a graph is called a
+			<b>directed graph</b> &mdash; a graph where each edge is associated
+			with a pair of vertices:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/digraph.svg' %}"
+				alt=""
+				loading="lazy"
+				width="120px"
+				height="120px"
+			/>
+		</figure>
+		<p>
+			In the digraph above, we have the following edges: ${e_3 = (a, b),}$
+			${e_2 = (b, c),}$ and ${e_1 = (c, d).}$ A common example of the
+			directed graph is a website's sitemap. One page leads to another,
+			which leads to another, and back to another, and so on. Below is a
+			brief summary of various graphs:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Graph</th>
+				<th>Directed edges?</th>
+				<th>Multiple edges?</th>
+				<th>Loops?</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Simple graph</td>
+					<td>No</td>
+					<td>No</td>
+					<td>No</td>
+				</tr>
+				<tr>
+					<td>Multigraph</td>
+					<td>No</td>
+					<td>Yes</td>
+					<td>No</td>
+				</tr>
+				<tr>
+					<td>Pseudograph</td>
+					<td>No</td>
+					<td>Yes</td>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<td>Simple digraph</td>
+					<td>Yes</td>
+					<td>No</td>
+					<td>No</td>
+				</tr>
+				<tr>
+					<td>Multidigraph</td>
+					<td>Yes</td>
+					<td>Yes</td>
+					<td>No</td>
+				</tr>
+				<tr>
+					<td>Mixed graph</td>
+					<td>Yes</td>
+					<td>Yes</td>
+					<td>Yes</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Any graph that is not a directed graph is called an
+			<b>undirected graph</b>. For undirected graphs, there are additional
+			pieces of terminology to be familiar with. We'll use the graph below
+			for reference.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/undirected_graph.svg' %}"
+				alt="undirected graph"
+				loading="lazy"
+				width="120px"
+				height="120px"
+			/>
+			<figcaption>The Graph ${U_g}$</figcaption>
+		</figure>
+		<p>
+			Vertices that are connected by an edge are said to be
+			<b>neighbors</b> of, or <b>adjcaent to</b>, one another. For example,
+			in the graph above, the vertex ${a}$ is a neighbor of ${b.}$
 		</p>
 		<p>
-			<small>Constraint</small>
-			Edges have no direction; i.e., the fact that ${v_4}$ and ${v_1}$ are
-			connected by the edge ${e_4}$ does not imply that the edge goes from
-			${v_4}$ to ${v_1}$ or vice versa.
+			The <b>neighborhood</b> of a particular vertex ${v}$ is the set of
+			all vertices that are neighbors of ${v.}$ In our reference graph
+			${U_g,}$ the neighborhood of ${c}$ is denoted:
 		</p>
-	</dfn>
-	<p>For example, the graphs below are <em>not</em> simple graphs:</p>
-	<figure>
-		<img
-			src="{% static 'images/notSimple.svg' %}"
-			alt="non-simple graph"
-			loading="lazy"
-			width="100px"
-			height="100px"
-		/>
-	</figure>
-	<p>
-		First, for the graph to the left, the edge ${v_1}$ connects the same
-		vertices as the edge ${v_2.}$ This violates
-		<cite>Constraint 2.</cite> For the graph to the right, the edge ${v_6}$
-		connects just one vertex. This violates <cite>Constraint 1.</cite>
-	</p>
-	<p>
-		The graph below is also not a simple graph. It's an example of a
-		<b>multigraph</b>.
-	</p>
-	<figure>
-		<img
-			src="{% static 'images/multiGraph.svg' %}"
-			alt=""
-			loading="lazy"
-			width="100px"
-			height="100px"
-		/>
-	</figure>
-	<p>
-		Simply put, a <i>multigraph</i> is a graph with at least one pair of
-		edges connecting the same two vertices. If the graph contains a
-		<b>loop</b> &mdash; an edge that connects a vertex to itself &mdash;
-		then we have a <b>pseudograph</b>:
-	</p>
-	<figure>
-		<img
-			src="{% static 'images/pseudoGraph.svg' %}"
-			alt=""
-			loading="lazy"
-			width="100px"
-			height="100px"
-		/>
-	</figure>
-	<p>
-		A <i>pseudograph</i> is a graph that includes loops as well as edges
-		connecting the same two vertices.
-	</p>
-	<p>
-		Graphs can also have <i>direction.</i> Such a graph is called a
-		<b>directed graph</b> &mdash; a graph where each edge is associated
-		with a pair of vertices:
-	</p>
-	<figure>
-		<img
-			src="{% static 'images/digraph.svg' %}"
-			alt=""
-			loading="lazy"
-			width="120px"
-			height="120px"
-		/>
-	</figure>
-	<p>
-		In the digraph above, we have the following edges: ${e_3 = (a, b),}$
-		${e_2 = (b, c),}$ and ${e_1 = (c, d).}$ Below is a brief summary of
-		various graphs:
-	</p>
-	<table class="alg">
-		<thead>
-			<th>Graph</th>
-			<th>Directed edges?</th>
-			<th>Multiple edges?</th>
-			<th>Loops?</th>
-		</thead>
-		<tbody>
-			<tr>
-				<td>Simple graph</td>
-				<td>No</td>
-				<td>No</td>
-				<td>No</td>
-			</tr>
-			<tr>
-				<td>Multigraph</td>
-				<td>No</td>
-				<td>Yes</td>
-				<td>No</td>
-			</tr>
-			<tr>
-				<td>Pseudograph</td>
-				<td>No</td>
-				<td>Yes</td>
-				<td>Yes</td>
-			</tr>
-			<tr>
-				<td>Simple digraph</td>
-				<td>Yes</td>
-				<td>No</td>
-				<td>No</td>
-			</tr>
-			<tr>
-				<td>Multidigraph</td>
-				<td>Yes</td>
-				<td>Yes</td>
-				<td>No</td>
-			</tr>
-			<tr>
-				<td>Mixed graph</td>
-				<td>Yes</td>
-				<td>Yes</td>
-				<td>Yes</td>
-			</tr>
-		</tbody>
-	</table>
-	<p>
-		Any graph that is not a directed graph is called an
-		<b>undirected graph</b>. For undirected graphs, there are additional
-		pieces of terminology to be familiar with. We'll use the graph below
-		for reference.
-	</p>
-	<figure>
-		<img
-			src="{% static 'images/undirected_graph.svg' %}"
-			alt="undirected graph"
-			loading="lazy"
-			width="120px"
-			height="120px"
-		/>
-		<figcaption>The Graph ${U_g}$</figcaption>
-	</figure>
-	<p>
-		Vertices that are connected by an edge are said to be
-		<b>neighbors</b> of, or <b>adjcaent to</b>, one another. For example,
-		in the graph above, the vertex ${a}$ is a neighbor of ${b.}$
-	</p>
-	<p>
-		The <b>neighborhood</b> of a particular vertex ${v}$ is the set of all
-		vertices that are neighbors of ${v.}$ In our reference graph ${U_g,}$
-		the neighborhood of ${c}$ is denoted:
-	</p>
-	<figure>$$ \mathcal{N}(c) = \{ a, b, d \} $$</figure>
-	<p>
-		Similarly, an edge that connects two vertices is said to be
-		<b>incident</b> to both those vertices. In the graph above, the edge
-		${e_4}$ is incident to the vertices ${c}$ and ${b.}$
-	</p>
-	<p>
-		The <b>degree</b> of a vertex ${v}$ is the number of edges incident to
-		${v.}$) For example, the degree of the vertex ${a}$ in the graph
-		${U_g}$ has four edges connected to it (the loop counts twice), so we
-		write:
-	</p>
-	<figure>$$ \text{deg}(a) = 4 $$</figure>
-	<p>
-		In ${U_g,}$ the vertex ${d}$ has no edges connected to it, so it has a
-		degree of ${\text{deg}(d) = 0.}$ A vertex with a degree of zero is
-		called an <b>isolated vertex</b> or an <b>isolated node</b>.
-	</p>
-	<p>
-		Finally, the vertex ${g}$ is called a <b>pendant</b> &mdash; a vertex
-		with only one neighbor.
-	</p>
+		<figure>$$ \mathcal{N}(c) = \{ a, b, d \} $$</figure>
+		<p>
+			Similarly, an edge that connects two vertices is said to be
+			<b>incident</b> to both those vertices. In the graph above, the edge
+			${e_4}$ is incident to the vertices ${c}$ and ${b.}$
+		</p>
+		<p>
+			The <b>degree</b> of a vertex ${v}$ is the number of edges incident
+			to ${v.}$) For example, the degree of the vertex ${a}$ in the graph
+			${U_g}$ has four edges connected to it (the loop counts twice), so we
+			write:
+		</p>
+		<figure>$$ \text{deg}(a) = 4 $$</figure>
+		<p>
+			In ${U_g,}$ the vertex ${d}$ has no edges connected to it, so it has
+			a degree of ${\text{deg}(d) = 0.}$ A vertex with a degree of zero is
+			called an <b>isolated vertex</b> or an <b>isolated node</b>.
+		</p>
+		<p>
+			Finally, the vertex ${g}$ is called a <b>pendant</b> &mdash; a vertex
+			with only one neighbor.
+		</p>
+	</section>
+
 	<section id="handshaking_theorem">
 		<h3>The Handshake Theorem</h3>
 		<p>Consider the following problem:</p>
@@ -303,23 +366,47 @@
 		<p>As such, we have the following theorem:</p>
 		<dfn>
 			<small>Handshake Theorem</small>
-			<p>
-				Let ${G = (V, E)}$ be an undirected graph with ${m}$ edges. Then:
-			</p>
-			<figure>$$ 2m = \sum\limits_{v \in V} \text{deg}(v) $$</figure>
+			<p>Let ${G = (V, E)}$ be an undirected graph. Then:</p>
+			<figure>
+				$$ \sum\limits_{v \in V} \text{deg}(v) = 2\lvert E \rvert $$
+			</figure>
 		</dfn>
+		<p>
+			In other words, given a simple graph ${G,}$ the number of edges is
+			given by summing all the degrees for each of the vertices, and
+			dividing by two:
+		</p>
+		<figure>
+			$$ \text{number of edges} = \dfrac{\text{sum of all degrees}}{2} $$
+		</figure>
+		<p>
+			The <cite>handshake theorem</cite> can be used to determine if a
+			particular proposition is false. For example, consider the following
+			hypothesis:
+		</p>
 	</section>
+</section>
 
-	<p>Having said all this, we now state our first definition formally:</p>
+<section id="formal">
+	<h2>More Formal Treatment</h2>
+	<p>
+		Now that we've gotten a brief overview, let's state some formal
+		definitions:
+	</p>
 	<dfn class="rule">
-		<small>Definition of a Graph</small>
+		<small>Definition: Graph</small>
 		<p>
 			A graph, denoted ${G,}$ is an non-empty ordered pair ${(V, E).}$
-			I.e., ${G = (V, E).}$ The first element of the pair, ${V,}$ is the
-			set of <i>vertices</i>, or <i>nodes</i>, of ${G.}$ The second element
-			of the pair, ${E,}$ is the set of <i>edges</i> of ${G.}$ Each edge
-			has 1 or 2 vertices associated with it, called the edge's
-			<i>endpoints</i>. An edge <i>connects</i> its endpoints.
+			I.e., ${G = (V, E).}$
+		</p>
+		<p>
+			The first element of the pair, ${V,}$ is the set of <i>vertices</i>,
+			or <i>nodes</i>, of ${G.}$
+		</p>
+		<p>
+			The second element of the pair, ${E,}$ is the set of <i>edges</i> of
+			${G.}$ Each edge connects a pair of vertices, called the edge's
+			<i>endpoints</i>.
 		</p>
 	</dfn>
 	<p>
@@ -460,8 +547,86 @@
 		<figcaption>A graph with different degrees.</figcaption>
 	</figure>
 	<p>
-		Next, recall that we first stated that we will only consider simple
-		graphs. The formal definition for a simple graph:
+		If every node in the graph has the degree ${d,}$ we say that the graph
+		is <b>${d}$-regular</b>. For example, the graph below is ${3}$-regular:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/3-regular_graph.svg' %}"
+			alt="degree of a node"
+			loading="lazy"
+			width="120px"
+			height="120px"
+		/>
+	</figure>
+	<p>
+		Every node in the graph above has ${d = 3.}$ With this bit of
+		terminology, we can see a useful application of the
+		<cite>handshake theorem</cite>: Determining if a given proposition is
+		false. Consider the following hypothesis:
+	</p>
+	<dfn>
+		<p>
+			<small>hypothesis</small> There exists a ${3}$-regular simple graph
+			${S}$ with ${5}$ vertices.
+		</p>
+	</dfn>
+	<p>
+		From the <cite>handshake theorem</cite>, we know that the number of
+		edges is twice the sum of the degrees for each node in ${S.}$ However,
+		such a graph does not exist because:
+	</p>
+	<figure>
+		$$ \begin{aligned} 2\lvert E \rvert &= \sum\limits_{v \in V} \\ 2\lvert
+		E \rvert &= 3 \cdot 5 \\ 2\lvert E \rvert &= 15 \\ \lvert E \rvert &=
+		\dfrac{15}{2} \\[1em] &= 7.5 \end{aligned} $$
+	</figure>
+	<p>
+		Because an edge is a non-empty tuple, it has a size ${s \in \Z^+.}$ And
+		because ${s \in \Z^+,}$ it is impossible for an edge to have a size of
+		${0.5.}$ Hence, no such graph exists.
+	</p>
+
+	<section id="subgraphs">
+		<h3>Subgraphs</h3>
+		<p>
+			Whenever we work with graphs, it's always helpful to recall the fact
+			that graphs consist of graphs. In other words, given a graph ${G,}$
+			there's a smaller graph, a <b>subgraph</b>, ${H}$ in ${G.}$
+		</p>
+		<dfn>
+			<small>Definition: Subgraph</small>
+			<p>
+				A graph ${H}$ is a <i>subgraph</i> of a graph ${G}$ if, and only
+				if:
+			</p>
+			<ol>
+				<li>${V(H) \subset V(G)}$</li>
+				<li>${E(H)} \subset E(G)$</li>
+			</ol>
+		</dfn>
+		<p>
+			For example, the graph below contains various subgraphs in different
+			colors:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/subgraph.svg' %}"
+				alt=""
+				loading="lazy"
+				height="120px"
+			/>
+		</figure>
+		<p>
+			If the subgraph ${H}$ contains <em>all</em> of the edges of ${G}$
+			connecting two vertices in ${V(H),}$ we say that ${H}$ is an
+			<b>induced subgraph</b> of ${G.}$
+		</p>
+	</section>
+
+	<p>
+		Recall that we first stated that we will only consider simple graphs.
+		The formal definition for a simple graph:
 	</p>
 	<figure>
 		<div class="rule">
@@ -962,8 +1127,7 @@
 				src="{% static 'images/star_graph.svg' %}"
 				alt="star graph"
 				loading="lazy"
-				width="80px"
-				height="80px"
+				height="50px"
 			/>
 		</figure>
 		<p>A more complicated example:</p>
@@ -2544,9 +2708,15 @@
 				src="{% static 'images/complete_graphs.svg' %}"
 				alt="complete graphs"
 				loading="lazy"
-				width="300px"
+				height="200px"
 			/>
 		</figure>
+		<p>
+			Importantly, every complete graph ${k_n}$ is ${(n-1)}$-regular. For
+			example, the <i>triangle graph</i> in the diagram above consists of
+			${3}$ vertices, so we say that it is ${k_3,}$ and is also
+			${2}$-regular.
+		</p>
 	</section>
 
 	<section id="cycles">
@@ -2563,7 +2733,7 @@
 				src="{% static 'images/cycle_graph.svg' %}"
 				alt="complete graphs"
 				loading="lazy"
-				width="300px"
+				height="150px"
 			/>
 		</figure>
 	</section>
@@ -2582,33 +2752,10 @@
 				src="{% static 'images/wheel_graph.svg' %}"
 				alt="complete graphs"
 				loading="lazy"
-				width="300px"
+				height="150px"
 			/>
 		</figure>
 	</section>
-</section>
-
-<section id="bipartite_graphs">
-	<h3>Bipartite Graphs</h3>
-	<p>
-		A <b>bipartite graph</b> is a graph whose vertex set can be divided
-		into disjoint subsets ${A}$ and ${B,}$ such that each ${v \in A}$ is
-		adjacent to a ${v \in B,}$ and each ${v \in B}$ is adjacent to a ${v
-		\in A.}$ A common way to think about bipartite graphs is to imagine a
-		game whose competitors are teams of father and son. One set of vertices
-		consists of fathers (call it ${F}$), and another set of vertices
-		consists of sons (call it ${S}$). Each father ${F}$ is then connected
-		to their son in ${S}$ and each son in ${S}$ is connected to their
-		father in ${F.}$
-	</p>
-	<figure>
-		<img
-			src="{% static 'images/bipartite_graph.svg' %}"
-			alt="Bipartite graph"
-			loading="lazy"
-			height="150px"
-		/>
-	</figure>
 </section>
 
 <section id="digraphs">
@@ -2688,9 +2835,9 @@
 	<h2>Connectivity</h2>
 	<p>
 		Many problems are best solved by thinking of them in terms of
-		<b>connectivity</b> &mdash; how various objects in the problem are
-		related to one another. To understand how to perform these models, we
-		begin by defining a few terms.
+		<b>connectivity</b> &mdash; how various things are connected to one
+		another. Connectivity issues often try to answer the question: How easy
+		is it to get around this graph? We begin by defining a few terms.
 	</p>
 	<p>
 		Consider the graph below. Suppose each of the vertices represents a
@@ -2701,7 +2848,7 @@
 			src="{% static 'images/walk1.svg' %}"
 			alt="walk"
 			loading="lazy"
-			width="150px"
+			height="150px"
 		/>
 	</figure>
 	<p>
@@ -2730,6 +2877,12 @@
 		e_6, e_8) \\ &(e_2, e_5, e_4, e_8) \\ &(e_2, e_5, e_3, e_2, e_7) \\
 		&(e_2, e_6, e_8) \end{aligned} $$
 	</div>
+	<p>
+		Notice that some of the routes are longer than others. This evidences
+		the fact that walks have <b>length</b>. The <i>length</i> of a walk is
+		the number edges in that walk. The less edges there are, the shorter
+		the walk.
+	</p>
 	<p>
 		If we wanted Shimura to get a good look at the neighborhood or the
 		fastest way to get to ${f,}$ we would've given him a <b>trail</b>.
@@ -2764,6 +2917,32 @@
 		\\ &(e_2, e_5, e_4, e_8) \end{aligned} $$
 	</div>
 	<p>
+		An important relationship between walks and paths is embodied in the
+		following lemma:
+	</p>
+	<dfn>
+		<small>lemma</small>
+		<p>
+			In a graph ${G,}$ every walk from the vertex ${u}$ to the vertex
+			${v,}$ i.e., a walk ${(u,v)_w,}$ contains a path ${(u,v)_p,}$
+			removing some edge if necessary.
+		</p>
+	</dfn>
+	<p>
+		The lemma above simply states that if we have a walk ${(u,v)_w,}$ we
+		can always remove some of the edges and end up with just a path
+		${(u,v)_p.}$ The proof for this lemma is by strong induction.
+	</p>
+	<p>
+		Let ${W}$ be a walk from ${u}$ to ${v.}$ For the sake of induction,
+		assume that every shorter walk contains a path. Suppose ${W}$ is not a
+		path. If ${W}$ is not a path, then ${W}$ repeats some vertex ${w.}$
+		Since ${W}$ repeats some vertex ${w,}$ ${W}$ contains a loop to vertex
+		${w.}$ Given that a loop is an edge, removing that edge results in a
+		shorter walk ${W.}$ Because we assumed that every shorter walk contains
+		a path, it the shorter walk ${W}$ contains a path.
+	</p>
+	<p>
 		If there's a path between every pair of vertices in a graph, we say
 		that the graph is <b>connected</b>.
 	</p>
@@ -2776,6 +2955,33 @@
 			then the graph is connected.
 		</p>
 	</dfn>
+	<p>A helpful theorem associated with connected graphs:</p>
+	<dfn>
+		<small>Connected Component Theorem</small>
+		<p>
+			Any undirected graph ${G}$ can be uniquely partitioned into
+			<i>connected components</i>, where:
+		</p>
+		<ol>
+			<li>each component is a connected subgraph, and</li>
+			<li>no two components have any edges between them.</li>
+		</ol>
+	</dfn>
+	<p>
+		In other words, a <b>connected component</b> is a subgraph ${C}$ of
+		some graph ${G,}$ where ${C}$ is not part of any larger connected
+		subgraph. For example, in the diagram below, the graph ${L}$ is
+		partitioned into three components, and the graph ${M}$ into just one
+		component, the entire graph ${M:}$
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/connected_component.svg' %}"
+			alt=""
+			loading="lazy"
+			height="160px"
+		/>
+	</figure>
 	<p>
 		Note that from the definitions, all paths and trails are walks, all
 		paths are trails, but not all trails are paths, nor are all walks paths
@@ -2955,7 +3161,7 @@
 				src="{% static 'images/eulerianPath.svg' %}"
 				alt="walk"
 				loading="lazy"
-				height="100px"
+				height="70px"
 			/>
 		</figure>
 		<p>
@@ -3121,5 +3327,69 @@
 			${G,}$ then we can conclude that ${G}$ is Hamiltonian.
 		</p>
 	</section>
+</section>
+
+<section id="bipartite_graphs">
+	<h2>Bipartite Graphs</h2>
+	<p>
+		A <b>bipartite graph</b> is a graph whose vertex set can be divided
+		into disjoint subsets ${A}$ and ${B,}$ such that each ${v \in A}$ is
+		adjacent to a ${v \in B,}$ and each ${v \in B}$ is adjacent to a ${v
+		\in A.}$ A common way to think about bipartite graphs is to imagine a
+		game whose competitors are teams of father and son. One set of vertices
+		consists of fathers (call it ${F}$), and another set of vertices
+		consists of sons (call it ${S}$). Each father ${F}$ is then connected
+		to their son in ${S}$ and each son in ${S}$ is connected to their
+		father in ${F.}$
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/bipartite_graph.svg' %}"
+			alt="Bipartite graph"
+			loading="lazy"
+			height="150px"
+		/>
+	</figure>
+	<p>Another example:</p>
+	<figure>
+		<img
+			src="{% static 'images/bipartite.svg' %}"
+			alt="Bipartite graph"
+			loading="lazy"
+			height="100px"
+		/>
+	</figure>
+	<p>
+		With bipartite graphs, there's only one <q>direction.</q> If ${G}$ is
+		bipartite, each edge crosses the sides. If there is a cyle, then the
+		cycle must cross the sides an even number of times. In graph ${B}$
+		below, the red edges indicate a cycle:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/cyclical_bipartite.svg' %}"
+			alt=""
+			loading="lazy"
+			height="100px"
+		/>
+		<figcaption>Graph ${B}$</figcaption>
+	</figure>
+	<p>
+		A quick way to determine if a graph is bipartite is to employ the
+		following theorem:
+	</p>
+	<dfn>
+		<small>theorem</small>
+		<p>
+			A graph ${G}$ is bipartite if, and only if, it has no odd cycles.<sup
+			></sup>
+		</p>
+	</dfn>
+	<div class="note">
+		<p>
+			Recall that an <i>odd cycle</i> is a cycle with an odd number of
+			vertices.
+		</p>
+	</div>
 </section>
 {% endblock %}

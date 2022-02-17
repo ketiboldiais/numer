@@ -1,0 +1,210 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on formal languages" />
+{% endblock %} {% block title %}
+<title>Formal Languages</title>
+{% endblock %} {% block content %}
+<h1>Formal Languages</h1>
+<section id="intro">
+	<p>
+		In this section, we discuss the topic of formal languages. A
+		<b>formal language</b> is a language designed for specific use cases,
+		such as mathematics or computer programming. Human languages have a
+		wide variety of features &mdash; characters, phrases, idioms, literary
+		devices, grammatical idiosyncracies, slang, dialects, tones, and so on.
+		Formal languages, in contrast, are very, very, basic &mdash; they have
+		rules, alphabets, and words. Roughly, we can think of a formal language
+		as the absolute bare minimum for a language.
+	</p>
+</section>
+
+<section id="alphabets">
+	<h2>Alphabets</h2>
+	<p>
+		The first step to defining a formal language is to determine the
+		language's <b>alphabet</b>.
+	</p>
+	<dfn>
+		<small>Definition: Alphabet</small>
+		<p>
+			An alphabet, denoted ${\Sigma,}$ is a non-empty, finite set of
+			symbols called <i>characters</i>.
+		</p>
+	</dfn>
+	<p>
+		For example, we can think of computers as using a formal language that
+		uses the alphabet:
+	</p>
+	<figure>$$ \Sigma = \{ 0, 1 \} $$</figure>
+	<p>Similarly, symbolic logic often uses the alphabet:</p>
+	<figure>$$ \Sigma = \{ \text{T}, \text{F} \} $$</figure>
+</section>
+
+<section id="strings">
+	<h2>Strings</h2>
+	<p>Once we have an alphabet, we can form <b>strings</b>.</p>
+	<dfn>
+		<small>Definition: String</small>
+		<p>
+			A <i>string</i> is (1) a finite sequence of the characters of
+			${\Sigma,}$ or (2) the <i>null string</i> ${\lambda.}$
+		</p>
+	</dfn>
+	<p>
+		For example, given ${\Sigma = \{ 0, 1\},}$ one example of a string
+		might be: ${101101110.}$ Or, given ${\Sigma = \{ a, b, c, \ldots, z
+		\},}$ ${\text{avocado}}$ would be a string.
+	</p>
+	<p>
+		All strings have a <b>length</b>, which is the number of characters
+		that make up the string.
+	</p>
+	<dfn>
+		<small>Definition: Length of a String</small>
+		<p>
+			Given an alphabet ${\Sigma,}$ the length of a string ${S}$ over
+			${\Sigma,}$ denoted ${\lvert S \rvert,}$ is the number of characters
+			in ${S,}$ where ${\lvert S \rvert \in \N.}$ The null string
+			${\lambda}$ has a length ${\lvert \lambda \rvert = 0.}$
+		</p>
+	</dfn>
+	<p>
+		For example: Given ${\Sigma = \{ 0, 1 \},}$ ${\lvert 10 \rvert = 2.}$
+		Given ${\Sigma = \{ \text{あ, か, $\ldots$, や}\},}$ we have ${\lvert
+		\text{みんな} \rvert = 3.}$ And given ${\Sigma = \{ a, b, c \},}$ we
+		have ${\lvert \lambda a \lambda b \rvert = 2}$ (remember that the
+		length of the empty string is ${0}$). Strings can be classified
+		according to their lengths:
+	</p>
+	<dfn>
+		<small>String Classification</small>
+		<p>
+			Let ${\Sigma}$ be an alphabet. Where ${n \in \N}$ and ${L}$ is the
+			length of a string over ${\Sigma,}$
+		</p>
+		<ul>
+			<li>${\Sigma^n}$ is the set of all strings where ${L = n.}$</li>
+			<li>
+				${\Sigma^+}$ is called the <b>positive closure of ${\Sigma}$</b>,
+				the set of all strings where ${L > 0.}$
+			</li>
+			<li>
+				${\Sigma^*}$ is called the <b>Kleene closure of ${\Sigma}$</b>, the
+				set of <em>all strings</em> over ${\Sigma.}$
+			</li>
+		</ul>
+	</dfn>
+	<p>
+		A few things to note from the definitions above. First, the set
+		${\Sigma^n}$ is just the Cartesian product of ${n}$ copies of
+		${\Sigma.}$ For example, consider ${\Sigma = \{ 0, 1 \}.}$ The set
+		${\Sigma^2}$ &mdash; the set of all strings of length ${2}$ &mdash; is
+		the Cartesian product:
+	</p>
+	<figure>
+		$$ \def\arraystretch{1.5} \begin{array}{c:c:c} & 0 & 1 \\ \hline 0 &
+		(0,0) & (1,0) \\ 1 & (0,1) & (1,1) \\ \end{array} $$
+	</figure>
+	<p>Thus, the set ${\Sigma^2}$ is the set consisting of the strings:</p>
+	<figure>$$ \{ 00, 01, 10, 11 \} $$</figure>
+	<p>
+		This illustration evidences another key point regarding strings: From a
+		set theory perspective, strings are <i>tuples</i>, and are thus subject
+		to the rules governing tuples, as well as the laws of set theory.
+	</p>
+	<p>
+		Second, the Kleene closure of ${\Sigma,}$ denoted ${\Sigma^*,}$ is the
+		set of every string over ${\Sigma.}$<sup></sup> And because it contains
+		every string, it is an <i>infinite set</i>. For example, say we had the
+		alphabet ${\Sigma = \{ a, b \}.}$ The number of strings we can make
+		with this alphabet is infinite:
+	</p>
+	<div class="note">
+		<p>
+			The Kleene (pronounced <i>clay-nee</i>) closure is named after the
+			American mathematician Stephen Cole Kleene (January 5, 1905 - January
+			25, 1994). Kleene is credited as the founder of recursion theory, a
+			branch of mathematical logic that deals with computability and
+			definability, as well as the invention of regular expressions in
+			1951. The importance of Kleene's work in logic led to the saying,
+			<q>Kleeneness is next to Gödelness.</q>
+		</p>
+	</div>
+	$$ \{ \lambda, a, b, aa, ab, ba, aaa, bbb, aabb, bbabbb, \ldots \} $$
+	<p>
+		The same goes for the positive closure ${\Sigma^+.}$ The only
+		difference between, however, is that ${\lambda \notin \Sigma^+.}$
+	</p>
+</section>
+
+<section id="languages">
+	<h2>Languages</h2>
+	<p>
+		Once we have an alphabet ${\Sigma}$ and strings over ${\Sigma,}$ we can
+		begin talking about languages. We'll begin with a rough definition for
+		the term <b>language</b>:
+	</p>
+	<dfn>
+		<small>Definition: Language</small>
+		<p>
+			Given the alphabet ${\Sigma,}$ the language ${\mathscr{L}}$ is a
+			subset of ${\Sigma^*.}$ I.e.,
+		</p>
+		$$ \mathscr{L} \subseteq \Sigma^* $$
+	</dfn>
+	<p>
+		Notice how simple this definition is. From the perspective of
+		mathematical logic, a formal language is just a subset of the Kleene
+		closure. How that subset is defined is entirely up to the speaker. For
+		example, suppose we had the alphabet ${\Sigma = \{ 0,1 \}.}$ Our friend
+		Gustavo comes up to us and says,
+		<q
+			>Look at this new formal language I made with ${\Sigma.}$ The only
+			requirement is that every word begins with a zero.</q
+		>
+		Based on these constraints, Gustavo's zeroese would be defined as:
+	</p>
+	<div>
+		$$ \begin{aligned} \mathscr{L}_1 &= \{ 0, 01, 00, 0001, 01010101,
+		011111, \ldots \} \\ &= \{ w~|~\text{$w$ begins with $0$} \}
+		\end{aligned} $$
+	</div>
+	<p>
+		Notice that this does not include ${\lambda,}$ since the constraint is
+		that every word begins with a zero. After a few weeks, we ask Gustavo
+		how his work on zeroese is going. He responds,
+		<q
+			>People started coming up with too many words of their own so I had
+			to impose additional constraints. Now the words must consist of three
+			letters, including the zero it starts with.</q
+		>
+		From the new rules, Gustavo's zeroese 2.0 now looks like:
+	</p>
+	<figure>$$ \mathscr{L}_2 = \{ 000, 010, 010, 011 \} $$</figure>
+	<p>
+		This is a significant reduction from the number of words in zeroese
+		1.0. All of Gustavo's constraints are examples of <b>rules</b> &mdash;
+		propositions that define the subset ${\mathscr{L}.}$
+	</p>
+	<p>
+		For example, suppose we had the alphabet ${\Sigma = \{ a, b \}.}$ We
+		can define the rules for some language ${\mathscr{L}_{ab}}$ as follows:
+	</p>
+	<dfn>
+		<ul>
+			<li>Let ${\Sigma = \{ a, b \}}$</li>
+			<li>Let ${S = \lambda.}$</li>
+			<ol>
+				<li>${S \to aSa}$</li>
+				<li>${S \to bSb}$</li>
+				<li>${S \to aaS}$</li>
+			</ol>
+		</ul>
+	</dfn>
+	<p>
+		From the rules above, we have a wide variety of words. From
+		<cite>rule 1</cite>, we have ${aa.}$ From <cite>rule 2</cite>, we have
+		${baab.}$ And from <cite>rule 3</cite>, we have ${aabaab.}$ Applying
+		<cite>rule 2</cite> again, we have ${baabaab.}$
+	</p>
+</section>
+{% endblock %}

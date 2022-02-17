@@ -169,27 +169,74 @@
 		counting principles. Accordingly, we review the fundamentals of
 		counting.
 	</p>
-	<p>
-		Suppose we have a six-sided die. How many ways can we roll an even
-		number? Well, there are six sides: <i class="fa-solid fa-dice-one"></i>
-		<i class="fa-solid fa-dice-two"></i>
-		<i class="fa-solid fa-dice-three"></i>
-		<i class="fa-solid fa-dice-four"></i>
-		<i class="fa-solid fa-dice-five"></i>
-		<i class="fa-solid fa-dice-six"></i>. Of these six sides, three are
-		even:
-		<i class="fa-solid fa-dice-two"></i>
-		<i class="fa-solid fa-dice-four"></i>
-		<i class="fa-solid fa-dice-six"></i>. Accordingly, there are three ways
-		to roll an even number. Simple enough.
-	</p>
-	<p>
-		Here's another question: How many different ways can we draw a face
-		card in a ${52}$-card deck? There are ${4}$ suits: &heartsuit;
-		&clubsuit; &spadesuit; &diamondsuit;. And for each of these suits,
-		there are three face cards: ${J,}$ ${Q,}$ ${K.}$ Thus, there are ${12}$
-		different ways to draw a face card.
-	</p>
+
+	<section id="basic_counting">
+		<h3>Basic Counting</h3>
+		<p>
+			In this section, we review some of the basic techniques in counting.
+			Many of these techniques will prove helpful in later sections.
+		</p>
+		<p>
+			Suppose we have a six-sided die. How many ways can we roll an even
+			number? Well, there are six sides:
+			<i class="fa-solid fa-dice-one"></i>
+			<i class="fa-solid fa-dice-two"></i>
+			<i class="fa-solid fa-dice-three"></i>
+			<i class="fa-solid fa-dice-four"></i>
+			<i class="fa-solid fa-dice-five"></i>
+			<i class="fa-solid fa-dice-six"></i>. Of these six sides, three are
+			even:
+			<i class="fa-solid fa-dice-two"></i>
+			<i class="fa-solid fa-dice-four"></i>
+			<i class="fa-solid fa-dice-six"></i>. Accordingly, there are three
+			ways to roll an even number. Simple enough.
+		</p>
+		<p>
+			Here's another question: How many different ways can we draw a face
+			card in a ${52}$-card deck? There are ${4}$ suits: &heartsuit;
+			&clubsuit; &spadesuit; &diamondsuit;. And for each of these suits,
+			there are three face cards: ${J,}$ ${Q,}$ ${K.}$ Thus, there are
+			${12}$ different ways to draw a face card.
+		</p>
+		<p>
+			This is just a brief appetizer for the kinds of questions we're
+			concerned with in counting. Let's look at a few more interesting
+			problems.
+		</p>
+		<section id="complimentary_counting">
+			<h4>Complementary Counting</h4>
+			<p>Consider the following problem:</p>
+			<dfn>
+				<small>problem</small>
+				<p>
+					How many three-digit numbers are <em>not</em> multiples of ${7?}$
+				</p>
+			</dfn>
+			<p>
+				This problem is best solved through
+				<b>complementary counting</b> &mdash; counting what we
+				<i>do not</i> want to count. Often, it's much easier to count
+				whatever it is we don't want, as opposed to what we actually want.
+				In this case, the largest three digit number is ${999.}$ The
+				smallest three digit number is ${100.}$ With a little trial and
+				error, we find that: (1) the smallest multiple of ${7}$ which is a
+				three digit number is ${105 / 7 = 15.}$ The largest multiple of
+				${7}$ which is a three digit number is ${994 / 7 = 142.}$
+			</p>
+			<p>
+				These two numbers, ${105}$ and ${994,}$ form the endpoints for our
+				count. Since we're counting multiples of ${7,}$ the number of
+				multiples of ${7}$ from ${105}$ through ${994}$ is:
+			</p>
+			<figure>$$ 142 - 15 + 1 = 128 $$</figure>
+			<p>numbers. From ${100}$ to ${999}$ there are:</p>
+			<figure>$$ 999 - 100 + 1 = 900 $$</figure>
+			<p>numbers. Hence, there are:</p>
+			<figure>$$ 900 - 128 = 772 $$</figure>
+			<p>three digit numbers which are not multiples of ${7.}$</p>
+		</section>
+	</section>
+
 	<section id="addition_rule">
 		<h3>The Addition Rule</h3>
 		<p>The addition rule provides the following:</p>
@@ -551,48 +598,285 @@
 				given the two legal moves of moving only east by ${1}$ or north by
 				${1.}$
 			</p>
-			<p>Let's consider another problem:</p>
+
+			<section id="permutations_for_circular_lists">
+				<h4>Rotational Duplicates</h4>
+
+				<p>Let's consider another problem:</p>
+				<dfn>
+					<small>Problem</small>
+					<p>
+						How many ways are there to arrange six people at circular
+						table?
+					</p>
+				</dfn>
+				<p>
+					To tackle this problem, it's helpful to begin with a diagram:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/circular_table.svg' %}"
+						alt=""
+						loading="lazy"
+						height="100px"
+					/>
+				</figure>
+				<p>
+					There are, in fact, ${6!}$ ways of arranging people on this
+					table. The problem, however, is that some of those positions may
+					be duplicated. For example, suppose we started with the
+					arrangement as shown in the diagram above. If we shifted everyone
+					to the right, we would get:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/circular_table1.svg' %}"
+						alt=""
+						loading="lazy"
+						height="100px"
+					/>
+				</figure>
+				<p>
+					This would be counted among the ${6!}$ calculation, but it isn't
+					a different seating arrangement. The people are still in the same
+					arrangement relative to one another; they're just in different
+					seats. Accordingly, the actual number of ways is:
+				</p>
+				<figure>$$ \dfrac{6!}{6} = 5! $$</figure>
+				<p>
+					We have to divide by ${6}$ to get rid of the count for a mere
+					shift. Let's add another wrinkle to the problem:
+				</p>
+				<dfn>
+					<small>Problem</small>
+					<p>
+						Suppose six people must be seated at circular table. Three are
+						men, three are women. How many different ways can we arrange
+						the men and women such that the genders alternate?
+					</p>
+				</dfn>
+				<p>Again, it's helpful to diagram:</p>
+				<figure>
+					<img
+						src="{% static 'images/men_women_alternate.svg' %}"
+						alt=""
+						loading="lazy"
+						height="130px"
+					/>
+				</figure>
+				<p>
+					Because the constraint is to alternate, our initial thought might
+					be to map out the different ways to arrange each person:
+				</p>
+				<table class="alg">
+					<thead>
+						<th>Person</th>
+						<th>Possible Ways</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>${m_1}$</td>
+							<td>3</td>
+						</tr>
+						<tr>
+							<td>${w_1}$</td>
+							<td>3</td>
+						</tr>
+						<tr>
+							<td>${m_2}$</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							<td>${w_2}$</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							<td>${m_3}$</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>${w_3}$</td>
+							<td>1</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>This yields:</p>
+				<figure>
+					$$ 3 \cdot 3 \cdot 2 \cdot 2 \cdot 1 \cdot 1 = 36 $$
+				</figure>
+				<p>
+					possible seating arrangements. But, like we saw with the previous
+					problem, this computation also counts the arrangement where each
+					person simply shifts over by ${1}$ seat. The question then is,
+					should we divide by ${6?}$
+				</p>
+				<p>
+					Not exactly. In this problem, the key constraint is that the
+					genders must alternate. Accordingly, a better way to think about
+					this problem is to place an <b>anchor position</b>, and then
+					denote the remaining positions in terms of ${O}$ (opposite
+					gender), and ${S}$ (same gender). The anchor position ${A}$
+					essentially starts the list, which ends at ${O_3,}$ and we then
+					move ${A}$ around. Thinking of it this way, our diagram becomes:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/men_women_alternate1.svg' %}"
+						alt=""
+						loading="lazy"
+						height="130px"
+					/>
+				</figure>
+				<p>which in turn shows that the number of possible ways are:</p>
+				<table class="alg">
+					<thead>
+						<th>Person</th>
+						<th>Possible Ways</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>${A}$</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>${O_1}$</td>
+							<td>3</td>
+						</tr>
+						<tr>
+							<td>${S_1}$</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							<td>${O_2}$</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							<td>${S_2}$</td>
+							<td>1</td>
+						</tr>
+						<tr>
+							<td>${O_3}$</td>
+							<td>1</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>Hence, there are:</p>
+				<figure>
+					$$ 1 \cdot 3 \cdot 2 \cdot 2 \cdot 1 \cdot 1 = 12 $$
+				</figure>
+				<p>ways to seat the men and women.</p>
+				<p>
+					If the examples aren't entirely clear, a helpful way to think
+					about this intuitively is to just consider a simpler example.
+					Let's say ${a,}$ ${b,}$ and ${c}$ are seated on a circular table.
+					How many ways are there to arrange ${a,}$ ${b,}$ and ${c?}$ Well,
+					let's list them out. First, keep ${a}$ anchored, then move ${b}$
+					and ${c.}$ Next keep ${b}$ anchored, and move ${a}$ and ${c.}$
+					Finally, keep ${c}$ anchored and move ${a}$ and ${b.}$ That will
+					yield all the possible arrangements:
+				</p>
+				<table class="alg">
+					<thead>
+						<th>Anchored</th>
+						<th>Permutations</th>
+					</thead>
+					<tr>
+						<td>${a}$</td>
+						<td>$$ (a, b, c) \\ (a, c, b) $$</td>
+					</tr>
+					<tr>
+						<td>${b}$</td>
+						<td>$$ (a, b, c) \\ (c, b, a) $$</td>
+					</tr>
+					<tr>
+						<td>${c}$</td>
+						<td>$$ (a, b, c) \\ (b, a, c) $$</td>
+					</tr>
+				</table>
+				<p>
+					Because the table is circular, there are duplicates in the count.
+					Let's color all of the duplicates:
+				</p>
+				<table class="alg">
+					<thead>
+						<th>Anchored</th>
+						<th>Permutations</th>
+					</thead>
+					<tr>
+						<td>${a}$</td>
+						<td>
+							$$ \textcolor{red}{(a, b, c)} \\ \textcolor{teal}{(a, c, b)}
+							$$
+						</td>
+					</tr>
+					<tr>
+						<td>${b}$</td>
+						<td>
+							$$ \textcolor{red}{(a, b, c)} \\ \textcolor{teal}{(c, b, a)}
+							$$
+						</td>
+					</tr>
+					<tr>
+						<td>${c}$</td>
+						<td>
+							$$ \textcolor{red}{(a, b, c)} \\ \textcolor{teal}{(b, a, c)}
+							$$
+						</td>
+					</tr>
+				</table>
+				<p>
+					Examining the duplicates, we see that there really just two ways
+					to seat three people on a circular table:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/rotational_duplicates.svg' %}"
+						alt=""
+						loading="lazy"
+						height="130px"
+					/>
+				</figure>
+			</section>
+		</section>
+
+		<section id="combinations">
+			<h4>Combinations</h4>
+			<p>
+				With permutations, order matters. With combinations, however,
+				<i>order does not matter</i>. One way to think about this
+				distinction is that with permutations, we're looking for the number
+				of possible <i>sequences</i> under the given constraints. But with
+				combinations, we're looking for <i>subsets</i> under the given
+				constraints. For example, consider the following problem:
+			</p>
 			<dfn>
 				<small>Problem</small>
 				<p>
-					How many ways are there to arrange six people at circular table?
+					Let ${A}$ be the set ${\{ a, b, c \}.}$ How many different
+					subsets can be mad with ${2}$ elements?
 				</p>
 			</dfn>
-			<p>To tackle this problem, it's helpful to begin with a diagram:</p>
-			<figure>
-				<img
-					src="{% static 'images/circular_table.svg' %}"
-					alt=""
-					loading="lazy"
-					height="150px"
-				/>
-			</figure>
+			<p>If we listed all the different permutations, we would have:</p>
+			<div class="tripart">
+				$$ \{a, b\} \\ \{a, c\} $$ $$ \{b, a\} \\ \{b, c\} $$ $$ \{c, a\}
+				\\ \{c, b\} $$
+			</div>
 			<p>
-				There are, in fact, ${6!}$ ways of arranging people on this table.
-				The problem, however, is that some of those positions may be
-				duplicated. For example, suppose we started with the arrangement as
-				shown in the diagram above. If we shifted everyone to the right, we
-				would get:
+				However, because sets do not inherently have order &mdash; i.e.,
+				order does not matter &mdash; several of the sets above are
+				identical. Thus, if we counted all of the sets above separately,
+				we'd have duplicates. Let's color match the identical sets:
 			</p>
-			<figure>
-				<img
-					src="{% static 'images/circular_table1.svg' %}"
-					alt=""
-					loading="lazy"
-					height="150px"
-				/>
-			</figure>
+			<div class="tripart">
+				$$ \textcolor{red}{\{a, b\}} \\ \textcolor{purple}{\{a, c\}} $$ $$
+				\textcolor{red}{\{b, a\}} \\ \textcolor{teal}{\{b, c\}} $$ $$
+				\textcolor{purple}{\{c, a\}} \\ \textcolor{teal}{\{c, b\}} $$
+			</div>
 			<p>
-				This would be counted among the ${6!}$ calculation, but it isn't a
-				different seating arrangement. The people are still in the same
-				arrangement relative to one another; they're just in different
-				seats. Accordingly, the actual number of ways is:
+				Looking at this way, we see that there are only three different
+				subsets that can be made:
 			</p>
-			<figure>$$ \dfrac{6!}{6} = 5! $$</figure>
-			<p>
-				We have to divide by ${6}$ to get rid of the count for a mere
-				shift.
-			</p>
+			<figure>$$ \{ a, b \},~~\{ b, c \},~~\{ a, c \} $$</figure>
 		</section>
 
 		<section id="multiplcation_rule_probability">

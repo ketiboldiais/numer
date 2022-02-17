@@ -2480,6 +2480,577 @@
 			</code></pre>
 		</div>
 	</section>
+
+	<section id="string">
+		<h2>Strings in Rust</h2>
+		<p>
+			Now we know the differences between borrowing and owning, we can
+			address the different string types in Rust. Consider the following
+			example:
+		</p>
+		<pre class="language-rust"><code>
+			fn main() {
+				let mut m = String::from("Hello ");
+				let n = "Goodbye ";
+				m.push_str(" world");
+				n.push_str(" world");
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			error[E0599]: no method named `push_str` found for reference `&str` in the current scope
+			--> main.rs:5:4
+				|
+			5 |     n.push_str(" world");
+				|       ^^^^^^^^ method not found in `&str`
+
+			For more information about this error, try `rustc --explain E0599`.
+		</code></pre>
+		<p>
+			The compiler is telling us that there is no method
+			<var>.push_str()</var> for <var>n</var>. There is no such method
+			because the value owned by <var>n</var>, <var>"Goodbye "</var> is
+			immutable.
+		</p>
+		<p>
+			In the example above, <var>n</var> and <var>m</var> have different
+			types. The variable <var>n</var> has the type
+			<var><mark>&str</mark></var
+			>, but the variable <var>m</var> has the type
+			<var><mark>string</mark></var
+			>. Both look fairly similar internally. An instance of
+			<var>string</var>, consists of a pointer to some address in the heap,
+			a length, and a capacity. An instance of <var>&str</var>, however,
+			consists of only a pointer and a length, no capacity. This implies
+			that <var>&str</var> has a fixed length.
+		</p>
+
+		<section id="slices">
+			<h4>String Slicing</h4>
+			<p>Observe the output of the following code:</p>
+			<pre class="language-rust"><code>
+				fn main() {
+					let m = String::from("abcde");
+					let n = &m[2..4];
+					println!("n = {}", n);
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				n = cd
+			</code></pre>
+			<p>
+				The variable <var>n</var> is essentially borrowing a slice of the
+				string owned by <var>m</var>. Specifically, it borrows the slice
+				<var>"cd"</var>. Specifically, the characters at index interval
+				${[2,4),}$ or ${2 \leq i &lt; 4,}$ where ${i}$ is the index.
+			</p>
+			<div id="sliceArray"></div>
+			<p>
+				Because <var>n</var> has the type <var>&str</var>, it has a pointer
+				and length (here, a length of ${2}$), but no capacity. If we want
+				the range to include <var>4</var>, we write:
+			</p>
+			<pre class="language-rust"><code>
+				fn main() {
+					let m = String::from("abcde");
+					let n = &m[2..=4];
+					println!("n = {}", n);
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				n = cde
+			</code></pre>
+		</section>
+	</section>
 </section>
+
+<section id="box">
+	<h2>Structs</h2>
+	<p>
+		To store values directly in the heap, we use the
+		<var><mark>Box</mark></var> type:
+	</p>
+	<pre class="language-rust"><code>
+		fn main() {
+			let a = 10;
+			let b = Box::new(10);
+		}
+	</code></pre>
+	<p>
+		In code above, <var>a</var> owns a value stored in the <i>stack</i>,
+		but <var>b</var> owns a value stored in the <i>heap</i>. The
+		<var>box</var> type is an example of a <b>struct</b> &mdash; a record
+		data type.
+	</p>
+	<p>
+		In languages like Java and C++, there are constructs like
+		<i>classes</i>. There are no classes in Rust, but we can achieve
+		similar results with structs. For example:
+	</p>
+	<pre class="language-rust"><code>
+		struct Coordinate {
+			x: i32,
+			y: i32
+		}
+
+		fn main() {
+			let a = Coordinate {x: 5, y: 8};
+			println!("({},{})", a.x, a.y);
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		(5,8)
+	</code></pre>
+	<p>
+		This is not all that different from C. Inside the
+		<var>struct</var> definition, we have the <b>fields</b>
+		<var>x</var> and <var>y</var>. Here's another example:
+	</p>
+	<pre class="language-rust"><code>
+		struct Person {
+			first_name: String,
+			last_name: String,
+			age: u32
+		}
+		
+		fn main() {
+			let p =  Person {
+				first_name: "John".to_string(),
+				last_name: "Weismann".to_string(),
+				age: 35
+			};
+			println!("&lbrace;{ first_name: {}, last_name: {}, age: {} }&rbrace;", p.first_name, p.last_name, p.age)
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		{ first_name: John, last_name: Weismann, age: 35 }
+	</code></pre>
+
+	<section id="methods">
+		<h3>Associated Functions & Methods</h3>
+		<p>
+			Unlike C, Rust provides syntactic sugar for implementing functions
+			associated with instances of the struct (i.e., <i>methods</i>). For
+			example, consider the code below:
+		</p>
+		<pre class="language-rust"><code>
+			struct Coordinate {
+				x: u32,
+				y: u32
+			}
+
+			impl Coordinate {
+				fn print(self) {
+					println!("({},{})", self.x, self.y);
+				}
+			}
+
+			fn main() {
+				let origin = Coordinate {x: 0, y: 0};
+				origin.print();
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			(0,0)
+		</code></pre>
+		<p>
+			To implement methods in Rust, we write
+			<var><mark>impl ${n}$ {${m}$;}</mark></var
+			>, where ${n}$ is the name of some struct, and ${m}$ is the
+			definition for some function.
+		</p>
+		<p>Notice the output of the following code however:</p>
+		<pre class="language-rust"><code>
+			struct Coordinate {
+				x: u32,
+				y: u32
+			}
+
+			impl Coordinate {
+				fn print(self) {
+					println!("({},{})", self.x, self.y);
+				}
+			}
+
+			fn main() {
+				let origin = Coordinate {x: 0, y: 0};
+				origin.print();
+				origin.print();
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			error[E0382]: use of moved value: `origin`
+				--> main.rs:16:2
+				|
+			14 |     let origin = Coordinate {x: 0, y: 0};
+				|         ------ move occurs because `origin` has type `Coordinate`, which does not implement the `Copy` trait
+			15 |     origin.print();
+				|            ------- `origin` moved due to this method call
+			16 |     origin.print();
+				|     ^^^^^^ value used here after move
+				|
+			note: this function takes ownership of the receiver `self`, which moves `origin`
+				--> main.rs:8:11
+				|
+			8  |     fn print(self) {
+				|              ^^^^
+		</code></pre>
+		<p>
+			We're seeing the output above because we used the parameter
+			<var><mark>self</mark></var> in the function <var>print()</var>. By
+			using this parameter, <var>self</var> (the instance
+			<var>origin</var>), is <i>moved</i> from <var>main()</var> to
+			<var>print()</var>. And once <var>print()</var> finishes executing,
+			<var>origin</var> no longer exists in memory. To avoid this behavior,
+			we must pass <var>self</var> as a reference:
+		</p>
+		<pre class="language-rust"><code>
+			struct Coordinate {
+				x: u32,
+				y: u32
+			}
+			
+			impl Coordinate {
+				fn print(&self) {
+					println!("({},{})", self.x, self.y);
+				}
+			}
+			
+			fn main() {
+				let origin = Coordinate {x: 0, y: 0};
+				origin.print();
+				origin.print();
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			(0,0)
+			(0,0)
+		</code></pre>
+		<p>Here's another example:</p>
+		<pre class="language-rust"><code>
+			struct Coordinate {
+				x: u32,
+				y: u32
+			}
+			
+			impl Coordinate {
+				fn print(&self) {
+					println!("({},{})", self.x, self.y);
+				}
+				fn dx(p1: &Coordinate, p2: &Coordinate) -> u32 {
+					let d = p2.x - p1.x;
+					return d;
+				}
+				fn dy(p1: &Coordinate, p2: &Coordinate) -> u32 {
+					let d = p2.y - p1.y;
+					return d;
+				}
+			}
+			
+			fn main() {
+				let origin = Coordinate {x: 0, y: 0};
+				let p1 = Coordinate {x: 1, y: 3};
+				let dx = Coordinate::dx(&origin, &p1);
+				let dy = Coordinate::dy(&origin, &p1);
+				println!("{}", dx);
+				println!("{}", dy);
+				origin.print();
+				p1.print();
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			1
+			3
+			(0,0)
+			(1,3)
+		</code></pre>
+		<p>
+			In the <var>impl</var> above, we implemented two functions,
+			<var>dx()</var> and <var>dy()</var>. These functions are called
+			<b>associated functions</b> &mdash; struct functions that can be
+			called without an instance of the struct.
+		</p>
+
+		<section id="mutable_methods">
+			<h4>Mutable Methods</h4>
+			<p>Examine this code's output:</p>
+			<pre class="language-rust"><code>
+				struct Coordinate {
+					x: u32,
+					y: u32
+				}
+				
+				impl Coordinate {
+					fn change_x(&self, new_x: u32) {
+						self.x = new_x;
+					}
+				}
+				
+				fn main() {
+					let p = Coordinate {x: 1, y: 3};
+					p.change_x(5);
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				error[E0594]: cannot assign to `self.x`, which is behind a `&` reference
+					--> main.rs:11:3
+					 |
+				10 |     fn change_x(&self, new_x: u32) {
+					 |                ----- help: consider changing this to be a mutable reference: `&mut self`
+				11 |         self.x = new_x;
+					 |         ^^^^^^^^^^^^^^ `self` is a `&` reference, so the data it refers to cannot be written
+			</code></pre>
+			<p>
+				This error message is as expected. The parameter is
+				<var>&self</var>, which is a reference, so <var>self</var> is
+				borrowing the value of <var>x</var>. And because it's borrowed, it
+				cannot be modified unless we indicate that the instance is mutable:
+			</p>
+			<pre class="language-rust"><code>
+				struct Coordinate {
+					x: u32,
+					y: u32
+				}
+				
+				impl Coordinate {
+					fn print(&self) {
+						println!("({},{})", self.x, self.y);
+					}
+					fn change_x(&mut self, new_x: u32) {
+						self.x = new_x;
+					}
+				}
+				
+				fn main() {
+					let mut p = Coordinate {x: 1, y: 3};
+					p.print();
+					p.change_x(5);
+					p.print();
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(1,3)
+				(5,3)
+			</code></pre>
+		</section>
+
+		<section id="constructors">
+			<h4>Constructors</h4>
+			<p>
+				When we implement structs, we generally want a
+				<b>constructor</b> &mdash; a function for creating instances of the
+				struct. There are various ways to implement constructors, but the
+				two most common approaches are to (1) implement a custom
+				<var><mark>new()</mark></var> function or (2) implement a custom
+				<var><mark>from()</mark></var> function. For example, with approach
+				(1):
+			</p>
+			<pre class="language-rust"><code>
+				struct Coordinate {
+					x: u32,
+					y: u32
+				}
+				
+				impl Coordinate {
+					fn print(&self) {
+						println!("({},{})", self.x, self.y);
+					}
+					fn new() -> Coordinate {
+						Coordinate {x: 0, y: 0}
+					}
+				}
+				
+				fn main() {
+					let p = Coordinate::new();
+					p.print();
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(0,0)
+			</code></pre>
+			<p>
+				Above, we implemented a <var>new()</var> constructor, which
+				instantiates <var>Coordinate</var> with default values. In this
+				case, <var>x: 0</var> and <var>y: 0</var>. We could also have
+				written:
+			</p>
+			<pre class="language-rust"><code>
+				struct Coordinate {
+					x: u32,
+					y: u32
+				}
+				
+				impl Coordinate {
+					fn print(&self) {
+						println!("({},{})", self.x, self.y);
+					}
+					fn new(x_coordinate: u32, y_coordinate: u32) -> Coordinate {
+						Coordinate {x: x_coordinate, y: y_coordinate}
+					}
+				}
+				
+				fn main() {
+					let p = Coordinate::new(3, 3);
+					p.print();
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(3,3)
+			</code></pre>
+			<p>
+				Alternatively, we can implement a constructor with
+				<var>from()</var>:
+			</p>
+			<pre class="language-rust"><code>
+				struct Coordinate {
+					x: u32,
+					y: u32
+				}
+				
+				impl Coordinate {
+					fn print(&self) {
+						println!("({},{})", self.x, self.y);
+					}
+					fn from(x_coordinate: u32, y_coordinate: u32) -> Coordinate {
+						Coordinate {x: x_coordinate, y: y_coordinate}
+					}
+				}
+				
+				fn main() {
+					let p = Coordinate::from(2,8);
+					p.print();
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(2,8)
+			</code></pre>
+			<p>
+				Rust is smart enough to infer that we're instantiating a struct, so
+				we can shorten the code further, so long as we use the fields as
+				parameters:
+			</p>
+			<pre class="language-rust"><code>
+				struct Coordinate {
+					x: u32,
+					y: u32
+				}
+				
+				impl Coordinate {
+					fn print(&self) {
+						println!("({},{})", self.x, self.y);
+					}
+					fn from(x: u32, y: u32) -> Coordinate {
+						Coordinate {x, y}
+					}
+				}
+				
+				fn main() {
+					let p = Coordinate::from(2,8);
+					p.print();
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(2,8)
+			</code></pre>
+			<p>
+				Which approach to use is a matter of style. However, many Rust
+				programmers, use <var>new()</var> for constructors with default
+				parameters, and <var>from()</var> for inline instantiation:
+			</p>
+			<pre class="language-rust"><code>
+				struct Coordinate {
+					x: u32,
+					y: u32
+				}
+				
+				impl Coordinate {
+					fn print(&self) {
+						println!("({},{})", self.x, self.y);
+					}
+					fn new() -> Coordinate {
+						Coordinate {x: 0, y: 0}
+					}
+					fn from(x: u32, y: u32) -> Coordinate {
+						Coordinate {x, y}
+					}
+				}
+				
+				fn main() {
+					let p = Coordinate::from(2,8);
+					let q = Coordinate::new();
+					p.print();
+					q.print();
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(2,8)
+				(0,0)
+			</code></pre>
+		</section>
+	</section>
+</section>
+
+<section id="enums">
+	<h2>Enums</h2>
+	<p>
+		Now that we've covered structs, another helpful data collection is the
+		<b>enum</b> &mdash; a one-of data type. For example, suppose we wanted
+		to implement a <var>Card</var> struct, corresponding to a fifty-two
+		card deck. As we know, French-suited cards consist of four suits and
+		fourteen ranks. We can implement the <var>Card</var> struct with the
+		help of an enum:
+	</p>
+	<pre class="language-rust"><code>
+		#[derive(Debug)]
+		enum Suit {
+			Heart,
+			Club,
+			Spade,
+			Diamond,
+		}
+
+		#[derive(Debug)]
+		enum Rank {
+			One, Two, Three, 
+			Four, Five, Six,
+			Seven, Eight, Nine, 
+			Ten, Jack, Queen,
+			King, Ace
+		}
+		struct Card {
+			suit: Suit,
+			rank: Rank
+		}
+		
+		impl Card {
+			fn print(&self) {
+				println!("({:?}, {:?})", self.suit, self.rank);
+			}
+			fn new() -> Card {
+				Card {suit: Suit::Heart, rank: Rank::One }
+			}
+			fn from(suit: Suit, rank: Rank) -> Card {
+				Card {suit, rank}
+			}
+		}
+		
+		fn main() {
+			let heart_1 = Card::new();
+			let spade_jack = Card::from(Suit::Spade, Rank::Jack);
+			heart_1.print();
+			spade_jack.print();
+		}
+	</code></pre>
+	<pre class="language-bash"><code>
+		(Heart, One)
+		(Spade, Jack)
+	</code></pre>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/CDemo.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/rust_intro.js"
+></script>
 
 {% endblock %}

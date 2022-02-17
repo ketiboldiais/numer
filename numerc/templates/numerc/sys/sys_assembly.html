@@ -60,6 +60,127 @@
 	</p>
 </section>
 
+<section id="information">
+	<h2>What is information?</h2>
+	<p>
+		We begin by reviewing the concept of <b>information</b> &mdash;
+		knowledge communicated or perceived about a particular fact or
+		circumstance. In the computer science context, information is
+		processed, organized, or structured data.<sup></sup> That data is a
+		resolution of uncertainty &mdash; it answers the
+		<i>declarative question</i>: <q>What is ${x?}$</q> where ${x}$ is some
+		subject. That subject, ${x,}$ could be anything: The location of the
+		closest coffee shop, the likelihood of two individuals forming a
+		relationship, or more generally, the answer to a particular question
+		${q,}$ and so on.
+	</p>
+	<div class="note">
+		<p>
+			This is a key difference between <i>data</i> and <i>information</i>.
+			Data can be a collection of redundant or meaningless symbols, but
+			information is organized data that resolves certainty.
+		</p>
+	</div>
+	<p>
+		The less predictable the answer to the declarative question is, the
+		more information the answer conveys. This is implied by the fact that
+		information is a resolution of uncertainty. Let's say the amount of
+		information needed to convey a low probability event A is ${A_I.}$ Then
+		let's say the amount of information needed to convey a high probability
+		event ${B}$ is ${B_I.}$ It follows that ${A_I &gt; B_I,}$ since ${A}$
+		is a more surprising event than ${B.}$ More generally, the more
+		uncertain, rare, or surprising-if-it-occurs an event is, the more
+		information is needed to represent that particular event.
+	</p>
+	<p>
+		How do we represent this information? One way to do so is with
+		<i>bits</i>. Say we had a switch for a lighbulb that goes on or off.
+		The switch has ${2}$ possible states &mdash; ${0}$ or ${1.}$ If we
+		lined up two of these switches and interpreted them as a unit, we would
+		have ${4}$ possible states. In general, if we had ${N}$ switches lined
+		up, we would have ${2^N}$ possible states. This in turn means that with
+		${N}$ switches, we have ${\log_{2}2^N = N}$ bits at our disposal.
+	</p>
+	<p>
+		We can calculate the amount of information there is in an event ${x}$
+		using the probability of the event ${x}$:
+	</p>
+	<figure>
+		$$ \text{information}(x) = - \log_2 (~p(x)~) $$
+		<figcaption>
+			where ${x}$ is some event, and ${p(x)}$ is the probability of ${x.}$
+		</figcaption>
+	</figure>
+	<p>
+		Suppose you're faced with ${n}$ equally probably choices, and our
+		friend Jihei tells us a fact ${x}$ that narrows it down to ${m}$
+		possible choices. The fact ${x}$ consists of ${I(x)}$ information:
+	</p>
+	<figure>
+		$$ \begin{aligned} I(n) - I(x) &= I(m) \\ I(n) &= I(m) + I(x) \\ I(n) -
+		I(m) &= I(x) \\ \end{aligned} $$
+	</figure>
+	<p>Thus, Jihei gave us:</p>
+	<figure>
+		$$ \begin{aligned} I(x) &= I(n) - I(m) \\[1em] &= \log_{2} \left(
+		\dfrac{n}{m} \right) \end{aligned} $$
+	</figure>
+	<p>bits of information. The amount of information in one coin flip:</p>
+	<figure>$$ I(f) = \log_{2} \left( \dfrac{2}{1} \right) $$</figure>
+	<p>which is ${1}$ bit of information. The roll of ${2}$ dice:</p>
+	<figure>$$ I(d) = \log_{2} \left( \dfrac{36}{1} \right) $$</figure>
+	<p>
+		which is ${5.2}$ bits. Once we have an idea about how many bits are
+		needed, we need to <b>encode</b>. <i>Encoding</i> is the process of
+		assigning representations to information. Choosing an appropriate and
+		efficient encoding is a real engineering challenge. There numerous
+		factors to consider:
+	</p>
+	<ul>
+		<li>
+			<i>Mechanism</i> &mdash; The more mechanisms the process contains,
+			the more complex the encoding is, and more difficult it is to improve
+			or modify in the future. Too little mechanisms, and we start limiting
+			the encodings functionality.
+		</li>
+		<li>
+			<i>Efficiency</i> &mdash; The number of bits used. We want the
+			minimal about of bits as possible to represent as much information as
+			possible. Too few bits, the less information we can represent.
+		</li>
+		<li>
+			<i>Reliability</i> &mdash; We want little to no <i>noise</i>.
+			Essentially, the reliability of the encoding in a variety of
+			environments. We do not want the encoding breaking down when it's
+			suddenly fed different types of information.
+		</li>
+		<li>
+			<i>Security</i> &mdash; The key issue here is <i>encryption</i>. We
+			want the encoding to have maximal security.
+		</li>
+	</ul>
+	<p>
+		If all the choices are equally likely, a simple way to encode is
+		<b>fixed-length encoding</b>. For example, with the decimal digits,
+		there are ${10}$ possible choices:
+	</p>
+	$$ \{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 \} $$
+	<p>Since we have ${10}$ possible choices, we need:</p>
+	<figure>$$ \log_{2}(10) \approx 3.322 $$</figure>
+	<p>bits. Thus, to encode the ${10}$ digits, need ${4}$ bits.</p>
+	<p>
+		For the standard English characters &mdash; uppercase letters (${26}$),
+		lowercase letters (${26}$), decimal digits (${10}$), punctuation
+		(${11}$), math (${9}$), finance symbols (${4}$) &mdash; there are
+		roughly ${86}$ possible choices. Thus, we need:
+	</p>
+	<figure>$$ \log_{2}(86) \approx 6.426 $$</figure>
+	<p>
+		bits. Accordingly, we need ${7}$ bits to represent the possible
+		choices. Hence the name, <i>7-bit ASCII</i>.
+	</p>
+</section>
+
 <section id="6502_processor">
 	<h2>Overview of the 6502</h2>
 	<p>
@@ -158,7 +279,45 @@
 </section>
 
 <section id="registers">
-	<h2>A Closer Look at the Processor</h2>
+	<h2>Overview: CPU</h2>
+	<p>
+		The CPU (Central Processing Unit) is a machine for executing programs.
+		The two key aspects of the CPU are:
+	</p>
+	<ol>
+		<li>registers, and</li>
+		<li>instructions</li>
+	</ol>
+	<p>
+		We can think of registers as variables. For example, on the 8080
+		processor, we have five ${8}$-bit registers. From a ${C}$ perspective,
+		we can think of those registers as:
+	</p>
+	<pre class="language-c"><code>
+		unsigned char A;
+		unsigned char B;
+		unsigned char C;
+		unsigned char D;
+		unsigned char E;
+	</code></pre>
+	<p>
+		Every processor has a component called the <b>program counter (PC)</b>,
+		which we can think of as a pointer:
+	</p>
+	<pre class="language-c"><code>
+		unsigned char A;
+		unsigned char B;
+		unsigned char C;
+		unsigned char D;
+		unsigned char E;
+
+		unsigned char* PC;
+	</code></pre>
+	<p>
+		For the CPU, program instructions are hexadecimal numbers, and a
+		program is just a sequence of hexadecimal numbers. Each assembly
+		language instruction corresponds to ${1}$ to ${3}$ bytes.
+	</p>
 	<p>
 		The 6507 processor uses a 28-pin configuration, running at ${1.19
 		\text{MHz},}$ or <q>ticking</q> at ${1.19}$ million times per second
@@ -567,8 +726,22 @@
 <section id="assembler_flow">
 	<h2>The Assembler Flow</h2>
 	<p>
-		At low levels, a program is nothing more than a sequence of
-		instructions to the processor.
+		As we mentioned earlier, a program is nothing more than a sequence of
+		hexadecimal numbers to the processor. Hexadecimal numbers, however, are
+		difficult to write, so use an abstraction &mdash; assembly. Unlike
+		other languages like C or Python, Assembly is about as low as we can
+		get without having to write code strictly in numerals.
+	</p>
+	<p>But how does the processor understand Assembly instructions?</p>
+	<p>
+		Because we're speaking directly with the processor, we have to remember
+		a key fact &mdash; computers are remarkably stupid. They don't
+		understand things like nuance and context, unless we define them. At
+		higher levels, we might think that computers are quickly approaching
+		the singularity, but nothing could be further from the truth.
+		Processors cannot read our minds &mdash; we have to explicitly state
+		the <em>exact</em> series of steps towards accomplishing a particular
+		task.
 	</p>
 </section>
 {% endblock %}
