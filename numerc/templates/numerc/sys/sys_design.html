@@ -272,6 +272,252 @@
 			</li>
 		</ol>
 	</section>
-	<p>There are many more components.</p>
+	<p>
+		There are many more components. Why so many components (and by
+		extension, tears)? Because of two principles in software design:
+	</p>
+	<ol>
+		<li>The <b>single reponsibility principle (SRP)</b>, and</li>
+		<li><b>separation of concerns (SoC)</b></li>
+	</ol>
+	<section id="srp">
+		<h3>Single Responsibility Principle (SRP)</h3>
+		<p>
+			SRP provides that a component must have one, and only one,
+			responsibility. For example, if we write a component ${f}$ for
+			reading a file, ${f}$ must only read that file. The component ${f}$
+			should not be doing tasks like saving particular data it encounters
+			or editing some other file.
+		</p>
+		<p>Adhering to SRP has several benefits:</p>
+		<ul>
+			<li>
+				<strong><b>Loose Coupling.</b></strong> A
+				<i>loosely-coupled component (LCC)</i> is a component that does not
+				depend on another component to perform its task. In contrast, a
+				<i>tightly-coupled component (TCC)</i> is a component whose task
+				can only perform its task if another component performs its task.
+				Suppose ${f}$ is a component tightly coupled to another component
+				${c.}$ Because ${f}$ is a TCC, changes to ${c}$ will affect how
+				${f}$ performs its task.<sup></sup>
+			</li>
+			<div class="note">
+				<p>
+					A loosely-coupled system is called an <i>orthogonal system</i>.
+					The term <i>orthogonal</i> is borrowed from geometry. Two lines
+					are orthogona if they meet at right angles. For example, the
+					${\text{$x$-axis}}$ and ${\text{$y$-axis}}$ on a graph. Moving
+					along the ${\text{$x$-axis}}$ has no effect on moving along the
+					${\text{$y$-axis}}$ and vice versa. Following this analogy, in
+					computing, two or more components are orthogonal if changes in
+					one do not affect any other.
+				</p>
+			</div>
+			<li>
+				<strong>Reduced Complexity.</strong> The most obvious advantage to
+				following SRP is reduced complexity. With every component having
+				one, and only one responsibility, it's much, much easier to think
+				about what the code is doing. Bugs are easier to spot because they
+				can be traced to a particular component.
+			</li>
+		</ul>
+	</section>
+
+	<section id="SoC">
+		<h3>Separation of Concerns (SoC)</h3>
+		<p>
+			SoC provides that an application should be separated into distinct
+			sections, so that each section addresses a distinct concern with
+			little overlap with other sections. We can think of a
+			<b>section</b> as a collection of components working together to
+			complete a particular concern. A <b>concern</b> is a large task
+			composed of many smaller tasks. For example, <q>user interface</q> is
+			a concern consisting of many small tasks &mdash; displaying a button,
+			calculating a proportion, returning a color, and so on. This sounds
+			like SRP, but the key difference is that it applies at a broader
+			level &mdash; instead of components, we're thinking in terms of many
+			<i>modules of components</i>.
+		</p>
+	</section>
+</section>
+
+<section id="web_architecture">
+	<h2>Web Architecture</h2>
+	<p>
+		A <b>web architecture</b> is the way components like a database,
+		message queue, cache, user interface, etc., are organized and operate
+		together to produce an online service. A typical web application might
+		have the following architecture:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/web_architecture_1.svg' %}"
+			alt="web architecture"
+			loading="lazy"
+			height="130px"
+		/>
+	</figure>
+	<p>
+		In the architecture above, we have ${5}$ separate components (the user
+		interface lies resides with the client). This is just one architecture.
+		We'll lookg at a few more architectures in detail.
+	</p>
+	<section id="client_server">
+		<h3>The Client-Server Architecture</h3>
+		<p>
+			The <b>client-server architecture</b> is the fundamental building
+			block of the web. Almost all other web architectures are essentially
+			architectures that build on top of the client-server
+			architecture.<sup></sup>
+			The architecture looks something like the following:
+		</p>
+		<div class="note">
+			<p>
+				We say <q>almost all</q> because there is another achitecture, the
+				<i>peer-to-peer architecture</i>, fairly different from the
+				client-server architecture. Peer-to-peer is an uncommon
+				architecture, but we will examine it in a later section.
+			</p>
+		</div>
+		<figure>
+			<img
+				src="{% static 'images/client_server_architecture.svg' %}"
+				alt="client-server architecture"
+				loading="lazy"
+				height="60px"
+			/>
+		</figure>
+		<p>
+			In the graph above, ${q}$ indicates a <b>request</b> (i.e., a
+			<i>question</i>), and ${a}$ indicates a <b>response</b> (i.e., an
+			<i>answer</i>). This corresponds to the fact that the client-server
+			architecture corresponds to the <b>request-response model</b>.
+		</p>
+		<p>
+			With the client-server architecture, the
+			<i>user interface</i> resides with client. The
+			<b>user interface</b> is the section for the application's
+			presentation to the user. In the context of the web, the user
+			interface is written in HTML, JavaScript, and CSS. Various libraries
+			may be used to help write that interface: vanilla JavaScript, jQuery,
+			React, Angular, Vue, Svelte, and so on.
+		</p>
+		<p>
+			The <b>client</b> is the entry point to the application. It might be
+			a mobile application, or a browser window on some device like a
+			desktop or tablet. Whatever it is, the client executes commands to
+			interact with the backend server.
+		</p>
+		<p>There are two types of clients:</p>
+		<ol>
+			<li>The <i>thin client</i>, and</li>
+			<li>the <i>thick client</i> (or <i>fat client</i>)</li>
+		</ol>
+		<p>
+			A <b>thin client</b>, is a client that holds only the user interface
+			of the application. With a <b>thick client</b>, the client holds both
+			the user interface <em>and</em> business logic.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/thin_v_fat.svg' %}"
+				alt="Thin versus fat clients"
+				loading="lazy"
+				height="200px"
+			/>
+			<figcaption>
+				Where UI is the user interface and BL is the business logic.
+			</figcaption>
+		</figure>
+		<p>
+			Because the thin client contains no business logic, the client must
+			send requests to the backend server for logic-related requests.
+			Without a connection to the backend server, the application is
+			substantially limited. Contrast this with the thick client, where
+			business logic resides with the client.
+		</p>
+	</section>
+
+	<section id="web_server">
+		<h3>Web Servers</h3>
+		<p>
+			The second component in the client-server architecture is the
+			<b>backend server</b> or <b>web server</b>. The web server is the
+			component that receives requests from the client and responds after
+			executing the business logic according to the client's parameters.
+		</p>
+		<p>
+			Servers that run web applications are often called
+			<i>application servers</i>. But there are also various types of web
+			servers:
+		</p>
+		<ol>
+			<li>proxy servers</li>
+			<li>mail servers</li>
+			<li>file servers</li>
+			<li>virtual servers</li>
+			<li>data storage servers</li>
+			<li>batch job server</li>
+		</ol>
+		<p>
+			Server implementation depends on what the application's backend
+			code's implementation. For example, if the backend code is written in
+			Java, then we ought to use Apache Tomcat or Jetty. Most simple web
+			applications use Apache HTTP Server. In recent years, there's been an
+			increased use of
+			<i>server-side rendering</i> &mdash; constructing the user interface
+			on a server and sending the constructed UI to the client.
+		</p>
+	</section>
+
+	<section id="client_server_communication">
+		<h3>Client Server Communication</h3>
+		<p>
+			As we saw in the diagrams, the client and server communicate with one
+			another &mdash; the client sends a <b>request</b>, and the server
+			sends a <b>response</b> to that request. If no request is made, there
+			is no response.
+		</p>
+		<p>
+			Communications between a client and the server are governed by the
+			<b>Hypertext Transfer Protocol (HTTP)</b>. We can think of HTTP as a
+			set of rules defining how data is transmitted over the
+			<i>world wide web</i> (i.e., the internet).
+		</p>
+		<section id="rest_api">
+			<h4>REST API &amp; API Endpoints</h4>
+			<p>
+				<b>REST (Representational State Transfer)</b> is a style of
+				software architecture for implementing web services. Web services
+				implemented using the REST architectural style are called
+				<i>RESTful web services.</i>
+			</p>
+			<p>
+				In modern ${n}$-tier web applications, all clients must hit a
+				<b>REST endpoint</b> to fetch data from the web server. On the
+				server side, the application code implements a <b>REST API</b>.
+				This is essentially an interface for incoming requests, implemented
+				under REST principles.
+			</p>
+			<p>
+				Within the context of APIs, REST architecture consists of two key
+				components:
+			</p>
+			<ol>
+				<li>
+					<b>Client</b> &mdash; The entity using the the API. For example,
+					a developer using the Twitter API to read and write data from
+					Twitter, or a browser calling the Twitter API to render
+					information on the screen.
+				</li>
+				<li>
+					<b>Resource</b> &mdash; Some object that the API provides
+					information about. For example, with the Twitter API, a resource
+					might be trending hashtags, or with the Instagram API, an ordered
+					list of most followed users. 
+				</li>
+			</ol>
+		</section>
+	</section>
 </section>
 {% endblock %}
