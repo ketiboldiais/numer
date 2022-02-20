@@ -639,7 +639,201 @@
 	</figure>
 	<p>
 		At some point, the rectangles are so infinitesimally thin that any
-		excess area is neglibile.
+		excess area is neglibile. With this idea in mind, let's consider an
+		example. Say we had the function:
 	</p>
+	<figure>$$ f(x) = x^2 $$</figure>
+	<p>
+		We'll start at ${a = 0}$ and let ${b}$ be arbitrary. Visualizing the
+		area beneath the curve as consisting of rectangles:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/riemann_sum_parabola.svg' %}"
+			alt="Graph of parabola"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		Suppose there are ${n}$ rectangles. We know that the area of rectangle
+		is given by the formula:
+	</p>
+	<figure>$$ A_r = b \cdot h $$</figure>
+	<p>If there are ${n}$ rectangles, then the base length is given by:</p>
+	<figure>$$ \dfrac{b}{n} $$</figure>
+	<p>
+		Because the base has a length ${b/n,}$ we can determine the height by
+		passing ${b/n}$ into the function:
+	</p>
+	<table class="alg">
+		<thead>
+			<th>${x}$</th>
+			<th>${f(x)}$</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${\dfrac{b}{n}}$</td>
+				<td>${ \left( \dfrac{b}{n} \right)^2 }$</td>
+			</tr>
+			<tr>
+				<td>${\dfrac{2b}{n}}$</td>
+				<td>${ \left( \dfrac{2b}{n} \right)^2 }$</td>
+			</tr>
+			<tr>
+				<td>${\dfrac{3b}{n}}$</td>
+				<td>${ \left( \dfrac{3b}{n} \right)^2 }$</td>
+			</tr>
+			<tr>
+				<td>${\vdots}$</td>
+				<td>${\vdots}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>The sum of the areas is thus:</p>
+	<figure>
+		$$ \left( \dfrac{b}{n} \right) \left( \dfrac{b}{n} \right)^2 + \left(
+		\dfrac{b}{n} \right) \left( \dfrac{2b}{n} \right)^2 + \left(
+		\dfrac{b}{n} \right) \left( \dfrac{3b}{n} \right)^2 + \ldots + \left(
+		\dfrac{b}{n} \right) \left( \dfrac{nb}{n} \right)^2 $$
+	</figure>
+	<p>
+		Notice the pattern of the terms. The coefficients go ${1,}$ ${2,}$
+		${3,}$ and so on, up to ${n.}$ The formula reduces to:
+	</p>
+	<figure>
+		$$ \left( \dfrac{b}{n} \right)^3 \left( 1 + 2^2 + 3^2 + \ldots + n^2
+		\right) $$
+	</figure>
+	<p>Just to ensure the pattern is clear, we'll write ${1}$ as ${1^2:}$</p>
+	<figure>
+		$$ \left( \dfrac{b}{n} \right)^3 \left( 1^2 + 2^2 + 3^2 + \ldots + n^2
+		\right) $$
+	</figure>
+	<p>Question: How big is this quantity:</p>
+	<figure>$$ 1^2 + 2^2 + 3^2 + \ldots + n^2 $$</figure>
+	<p>
+		Since we're working with rectangles, a good starting point is to try
+		and build a pyramid with a base of ${n \times n.}$
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/pyramid_riemann_sum.svg' %}"
+			alt=""
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		In the diagram above, we have two views of the pyramid, a top view and
+		a profile view. In the profile view, the slope of the dashed red line
+		is ${2.}$
+	</p>
+	<p>
+		It follows that the next layer is ${(n-1) \times (n-1).}$ This means
+		the total number of blocks at the base is ${n^2,}$ the rightmost term
+		in our long expression:
+	</p>
+	<figure>$$ 1^2 + 2^2 + 3^2 + \ldots + \textcolor{salmon}{n^2} $$</figure>
+	<p>
+		If we examining the term a little closer, we see that the term before
+		${n^2}$ is ${(n-1)^2:}$
+	</p>
+	<figure>
+		$$ 1^2 + 2^2 + 3^2 + \ldots + \textcolor{salmon}{(n-1)^2} + n^2 $$
+	</figure>
+	<p>
+		Corresponding to the total number of blocks for the next layer,
+		${(n-1)^2.}$ The volume of a pyramid with a base of side lengths ${n}$
+		and a height of ${n}$ is given by the formula:
+	</p>
+	<figure>$$ V_p = \dfrac{1}{3}n^2 \cdot n = \dfrac{1}{3} n^3 $$</figure>
+	<p>This tells us the following fact:</p>
+	<figure>
+		$$ \textcolor{salmon}{\dfrac{1}{3}n^3} &lt; 1^2 + 2^2 + 3^2 + \ldots +
+		(n-1)^2 + n^2 $$
+	</figure>
+	<p>
+		This new fact (in red) corresponds to the inner pyrmaid, and in turn
+		corresponds to a lower bound. We can also capture the outer upper bound
+		(the volume of the pyramid denoted by the green dashed line in the
+		diagram) with the formula:
+	</p>
+	<figure>$$ \dfrac{1}{3}(n+1)^2(n+1) $$</figure>
+	<p>Thus, we have:</p>
+	<figure>
+		$$ \textcolor{salmon}{\dfrac{1}{3}n^3} &lt; 1^2 + 2^2 + 3^2 + \ldots +
+		(n-1)^2 + n^2 &lt; \textcolor{green}{\dfrac{1}{3}(n+1)^3} $$
+	</figure>
+	<p>
+		At this point, we're ready to take the limit. The original expression:
+	</p>
+	<figure>
+		$$ \left( \dfrac{b}{n} \right)^3 \left( 1 + 2^2 + 3^2 + \ldots + n^2
+		\right) $$
+	</figure>
+	<p>We want to rewrite this expression as:</p>
+	<figure>
+		$$ b^3 \left( \dfrac{1^2 + 2^2 + \ldots + n^2}{n^3} \right) $$
+	</figure>
+	<p>Going back to our inequality, we divide by ${n^3:}$</p>
+	<figure>
+		$$ \dfrac{\textcolor{salmon}{\dfrac{1}{3}n^3}}{n^3} &lt; \dfrac{1^2 +
+		2^2 + 3^2 + \ldots + (n-1)^2 + n^2}{n^3} &lt;
+		\dfrac{\textcolor{green}{\dfrac{1}{3}(n+1)^3}}{n^3} $$
+	</figure>
+	<p>Reducing, we get:</p>
+	<figure>
+		$$ \dfrac{1}{3} &lt; \dfrac{1^2 + 2^2 + 3^2 + \ldots + n^2}{n^3} &lt;
+		\dfrac{1}{3} \left( 1 + \dfrac{1}{n} \right)^3 $$
+	</figure>
+	<p>As ${n}$ goes to infinity, we see that:</p>
+	<figure>
+		$$ \dfrac{1}{3} &lt; \dfrac{1^2 + 2^2 + 3^2 + \ldots + n^2}{n^3} &lt;
+		\dfrac{1}{3} \left( 1 + \cancel{\dfrac{1}{n}}^{n \to \infty \implies 0}
+		\right)^3 $$
+	</figure>
+	<p>Hence:</p>
+	<figure>
+		$$ \dfrac{1}{3} &lt; \dfrac{1^2 + 2^2 + 3^2 + \ldots + n^2}{n^3} &lt;
+		\dfrac{1}{3} $$
+	</figure>
+	<p>It follows that the total area under ${x^2}$ is:</p>
+	<figure>$$ \int_0^b x^2~dx = \dfrac{1}{3}b^3 $$</figure>
+	<p>The graph of ${f(x) = x^2:}$</p>
+	<figure>
+		<img
+			src="{% static 'images/integral_parabola.svg' %}"
+			alt="Graph of parabola"
+			loading="lazy"
+			height="250px"
+		/>
+	</figure>
+	<p>
+		<span class="topic">Summation Notation.</span> With our first example
+		done, we introduce another new bit of notation. Writing:
+	</p>
+	<figure>$$ 1 + 2 + 3 + \ldots + n $$</figure>
+	<p>
+		is tedious. Accordingly, mathematicians use
+		<b>summation notation</b> to express the idea of summing the terms in a
+		sequence of numbers:
+	</p>
+	<figure>
+		$$ \sum\limits_{i = 1}^{n} a_i = a_1 + a_2 + \ldots + a_n $$
+	</figure>
+	<p>Thus, inequality:</p>
+	<figure>
+		$$ \dfrac{1}{3} &lt; \dfrac{1^2 + 2^2 + 3^2 + \ldots + n^2}{n^3} &lt;
+		\dfrac{1}{3} \left( 1 + \dfrac{1}{n} \right)^3 $$
+	</figure>
+	<p>can be more concisely written:</p>
+	<figure>
+		$$ \dfrac{1}{3} &lt; \dfrac{1}{n^3} \sum\limits_{i = 1}^{n} i^2 &lt;
+		\dfrac{1}{3} \left( 1 + \dfrac{1}{n} \right)^3 $$
+	</figure>
+	<p>and what we showed was that:</p>
+	<figure>
+		$$ \lim\limits_{n \to \infty} \dfrac{1}{n^3} \sum\limits_{i = 1}^{n}
+		i^2 = \dfrac{1}{3} $$
+	</figure>
 </section>
 {% endblock %}
