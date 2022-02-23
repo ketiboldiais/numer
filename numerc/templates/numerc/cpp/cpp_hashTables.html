@@ -1,0 +1,400 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on hash tables." />
+{% endblock %} {% block title %}
+<title>Hash Tables</title>
+{% endblock %} {% block content %}
+<h1>Hash Tables</h1>
+<section id="intro">
+	<p>
+		In this section, we examine <b>hash tables</b> and
+		<b>hashing techniques</b>.
+	</p>
+</section>
+<section id="hashing">
+	<p>
+		To understand what hashing is and why hash tables exist, it's helpful
+		to revisit a problem we've seen over and over again &mdash; searching.
+	</p>
+
+	<p>
+		Say we had some array ${A}$ containing ${n}$ elements, and we want to
+		check if the array contains some value ${v}$ (let's say it does). To do
+		so, we need a searching algorithm. If we use linear search, then we
+		have a complexity of ${O(n).}$ This is because the algorithm must look
+		at each element, one by one from left to right, checking if the given
+		element is equal to ${v.}$
+	</p>
+
+	<p>
+		Alternatively, we could use binary search. With binary search, however,
+		the array's elements must be first be sorted from least to greatest.
+		Assuming the elements are sorted correctly, then we have a complexity
+		of ${O(\text{lg } n).}$ Swift just has to split the array in half,
+		check which head of each half is closer to ${v,}$ toss the half
+		further, and continue searching in the other half. Dividing over and
+		over again, Swift eventually finds ${v.}$ Mathematically, this takes
+		${\text{lg } n}$ steps.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			For those unfamiliar, the symbol ${\text{lg}}$ is equivalent to
+			${\log_{2}.}$ We use ${\text{lg}}$ rather than ${\log}$ because
+			${\log}$ is usually reserved for ${\log_{10},}$ the common logarithm.
+			${\text{lg}}$ is the binary logarithm.
+		</p>
+	</div>
+
+	<p>
+		Comparing the two, binary search is much faster &mdash; linear time is
+		generally slower than logarithmic time. The catch, of course, is that
+		the elements in the array must first be sorted. Now, even though
+		logarithmic time is pretty good, constant time, ${O(1),}$ is even
+		better. It is this goal, achieving ${O(1),}$ that sparks the need for
+		hashing.
+	</p>
+
+	<p>
+		With hashing, we want to transform values into some number
+		corresponding to an index in the array. For example, suppose we had the
+		following sequence of values:
+	</p>
+	<figure>$$ \lang 8, 4, 9, 11, 3 \rang $$</figure>
+	<p>
+		In the world of hashing, we call these elements
+		<b>keys</b>. The first idea: store each key at an index corresponding
+		to its value, rather than just blindly storing them as presented. 8
+		goes to index 8, 4 goes to index 4, 9 goes to index 9, 11 to 11, 3 to
+		3, and so on:
+	</p>
+	<div id="hashArrayIntro"></div>
+	<p>
+		The rest of the spaces are kept empty, or, in some implementations,
+		initialized to zero (more on this later):
+	</p>
+	<div id="hashArrayZeroInitialized"></div>
+	<p>
+		If the value we're looking for is 8, we tell Swift to look at index 8.
+		If it's 4, look at 4. Notice what this leads to in terms of complexity.
+		The algorithm just needs to take one step, like accessing an element in
+		the array. This is a complexity of order ${O(1)}$ &mdash; constant
+		time.
+	</p>
+	<p>
+		The problem, however, is when we have a key like ${8435.}$ This is very
+		far down the array. Worse, there are a lot of spaces wasted in the
+		array. With our original keys, ${11}$ was the greatest, so there are
+		${8422}$ positions left empty (or more accurately, ${8429,}$ since
+		there are 7 empty positions before 11). This is a lot of wasted space.
+		It seems that by achieving ${O(1),}$ we did so at a gigantic cost in
+		memory. So now we have another goal &mdash; reducing memory costs while
+		maintaing ${O(1).}$ The solution to this problem is <b>hashing</b>.
+	</p>
+</section>
+
+<section id="hashing">
+	<h2>Hashing</h2>
+	<p>
+		Hashing is the process of turning a value of a particular type &mdash;
+		whether it's a <var>String</var>, <var>Int</var>, etc. &mdash; into a
+		numeric value. The resulting numeric value is called a
+		<b>hash value</b>. These hash values are then used to lookup values in
+		a <b>hash table</b>.
+	</p>
+	<p>
+		To do so, we need a function, more specifically called a
+		<b>hash function</b>. Before we consider the hash function, we should
+		lay out the problem thus far, and use more specific terminology. First,
+		the keys, all together, form a <b>key space</b>. Second, we'll refer to
+		the array we mentioned previously as a <b>hash table</b>. Third, there
+		is some hash function ${h(x) = x}$ that maps elements of the key space
+		to elements of the hash table. E.g., ${h(8) = 8,}$ ${h(11) = 11,}$ and
+		so on.
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/keyspace.svg' %}"
+			alt="keyspace and hashtable"
+			loading="lazy"
+			style="width: 200px"
+		/>
+	</figure>
+
+	<p>
+		Applying the hash function to all the elements in the key space, the
+		final result looks like:
+	</p>
+
+	<figure>
+		<img
+			src="{% static 'images/keyspace2.svg' %}"
+			alt="keyspace"
+			loading="lazy"
+			style="width: 200px"
+		/>
+	</figure>
+
+	<p>
+		Again, notice the empty spaces in the hash table. Let's think more
+		about that hash function. Mathematically, a function is a kind of
+		<b>relation</b>. There are four major types of relations:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/relation_types.svg' %}"
+			alt="relation types"
+			loading="lazy"
+			style="width: 200px"
+		/>
+	</figure>
+	<p>
+		Of these types, (1) <i>one-to-one relations</i>, and (2)
+		<i>many-to-one relations</i> are functions. Our function above, ${h(x)
+		= x,}$ is a one-to-one type function. This particular function
+		implements a hashing technique called <b>ideal hashing.</b> As we saw
+		earlier, the cost to ideal hashing is the amount of space wasted.
+		What's responsible for this wasted space? The <em>hash function</em>.
+		This means that, if we want to reduce the amount of space wasted, we
+		must modify the hash function. In other words, we must use a different
+		<i>hashing technique</i>.
+	</p>
+
+	<p>
+		How might we do so? Well, looking at the hash table above, it has a
+		size of 12. One possible definition for ${h(x)}$ is to use the modulo
+		operator (generally symbolized in programming languages as the
+		<var>%</var> operator):
+	</p>
+
+	<figure class="math-display">
+		$$h(x) = x \bmod s$$
+		<figcaption>where ${s}$ is the size of the hash table.</figcaption>
+	</figure>
+
+	<p>
+		With this definition, let's say our key space now includes ${13.}$ Then
+		the function would output:
+	</p>
+	<table class="alg">
+		<thead>
+			<th>${k}$</th>
+			<th>${h(k) = k \bmod 12}$</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${8}$</td>
+				<td>${8}$</td>
+			</tr>
+			<tr>
+				<td>${4}$</td>
+				<td>${4}$</td>
+			</tr>
+			<tr>
+				<td>${4}$</td>
+				<td>${4}$</td>
+			</tr>
+			<tr>
+				<td>${11}$</td>
+				<td>${11}$</td>
+			</tr>
+			<tr>
+				<td>${3}$</td>
+				<td>${3}$</td>
+			</tr>
+			<tr>
+				<td>${13}$</td>
+				<td>${1}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>Visualizing the resulting hash table:</p>
+	<figure>
+		<img
+			src="{% static 'images/keyspace3.svg' %}"
+			alt="keyspace"
+			loading="lazy"
+			style="width: 200px"
+		/>
+	</figure>
+
+	<p>
+		Great, it works. We are now actually using the empty spaces. But
+		there's a problem lingering &mdash; what happens when we the keyspace
+		includes ${1?}$ ${h(1) = 1 \bmod 12 = 1.}$ But ${1}$ is already
+		occupied by 13. We can have ${1}$ map to ${1,}$ but that would result
+		in a
+		<b>collision</b> &mdash; two or more keys mapping to the same
+		index.<sup></sup> We do not want collisions. So now we have another
+		problem to solve: How do we avoid collisions?
+	</p>
+	<div class="note">
+		<p>
+			Whenever we change an ideal hashing function to some non-ideal
+			hashing function, we introduce the problem of collisions. This is
+			because the moment we step out of the world of linear functions, we
+			potentially enter into the world of many-to-one functions.
+		</p>
+	</div>
+</section>
+
+<section id="collision_avoidance">
+	<h2>Collision Avoidance</h2>
+	<p>
+		It turns out there are a lot of different methods to for avoiding or
+		removing collisions. Generally, they fall into two categories: (1)
+		<b>open hashing</b>, and (2) <b>closed hashing</b>. Open hashing is
+		also called <b>seperate chaining</b>, and closed hashing is also called
+		<b>open addressing</b>. Open addressing can be implemented in several
+		ways: <b>linear probing</b>, <b>quadratic probing</b>, and
+		<b>double hashing</b>. These are just a few methods.
+	</p>
+	<section id="chaining">
+		<h3>Open Hashing / Separate Chaining</h3>
+		<p>
+			With open hashing, we use additional space to avoid collisions. As
+			mentioned earlier, one way to use additional space is through
+			<i>separate chaining</i>.
+		</p>
+		<p>
+			Let's first consider chaining. With chaining, we use our usual hash
+			function. But instead of simply inserting the key into an empty
+			position in the hash table, we insert the key
+			<i>and</i> include a pointer. In other words, we start a chain. If we
+			encounter a key that maps to an occupied position in the hash table,
+			the key is chained to the occupying key by having the occupying key's
+			pointer point to the subsequent key. For example, let's say our key
+			space now includes ${1:}$
+		</p>
+		<table class="alg">
+			<thead>
+				<th>${k}$</th>
+				<th>${h(k) = k \bmod 12}$</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${8}$</td>
+					<td>${8}$</td>
+				</tr>
+				<tr>
+					<td>${4}$</td>
+					<td>${4}$</td>
+				</tr>
+				<tr>
+					<td>${11}$</td>
+					<td>${11}$</td>
+				</tr>
+				<tr>
+					<td>${3}$</td>
+					<td>${3}$</td>
+				</tr>
+				<tr>
+					<td>${13}$</td>
+					<td>${\color{red} 1}$</td>
+				</tr>
+				<tr>
+					<td>${1}$</td>
+					<td>${\color{red} 1}$</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			As expected, we see that there's a collision. Open hashing's solution
+			is as follows: Instead of using spaces in the array to store the key,
+			we take the output hash value (the index in the array), and store at
+			that index the root of a <i>linked list</i>. The key is then appended
+			to that linked list. For example, given that the maximum key is
+			${13,}$ we have an array of size ${13,}$ with indices running from
+			${0}$ to ${12:}$
+		</p>
+		<table class="hash">
+			<tr>
+				<td>0</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td><div id="hash6"></div></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td><div id="hash5"></div></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td><div id="hash3"></div></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td><div id="hash1"></div></td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td><div id="hash2"></div></td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>11</td>
+				<td><div id="hash4"></div></td>
+			</tr>
+			<tr>
+				<td>12</td>
+				<td></td>
+			</tr>
+		</table>
+		<p>
+			Thus, when we search for a particular value, say ${1,}$ we: (1) Pass
+			the value into the hash function ${h(x);}$ (2) ${h(x)}$ returns the
+			hash key (the index); (3) we search for the value ${1}$ in the linked
+			list chained to that index.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/keyspace4.svg' %}"
+				alt="keyspace"
+				loading="lazy"
+				style="width: 300px"
+			/>
+		</figure>
+		<p>
+			The chain above is really just a
+			<i>linked list</i>. With linked lists, we solve the collision proble.
+			But, in doing so, we've increased complexity. On average, this is
+			still faster than ${O(\text{lg } n),}$ but if we have to search for
+			1, we'll have to search through the linked list as well. If the chain
+			grows too long, then we potentially hit ${O(n).}$ Moreover, there are
+			open positions in the hash table, but instead of using them, we're
+			adding to chains.
+		</p>
+	</section>
+
+	<section id="linear_probing">
+		<h3>Closed Hashing / Open Addressing</h3>
+		<p>
+			With <i>closed hashing</i> (a.k.a., <i>open addressing</i>), we store
+			the collision-risk key to any other free space.
+		</p>
+	</section>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/CDemo.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/cpp_hashing.js"
+></script>
+{% endblock %}

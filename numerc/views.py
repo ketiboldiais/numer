@@ -431,6 +431,9 @@ def cpp_queue(request):
 def cpp_tree(request):
 	return render(request, "numerc/cpp/cpp_trees.html")
 
+def cpp_hashTables(request):
+	return render(request, "numerc/cpp/cpp_hashTables.html")
+
 
 
 #! C# Views (cshv)

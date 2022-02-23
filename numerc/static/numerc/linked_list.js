@@ -148,6 +148,8 @@ render(linkedListPeeking1);
 
 const linkedListPeekingIndexed = {
 	id: "linkedListPeekingIndexed",
+	width: 150,
+	bottomPadding: '15%',
 	type: "single",
 	circular: "false",
 	indexed: true,

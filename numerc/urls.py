@@ -249,6 +249,8 @@ urlpatterns = [
 
 	path("cpp_tree", views.cpp_tree, name="cpp_tree"),
 
+	path("cpp_hashTables", views.cpp_hashTables, name="cpp_hashTables"),
+
 
 	# C# paths
 	path("csh_preface", views.csh_preface, name="csh_preface"),

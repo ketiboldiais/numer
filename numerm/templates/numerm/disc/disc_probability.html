@@ -1235,6 +1235,430 @@
 		</figure>
 	</section>
 </section>
+
+<section id="probability">
+	<h2>Basic Probability Terminology</h2>
+	<p>
+		In probability theory, we assign to an <i>event</i> a number between
+		${0}$ and ${1}$ inclusive. We call this number a <b>probability</b>.
+		From this number, we have the following terminology:
+	</p>
+	<ul>
+		<li>
+			An <b>impossible event</b> is an event with a probability of ${0}$
+			(i.e., a ${0\%}$ chance of occuring).
+		</li>
+		<li>
+			A <b>certain event</b> is an event with a probability of ${1}$ (i.e.,
+			a ${100\%}$ chance of occuring).
+		</li>
+		<li>
+			A <b>likely event</b> is an event with a probability strictly greater
+			than ${0.5.}$
+		</li>
+		<li>
+			An <b>unlikely event</b> is an event with a probability strictly less
+			than ${0.5.}$
+		</li>
+	</ul>
+	<p>We can think of probabilities as falling on a spectrum:</p>
+	<figure>
+		<img
+			src="{% static 'images/probability_spectrum.svg' %}"
+			alt="probability spectrum"
+			style="width: 250px"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		The study of probability we're concerned with in these first few
+		sections is determining how to assign events to this spectrum.
+		Generally, this is done in two ways:
+	</p>
+	<ol>
+		<li>experimental probability, or</li>
+		<li>theoretical probability</li>
+	</ol>
+
+	<section id="experimental_probability">
+		<h3>Experimental Probability</h3>
+		<p>
+			In experimental probability, we conduct some <i>experiment</i> and
+			observe its <i>results</i>. There are a few terms associated with
+			experimental probability:
+		</p>
+		<ul>
+			<li>
+				The <b>number of trials</b> is the total number of times the
+				experiment is repeated.
+			</li>
+			<li>
+				The experiment's <b>outcomes</b> are the different possible results
+				for <em>one</em> trial of the experiment.
+			</li>
+			<li>
+				Each experiment outcome has a <b>frequency</b> &mdash; the number
+				of times the outcome is observed.
+			</li>
+			<li>
+				Each experiment outcome has a <b>relative frequency</b> &mdash; the
+				frequency of the outcome expressed as a fraction or percentage of
+				the total number of trials.
+			</li>
+		</ul>
+		<p>For example, consider the following experiment:</p>
+		<dfn>
+			<small>Experiment</small>
+			<p>
+				A coin was tossed into the air and caught in hand ${279}$ times. It
+				fell heads ${159}$ times, and tails ${120}$ times.
+			</p>
+		</dfn>
+		<p>From the experiment, we have the following findings:</p>
+		<table class="alg">
+			<tbody>
+				<tr>
+					<td>Number of trials</td>
+					<td>${279}$</td>
+				</tr>
+				<tr>
+					<td>Outcomes</td>
+					<td>heads, tails</td>
+				</tr>
+				<tr>
+					<td>Frequency of heads</td>
+					<td>${159}$</td>
+				</tr>
+				<tr>
+					<td>Frequency of tails</td>
+					<td>${120}$</td>
+				</tr>
+				<tr>
+					<td>Relative frequency of heads</td>
+					<td>${\dfrac{159}{279} \approx 0.57}$</td>
+				</tr>
+				<tr>
+					<td>Relative frequency of tails</td>
+					<td>${\dfrac{120}{279} \approx 0.43}$</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Absent any further data, the relative frequency an event ${E_i}$ is
+			our best estimate of the probability of ${E_i}$ &mdash; denoted
+			${P(E_i)}$ &mdash; occurring.
+		</p>
+		<div>
+			$$ \text{experimental probability} = \text{relative frequency} $$
+		</div>
+		<p>Thus, we have:</p>
+		<figure>
+			$$ \begin{aligned} P(\text{heads}) &\approx 0.57 \\ P(\text{tails})
+			&\approx 0.43 \end{aligned} $$
+		</figure>
+	</section>
+
+	<section id="sample_space">
+		<h3>Sample Space</h3>
+		<p>
+			The <b>sample space ${U}$</b> is the set of all possible outcomes of
+			an experiment. We can represent a sample space in a variety of ways.
+			For example, suppose we ran an experiment of tossing two dice. For a
+			single die, the possible outcomes are heads ${(H)}$ or tails ${(T).}$
+			We can <i>list</i> the possible outcomes in set notation:
+		</p>
+		<figure>$$ \{ (H,H), (T,T), (H,T), (T,H) \} $$</figure>
+		<p>
+			Alternatively, we can represent the possible outcomes with a
+			${2}$-dimensional grid:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/heads_tails_grid.svg' %}"
+				alt="heads tails grid"
+				loading="lazy"
+				style="width: 150px"
+			/>
+		</figure>
+		<p>
+			We can also represent the possible outcomes with a <i>dendrogram</i>,
+			or <i>tree</i>:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/coin_tree.svg' %}"
+				alt="heads tails grid"
+				loading="lazy"
+				style="width: 150px"
+			/>
+		</figure>
+		<p>Each branch in the tree above represents a different outcome.</p>
+		<p>We could also use a table:</p>
+		<figure>
+			$$ \begin{array}{cc:c:c} & & H_2 & T_2 \\ \hline & H_1 & (H_1, H_2) &
+			(H_1, T_2) \\ & T_1 & (T_1, H_1) & (T_1, T_2) \\ \end{array} $$
+		</figure>
+	</section>
+	<section id="theoretical_probability">
+		<h3>Theoretical Probability</h3>
+		<p>
+			<i>Theoretical probability</i>, also called
+			<b>mathematical probability</b>, is probability based on what we
+			theoretically expect to occur. Mathematical probability is a vast
+			field consisting of numerous subfields. In this section, we
+			investigate <b>naive probability</b> &mdash; mathematical probability
+			with simplifying assumptions.
+		</p>
+		<p>
+			The first simplifying assumption is the
+			<cite>naive definition of probability</cite>:
+		</p>
+		<dfn>
+			<small>Naive Definition of Probability</small>
+			<p>
+				Where an event ${A}$ contains equally likely possible results, the
+				probability of ${A}$ occuring is:
+			</p>
+			<figure>$$ P(A) = \dfrac{n(A)}{n(U)} $$</figure>
+			<p>
+				where ${n(A)}$ is the cardinality of the set of possible results
+				${A,}$ and ${n(U)}$ is the cardinality of the sample space.
+			</p>
+		</dfn>
+		<p>
+			For example, suppose that a marble is randomly selected from a bag
+			containg ${3}$ green, ${4}$ yellow, and ${5}$ blue marbles.
+		</p>
+		<ol>
+			<li>
+				<i>What is the probability of selecting a green ticket?</i>
+				<p>
+					First, we determine the size of the sample space. Because there
+					are ${3}$ green, ${4}$ yellow, and ${5}$ blue marbles, the sample
+					space has a size of ${12.}$
+				</p>
+				<figure>$$ n(U) = 12 $$</figure>
+				<p>
+					Next, there ${3}$ green marbles, so applying the naive
+					definition, we have:
+				</p>
+				<figure>
+					$$ P(G) = \dfrac{n(G)}{n(U)} \dfrac{3}{12} = \dfrac{1}{4} $$
+				</figure>
+			</li>
+			<li>
+				<i
+					>What is the probability of selecting a green or yellow
+					marble?</i
+				>
+				<p>
+					There ${3}$ green marbles and ${4}$ yellow marbles, so we have:
+				</p>
+				<div>
+					$$ P(G \cup Y) = \dfrac{n(G) + n(Y)}{n(U)} = \dfrac{3+4}{12} =
+					\dfrac{7}{12} $$
+				</div>
+			</li>
+			<li>
+				<i>What is the probability of selecting an orange marble?</i>
+				<p>There are no orange marbles, so ${n(O) = 0.}$ Thus:</p>
+				<figure>
+					$$ P(O) = \dfrac{n(O)}{n(U)} = \dfrac{0}{12} = 0 $$
+				</figure>
+			</li>
+			<li>
+				<i
+					>What is the probability of selecting a green, yellow, or blue
+					ticket?</i
+				>
+				<p>Following question ${2,}$ we have:</p>
+				<div>
+					$$ \begin{aligned} P(G \cup Y \cup B) &= \dfrac{n(G) + n(Y) +
+					n(B)}{n(U)} \\[1em] &= \dfrac{3+4+5}{12} \\[1em] &=
+					\dfrac{12}{12} \\[1em] &= 1 \end{aligned} $$
+				</div>
+			</li>
+		</ol>
+		<p>
+			From the example above, we saw that ${P(O)}$ (the probability of
+			selecting an orange marble) is ${0.}$ Because ${P(O)}$ is ${0,}$ we
+			say that ${O}$ is <i>impossible</i>. We also saw that ${P(G \cup Y
+			\cup B)}$ (the probability of selecting a green, yellow, or blue
+			marble) is ${1.}$ We say that ${G}$ is <i>certain</i>.
+		</p>
+		<p>In naive probability, the following lemma holds:</p>
+		<dfn>
+			<small>Lemma</small>
+			<p>
+				For any event ${A,}$ the probability ${P(A)}$ of ${A}$ occurring
+				satisfies the expression:
+			</p>
+			<figure>$$ 0 \leq P(A) \leq 1 $$</figure>
+		</dfn>
+		<p>
+			Let's consider another example. Suppose that an ordinary ${6}$-sided
+			die is rolled once. Examine the following analyses:
+		</p>
+		<ol>
+			<li>
+				<i>What is the probability of rolling a ${6?}$</i>
+				<p>
+					Given an ordinary ${6}$-sided die, the sample space is ${A = \{
+					1, 2, 3, 4, 5, 6 \}.}$ Thus, by the naive definition, we have:
+				</p>
+				<figure>$$ P(6) = \dfrac{n(\{6\})}{n(U)} = \dfrac{1}{6} $$</figure>
+			</li>
+			<li>
+				<i>What is the probability of <em>not</em> rolling a ${6?}$</i>
+				<p>
+					Not rolling a ${6}$ yields the set of results ${\{ 1,2,3,4,5
+					\}.}$ In other words, the set ${\{r \in A : r \neq 6\}.}$ By the
+					naive definition, we have:
+				</p>
+				<figure>
+					$$ P(\neg 6) = \dfrac{n(\{r \in A : r \neq 6\})}{n(U)} =
+					\dfrac{5}{6} $$
+				</figure>
+			</li>
+			<li>
+				<i>What is the probability of rolling a ${1}$ or ${2?}$</i>
+				<p>The event in this case is ${\{ 1, 2 \}.}$ Thus, we have:</p>
+				<figure>
+					$$ \begin{aligned} P(1 \cup 2) &= \dfrac{n(\{ 1, 2 \})}{n(U)}
+					\\[1em] &= \dfrac{2}{6} \\[1em] &= \dfrac{1}{3} \end{aligned} $$
+				</figure>
+			</li>
+			<li>
+				<i
+					>What is the probability of <em>not</em> rolling a ${1}$ or
+					${2?}$</i
+				>
+				<p>
+					Not rolling a ${1}$ or ${2}$ is the event ${\{ r \in A : r \notin
+					\{1,2\} \}.}$ In other words, the set ${\{ 3,4,5,6 \}.}$ Thus, we
+					have:
+				</p>
+				<div>
+					$$ \begin{aligned} P(\neg(1 \cup 2)) &= \dfrac{n(\{ r \in A : r
+					\notin \{1,2\} \})}{n(U)} \\[1em] &= \dfrac{4}{6} \\[1em] &=
+					\dfrac{2}{3} \end{aligned} $$
+				</div>
+			</li>
+		</ol>
+		<p>From the analyses above, notice that:</p>
+		<figure>
+			$$ \begin{aligned} P(6) + P(\neg 6) &= 1 \\ P(1 \cup 2) + P(\neg(1
+			\cup 2)) &= 1 \end{aligned} $$
+		</figure>
+		<p>In other words:</p>
+		<figure>
+			$$ \begin{aligned} P(6 \cup (\neg 6)) &= 1 \\ P((1 \cup 2) \cup
+			(\neg(1 \cup 2))) &= 1 \end{aligned} $$
+		</figure>
+		<p>
+			This is no coincidence. Because every outcome in ${A}$ is equally
+			likely, it's either we roll a ${6}$ or we don't roll a ${6.}$
+			Similarly, we either roll a ${1}$ or ${2,}$ or we don't roll a ${1}$
+			or ${2.}$ We say that such events are
+			<b>complementary events</b> &mdash; it is certain that one of the
+			events will occur, and impossible for both of them to occur at the
+			same time.
+		</p>
+		<dfn>
+			<small>Definition: Complementary Events</small>
+			<p>
+				Two events are complementary if exactly one of the events
+				<em>must</em> occur. If ${A}$ is an event, then ${A'}$ (read
+				<q>not A</q>) is the complementary event of ${A,}$ satisfying the
+				proposition:
+			</p>
+			<figure>$$ P(A) + P(A') = 1 $$</figure>
+		</dfn>
+	</section>
+	<section id="compound_events">
+		<h3>Compound Events</h3>
+		<p>
+			Suppose we have two boxes, ${x}$ and ${y.}$ Box ${x}$ contains ${2}$
+			blue balls and ${2}$ green balls. Box ${y}$ contains ${1}$ white ball
+			and ${3}$ red balls. A ball is randomly selected from each of the
+			boxes, with each ball equally likely of being selected. Question:
+			What is the probability of getting a blue ball from ${x}$
+			<em>and</em> a red ball from ${y?}$
+		</p>
+		<p>
+			To answer this question, let's first determine the sample space.
+			Here, the ${y}$ box has the outcomes ${y = \{ w_y, r_{1y}, r_{2y},
+			r_{3y} \}.}$ The ${x}$ box has the outcomes ${x = \{ b_{1x}, b_{2x},
+			g_{1x}, g_{2x} \}.}$ Thus, we have:
+		</p>
+		<figure>
+			$$ \begin{aligned} n(y) &= 4 \\ n(x) &= 4 \end{aligned} $$
+		</figure>
+		<p>Accordingly, the number of possibilities is:</p>
+		<figure>$$ 4 \times 4 = 16 $$</figure>
+		<p>
+			If we enumerate each of the possibilities and identify the outcomes
+			of picking blue from ${x}$ and red from ${y:}$
+		</p>
+		<div>
+			$$ \begin{array}{cc:c:c:c:c} & & b_x & b_x & g_x & g_x \\ \hline &
+			w_y & ( b_x, w_y) & (b_x, w_y) & (g_x, w_y) & (g_x, w_y) \\ & r_y &
+			\color{salmon} (b_x, r_y) & \color{salmon} (b_x, r_y) & (g_x, r_y) &
+			(g_x, r_y) \\ & r_y & \color{salmon} (b_x, r_y) & \color{salmon}
+			(b_x, r_y) & (g_x, r_y) & (g_x, r_y) \\ & r_y & \color{salmon} (r_y,
+			b_x ) & \color{salmon} (b_x, r_y) & (g_x, r_y) & (g_x, r_y)
+			\end{array} $$
+		</div>
+		<p>Hence, we have:</p>
+		<figure>$$ P(b_x \cap r_y) = \dfrac{6}{16} $$</figure>
+		<p>This conclusion results from the following rule:</p>
+		<dfn>
+			<small>Naive Probability of Independent Events</small>
+			<p>
+				If ${A}$ and ${B}$ are independent events, then the probability of
+				${A}$ <em>and</em> ${B}$ occurring is given by:
+			</p>
+			<figure>$$ P(A \cap B) = P(A) \times P(B) $$</figure>
+		</dfn>
+		<p>The more general form of this rule:</p>
+		<dfn>
+			<small>General Naive Probability of Independent Events</small>
+			<p>
+				If ${E_1, E_2, \ldots, E_n}$ are independent events, then the
+				probability of ${E_1 \cap E_2 \cap \ldots \cap E_n}$ occurring
+				is given by:
+			</p>
+			<figure>
+				$$ P(E_1 \cap E_2 \cap \ldots \cap E_n) = \prod_{i=1}^{n} P(E_i)
+				$$
+			</figure>
+		</dfn>
+		<p>We should be clear about what an <b>independent event</b> is:</p>
+		<dfn>
+			<small>Definition: Independent Event</small>
+			<p>Let ${A}$ and ${B}$ be events. If ${P(A)}$ does not affect ${P(B)}$ and </p>
+		</dfn>
+		<p>
+			In other words, events are <b>independent</b> if and only if the
+			occurrence of either of them does not affect the probability of the
+			others occurring.
+		</p>
+		<p>
+			To illustrate, from our example, picking a ball from box ${x}$ does
+			not affect the probability of any of the outcomes of picking a ball
+			from box ${y,}$ and vice versa. Events that are not independent are
+			said to be <b>dependent events.</b>
+		</p>
+		<dfn>
+			<small>Dependent Event</small>
+			<p>
+				Let ${A}$ and ${B}$ be events. If ${P(A)}$ affects ${P(B),}$ then
+				we say that ${A}$ and ${B}$ are
+			</p>
+		</dfn>
+	</section>
+</section>
+
 <script
 	src="https://kit.fontawesome.com/8f194b5644.js"
 	crossorigin="anonymous"

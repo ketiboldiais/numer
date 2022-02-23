@@ -962,6 +962,125 @@
 			/>
 		</figure>
 	</section>
+
+	<section id="buses">
+		<h3>Buses</h3>
+		<p>
+			Computers often require manipulating groups of bits together. For
+			example, sending some sequence ${00101011}$ from one area to another
+			would be much more efficient if we could send it all together rather
+			than sending it one by one.
+		</p>
+		<p>
+			To help achieve this efficiency, we treat a group of bits as a single
+			entity called a <b>bus</b>. For example, suppose we want to add two
+			${16}$ bit numbers. To do so, we build a gate called a
+			<b>${16}$-bit adder</b>. Such a gate requires two inputs that feed
+			${16}$ bits each, and output ${16}$ bits. Thus, the gate has ${32}$
+			wires feeding into it as input, and ${16}$ wires leaving it as
+			output:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/real_16_bit_adder.svg' %}"
+				alt="16-bit adder"
+				loading="lazy"
+				style="width: 120px"
+			/>
+		</figure>
+		<p>
+			Instead of thinking about all of these wires individually, we
+			abstract each group of ${16}$ wires as a <i>bus</i>, corresponding to
+			groups of ${16}$ bits:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/16_bit_adder.svg' %}"
+				alt="16-bit adder"
+				loading="lazy"
+				style="width: 120px"
+			/>
+		</figure>
+	</section>
+
+	<section id="basic_gates">
+		<h3>Gates from NAND</h3>
+		<p>
+			This section presents an overview of some common gates, all formed
+			from the NAND gate.
+		</p>
+		<section id="not_gate"></section>
+		<section id="and_gate"></section>
+		<section id="or_gate"></section>
+		<section id="xor_gate"></section>
+		<section id="nor_gate"></section>
+		<section id="mux_gate">
+			<h4>Multiplexor</h4>
+			<p>
+				The <var>mux gate</var>, or <b>multiplexor</b>, is visualized as
+				the following:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/mux_gate.svg' %}"
+					alt="mux gate"
+					loading="lazy"
+					style="width: 120px"
+				/>
+			</figure>
+			<p>
+				The multiplexor takes three inputs: The usual <var>a</var> and
+				<var>b</var>, and a <var>sel</var> input. If <var>sel</var> is
+				${0,}$ the multiplexor outputs <var>a</var>. If <var>sel</var> is
+				${1,}$ the multiplexor outputs <var>b</var>.
+			</p>
+			<p>The HDL description:</p>
+			<pre class="language-pseudo"><code>
+				if (sel==0)
+					out=a
+				else
+					out=b
+			</code></pre>
+			<p>The truth table:</p>
+			<figure>
+				$$ \begin{array}{c:c:c:c:} & \texttt{a} & \texttt{b} & \texttt{sel}
+				& \texttt{out} \\ \hline & 0 & 0 & 0 & 0 \\ & 0 & 1 & 0 & 0 \\ & 1
+				& 0 & 0 & 1 \\ & 1 & 1 & 0 & 1 \\ & 0 & 0 & 1 & 0 \\ & 0 & 1 & 1 &
+				1 \\ & 1 & 0 & 1 & 0 \\ & 1 & 1 & 1 & 1 \end{array} $$
+			</figure>
+			<p>The multiplexor also has an abbreviated truth table:</p>
+			<figure>
+				$$ \begin{array}{c:c:c} & \texttt{sel} & \texttt{out} \\ \hline & 0
+				& \texttt{a} \\ & 1 & \texttt{b} \\ \end{array} $$
+			</figure>
+		</section>
+		<section id="dmux_gate">
+			<h4>Demultiplexor</h4>
+			<p>
+				The <b>DMux gate</b>, or <b>demultiplexor</b>, is schematically
+				represented as follows:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/dmux_gate.svg' %}"
+					alt="demultiplexor"
+					loading="lazy"
+					style="width: 120px"
+				/>
+			</figure>
+			<p>
+				We can think of the demultiplexor as the inverse of a multiplexor.
+			</p>
+		</section>
+		<section id="not16_gate"></section>
+		<section id="and16_gate"></section>
+		<section id="or16_gate"></section>
+		<section id="mux16_gate"></section>
+		<section id="or8way_gate"></section>
+		<section id="mux4way16_gate"></section>
+		<section id="dmux4way_gate"></section>
+		<section id="dmux8way_gate"></section>
+	</section>
 </section>
 
 <section id="information">
@@ -1089,8 +1208,16 @@
 	<h2>Overview of the 6502</h2>
 	<p>
 		Below is a pinout diagram of the 6502 processor. Let's go over some of
-		the key features of the pinout.
+		the key features of the pinout.<sup></sup>
 	</p>
+	<div class="note">
+		<p>
+			Every processor manufacturer provides a manual usually called
+			<i>Programmer's Environment Manual.</i> These are more generally
+			called <b>data books</b>, and they're what they sound like &mdash; a
+			manual for working with the processor directly.
+		</p>
+	</div>
 	<figure>
 		<img
 			src="{% static 'images/6502.svg' %}"

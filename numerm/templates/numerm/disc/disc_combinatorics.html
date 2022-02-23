@@ -4,71 +4,290 @@
 <title>Combinatorics</title>
 {% endblock %} {% block content %}
 <h1>Combinatorics</h1>
-<section>
+<section id="intro">
 	<p>Consider the following problem:</p>
-	<figure>
-		<div class="rule">
-			<p>
-				John plays a video game where there are 50 characters to chose from.
-				John must construct a team of characters. The team can only consist of 5
-				unique characters, selected from the 50 characters. How many different
-				teams can John construct?
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			John plays a video game where there are 50 characters to chose from.
+			John must construct a team of characters. The team can only consist
+			of 5 unique characters, selected from the 50 characters. How many
+			different teams can John construct?
+		</p>
+	</dfn>
 	<p>
-		This is an example of a <span class="term">combinatorics</span> problem.
-		Combinatorics is the study of <span class="italicsText">combinations</span>,
-		or <span class="italicsText">arrangements</span>, of discrete objects. By
+		This is an example of a
+		<span class="term">combinatorics</span> problem. Combinatorics is the
+		study of <span class="italicsText">combinations</span>, or
+		<span class="italicsText">arrangements</span>, of discrete objects. By
 		and large, questions in combinatorics fall into a few categories:
 	</p>
-	<figure>
-		<ol>
-			<li>
-				<span class="topic">Existence.</span> Given some things and a set of
-				conditions, does a particular arrangement ${x}$ exist?
-			</li>
-			<li>
-				<span class="topic">Enumeration.</span> How many different ways are
-				there to arrange these things given this set of conditions?
-			</li>
-			<li>
-				<span class="topic">Analysis.</span> What are the properties, or
-				characteristics, of this particular arrangement?
-			</li>
-			<li>
-				<span class="topic">Optimization.</span> Given all these different
-				arrangements, what is the most optimal?
-			</li>
-		</ol>
-	</figure>
+	<ol>
+		<li>
+			<span class="topic">Existence.</span> Given some things and a set of
+			conditions, does a particular arrangement ${x}$ exist?
+		</li>
+		<li>
+			<span class="topic">Enumeration.</span> How many different ways are
+			there to arrange these things given this set of conditions?
+		</li>
+		<li>
+			<span class="topic">Analysis.</span> What are the properties, or
+			characteristics, of this particular arrangement?
+		</li>
+		<li>
+			<span class="topic">Optimization.</span> Given all these different
+			arrangements, what is the most optimal?
+		</li>
+	</ol>
 	<p>
 		Not every combinatorics problem falls into the categories above, and of
-		those that do, they may not fit so neatly. The categorization presented is
-		intended to be illustrative, rather than comprehensive. However, many of the
-		most useful ideas in combinatorics stem from the aforementioned questions,
-		and it is these ideas that we explore. Accordingly, for our purposes,
-		combinatorics is the study of the existence, enumeration, analysis, and
-		optimization of arranging discrete objects.
+		those that do, they may not fit so neatly. The categorization presented
+		is intended to be illustrative, rather than comprehensive. However,
+		many of the most useful ideas in combinatorics stem from the
+		aforementioned questions, and it is these ideas that we explore.
+		Accordingly, for our purposes, combinatorics is the study of the
+		existence, enumeration, analysis, and optimization of arranging
+		discrete objects.
 	</p>
+</section>
+
+<section id="induction">
+	<h2>Review of Induction</h2>
+	<p>
+		Before we examine more substantive material, it's worth reviewing
+		mathematical induction, given how it forms the basis for many proofs in
+		combinatorics.
+	</p>
+	<p>
+		A good illustration of induction is the sinking of the titanic. The
+		titanic was a large cruise ship with bulkheads separated into sections.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/titanic_bulkheads.svg' %}"
+			alt="Titanic bulkheads"
+			loading="lazy"
+			style="width: 260px"
+		/>
+	</figure>
+	<p>Symbolically, we denote these sections as:</p>
+	$$ (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) $$
+	<p>
+		The idea was that, if there were separate sections, if one or two would
+		flood, the remaining would be left unflooded. When the titanic struck
+		the ice berg, water flooded the sections towards the front:
+	</p>
+	$$ (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
+	\textcolor{cornflowerblue} P) $$
+	<p>
+		Unfortunately, the barriers between each of these sections weren't
+		completely sealed, so water began leaking into the next sections:
+	</p>
+	$$ (A, B, C, D, E, F, G, H, I, J, K, L, M, N, \textcolor{cornflowerblue}
+	O, \textcolor{cornflowerblue} P) $$
+	<p>Then the next:</p>
+	$$ (A, B, C, D, E, F, G, H, I, J, K, L, M, \textcolor{cornflowerblue} N,
+	\textcolor{cornflowerblue} O, \textcolor{cornflowerblue} P) $$
+	<p>And then the next:</p>
+	$$ (A, B, C, D, E, F, G, H, I, J, K, L, \textcolor{cornflowerblue} M,
+	\textcolor{cornflowerblue} N, \textcolor{cornflowerblue} O,
+	\textcolor{cornflowerblue} P) $$
+	<p>Eventually flooding all of the sections:</p>
+	$$ \textcolor{cornflowerblue} {(A, B, C, D, E, F, G, H, I, J, K, L,
+	\textcolor{cornflowerblue} M, \textcolor{cornflowerblue} N,
+	\textcolor{cornflowerblue} O, \textcolor{cornflowerblue} P)} $$
+	<p>
+		This illustrates the principle of induction. From the fact that the
+		first ${n}$ sections flood, it follows that the ${n+1}$ sections will
+		also flood.
+	</p>
+	<p>
+		<span class="topic">Towers of Hanoi.</span> We can apply the principle
+		of induction to the towers of hanoi problem:
+	</p>
+	<dfn>
+		<small>Problem: Towers of Hanoi</small>
+		<p>
+			There are three pegs, one of which holds ${n}$ disks. All disks on
+			such a peg must have smaller ones on top &mdash; i.e., no disk ${d}$
+			can lie atop a disk smaller than ${d.}$ The disks can only moved one
+			at a time. Is it possible to move ${n}$ disks from the starting peg
+			to the final, third peg?
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/towers_of_hanoi_simple.svg' %}"
+				alt="Towers of Hanoi"
+				loading="lazy"
+			/>
+		</figure>
+	</dfn>
+	<p>Suppose we modeled the initial state as follows:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & d_0 \\ & d_1 \\
+		& d_2 \\ \end{array} $$
+	</figure>
+	<p>
+		where ${p}$ is a peg, and ${d}$ is a disk, ${d_0}$ being the smallest.
+		Let's start with the simplest case, where we only have one disc &mdash;
+		${d_0:}$
+	</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & d_0 \\
+		\end{array} $$
+	</figure>
+	<p>
+		To move this disc to the next peg, we simply take it and put it on the
+		next peg:
+	</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & d_0 \\
+		\end{array} $$
+	</figure>
+	<p>then put it on the next peg:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & & d_0 \\
+		\end{array} $$
+	</figure>
+	<p>We'll write this step down as:</p>
+	<figure>$$ M_1(d_0) = R_1(d_0), R_1(d_0) $$</figure>
+	<p>
+		where ${R_1}$ means move ${1}$ right, and ${M_1}$ means move ${1}$
+		disc.
+	</p>
+	<p>What if we had two discs:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & d_0 \\ & d_1 \\
+		\end{array} $$
+	</figure>
+	<p>For this we start by moving the first disc to ${p_2:}$</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & d_0 \\ & d_1
+		\\ \end{array} $$
+	</figure>
+	<p>Then we move the second disc all the way to the right:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & d_0 \\ & & &
+		d_1 \\ \end{array} $$
+	</figure>
+	<p>Then move ${d_0}$ to the right:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & & d_0 \\ & &
+		& d_1 \\ \end{array} $$
+	</figure>
+	<p>The steps are thus:</p>
+	<figure>$$ M_2 = R_1(d_0), M_1(d_1), R_1(d_0) $$</figure>
+	<p>
+		Thus, we have a procedure for moving two discs. What if we had three
+		discs:
+	</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & d_0 \\ & d_1 \\
+		& d_2 \\ \end{array} $$
+	</figure>
+	<p>
+		This one takes a bit more thinking, but fortunately we already have
+		some procedures to help us. We start by performing ${M_2}$ to move the
+		two discs all the way to the right:
+	</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & & d_0 \\ & &
+		& d_1 \\ & d_2 \\ \end{array} $$
+	</figure>
+	<p>Then we move the third disc over:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & & d_0 \\ & &
+		& d_1 \\ & & d_2 \\ \end{array} $$
+	</figure>
+	<p>Then we move the first disc all the way to the left:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & d_0 \\ & & &
+		d_1 \\ & & d_2 \\ \end{array} $$
+	</figure>
+	<p>Then then second disk one step to the left:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & d_0 \\ & & d_1
+		\\ & & d_2 \\ \end{array} $$
+	</figure>
+	<p>Then we move ${d_0}$ one step to the right:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & d_0 \\ & &
+		d_1 \\ & & d_2 \\ \end{array} $$
+	</figure>
+	<p>
+		Repeating this process one more time moves all of the discs to the last
+		peg:
+	</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & p_1 & p_2 & p_3 \\ \hline & & & d_0 \\ & &
+		& d_1 \\ & & & d_2 \\ \end{array} $$
+	</figure>
+	<p>Thus, we can define this procedure as:</p>
+	$$ M_3 = M_2, R_1(d_2), L_2(d_0), L_1(d_1), R_1(d_0) $$
+	<p>
+		Once we get to ${4}$ disks, things start getting very complicated.
+		Fortunately, there's an easy solution. We know how to move three disks,
+		so what we can do is just pretend the fourth disk doesn't exist, and
+		just perform ${M_3:}$
+	</p>
+	<figure>$$ M_4 = M_3, R_1(d_3), M_3 $$</figure>
+	<p>And if we had ${5}$ disks, we simply use ${M_4:}$</p>
+	<figure>$$ M_5 = M_4, R_1(d_4), M_4 $$</figure>
+	<p>
+		Examining this problem, we see that is, in fact, possible to move ${n}$
+		disks from their initial peg to the final peg. Let's circle back to see
+		what we needed to prove this:
+	</p>
+	<ol>
+		<li>We needed to know that we can do it for ${1}$ disk.</li>
+		<li>
+			We needed to know that if we can move ${n}$ disks, we can move
+			${n+1}$ disks.
+		</li>
+	</ol>
+	<p>
+		This is how mathematical induction works. We start with a base case
+		&mdash; ${1}$ disk, which we denote as ${P(1).}$ Then we stated an
+		induction hypothesis: If we can move ${n}$ disks, we can move ${n+1}$
+		disks. We denote this symbolically as ${P(n) \implies P(n+1).}$ Then we
+		supposed that ${P(n)}$ is true, and verified that ${P(n+1)}$ is true.
+		Once we've proven that ${P(n+1)}$ is true, it follows that ${P(n)
+		\implies P(n+1)}$ is true, because a conditional statement is false
+		only if ${P(n)}$ is true and ${P(n+1)}$ is false.
+	</p>
+	<p>Mathematical induction is enapsulated as such:</p>
+	<dfn>
+		<small>Mathematical Induction</small>
+		<p>Suppose we seek to prove a sequence of statements:</p>
+		<figure>$$ S_1, S_2, S_3, \ldots, S_n, S_{n+1}, \ldots $$</figure>
+		<p>
+			The principle of mathematical induction provides that the sequence of
+			statements can be proved by showing that:
+		</p>
+		<ol>
+			<li>${S_1}$ is true.</li>
+			<li>For all ${n}$ where ${S_n}$ is true, ${S_{n+1}}$ is true.</li>
+		</ol>
+	</dfn>
 </section>
 
 <section id="enumeration">
 	<h2>Enumeration</h2>
 	<p>
 		In these next few sections, we explore the basics of
-		<span class="italicsText">enumeration</span>, the formal term for what we
-		think of when we hear the word &#8220;counting.&#8221; The concept of
-		counting things might seem intuitive, but looks can be deceiving. Many
-		counting problems require us to first determine (a)
-		<span class="italicsText">what</span> exactly it is we are counting, and (b)
-		<span class="italicsText">how</span> we should count. It is these problems
-		that concern the next sections.
+		<span class="italicsText">enumeration</span>, the formal term for what
+		we think of when we hear the word &#8220;counting.&#8221; The concept
+		of counting things might seem intuitive, but looks can be deceiving.
+		Many counting problems require us to first determine (a)
+		<span class="italicsText">what</span> exactly it is we are counting,
+		and (b) <span class="italicsText">how</span> we should count. It is
+		these problems that concern the next sections.
 	</p>
 	<p>
 		For example, suppose on August 1, a friend says, &#8220;We'll meet in a
-		week.&#8221; Does the friend mean, August 7 or August 8? Both meanings are
-		plausible. If we count August 1, then:
+		week.&#8221; Does the friend mean, August 7 or August 8? Both meanings
+		are plausible. If we count August 1, then:
 	</p>
 	<figure>
 		<div>
@@ -83,11 +302,11 @@
 	</figure>
 	<p>
 		This is an example of what we call an
-		<span class="term">indexing problem</span> &mdash; where do we start the
-		count? In reality, indexing depends enormously on convention. In the
-		English-speaking world, if at 10:00 a.m. the lecturer says, &#8220;We'll
-		meet again in 2 hours&#8221; they almost assuredly mean, &#8220;Reconvene at
-		12:00 p.m.&#8221;
+		<span class="term">indexing problem</span> &mdash; where do we start
+		the count? In reality, indexing depends enormously on convention. In
+		the English-speaking world, if at 10:00 a.m. the lecturer says,
+		&#8220;We'll meet again in 2 hours&#8221; they almost assuredly mean,
+		&#8220;Reconvene at 12:00 p.m.&#8221;
 	</p>
 	<figure>
 		<div>
@@ -99,9 +318,9 @@
 		question: &#8220;What do we count?&#8221;
 	</p>
 	<p>
-		In many programming languages, if an array contains 4 elements, then the
-		third element in the array is actually element number 2, because the count
-		starts at 0:
+		In many programming languages, if an array contains 4 elements, then
+		the third element in the array is actually element number 2, because
+		the count starts at 0:
 	</p>
 	<figure>
 		<div>
@@ -116,9 +335,10 @@
 		</div>
 	</figure>
 	<p>
-		Clearly, there are 10 numbers. This is a very basic counting problem, and it
-		is what we think of when hear the word &#8220;counting&#8221;. Now, how many
-		numbers are between 8 and 16 inclusive (i.e., including 8 and 16)?:
+		Clearly, there are 10 numbers. This is a very basic counting problem,
+		and it is what we think of when hear the word &#8220;counting&#8221;.
+		Now, how many numbers are between 8 and 16 inclusive (i.e., including 8
+		and 16)?:
 	</p>
 	<figure>
 		<div>
@@ -126,25 +346,26 @@
 		</div>
 	</figure>
 	<p>
-		We could manually count each element. But, that approach is inefficient,
-		particularly for very long sequences. A better way would be to simplify
-		sequence into the one we saw previously:
+		We could manually count each element. But, that approach is
+		inefficient, particularly for very long sequences. A better way would
+		be to simplify sequence into the one we saw previously:
 	</p>
 	<figure>
-		$$ \begin{aligned} (8-7) &= 1, \\ (9-7) &= 2, \\ (10-7) &= 3, \\ (11-7) &=
-		4, \\ (12-7) &= 5, \\ (13-7) &= 6, \\ (14-7) &= 7, \\ (15-7) &= 8, \\ (16-7)
-		&= 9, \\ \end{aligned} $$
+		$$ \begin{aligned} (8-7) &= 1, \\ (9-7) &= 2, \\ (10-7) &= 3, \\ (11-7)
+		&= 4, \\ (12-7) &= 5, \\ (13-7) &= 6, \\ (14-7) &= 7, \\ (15-7) &= 8,
+		\\ (16-7) &= 9, \\ \end{aligned} $$
 	</figure>
 	<p>
-		From this approach, we can see that given two positive numbers ${a}$ and
-		${b}$ where ${b > a,}$ the number of integers in the sequence ${[a, a+1,
-		\ldots, b-1, b]}$ is: ${(b - a) + 1.}$
+		From this approach, we can see that given two positive numbers ${a}$
+		and ${b}$ where ${b > a,}$ the number of integers in the sequence ${[a,
+		a+1, \ldots, b-1, b]}$ is: ${(b - a) + 1.}$
 	</p>
 	<div class="rule">
 		<p>
-			<span class="topic">Proposition.</span> Let ${a}$ and ${b}$ be integers,
-			where ${b > a.}$ Given a sequence ${L = [a, a+1, \ldots, b-1, b],}$ the
-			number of elements in the sequence, ${n(L),}$ is given by:
+			<span class="topic">Proposition.</span> Let ${a}$ and ${b}$ be
+			integers, where ${b > a.}$ Given a sequence ${L = [a, a+1, \ldots,
+			b-1, b],}$ the number of elements in the sequence, ${n(L),}$ is given
+			by:
 		</p>
 		<figure>
 			<div>
@@ -157,183 +378,189 @@
 		example, how many multiples of 3 are between 62 and 215?
 	</p>
 	<p>
-		Well, we know the first multiple of three between 62 and 215 is 63. The last
-		multiple of three is 213. Thus, the actual array we want to count is ${63,
-		66, 69, \ldots, 213.}$ Now, we need to convert this array into one we know
-		how to count, so we divide each element in the array by 3: ${21, 22, 23,
-		\ldots , 71.}$ From our previous proposition, we know how to count this
-		array: ${(71 - 21) + 1 = 51.}$ Thus, there are 51 numbers in the array
-		&mdash; i.e., there are 51 multiples of 3 between 62 and 215.
+		Well, we know the first multiple of three between 62 and 215 is 63. The
+		last multiple of three is 213. Thus, the actual array we want to count
+		is ${63, 66, 69, \ldots, 213.}$ Now, we need to convert this array into
+		one we know how to count, so we divide each element in the array by 3:
+		${21, 22, 23, \ldots , 71.}$ From our previous proposition, we know how
+		to count this array: ${(71 - 21) + 1 = 51.}$ Thus, there are 51 numbers
+		in the array &mdash; i.e., there are 51 multiples of 3 between 62 and
+		215.
 	</p>
 	<p>
 		Let's try another one. How many multiples of 10 are between 9 and 101?
-		Again, the first multiple of 10 is 10. The last multiple of 10 is 100. Thus,
-		the sequence is ${[10, 20, \ldots, 100].}$ We divide by 10: ${[1, 2, 3,
-		\ldots, 10].}$ And again, we know how to count this sequence: ${(10 - 1) + 1
-		= 10.}$ There are 10 multiples of 10 between 9 and 101.
+		Again, the first multiple of 10 is 10. The last multiple of 10 is 100.
+		Thus, the sequence is ${[10, 20, \ldots, 100].}$ We divide by 10: ${[1,
+		2, 3, \ldots, 10].}$ And again, we know how to count this sequence:
+		${(10 - 1) + 1 = 10.}$ There are 10 multiples of 10 between 9 and 101.
 	</p>
 	<p>
-		How many multiples of 10 are between 11 and 103? Here, the first multiple of
-		10 is 20. The last multiple of 10 is 100. We have the sequence ${[20, 30,
-		\ldots, 100].}$ Dividing by 3: ${[2, 3, 4, \ldots, 10.]}$ Then counting:
-		${(10-2) + 1 = 9.}$ There are 9 multiples of 10 between 11 and 103.
+		How many multiples of 10 are between 11 and 103? Here, the first
+		multiple of 10 is 20. The last multiple of 10 is 100. We have the
+		sequence ${[20, 30, \ldots, 100].}$ Dividing by 3: ${[2, 3, 4, \ldots,
+		10.]}$ Then counting: ${(10-2) + 1 = 9.}$ There are 9 multiples of 10
+		between 11 and 103.
 	</p>
 	<p>
-		Now that we know how to count multiples, we can start counting even more
-		elaborate sequences: How many four-digit positive integers are perfect
-		cubes?
+		Now that we know how to count multiples, we can start counting even
+		more elaborate sequences: How many four-digit positive integers are
+		perfect cubes?
 	</p>
 	<p>
 		Solution: We know that the first four-digit positive integer that is a
-		perfect cube is ${10 \cdot 10 \cdot 10 = 1000.}$ The last four-digit perfect
-		cube is a bit trickier to find. Fortunately, the method of exhaustion is
-		feasible here. We know ${20 \cdot 20 \cdot 20 = 8000.}$ This is already
-		pretty close to five-digits, so let's just try the next positive integer:
-		${21 \cdot 21 \cdot 21 = 9,261.}$ Now we're very close; 22 will probably
-		enter five-digit territory: ${22 \cdot 22 \cdot 22 = 10,648.}$ Great, so we
-		know our sequence is ${[1000, \ldots, 9261].}$ Taking the cubic root of each
-		element, we have ${[10, \ldots, 21.]}$ Counting this list: ${(21 - 10) + 1 =
-		12.}$ Hence, there are 12 four-digit positive integers that are perfect
-		cubes.
+		perfect cube is ${10 \cdot 10 \cdot 10 = 1000.}$ The last four-digit
+		perfect cube is a bit trickier to find. Fortunately, the method of
+		exhaustion is feasible here. We know ${20 \cdot 20 \cdot 20 = 8000.}$
+		This is already pretty close to five-digits, so let's just try the next
+		positive integer: ${21 \cdot 21 \cdot 21 = 9,261.}$ Now we're very
+		close; 22 will probably enter five-digit territory: ${22 \cdot 22 \cdot
+		22 = 10,648.}$ Great, so we know our sequence is ${[1000, \ldots,
+		9261].}$ Taking the cubic root of each element, we have ${[10, \ldots,
+		21.]}$ Counting this list: ${(21 - 10) + 1 = 12.}$ Hence, there are 12
+		four-digit positive integers that are perfect cubes.
 	</p>
 	<p>
-		Let's consider another interesting example. There are four villages, ${A,}$
-		${B,}$ ${C,}$ and ${D.}$ Each line represents a path between the villages.
-		How many ways are there to go from ${A}$ to ${D}$ along the paths, if one
-		can only move left to right? (I.e., one cannot move ${ABABABACD;}$ only
-		${ACD}$ or ${ABD}$).
+		Let's consider another interesting example. There are four villages,
+		${A,}$ ${B,}$ ${C,}$ and ${D.}$ Each line represents a path between the
+		villages. How many ways are there to go from ${A}$ to ${D}$ along the
+		paths, if one can only move left to right? (I.e., one cannot move
+		${ABABABACD;}$ only ${ACD}$ or ${ABD}$).
 	</p>
 	<figure>
 		<img
 			src="{% static 'images/counting_graph.svg' %}"
 			alt="4 nodes, 4 edges"
-			class="forty-p"
 			loading="lazy"
+			style="width: 150px"
 		/>
 		<figcaption>Note the arrows.</figcaption>
 	</figure>
 	<p>
-		This is another counting problem. First, observe the number of paths between
-		each village. Between ${A}$ and ${C,}$ there are 2 paths, and between ${A}$
-		and ${C,}$ there are 5 paths. Accordingly, there are 10 possible paths if we
-		take the route ${ACD.}$ Now consider the route ${ABD.}$ From ${A}$ to ${B,}$
-		there are 4 possible paths, and from ${B}$ to ${D,}$ there are 3 possible
-		paths. Hence, there are 12 possible paths for taking the route ${ABD.}$ In
-		total, there are ${10 + 12 = 22}$ possible paths from ${A}$ to ${D.}$
+		This is another counting problem. First, observe the number of paths
+		between each village. Between ${A}$ and ${C,}$ there are 2 paths, and
+		between ${A}$ and ${C,}$ there are 5 paths. Accordingly, there are 10
+		possible paths if we take the route ${ACD.}$ Now consider the route
+		${ABD.}$ From ${A}$ to ${B,}$ there are 4 possible paths, and from
+		${B}$ to ${D,}$ there are 3 possible paths. Hence, there are 12
+		possible paths for taking the route ${ABD.}$ In total, there are ${10 +
+		12 = 22}$ possible paths from ${A}$ to ${D.}$
 	</p>
 
 	<section class="problems">
 		<h3 class="pset">Exercises</h3>
-		<ol class="ex grid">
-			<li class="grid-item">
+		<ol>
+			<li>
 				How many numbers are in the following sequences:
 				<ol>
 					<li>${L = [36, 37, 38, \ldots , 92, 93]}$</li>
 					<details class="answer">
 						<summary>Solution</summary>
 						<p>
-							We use the relevant proposition: ${(93 - 36) + 1 = 58.}$ There are
-							58 numbers in the sequence ${L;}$ ${n(L) = 58.}$
+							We use the relevant proposition: ${(93 - 36) + 1 = 58.}$
+							There are 58 numbers in the sequence ${L;}$ ${n(L) = 58.}$
 						</p>
 					</details>
 					<li>${N = [4, 6, 8, \ldots, 128, 130]}$</li>
 					<details class="answer">
 						<summary>Solution</summary>
 						<p>
-							Again, we convert the sequence into one we can actually count. We
-							can see each element is a multiple of 2. Thus, the sequence is:
-							${[(4/2), (6/2), (8/2), \ldots, (128/2), (130/2)].}$ Simplifying:
-							${2, 3, 4, \ldots, 64, 65.}$ Using the proposition: ${(65 - 2) + 1
-							= 64.}$ Thus, ${n(N) = 64.}$.
+							Again, we convert the sequence into one we can actually
+							count. We can see each element is a multiple of 2. Thus, the
+							sequence is: ${[(4/2), (6/2), (8/2), \ldots, (128/2),
+							(130/2)].}$ Simplifying: ${2, 3, 4, \ldots, 64, 65.}$ Using
+							the proposition: ${(65 - 2) + 1 = 64.}$ Thus, ${n(N) = 64.}$.
 						</p>
 					</details>
 					<li>${S = [-33, -28, -23, \ldots, 52, 57]}$</li>
 					<details class="answer">
 						<summary>Solution</summary>
 						<p>
-							Again, we convert the sequence into one we can count. We can see
-							that each element in the sequence differs by 5. To simplify the
-							sequence so we can divide by 5, let's add 3 to each element:
-							${[-30, -25, -20, \ldots, 55, 60.]}$ Now let's divide by 5: ${-6,
-							-5, -4, \ldots, 11, 12.}$ Using our formula: ${(12 - (-6)) + 1 =
-							19.}$ Thus, ${n(S) = 19.}$
+							Again, we convert the sequence into one we can count. We can
+							see that each element in the sequence differs by 5. To
+							simplify the sequence so we can divide by 5, let's add 3 to
+							each element: ${[-30, -25, -20, \ldots, 55, 60.]}$ Now let's
+							divide by 5: ${-6, -5, -4, \ldots, 11, 12.}$ Using our
+							formula: ${(12 - (-6)) + 1 = 19.}$ Thus, ${n(S) = 19.}$
 						</p>
 					</details>
 					<li>${Q = [147, 144, 141, \ldots, 42, 39]}$</li>
 					<details class="answer">
 						<summary>Solution</summary>
 						<p>
-							In this sequence, we can see each element differs by 3. Let's try
-							subtracting 9 from each element: ${[30, 33, \ldots , 132, 135,
-							138.]}$ Reverse the list and divde by 3: ${[10, 11, \ldots, 44,
-							45, 46.]}$ Using our proposition: ${(46-10) + 1 = 37.}$ Thus,
-							${n(Q) = 37.}$
+							In this sequence, we can see each element differs by 3. Let's
+							try subtracting 9 from each element: ${[30, 33, \ldots , 132,
+							135, 138.]}$ Reverse the list and divde by 3: ${[10, 11,
+							\ldots, 44, 45, 46.]}$ Using our proposition: ${(46-10) + 1 =
+							37.}$ Thus, ${n(Q) = 37.}$
 						</p>
 					</details>
 					<li>
-						${C = [3 \frac{2}{3}, 4 \frac{1}{3}, 5, 5 \frac{2}{3}, \ldots , 26
-						\frac{1}{3}, 27]}$
+						${C = [3 \frac{2}{3}, 4 \frac{1}{3}, 5, 5 \frac{2}{3}, \ldots ,
+						26 \frac{1}{3}, 27]}$
 					</li>
 					<details class="answer">
 						<summary>Solution</summary>
 						<p>
-							We can see each element differs by ${\frac{2}{3}.}$ Let's try and
-							give all of the elements a common denominator: ${[\frac{11}{3},
-							\frac{13}{3}, \frac{15}{3}, \ldots, \frac{79}{3}, \frac{81}{3}].}$
-							Since each of the elements has a multiplier of ${\frac{1}{3},}$ we
-							can factor ${\frac{1}{3}}$ out, leaving us with: ${[11, 13, 15,
-							\ldots, 79, 81.]}$ These are all separated by 2, so let's subtract
-							1 to each element: ${[10, 12, 14, \ldots, 78, 80];}$ then divide
-							by 2: ${[5, 6, 7, \ldots, 39, 40.]}$ We can count this list:
-							${(40-5) + 1 = 36.}$ Thus, ${n(C) = 36.}$
+							We can see each element differs by ${\frac{2}{3}.}$ Let's try
+							and give all of the elements a common denominator:
+							${[\frac{11}{3}, \frac{13}{3}, \frac{15}{3}, \ldots,
+							\frac{79}{3}, \frac{81}{3}].}$ Since each of the elements has
+							a multiplier of ${\frac{1}{3},}$ we can factor
+							${\frac{1}{3}}$ out, leaving us with: ${[11, 13, 15, \ldots,
+							79, 81.]}$ These are all separated by 2, so let's subtract 1
+							to each element: ${[10, 12, 14, \ldots, 78, 80];}$ then
+							divide by 2: ${[5, 6, 7, \ldots, 39, 40.]}$ We can count this
+							list: ${(40-5) + 1 = 36.}$ Thus, ${n(C) = 36.}$
 						</p>
 					</details>
 				</ol>
 			</li>
 
-			<li class="grid-item">
+			<li>
 				How many odd perfect squares are between 5 and 211?
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
-						Again, let's come up with a sequence. First, let's find the first
-						element. The first element is 9: ${3^2 = 9.}$ Now let's find the
-						last element. We know ${12^2 = 144.}$ So just a little higher.
-						${13^2 = 169.}$ ${15 \times 15 = 225;}$ too high. ${14^2 = 196,}$
-						but this is even. So, the first element is 9, and the last element
-						is 169. Thus, we have ${[9, 25, 49, 81, \ldots 196].}$ Taking the
-						square root each element: ${[3, 5, 7, 9, \ldots , 13.]}$ Subtracting
-						1 from each element: ${[2, 4, 6, 8, \ldots , 12.]}$ Dividing each
-						element by 2: ${[1, 2, 3, 4, \ldots, 6.]}$ Thus, there are 6 odd
-						perfect squares between 5 and 211.
+						Again, let's come up with a sequence. First, let's find the
+						first element. The first element is 9: ${3^2 = 9.}$ Now let's
+						find the last element. We know ${12^2 = 144.}$ So just a little
+						higher. ${13^2 = 169.}$ ${15 \times 15 = 225;}$ too high.
+						${14^2 = 196,}$ but this is even. So, the first element is 9,
+						and the last element is 169. Thus, we have ${[9, 25, 49, 81,
+						\ldots 196].}$ Taking the square root each element: ${[3, 5, 7,
+						9, \ldots , 13.]}$ Subtracting 1 from each element: ${[2, 4, 6,
+						8, \ldots , 12.]}$ Dividing each element by 2: ${[1, 2, 3, 4,
+						\ldots, 6.]}$ Thus, there are 6 odd perfect squares between 5
+						and 211.
 					</p>
 				</details>
 			</li>
 
-			<li class="grid-item">
-				How many sets of four consecutive positive integers are there such that
-				the product of the four integers is less than 100,000?
+			<li>
+				How many sets of four consecutive positive integers are there such
+				that the product of the four integers is less than 100,000?
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
-						First, the smallest element in this sequence is ${[1, 2, 3, 4] = 1
-						\cdot 2 \cdot 3 \cdot 4 = 24}$ (remember, we're looking for
-						consecutive positive integers). Now, we have to look for the largest
-						set. Let's focus on the value 100,000.
+						First, the smallest element in this sequence is ${[1, 2, 3, 4]
+						= 1 \cdot 2 \cdot 3 \cdot 4 = 24}$ (remember, we're looking for
+						consecutive positive integers). Now, we have to look for the
+						largest set. Let's focus on the value 100,000.
 					</p>
 					<p>
-						We're looking for four numbers that when multiplied together produce
-						100,000. Let's look at a simpler case, a number to the power of 4.
-						We know that ${20^4 = 160,000.}$ Let's try another number: ${19^4 =
-						130,321.}$ Getting a little closer. ${18^4 = 104,976.}$ This is
-						pretty close, so the last number has to be immediately next to 18.
-						Let's try another one: ${17^4 = 83,521.}$ This is lower than
-						100,000. This means the set of four integers is somewhere in the
-						vicinity of 17 and 18. Let's try: ${15 \cdot 16 \cdot 17 \cdot 18 =
-						73,440.}$ Close, but let's just try one more: ${16 \cdot 17 \cdot 18
-						\cdot 19 = 93,024;}$ include 20 in the next set and we are
-						definitely over 100,000. Thus, this is definitely the last element.
-						Great, this means we have the following:
+						We're looking for four numbers that when multiplied together
+						produce 100,000. Let's look at a simpler case, a number to the
+						power of 4. We know that ${20^4 = 160,000.}$ Let's try another
+						number: ${19^4 = 130,321.}$ Getting a little closer. ${18^4 =
+						104,976.}$ This is pretty close, so the last number has to be
+						immediately next to 18. Let's try another one: ${17^4 =
+						83,521.}$ This is lower than 100,000. This means the set of
+						four integers is somewhere in the vicinity of 17 and 18. Let's
+						try: ${15 \cdot 16 \cdot 17 \cdot 18 = 73,440.}$ Close, but
+						let's just try one more: ${16 \cdot 17 \cdot 18 \cdot 19 =
+						93,024;}$ include 20 in the next set and we are definitely over
+						100,000. Thus, this is definitely the last element. Great, this
+						means we have the following:
 					</p>
 					<figure>
 						<div>
@@ -341,8 +568,8 @@
 						</div>
 					</figure>
 					<p>
-						Now, the question is how do we count these? Well, let's think about
-						how each of these sets work:
+						Now, the question is how do we count these? Well, let's think
+						about how each of these sets work:
 					</p>
 					<figure>
 						<div>
@@ -356,9 +583,9 @@
 						</div>
 					</figure>
 					<p>
-						If we focus on just the first number for each of the sets above, we
-						get: ${1, 2, 3, 4, \ldots, 15, 16.}$ Thus, there are 16 different
-						possible sets.
+						If we focus on just the first number for each of the sets
+						above, we get: ${1, 2, 3, 4, \ldots, 15, 16.}$ Thus, there are
+						16 different possible sets.
 					</p>
 				</details>
 			</li>
@@ -371,29 +598,31 @@
 	</p>
 	<div class="rule">
 		<p>
-			12 students are taking at least 1 foreign language. The school offers only
-			Spanish and French. 8 students take Spanish, 5 take both Spanish and
-			French. How many students take French?
+			12 students are taking at least 1 foreign language. The school offers
+			only Spanish and French. 8 students take Spanish, 5 take both Spanish
+			and French. How many students take French?
 		</p>
 	</div>
 	<p>
-		There are multiple ways to approach this problem, but the worst possible way
-		is to blindly add and subtract. We want to think as logically as possible.
-		More importantly, we want to think about this problem in terms of set
-		theory. Here, we have a situation where students take Spanish, French, or
-		both Spanish and French. The problem can be viewed as sets intersecting,
-		where ${F = \text{French},}$ ${S = \text{Spanish}:}$
+		There are multiple ways to approach this problem, but the worst
+		possible way is to blindly add and subtract. We want to think as
+		logically as possible. More importantly, we want to think about this
+		problem in terms of set theory. Here, we have a situation where
+		students take Spanish, French, or both Spanish and French. The problem
+		can be viewed as sets intersecting, where ${F = \text{French},}$ ${S =
+		\text{Spanish}:}$
 	</p>
 	<figure>
 		<img
 			src="{% static 'images/french_and_spanish.svg' %}"
 			alt="int"
 			loading="lazy"
-			class="sixty-p"
+			style="width: 150px"
 		/>
 	</figure>
 	<p>
-		The Venn diagram above can be thought of as representing several sections:
+		The Venn diagram above can be thought of as representing several
+		sections:
 	</p>
 	<figure>
 		<div>
@@ -414,10 +643,10 @@
 		</div>
 	</figure>
 	<p>
-		What else can we infer from this data? Well, we know that ${n(F \cap S) =
-		5.}$ These are the students that take both Spanish and French. Next, we know
-		${n(S) = 8;}$ there are 8 total students taking Spanish. Thus, we can make
-		the following inference:
+		What else can we infer from this data? Well, we know that ${n(F \cap S)
+		= 5.}$ These are the students that take both Spanish and French. Next,
+		we know ${n(S) = 8;}$ there are 8 total students taking Spanish. Thus,
+		we can make the following inference:
 	</p>
 	<figure>
 		<div>
@@ -425,20 +654,22 @@
 		</div>
 	</figure>
 	<p>
-		Thus, there are 3 students that take only Spanish. How many students take
-		only French? Well, it must be 4, since ${n(F \cup S) - n(S) = 12 - 8 = 4.}$
-		Hence, ${n(F) = n(F \setminus S) + n(F \cap S) = 4 + 5 = 9.}$
+		Thus, there are 3 students that take only Spanish. How many students
+		take only French? Well, it must be 4, since ${n(F \cup S) - n(S) = 12 -
+		8 = 4.}$ Hence, ${n(F) = n(F \setminus S) + n(F \cap S) = 4 + 5 = 9.}$
 	</p>
 	<p>Here is another problem:</p>
-	<div class="rule">
+	<dfn>
+		<small>Problem</small>
 		<p>
-			Agnes has 27 cats. 14 cats are short-haired. 11 cats are kittens. 5 cats
-			are long-haired adult cats (not kittens). How many short-haired kittens?
+			Agnes has 27 cats. 14 cats are short-haired. 11 cats are kittens. 5
+			cats are long-haired adult cats (not kittens). How many short-haired
+			kittens?
 		</p>
-	</div>
+	</dfn>
 	<p>
-		Again, set theory allows us to think about this as logically as possible.
-		Here, we have several sets from the data above:
+		Again, set theory allows us to think about this as logically as
+		possible. Here, we have several sets from the data above:
 	</p>
 	<figure>
 		<div>
@@ -449,8 +680,8 @@
 		</div>
 	</figure>
 	<p>
-		The problem gives us the following data, and the last line is what we want
-		to find:
+		The problem gives us the following data, and the last line is what we
+		want to find:
 	</p>
 	<figure>
 		<div>
@@ -464,91 +695,89 @@
 		</div>
 	</figure>
 	<p>
-		First, we know that ${n(K \cup A) = 27.}$ We also know that ${n(K) = 11.}$
-		Thus, ${n(A) = n(K \cup A) - n(K) = 27 - 11 = 16.}$ There are 16 adults.
+		First, we know that ${n(K \cup A) = 27.}$ We also know that ${n(K) =
+		11.}$ Thus, ${n(A) = n(K \cup A) - n(K) = 27 - 11 = 16.}$ There are 16
+		adults.
 	</p>
 	<p>
-		We know that ${n(L \cap A) = 5,}$ so ${n(A \cap S) = n(A) - n(A \cap L) = 16
-		- 5 = 11.}$ There are 11 short-hair adults. Now, we know ${n(S) = 14,}$ and
-		we know that ${n(S) = n(K \cap S) + n(A \cap S).}$ Hence, ${n(K \cap S) =
-		n(S) - n(A \cap S) = 14 - 11 = 3.}$ Therefore, there are 3 short-hair
-		kittens.
+		We know that ${n(L \cap A) = 5,}$ so ${n(A \cap S) = n(A) - n(A \cap L)
+		= 16 - 5 = 11.}$ There are 11 short-hair adults. Now, we know ${n(S) =
+		14,}$ and we know that ${n(S) = n(K \cap S) + n(A \cap S).}$ Hence,
+		${n(K \cap S) = n(S) - n(A \cap S) = 14 - 11 = 3.}$ Therefore, there
+		are 3 short-hair kittens.
 	</p>
 </section>
 
 <section id="product_rule_combinatorics">
 	<h2>The Product Rule</h2>
 	<p>Consider the following problem:</p>
-	<figure>
-		<div class="rule">
-			<p>
-				A reality TV show features 4 women, each of whom are paired with 2 men.
-				Only one woman and one of their paired men may be chosen as the most
-				romantic couple. How many different outcomes are possible?
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			A reality TV show features 4 women, each of whom are paired with 2
+			men. Only one woman and one of their paired men may be chosen as the
+			most romantic couple. How many different outcomes are possible?
+		</p>
+	</dfn>
 	<p>
-		This is a basic counting problem. Suppose the women are Jane, Binita, Yuna,
-		and Miremba. Jane is paired with: Remmy, Kento. Binita is paired with:
-		Aiden, Jose. Yuna is paired with: Hans, Luka. And Miremba is paired with:
-		Dan, Bo. Enumerating the different possible choices:
+		This is a basic counting problem. Suppose the women are Jane, Binita,
+		Yuna, and Miremba. Jane is paired with: Remmy, Kento. Binita is paired
+		with: Aiden, Jose. Yuna is paired with: Hans, Luka. And Miremba is
+		paired with: Dan, Bo. Enumerating the different possible choices:
 	</p>
 	<figure>
 		<div>
-			$$ \small \begin{matrix} (Jane, Remmy) & (Jane, Kento) \\ (Binita, Aiden)
-			& (Binita, Jose) \\ (Yuna, Hans) & (Yuna, Luka) \\ (Miremba, Dan) &
-			(Miremba, Bo) \end{matrix} $$
+			$$ \small \begin{matrix} (Jane, Remmy) & (Jane, Kento) \\ (Binita,
+			Aiden) & (Binita, Jose) \\ (Yuna, Hans) & (Yuna, Luka) \\ (Miremba,
+			Dan) & (Miremba, Bo) \end{matrix} $$
 		</div>
 	</figure>
 	<p>
-		There are 8 possible outcomes. This corresponds to the following principle:
+		There are 8 possible outcomes. This corresponds to the following
+		principle:
 	</p>
-	<figure>
-		<div class="rule">
-			<p>
-				<span class="topic">Product Rule.</span> Suppose two decisions, ${a}$
-				and ${b,}$ are made. If ${a}$ results in
-				<span class="underlineText">any one</span> of ${m}$ possible outcomes,
-				and if, for each outcome of ${a}$ there are ${n}$ possible outcomes of
-				${b,}$ then together there are ${m \cdot n}$ possible outcomes of the
-				two decisions ${a}$ and ${b.}$
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Product Rule.</small>
+		<p>
+			Suppose two decisions, ${a}$ and ${b,}$ are made. If ${a}$ results in
+			<span class="underlineText">any one</span> of ${m}$ possible
+			outcomes, and if, for each outcome of ${a}$ there are ${n}$ possible
+			outcomes of ${b,}$ then together there are ${m \cdot n}$ possible
+			outcomes of the two decisions ${a}$ and ${b.}$
+		</p>
+	</dfn>
 	<p>We can see that the rule above is true with a picture:</p>
 	<figure>
 		<div>
-			$$ \begin{aligned} &(1, 1), (1, 2), \ldots, (1, n) \\ &(2, 1), (2, 2),
-			\ldots, (2, n) \\ &(3, 1), (3, 2), \ldots, (3, n) \\ &\vdots \\ &(m, 1),
-			(m, 2), \ldots, (m, n) \end{aligned} $$
+			$$ \begin{aligned} &(1, 1), (1, 2), \ldots, (1, n) \\ &(2, 1), (2,
+			2), \ldots, (2, n) \\ &(3, 1), (3, 2), \ldots, (3, n) \\ &\vdots \\
+			&(m, 1), (m, 2), \ldots, (m, n) \end{aligned} $$
 		</div>
 	</figure>
 	<p>
-		We can generalize the rule above for when there are more than 2 decisions
-		made:
+		We can generalize the rule above for when there are more than 2
+		decisions made:
 	</p>
-	<figure>
-		<div class="rule">
-			<p>
-				<span class="topic">General Product Rule.</span> Suppose there are ${r_1
-				\ldots r_i}$ decisions to be performed, where ${r, i \in \Z^{+}.}$
-				Suppose further that ${r_1}$ results in ${n_1}$ possible outcomes,
-				${r_2}$ results in ${n_2}$ possible outcomes, ${r_3}$ in ${n_3}$
-				possible outcomes, ad infinitum. Then there is a total of ${n_1 \times
-				n_2 \times n_3 \times \ldots \times n_r}$ possible outcomes.
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>General Product Rule.</small>
+		<p>
+			Suppose there are ${r_1 \ldots r_i}$ decisions to be performed, where
+			${r, i \in \Z^{+}.}$ Suppose further that ${r_1}$ results in ${n_1}$
+			possible outcomes, ${r_2}$ results in ${n_2}$ possible outcomes,
+			${r_3}$ in ${n_3}$ possible outcomes, ad infinitum. Then there is a
+			total of ${n_1 \times n_2 \times n_3 \times \ldots \times n_r}$
+			possible outcomes.
+		</p>
+	</dfn>
 
 	<section class="problems">
 		<h3 class="pset">Exercises</h3>
-		<ol class="ex grid">
-			<li class="grid-item">
-				A senate committee consists of 3 lawyers, 4 engineers, 5 doctors, and 2
-				mathematicians. The committee must construct a subcommittee of 4,
-				consisting of 1 person from each profession. How many different
-				subcommittees are possible?
+		<ol>
+			<li>
+				A senate committee consists of 3 lawyers, 4 engineers, 5 doctors,
+				and 2 mathematicians. The committee must construct a subcommittee
+				of 4, consisting of 1 person from each profession. How many
+				different subcommittees are possible?
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>This is a simple application of the decision outcome rule:</p>
@@ -561,23 +790,25 @@
 				</details>
 			</li>
 
-			<li class="grid-item">
-				A university identifies its members with an identification string. The
-				string consists of 7 characters, of which the first 3 characters must be
-				an English alphabet, and the last 4 characters must be numbers (e.g.,
-				<span class="monoText">AXX7980</span>). How many possible strings are
-				there?
+			<li>
+				A university identifies its members with an identification string.
+				The string consists of 7 characters, of which the first 3
+				characters must be an English alphabet, and the last 4 characters
+				must be numbers (e.g.,
+				<span class="monoText">AXX7980</span>). How many possible strings
+				are there?
 
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
-						There are 26 English alphabets, and there 10 possible numbers. Thus:
+						There are 26 English alphabets, and there 10 possible numbers.
+						Thus:
 					</p>
 					<figure>
 						<div>
 							<p>
-								${26 \cdot 26 \cdot 26 \cdot 10 \cdot 10 \cdot 10 \cdot 10 =
-								175,760,000}$
+								${26 \cdot 26 \cdot 26 \cdot 10 \cdot 10 \cdot 10 \cdot 10
+								= 175,760,000}$
 							</p>
 						</div>
 					</figure>
@@ -585,76 +816,78 @@
 				</details>
 			</li>
 
-			<li class="grid-item">
-				Suppose a graph consists of ${n}$ points. How many different functions
-				are defined on these ${n}$ points if each function is either ${0,}$
-				${1,}$ or ${\texttt{null}?}$
+			<li>
+				Suppose a graph consists of ${n}$ points. How many different
+				functions are defined on these ${n}$ points if each function is
+				either ${0,}$ ${1,}$ or ${\texttt{null}?}$
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
-						When dealing with problems involving abstractions, it's often best
-						to consider a simpler, concrete case first. Suppose the function is
-						called ${f.}$ Next, instead of considering ${n}$ points, suppose
-						there is just 1 point. With just 1 point, we have ${f(1) = -1,}$
-						${f(1) = 0,}$ ${f(1) = \texttt{null}.}$ This means that with just 1
-						point, we have 3 possible functions. Because we're dealing with a
-						function, the value after ${f(1)}$ &mdash; the value of ${f(2)}$
-						&mdash; could be either ${-1,}$ ${0,}$ or ${\texttt{null}.}$ This
-						means that we have ${3 \cdot 3 = 3^2 = 9}$ possible functions. With
-						3 points, we have ${3 \cdot 3 \cdot 3 = 3^3 = 27.}$ Expanding on
-						this thought process, there are ${3^n}$ possible functions.
+						When dealing with problems involving abstractions, it's often
+						best to consider a simpler, concrete case first. Suppose the
+						function is called ${f.}$ Next, instead of considering ${n}$
+						points, suppose there is just 1 point. With just 1 point, we
+						have ${f(1) = -1,}$ ${f(1) = 0,}$ ${f(1) = \texttt{null}.}$
+						This means that with just 1 point, we have 3 possible
+						functions. Because we're dealing with a function, the value
+						after ${f(1)}$ &mdash; the value of ${f(2)}$ &mdash; could be
+						either ${-1,}$ ${0,}$ or ${\texttt{null}.}$ This means that we
+						have ${3 \cdot 3 = 3^2 = 9}$ possible functions. With 3 points,
+						we have ${3 \cdot 3 \cdot 3 = 3^3 = 27.}$ Expanding on this
+						thought process, there are ${3^n}$ possible functions.
 					</p>
 				</details>
 			</li>
 
-			<li class="grid-item">
-				Blackacre Corp. has two divisions, software and hardware. Blackacre owns
-				a building with 12 floors. Assuming Blackacre will assign 1 floor to
-				each division, how many different ways are there to assign different
-				floors to each division?
+			<li>
+				Blackacre Corp. has two divisions, software and hardware. Blackacre
+				owns a building with 12 floors. Assuming Blackacre will assign 1
+				floor to each division, how many different ways are there to assign
+				different floors to each division?
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
-						There are 12 possible floors to assign to software (or hardware),
-						leaving 11 possible floors for the other. Accordingly, there are
-						${12 \times 11 = 121}$ possible assignments.
+						There are 12 possible floors to assign to software (or
+						hardware), leaving 11 possible floors for the other.
+						Accordingly, there are ${12 \times 11 = 121}$ possible
+						assignments.
 					</p>
 				</details>
 			</li>
 
-			<li class="grid-item">
-				The seats on a plane are identified with an uppercase English alphabet,
-				followed by a positive integer no greater than 100. What is the largest
-				number of seats that can be labeled differently?
+			<li>
+				The seats on a plane are identified with an uppercase English
+				alphabet, followed by a positive integer no greater than 100. What
+				is the largest number of seats that can be labeled differently?
 
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
-						There are 26 letters in the alphabet, and 100 positive integers no
-						greater than 100. Accordingly: ${26 \times 100 = 2600}$ possible
-						seats.
+						There are 26 letters in the alphabet, and 100 positive integers
+						no greater than 100. Accordingly: ${26 \times 100 = 2600}$
+						possible seats.
 					</p>
 				</details>
 			</li>
 
-			<li class="grid-item">
+			<li>
 				How many different bit strings of length 12 are there?
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
 						A bit is either a 0 or a 1. Accordingly, for a bit of length 1,
-						there are two possibilities: 0 or 1. For a bit string of length 2,
-						there are 4 possibilities: 00, 01, 10, 11. For a bit string of
-						length 3, there are 9. And so on. Thus, for a bit string of length
-						12, there are ${2^{12},}$ or ${4096,}$ bit strings.
+						there are two possibilities: 0 or 1. For a bit string of length
+						2, there are 4 possibilities: 00, 01, 10, 11. For a bit string
+						of length 3, there are 9. And so on. Thus, for a bit string of
+						length 12, there are ${2^{12},}$ or ${4096,}$ bit strings.
 					</p>
 				</details>
 			</li>
 
-			<li class="grid-item">
+			<li>
 				A license plate consists of three English letters followed by three
-				digits. Assuming no sequence is prohibited, how many different license
-				plates can be made?
+				digits. Assuming no sequence is prohibited, how many different
+				license plates can be made?
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>From the problem, a license plate has six slots:</p>
@@ -667,49 +900,37 @@
 						</div>
 					</figure>
 					<p>
-						There are 26 letters in the English alphabet, and 10 digits. Since
-						no sequence is prohibited, the first slot can be any one of 26
-						letters, the second any one of 26 letters, the third any one of 26
-						letters. And for the numbers, any one of 10 digits, any one of 10
-						digits, and any one of 10 digits. Thus:
+						There are 26 letters in the English alphabet, and 10 digits.
+						Since no sequence is prohibited, the first slot can be any one
+						of 26 letters, the second any one of 26 letters, the third any
+						one of 26 letters. And for the numbers, any one of 10 digits,
+						any one of 10 digits, and any one of 10 digits. Thus:
 					</p>
 					<figure>
 						<div>
-							<p>${26 \times 26 \times 26 \times 10 \times 10 \times 10}$</p>
+							<p>
+								${26 \times 26 \times 26 \times 10 \times 10 \times 10}$
+							</p>
 						</div>
 					</figure>
 					<p>
-						This is ${17~576~000}$ possible license plates. Nowhere near enough
-						for the roughly ${276~000~000}$ registered vehicles in the United
-						States.<label for="carStat" class="margin-toggle"
-							><sup></sup
-						></label>
-						<input
-							type="checkbox"
-							id="carStat"
-							class="margin-toggle sidenote-number"
-						/>
-						<span class="marginnote"
-							><a
-								href="https://www.bts.gov/content/number-us-aircraft-vehicles-vessels-and-other-conveyances"
-								>See Bureau of Transportation Statistics, Number of U.S.
-								Aircraft, Vehicles, Vessels, and Other Conveyances.</a
-							></span
-						>
+						This is ${17~576~000}$ possible license plates. Nowhere near
+						enough for the roughly ${276~000~000}$ registered vehicles in
+						the United States.
 					</p>
 				</details>
 			</li>
 
-			<li class="grid-item">
-				How many functions are there from a set of ${m}$ elements to a set of
-				${n}$ elements?
+			<li>
+				How many functions are there from a set of ${m}$ elements to a set
+				of ${n}$ elements?
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
 						Recall that a function maps exactly
-						<span class="underlineText">one</span> of the ${n}$ elements in the
-						codomain to each of the ${m}$ elements in the domain. Thus, there
-						are:
+						<span class="underlineText">one</span> of the ${n}$ elements in
+						the codomain to each of the ${m}$ elements in the domain. Thus,
+						there are:
 					</p>
 					<figure>
 						<div>
@@ -723,34 +944,36 @@
 				</details>
 			</li>
 
-			<li class="grid-item">
+			<li>
 				How many one-to-one functions are possible from a set with ${m}$
 				elements to a set with ${n}$ elements?
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
-						First, we must assume that ${m \leq n.}$ This is because if ${m >
-						n,}$ then there are no one-to-one functions. That said, we first
-						consider some element ${a_1}$ in the domain (the set containing
-						${m}$ elements). Given ${a_1,}$ there are ${n}$ possible values.
-						Then, for ${a_2,}$ there are ${n - 1}$ possible values. Then for
-						${a_3,}$ ${n - 2,}$ and so on. The pattern:
+						First, we must assume that ${m \leq n.}$ This is because if ${m
+						> n,}$ then there are no one-to-one functions. That said, we
+						first consider some element ${a_1}$ in the domain (the set
+						containing ${m}$ elements). Given ${a_1,}$ there are ${n}$
+						possible values. Then, for ${a_2,}$ there are ${n - 1}$
+						possible values. Then for ${a_3,}$ ${n - 2,}$ and so on. The
+						pattern:
 					</p>
 					<figure class="math-display">
 						<div>
-							$$ \begin{matrix} a_1 & n \\ a_2 & n-1 \\ a_3 & n-2 \\ a_4 & n-3
-							\\ a_5 & n-4 \\ \vdots & \vdots \end{matrix} $$
+							$$ \begin{matrix} a_1 & n \\ a_2 & n-1 \\ a_3 & n-2 \\ a_4 &
+							n-3 \\ a_5 & n-4 \\ \vdots & \vdots \end{matrix} $$
 						</div>
 					</figure>
 					<p>
 						Examining this pattern, we see that given some element ${a_k,}$
-						there are ${n - k + 1}$ possible values. Applying the product rule,
-						it follows that there are:
+						there are ${n - k + 1}$ possible values. Applying the product
+						rule, it follows that there are:
 					</p>
 					<figure class="math-display">
 						<div>
 							<p>
-								${n \times (n - 1) \times (n - 2) \times \ldots (n - m + 1)}$
+								${n \times (n - 1) \times (n - 2) \times \ldots (n - m +
+								1)}$
 							</p>
 						</div>
 					</figure>
@@ -760,9 +983,10 @@
 					</p>
 				</details>
 			</li>
-			<li class="grid-item">
-				Consider the code below. Suppose ${n_1, n_2, \ldots, n_m \in \Z^{+}.}$
-				What is the value of ${k}$ after the code finishes executing?
+			<li>
+				Consider the code below. Suppose ${n_1, n_2, \ldots, n_m \in
+				\Z^{+}.}$ What is the value of ${k}$ after the code finishes
+				executing?
 				<ol class="alg">
 					<li>${k}$ := 0;</li>
 					<li>for ${i_1}$ := 1 to ${n_1}$:</li>
@@ -780,13 +1004,14 @@
 				<details class="answer">
 					<summary>Solution</summary>
 					<p>
-						From the code, we see that the initial value of ${k}$ is ${0.}$ For
-						each iteration, ${k}$ is incremented by ${1.}$ With loops, the
-						number of iterations is the number of ways to perform the tasks
-						${t_1, t_2, \ldots, t_m.}$ Thus, the number of ways to perform the
-						task ${t_j}$ where ${j = 1, 2, \ldots, m}$ is ${n_j,}$ because the
-						${j^{th}}$ loop is traversed once for each integer ${i_j,}$ where
-						${1 \leq i_j \leq n_j.}$ Accordingly, the final value of ${k}$ is:
+						From the code, we see that the initial value of ${k}$ is ${0.}$
+						For each iteration, ${k}$ is incremented by ${1.}$ With loops,
+						the number of iterations is the number of ways to perform the
+						tasks ${t_1, t_2, \ldots, t_m.}$ Thus, the number of ways to
+						perform the task ${t_j}$ where ${j = 1, 2, \ldots, m}$ is
+						${n_j,}$ because the ${j^{th}}$ loop is traversed once for each
+						integer ${i_j,}$ where ${1 \leq i_j \leq n_j.}$ Accordingly,
+						the final value of ${k}$ is:
 					</p>
 					<figure class="math-display">
 						<div>
@@ -802,22 +1027,21 @@
 <section id="sum_rule_combinatorics">
 	<h2>The Sum Rule</h2>
 	<p>Let's start with the following problem:</p>
-	<figure>
-		<div class="rule">
-			<p>
-				Blackacre Corp. tasks corporate lawyer Goodman to find a whistleblower.
-				Goodman knows the perpetrator is either a board member or one of the
-				senior managers. How many suspects are there if there are 37 board
-				members and 83 senior managers, where no one is both a board member and
-				a senior manager?
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			Blackacre Corp. tasks corporate lawyer Goodman to find a
+			whistleblower. Goodman knows the perpetrator is either a board member
+			or one of the senior managers. How many suspects are there if there
+			are 37 board members and 83 senior managers, where no one is both a
+			board member and a senior manager?
+		</p>
+	</dfn>
 	<p>
-		There are 37 ways to choose a board member, and 83 ways to choose a senior
-		manager. Furthermore, we know that choosing a board member is never the same
-		as choosing a senior manager, because no one is both a board member and a
-		senior manager. Thus, there are:
+		There are 37 ways to choose a board member, and 83 ways to choose a
+		senior manager. Furthermore, we know that choosing a board member is
+		never the same as choosing a senior manager, because no one is both a
+		board member and a senior manager. Thus, there are:
 	</p>
 	<figure>
 		<div>
@@ -825,156 +1049,111 @@
 		</div>
 	</figure>
 	<p>suspects. This analysis is an application of the sum rule:</p>
-	<figure>
-		<div class="rule">
-			<p>
-				<span class="topic">Sum Rule of Combinatorics.</span> If a decision can
-				be made either in one of ${n_1}$ ways or in one of ${n_2}$ ways, and
-				none of the sets of ${n_1}$ ways is the same as any of the set of
-				${n_2}$ ways, then there are ${n_1 + n_2}$ ways to make a decision.
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Sum Rule of Combinatorics.</small>
+		<p>
+			If a decision can be made either in one of ${n_1}$ ways or in one of
+			${n_2}$ ways, and none of the sets of ${n_1}$ ways is the same as any
+			of the set of ${n_2}$ ways, then there are ${n_1 + n_2}$ ways to make
+			a decision.
+		</p>
+	</dfn>
 	<p>
 		The sum rule above applies to two choices. What if there are multiple
 		choices? Consider the following problem:
 	</p>
-	<figure>
-		<div class="rule">
-			<p>
-				Assume the same facts from the previous problem. Corporate lawyer
-				Goodman found three lists logging outgoing communications on the day of
-				the leak. On the first list, there are 5 names. On the second list,
-				there 3 names. On the third list, there 8 names. No name is on more than
-				one list, and each name on the list is either a board member or a senior
-				manager. How many possible suspects are there given this list?
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			Assume the same facts from the previous problem. Corporate lawyer
+			Goodman found three lists logging outgoing communications on the day
+			of the leak. On the first list, there are 5 names. On the second
+			list, there 3 names. On the third list, there 8 names. No name is on
+			more than one list, and each name on the list is either a board
+			member or a senior manager. How many possible suspects are there
+			given this list?
+		</p>
+	</dfn>
 	<p>
-		We know that no name is on more than one list. We also know that there are
-		no duplicates in the list, because each name on the list is either a board
-		member or a senior manager and no one can be both. Because of these two
-		facts, there are:
+		We know that no name is on more than one list. We also know that there
+		are no duplicates in the list, because each name on the list is either
+		a board member or a senior manager and no one can be both. Because of
+		these two facts, there are:
 	</p>
-	<figure>
-		<div>
-			<p>${3 + 5 + 8 = 16}$</p>
-		</div>
-	</figure>
+	<figure>$$ 3 + 5 + 8 = 16 $$</figure>
 	<p>
-		suspects. This analysis demonstrates how the sum rule can be extended to
-		multiple choices:
+		suspects. This analysis demonstrates how the sum rule can be extended
+		to multiple choices:
 	</p>
-	<figure>
-		<div class="rule">
-			<p>
-				<span class="topic">Extended Sum Rule of Combinatorics.</span> Suppose a
-				decision can be made in one of ${n_1}$ ways, in one of ${n_2}$ ways,
-				${\ldots,}$ or in one of ${n_m}$ ways, where none of the set of ${n_i}$
-				ways of deciding is the same as any of the set of ${n_j}$ ways, for all
-				pairs ${i}$ and ${j}$ with ${1 \leq i < j \leq m.}$ Then the number of
-				ways to decide is:
-			</p>
-			<figure>
-				<div>
-					<p>${n_1 + n_2 + \ldots + n_m}$</p>
-				</div>
-			</figure>
-		</div>
-	</figure>
-</section>
-
-<section id="summary_of_product_and_sum_rule">
-	<h3>Brief Summary</h3>
-	<p>
-		Because of how important the sum and product rules are to counting, we
-		summarize them in checklists. First, the product rule:
-	</p>
-	<figure>
-		<ol class="checklist">
-			<h4 class="listHeader">The Product Rule applies only if:</h4>
-			<li>There are ${d_1, d_2, \ldots, d_i}$ decisions to make.</li>
-			<li>
-				${r_1}$ results in ${n_1}$ possible outcomes, ${r_2}$ results in ${n_2}$
-				possible outcomes, ${\ldots,}$ ${r_i}$ in ${n_i}$ possible outcomes.
-			</li>
-			<p>
-				Result: There are ${n_1 \times n_2 \times \ldots \times n_r}$ possible
-				outcomes.
-			</p>
-		</ol>
-	</figure>
-	<p>And the sum rule:</p>
-	<figure>
-		<ol class="checklist">
-			<h4 class="listHeader">The Sum Rule applies only if:</h4>
-			<li>
-				There are ${n_1,}$ ${n_2,}$ ${\ldots,}$ ${n_m}$ possible decisions.
-			</li>
-			<li>
-				None of the set of ${n_i}$ ways of deciding is the same as any of the
-				set of ${n_j}$ ways, for all pairs ${i}$ and ${j}$ where ${1 \leq i < j
-				\leq m.}$
-			</li>
-			<p>
-				Result: There are ${n_1 + n_2 + \ldots + n_m}$ possible ways to decide.
-			</p>
-		</ol>
-	</figure>
+	<dfn>
+		<small>Extended Sum Rule of Combinatorics.</small>
+		<p>
+			Suppose a decision can be made in one of ${n_1}$ ways, in one of
+			${n_2}$ ways, ${\ldots,}$ or in one of ${n_m}$ ways, where none of
+			the set of ${n_i}$ ways of deciding is the same as any of the set of
+			${n_j}$ ways, for all pairs ${i}$ and ${j}$ with ${1 \leq i < j \leq
+			m.}$ Then the number of ways to decide is:
+		</p>
+		<figure>
+			<div>
+				<p>${n_1 + n_2 + \ldots + n_m}$</p>
+			</div>
+		</figure>
+	</dfn>
 </section>
 
 <section id="using_the_sum_rule_and_product_rule_together">
 	<h2>Using the Sum & Product Rules Together</h2>
 	<p>
 		While the sum and product rules are useful tools for counting, they are
-		limited. Often, a counting problem requires using both rules for a solution.
-		For example, consider the following problem:
+		limited. Often, a counting problem requires using both rules for a
+		solution. For example, consider the following problem:
 	</p>
-	<figure>
-		<div class="rule">
-			<p>
-				A computer language ${X}$ permits variable names according to the
-				following rules:
-			</p>
-			<ol>
-				<li>
-					The variable name is a string of one or two alphanumeric characters
-					(an <span class="italicsText">alphanumeric character</span> is a
-					character that is either one of the 26 English letters or one of the
-					10 digits).
-				</li>
-				<li>Uppercase and lowercase letters are not distinguished.</li>
-				<li>The variable name must begin with a letter.</li>
-				<li>
-					The variable name must not be one of the five strings of two
-					characters reserved by the language.
-				</li>
-			</ol>
-			<p>How many different variable names are possible in ${X?}$</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			A computer language ${X}$ permits variable names according to the
+			following rules:
+		</p>
+		<ol>
+			<li>
+				The variable name is a string of one or two alphanumeric characters
+				(an
+				<span class="italicsText">alphanumeric character</span> is a
+				character that is either one of the 26 English letters or one of
+				the 10 digits).
+			</li>
+			<li>Uppercase and lowercase letters are not distinguished.</li>
+			<li>The variable name must begin with a letter.</li>
+			<li>
+				The variable name must not be one of the five strings of two
+				characters reserved by the language.
+			</li>
+		</ol>
+		<p>How many different variable names are possible in ${X?}$</p>
+	</dfn>
 	<p>
 		Solving this problem requires applying both the sum and product rules.
-		First, let's denote the set of all possible variable names as ${V.}$ The set
-		${V}$ consists of two subsets: ${V_1,}$ the set of all possible variable
-		names with a single character, and the set ${V_2,}$ the set of all possible
-		variable names with two characters. The problem essentially asks us to
-		determine ${n(V),}$ which is ${n(V_1) + n(V_2).}$
+		First, let's denote the set of all possible variable names as ${V.}$
+		The set ${V}$ consists of two subsets: ${V_1,}$ the set of all possible
+		variable names with a single character, and the set ${V_2,}$ the set of
+		all possible variable names with two characters. The problem
+		essentially asks us to determine ${n(V),}$ which is ${n(V_1) +
+		n(V_2).}$
 	</p>
 	<p>
-		We first determine ${n(V_1).}$ Our immediate constraint is that the variable
-		name must begin with a letter. Thus, for the first character, there are
-		${26}$ choices (uppercase and lowercase letters are not distinguished). This
-		takes care of the first character and determines the number of possible
-		variable names of a single character: ${26.}$
+		We first determine ${n(V_1).}$ Our immediate constraint is that the
+		variable name must begin with a letter. Thus, for the first character,
+		there are ${26}$ choices (uppercase and lowercase letters are not
+		distinguished). This takes care of the first character and determines
+		the number of possible variable names of a single character: ${26.}$
 	</p>
 	<p>
-		Next, we determine ${n(V_2).}$ The second character can be either one of the
-		26 English letters or one of the 10 digits. Applying the sum rule, there are
-		36 possible choices for each of the 26 choices for the first character. But,
-		five of these choices will result in a reserved string, so we must subtract
-		${5}$ from ${36:}$
+		Next, we determine ${n(V_2).}$ The second character can be either one
+		of the 26 English letters or one of the 10 digits. Applying the sum
+		rule, there are 36 possible choices for each of the 26 choices for the
+		first character. But, five of these choices will result in a reserved
+		string, so we must subtract ${5}$ from ${36:}$
 	</p>
 	<figure>
 		<div>
@@ -985,32 +1164,27 @@
 		Now, because the variable name can be either one or two characters, the
 		number of variable names is given by the sum rule:
 	</p>
-	<figure>
-		<div>
-			<p>${n(V) = n(V_1) + n(V_2) = 26 + 931 = 957}$</p>
-		</div>
-	</figure>
+	<figure>$$ n(V) = n(V_1) + n(V_2) = 26 + 931 = 957 $$</figure>
 	<p>
 		Hence, there are ${957}$ possible variable names in ${X.}$ Not a
 		particularly expressive language.
 	</p>
 	<p>Here is another problem:</p>
-	<figure>
-		<div class="rule">
-			<p>
-				A website requires its users to choose a password that is six to eight
-				characters long. Each character in the password must be either an
-				uppercase letter or a digit. Each password must contain at least one
-				digit. How many possible passwords are there?
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			A website requires its users to choose a password that is six to
+			eight characters long. Each character in the password must be either
+			an uppercase letter or a digit. Each password must contain at least
+			one digit. How many possible passwords are there?
+		</p>
+	</dfn>
 	<p>
-		First, we denote the set of all passwords as ${P.}$ The set ${P}$ consists
-		of three subsets: ${P_6,}$ the set of all passwords ${6}$ characters long,
-		${P_7,}$ the set of all passwords ${7}$ characters long, and ${P_8,}$ the
-		set of all passwords ${8}$ characters long. The number of possible passwords
-		then is:
+		First, we denote the set of all passwords as ${P.}$ The set ${P}$
+		consists of three subsets: ${P_6,}$ the set of all passwords ${6}$
+		characters long, ${P_7,}$ the set of all passwords ${7}$ characters
+		long, and ${P_8,}$ the set of all passwords ${8}$ characters long. The
+		number of possible passwords then is:
 	</p>
 	<figure>
 		<div>
@@ -1019,43 +1193,36 @@
 	</figure>
 	<p>
 		We first consider ${n(P_6).}$ This is where we run into difficulty. The
-		constraint that each password must contain at least one digit doesn't help
-		as much, at least directly. The password could be all digits, some letters
-		and one digit, some letters and two digits, and so on. Accordingly, we must
-		find ${n(P_6)}$ indirectly. To do so, we first determine the number of
-		6-character strings consisting of letters and digits, and then we determine
-		the number of 6-character strings with no digits. If we subtract these two
-		numbers, we have a set of 6-character character strings where no string is
-		consists entirely of letters. Fortunately, these are a straightforward
-		applications of the product rule:
+		constraint that each password must contain at least one digit doesn't
+		help as much, at least directly. The password could be all digits, some
+		letters and one digit, some letters and two digits, and so on.
+		Accordingly, we must find ${n(P_6)}$ indirectly. To do so, we first
+		determine the number of 6-character strings consisting of letters and
+		digits, and then we determine the number of 6-character strings with no
+		digits. If we subtract these two numbers, we have a set of 6-character
+		character strings where no string is consists entirely of letters.
+		Fortunately, these are a straightforward applications of the product
+		rule:
 	</p>
 	<figure>
-		<div>
-			$$ \begin{aligned} n(P_6) &= 36^6 - 26^6 \\ &= 2~176~782~336 - 308~915~776
-			\\ &= 1~867~866~560 \end{aligned} $$
-		</div>
+		$$ \begin{aligned} n(P_6) &= 36^6 - 26^6 \\ &= 2~176~782~336 -
+		308~915~776 \\ &= 1~867~866~560 \end{aligned} $$
 	</figure>
 	<p>Applying the same analysis to ${P_7:}$</p>
 	<figure>
-		<div>
-			$$ \begin{aligned} n(P_7) &= 36^7 - 26^7 \\ &= 78~364~164~096 -
-			8~031~810~176 \\ &= 70~332~353~920 \end{aligned} $$
-		</div>
+		$$ \begin{aligned} n(P_7) &= 36^7 - 26^7 \\ &= 78~364~164~096 -
+		8~031~810~176 \\ &= 70~332~353~920 \end{aligned} $$
 	</figure>
 	<p>And to ${P_8:}$</p>
-	<figure>
-		<div>
-			$$ \begin{aligned} n(P_8) &= 36^8 - 26^8 \\ &= 2~821~109~907~456 -
-			208~827~064~576 \\ &= 2~612~282~842~880 \end{aligned} $$
-		</div>
-	</figure>
+
+	$$ \begin{aligned} n(P_8) &= 36^8 - 26^8 \\ &= 2~821~109~907~456 -
+	208~827~064~576 \\ &= 2~612~282~842~880 \end{aligned} $$
+
 	<p>Hence, there are:</p>
 	<figure>
-		<div>
-			$$ \begin{aligned} n(P) &= n(P_6) + n(P_7) + n(P_8) \\ &= 1~867~866~560 +
-			70~332~353~920 + 2~612~282~842~880 \\ &= 2~684~483~063~360 \end{aligned}
-			$$
-		</div>
+		$$ \begin{aligned} n(P) &= n(P_6) + n(P_7) + n(P_8) \\ &= 1~867~866~560
+		+ 70~332~353~920 + 2~612~282~842~880 \\ &= 2~684~483~063~360
+		\end{aligned} $$
 	</figure>
 	<p>possible passwords.</p>
 </section>
@@ -1063,19 +1230,18 @@
 <section id="the_subtraction_rule">
 	<h2>The Subtraction Rule</h2>
 	<p>Consider the following problem:</p>
-	<figure>
-		<div class="rule">
-			<p>
-				How many bit strings 8 bits long begin with a ${1}$ or end with the two
-				bits ${00?}$
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			How many bit strings 8 bits long begin with a ${1}$ or end with the
+			two bits ${00?}$
+		</p>
+	</dfn>
 	<p>
-		We cannot directly solve this problem with the sum and product rules alone.
-		But, we can try and reason our way through it. First, from the facts, we
-		have two possible choices: (1) The bit string starts with a ${1,}$ or (2)
-		the bit string ends with ${00.}$
+		We cannot directly solve this problem with the sum and product rules
+		alone. But, we can try and reason our way through it. First, from the
+		facts, we have two possible choices: (1) The bit string starts with a
+		${1,}$ or (2) the bit string ends with ${00.}$
 	</p>
 	<figure>
 		<div class="rule">
@@ -1085,26 +1251,28 @@
 	</figure>
 	<p>
 		For choice (1), there are 7 slots available, so we have ${2^7 = 128}$
-		possible strings. For choice (2), there are 6 slots available, so we have
-		${2^6 = 64}$ possible strings. Both of these conclusions follow from the
-		product rule.
+		possible strings. For choice (2), there are 6 slots available, so we
+		have ${2^6 = 64}$ possible strings. Both of these conclusions follow
+		from the product rule.
 	</p>
 	<p>
-		The rub, however, is that some of the possibilities for (1) and (2) are the
-		same. Namely, these are the strings that begin with ${1}$ and end with
-		${00:}$
+		The rub, however, is that some of the possibilities for (1) and (2) are
+		the same. Namely, these are the strings that begin with ${1}$ and end
+		with ${00:}$
 	</p>
 	<figure>
 		<div class="rule">
-			<p>In both (1) and (2): <span class="monoText">1 _ _ _ _ _ 0 0</span></p>
+			<p>
+				In both (1) and (2): <span class="monoText">1 _ _ _ _ _ 0 0</span>
+			</p>
 		</div>
 	</figure>
 	<p>
-		If we simply added the possibilities of choices (1) and (2), we would be
-		counting these possibilities twice. Accordingly, we must subtract the
-		possibilities where the string begins with ${1}$ and ends with ${00.}$ There
-		are five slots empty, so there are ${2^5 = 32}$ of such possibilities.
-		Hence, there are:
+		If we simply added the possibilities of choices (1) and (2), we would
+		be counting these possibilities twice. Accordingly, we must subtract
+		the possibilities where the string begins with ${1}$ and ends with
+		${00.}$ There are five slots empty, so there are ${2^5 = 32}$ of such
+		possibilities. Hence, there are:
 	</p>
 	<figure>
 		<div>
@@ -1112,37 +1280,38 @@
 		</div>
 	</figure>
 	<p>
-		possible big strings. The analysis above demonstrates the subtraction rule:
+		possible big strings. The analysis above demonstrates the subtraction
+		rule:
 	</p>
-	<figure>
-		<div class="rule">
-			<p>
-				<span class="topic">Subtraction Rule.</span> If a decision can be made
-				in either ${n_1}$ ways or ${n_2}$ ways, then the number of ways to make
-				a decision is ${n_1 + n_2}$ minus the number of ways to decide that are
-				common to the two different ways.
-			</p>
-		</div>
-	</figure>
+
+	<dfn>
+		<small>Subtraction Rule</small>
+		<p>
+			If a decision can be made in either ${n_1}$ ways or ${n_2}$ ways,
+			then the number of ways to make a decision is ${n_1 + n_2}$ minus the
+			number of ways to decide that are common to the two different ways.
+		</p>
+	</dfn>
 </section>
 
 <section id="the_division_rule">
 	<h2>The Division Rule</h2>
 	<p>
-		So far, we've seen the product rule, the sum rule, and the subtraction rule.
-		There's one more fundamental rule to explore. The motivating problem:
+		So far, we've seen the product rule, the sum rule, and the subtraction
+		rule. There's one more fundamental rule to explore. The motivating
+		problem:
 	</p>
-	<figure>
-		<div class="rule">
-			<p>
-				A bricklayer has 6 colored bricks. 4 of the bricks are red, 2 are white.
-				How many possible ways can the bricklayer arrange these bricks?
-			</p>
-		</div>
-	</figure>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			A bricklayer has 6 colored bricks. 4 of the bricks are red, 2 are
+			white. How many possible ways can the bricklayer arrange these
+			bricks?
+		</p>
+	</dfn>
 	<p>
-		From the facts, we know that with each brick laid, there are less bricks to
-		lay. Thus, if all the bricks were of the same color, we have:
+		From the facts, we know that with each brick laid, there are less
+		bricks to lay. Thus, if all the bricks were of the same color, we have:
 	</p>
 	<figure>
 		<div>
@@ -1150,35 +1319,355 @@
 		</div>
 	</figure>
 	<p>
-		possible arrangements. However, the bricks do not all have the same color. 4
-		are red and 2 are white. But, we know that for each of these ${720}$
-		possibilities, the arrangement consists of red and white bricks.
-		Accordingly, to find the number of possibilities, we simply divide the total
-		number of possibilities by the number of possibilities for red bricks times
-		the number of possibilities for the white bricks:
+		possible arrangements. However, the bricks do not all have the same
+		color. 4 are red and 2 are white. But, we know that for each of these
+		${720}$ possibilities, the arrangement consists of red and white
+		bricks. Accordingly, to find the number of possibilities, we simply
+		divide the total number of possibilities by the number of possibilities
+		for red bricks times the number of possibilities for the white bricks:
 	</p>
 	<figure>
 		<div>$$ \dfrac{6!}{2! 4!} = 15 $$</div>
 	</figure>
 	<p>
-		Thus, there are ${15}$ possibilities. This problem demonstrates the division
-		rule:
+		Thus, there are ${15}$ possibilities. This problem demonstrates the
+		division rule:
+	</p>
+	<dfn>
+		<small>Division Rule.</small>
+		<p>
+			If a decision can be made in ${n}$ ways, and for every way ${w,}$
+			exactly ${d}$ of the ${n}$ ways corresponds to way ${w,}$ then there
+			are ${\dfrac{n}{d}}$ ways to make the decision.
+		</p>
+	</dfn>
+</section>
+
+<section id="permutations">
+	<h2>Permutations</h2>
+	<p>Consider the following problem:</p>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			How many different ordered arrangements of the letters ${a,}$ ${b,}$
+			and ${c}$ are possible?
+		</p>
+	</dfn>
+	<p>Directly enumerating the possiblities:</p>
+	<figure>
+		$$ \begin{array}{c:c:c:c} & 1 & 2 & 3 \\ \hline & a & b & c \\ & a & c
+		& b \\ & b & a & c \\ & b & c & a \\ & c & a & b \\ & c & b & a
+		\end{array} $$
+	</figure>
+	<p>
+		we see that there are ${6}$ possibilities. Each of these possibilities
+		is called a <b>permutation</b>.
+	</p>
+	<dfn>
+		<small>Definition: Permutation</small>
+		<p>
+			A <i>permutation</i> of the set ${\{ 1,2,3,\ldots,n \}}$ is a list of
+			its ${n}$ elements where each element appears eactly once in the
+			list. In general, there are:
+		</p>
+		<figure>$$ n(n-1)(n-1) \ldots 3 \cdot 2 \cdot 1 = n! $$</figure>
+		<p>permutations of a set of size ${n.}$</p>
+	</dfn>
+	<p>
+		Permutations are essentially tuples. They are arrangements of the
+		elements of a set where <i>order</i> distinguishes one tuple from
+		another. For example, in the previous problem, the tuple ${(a, b, c)}$
+		is different from the tuple ${(a, c, b).}$
+	</p>
+	<p>Now consider the following problem:</p>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			How many ways are there to order ${2}$ letters out of the ${\{ a, b,
+			c, d\}?}$
+		</p>
+	</dfn>
+	<p>
+		In this counting problem, we're just looking at arranging two letters:
 	</p>
 	<figure>
-		<div class="rule">
-			<p>
-				<span class="topic">Division Rule.</span> If a decision can be made in
-				${n}$ ways, and for every way ${w,}$ exactly ${d}$ of the ${n}$ ways
-				corresponds to way ${w,}$ then there are ${\dfrac{n}{d}}$ ways to make
-				the decision.
-			</p>
-		</div>
+		$$ \begin{array}{c:c:c} & 1 & 2 \\ \hline & a & b \\ & a & c \\ & a & d
+		\\ & b & a \\ & b & c \\ & b & d \\ & c & a \\ & c & b \\ & c & d
+		\end{array} $$
 	</figure>
+	<p>
+		Notice that there are ${9}$ possible arrangements. If the problem
+		instead asked for all four letters, we would have ${4! = 24}$ possible
+		arrangements.
+	</p>
+	<p>This illustrates the formula:</p>
+	<dfn>
+		<small>Permutation: Number of Tuples</small>
+		<p>
+			Given a set of size ${n,}$ choosing ${r}$ elements, the number of
+			tuples where each element ${1, \ldots, r}$ appears exactly once
+			(i.e., no repetition) is given by:
+		</p>
+		<figure>$$ P(n,r) = {^nP}_r = {_nP_r} = \dfrac{n!}{(n-r)!} $$</figure>
+		<p>where ${r \leq n.}$</p>
+	</dfn>
+
+	<section id="permutations_with_repetition">
+		<h4>Permutations with Repetition</h4>
+	</section>
+</section>
+
+<section id="combination">
+	<h2>Combinations</h2>
+	<p>Consider the following problem:</p>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			Given ${5}$ items ${\{ a, b, c, d, e \},}$ how many different groups
+			of ${3}$ can be formed?
+		</p>
+	</dfn>
+	<p>
+		In this question, we see that there are ${5}$ ways to select the
+		initial item, ${4}$ ways to select the next, and ${3}$ ways to select
+		the last. The problem, however, is that we've double counted. 
+	</p>
+	<p>
+		With permutations, we were counting either (1) the number of possible
+		<i>tuples</i>, or (2) the number of possible <i>sequences</i>, given
+		set of ${n}$ unique elements. Many problems, however, ask us to
+		determine the number of <i>subsets</i> given a set of ${n}$ unique
+		elements. Recognizing this difference is helpful for distinguishing
+		between permutations and combinations. Tuples and sequences are
+		inherently <i>ordered</i>, but <i>subsets</i> are mere collections
+		&mdash; there is no notion of order.
+	</p>
+	<dfn>
+		<small>Definition: Combination</small>
+		<p>
+			Given a set of size ${n,}$ choosing ${k}$ elements, the number of
+			subsets with elements ${1, \ldots, k,}$ called <i>combinations</i>,
+			is given by:
+		</p>
+		<div>$$ C(n,k) = \dbinom{n}{k} = \dfrac{n!}{k!(n-k)!} $$</div>
+		<p>where ${k \leq n.}$</p>
+	</dfn>
+</section>
+
+<section id="catalan_numbers">
+	<h2>Catalan Numbers</h2>
+	<p>Consider the following problem:</p>
+	<dfn>
+		<small>Problem</small>
+		<p>
+			How many paths &mdash; where the only legal moves are ${x+1}$ and
+			${y+1.}$ &mdash; are there from ${(0,0)}$ to ${(n,n)}$ without
+			crossing the diagonal?
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/grid.svg' %}"
+				alt="grid"
+				loading="lazy"
+			/>
+		</figure>
+	</dfn>
+	<p>
+		The first step towards solving this problem is finding the total number
+		of ways we can reach the point ${(n,n)}$ from ${(0,0).}$ Since there
+		are only two legal moves, we have ${n}$ ways to do ${y+1,}$ and ${n}$
+		ways to do ${x+1.}$ Thus, we have ${2n!.}$
+	</p>
 </section>
 
 <section id="the_pigeonhole_principle">
 	<h2>The Pigeonhole Principle</h2>
-	<p></p>
+	<p>
+		Say we had ${3}$ pigeons, and ${2}$ holes. Every pigeon must go into
+		one, and only one, hole. The piegeonhole principle states that under
+		these constraints, one hole must house at least two pigeons. This makes
+		sense &mdash; there are more pigeons than holes, so one of the holes
+		must be shared.
+	</p>
+	<dfn>
+		<small>Pigeonhole Principle</small>
+		<p>
+			Given ${n}$ pigeons, each assigned to one of ${m}$ holes, if ${m &lt;
+			n,}$ then there must be some hole with at least ${2}$ pigeons.
+		</p>
+	</dfn>
+	<p>
+		Note what this theorem implies. If we had ${1000}$ pigeons and ${100}$
+		holes, at least one of those ${100}$ holes will hold
+		<i>at least</i> ${2}$ pigeons. It doesn't state that some hole will
+		house exactly ${2}$ pigeons, it merely states that some hole will house
+		<i>at least</i> ${2}$ pigeons.
+	</p>
+	<p>
+		The theorem is not difficult to prove. A simple proof is done by
+		contradiction. Assume for the sake of contraction that each hole has at
+		most ${1}$ pigeon. It follows that number of pigeons, denoted ${n,}$ is
+		the sum of the number of pigeons per hole ${h,}$ denoted ${m.}$
+	</p>
+	<figure>$$ n = \sum\limits_{h} \text{card}(h) = m $$</figure>
+	<p>
+		where ${h}$ is a hole, and ${\text{card}(h)}$ is the number of pigeons
+		in the hole ${h.}$ If there are ${n+1}$ pigeons, then:
+	</p>
+	<figure>$$ n + 1 = \sum\limits_{h} \text{card}(h) \leq m $$</figure>
+	<p>
+		This contradicts the fact that there ${n+1}$ pigeons. Hence, it must be
+		the case that given ${n}$ pigeons, there be at least one hole with more
+		than ${1}$ pigeon.
+	</p>
+	<p>
+		The pigeonhole principle seems simple, but it can lead to some
+		surprising results. For example, from the pigeonhole principle, it
+		follows that there is some pair of non-bald people in Chicago with
+		exactly the same number of hairs on their head. How is this true? Well,
+		there are about ${2.7 \times 10^6}$ people (pigeons) in Chicago. Each
+		person has about ${10^5}$ hairs. Some people have only ${1}$ hair (a
+		particular hole), others have ${2}$ hairs (another hole), and others
+		have ${10^3}$ hairs (yet another hole). Thus, there are roughly
+		${10^5}$ possible holes. Because there are more people (pigeons) than
+		holes (number of hairs), it follows that at least one pair of people
+		have the exact same number of hairs on their head (share a hole).
+	</p>
+	<p>
+		Here's another example. A <i>blue moon</i> is a month where we have two
+		full moons in the same month. This a fairly uncommon occurrence. The
+		lunar cycle usually lasts a month, so most months have exactly one full
+		moon. More specifically, a lunar cycle lasts roughly ${29.53}$ days,
+		and every ${3}$ years, there are just a little over ${37}$ full lunar
+		cycles. Thus, there are at least ${37}$ full moons in ${3}$ years. Now,
+		in ${3}$ years, there are ${36}$ months. This means that by the
+		pigeonhole principle, there is at least one blue moon in every ${3}$
+		year period. What this tells us is that, the saying
+		<q>Once in a blue moon</q> does not denote something that occurs very
+		rarely. Something occuring at least once every three years really isn't
+		all that rare.
+	</p>
+	<p>
+		In general, to use the pigeonhole principle, we want to always answer
+		the following questions before proceeding:
+	</p>
+	<ul>
+		<li>
+			<i>What are the pigeons?</i> In other words, what are the objects
+			we're working with?
+		</li>
+		<li>
+			<i>What are the holes?</i> By <q>hole</q> we mean some set.
+			Importantly, we want to ensure that the holes are all distinct. The
+			set must also be well-defined, in the sense that we can assign
+			objects to it.
+		</li>
+		<li>
+			<i>How are the pigeons assigned to the holes?</i> We want to have
+			some mechanism that can assign at least one object to one hole.
+		</li>
+		<li>
+			<i>How do we know that there are more pigeons than holes?</i> We must
+			prove that there are more objects than there are sets.
+		</li>
+	</ul>
+	<section id="dirichlets_theorem">
+		<h3>Dirichlet's Theorem</h3>
+		<dfn>
+			<small>Dirichlet's Theorem</small>
+			<p>
+				Let ${\alpha}$ be any real number and ${q}$ a positive integer.
+				There exists integers ${n}$ and ${m}$ where ${0 &lt; m \leq q,}$
+				such that:
+			</p>
+			<figure>
+				$$ \left\lvert \alpha - \dfrac{n}{m} \right\rvert \leq
+				\dfrac{1}{mq} $$
+			</figure>
+		</dfn>
+		<p>
+			Dirichlet's theorem is what underlies Diophantine approximation, a
+			technique for approximating real numbers (particularly irrational
+			numbers) with rational numbers. Dirichlet's theorem provides that we
+			can approximate some real number ${\alpha}$ as the number
+			${\dfrac{n}{m}.}$ Provided that the approximation ${\dfrac{n}{m}}$
+			has a denominator that isn't too big, the error, ${\dfrac{1}{mq},}$
+			is quite small.
+		</p>
+		<p>
+			One way to get to this theorem is by first fixing an ${m,}$ then find
+			${n.}$ Doing so, we have:
+		</p>
+		<figure>
+			$$ \alpha \approx \dfrac{n}{m} \equiv n \approx \alpha m $$
+		</figure>
+		<p>
+			Rewriting the theorem's equation in this form, we see that we can
+			approximate ${\alpha}$ by just picking the nearest integer to
+			${\alpha m}$ as ${n.}$ By picking the nearest integer, it follows
+			that distance between ${n}$ and ${\alpha m}$ is at most ${1/2,}$
+			since the integers are evenly spaced.
+		</p>
+		<figure>
+			$$ \lvert n - am \rvert \leq \dfrac{1}{2} \equiv \left\lvert a -
+			\dfrac{n}{m} \right\rvert \leq \dfrac{1}{2m} $$
+		</figure>
+		<p>
+			This, however, is not good enough. What we really wanted was
+			${\dfrac{1}{mq}.}$ To fix this, we must find a a particular ${m}$
+			such that ${\alpha m}$ is actually close to an integer. So, what we
+			can do is consider the possibilities:
+		</p>
+		<figure>
+			$$ \{ \alpha \}, \{ 2\alpha \}, \{ 3\alpha \}, \ldots, \{ q\alpha \}
+			$$
+		</figure>
+		<p>
+			What we want to find is is some number that's within ${\dfrac{1}{q}}$
+			of either ${0}$ or ${1.}$ This is a little too difficult, so what we
+			can do is use a trick: Finding two numbers, ${s}$ and ${t,}$ that are
+			close to each other, instead of ${0}$ or ${1.}$ Why can we use this
+			trick? Because if ${\lvert \{ s \alpha \} - \{ t \alpha \} \rvert
+			\leq \dfrac{1}{q},}$ then ${(s-t) \alpha}$ is within ${\dfrac{1}{q}}$
+			of an integer.
+		</p>
+		<p>Let's include ${0}$ to our list of possibilities:</p>
+		<figure>
+			$$ 0, \{ \alpha \}, \{ 2\alpha \}, \{ 3\alpha \}, \ldots, \{ q\alpha
+			\} $$
+		</figure>
+		<p>
+			This yields ${q+1}$ numbers, all between ${0}$ and ${1.}$ We want to
+			show that two numbers in this list are close to each other. This is
+			an example of a <b>packing problem</b> &mdash; trying to pack as many
+			objects (here, numbers) within a particular bound. In this case, we
+			want to distribute the possibilities into intervals:
+		</p>
+		<figure>
+			$$ \left[0, \dfrac{1}{q}\right], \left[\dfrac{1}{q},
+			\dfrac{2}{q}\right], \ldots \left[\dfrac{q-1}{q},1\right] $$
+		</figure>
+		<p>
+			Viewed in this way, we see that there are ${q}$ intervals and ${q+1}$
+			numbers. By the pigeonhole principle, at least two of the numbers
+			must be in the same interval. Since each of the intervals are of
+			length ${\dfrac{1}{q},}$ if two numbers are in the same interval,
+			then they must be within ${\dfrac{1}{q}}$ of each other.
+		</p>
+		<p>With this fact, we can infer that:</p>
+		<figure>
+			$$ \lvert \{ s\alpha \} - \{ t \alpha \} \rvert \leq \dfrac{1}{q} $$
+		</figure>
+		<p>
+			Suppose ${m = |s - t|.}$ Then it follows that ${| m \alpha |}$ is
+			within ${\dfrac{1}{q}}$ of some integer. If ${n}$ is that integer,
+			then:
+		</p>
+		<figure>
+			$$ \left\lvert \alpha - \dfrac{n}{m} \right\rvert \leq \dfrac{1}{mq}
+			$$
+		</figure>
+	</section>
 </section>
 
 {% endblock %}
