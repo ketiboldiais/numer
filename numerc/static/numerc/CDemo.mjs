@@ -163,11 +163,13 @@ class CDemo {
 		const colors = {
 			strokeColor: "var(--textColor)",
 			nodeStrokeColor: "var(--textColor)",
-			circleFillColor: d3.scaleOrdinal(d3.schemePastel1),
+			nodeColor: "#F9F3DF",
+			leafColor: "#D5EEBB",
 			textColor: "var(--textColor)",
-			edgeLabelColor: "var(--darkRed)",
+			edgeLabelColor: "tomato",
 			levelTextColor: "teal",
-			heightTextColor: "coral",
+			heightMarkColor: "#B4CFB0",
+			depthMarkColor: "#CDB699",
 		};
 		const margin = {
 			top: 35,
@@ -208,6 +210,7 @@ class CDemo {
 			.append("g")
 			.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+		// Append SVG definition markers
 		const svgDefs = svg.append("svg:defs");
 		svgDefs
 			.selectAll("marker")
@@ -238,7 +241,7 @@ class CDemo {
 				}
 			};
 			childCount(0, root);
-			const newHeight = d3.max(levelWidth) * 40; // 30 pixels per line
+			const newHeight = d3.max(levelWidth) * 30; // 30 pixels per line
 			return newHeight;
 		}
 
@@ -250,9 +253,10 @@ class CDemo {
 		const treeStructure = d3
 			.tree()
 			.size([dimensions.width, treeSize()])
-			.separation((a, b) => (a.parent == b.parent ? 2 : 3));
+			.separation((a, b) => (a.parent == b.parent ? 1 : 1.2));
 		treeStructure(root);
 
+		// For left- or right-skewed trees, perform the following
 		(function () {
 			root.descendants().forEach((d) => (d.y = d.depth * 50));
 			if (demoObj.skew == "right") {
@@ -262,6 +266,96 @@ class CDemo {
 			}
 		})();
 
+		// Leveled
+		// if data object has property leveled: true, level numbers are added
+		function nodesByLevel(nodeList) {
+			const arr = [];
+			let depth = nodeList[0].depth;
+			arr.push(nodeList[0]);
+			for (let i = 0; i < nodeList.length; i++) {
+				if (nodeList[i].depth > depth) {
+					arr.push(nodeList[i]);
+					depth = nodeList[i].depth;
+				}
+			}
+			return arr;
+		}
+
+		function levelMark() {
+			if (demoObj.leveled) {
+				const levelNums = svg
+					.append("g")
+					.selectAll("text")
+					.data(nodesByLevel(root.descendants()))
+					.enter()
+					.append("text")
+					.attr("x", 0)
+					.attr("y", (d) => d.y + 3)
+					.text((d) => d.depth + 1)
+					.attr("text-anchor", "middle")
+					.attr("fill", colors.levelTextColor)
+					.style("font-family", "Fira")
+					.style("font-size", dimensions.levelFontSize);
+			}
+		}
+		levelMark();
+
+		function depthMark() {
+			if (demoObj.depth) {
+				const depthNums = svg.append("g");
+				depthNums
+					.selectAll("text")
+					.data(nodesByLevel(root.descendants()))
+					.enter()
+					.append("text")
+					.attr("x", 0)
+					.attr("y", (d) => d.y + 3)
+					.text((d) => d.depth)
+					.attr("text-anchor", "middle")
+					.attr("fill", colors.depthMarkColor)
+					.style("font-family", "CMU")
+					.style("font-size", dimensions.levelFontSize);
+				depthNums
+					.selectAll("line")
+					.data(nodesByLevel(root.descendants()))
+					.enter()
+					.append("line")
+					.attr("x1", (d) => -dimensions.width + dimensions.width + 10)
+					.attr("y1", (d) => d.y)
+					.attr("x2", (d) => dimensions.width)
+					.attr("y2", (d) => d.y)
+					.attr("stroke", colors.depthMarkColor);
+			}
+		}
+		depthMark();
+
+		if (demoObj.heightMarked) {
+			const length = nodesByLevel(root.descendants()).length - 1;
+			const heightNums = svg.append("g");
+			heightNums
+				.selectAll("text")
+				.data(nodesByLevel(root.descendants()))
+				.enter()
+				.append("text")
+				.attr("x", dimensions.width)
+				.attr("y", (d) => d.y + 3)
+				.text((d) => length - d.depth)
+				.attr("text-anchor", "middle")
+				.attr("fill", colors.heightMarkColor)
+				.style("font-family", "Fira")
+				.style("font-size", dimensions.levelFontSize);
+			heightNums
+				.selectAll("line")
+				.data(nodesByLevel(root.descendants()))
+				.enter()
+				.append("line")
+				.attr("x1", (d) => -dimensions.width + dimensions.width)
+				.attr("y1", (d) => d.y)
+				.attr("x2", (d) => dimensions.width - 10)
+				.attr("y2", (d) => d.y)
+				.attr("stroke", colors.heightMarkColor);
+		}
+
 		// Add links
 		const links = svg.append("g");
 		const physicalLink = links
@@ -269,13 +363,16 @@ class CDemo {
 			.data(root.links())
 			.enter()
 			.append("line")
+			.attr("display", (d) =>
+				d.source.data.display || d.target.data.display ? "none" : "initial"
+			)
 			.attr("x1", (d) => d.source.x)
 			.attr("y1", (d) => d.source.y)
 			.attr("x2", (d) => d.target.x)
 			.attr("y2", (d) => d.target.y)
 			.attr("stroke", (d) => {
-				if (d.target.data.edgeMark == "red") {
-					return "red";
+				if (d.target.data.path) {
+					return colors.edgeLabelColor;
 				} else {
 					return colors.strokeColor;
 				}
@@ -285,7 +382,13 @@ class CDemo {
 					return "url(#end)";
 				}
 			})
-			.attr("stroke-width", dimensions.edgeStroke);
+			.attr("stroke-width", (d) => {
+				if (d.target.data.path) {
+					return 3;
+				} else {
+					return dimensions.edgeStroke;
+				}
+			});
 
 		// Edge label
 		// edge labels included only if an edge has edgeLabel: property set
@@ -311,61 +414,21 @@ class CDemo {
 			.selectAll("circle")
 			.data(root.descendants())
 			.enter()
+			.filter((d) => !d.data.display)
 			.append("circle")
 			.attr("class", "treeNode")
 			.attr("cx", (d) => d.x)
 			.attr("cy", (d) => d.y)
 			.attr("r", dimensions.radius)
-			.attr("fill", (d) => colors.circleFillColor(d.depth))
+			.attr("fill", (d) => {
+				if (d.data.focus) {
+					return `${d.data.focus}`;
+				} else {
+					return d.height == 0 ? colors.leafColor : colors.nodeColor;
+				}
+			})
 			.attr("stroke", colors.nodeStrokeColor)
 			.attr("stroke-width", dimensions.strokeWidth);
-
-		// Leveled
-		// if data object has property leveled: true, level numbers are added
-		function nodesByLevel(nodeList) {
-			const arr = [];
-			let depth = nodeList[0].depth;
-			arr.push(nodeList[0]);
-			for (let i = 0; i < nodeList.length; i++) {
-				if (nodeList[i].depth > depth) {
-					arr.push(nodeList[i]);
-					depth = nodeList[i].depth;
-				}
-			}
-			return arr;
-		}
-
-		if (demoObj.leveled) {
-			const levelNums = svg
-				.append("g")
-				.selectAll("text")
-				.data(nodesByLevel(root.descendants()))
-				.enter()
-				.append("text")
-				.attr("x", 0)
-				.attr("y", (d) => d.y + 3)
-				.text((d) => d.depth + 1)
-				.attr("text-anchor", "middle")
-				.attr("fill", colors.levelTextColor)
-				.style("font-family", "Fira")
-				.style("font-size", dimensions.levelFontSize);
-		}
-
-		if (demoObj.heightMarked) {
-			const heightNums = svg
-				.append("g")
-				.selectAll("text")
-				.data(nodesByLevel(root.descendants()))
-				.enter()
-				.append("text")
-				.attr("x", dimensions.width - 5)
-				.attr("y", (d) => d.y + 3)
-				.text((d) => d.depth)
-				.attr("text-anchor", "middle")
-				.attr("fill", colors.heightTextColor)
-				.style("font-family", "Fira")
-				.style("font-size", dimensions.levelFontSize);
-		}
 
 		// Append labels
 		const labels = svg.append("g");
@@ -373,6 +436,7 @@ class CDemo {
 			.selectAll("text")
 			.data(root)
 			.enter()
+			.filter((d) => !d.data.display)
 			.append("text")
 			.text((d) => d.id)
 			.attr("x", (d) => d.x)
@@ -394,8 +458,6 @@ class CDemo {
 			.attr("fill", colors.textColor)
 			.style("font-family", "Fira")
 			.style("font-size", dimensions.fontSize);
-
-
 	}
 
 	renderLinkedList(obj) {
@@ -414,20 +476,23 @@ class CDemo {
 			width: userWidth - margin.left - margin.right,
 			height: 50 - margin.top - margin.bottom,
 		};
-	
+
 		// X Scale
 		const xScale = d3
 			.scaleBand()
 			.domain(d3.range(numberOfNodes))
 			.rangeRound([0, dimensions.width])
 			.paddingInner(0.5);
-	
+
 		const svg = linkedList
 			.append("div")
 			.classed("svg-container", true)
 			.classed("linkedList", true)
-			.style('padding-bottom', obj.bottomPadding ? obj.bottomPadding : '15%')
-			.style('width', obj.divWidth ? obj.divWidth : '60%')
+			.style(
+				"padding-bottom",
+				obj.bottomPadding ? obj.bottomPadding : "15%"
+			)
+			.style("width", obj.divWidth ? obj.divWidth : "60%")
 			.classed("singleNode", obj.nodes.length == 1)
 			.append("svg")
 			.attr("preserveAspectRatio", "xMinYMin meet")
@@ -439,7 +504,7 @@ class CDemo {
 			)
 			.classed("svg-content-responsive", true)
 			.append("g")
-			.attr("transform", `translate(${numberOfNodes*5}, ${margin.top})`);
+			.attr("transform", `translate(${numberOfNodes * 5}, ${margin.top})`);
 		const svgDefs = svg.append("svg:defs");
 		svgDefs
 			.selectAll("marker")
@@ -464,16 +529,16 @@ class CDemo {
 				return `translate(${xScale(i)}, 0)`;
 			})
 			.attr("y", 0);
-	
+
 		const deletedNode = nodeGroup
 			.filter((d) => d.deleted)
 			.classed("deleted-node", true);
-	
+
 		// Data Field
 		const dataField = nodeGroup.append("g").classed("data-field", true);
-	
+
 		// Deleted Node
-	
+
 		const dataFieldRectangle = dataField
 			.append("rect")
 			.attr("width", xScale.bandwidth())
@@ -486,7 +551,7 @@ class CDemo {
 			.attr("x", xScale.bandwidth() / 2)
 			.attr("y", 7)
 			.text((d) => d.data);
-	
+
 		// Indexing
 		if (obj.indexed) {
 			const index = dataField
@@ -498,7 +563,7 @@ class CDemo {
 				.attr("y", 20)
 				.text((d, i) => i);
 		}
-	
+
 		// Next Field
 		const nextField = nodeGroup
 			.append("g")
@@ -508,7 +573,7 @@ class CDemo {
 			.append("rect")
 			.attr("width", xScale.bandwidth() / 2)
 			.attr("height", 10);
-	
+
 		// arrow
 		const link = nodeGroup
 			.filter((d) => !d.alone)
@@ -516,10 +581,13 @@ class CDemo {
 			.classed("link", true)
 			.attr("x1", xScale.bandwidth() + xScale.bandwidth() / numberOfNodes)
 			.attr("y1", 5)
-			.attr("x2", xScale.bandwidth() + (xScale.bandwidth() - numberOfNodes))
+			.attr(
+				"x2",
+				xScale.bandwidth() + (xScale.bandwidth() - numberOfNodes)
+			)
 			.attr("y2", 5)
 			.attr("marker-end", "url(#end)");
-	
+
 		const annotation = nextField
 			.filter((d) => d.annotate)
 			.append("text")
@@ -531,7 +599,7 @@ class CDemo {
 			.text((d, i) => d.annotate);
 	}
 
-	renderHash(obj) { 
+	renderHash(obj) {
 		this.renderLinkedList(obj);
 	}
 }
