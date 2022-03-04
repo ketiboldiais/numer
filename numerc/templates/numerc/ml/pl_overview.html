@@ -164,353 +164,344 @@
 			choices about what to do with the AST. In some
 		</p>
 	</section>
-</section>
 
-<section class="outline">
-	<div>
-		<ul>
+	<section id="lexing">
+		<h3>Stage 1: Lexical analysis</h3>
+		<p>
+			The compiler's first job is <b>front-end implementation</b>. This is
+			where the compiler must organize the data representing the user's
+			code so that it's ready for the next stage. The first step is
+			<i>scanning</i>, also called <i>lexing</i>.
+		</p>
+		<p>
+			A program called the <b>lexer</b> (or <i>scanner</i>), takes a stream
+			of characters and groups them together into <b>tokens</b> &mdash; the
+			equivalent of a <q>word</q> in the language (tokens can be one or
+			many characters long).
+		</p>
+	</section>
+
+	<section id="parsing">
+		<h3>Stage 2: Parsing</h3>
+		<p>
+			<b>Parsing</b> is the stage where a language's syntax is given
+			grammar.
+		</p>
+		<p>
+			The parser takes a stream of tokens and builds a tree structure
+			representing the grammar's nested structure.
+		</p>
+		<p>
+			<b>Grammar</b> is a language's set of rules for how larger
+			expressions and statements are composed from tokens.
+		</p>
+		<p>
+			The parser's output is a <b>parse tree</b> (a.k.a.
+			<b>abstract syntax tree (AST)</b>).
+		</p>
+	</section>
+
+	<section id="static_analysis">
+		<h3>State 3: Static Analysis</h3>
+		<p>
+			After lexing and parsing, the program has
+			<b>syntactic structure</b>, but it doesn't have
+			<b>semantic structure</b>. E.g., we have <var>a &lt; b</var> but we
+			don't know what <var>a</var> or <var>b</var> refer to.
+		</p>
+		<p>
+			To determine these meanings, the language applies its
+			<b>binding</b> or <b>resolution</b> rules. The language looks at each
+			identifier and determines where that particular name is defined, then
+			links the two. In day-to-day programming, this is where the notion of
+			<b>scope</b> is derived from &mdash; the areas of source code where a
+			particular variable name can be used or is <q>visible</q>.
+		</p>
+		<p>
+			If the language is <b>statically-typed</b>, the language will perform
+			compile-time type checking before it links the identifier and names.
+			If the language's type-checking rules prohibit the particular
+			operation we want, the language returns a <b>type error</b>.
+		</p>
+		<p>
+			Once the language has determined semantic meaning, it must write
+			these meanings somewhere for later usage. There are a variety of
+			possible approaches:
+		</p>
+		<ol>
 			<li>
-				The compiler's first job is <b>front-end implementation</b>. This
-				is where the compiler must organize the data representing the
-				user's code so that it's ready for the next stage.
+				Storing the semantic meanings directly as <b>attributes</b> on the
+				AST. With this approach, nodes in the AST are implemented with an
+				extra tree for this data writing.
 			</li>
-			<li>Stage 1: Lexical analysis</li>
-			<ul>
-				<li>
-					The first step is <i>scanning</i>, also called <i>lexing</i>.
-				</li>
-				<li>
-					A program called the <b>lexer</b> (or <i>scanner</i>), takes a
-					stream of characters and groups them together into
-					<b>tokens</b> &mdash; the equivalent of a <q>word</q> in the
-					language (tokens can be one or many characters long).
-				</li>
-			</ul>
-			<li>Stage 2: Parsing</li>
-			<ul>
-				<li>
-					<b>Parsing</b> is the stage where a language's syntax is given
-					grammar.
-				</li>
-				<li>
-					The parser takes a stream of tokens and builds a tree structure
-					representing the grammar's nested structure.
-				</li>
-				<li>
-					<b>Grammar</b> is a language's set of rules for how larger
-					expressions and statements are composed from tokens.
-				</li>
-				<li>
-					The parser's output is a <b>parse tree</b> (a.k.a.
-					<b>abstract syntax tree (AST)</b>).
-				</li>
-			</ul>
-			<li>State 3: Static Analysis</li>
-			<ul>
-				<li>
-					After lexing and parsing, the program has
-					<b>syntactic structure</b>, but it doesn't have
-					<b>semantic structure</b>. E.g., we have <var>a &lt; b</var> but
-					we don't know what <var>a</var> or <var>b</var> refer to.
-				</li>
-				<li>
-					To determine these meanings, the language applies its
-					<b>binding</b> or <b>resolution</b> rules. The language looks at
-					each identifier and determines where that particular name is
-					defined, then links the two. In day-to-day programming, this is
-					where the notion of <b>scope</b> is derived from &mdash; the
-					areas of source code where a particular variable name can be used
-					or is <q>visible</q>.
-				</li>
-				<li>
-					If the language is <b>statically-typed</b>, the language will
-					perform compile-time type checking before it links the identifier
-					and names. If the language's type-checking rules prohibit the
-					particular operation we want, the language returns a
-					<b>type error</b>.
-				</li>
-				<li>
-					Once the language has determined semantic meaning, it must write
-					these meanings somewhere for later usage. There are a variety of
-					possible approaches:
-				</li>
-				<ol>
-					<li>
-						Storing the semantic meanings directly as <b>attributes</b> on
-						the AST. With this approach, nodes in the AST are implemented
-						with an extra tree for this data writing.
-					</li>
-					<li>
-						Storing the data in a separate data structure called the
-						<b>lookup table</b>. This approach itself has a variety of
-						implementations. One way is to create a table where the keys
-						are the names of variables and declarations, in which case it's
-						called a <b>symbol table</b>. Eacy key is associated with a
-						value, and usage is a matter of looking up the key-value pair.
-					</li>
-					<li>
-						The third approach is to completely restructure the AST based
-						on the semantic determinations. Under this approach, the AST
-						serves double-duty &mdash; it provides both syntatic and
-						semantic structure.
-					</li>
-				</ol>
-			</ul>
-			<li>The compiler's second job is <b>mid-end implementation</b>.</li>
-			<ul>
-				<li>
-					Source code must be translated into a language that can be
-					understood by the architecture the program will run in &mdash;
-					the architecture's <b>assembly language</b>.
-				</li>
-				<li>
-					Many compilers store the results of the front end stage in the
-					form of an <b>intermediate representation (IR)</b>. With one IR,
-					the language can execute on, or <i>target</i>, multiple
-					platforms. For example, let's say we write some language called
-					Eggcorn. We want it to run on the architectures: x86, ARM, MIPS,
-					and RISC-V. Without an intermediate representation, we would have
-					to write ${4}$ different compilers &mdash; one for x86, one for
-					ARM, one for MIPS, and one for RISC-V. But, with intermediate
-					representation, we can just write one compiler with multiple
-					backends. Such a compiler would have one front-end to store the
-					front-end results as an IR, and four different backends for each
-					of the architectures &mdash; one backend for x86, one backend for
-					ARM, one for MIPS, and one for RISC-V.
-				</li>
-				<li>
-					Intermediate representation also serves another purpose &mdash;
-					<b>optimization</b>. The front-end's results already have
-					syntactical and semantic structure, so why not take advantage of
-					that? Indeed, the language market's competition today is centered
-					on how best to take advantage of this opportunity, particularly
-					given increased processing speeds and memory capacity. For
-					example, if the user writes <var>a = 2 * 3.14 * 1</var>, we have
-					enough syntax and semantics for the compiler to determine
-					<var>a = 6.28</var>. Moving these calculations to the compiler
-					rather than runtime has a significant impact on performance. By
-					moving these executions to the compiler, the developer takes the
-					time and resources cost for these computations, leaving the user
-					to enjoy the sweet fruits of a fast and correct program.
-				</li>
-			</ul>
-			<li>The final step is the back-end implementation.</li>
-			<ul>
-				<li>
-					Here, the compiler performs <b>code generation (code gen)</b>.
-					The intermediate representation is taken as an input, and outputs
-					primitive assembly-like instructions that the CPU can run.
-				</li>
-				<li>
-					To perform code generation, the language designer must make a
-					decision: Should the output instructions be aimed at a
-					<b>real CPU</b> or a <b>virtual CPU</b>? If the instructions are
-					aimed at a real CPU, then the output instructions are called
-					<b>real machine codes</b> or <b>native code</b>. With native
-					code, the instructions are loaded directly into the CPU. This
-					leads to breathtakingly fast execution speeds. For example, Clang
-					compiles C and C++ into native code, and we all know how fast C
-					and C++ execute. Compiling to native code, however, is
-					<em>a lot</em> of work. Architectures today have massive
-					instruction sets, complex pipelines, alongside various
-					idiosyncracies for backwards compatibility. Moreover, if we want
-					to output native code, we'll have to write several of these
-					massive programs, since there are different architectures. This
-					is why Clang has so many backends: There's ARM 32-bit Clang, ARM
-					64-bit Clang, Clang x86-64, RISC-V 32 Clang, RISC-V 64 Clang, and
-					so on. The same goes for the gcc compiler: There's ARM 32-bit
-					gcc, ARM 64-bit gcc, AVR gcc, x86 gcc, x86-64 gcc, Kalray MPPA
-					gcc, MIPS gcc, MRISC32 gcc, MSP gcc, nanoMIPS gcc, RISC-V gcc,
-					s390x gcc, etc. <q>A lot of work</q> is an understatement. It
-					takes thousands of very smart developers and many years to create
-					these long rosters.
-				</li>
-				<li>
-					To overcome this barrier, computer scientists like Martin
-					Richards (the inventor of BCPL, the grandmother of C through its
-					daughter B) and Niklaus Wirth (the inventor of Pascal) wrote
-					compilers that produced <b>virtual machine code</b> &mdash;
-					instructions that target <i>virtual CPUs</i>. Originally called
-					<b>p-code (portable code)</b>, we call such instructions
-					<b>bytecode</b> today because each instruction is usually exactly
-					${1}$ byte long.
-				</li>
-				<li>
-					If we output to bytecode, then we have another job &mdash;
-					translate into machine code. Again there are two options: (1)
-					write a smaller compiler that converts the bytecode into native
-					code, or (2) write a language virtual machine.
-				</li>
-				<li>
-					Mini-compiler approach: At the end of the day, each architecture
-					must still be targeted. However, with more and more intermediate
-					representations, the more of the earlier phases can be shared
-					across architectures. This makes the architecture targeting phase
-					much smaller and easier to manage. The cost: optimizations get
-					very tricky. Procedures for allocating registers and selecting
-					instructions are most efficient when we provide data about a
-					particular architecture, and writing a mini-compiler requires
-					gathering that data and knowing how to leverage them. This is
-					very much a skilled art, and takes a great deal of trial and
-					error &mdash; i.e., experience.
-				</li>
-				<li>
-					Language virtual machine approach: With the virtual machine
-					approach, we emulate a hypothetic chip supporting a particular
-					architecture at run time. This hypothetical chip understands our
-					bytcode, so we don't need to translate into native code ourselves
-					necessarily. The cost: Running bytecode in a virtual machine is
-					slower than running native code. Because of this cost, many
-					compiler designers using the virtual machine approach spend a
-					substantial amount of time looking for ways to move as much
-					processing to compile time rather than runtime. Languages that
-					use the virtual machine approach include Java, JavaScript, and
-					Python.
-				</li>
-			</ul>
-			<li>Ending: Runtime</li>
-			<ul>
-				<li>
-					Once the compiler has completed code generation, we're left with
-					a set of instructions ready for execution. All that's left to do
-					is to <i>run</i> the instructions. If the instructions are in
-					native code, the operating system is simply told to execute. For
-					example, in C, we might write <var><mark>./MyProgram</mark></var
-					>. If the instructions are in virtual machine code, we would
-					start the virtual machine and the load the instructions there.
-					For example, in Java, we might write
-					<var><mark>java MyProgram</mark></var
-					>.
-				</li>
-				<li>
-					For most languages, there are other processes running in the
-					background while the program we wrote runs. For example, if the
-					language provides some form of garbage collection, the garbage
-					collector's instructions are also included in our instruction
-					set. All of these instructions put together is called
-					<b>runtime</b>. In fully compled languages, for example Go, the
-					code comprising runtime &mdash; the instructions for our program,
-					as well as the instructions for services like garbage collection
-					&mdash; are kept in the <b>executable.</b> In other languages
-					like Java, Python, and JavaScript, the executable consists only
-					of the instructions for a program, and instructions for
-					language-provided services are kept in the virtual machine.
-				</li>
-			</ul>
-			<li>Alternative Approaches</li>
-			<ul>
-				<li>
-					The approach above provides a broad overview for most languages,
-					but not every language takes this path.
-				</li>
-				<li>
-					C, for example, was designed with a technique called
-					<b>syntax-directed translation</b>, which is best implemented a
-					compling technique called <b>single-pass compiling</b>. In
-					single-pass compiling, the processes of parsing, static analysis,
-					and code generation are woven together, avoiding the use of
-					intermediate representations or additional data structures like a
-					lookup table. Because these additional data structures do not
-					exist, there's no way to revisit code parsed earlier, since it
-					wasn't saved. This in turn means that to parse an expression, the
-					language must know enough about the expression to continue. This
-					is why we cannot call a function in C before (1) defining it, or
-					(2) providing a forward declaration (a.k.a., a
-					<i>function prototype</i>). Why avoid additional data structures?
-					Because C was developed in the early 1970s, when memory was
-					extremely limited. Compilers couldn't hold an entire source file
-					in memory, let alone an entire program. Additional data
-					structures simply weren't feasible.
-				</li>
-				<li>
-					Some languages use an approach called
-					<b>tree-walk interpretation</b> &mdash; executing the code as
-					soon as an AST is produced. This is approach is usually used in
-					early experimentation and testing, rather than production.
-				</li>
-				<li>
-					Yet another approach is <b>transpiling</b>. Instead of writing
-					our own intermediate representation, we have our language compile
-					into another <i>source language</i> like C, Java, or JavaScript.
-					With this approach, we don't have to write our own backends.
-					Instead, we rely on the backends already written for that source
-					language. For example, TypeScript is a language that transpiles
-					to JavaScript. Babel is transpiler that transpiles ES6 JavaScript
-					into ES5 JavaScript. Historically, many compilers provided ways
-					to transpile source code into JavaScript, given how JavaScript's
-					ubiquity with web development. This has changed, with many
-					compilers now provide ways to transpile into WebAssembly.
-				</li>
-				<li>
-					Arguably, the most sophisticated and complex approach is
-					<b>Just-in-time Compilation (JIT)</b>. With JIT, we use the
-					virtual machine approach. The source code is saved as bytecode,
-					then loaded into a virtual machine, e.g., Java's HotSpot Virtual
-					Machine (JVM), or Microsoft's Common Language Runtime (CLR), or
-					some JavaScript engine like Google's V8. Inside the virtual
-					machine is a special program &mdash; the JIT compiler &mdash;
-					that compiles the bytecode on the fly <em>after</em> the program
-					has started, and only compiles instructions as they're needed.
-					The output of these on the fly (or <q>just-in-time</q>)
-					compilations are faster instructions, typically the CPU's native
-					instructions. When the JIT compiler reaches some instruction it's
-					seen before, it uses the previously-compiled native instruction,
-					leading to much faster executions. This opens up a whole new
-					world of optimization inaccessible to the usual compilers, e.g.,
-					inlining frequently used functions.
-				</li>
-			</ul>
-			<li>Compilers vs. Interpreters</li>
-			<ul>
-				<li>
-					A <b>compiler</b> is a program that takes source code and
-					translates it into some other form, but does not execute the
-					program. <i>Compiling</i> refers to the implementation technique
-					embodied in this program &mdash; source code input, some other
-					form of code output.
-				</li>
-				<li>
-					An <b>interpreter</b> is a program that takes source code and
-					executes it immediately. That process may or may not including
-					compiling. <i>Interpreting</i> refers to the implementation
-					technique embodied in this program &mdash; source code input,
-					execute.
-				</li>
-				<li>
-					This means that some programs are compilers but not interpreters,
-					some programs are interpreters but not compilers, and some
-					programs are both compilers and interpreters.
-				</li>
-				<li>
-					For example, Clang and GCC are compilers that take C code and
-					comple it to machine code. Cint and PicoC, however, are
-					interpeters &mdash; they take C code and execute. Similarly, the
-					Ruby MRI (Ruby's original implementation) took source code,
-					parsed it, and executed it directly by traversing the output AST.
-					This is clearly an interpreter.
-				</li>
-				<li>
-					Then there are implementations that are both interpreters and
-					compilers. For example, when a Python program is run with
-					CPython, the code is parsed, translated into bytecode, and
-					executed inside a virtual machine. Thus, CPython is both an
-					interpreter and a compiler, given how it's translating source
-					code into some other code form, then executing.
-				</li>
-				<li>
-					All of these examples illustrate why the purported distinction
-					between an <q>interpreted language</q> and a
-					<q>compiled language</q> are meaningless and unhelpful.
-					Introductory programming courses and beginner tutorials introduce
-					these distinctions to reduce complexity and to satisfy lingering
-					curiosity and confusion. The seasoned programmer, however, knows
-					that the right question to ask is not whether the language is
-					compiled or interpreted, but rather how the language is
-					implemented.
-				</li>
-			</ul>
-		</ul>
-	</div>
+			<li>
+				Storing the data in a separate data structure called the
+				<b>lookup table</b>. This approach itself has a variety of
+				implementations. One way is to create a table where the keys are
+				the names of variables and declarations, in which case it's called
+				a <b>symbol table</b>. Eacy key is associated with a value, and
+				usage is a matter of looking up the key-value pair.
+			</li>
+			<li>
+				The third approach is to completely restructure the AST based on
+				the semantic determinations. Under this approach, the AST serves
+				double-duty &mdash; it provides both syntatic and semantic
+				structure.
+			</li>
+		</ol>
+	</section>
+
+	<section id="mid_end_implementation">
+		<h3>Mid-end Implementation</h3>
+		<p>
+			Source code must be translated into a language that can be understood
+			by the architecture the program will run in &mdash; the
+			architecture's
+			<b>assembly language</b>.
+		</p>
+		<p>
+			Many compilers store the results of the front end stage in the form
+			of an <b>intermediate representation (IR)</b>. With one IR, the
+			language can execute on, or <i>target</i>, multiple platforms. For
+			example, let's say we write some language called Eggcorn. We want it
+			to run on the architectures: x86, ARM, MIPS, and RISC-V. Without an
+			intermediate representation, we would have to write ${4}$ different
+			compilers &mdash; one for x86, one for ARM, one for MIPS, and one for
+			RISC-V. But, with intermediate representation, we can just write one
+			compiler with multiple backends. Such a compiler would have one
+			front-end to store the front-end results as an IR, and four different
+			backends for each of the architectures &mdash; one backend for x86,
+			one backend for ARM, one for MIPS, and one for RISC-V.
+		</p>
+		<p>
+			Intermediate representation also serves another purpose &mdash;
+			<b>optimization</b>. The front-end's results already have syntactical
+			and semantic structure, so why not take advantage of that? Indeed,
+			the language market's competition today is centered on how best to
+			take advantage of this opportunity, particularly given increased
+			processing speeds and memory capacity. For example, if the user
+			writes <var>a = 2 * 3.14 * 1</var>, we have enough syntax and
+			semantics for the compiler to determine <var>a = 6.28</var>. Moving
+			these calculations to the compiler rather than runtime has a
+			significant impact on performance. By moving these executions to the
+			compiler, the developer takes the time and resources cost for these
+			computations, leaving the user to enjoy the sweet fruits of a fast
+			and correct program.
+		</p>
+	</section>
+
+	<section id="backend_implementation">
+		<h3>Backend Implementation</h3>
+		<p>
+			Here, the compiler performs <b>code generation (code gen)</b>. The
+			intermediate representation is taken as an input, and outputs
+			primitive assembly-like instructions that the CPU can run.
+		</p>
+		<p>
+			To perform code generation, the language designer must make a
+			decision: Should the output instructions be aimed at a
+			<b>real CPU</b> or a <b>virtual CPU</b>? If the instructions are
+			aimed at a real CPU, then the output instructions are called
+			<b>real machine codes</b> or <b>native code</b>. With native code,
+			the instructions are loaded directly into the CPU. This leads to
+			breathtakingly fast execution speeds. For example, Clang compiles C
+			and C++ into native code, and we all know how fast C and C++ execute.
+			Compiling to native code, however, is <em>a lot</em> of work.
+			Architectures today have massive instruction sets, complex pipelines,
+			alongside various idiosyncracies for backwards compatibility.
+			Moreover, if we want to output native code, we'll have to write
+			several of these massive programs, since there are different
+			architectures. This is why Clang has so many backends: There's ARM
+			32-bit Clang, ARM 64-bit Clang, Clang x86-64, RISC-V 32 Clang, RISC-V
+			64 Clang, and so on. The same goes for the gcc compiler: There's ARM
+			32-bit gcc, ARM 64-bit gcc, AVR gcc, x86 gcc, x86-64 gcc, Kalray MPPA
+			gcc, MIPS gcc, MRISC32 gcc, MSP gcc, nanoMIPS gcc, RISC-V gcc, s390x
+			gcc, etc. <q>A lot of work</q> is an understatement. It takes
+			thousands of very smart developers and many years to create these
+			long rosters.
+		</p>
+		<p>
+			To overcome this barrier, computer scientists like Martin Richards
+			(the inventor of BCPL, the grandmother of C through its daughter B)
+			and Niklaus Wirth (the inventor of Pascal) wrote compilers that
+			produced
+			<b>virtual machine code</b> &mdash; instructions that target
+			<i>virtual CPUs</i>. Originally called <b>p-code (portable code)</b>,
+			we call such instructions <b>bytecode</b> today because each
+			instruction is usually exactly ${1}$ byte long.
+		</p>
+		<p>
+			If we output to bytecode, then we have another job &mdash; translate
+			into machine code. Again there are two options: (1) write a smaller
+			compiler that converts the bytecode into native code, or (2) write a
+			language virtual machine.
+		</p>
+		<p>
+			Mini-compiler approach: At the end of the day, each architecture must
+			still be targeted. However, with more and more intermediate
+			representations, the more of the earlier phases can be shared across
+			architectures. This makes the architecture targeting phase much
+			smaller and easier to manage. The cost: optimizations get very
+			tricky. Procedures for allocating registers and selecting
+			instructions are most efficient when we provide data about a
+			particular architecture, and writing a mini-compiler requires
+			gathering that data and knowing how to leverage them. This is very
+			much a skilled art, and takes a great deal of trial and error &mdash;
+			i.e., experience.
+		</p>
+		<p>
+			Language virtual machine approach: With the virtual machine approach,
+			we emulate a hypothetic chip supporting a particular architecture at
+			run time. This hypothetical chip understands our bytcode, so we don't
+			need to translate into native code ourselves necessarily. The cost:
+			Running bytecode in a virtual machine is slower than running native
+			code. Because of this cost, many compiler designers using the virtual
+			machine approach spend a substantial amount of time looking for ways
+			to move as much processing to compile time rather than runtime.
+			Languages that use the virtual machine approach include Java,
+			JavaScript, and Python.
+		</p>
+	</section>
+
+	<section id="ending_runtime">
+		<h3>Finis: Runtime</h3>
+		<p>
+			Once the compiler has completed code generation, we're left with a
+			set of instructions ready for execution. All that's left to do is to
+			<i>run</i> the instructions. If the instructions are in native code,
+			the operating system is simply told to execute. For example, in C, we
+			might write <var><mark>./MyProgram</mark></var
+			>. If the instructions are in virtual machine code, we would start
+			the virtual machine and the load the instructions there. For example,
+			in Java, we might write <var><mark>java MyProgram</mark></var
+			>.
+		</p>
+		<p>
+			For most languages, there are other processes running in the
+			background while the program we wrote runs. For example, if the
+			language provides some form of garbage collection, the garbage
+			collector's instructions are also included in our instruction set.
+			All of these instructions put together is called
+			<b>runtime</b>. In fully compled languages, for example Go, the code
+			comprising runtime &mdash; the instructions for our program, as well
+			as the instructions for services like garbage collection &mdash; are
+			kept in the <b>executable.</b> In other languages like Java, Python,
+			and JavaScript, the executable consists only of the instructions for
+			a program, and instructions for language-provided services are kept
+			in the virtual machine.
+		</p>
+	</section>
+
+	<section id="alternatives">
+		<h3>Alternative Routes</h3>
+		<p>
+			The approach above provides a broad overview for most languages, but
+			not every language takes this path.
+		</p>
+		<p>
+			C, for example, was designed with a technique called
+			<b>syntax-directed translation</b>, which is best implemented a
+			compling technique called <b>single-pass compiling</b>. In
+			single-pass compiling, the processes of parsing, static analysis, and
+			code generation are woven together, avoiding the use of intermediate
+			representations or additional data structures like a lookup table.
+			Because these additional data structures do not exist, there's no way
+			to revisit code parsed earlier, since it wasn't saved. This in turn
+			means that to parse an expression, the language must know enough
+			about the expression to continue. This is why we cannot call a
+			function in C before (1) defining it, or (2) providing a forward
+			declaration (a.k.a., a <i>function prototype</i>). Why avoid
+			additional data structures? Because C was developed in the early
+			1970s, when memory was extremely limited. Compilers couldn't hold an
+			entire source file in memory, let alone an entire program. Additional
+			data structures simply weren't feasible.
+		</p>
+		<p>
+			Some languages use an approach called
+			<b>tree-walk interpretation</b> &mdash; executing the code as soon as
+			an AST is produced. This is approach is usually used in early
+			experimentation and testing, rather than production.
+		</p>
+		<p>
+			Yet another approach is <b>transpiling</b>. Instead of writing our
+			own intermediate representation, we have our language compile into
+			another <i>source language</i> like C, Java, or JavaScript. With this
+			approach, we don't have to write our own backends. Instead, we rely
+			on the backends already written for that source language. For
+			example, TypeScript is a language that transpiles to JavaScript.
+			Babel is transpiler that transpiles ES6 JavaScript into ES5
+			JavaScript. Historically, many compilers provided ways to transpile
+			source code into JavaScript, given how JavaScript's ubiquity with web
+			development. This has changed, with many compilers now provide ways
+			to transpile into WebAssembly.
+		</p>
+		<p>
+			Arguably, the most sophisticated and complex approach is
+			<b>Just-in-time Compilation (JIT)</b>. With JIT, we use the virtual
+			machine approach. The source code is saved as bytecode, then loaded
+			into a virtual machine, e.g., Java's HotSpot Virtual Machine (JVM),
+			or Microsoft's Common Language Runtime (CLR), or some JavaScript
+			engine like Google's V8. Inside the virtual machine is a special
+			program &mdash; the JIT compiler &mdash; that compiles the bytecode
+			on the fly <em>after</em> the program has started, and only compiles
+			instructions as they're needed. The output of these on the fly (or
+			<q>just-in-time</q>) compilations are faster instructions, typically
+			the CPU's native instructions. When the JIT compiler reaches some
+			instruction it's seen before, it uses the previously-compiled native
+			instruction, leading to much faster executions. This opens up a whole
+			new world of optimization inaccessible to the usual compilers, e.g.,
+			inlining frequently used functions.
+		</p>
+	</section>
+
+	<section id="compilers_v_interpreters">
+		<h3>Compilers v. Interpreters</h3>
+		<p>
+			A <b>compiler</b> is a program that takes source code and translates
+			it into some other form, but does not execute the program.
+			<i>Compiling</i> refers to the implementation technique embodied in
+			this program &mdash; source code input, some other form of code
+			output.
+		</p>
+		<p>
+			An <b>interpreter</b> is a program that takes source code and
+			executes it immediately. That process may or may not including
+			compiling. <i>Interpreting</i> refers to the implementation technique
+			embodied in this program &mdash; source code input, execute.
+		</p>
+		<p>
+			This means that some programs are compilers but not interpreters,
+			some programs are interpreters but not compilers, and some programs
+			are both compilers and interpreters.
+		</p>
+		<p>
+			For example, Clang and GCC are compilers that take C code and comple
+			it to machine code. Cint and PicoC, however, are interpeters &mdash;
+			they take C code and execute. Similarly, the Ruby MRI (Ruby's
+			original implementation) took source code, parsed it, and executed it
+			directly by traversing the output AST. This is clearly an
+			interpreter.
+		</p>
+		<p>
+			Then there are implementations that are both interpreters and
+			compilers. For example, when a Python program is run with CPython,
+			the code is parsed, translated into bytecode, and executed inside a
+			virtual machine. Thus, CPython is both an interpreter and a compiler,
+			given how it's translating source code into some other code form,
+			then executing.
+		</p>
+		<p>
+			All of these examples illustrate why the purported distinction
+			between an
+			<q>interpreted language</q> and a <q>compiled language</q> are
+			meaningless and unhelpful. Introductory programming courses and
+			beginner tutorials introduce these distinctions to reduce complexity
+			and to satisfy lingering curiosity and confusion. The seasoned
+			programmer, however, knows that the right question to ask is not
+			whether the language is compiled or interpreted, but rather how the
+			language is implemented.
+		</p>
+	</section>
 </section>
 
 {% endblock %}

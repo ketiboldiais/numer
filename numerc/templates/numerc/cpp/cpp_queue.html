@@ -749,26 +749,26 @@
 </section>
 
 <section id="frp_bounded_queue">
-	<h2>FRB Bounded Queue</h2>
+	<h2>Single-use FRP Bounded Queue</h2>
 	<p>
 		With the FRP bounded queue, we have two pointers, <var>rear</var> and
 		<var>front</var>:
 	</p>
 	<ol class="alg">
-		<li>class Queue:</li>
+		<li>struct Queue:</li>
 		<ol>
-			<li>&lt;T&gt; capacity;</li>
-			<li>&lt;T&gt; length;</li>
-			<li>&lt;T&gt; rear;</li>
-			<li>&lt;T&gt; front;</li>
-			<li>&lt;T&gt;* Q;</li>
-			<li>Queue(&lt;T&gt; size):</li>
+			<li>int capacity;</li>
+			<li>int length;</li>
+			<li>int rear;</li>
+			<li>int front;</li>
+			<li>{T}* Q;</li>
+			<li>Queue(int size):</li>
 			<ol>
-				<li>&lt;T&gt; capacity = size;</li>
-				<li>&lt;T&gt; length = 0;</li>
-				<li>&lt;T&gt; rear = -1;</li>
-				<li>&lt;T&gt; front = -1;</li>
-				<li>&lt;T&gt;* Q = allocate(sizeof(&lt;T&gt;) * size)</li>
+				<li>capacity = size;</li>
+				<li>length = 0;</li>
+				<li>rear = -1;</li>
+				<li>front = -1;</li>
+				<li>Q = allocate(sizeof({T}) * size)</li>
 			</ol>
 		</ol>
 	</ol>
@@ -792,12 +792,12 @@
 	</div>
 	<p>
 		As we saw with the RP queue, dequeuing results in an empty space at the
-		front of the queue. And with the RP queue, the remedy for this is shift
-		all of the elements to the left, filling up newly emptied position,
-		much like how people in a line shift forward.
+		front of the queue. And with the RP queue, the remedy for this is to
+		shift all of the elements to the left, filling the newly emptied
+		position, much like how people in a line shift forward.
 	</p>
 	<p>
-		With people, it's not that big of a deal. A small step forward
+		With people, this is not that big of a deal. A small step forward
 		miniscule. For computers, however, having so many queuers perform an
 		operation is inefficient. Is there a more efficient way to do this? It
 		turns out yes. Instead of having everyone in line at the bank shift
@@ -858,12 +858,13 @@
 		entirely of basic steps &mdash; ${O(1)}$ time. Compare this with the RP
 		bounded queue, where it took ${O(n)}$ time to dequeue elements.
 	</p>
+
 	<p>
-		At this point, we might have a lot of questions. How does the impact
+		At this point, we might have a lot of questions. How does this impact
 		all of the other operations? What about the gaps? Didn't the RP bounded
 		queue employ a left-shift in the first place because of gaps in the
-		array implementation? These are all fair questions, and we now address
-		them in turn.
+		array implementation? These are all fair questions, and we address them
+		carefully in turn.
 	</p>
 
 	<section id="is_empty">
@@ -903,33 +904,631 @@
 			<li>f = 2;</li>
 			<li>r = 3</li>
 		</ol>
+		<p>And dequeuing one more time:</p>
+		<div class="split">
+			<div id="frpArray2_3"></div>
+			<div id="frpQueue2_3"></div>
+		</div>
+		<ol class="alg">
+			<li>f = 3;</li>
+			<li>r = 3</li>
+		</ol>
+		<p>Then, dequeuing one last time:</p>
+		<div class="split">
+			<div id="frpArray2_4"></div>
+			<div id="frpQueue2_4"></div>
+		</div>
+		<p></p>
+		<ol class="alg">
+			<li>fn isEmpty(*Queue queue) -> bool:</li>
+			<ol>
+				<li>return (*queue).front == (*queue).rear;</li>
+			</ol>
+		</ol>
+		<p>
+			Note that this is all a matter of interpretation. In a language like
+			C, the data is more than likely still inside the array. But even if
+			it was, it's essentially lost, because the only way we can interact
+			with the queue is through the front and rear pointers.
+		</p>
 	</section>
-	<p>And dequeuing one more time:</p>
-	<div class="split">
-		<div id="frpArray2_3"></div>
-		<div id="frpQueue2_3"></div>
-	</div>
-	<ol class="alg">
-		<li>f = 3;</li>
-		<li>r = 3</li>
-	</ol>
+
+	<section id="full_guard">
+		<h3>Capacity Guard</h3>
+		<p>For the capacity guard, we will use the following function:</p>
+		<ol class="alg">
+			<li>fn isFull(*Queue queue) -> bool:</li>
+			<ol>
+				<li>return (*queue).r == capacity - 1;</li>
+			</ol>
+		</ol>
+		<p>
+			This corresponds to the fact that if <var>rear</var> equals the last
+			index in the array, we've reached capacity.
+		</p>
+	</section>
+
+	<section id="enqueue">
+		<h3>Enqueue</h3>
+		<p>For enqueuing a queuer, we use the following procedure:</p>
+		<ol class="alg">
+			<li>fn enqueue(Queue* queue, {T} data):</li>
+			<ol>
+				<li>if (isFull(*queue)):</li>
+				<ol>
+					<li>print "Queue is full"</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>(*queue).rear++;</li>
+					<li>(*queue).Q[(*queue).rear] = data;</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			Examining this procedure, we see that the dequeue procedure runs in
+			constant time &mdash; ${O(1).}$
+		</p>
+	</section>
+
+	<section id="dequeue">
+		<h3>Dequeue</h3>
+		<p>For dequeuing a queuer, we use the following procedure:</p>
+		<ol class="alg">
+			<li>fn dequeue(Queue* queue) -> {T}:</li>
+			<ol>
+				<li>int x = -1;</li>
+				<li>if (isEmpty(*queue)):</li>
+				<ol>
+					<li>print "Nothing to dequeue; queue is empty."</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>(*queue).front++;</li>
+					<li>x = (*queue).Q[(*queue).front];</li>
+				</ol>
+				<li>return x;</li>
+			</ol>
+		</ol>
+		<p>
+			Examining this procedure, we see that the dequeue procedure runs in
+			constant time &mdash; ${O(1).}$
+		</p>
+	</section>
+
+	<section id="frp_costs">
+		<h3>Single-use FRP Drawbacks</h3>
+		<p>
+			If we thought about FRPs carefully, we might have noticed a few
+			drawbacks. Suppose we had the following queue:
+		</p>
+		<div id="frp_problem_0"></div>
+		<p>If we dequeue twice, we get:</p>
+		<div id="frp_problem_1"></div>
+		<p>
+			Because of the way we've implemented <var>isFull()</var> and
+			<var>isEmpty()</var>, we cannot reuse the space previously occupied
+			by the dequeued queuer. If dequeued all of the elements:
+		</p>
+		<div id="frp_problem_2"></div>
+		<p>
+			and executed <var>isEmpty()</var>, we would get back <var>true</var>,
+			since <var>front > rear</var>. Given this restriction, we call such
+			FRPs <b>single-use FRP-bounded queues</b>. While single-use FRPs are
+			useful for certain problems, most problems would be better served by
+			reusing the freed spaces. To do so, we must use either: a
+			<i>Resetting FRP</i> or a <i>circular queue.</i>
+		</p>
+	</section>
+</section>
+
+<section id="multi-use_frp">
+	<h2>Resetting FRPs</h2>
 	<p>
-		Once we get to the point where <var>f == r</var> (the
-		<var>front</var> is the same as the <var>rear</var>), then we conclude
-		that the queue is emptied. The implementation:
+		A <b>multi-use FRP</b> is an FRP that reuses a dequeued element's newly
+		available space. The multi-use FRP's implementation is, for the most
+		part, the same as the single-use FRP, but with
+		<b>pointer resetting</b>.
+	</p>
+	<p>
+		The solution is simple: The moment <var>isEmpty()</var> returns
+		<var>true</var>, re-initialize <var>front</var> and <var>rear</var> to
+		<var>-1</var>. For example, consider the following queue:
+	</p>
+	<div id="multi_use_frp1"></div>
+	<p>If we dequeued all of the elements:</p>
+	<div id="multi_use_frp2"></div>
+	<p>
+		we immediately reset the pointers <var>front</var> and
+		<var>rear</var> to <var>-1</var>:
+	</p>
+	<div id="multi_use_frp3"></div>
+	<p>
+		This allows us to reuse the dequeued element's spaces. Accordinly,
+		implementing the resetting FRP is just a matter of writing a new
+		function called <var>reset</var>:
 	</p>
 	<ol class="alg">
-		<li>fn isEmpty(*Queue queue) -> bool:</li>
+		<li>fn reset(Queue* queue) -> void:</li>
 		<ol>
-			<li>return (*queue).front == (*queue).rear;</li>
+			<li>if (isEmpty(*queue)):</li>
+			<ol>
+				<li>(*queue).front = -1;</li>
+				<li>(*queue).rear = -1;</li>
+			</ol>
+			<li>else:</li>
+			<ol>
+				<li>print "Cannot reset; queue is not empty."</li>
+			</ol>
 		</ol>
 	</ol>
 	<p>
-		Note that this is all a matter of interpretation. In a language like C,
-		the data is more than likely still inside the array. But even if it
-		was, it's essentially lost, because the only way we can interact with
-		the queue is through the front and rear pointers.
+		The problem, however, is that there's a catch: We can only reuse the
+		dequeued spaces only if the array is empty. This means that in the
+		situation:
 	</p>
+	<div id="multi_use_frp4"></div>
+	<p>
+		We cannot use the dequeued space, because the queue is not empty.
+		Because of this limitation, we want to a <b>circular queue</b>.
+	</p>
+</section>
+
+<section id="circular_queue">
+	<h2>Circular Queues</h2>
+	<p>
+		Circular queues are the solution to the problems posed by single-use
+		FRPs and resetting FRPs. First, instead of starting
+		<var>front</var> and <var>rear</var> at <var>-1</var>, we start them at
+		<var>0</var>. For example, suppose we had a queue with a capacity of
+		${6:}$
+	</p>
+	<div id="circ1"></div>
+	<p>
+		Say we enqueue the value <var>1</var>. So the rear pointer
+		<var>r</var> increments, and initializes the value <var>1</var> at
+		index ${1:}$
+	</p>
+	<div id="circ2"></div>
+	<p>
+		The index that <var>f</var> points to, ${0}$ in this case, must be left
+		empty. Wherever <var>f</var> is pointing, that location must be left
+		empty. Let's say we filled the rest of queue spaces:
+	</p>
+	<div id="circ3"></div>
+	<p>Now let's say we dequeue two queuers:</p>
+	<div id="circ4"></div>
+	<p>
+		and we want to enqueue the element <var>2</var>. For single-use FRPs
+		and resetting FRPs, we saw that we cannot enqueue here. For circular
+		queues, however, we definitely can: Move <var>r</var> back to
+		<var>0</var>, and enqueue:
+	</p>
+	<div id="circ5"></div>
+	<p>
+		At this point, the queue is <em>full</em>. Remember, we cannot use the
+		space <var>f</var> points to. If we allow <var>r</var> to point at this
+		space, then both <var>f</var> and <var>r</var> are equal. And if both
+		<var>f</var> and <var>r</var> are equal, then the queue is empty.
+	</p>
+	<p>
+		To insert the element <var>7</var>, we simply increment
+		<var>r</var> and enqueue:
+	</p>
+	<div id="circ6"></div>
+	<p>
+		Let's consider another example, this time visualizing the circular
+		queue. We visualize the circular queue
+	</p>
+	<div id="circular_queue_linear"></div>
+	<p>as:</p>
+	<div id="circular_queue1"></div>
+	<p>
+		Thinking of the circular queue in this way, it's more apparent what we
+		have to do to bring <var>r</var> back to the first index ${0}$ once
+		it's reached the last index &mdash; through the modulus operator.
+		Consider the table of values, where ${r}$ is the value of
+		<var>rear</var>, and <var>s</var> is the circular queue's capacity:
+	</p>
+	<table class="alg">
+		<thead>
+			<th>${r}$</th>
+			<th>${(r + 1) \bmod s}$</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${0}$</td>
+				<td>${1 \bmod 5 = 1}$</td>
+			</tr>
+			<tr>
+				<td>${1}$</td>
+				<td>${2 \bmod 5 = 2}$</td>
+			</tr>
+			<tr>
+				<td>${2}$</td>
+				<td>${3 \bmod 5 = 3}$</td>
+			</tr>
+			<tr>
+				<td>${3}$</td>
+				<td>${4 \bmod 5 = 4}$</td>
+			</tr>
+			<tr>
+				<td>${4}$</td>
+				<td>${5 \bmod 5 = 0}$</td>
+			</tr>
+			<tr>
+				<td>${0}$</td>
+				<td>${1 \bmod 5 = 1}$</td>
+			</tr>
+			<tr>
+				<td>${1}$</td>
+				<td>${2 \bmod 5 = 2}$</td>
+			</tr>
+			<tr>
+				<td>${2}$</td>
+				<td>${3 \bmod 5 = 3}$</td>
+			</tr>
+			<tr>
+				<td>${3}$</td>
+				<td>${4 \bmod 5 = 4}$</td>
+			</tr>
+			<tr>
+				<td>${4}$</td>
+				<td>${5 \bmod 5 = 0}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		Notice how we're going back to ${0}$ once we've reached the inex ${4.}$
+		This is precisely what we want.
+	</p>
+	<section id="empty_guard">
+		<h3>Circular Queue: Capacity Guard</h3>
+		<p>
+			Following our previous analysis, the circular queue's capacity guard
+			is implemented as such:
+		</p>
+		<ol class="alg">
+			<li>fn isFull(Queue* q) -> bool:</li>
+			<ol>
+				<li>rear = (*q).rear + 1;</li>
+				<li>front = (*q).front;</li>
+				<li>max = (*q).capacity;</li>
+				<li>return rear % max == front;</li>
+			</ol>
+		</ol>
+		<p>
+			Examining this procedure, we see that <var>isFull()</var> takes
+			${O(1)}$ time to execute.
+		</p>
+	</section>
+
+	<section id="empty_guard">
+		<h3>Circular Queue: Empty Guard</h3>
+		<p>The empty guard is no different from the FRP's empty guard:</p>
+		<ol class="alg">
+			<li>fn isEmpty(Queue* q) -> bool:</li>
+			<ol>
+				<li>return (*queue).front == (*queue).rear;</li>
+			</ol>
+		</ol>
+		<p>Needless to say, this function takes ${O(1)}$ time to execute.</p>
+	</section>
+
+	<section id="enqueue">
+		<h3>Circular Queue: Enqueue</h3>
+		<p>To enqueue into a circular queue, we use the following:</p>
+		<ol class="alg">
+			<li>fn enqueue(Queue* queue, {T} data) -> void:</li>
+			<ol>
+				<li>if isFull(*queue):</li>
+				<ol>
+					<li>print "Queue is full, enqueue prohibited."</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>(*queue).rear = ((*queue).rear + 1) % (*queue).size;</li>
+					<li>(*queue).Q[(*queue).rear] = data;</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			Again, this procedure has a time complexity of ${O(1).}$ Thus, the
+			circular queue's <var>enqueue()</var> procedure runs in constant
+			time.
+		</p>
+	</section>
+
+	<section id="dequeue">
+		<h3>Circular Queue: Dequeue</h3>
+		<p>The circular queue's dequeue operation appears as such:</p>
+		<ol class="alg">
+			<li>fn dequeue(Queue* queue) -> {T}:</li>
+			<ol>
+				<li>{T} data = NULL;</li>
+				<li>if (isEmpty(queue)):</li>
+				<ol>
+					<li>printf "Queue is empty, dequeue prohibited."</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>(*queue).front = ((*queue).front + 1) % (*queue).size;</li>
+					<li>data = (*queue).Q[(*queue).front];</li>
+				</ol>
+				<li>return data;</li>
+			</ol>
+		</ol>
+		<p>
+			This procedure has a time complexity of ${O(1)}$ &mdash; constant
+			time.
+		</p>
+	</section>
+</section>
+
+<section id="linked_list_implementation">
+	<h2>Linked List Queues</h2>
+	<p>
+		Queues implemented with linked lists are called <b>linked queues</b>.
+		Recall that the queue is a first-in-first-out data structure. As such,
+		we must account for this characteristic when implementing a linked
+		queue.
+	</p>
+	<p>Consider the following queue:</p>
+	<div id="linked_queue_intro"></div>
+	<p>Implementing this as a linked list, we have:</p>
+	<div id="linked_queue_intro_LL"></div>
+	<p>
+		Initially, the front pointer <var>f</var> and the rear pointer
+		<var>r</var> should be <var>NULL</var>. Thus, when we create the first
+		node for the queue above, we create the node with a pointer
+		<var>t</var>, then have the pointers <var>f</var> and
+		<var>r</var> point to this new node:
+	</p>
+	<div id="linked_queue_intro_LL_1"></div>
+	<p>
+		Once we have the first node established, we can begin queuing and
+		dequeuing.
+	</p>
+
+	<section id="empty_guard">
+		<h3>Empty Guard</h3>
+		<p>For the linked list queue, the empty guard is as follows:</p>
+		<ol class="alg">
+			<li>fn isEmpty(*Queue queue) -> bool:</li>
+			<ol>
+				<li>return (*queue).front == NULL;</li>
+			</ol>
+		</ol>
+		<p>
+			Notice that we're simply testing if <var>front</var> is
+			<var>NULL</var>. If it is, then we can conclude that the queue is
+			empty.
+		</p>
+	</section>
+
+	<section id="capacity_guard">
+		<h3>Capacity Guard</h3>
+		<p>The capacity guard looks like:</p>
+		<ol class="alg">
+			<li>fn isFull(Node* n) -> bool:</li>
+			<ol>
+				<li>return n == NULL;</li>
+			</ol>
+		</ol>
+		<p>
+			Notice that we're testing if a particular node pointer is the null
+			pointer. We do so because with linked lists, we can dequeue and
+			enqueue (nodes) as much as we want, so long as the pointer returned
+			from allocating space is not null. If it is null, then we've run out
+			of heap memory &mdash; i.e., the queue is full.
+		</p>
+	</section>
+
+	<section id="enqueue">
+		<h3>Enqueue</h3>
+		<p>The enqueue procedure:</p>
+		<ol class="alg">
+			<li>fn enqueue(Queue* queue, {T} data) -> void:</li>
+			<ol>
+				<li>Node *t = new Node;</li>
+				<li>if (isFull(t)):</li>
+				<ol>
+					<li>print "Queue is full."</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>(*t).data = data;</li>
+					<li>if ((*queue).front == NULL):</li>
+					<ol>
+						<li>(*queue).front = rear = t;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>(*queue).rear->next = t;</li>
+						<li>(*queue).rear = t;</li>
+					</ol>
+				</ol>
+			</ol>
+		</ol>
+	</section>
+
+	<section id="dequeue">
+		<h3>Dequeue</h3>
+		<p>The dequeue procedure appears as follows:</p>
+		<ol class="alg">
+			<li>{T} dequeue(struct Queue* queue):</li>
+			<ol>
+				<li>{T} datum = MIN_INT;</li>
+				<li>Node* p;</li>
+				<ol>
+					<li>if (isEmpty(queue)):</li>
+					<ol>
+						<li>print "Nothing to dequeue; returning MIN_INT";</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>p = (*queue).front</li>
+						<li>(*queue).front = (*(*queue).front).next;</li>
+						<li>datum = (*p).data;</li>
+						<li>free(p);</li>
+					</ol>
+				</ol>
+				<li>return datum;</li>
+			</ol>
+		</ol>
+		<p>
+			In this implementation, we return the data bound to the dequeued
+			queuer. And as with many of the other procedures, this procedure has
+			a time complexity of ${O(1)}$ &mdash; constant time.
+		</p>
+	</section>
+</section>
+
+<section id="DEqueue">
+	<h2>Deque</h2>
+	<p>
+		The <b>double-ended queue</b> (appreviated <b>deque</b>, pronounced
+		<i>deck</i>), is a queue where insertion and deletion can be done on
+		both the front- and rear-ends of the queue.
+	</p>
+	<p>
+		For FRPs, circular queues, and linked-list queues, we've used both
+		front and rear pointers. Moreover, to enqueue we've used the rear
+		pointer, and to dequeue we've used the rear pointer exclusively. I.e.,
+		we can only insert and remove queuers from the front of the queue. For
+		the deque, however, we can enqueue and dequeue from both ends of the
+		queue.
+	</p>
+	<div class="split">
+		<table class="alg">
+			<tr>
+				<td><b>Queue</b></td>
+				<td>insert</td>
+				<td>delete</td>
+			</tr>
+			<tr>
+				<td><var>front</var></td>
+				<td>${\color{indianred} \times}$</td>
+				<td>${\color{green} \checkmark}$</td>
+			</tr>
+			<tr>
+				<td><var>rear</var></td>
+				<td>${\color{green} \checkmark}$</td>
+				<td>${\color{indianred} \times}$</td>
+			</tr>
+		</table>
+		<table class="alg">
+			<tr>
+				<td><b>Deque</b></td>
+				<td>insert</td>
+				<td>delete</td>
+			</tr>
+			<tr>
+				<td><var>front</var></td>
+				<td>${\color{green} \checkmark}$</td>
+				<td>${\color{green} \checkmark}$</td>
+			</tr>
+			<tr>
+				<td><var>rear</var></td>
+				<td>${\color{green} \checkmark}$</td>
+				<td>${\color{green} \checkmark}$</td>
+			</tr>
+		</table>
+	</div>
+	<p>
+		Because of this trait, deques are much more like a deck of cards than
+		they are a line of queuers &mdash; it's easy to take one card off
+		either end of the deck, but harder to extract an individual card from
+		the deck's center.
+	</p>
+	<p>For example, suppose we had the following deque:</p>
+	<div id="deque_intro"></div>
+	<p>
+		Initially, both <var>f</var> (the front pointer) and <var>r</var> (the
+		rear pointer), are <var>-1</var>. Let's insert the dequer
+		<var>3</var> with the rear pointer:
+	</p>
+	<div id="deque_intro1"></div>
+	<p>Let's insert three more dequers:</p>
+	<div id="deque_intro2"></div>
+	<p>Now let's delete a dequer using the front pointer:</p>
+	<div id="deque_intro_delete1"></div>
+	<p>Deleting once more with the front pointer:</p>
+	<div id="deque_intro_delete2"></div>
+	<p>
+		So far, this doesn't look all that different from what we've seen with
+		queues. So what's the difference? We can insert a new dequer with the
+		front pointer. We simply use the front pointer to assign the new
+		dequer, followed by a decrement of the front pointer's value. Say we
+		wanted to insert the dequer <var>3</var>:
+	</p>
+	<div id="deque_intro_front_insert"></div>
+	<p>We can insert once more:</p>
+	<div id="deque_intro_front_insert1"></div>
+	<p>
+		At this point, the front pointer <var>f</var> is <var>-1</var>, and we
+		use that as a condition indicating that we cannot insert towards the
+		<var>front</var> any further.
+	</p>
+</section>
+
+<section id="input_restricted_deques">
+	<h2>Input-restricted Deques</h2>
+	<p>
+		The <b>input-restricted deque (indeque)</b> is a deque where insertion
+		can only be done with the rear, but deletion may be done on both the
+		front- and rear-ends.
+	</p>
+</section>
+
+<section id="output_restricted_deques">
+	<h2>Output-restricted Deques</h2>
+	<p>
+		The <b>output-restricted deque (outdeque)</b> is a deque where deletion
+		can only be done with the front, but insertion may be done on both the
+		front- and rear-ends.
+	</p>
+</section>
+
+<section id="priority_queues">
+	<h2>Priority Queues</h2>
+	<p>
+		A <b>priority queue</b> is a queue with priority constraints for
+		enqueuing and dequeuing. There are two ways to implement these priority
+		contraints:
+	</p>
+	<ol>
+		<li>Establishing a priority criteria, or</li>
+		<li>assigning priority to particular elements.</li>
+	</ol>
+	<p>For example, consider the following priority queue:</p>
+	<div id="priority_queue_intro"></div>
+	<p>
+		In the priority queue above, ${3}$ corresponds to the lowest priority,
+		and ${1}$ corresponds to the highest priority. To implement the
+		priority queue above, we use arrays (or linked lists) corresponding to
+		each priority.
+	</p>
+	<table class="priorityQueue">
+		<tr>
+			<td>P1</td>
+			<td>A</td>
+			<td>B</td>
+			<td>F</td>
+		</tr>
+		<tr>
+			<td>P2</td>
+			<td>C</td>
+			<td>E</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Priority3</td>
+			<td>D</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
 </section>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>

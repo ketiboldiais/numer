@@ -493,6 +493,9 @@ def sys_rustIntro(request):
 def sys_design(request):
 	return render(request, "numerc/sys/sys_design.html")
 
+def sys_devOps(request):
+	return render(request, "numerc/sys/sys_devOps.html")
+
 #! Software Design Views (desv)
 def des_index(request):
 	return render(request, "numerc/des/des_index.html")

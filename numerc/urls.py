@@ -291,6 +291,8 @@ urlpatterns = [
 
 	path("sys_design", views.sys_design, name="sys_design"),
 
+	path("sys_devOps", views.sys_devOps, name="sys_devOps"),
+
 	# Software Design
 	path("des_index", views.des_index, name="des_index"),
 

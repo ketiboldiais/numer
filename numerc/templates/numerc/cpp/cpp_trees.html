@@ -1132,7 +1132,7 @@
 					formulas provide us with upper and lower bounds for the heights
 					of proper binary trees.
 				</p>
-				<dfn>
+				<dfn id="proper_binary_tree_bounds_lemma">
 					<small>Theorem: Proper Binary Tree Bounds</small>
 					<p>
 						Given a proper binary tree ${B}$ with ${n}$ nodes, the height
@@ -2151,7 +2151,9 @@
 				Now we fill in the parentheses. First, the left subtree, following
 				the same sequence, <var>root L R</var>:
 			</p>
-			<figure>$$ a, (b, d, e)_{\texttt{L}}, (~~~~~)_{\texttt{R}} $$</figure>
+			<figure>
+				$$ a, (b, d, e)_{\texttt{L}}, (~~~~~)_{\texttt{R}} $$
+			</figure>
 			<p>
 				Then the right subtree, following the same sequence,
 				<var>root L R</var>.
@@ -2173,7 +2175,9 @@
 				Now we fill in the subtree parentheses. Starting with the left
 				subtree, we use the same sequence, <var>L root R</var>:
 			</p>
-			<figure>$$ (d, b, e)_{\texttt{L}}, a, (~~~~~)_{\texttt{R}} $$</figure>
+			<figure>
+				$$ (d, b, e)_{\texttt{L}}, a, (~~~~~)_{\texttt{R}} $$
+			</figure>
 			<p>
 				Then we fill in the right subtree's parentheses, again using
 				<var>L root R</var>:
@@ -2195,7 +2199,9 @@
 				Now we fill in the subtrees, again using <var>L R root</var>. For
 				the left subtree:
 			</p>
-			<figure>$$ (d, e, b)_{\texttt{L}}, (~~~~~)_{\texttt{R}}, a $$</figure>
+			<figure>
+				$$ (d, e, b)_{\texttt{L}}, (~~~~~)_{\texttt{R}}, a $$
+			</figure>
 			<p>And for the right subtree:</p>
 			<figure>
 				$$ (d, e, b)_{\texttt{L}}, (f, g, c)_{\texttt{R}}, a $$
@@ -2216,11 +2222,104 @@
 				<div id="big_traverse_subtree_generational"></div>
 			</div>
 
+			<section id="traversal_sketching">
+				<h5>Traversal Sketching</h5>
+				<p>
+					We can also determine traversal sequences through a technique
+					called <b>traversal sketching</b>. To sketch a traversal, we
+					first draw a horizontal line at the bottom of the tree. Then, we
+					draw lines linking each node to this horizontal line.
+				</p>
+				<p>
+					For preorder traversal, the links are drawn from left to right,
+					starting at the root:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/preorder_sketch.svg' %}"
+						alt="preorder sketch"
+						loading="lazy"
+						style="width: 250px"
+					/>
+					<figcaption>Preorder: ${(a, b, d, e, c, f, g)}$</figcaption>
+				</figure>
+				<p>
+					For inorder traversal, the links are drawn from left to right:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/inorder_sketch.svg' %}"
+						alt="inorder sketch"
+						loading="lazy"
+						style="width: 250px"
+					/>
+					<figcaption>Inorder: ${(d, b, e, a, f, c, g)}$</figcaption>
+				</figure>
+				<p>
+					And for postorder traversal, the links are drawn from right to
+					left, starting at the root:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/postorder_sketch.svg' %}"
+						alt="postorder sketch"
+						loading="lazy"
+						style="width: 250px"
+					/>
+				</figure>
+				<figcaption>Postorder: ${(d, e, b, f, g, c, a)}$</figcaption>
+				<p>
+					Another way to sketch a traveral sequence is
+					<b>tree contouring</b>. The idea is that we draw a path along the
+					tree's outline. For each of the traversal approaches, we place a
+					tick on either the left, bottom, or right. Each time the countour
+					crosses a tick, we record the ticked node.
+				</p>
+				<p>
+					With preorder traversal, the tick is placed on the lefthand side
+					of the node:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/preorder_contour.svg' %}"
+						alt="preorder contour"
+						loading="lazy"
+						style="width: 180px"
+					/>
+				</figure>
+				<p>
+					With inorder traversal, the tick is drawn on the bottom of the
+					node:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/inorder_contour.svg' %}"
+						alt="inorder contour"
+						loading="lazy"
+						style="width: 180px"
+					/>
+				</figure>
+				<p>
+					And with postorder traversal, the tick is drawn to the right of
+					the node:
+				</p>
+				<figure>
+					<img
+						src="{% static 'images/postorder_contour.svg' %}"
+						alt="postorder contour"
+						loading="lazy"
+						style="width: 180px"
+					/>
+				</figure>
+			</section>
 		</section>
 	</section>
+</section>
 
-	<section id="linked_list_implemented_binary_tree">
-		<h3>Linked-list-implemented Binary Trees</h3>
+<section id="linked_list_implemented_binary_tree">
+	<h2>Linked-list-implemented Binary Trees</h2>
+
+	<section id="background">
 		<p>
 			The <b>linked-list-implemented binary tree (LBT)</b> looks similar to
 			a general linked list in implementation. Usually, there's a
@@ -2258,16 +2357,1782 @@
 		</p>
 		<p>
 			To begin, we need to implement the basic <var>Node</var> data
-			structure, as we saw with linked lists:
+			structure, as we saw with linked lists, along with its constructor:
 		</p>
 		<ol class="alg">
 			<li>struct Node:</li>
 			<ol>
 				<li>int data;</li>
-				<li>struct Node *left_child;</li>
-				<li>struct Node *right_child;</li>
+				<li>struct Node* left_child;</li>
+				<li>struct Node* right_child;</li>
+				<li></li>
+				<li>fn newNode(int data):</li>
+				<ol>
+					<li>Node node = malloc(sizeof(node));</li>
+					<li>(*node).data = data;</li>
+					<li>(*node).left_child = null;</li>
+					<li>(*node).right_child = null;</li>
+				</ol>
 			</ol>
 		</ol>
+	</section>
+
+	<section id="dynamic_tree_constructor">
+		<h3>Dynamic Tree Constructor</h3>
+		<p>
+			Once we have the node record, we want to think about how to
+			<i>generate</i>, or create, the binary tree. In this section, we
+			focus on a <b>dynamic tree constructor</b> &mdash; a tree constructor
+			that generates a tree at runtime. The ideal starting point is the
+			tree's root. Once we have a root, we create the root's left-child and
+			right-child. That said, we have to keep in mind that there are four
+			possiblities for a given node ${n}$'s lineage:
+		</p>
+		<ol>
+			<li>${n}$ is leaf &mdash; it has ${0}$ children.</li>
+			<li>
+				${n}$ is left-uniparous &mdash; it has exactly ${1}$ left-child.
+			</li>
+			<li>
+				${n}$ is right-uniparous &mdash; it has exactly ${1}$ right-child.
+			</li>
+			<li>${n}$ is full &mdash; it has exactly ${2}$ children.</li>
+		</ol>
+		<p>
+			These conditions boil down to two questions: (1) Does a left-child
+			exist? (2) Does a right-child exist?
+		</p>
+		<figure>
+			<table class="alg">
+				<thead>
+					<th>${\exists (\texttt{left-child})}$</th>
+					<th>${\exists (\texttt{right-child})}$</th>
+					<th><var>node is</var></th>
+				</thead>
+				<tbody>
+					<tr>
+						<td><var>true</var></td>
+						<td><var>true</var></td>
+						<td><var>full</var></td>
+					</tr>
+					<tr>
+						<td><var>true</var></td>
+						<td><var>false</var></td>
+						<td><var>left-uniparous</var></td>
+					</tr>
+					<tr>
+						<td><var>false</var></td>
+						<td><var>true</var></td>
+						<td><var>right-uniparous</var></td>
+					</tr>
+					<tr>
+						<td><var>false</var></td>
+						<td><var>false</var></td>
+						<td><var>leaf</var></td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<p>
+			To illustrate, we'll use the following binary tree, called
+			<var>B1</var>:
+		</p>
+		<div id="tree_b1"></div>
+		<p>
+			To implement the tree above, we will generate the binary tree
+			generation by generation, from left to right. More specifically, we
+			generate the tree using a <i>queue</i>.
+		</p>
+		<ol class="alg">
+			<li>Queue queue = newQueue();</li>
+		</ol>
+		<div id="tree_b1_queue"></div>
+		<p>With the queue, we use the following procedure:</p>
+		<ol class="proc">
+			<li>Create a root node.</li>
+			<li>Enqueue the address of the root node into <var>queue</var>.</li>
+			<li>
+				Dequeue the address of the new node, name that address the pointer
+				<var>p</var>.<sup></sup>
+			</li>
+			<li>
+				Using <var>p</var>, ask: Does <var>p</var> have a left child?
+			</li>
+			<ol>
+				<li>Yes ${\implies}$ go to step 4.</li>
+				<li>No ${\implies}$ go to step 5.</li>
+			</ol>
+			<li>Create a pointer <var>t</var>.</li>
+			<li>Create a new node and assign it to <var>t</var>.</li>
+			<li>
+				Initialize <var>p</var>'s <var>left_child</var> pointer as
+				<var>t</var>.
+			</li>
+			<li>
+				Initialize <var>p</var>'s <var>right_child</var> pointer as
+				<var>t</var>.
+			</li>
+			<li>
+				Using <var>p</var>, ask: Does <var>p</var> have a right child?
+			</li>
+			<ol>
+				<li>Yes ${\implies}$ go to step 4.</li>
+				<li>No ${\implies}$ go to step 5.</li>
+			</ol>
+			<li>Enqueue the address of <var>t</var> into <var>queue.</var></li>
+			<li>Return to step 3.</li>
+		</ol>
+		<div class="note">
+			<p>
+				The operation <var>dequeue()</var> returns the address of the
+				dequeued queuer.
+			</p>
+		</div>
+		<p>
+			Applying this procedure, the first step is to create the root node.
+			For our tree <var>B1</var>, this is the node ${n_5.}$
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5); <var>address: F0</var></li>
+			<li>Queue queue = newQueue();</li>
+		</ol>
+		<p>
+			Let's say the address of <var>root</var> is some address
+			<var>F0</var>. We take that address, and insert it into the queue:
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+		</ol>
+		<p>
+			With these steps performed, we now have the first node in our tree:
+		</p>
+		<div class="split">
+			<div id="tree_b1_queue_with_root"></div>
+			<div id="tree_b1_1"></div>
+		</div>
+		<p>
+			We then dequeue the address <var>F0</var>, and have a pointer
+			<var>p</var> point to the address <var>F0</var>.
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+		</ol>
+		<div class="split">
+			<div id="tree_b1_queue_with_root_dequeue"></div>
+			<div id="tree_b1_1_p"></div>
+		</div>
+		<p>
+			With <var>p</var> pointed to <var>F0</var>, we ask:
+			<q>Does the node <var>p</var> have a left-child?</q> Examining the
+			tree <var>B1</var>, the answer is yes, the node <var>p</var> has a
+			left child. So, we use a temporary pointer <var>t</var> to create a
+			new node, and have <var>p</var>'s pointee's
+			<var>left_child</var> pointer point to the new node:
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8); <var>address: F1</var></li>
+			<li>(*p).left_child = t;</li>
+		</ol>
+		<p>
+			Suppose the address of the new node is <var>F1</var>. We enqueue this
+			address to our queue:
+		</p>
+		<div class="split">
+			<div id="tree_b1_2_p"></div>
+			<div id="tree_b1_queue_with_2"></div>
+		</div>
+		<p>
+			With the left-child linked, we then ask the second question:
+			<q>Does the node <var>p</var> have a right-child?</q> Again, the
+			answer is yes. We use the temporary pointer <var>t</var> to create a
+			new node, and have <var>p</var>'s pointee's
+			<var>right_child</var> pointer point to the new node:
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(6); <var>address: F2</var></li>
+			<li>(*p).right_child = t;</li>
+		</ol>
+		<p>
+			Let's say the address of the new node <var>F2</var>. We enqueue this
+			address to our queue:
+		</p>
+		<div class="split">
+			<div id="tree_b1_3_p"></div>
+			<div id="tree_b1_queue_with_3"></div>
+		</div>
+		<p>
+			We now have the first generation taken care of. So we go to the next
+			generation, working from left to right.
+		</p>
+		<div id="tree_b1_1_gen2"></div>
+		<p>
+			We dequeue the address <var>F1</var>, and have the pointer
+			<var>p</var> point to this address.
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(6);</li>
+			<li>(*p).right_child = t;</li>
+			<li>Node* p = queue.dequeue();</li>
+		</ol>
+		<div class="split">
+			<div id="tree_b1_queue_with_4"></div>
+			<div id="tree_b1_4_p"></div>
+		</div>
+		<p>
+			Using <var>p</var> set, we ask,
+			<q>Does the node <var>p</var> have a left-child?</q> In this case, it
+			does not. So we immediately ask the next question:
+			<q>Does the node <var>p</var> have a right child?</q> Yes. So we use
+			the temporary pointer <var>t</var> to create a new node, enqueue
+			<var>t</var>, and have <var>p</var>'s right-child pointer point to
+			<var>t</var>:
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(6);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(9);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).right_child = t;</li>
+		</ol>
+		<p>Now we have:</p>
+		<div class="split">
+			<div id="tree_b1_4"></div>
+			<div id="tree_b1_queue_4"></div>
+		</div>
+		<p>
+			This takes care of the left node in the second generation, so now we
+			consider the right node. We dequeue our <var>queue</var>, assigning
+			the dequeued address to <var>p</var>:
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(6);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(9);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+		</ol>
+		<p>
+			Using <var>p</var>, again we ask, does <var>p</var> have a left
+			child? Yes, it does. We create a new node using <var>t</var>, enqueue
+			<var>t</var>, and have <var>p</var>'s left-child pointer point to
+			<var>t</var>:
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(6);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(9);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(3);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).left_child = t;</li>
+		</ol>
+		<div class="split">
+			<div id="tree_b1_5"></div>
+			<div id="tree_b1_queue_5"></div>
+		</div>
+		<p>
+			We then ask, does <var>p</var> have a right-child? No, it does not.
+			So we go to the next generation:
+		</p>
+		<div id="tree_b1_1_gen3"></div>
+		<p>
+			We <var>dequeue</var> our <var>queue</var>, and assign the returned
+			address to <var>p</var>.
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(6);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(9);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(3);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).left_child = t;</li>
+			<li>p = queue.dequeue(); <var>address in p: F3</var></li>
+		</ol>
+		<div class="split">
+			<div id="tree_b1_6"></div>
+			<div id="tree_b1_queue_6"></div>
+		</div>
+		<p>
+			We ask: Does the node <var>p</var> have a left child? Yes, it does.
+			We create a new node using <var>t</var>, queue <var>t</var>, and
+			assign <var>t</var> to the <var>left_child</var> pointer of
+			<var>p</var>:
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(6);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(9);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(3);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).left_child = t;</li>
+			<li>p = queue.dequeue(); <var>address in p: F3</var></li>
+			<li>t = newNode(4); <var>address: F5</var></li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).left_child = t;</li>
+		</ol>
+		<div class="split">
+			<div id="tree_b1_7"></div>
+			<div id="tree_b1_queue_7"></div>
+		</div>
+		<p>
+			Then we ask: Does the node <var>p</var> have a right child? Yes.
+			Again we create a new node using <var>t</var>, queue <var>t</var>,
+			and assign <var>t</var> to the <var>right_child</var> pointer of
+			<var>p</var>:
+		</p>
+		<ol class="alg">
+			<li>Node root = newNode(5);</li>
+			<li>Queue queue = newQueue();</li>
+			<li>queue.enqueue(root);</li>
+			<li>Node* p = queue.dequeue();</li>
+			<li>Node* t = newNode(8);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(6);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(9);</li>
+			<li>(*p).right_child = t;</li>
+			<li>p = queue.dequeue();</li>
+			<li>t = newNode(3);</li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).left_child = t;</li>
+			<li>p = queue.dequeue(); <var>address in p: F3</var></li>
+			<li>t = newNode(4); <var>address: F5</var></li>
+			<li>queue.enqueue(t);</li>
+			<li>(*p).left_child = t;</li>
+			<li>t = newNode(2); <var>address: F6</var></li>
+			<li>(*p).right_child = t;</li>
+		</ol>
+		<div class="split">
+			<div id="tree_b1_8"></div>
+			<div id="tree_b1_queue_8"></div>
+		</div>
+		<p>
+			At this point, we see that we've generated our tree. The algorithm
+			continues by dequeuing the remaining queuers, testing for the two
+			conditions of left- and right-child existence. Once the last queuer
+			is dequeued, the algorithm terminates.
+		</p>
+		<div class="demo">
+			<button>C</button>
+			<div class="implementation">
+				<h4>C Implementation</h4>
+				<p>
+					Below is an implementation in C. This is somewhat of a lengthy
+					implementation because we need an auxiliary data structure, the
+					circular queue.
+				</p>
+				<p>
+					First, we start with a diagram of the tree we want to construct.
+					In this case, we'll use the following tree for illustration:
+				</p>
+				<div id="create_tree_sample"></div>
+				<p>
+					Next, the program we'll run is written in a file called
+					<var>Main.c</var>. Its source code and output appear as such:
+				</p>
+				<pre class="language-c"><code>
+					#include "Tree.h"
+					
+					int main() {
+						struct Tree* tree = newTree();
+						printTree(tree);
+						return 0;
+					}
+				</code></pre>
+				<pre class="language-bash"><code>
+					$ make Main
+					cc     Main.c   -o Main
+					$ ./Main
+					Enter root value: 3
+					Enter left child of 3: 1
+					Enter right child of 3: 2
+					Enter left child of 1: 8
+					Enter right child of 1: 7
+					Enter left child of 2: -1
+					Enter right child of 2: 4
+					Enter left child of 8: -1
+					Enter right child of 8: -1
+					Enter left child of 3: -1
+					Enter right child of 3: -1
+					3
+					|---2
+					|   |---4
+					|---1
+					|   |---8
+					|   |---7
+				</code></pre>
+				<p>
+					In the code above, we use a function called
+					<var>newTree()</var>, which takes no parameters. When
+					<var>Main.c</var> is run, the user is prompted to enter the
+					different values to be placed in each node. To keep the code
+					simple, we'll use the value <var>-1</var> to indicate that a
+					particular node does not exist. Entering <var>-1</var> for all
+					leaves in the tree terminates the tree construction, which brings
+					us to the next line, <var>printTree(tree)</var>. This function
+					prints the newly constructed tree.
+				</p>
+				<p>
+					Now that we know how the overall program works, let's examine the
+					implementation details. First, we have an include:
+					<var>#include "Tree.h"</var>. Let's look inside this header file.
+				</p>
+				<h4>Tree.h</h4>
+				<p>
+					Inside the <var>Tree.h</var> header file, we have the following
+					code:
+				</p>
+				<pre class="language-c"><code>
+					#include "Queue.h"
+				
+					struct Node {
+						int data;
+						struct Node* left_child;
+						struct Node* right_child;
+					};
+
+					struct Node* newNode(int datum) {
+						struct Node* node = (struct Node*) malloc(sizeof(struct Node));
+						(*node).data = datum;
+						(*node).left_child = NULL;
+						(*node).right_child = NULL;
+						return node;
+					}
+
+					struct Tree {
+						struct Node* root;
+					};
+
+					struct Tree* newTree() {
+						struct Tree* tree = (struct Tree*) malloc(sizeof(struct Tree));
+						(*tree).root = NULL;
+						struct Node *p, *t;
+						int user_input_data;
+						struct Queue* pointerQueue = newQueue(10);
+						printf("Enter root value: ");
+						scanf("%d", &user_input_data);
+						(*tree).root = newNode(user_input_data);
+						enqueue(pointerQueue, (*tree).root);
+
+						while(!isEmpty(pointerQueue)) {
+							p = dequeue(pointerQueue);
+							printf("Enter left child of %d: ", (*p).data);
+							scanf("%d", &user_input_data);
+							if (user_input_data != -1) {
+								t = newNode(user_input_data);
+								(*p).left_child = t;
+								enqueue(pointerQueue, t);
+							}
+							printf("Enter right child of %d: ", (*p).data);
+							scanf("%d", &user_input_data);
+							if (user_input_data != -1) {
+								t = newNode(user_input_data);
+								(*p).right_child = t;
+								enqueue(pointerQueue, t);
+							}
+						}
+						return tree;
+					}
+
+					void print(struct Node* tree, int level) {
+						if (tree != NULL) {
+							for (int i = 0; i < level; i++) {
+								printf(i == level - 1 ? "|---" : "|   ");
+							}
+							printf("%d\n", (*tree).data);
+							print((*tree).right_child, level + 1);
+							print((*tree).left_child, level + 1);
+						}
+					}
+
+					void printTree(struct Tree* tree) {
+						print((*tree).root, 0);
+					}
+				</code></pre>
+				<p>The <var>queue.h</var> file contains the following code:</p>
+				<pre class="language-c"><code>
+					#pragma once
+					#include &lt;stdbool.h&gt;
+					#include &lt;stdio.h&gt;
+					#include &lt;stdlib.h&gt;
+
+					struct Queue {
+						int capacity;
+						int length;
+						int front;
+						int rear;
+						struct Node** Q; 
+					};
+
+					struct Queue* newQueue(int maxSize) {
+						struct Queue* queue = (struct Queue*) malloc(sizeof(struct Queue));
+						(*queue).capacity = maxSize;
+						(*queue).length = 0;
+						(*queue).front = -1;
+						(*queue).rear = -1;
+						(*queue).Q = (struct Node**) malloc(sizeof(int) * maxSize);
+						return queue;
+					}
+
+					bool isFull(struct Queue* queue) {
+						int rear = (*queue).rear + 1;
+						int front = (*queue).front;
+						int max = (*queue).capacity;
+						return rear % max == front;
+					}
+
+					bool isEmpty(struct Queue* queue) {
+						return (*queue).front == (*queue).rear;
+					}
+
+					void enqueue(struct Queue* queue, struct Node* data) {
+						if (isFull(queue)) {
+							printf("Queue is full; enqueue prohibited.\n");
+						} else {
+							(*queue).rear = ((*queue).rear + 1) % (*queue).capacity;
+							(*queue).Q[(*queue).rear] = data;
+						}
+					}
+
+					struct Node* dequeue(struct Queue* queue) {
+						struct Node* t = NULL;
+						if (isEmpty(queue)) {
+							printf("Queue is empty, dequeue prohibited. Returning null pointer.\n");
+						} else {
+							(*queue).front = ((*queue).front + 1) % ((*queue).capacity);
+							t = (*queue).Q[(*queue).front];
+						}
+						return t;
+					}
+
+					void printQueue(struct Queue* queue) {
+						for (int i = 0; i < (*queue).capacity; i++) {
+							printf("%p ", (*queue).Q[i]);
+							printf("\n");
+						}
+					}
+				</code></pre>
+				<p>
+					Let's go over this code carefully, focusing on
+					<var>Tree.h</var>. First, we have the definition for a
+					<var>Node</var> struct:
+				</p>
+				<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* left_child;
+						struct Node* right_child;
+					};
+				</code></pre>
+				<p>
+					This is a tree node. It has a data field, <var>data</var>, which
+					is bound to the value the node stores. The node also has a
+					<var>left_child</var> pointer, which points to the node's left
+					child, itself a node, and a <var>right_child</var> pointer, which
+					points to the node's right child.
+				</p>
+				<p>
+					Next, we have a <i>node constructor</i>. This is similar to the
+					singly-linked list's node constructor &mdash; a function that
+					creates a new instance of a node.
+				</p>
+				<pre class="language-c"><code>
+					struct Node* newNode(int datum) {
+						struct Node* node = (struct Node*) malloc(sizeof(struct Node));
+						(*node).data = datum;
+						(*node).left_child = NULL;
+						(*node).right_child = NULL;
+						return node;
+					}
+				</code></pre>
+				<p>
+					The node constructor <var>newNode()</var> has the parameter
+					<var>int datum</var>. We pass the data we want stored in the
+					resulting tree node into <var>newNode()</var> as an argument,
+					which is bound to <var>int datum</var>. Inside
+					<var>newNode()</var>, we allocate enough space for a
+					<var>Node</var> struct, followed by an instantiation of the new
+					node's fields. In this case, <var>datum</var> is bound to the new
+					node's <var>data</var> field, and the <var>left_child</var> and
+					<var>right_child</var> pointers are initialized to
+					<var>NULL</var>. Once initialized, we return the newly
+					instantiated node.
+				</p>
+				<p>Next, we have the definition for a <var>Tree</var> struct.</p>
+				<pre class="language-c"><code>
+					struct Tree {
+						struct Node* root;
+					};
+				</code></pre>
+				<p>
+					For now, this structure only has a single field, the
+					<var>root</var>. This is a <var>Node</var> pointer, which serves
+					as our access point for the rest of the tree. In later sections,
+					we will add further properties to the <var>Tree</var> structure
+					(e.g., depth, height, levels, etc.), as well as more elaborate
+					methods that utilize these additional properties.
+				</p>
+				<p>
+					Following the tree structure, we have the
+					<i>tree constructor</i>:
+				</p>
+				<pre class="language-c"><code>
+					struct Tree* newTree() {
+						struct Tree* tree = (struct Tree*) malloc(sizeof(struct Tree));
+						(*tree).root = NULL;
+						struct Node *p, *t;
+						int user_input_data;
+						struct Queue* pointerQueue = newQueue(10);
+						printf("Enter root value: ");
+						scanf("%d", &user_input_data);
+						(*tree).root = newNode(user_input_data);
+						enqueue(pointerQueue, (*tree).root);
+					
+						while(!isEmpty(pointerQueue)) {
+							p = dequeue(pointerQueue);
+
+							printf("Enter left child of %d: ", (*p).data);
+							scanf("%d", &user_input_data);
+							if (user_input_data != -1) {
+								t = newNode(user_input_data);
+								(*p).left_child = t;
+								enqueue(pointerQueue, t);
+							}
+
+							printf("Enter right child of %d: ", (*p).data);
+							scanf("%d", &user_input_data);
+							if (user_input_data != -1) {
+								t = newNode(user_input_data);
+								(*p).right_child = t;
+								enqueue(pointerQueue, t);
+							}
+						}
+						return tree;
+					}
+				</code></pre>
+				<p>
+					This is a fairly large function, so we'll take it a piece at a
+					time. First, we create a new instace of a tree, with its
+					<var>root</var> pointer initially <var>NULL</var>:
+				</p>
+				<pre class="language-c"><code>
+					struct Tree* tree = (struct Tree*) malloc(sizeof(struct Tree));
+					(*tree).root = NULL;
+				</code></pre>
+				<p>
+					Next, we create two <var>Node</var> pointers, <var>p</var> and
+					<var>t</var>.
+				</p>
+				<pre class="language-c"><code>
+					struct Node *p, *t;
+				</code></pre>
+				<p>
+					The pointer <var>p</var> is used to point to the current node we
+					want to test for child existence. The pointer <var>t</var> is
+					then used to create new node instances.
+				</p>
+				<p>After these two pointers, we have the <i>pointer queue</i>:</p>
+				<pre class="language-c"><code>
+					struct Queue* pointerQueue = newQueue(10);
+				</code></pre>
+				<p>This is a circular queue with a circumference of ${10:}$</p>
+				<div id="circular_queue_tree"></div>
+				<p>
+					We use this queue to keep track of the values of
+					<var>p</var> and <var>t</var>. The auxiliary circular queue's
+					implementation will be discussed shortly in the
+					<cite>Queue.h</cite> section.
+				</p>
+				<p>
+					Following these pointers, we have a variable
+					<var>user_input_data</var>, followed by a prompt for user input:
+				</p>
+				<pre class="language-c"><code>
+					int user_input_data;
+					printf("Enter root value: ");
+				</code></pre>
+				<p>
+					The variable <var>user_input_data</var> stores the user's input
+					passed to the <var>scanf</var> call:
+				</p>
+				<pre class="language-c"><code>
+					scanf("%d", &user_input_data);
+				</code></pre>
+				<p>
+					When the user inputs a value, that value is bound to
+					<var>user_input_data</var>. With
+					<var>user_input_data</var> initialized, it is then passed as an
+					argument to <var>newNode()</var>:
+				</p>
+				<pre class="language-c"><code>
+					(*tree).root = <mark>newNode(user_input_data)</mark>;
+				</code></pre>
+				<p>
+					This results in a new tree node, following the
+					<var>newNode()</var> constructor's implementation.
+				</p>
+				<pre class="language-pseudo"><code>
+					*node = {
+						data = user_input_data;
+						left_child = NULL;
+						right_child = NULL;
+					}
+				</code></pre>
+				<p>
+					The <var>tree</var> we initialized earlier, whose pointer
+					<var>root</var> was initially <var>NULL</var>, now points to the
+					address of this new node:
+				</p>
+				<pre class="language-pseudo"><code>
+					(*tree).root = {
+						data = user_input_data;
+						left_child = NULL;
+						right_child = NULL;
+					}
+				</code></pre>
+				<p>
+					Suppose the address of <var>root</var> is <var>0x1</var>. We
+					enqueue this address into our circular queue,
+					<var>pointerQueue</var>:
+				</p>
+				<div class="split">
+					<pre class="language-c"><code>
+						enqueue(pointerQueue, (*tree).root);
+					</code></pre>
+					<div id="root_queued"></div>
+				</div>
+				<p>
+					All of this code establishes the tree's <var>root</var>. Once the
+					root's established, we can begin inserting the root's
+					descendants. To do so, we use a while-loop. The guard clause for
+					the while loop: As long as the the pointer queue isn't empty.
+				</p>
+				<pre class="language-c"><code>
+					<mark>while(!isEmpty(pointerQueue))</mark> {
+						p = dequeue(pointerQueue);
+
+						printf("Enter left child of %d: ", (*p).data);
+						scanf("%d", &user_input_data);
+						if (user_input_data != -1) {
+							t = newNode(user_input_data);
+							(*p).left_child = t;
+							enqueue(pointerQueue, t);
+						}
+
+						printf("Enter right child of %d: ", (*p).data);
+						scanf("%d", &user_input_data);
+						if (user_input_data != -1) {
+							t = newNode(user_input_data);
+							(*p).right_child = t;
+							enqueue(pointerQueue, t);
+						}
+					}
+				</code></pre>
+				<p>
+					If the pointer queue is not empty, we enter the while-loop.
+					Inside, we first assign to <var>p</var> the return value of
+					dequeuing <var>pointerQueue</var>.
+				</p>
+				<pre class="language-c"><code>
+					p = dequeue(pointerQueue);
+				</code></pre>
+				<p>
+					The <var>dequeue()</var> function, found in <var>queue.h</var>,
+					accesses the current front queuer of a queue, dequeues and
+					returns that queuer as an output value. That output value, a node
+					pointer, is then bound to <var>p</var>.
+				</p>
+				<p>Once dequeued, we proceed to the while-loop's two prongs:</p>
+				<div class="split">
+					<pre class="language-c"><code>
+						printf("Enter left child of %d: ", (*p).data);
+						scanf("%d", &user_input_data);
+						if (user_input_data != -1) {
+							t = newNode(user_input_data);
+							(*p).left_child = t;
+							enqueue(pointerQueue, t);
+						}
+					</code></pre>
+					<pre class="language-c"><code>
+						printf("Enter right child of %d: ", (*p).data);
+						scanf("%d", &user_input_data);
+						if (user_input_data != -1) {
+							t = newNode(user_input_data);
+							(*p).right_child = t;
+							enqueue(pointerQueue, t);
+						}
+					</code></pre>
+				</div>
+				<p>
+					For both of these prongs, we prompt the user to enter the left-
+					and right-child values for <var>p</var> respectively. The
+					<var>(*p).data</var> is used to inform the user which node the
+					user is entering data for. When the user enters the data, she has
+					the choice to enter either <var>-1</var> or any other
+					<var>int</var> value. If the user enters <var>-1</var>, we enter
+					the relevant if-block and create a new node. For example, suppose
+					the user enters <var>2</var> for the <var>root</var>'s
+					left-child. The code block to execute:
+				</p>
+				<pre class="language-c"><code>
+					t = newNode(user_input_data);
+					(*p).left_child = t;
+					enqueue(pointerQueue, t);
+				</code></pre>
+				<p>In the first line, we create a new node:</p>
+				<div class="split">
+					<pre class="language-c"><code>
+						t = newNode(user_input_data);
+					</code></pre>
+					<pre class="language-pseudo"><code>
+						*t = {
+							data = 2;
+							left_child = NULL;
+							right_child = NULL;
+						}
+					</code></pre>
+				</div>
+
+				<p>
+					Let's say the address of this new node is <var>0x2</var>. Once
+					the new node is created, we make the left-child of <var>p</var>,
+					currently the <var>root</var>, point to this new node:
+				</p>
+				<pre class="language-pseudo"><code>
+					*p = {
+						data = 3;
+						left_child = t;
+						right_child = NULL;
+					}
+				</code></pre>
+				<p>Then we enqueue this address to the <var>pointerQueue</var>:</p>
+				<div class="split">
+					<pre class="language-c"><code>
+						enqueue(pointerQueue, t);
+					</code></pre>
+					<div id="root_left_child_queued"></div>
+				</div>
+				<p>
+					Next, we prompt the user to enter the right-child of
+					<var>p</var> (still currently the root). The user enters
+					<var>1</var>. Using <var>t</var>, we create a new node with, say,
+					an address of <var>0x3</var>.
+				</p>
+				<pre class="language-pseudo"><code>
+					0x2 = {
+						data = 1;
+						left_child = NULL;
+						right_child = NULL;
+					}
+					*t = {
+						data = 1;
+						left_child = NULL;
+						right_child = NULL;
+					}
+					*p = {
+						data = 3;
+						left_child = 0x2;
+						right_child = t;
+					}
+				</code></pre>
+				<p>
+					We again enqueue the current address <var>t</var> points to into
+					<var>pointerQueue</var>:
+				</p>
+				<div class="split">
+					<pre class="language-c"><code>
+						enqueue(pointerQueue, t);
+					</code></pre>
+					<div id="root_right_child_queued"></div>
+				</div>
+				<p>
+					Once the left- and right-children of the current
+					<var>p</var> are taken care of, we move back to the top of the
+					while-loop:
+				</p>
+				<pre class="language-c"><code>
+					p = dequeue(pointerQueue);
+				</code></pre>
+				<p>
+					Dequeuing <var>pointerQueue</var>, <var>p</var> now becomes the
+					new front queuer:
+				</p>
+				<div id="new_front1"></div>
+				<p>This process continues until the queue is completely empty.</p>
+			</div>
+		</div>
+	</section>
+
+	<section id="traversal_implementations">
+		<h3>Tree Traversals</h3>
+		<p>
+			Now that we have a tree constructor, we can examine the
+			implementations for tree traversals. Suppose we have the following
+			tree, implemented as a linked list (red text indicating the address
+			of the pointee):
+		</p>
+		<div id="traversal_1"></div>
+		<p>
+			Using this tree to illustrate, we examine each of the traversal
+			implementations.
+		</p>
+		<section id="preorder_traversal">
+			<h4>Preorder Traversal</h4>
+			<p>For preorder traversal, we have the following function:</p>
+			<ol class="alg">
+				<li>fn preorder(Node* root):</li>
+				<ol>
+					<li>if (root != NULL):</li>
+					<ol>
+						<li>print "{(*root).data}";</li>
+						<li>preorder((*root).left_child);</li>
+						<li>preorder((*root).right_child);</li>
+					</ol>
+				</ol>
+			</ol>
+			<p>
+				This is a recursive function. If the <var>root</var> is not
+				<var>NULL</var>, we print the data. Thereafter, we make a recursive
+				call using the left-child of <var>root</var> as an argument. After
+				that recursive call, we make another recursive call using the
+				right-child of <var>root</var> as an argument.
+			</p>
+			<p>
+				For example, suppose our example tree is called <var>oak</var>,
+				whose <var>root</var> has the address <var>F0</var>. To preorder
+				traverse <var>oak</var>, we make the call
+				<var>preorder((*oak).root)</var>. This results in a function call
+				in the stack, <var>preorder(F0)</var>. The first line in this call
+				prints the value <var>8</var>:
+			</p>
+			<div class="split">
+				<div class="ds-stack">
+					<ol>
+						<li>preorder(F0)</li>
+					</ol>
+				</div>
+				<div id="preorder_trace1"></div>
+			</div>
+			<p>
+				Inside <var>preorder(F0)</var>, we call
+				<var>preorder((*root).left_child)</var>. Following our diagram,
+				this means making the call <var>preorder(F1)</var>:
+			</p>
+			<div class="split">
+				<div class="ds-stack">
+					<ol>
+						<li>preorder(F0)</li>
+						<li>preorder(F1)</li>
+					</ol>
+				</div>
+				<div id="preorder_trace2"></div>
+			</div>
+			<p>
+				Given <var>preorder(F1)</var>, we print the value <var>3</var>,
+				then make the call <var>preorder(F3)</var>:
+			</p>
+			<div class="split">
+				<div class="ds-stack">
+					<ol>
+						<li>preorder(F0)</li>
+						<li>preorder(F1)</li>
+						<li>preorder(F3)</li>
+					</ol>
+				</div>
+				<div id="preorder_trace3"></div>
+			</div>
+			<p>
+				The call <var>preorder(F3)</var> then prints the value
+				<var>4</var>, and calls <var>preorder((*root).left_child)</var>.
+			</p>
+			<div class="split">
+				<div class="ds-stack">
+					<ol>
+						<li>preorder(F0)</li>
+						<li>preorder(F1)</li>
+						<li>preorder(F3)</li>
+						<li>preorder(0)</li>
+					</ol>
+				</div>
+				<div id="preorder_trace4"></div>
+			</div>
+			<p>
+				Because <var>F3</var> has no left-child, the call is essentially
+				<var>preorder(0)</var> (a null pointer). Nevertheless, the call is
+				made and subsequently popped off the stack. This takes us to the
+				next call, <var>preorder((*root).right_child)</var>. Because
+				<var>F3</var> has no right-child, this call also results in
+				<var>preorder(0)</var>:
+			</p>
+			<div class="split">
+				<div class="ds-stack">
+					<ol>
+						<li>preorder(F0)</li>
+						<li>preorder(F1)</li>
+						<li>preorder(F3)</li>
+						<li>preorder(0)</li>
+					</ol>
+				</div>
+				<div id="preorder_trace5"></div>
+			</div>
+			<p>
+				Having executed all of the instructions for
+				<var>preorder(F3)</var>, the most recent being the call
+				<var>preorder(F1.left_child)</var>, the call
+				<var>preorder(F3)</var> is popped off the stack:
+			</p>
+			<div class="split">
+				<div class="ds-stack">
+					<ol>
+						<li>preorder(F0)</li>
+						<li>preorder(F1)</li>
+					</ol>
+				</div>
+				<div id="preorder_trace5"></div>
+			</div>
+			<p>
+				We're now back at <var>preorder(F1)</var> to execute
+				<var>preorder(F1.right_child)</var>. This results in the call
+				<var>preorder(F4)</var>. The value <var>9</var> is printed, and the
+				call <var>preorder(F4.left_child)</var> is made.
+			</p>
+			<div class="stackTrace">
+				<div class="ds-stack">
+					<ol>
+						<li>preorder(F0)</li>
+						<li>preorder(F1)</li>
+						<li>preorder(F4)</li>
+					</ol>
+				</div>
+				<div id="preorder_trace6"></div>
+			</div>
+			<p>
+				This recursive call evaluates to <var>preorder(NULL)</var>, so we
+				make the next recursive call, <var>preorder(F4.right_child)</var>.
+				This also results in <var>preorder(NULL)</var>, so
+				<var>preorder(F4)</var> is popped off the stack.
+			</p>
+		</section>
+		<p>
+			With <var>preorder(F4.right_child)</var> finished, this completes the
+			call for <var>preorder(F4)</var>, which completes the call for
+			<var>preorder(F1)</var>. This then completes the call for
+			<var>preorder(F1.left_child)</var>. The process continues for
+			<var>preorder(F1.right_child)</var>. Putting it all together, we have
+			a call trace that looks like:
+		</p>
+		<div id="preorder_trace_final"></div>
+		<p>
+			If we count the number <var>preorder()</var> calls, we'll find that
+			there are ${15}$ calls total, given ${7}$ nodes. Recall from our
+			earlier discussion that given ${N}$ nodes, there are ${N}$ non-null
+			pointers and ${N+1}$ null pointers. Thus, the total number of calls
+			we make is ${2N + 1.}$ This conforms with our data: Given a binary
+			tree of ${7}$ nodes, we have ${2(7) + 1 = 15}$ calls for preorder
+			traversal.
+		</p>
+		<p>
+			Now, although there are ${15}$ calls, that does not mean the size of
+			the call stack grows to ${15.}$ Indeed, the most the call stack grows
+			up to is ${4.}$ When we called <var>preorder(F0)</var>, that resulted
+			in a call to <var>preorder(F2)</var>, then a call to
+			<var>preorder(F5)</var>, then a call to <var>preorder(0)</var>. Once
+			<var>preorder(0)</var> finishes, it's popped off the stack, then we
+			make another call to <var>preorder(0)</var>, then that's popped off
+			the stack, then back to <var>preorder(F5)</var>, and so on. The call
+			stack grows up to <var>preorder(0)</var>, then back down, and so on.
+		</p>
+		<p>
+			Because of this up and down movement, the most the call stack grows
+			to is ${H + 2,}$ where ${H}$ is the height of the binary tree. For
+			our example tree, the height is ${H = 2,}$ which yields the call
+			stack size of ${S_c = H + 2 = 4.}$
+		</p>
+		<section id="iterative_inorder">
+			<h4>Iterative Preorder Traversal</h4>
+			<p>
+				Although recursion is the preferred and more common approach for
+				implementing tree traversals, we can also traverse through
+				iterative means. With an iterative approach, we may have to
+				implement our own stack. To see why, let's reuse our
+				<var>oak</var> tree to illustrate. We'll use a function that (for
+				now) looks like the recursive implementation:
+			</p>
+			<div class="split">
+				<ol class="alg">
+					<li>fn preorderLoop(Node* root) -> void:</li>
+					<li>while (root != NULL):</li>
+					<ol>
+						<li>if ((*root).left_child != NULL):</li>
+						<ol>
+							<li>print((*root).data);</li>
+							<li>root = (*root).left_child;</li>
+						</ol>
+						<li>else if ((*root).right_child != NULL):</li>
+						<ol>
+							<li>print((*root).data);</li>
+							<li>root = (*root).right_child;</li>
+						</ol>
+						<li>else:</li>
+						<ol>
+							<li>print("Finished")</li>
+						</ol>
+					</ol>
+				</ol>
+				<div id="preorder_loop"></div>
+			</div>
+			<p>
+				Suppose <var>(*oak).root</var> has the address <var>F0</var>. First
+				we make the call <var>preorderLoop((*oak).root)</var>, which
+				evaluates to <var>preorderLoop(F0)</var>. The first instruction in
+				this call is <var>print((*root).data)</var>, which evaluates to
+				<var>print(F0.data)</var>. The value <var>8</var> is thus printed
+				to the console.
+			</p>
+			<p>
+				Next, we make a call to <var>preorderLoop(F0.left_child)</var>.
+				This evaluates to <var>preorderLoop(F1)</var>. The first
+				instruction for this call is <var>print(F1.data)</var>, so the
+				value <var>3</var> is logged to the console. Following this call,
+				we have <var>preorderLoop(F1.left_child)</var>. This evaluates to
+				<var>preorderLoop(F3)</var>. Again the first instruction is
+				<var>print(F3.data)</var>, so we output <var>4</var> to the
+				console.
+			</p>
+			<p>
+				Then we have <var>preorderLoop(F3.left_child)</var>. There is no
+				left-child, so we call <var>preorderLoop(F3.right_child)</var>. Now
+				we've got a problem. There is no right-child of
+				<var>F3</var> &mdash; it's a null pointer. Given the program as is,
+				we have no way of <q>going back</q> to the previous node,
+				<var>F1</var>. Accordingly, what we need is an auxiliar data
+				structure to keep track of the nodes we've previously visited
+				&mdash; a <i>stack</i>.
+			</p>
+			<p>
+				Suppose we've implemented a <var>Stack</var> data structure, with
+				the functions <var>push()</var> and <var>pop()</var>. The function
+				<var>push()</var> inserts a new node address onto the stack, and
+				the function <var>pop()</var> removes the topmost address from the
+				stack, returning that address as an output value. We also have a
+				function <var>isEmpty()</var> which returns <var>true</var> if the
+				stack is empty, and <var>false</var> otherwise. With this auxiliary
+				data structure, we'll write the rewrite our
+				<var>preorderLoop()</var> function as follows:
+			</p>
+			<ol class="alg">
+				<li>fn preorderLoop(Node* root) -> void:</li>
+				<ol>
+					<li>struct Stack nodeStack;</li>
+					<li>while (root != NULL || !isEmpty()):</li>
+					<ol>
+						<li>if (root != NULL):</li>
+						<ol>
+							<li>print((*root).data);</li>
+							<li>push(nodeStack, root);</li>
+							<li>root = (*root).left_child;</li>
+						</ol>
+						<li>else:</li>
+						<ol>
+							<li>root = pop(nodeStack);</li>
+							<li>root = (*root).right_child;</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+			<p>
+				Let's trace the call. We bgin by calling
+				<var>preorder((*oak).root)</var>. The variable <var>root</var> is
+				not <var>NULL</var>, so we enter the while-loop.
+			</p>
+			<figure>
+				<table class="alg">
+					<thead>
+						<th>Iteration Count</th>
+						<th>Evaluation</th>
+						<th>Stack</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>${1}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop((*oak).root)
+											└── preorderLoop(F0)
+													├── print(F0.data)
+													├── push(nodeStack, root);
+													└── root = (F0).left_child = F1;
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				The variable <var>root</var> now points to the address
+				<var>F1</var>. This is not a <var>NULL</var> value, so we again
+				enter the loop and evaluate:
+			</p>
+			<figure>
+				<table class="alg">
+					<thead>
+						<th>Iteration Count</th>
+						<th>Evaluation</th>
+						<th>Stack</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>${1}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop(root)
+											└── preorderLoop(F0)
+													├── print(F0.data) >> "8"
+													├── push(nodeStack, root);
+													└── root = (F0).left_child = F1;
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>${2}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop(root)
+											└── preorderLoop(F1)
+													├── print(F1.data) >> "3"
+													├── push(nodeStack, root);
+													└── root = (F1).left_child = F3;
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+										<li>F1</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				The variable <var>root</var> is now <var>F3</var>. This is not
+				<var>NULL</var>, so we again enter the loop and evaluate:
+			</p>
+			<figure>
+				<table class="alg">
+					<thead>
+						<th>Iteration Count</th>
+						<th>Evaluation</th>
+						<th>Stack</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>${1}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop(root)
+											└── preorderLoop(F0)
+													├── print(F0.data) >> "8"
+													├── push(nodeStack, root);
+													└── root = (F0).left_child = F1;
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>${2}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop(root)
+											└── preorderLoop(F1)
+													├── print(F1.data) >> "3"
+													├── push(nodeStack, F3);
+													└── root = (F1).left_child = F3;
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+										<li>F1</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>${2}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop(root)
+											└── preorderLoop(F3)
+													├── print(F3.data) >> "4"
+													├── push(nodeStack, F3);
+													└── root = (F1).left_child = NULL;
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+										<li>F1</li>
+										<li>F3</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				Now <var>root == NULL</var>. Accordingly, we check the second prong
+				of the while-loop's guard clause, <var>!isEmpty()</var>. This
+				returns <var>true</var>, so we again enter the loop. However,
+				because <var>root == NULL</var>, we enter the second prong:
+			</p>
+			<figure>
+				<table class="alg">
+					<thead>
+						<th>Iteration Count</th>
+						<th>Evaluation</th>
+						<th>Stack</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>${1}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop(root)
+											└── preorderLoop(F0)
+													├── print(F0.data) >> "8"
+													├── push(nodeStack, root);
+													└── root = (F0).left_child = F1;
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>${2}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop(root)
+											└── preorderLoop(F1)
+													├── print(F1.data) >> "3"
+													├── push(nodeStack, F3);
+													└── root = (F1).left_child = F3;
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+										<li>F1</li>
+										<li>F3</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>${3}$</td>
+							<td>
+								<pre class="language-pseudo"><code>
+									.
+									└── preorderLoop(root)
+											├── root = pop(nodeStack) = F3
+											└── root = (*root).right_child = (F3).right_child = F4
+								</code></pre>
+							</td>
+							<td>
+								<div class="ds-stack">
+									<ol>
+										<li>F0</li>
+										<li>F1</li>
+									</ol>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				At this point, it should be apparent how the auxiliary
+				<var>nodeStack</var> is helping us <q>go back</q> to our previously
+				visited nodes. Eventually, the stack is emptied, and the while-loop
+				terminates. Comparing the stack's growth over time:
+			</p>
+			<div id="preorder_stack_growth"></div>
+			<p>
+				Examining this chart, we see that a total of ${15}$ iterations are
+				done to traverse the entire tree. Indeed, there is no difference in
+				terms of time complexity between recursive and iterative preorder
+				traversals &mdash; it's still ${O(n),}$ where ${n}$ is the number
+				of nodes in the tree.
+			</p>
+		</section>
+	</section>
+
+	<section id="inorder_traversal">
+		<h3>Inorder Traversal</h3>
+		<p>
+			The inorder traversal algorithm is implemented with the following
+			function:
+		</p>
+		<ol class="alg">
+			<li>fn inorder(Node* root) -> void:</li>
+			<ol>
+				<li>if (root != NULL):</li>
+				<ol>
+					<li>inorder((*root).left_child);</li>
+					<li>print "{(*root).data}";</li>
+					<li>inorder((*root).right_child);</li>
+				</ol>
+			</ol>
+		</ol>
+		<p>
+			Suppose we want to inorder-traverse the following tree, named
+			<var>sequoia</var>.
+		</p>
+		<div id="inorder_tree_demo"></div>
+		<p>
+			We begin by making the call <var>inorder((*sequoia).root)</var>.
+			Suppose <var>root</var> points to the address <var>F0</var>. This
+			results in the call <var>inorder(F0)</var>. Making this call, the
+			first statement is <var>inorder((*root).left_child)</var>. This
+			evaluates to <var>inorder(F0.left_child)</var>, which evaluates to
+			<var>inorder(F1)</var>:
+		</p>
+		<div id="inorder_trace_f1"></div>
+		<p>
+			Calling <var>inorder(F1)</var>, we then call
+			<var>inorder(F1.left_child)</var>, which evaluates to
+			<var>inorder(F3)</var>.
+		</p>
+		<div id="inorder_trace_f3"></div>
+		<p>
+			The call <var>inorder(F3)</var> results in the call
+			<var>inorder(F3.left_child)</var>. Because <var>F3</var> has no
+			left-child, this evaluates to the call <var>inorder(0)</var>. This
+			does not lead to any further calls, so it completes and we go to the
+			next call, <var>print "{F3.data}"</var>:
+		</p>
+		<div id="inorder_trace_f3_1"></div>
+		<p>
+			Once the <var>print</var> line finishes executing, we go to the next
+			call, <var>inorder(F3.right_child)</var>. Here, <var>F3</var> has no
+			right-child, so the call evaluates to <var>inorder(0)</var>.
+		</p>
+		<div id="inorder_trace_f3_2"></div>
+		<p>
+			This completes the call to <var>inorder(F3)</var>, so we go back to
+			the call <var>inorder(F1)</var>. The next line is
+			<var>print "{F1.data}"</var>, so we print the value <var>8</var>:
+		</p>
+		<div id="inorder_trace_f1_1"></div>
+		<p>
+			We then proceed to the next line, <var>inorder(F1.right_child)</var>.
+			Because <var>F1</var> has a right-child, this call evaluates to
+			<var>inorder(F4)</var>. Inside this call, we make the recursive call
+			<var>inorder(F4.left_child)</var>. But <var>F4</var> has no
+			left-child, so the call evaluates to <var>inorder(0)</var>.
+		</p>
+		<div id="inorder_trace_f4"></div>
+		<p>
+			We go to the next line, <var>print "{F4.data}"</var>, which prints
+			the value <var>6</var>. This line is followed by
+			<var>inorder(F4.right_child)</var>. And once again, because
+			<var>F4</var> has no right-child, the call evaluates to
+			<var>inorder(0)</var>:
+		</p>
+		<div id="inorder_trace_f4_1"></div>
+		<p>
+			This completes the call to <var>inorder(F4)</var>, which in turn
+			completes the call to <var>inorder(F1)</var>. This brings us back to
+			<var>inorder(F0)</var>. We execute the line
+			<var>print "{F0.data}"</var>, and proceed to
+			<var>inorder(F0.right_child)</var>, repeating the process we've
+			covered. All of the calls together yield the following call trace:
+		</p>
+		<div id="inorder_trace_final"></div>
+
+		<section id="iterative_inorder">
+			<h4>Iterative Inorder Traversal</h4>
+			<p>
+				Just as we saw with preorder traversal, we can also implement an
+				iterative version of inorder traversal. Recall that with inorder
+				traversal, we want to traverse all of the left-subtrees before
+				visiting the node. Thus, the iterative procedure looks similar to
+				the <var>preorderLoop()</var>, with a few modifications:
+			</p>
+			<ol class="alg">
+				<li>fn inorderLoop(Node* root) -> void:</li>
+				<ol>
+					<li>Stack nodeStack;</li>
+					<li>while (root != NULL || !isEmpty(nodeStack)):</li>
+					<ol>
+						<li>if (root != NULL):</li>
+						<ol>
+							<li>push(nodeStack, root);</li>
+							<li>root = (*root).left_child;</li>
+						</ol>
+						<li>else:</li>
+						<ol>
+							<li>root = pop(nodeStack);</li>
+							<li>print((*root).data);</li>
+							<li>root = (*root).right_child;</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+			<p>
+				Notice that with <var>inorderLoop()</var>, the first arm of the
+				while loop is to traverse the entire left-subtree. Only after we've
+				traversed the entire left-subtree do we enter the second arm. Once
+				we've arrived at the state where there are no left-children, we
+				proceed to the second arm. Here, we pop node stack (binding the
+				return value to <var>root</var>), then <var>print()</var> the
+				relevant data. Thereafter, we change <var>root</var>'s assigned
+				value to <var>(*root).right_child</var>.
+			</p>
+			<p>Our auxiliary <var>nodeStack</var>'s changes over time:</p>
+			<div id="inorder_stack_growth"></div>
+			<p>
+				Notice that, broadly, the changes occur in the same way as
+				<var>preorderLoop()</var>. This isn't all that odd, the only change
+				we've made is moving the <var>print()</var> line elsewhere. With
+				<var>preorderLoop()</var>, we printed the value before moving on to
+				the <em>left-child</em>. With <var>inorderLoop()</var>, we print
+				the value before moving on to the <em>right-child</em>. Moving this
+				<var>print()</var> line does not impact the time complexity of
+				traversing the entire tree &mdash; it's still ${O(n),}$ where ${n}$
+				is the number of nodes in the tree.
+			</p>
+		</section>
+	</section>
+
+	<section id="postorder_traversal">
+		<h3>Postorder Traversal</h3>
+		<p>
+			The postorder traversal algorithm is embodied in the following
+			function:
+		</p>
+		<ol class="alg">
+			<li>fn postorder(Node* root) -> void:</li>
+			<ol>
+				<li>postorder((*root).left_child)</li>
+				<li>postorder((*root).right_child)</li>
+				<li>print((*root).data)</li>
+			</ol>
+		</ol>
+		<p>
+			Notice that the algorithm looks similar to the other traversal
+			methods, the only difference being: The <var>print()</var> call
+			occurs only after the left- and right-subtrees of a given node have
+			been traversed. Suppose we called <var>postorder()</var> on a tree
+			called <var>cedar</var>, represented as follows:
+		</p>
+		<div id="postorder_sample"></div>
+		<p>
+			We won't go over the call execution for postorder traversal in
+			detail, as it is similar to the other traversals we've seen. The call
+			trace is as follows:
+		</p>
+		<div id="postorder_trace_final"></div>
+		<p>
+			As we saw with preorder and inorder traversal, postorder traversal
+			results in ${2N + 1}$ function calls, where ${N}$ is the binary
+			tree's order &mdash; i.e., the number of its nodes. Along the same
+			lines, the resulting call stack size for a given invokation of
+			<var>postorder()</var> is ${S_c = H + 2,}$ where ${H}$ is the tree's
+			height.
+		</p>
+	</section>
+
+	<section id="traversal_time_complexities">
+		<h3>Traversal Complexities</h3>
+		<p>
+			Let's lay out our numeric conclusions for the traversal approaches:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Traversal Method</th>
+				<th>Number of Calls</th>
+				<th>Stack Size</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>preorder()</var></td>
+					<td>${2N + 1}$</td>
+					<td>${H + 2}$</td>
+				</tr>
+				<tr>
+					<td><var>inorder()</var></td>
+					<td>${2N + 1}$</td>
+					<td>${H + 2}$</td>
+				</tr>
+				<tr>
+					<td><var>postorder()</var></td>
+					<td>${2N + 1}$</td>
+					<td>${H + 2}$</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						Where ${N}$ is the tree's order, and ${H}$ is the tree's
+						height.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			The number of calls and stack sizes are all the same. Now, recall the
+			<cite
+				><a href="#proper_binary_tree_bounds_lemma" target="_blank"
+					>Proper Binary Tree Bounds Lemma</a
+				></cite
+			>: The height of a tree, denoted ${H,}$ has the bounds:
+		</p>
+		<figure>$$ O(\log n) \leq H \leq O(n) $$</figure>
+		<p>
+			where ${n}$ is the number of nodes. This yields the following
+			complexities:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Traversal Method</th>
+				<th>Time Complexity</th>
+				<th>Space Complexity</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>preorder()</var></td>
+					<td>${O(n)}$</td>
+					<td>${O(\log n) \leq H \leq O(n)}$</td>
+				</tr>
+				<tr>
+					<td><var>inorder()</var></td>
+					<td>${O(n)}$</td>
+					<td>${O(\log n) \leq H \leq O(n)}$</td>
+				</tr>
+				<tr>
+					<td><var>postorder()</var></td>
+					<td>${O(n)}$</td>
+					<td>${O(\log n) \leq H \leq O(n)}$</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						Where ${n}$ is the tree's order, and ${H}$ is the tree's
+						height.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Thus, traversing an entire binary tree has a time complexity of
+			${O(n).}$ And the space complexity for such a traversal is at least
+			${O(\log n),}$ and at most ${O(n),}$ depending on the tree's height.
+		</p>
 	</section>
 </section>
 

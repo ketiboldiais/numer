@@ -1,0 +1,447 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on DevOps" />
+{% endblock %} {% block title %}
+<title>DevOps</title>
+{% endblock %} {% block content %}
+<h1>DevOps</h1>
+<section id="intro">
+	<p>
+		The term <b>DevOps</b> is a shortening of
+		<b>Development and Operations</b>. Traditionally, the software company
+		had two separate departments &mdash; Development and Operations.
+		Development handled writing, testing, and debugging the company's
+		software. Development would then send its finished work product to
+		Operations for deployment on the company's servers. Operations handled
+		tasks like maintaining the servers, monitoring the server operating
+		systems, and managing capacity and load. Where development was usually
+		staffed by programmers/software engineers, operations was staffed by
+		system administrators/network engineers. In sum: The dev writes the
+		code, the sysadmin runs it.
+	</p>
+	<p>
+		With the rapid progression of technology, this boundaries are
+		increasingly blurred. Operations departments started doing work that
+		looked much more like development work. Ops engineers began working
+		with virtual machines, writing code for automated API calls. Nowadays,
+		it's highly unlikely to see a single server in the modern software
+		company's operations office &mdash; it's monitors and whiteboards,
+		operations engineers coding away.
+	</p>
+</section>
+
+<section id="networks">
+	<h2>Networks</h2>
+	<p>
+		The word &#8220;internet&#8221; was used as early as 1974 as shorthand
+		for &#8220;internetwork,&#8221; likely in reference to the notion of
+		<i>interconnected</i> computer networks. Accordingly, to study what the
+		internet is, we should have basic understanding of computer networks.
+	</p>
+	<p>
+		A <b>network</b> is a group or system of interconnected entities. For
+		example, a <i>social network</i> is a group of persons connected
+		through social relations. A <i>railway network</i> is a group of
+		stations connected through rail tracks.
+	</p>
+	<p>
+		A <b>computer network</b> is a group of computers connected to one
+		another, either through wires or wireless radio. We might have some
+		vague understanding of a computer network:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/client_server.svg' %}"
+			alt="Client-server network"
+			loading="lazy"
+			class="fifty-p"
+		/>
+		<figcaption>A simple network</figcaption>
+	</figure>
+	<p>
+		The grey point in the center is the mystery. What exactly happens
+		between the client (i.e., a device) and the server? Our goal is to try
+		and reveal what's behind the grey point.
+	</p>
+	<p>
+		Computer networks is a broad field, consisting of three sub-fields: (1)
+		communications, (2) networks, and (3) distributed systems.
+		Communications is the lowest level, providing the theory and
+		foundations for all modern computer systems. It's the study of how we
+		use signals, 1s and 0s, to communicate information. Communications is
+		traditionally handled by electrical engineers, physicists, and
+		chemists, as most of the applications at such a low level concern
+		electronics and materials science.
+	</p>
+	<p>
+		Networks are abstractions of communications. At this level, we focus on
+		the software: How the information is represented, packaged, and
+		transmitted; the rules governing information transmission; optimization
+		and efficiency in constructing networking systems.
+	</p>
+	<p>
+		At the highest level are distributed systems. Distributed systems is
+		the study of how to create, improve, and maintain computing
+		environments whose components are spread across multiple computers on a
+		network. Such environments include peer-to-peer applications like
+		uTorrent and the historic Limewire; massive multiplayer online games
+		like World of War Craft and Guild Wars; wireless sensor networks;
+		aircraft control systems; and increasingly important in the modern era,
+		parallel computation.
+	</p>
+	<p>
+		Our predominant focus will be on networks, but we will occasionally
+		touch on communications and distributed networks for a better picture
+		of how everything fits together.
+	</p>
+</section>
+
+<section id="network_uses">
+	<h2>Network Uses</h2>
+	<p>
+		Today, so much of our lives depends on networks. Email, wireless
+		printers, streaming news, movies, video clips, messaging, transferring
+		finances, phone calling, computer gaming, maps, securing information,
+		accessing information, signing contracts, ordering takeout and
+		groceries &mdash; none of this is possible without networks. Let's go
+		over some of the most important use cases for networks.
+	</p>
+	<p>
+		<small>Communication.</small> One of the most important uses for
+		networks is communication. VoIP (&#8220;voice-over-IP&#8221;), video
+		conferencing, instant messaging, and social networking are all examples
+		of using networks for communication. A core goal in communication
+		networks is achieving low latency, high speed. Communication networks
+		close to this goal are often characterized as &#8220;fast&#8221; (i.e.,
+		&#8220;high-speed internet&#8221;). Latency and bandwidth, however, are
+		two very different concepts.
+	</p>
+	<p>
+		<b>Bandwidth</b> is what many perceive as a network's
+		&#8220;speed.&#8221; It's a measure of how much data can be transferred
+		from one point in a network to another. High bandwidth, however,
+		doesn't imply &#8220;high speed.&#8221; We can think of bandwidth as
+		akin to a freeway. Say you're downloading a 600 Mb (Megabyte) file. If
+		the bandwidth was, say, 1000 Mbps (megabits per second), it would take
+		you about 4.8 seconds to download the file (there are 4800 megabits in
+		600 megabytes). Following the freeway analogy, we can think of each
+		megabit as piece of data, and at 1000 Mbps, we have a thousand lanes
+		open on the freeway. If there are too many people on the network (i.e.,
+		congestion), or the interent service provider places a speed limit,
+		some of those lanes may be closed. With enough congestion or a cap,
+		that 1000 Mbps could be brought down to 100Mbps, in which case it would
+		take 48 seconds to download the file.
+	</p>
+	<p>
+		Higher bandwidth, however, doesn't necessarily mean
+		&#8220;high-speed.&#8221; There is always the problem of
+		<b>latency</b> &mdash; how much time it takes for a signal to travel to
+		its destination and back. We can think of latency as how long it takes
+		to get a response after stating a request. For example, you might be at
+		a drive through, and there's no one in line. You get to the intercom,
+		the teller greets you, and you state your order. A second goes by, no
+		response. A minute goes by, no response. At 2 to 3 minutes, you're
+		likely starting to get irritated. Any longer than that, and you just
+		drive away. There was no one in line and you got to the intercom fine,
+		but it wasn't &#8220;fast.&#8221; You sat there for quite some time!
+		The same idea extends to latency.
+	</p>
+	<p>
+		Viewing latency and bandwidth together, we can think of it this way:
+	</p>
+	<figure>
+		<div class="rule">
+			<p>High latency, low bandwidth:</p>
+			<ol>
+				<li>Frankie: &#8220;Hi Johnny.&#8221;</li>
+				<li>
+					Johnny: &#8220;... ... ... Hi ... ... ... ... Frankie.&#8221;
+				</li>
+			</ol>
+			<p>High latency, high bandwidth:</p>
+			<ol>
+				<li>Frankie: &#8220;Hi Johnny.&#8221;</li>
+				<li>Johnny: &#8220;... Hi Frankie.&#8221;</li>
+			</ol>
+			<p>Low latency, low bandwidth:</p>
+			<ol>
+				<li>Frankie: &#8220;Hi Johnny.&#8221;</li>
+				<li>Johnny: &#8220;Hi ... ... ... Frankie.&#8221;</li>
+			</ol>
+			<p>Low latency, high bandwidth:</p>
+			<ol>
+				<li>Frankie: &#8220;Hi Johnny.&#8221;</li>
+				<li>Johnny: &#8220;Hi Frankie.&#8221;</li>
+			</ol>
+		</div>
+	</figure>
+	<p>
+		<small>Resource Sharing.</small> In addition to communication, networks
+		are critical for resource sharing. The need to share resources traces
+		its origins all the way back to the ancient days of mainframe
+		computers, where timesharing was the norm. Today, that need continues
+		in various media. At a large company office, for example, it's unlikely
+		that every worker has their own printer. Instead, there are likely
+		several printers in a particular location that workers can send tasks
+		to. Resource sharing extends beyond the printer. Cloud-based tools like
+		online file converters and video downloaders are all examples of
+		resource sharing. As resources grow increasingly costly,
+		resource-sharing is a tremendously cost-effective way of meeting
+		demand.
+	</p>
+</section>
+
+<section id="internet">
+	<h2>The Internet</h2>
+	<p>
+		The internet is the penultimate example of a human accomplishment from
+		humble beginnings. The internet traces its origins to 1969, with a
+		small, tiny network called ARPANET (The U.S. &#8220;Advanced Research
+		Projects Agency Network&#8221;). Before 1970 (when ARPANET was
+		implemented), communicating between computers (large, unwieldy
+		mainframe systems at the time) was done with <i>circuit switching</i>,
+		much like how telephones were connected, end to end, with wired
+		connections.
+	</p>
+	<p>
+		While this system worked, they were slow and easily broke down. Two
+		actors fanned the flames for optimization: At the height of the Cold
+		War, military officials wanted connections that could continue working
+		in the event of a nuclear strike. Separately, researchers at various
+		universities across the United States wanted more reliable connections
+		for sharing data and computational resources.
+	</p>
+	<p>
+		In 1962, Paul Baran &mdash; a computer scientist at the Rand
+		Corporation &mdash; proposed that data be broken down into smaller
+		pieces, and sent along different paths to a destination. Novel as it
+		was, critics dismissed Baran's idea, and it fell short of
+		implementation. As we'll see later, Baran's idea now forms the
+		underlying basis for the World Wide Web.
+	</p>
+	<p>
+		Several years later, the director of the U.S. Department of Defense's
+		Advanced Research Project Agency (ARPA), J.C.R. Licklider &mdash; known
+		by his colleagues as &#8220;Lick&#8221; &mdash; began outlining the
+		idea of a massive &#8220;Intergalactic Computer Network.&#8221;
+		Following ARPA's tradition of leaving after a year or two to give
+		others a chance at management, Licklider returned to academia before
+		seeing his idea to fruition. Licklider, however, took care in ensuring
+		Robert Taylor and Irvin Sutherland, two highly-accomplished researchers
+		at ARPA, continued his vision. By December of 1969, Sutherland and
+		Taylor established an experimental network connection between UC Santa
+		Barbara, UCLA, the Stanford Research Institution, and the University of
+		Utah School of Computing. Several months later, in July 1970, the
+		network expanded to include MIT and the Rand Corporation, among others.
+		And by March 1971, the network included the University of Illinois,
+		Harvard, and several other locations, connecting 15 computers spread
+		from the West to the East Coast. That experimental network, ARPANET,
+		would later become the internet, to which well over 10 billion devices
+		are now connected.
+	</p>
+
+	<h3>Wired Connections</h3>
+	<p>
+		In the modern era, we've gotten used to everything being wireless. This
+		author fondly remembers the days of dial up. With smartphones growing
+		more and more pervasive, we no longer ask if a hotel room provides
+		in-unit ethernet cables. In fact, we don't even ask questions at all
+		&mdash; we just assume the business provides WiFi, and if that isn't
+		the case, that there's service for LTE usage.
+	</p>
+	<p>
+		The shocker: On the internet,
+		<span class="underlineText">most</span> data is
+		<span class="underlineText">not</span> moved on a wireless connection.
+		In fact, wireless connections are at the very fringe of the internet.
+		What do we mean by this? Imagine the interent as akin to the Tokyo
+		train lines. There are numerous stops; the wireless connection is among
+		the very last (if not the last). The vast majority of data transmitted
+		via the internet is moved via fiber optic cables. Wireless connections
+		are simply too slow, too small, and have too little range to transmit
+		the voluminous amounts of data we supply and demand.
+	</p>
+	<p>
+		The fiber optic cables supporting the internet lay across land and sea.
+		They go through the oceans, passing from country to country, and within
+		the countries, pass from state to state (or
+		provinces/prefectures/etc.), city to city, and so on. The data we
+		obtain and transmit wirelessly is actually received from, and sent to,
+		a tower, which is itself connected to some juncture along the myriad of
+		cables.
+		<label for="trains" class="margin-toggle"><sup></sup></label>
+		<input
+			type="checkbox"
+			id="trains"
+			class="margin-toggle sidenote-number"
+		/>
+		<span class="marginnote">
+			In the United States, one very interesting aspect of these fiber
+			optic cables is that they usually run along the federal interstate
+			highways. These highways themselves trace their origins to railroad
+			lines from the 19th Century. Why do these connections exist? It's a
+			lot easier to maintain things and fix problems on large
+			infrastructures if we use pre-existing paths to traverse the
+			infrastructure.</span
+		>
+	</p>
+	<p>
+		For example, suppose we're on our home WiFi network, and want to see
+		some lecture notes, contained in a PDF file, from a course offered at
+		the University of Adelaide in Australia. Then suppose that those notes
+		were stored on a server in Australia. When click on the link to that
+		PDF, we are sending a <i>request</i> for those notes (more on this
+		later), and the server <i>responds</i> with the notes. We do not send
+		that request or receive the response with only a wireless connection.
+		That would be far, far too slow. What instead happens is that the
+		request is sent from our computer to our router, then from the router
+		to some closer server, then from there to a tower, then from the tower
+		all the way through the fiber optic cables across land and sea to that
+		server in Australia. The truly remarkable aspect of all this is that
+		depending on our internet connection and how large the PDF file is,
+		this all occurs in a second or less. Even more remarkable: Countries
+		have agreed to how these fiber optics cables transmit data, whether
+		they have good or bad diplomatic relations.
+	</p>
+	<p>
+		How do these fiber optic cables work so quickly? Through light and
+		glass. Data is transmitted across these cables in the form of light,
+		bouncing off the glass from point to point. Given that light travels at
+		the fastest speed known to man (roughly 300,000 kilometers per second
+		or 186,000 miles per second) &mdash; it's no surprise that data
+		transmission along the cables is swift.
+	</p>
+	<p>
+		At the very edges of these fiber optic cables, there are copper-based
+		connections. For example, in a large building, there is likely a wall
+		socket connecting some router, or multiple routers. Each router
+		provides a wireless connection for a certain area (recall how walking
+		away from a certain area reduces the strength of a wireless
+		connection). The router's connections are copper-based, not fiber
+		optic. For particularly large buildings, the router connections might
+		lead to some obscure closet containing a hub for all the routers.
+		Behind that hub, there's likely a few slender fiber optic cables
+		leading some electrical tower nearby, which itself connects to other
+		junctions along the fiber optic cable network. These shorter
+		copper-based connections are used primarily because copper is cheaper
+		than glass fiber. However, we do not use copper for long-range
+		connections because electrical signals along copper generally only have
+		a range of 100 meters. Beyond 100 meters, these signals begin
+		degrading.
+	</p>
+	<p>
+		In recent years, numerous companies have jumped in on the fiber-optic
+		cable market. In various suburban areas, we might notice signs saying a
+		particular company offers fiber-optic connections in the area. These
+		companies essentially lay fiber-optic connections from homes (usually
+		much smaller buildings, and as such, rely on slower copper connections)
+		to a nearby tower. What may be perplexing is that these areas appear
+		almost arbitrary &mdash; one side of the neighborhood has access to a
+		connection, while the other does not. This is a result of how expensive
+		fiber-optic connections are. Companies will provide these connections
+		only if there's sufficient interest to warrant the cost of laying down
+		a cable. It would be a poor investment to lay a fiber optic cable for a
+		single home.
+	</p>
+
+	<h3>Wireless Connections</h3>
+	<p>
+		In the modern era, wireless connections are almost always our first
+		connection to the internet. Wireless connections come in various forms,
+		one of which is a <i>Wifi network</i>. In a large building or room, we
+		might notice medium-sized boxes with blinking lights (and potentially
+		an antenna). These are <b>routers</b>, and they provide a Wifi
+		connection. As mentioned earlier, these routers have copper based
+		connections to some hub elsewhere. Wifi is what we use for short-range
+		connections, and they primarily set up for personal use.
+	</p>
+	<p>
+		Another form of wireless connection is through a
+		<i>mobile data network</i>. Instead of a router, mobile data networks
+		are provided by large cell towers. If we've ever wondered why cell
+		phone plans cost so much, one contributing factor is the cost of
+		maintaining and improving the mobile data networks provided by the cell
+		towers.
+	</p>
+
+	<h3>How Do Devices Communicate on the Internet?</h3>
+	<p>
+		We've established a broad overview of the internet's underlying
+		infastructure, but now we have another question: How do devices
+		connected to the internet know when to send and receive data? In other
+		words, how do these devices communciate?
+	</p>
+	<p>
+		The answer this question, we add another layer of abstraction to the
+		internet: The internet is not just a physical infrastructure; it's also
+		a
+		<b>communication protocol</b> &mdash; agreement as to how two or more
+		entities exchange data. The <b>Internet Protocol</b> (IP) is series of
+		agreements that allow internet-connected devices to communicate. IP
+		specifies the format of <i>IP addresses</i> &mdash; the identifiers, or
+		names, for devices connected to the internet. IP has underwent several
+		changes to the way IP addresses are formatted:
+	</p>
+	<figure>
+		<div>
+			<p><var>192.18.21.4</var></p>
+		</div>
+		<figcaption>An IPv4 address</figcaption>
+	</figure>
+	<p>
+		The IP address above is an IPv4 (read &#8220;IP version 4&#8221;)
+		address, formatted in
+		<i>dotted decimal notation</i>. Under IPv4, IP addresses consisted of
+		32 bits. With 32 bits, we can generate ${2^{32},}$ roughly 4.3 billion,
+		unique addresses. The problem: There are now more than 4.3 billion
+		people on Earth, many of whom have multiple devices, not counting all
+		of the devices that aren't directly used by people. Because of this
+		problem, we are now on IPv6 (IPv5 was proposed but never formally
+		adopted):
+	</p>
+	<figure>
+		<div>
+			<p><var>2607:f8b0:4002:801::2104</var></p>
+		</div>
+		<figcaption>An IPv6 address</figcaption>
+	</figure>
+	<p>
+		With IPv6, addresses went from 32 bits to 128 bits. With 128 bits, we
+		generate ${2^{128}}$ unique addresses, roughly ${3.4 \times 10^{38},}$
+		or 340 undecillion. This is probably big enough.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			Fun aside: ${2^{32}}$ is roughly 4.3 billion, ${2^{64}}$ is about
+			18.4 quintillion ${(\approx 1.8 \times 10^{19})}$, ${2^{128}}$ about
+			340 undecillion ${(\approx 3.4 \times 10^{38})}$, ${2^{256}}$ is
+			roughly 115 quattuorvigintillion ${(\approx 1.158 \times 10^{77}),}$
+			${2^{512}}$ is about ${1.34 \times 10^{154}}$ (Latin has its limits),
+			${2^{1024}}$ is about ${1.798 \times 10^{308},}$ and ${2^{2056}}$ is
+			about ${8.27 \times 10^{618}.}$
+		</p>
+	</div>
+	<p>
+		In addition to the naming rule, IP also specifies how messages should
+		be formatted when they're exchanged across the internet. We can think
+		of this as akin to the local post office's rules on what we can and
+		cannot put into certain boxes or envelopes. We can place whatever we
+		want in the box or envelope (subject to criminal sanctions), but for
+		the box or envelope to be sent, we have to follow the carrier's rules.
+		In IP terms, that box or envelope is called a <b>datagram</b>.
+	</p>
+	<p>
+		The datagram consists of several fields. For our purposes, the three
+		most important fields are the
+		<b>source IP address</b>, <b>destination IP address</b>, and
+		<b>data field</b>. As we can guess, the the source IP address indicates
+		where the datagram originates, and the destination IP address indicates
+		where the datagram should arrive. The data field is where all of actual
+		content we want transmitted is placed. That content could be a video,
+		an image, a text file, pretty much anything that can be represented in
+		1s and 0s. IP itself doesn't care what the content is. This freedom, of
+		course, comes at a price: Just as we can send and receive cat videos,
+		malevolent actors can send malicious content &mdash; viruses, worms,
+		Trojan horses, phishing attacks, scams, and false information.
+	</p>
+</section>
+{% endblock %}
