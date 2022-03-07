@@ -1146,7 +1146,7 @@ class CDemo {
 			.attr("x2", (d) => d.target.y)
 			.attr("y2", (d) => d.target.x)
 			.attr("stroke", colors.strokeColor)
-			.attr('opacity', '0.3')
+			.attr("opacity", "0.3");
 		// adds each node as a group
 		var node = g
 			.selectAll(".node")
@@ -1176,7 +1176,9 @@ class CDemo {
 			.attr("font-family", "Fira")
 			.attr("font-size", "0.6rem")
 			.attr("fill", (d) => {
-				return d.children || d.data.call ? colors.branchText : colors.leafText;
+				return d.children || d.data.call
+					? colors.branchText
+					: colors.leafText;
 			})
 			.attr("x", function (d) {
 				return d.children ? -10 : 10;
@@ -1254,7 +1256,7 @@ class CDemo {
 			.classed("svg-content-responsive", true)
 			.append("g")
 			.attr("transform", `translate(${margin.left}, ${margin.top})`);
-	
+
 		const call = svg
 			.selectAll(".call")
 			.data(obj.data)
@@ -1293,9 +1295,196 @@ class CDemo {
 			.attr(
 				"transform",
 				`translate(0, ${
-					dimensions.callRectangleHeight + dimensions.callRectangleWidth/1.5
+					dimensions.callRectangleHeight +
+					dimensions.callRectangleWidth / 1.5
 				})`
 			);
+	}
+
+	plot(obj) {
+		const main = d3.select("body");
+		const userInputWidth = obj.width ? obj.width : 300;
+		const userInputHeight = obj.height ? obj.height : 250;
+		const userInputPrecision = obj.precision ? obj.precision : 100;
+		const demoContainer = main.selectAll(`#${obj.id}`);
+		const data = {
+			domain: d3.ticks(obj.domain[0], obj.domain[1], userInputPrecision),
+		};
+		demoContainer.classed("demo-container", true);
+		const colors = {
+			strokeColor: "firebrick",
+			tickColor: "#AECBD6",
+		};
+
+		// Margins
+		const margin = {
+			top: 10,
+			right: 10,
+			bottom: 10,
+			left: 10,
+		};
+
+		// Dimensions
+		const dimensions = {
+			width: userInputWidth - margin.left - margin.right,
+			height: userInputHeight - margin.top - margin.bottom,
+			fontSize: "0.6rem",
+		};
+
+		// Scales
+		const scales = {
+			xScale: d3.scaleLinear(
+				[-5, 5],
+				[0, dimensions.width]
+			),
+			yScale: d3.scaleLinear(
+				[obj.range[0], obj.range[1]],
+				[dimensions.height, 0]
+			),
+			xValScale: d3.scaleLinear([0, 100]),
+			yValScale: d3.scaleLinear([100, 0]),
+		};
+
+		// Points for function
+		let dataset = [];
+		let xTemp, yTemp;
+		for (let i = 0; i <= data.domain.length - 1; i++) {
+			xTemp = data.domain[i];
+			yTemp = obj.fn(xTemp);
+			if (isNaN(yTemp) || !isFinite(yTemp)) {continue}
+			else {
+				dataset.push([xTemp, yTemp]);
+			}
+		}
+
+		// line generator
+		const line = d3
+			.line()
+			.x((d) => scales.xScale(d[0]))
+			.y((d) => scales.yScale(d[1]));
+
+		const svg = demoContainer
+			.append("div")
+			.style("display", "inline-block")
+			.style("position", "relative")
+			.style("width", obj.divWidth ? `${obj.divWidth}%` : "60%")
+			.style(
+				"padding-bottom",
+				obj.paddingBottom ? `${obj.paddingBottom}%` : "50%"
+			)
+			.style("overflow", "hidden")
+			.append("svg")
+			.attr("preserveAspectRatio", "xMinYMin meet")
+			.attr(
+				"viewBox",
+				`0 0 ${dimensions.width + margin.left + margin.right} ${
+					dimensions.height + margin.top + margin.bottom
+				}`
+			)
+			.classed("svg-content-responsive", true)
+			.append("g")
+			.attr("transform", `translate(${margin.left}, ${margin.top})`);
+		const svgDefinitions = svg
+			.append("svg:defs")
+			.attr("id", "arrow")
+			.append("svg:marker")
+			.attr("viewBox", "0 -5 10 10")
+			.attr("refX", 15)
+			.attr("refY", -1.5)
+			.attr("markerWidth", 6)
+			.attr("markerHeight", 6)
+			.attr("orient", "auto")
+			.append("svg:path")
+			.attr("d", "M 0 -5 10 10")
+			.attr("stroke", "#000")
+			.attr("stroke-width", 2);
+
+		// Clip path
+		const clipPath = svg
+			.append("clipPath")
+			.attr("id", "chart-area")
+			.append("rect")
+			.attr("x", margin.right)
+			.attr("y", margin.top)
+			.attr("width", dimensions.width)
+			.attr("height", dimensions.height);
+
+		// Axes
+		const xAxis = d3
+			.axisBottom(scales.xScale)
+			.tickSizeInner(3)
+			.tickSizeOuter(0);
+		const yAxis = d3
+			.axisLeft(scales.yScale)
+			.tickSizeInner(3)
+			.tickSizeOuter(0);
+
+		// Append x-axis
+		const addXAxis = svg
+			.append("g")
+			.attr("transform", `translate(0, ${dimensions.height / 2})`)
+			.style("font-size", "0.45rem")
+			.style("font-family", "CMU")
+			.style("color", colors.tickColor)
+			.call(xAxis);
+		// const xArrow = addXAxis.select("path").attr("marker-end", "url(#arrow)");
+
+		// Append y-axis
+		const addYAxis = svg
+			.append("g")
+			.attr("transform", `translate(${dimensions.width / 2}, 0)`)
+			.style("font-family", "CMU")
+			.style("font-size", "0.45rem")
+			.style("color", colors.tickColor)
+			.call(yAxis);
+		// const yArrow = addYAxis.select("path").attr("marker-end", "url(#arrow)");
+
+		const xAxisTicks = addXAxis.selectAll(".tick").selectAll("line");
+		const yAxisTicks = addYAxis.selectAll(".tick").selectAll("line");
+
+		const lastXTick = addXAxis
+			.selectAll(".tick:last-child")
+			.selectAll("line");
+		const lastXTickText = addYAxis
+			.selectAll(".tick:last-child")
+			.selectAll("text");
+		const lastYTick = addYAxis
+			.selectAll(".tick:last-child")
+			.selectAll("line");
+		const lastYTickText = addXAxis
+			.selectAll(".tick:last-child")
+			.selectAll("text");
+		const firstXTick = addXAxis.select(".tick").selectAll("line");
+		const firstXTickText = addXAxis.select(".tick").selectAll("text");
+		const firstYTick = addYAxis.select(".tick").selectAll("line");
+		const firstYTickText = addYAxis.select(".tick").selectAll("text");
+
+		const ticks = [
+			lastXTick,
+			lastXTickText,
+			lastYTick,
+			lastYTickText,
+			firstXTick,
+			firstXTickText,
+			firstYTick,
+			firstYTickText,
+		];
+		for (let i = 0; i < ticks.length; i++) {
+			ticks[i].style("display", "none");
+		}
+
+		// Offset ticks
+		xAxisTicks.attr("y1", -3);
+		yAxisTicks.attr("x1", 3);
+
+		const plot = svg
+			.append("path")
+			.datum(dataset)
+			.attr("clip-path", "url(#chart-area)")
+			.attr("fill", "none")
+			.attr("stroke", colors.strokeColor)
+			.attr("stroke-width", 1)
+			.attr("d", line);
 	}
 }
 
