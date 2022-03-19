@@ -51,6 +51,10 @@
 		font-family: "Fira";
 		src: url("./numerc_fonts/inconsolata/FiraCode-VF.woff2") format('woff2');
 	}
+	@font-face {
+		font-family: "Kadwa";
+		src: url("./numerc_fonts/cmu_serif/kadwa.woff2") format('woff2');
+	}
 /* Colors & Fonts */
 	:root {
 	--page: #ffffff;
@@ -406,7 +410,7 @@
 
 /* Figure element styling */
 	figure {
-		margin: 0 5%;
+		margin: 5%;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -418,6 +422,7 @@
 		counter-increment: fig;
 		font-size: 0.7rem;
 		margin: 1% auto;
+		margin-bottom: 0;
 		padding: 0;
 		font-family: var(--serif);
 		text-align: center;
@@ -470,16 +475,21 @@
 /* Heading styles */
 	h1,h2,h3,h4,h5,h6,p.h7,p.h8,p.h9,p.h10,p.subheading,p.warning-heading {
 		display: block;
+		font-family: "Kadwa";
 		padding: 0;
 		margin: 0;
 		margin-top: 1em;
-		margin-bottom: -0.8rem;
+		margin-bottom: -1.1em;
 		color: var(--darkRed);
 	}
-	h1 var, h2 var, h3 var, h4 var, h5 var, h6 var, span.topic var {
-		font-family: monospace, 'Courier New', Courier;
-		font-size: 1em;
+	h4::before, h5::before, h6::before {
+		content: "›";
+		font-weight: bold;
+		font-size: 1.2em;
+		margin-right: 5px;
+		color: goldenrod;
 	}
+	
 	h1 {
 		font-size: 2em;
 		padding: 1.2em 0;
@@ -489,7 +499,7 @@
 	}
 	h2 {
 		font-size: 1.4em;
-		margin-bottom: 0.4em;
+		margin-bottom: -0.6em;
 		text-align: left;
 		border-bottom: thin solid;
 	}
@@ -498,6 +508,7 @@
 	}
 	h4 {
 		font-size: 1.2em;
+		color: var(--textColor);
 	}
 	h5 {
 		font-size: 1.1em;
@@ -895,9 +906,10 @@
 		ul.syntax {
 			width: fit-content;
 			margin: 0 auto;
-			padding: 0.1em 0.4em;
+			padding: 5px 0.4em;
 			padding-top: 0.2em;
 		}
+		ul.syntax b {font-weight: normal; color: rgb(136, 178, 190)}
 		ul.syntax li {
 			padding: 0;
 			margin: 0;
@@ -1008,7 +1020,7 @@
 		padding-bottom: 0;
 		padding-top: 0;
 	}
-	input[type=checkbox] {
+	ol.checklist input[type=checkbox] {
 		position: relative;
 		vertical-align: middle;
 		margin-right: 0.8em;
@@ -1024,7 +1036,7 @@
 		cursor: pointer;
 		transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
 	}
-	input[type=checkbox]::before {
+	ol.checklist input[type=checkbox]::before {
 		position: absolute;
 		content: "";
 		display: block;
@@ -1039,12 +1051,12 @@
 		transform: rotate(45deg);
 		opacity: 0;
 	}
-	input[type=checkbox]:checked {
+	ol.checklist input[type=checkbox]:checked {
 		color: #fff;
 		border-color: #00641e;
 		background: #74be67;
 	}
-	input[type=checkbox]:checked::before {
+	ol.checklist input[type=checkbox]:checked::before {
 		opacity: 1;
 	}
 /* Text styles */
@@ -1093,6 +1105,10 @@
 	span.hl {
 		background-color: gold;
 	}
+	h1>var, h2>var, h3>var, h4>var, h5>var, h6>var, span.topic>var, th>var {
+		font-family: 'system-ui', monospace;
+		font-size: 1em;
+	}
 /* Blockquote */
 	blockquote {
 		font-size: 1.4rem;
@@ -1114,7 +1130,7 @@
 		border: solid thin var(--lightGrey);
 		border-collapse: collapse;
 		overflow-x: auto;
-		font-size: 0.65rem;
+		font-size: 0.72rem;
 	}
 	thead, tbody {
 		overflow-x: auto;
@@ -1390,54 +1406,107 @@
 		margin: 0 0.6em;
 	}
 /* Algorithms - Pseudocode */
-	ol.alg {
-		font-family: "Fira";
+
+	ol.alg, ol.algc {
+		color: var(--textColor);
 		text-rendering: optimizeLegibility;
-		font-size: 1.3em; 
 		font-style: normal; 
-		background-color: rgb(246, 248, 250);
-		counter-reset: lineNumber;
+		counter-reset: lineNumber -1;
 		list-style: none;
-		margin: 5px 0;
-		padding: 0.1em 0;
-		border-top: solid thin var(--lightGrey);
-		border-bottom: solid thin var(--lightGrey);
-		padding-right: 0.3em;
-		box-shadow: inset 20px 0 0 0 rgb(234, 234, 234);
+		margin: 5px 2px;
+		padding: 0.1em 1em 0 0.5em;
 		overflow-x: auto;
 		overflow-y: hidden;
 	}
-	ol.alg ol {margin: 0; padding: 0;}
-	ol.alg li {
+	ol.algc {
+		background-color: var(--page);
+		box-shadow: inset 1.4em 0 0 0 rgb(245, 255, 254);
+		border-top: solid thin var(--mediumBlue);
+		border-bottom: solid thin var(--mediumBlue);
+	}
+	ol.alg {
+		font-family: "Fira";
+		background-color: rgb(255, 253, 245);
+		box-shadow: inset 1.4em 0 0 0 rgb(255, 239, 219);
+		border-top: solid thin var(--gold);
+		border-bottom: solid thin var(--gold);
+	}
+	ol.alg ol, ol.algc ol {margin: 0; padding: 0;}
+	ol.alg li, ol.algc li {
 		display: block;
 		white-space: nowrap;
-		padding: 0.1em 0;
-		margin: 0;
-		font-size: 0.7rem;
-		color: var(--textColor);
+		padding: 2px 0;
+		margin: 2px 0;
+		margin-top: -1.2em;
+		margin-left: 2em;
+		font-size: 0.65rem;
 		counter-increment: lineNumber;
+		cursor: pointer;
+	}
+	ol.algc li {
+		max-width: 40em;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-size: 0.73rem;
 	}
 	ol.alg li var {
 		color: rgb(196, 196, 196);
-		font-size: 0.96em;
+		font-size: 0.94em;
 	}
-	ol.alg li::before {
-		display: inline-block;
+	ol.alg li::before,  ol.algc li::before{
+		display: block;
+		position: relative;
+		top: 1.1em;
+		right: 2.4em;
 		content: counter(lineNumber);
-		color: var(--textColor);
-		padding: 3px;
+		font-family: "system-ui";
+		font-size: 0.63rem;
 		margin: 0;
 	}
-	ol.alg>li::before {width: 1.8em;}
-	ol.alg>ol>li::before {width: 3.3em;}
-	ol.alg>ol>ol>li::before {width: 4.8em;}
-	ol.alg>ol>ol>ol>li::before {width: 6.3em;}
-	ol.alg>ol>ol>ol>ol>li::before {width: 7.8em;}
-	ol.alg>ol>ol>ol>ol>ol>li::before {width: 9.3em;}
-	ol.alg>ol>ol>ol>ol>ol>ol>li::before {width: 10.8em;}
-	ol.alg>ol>ol>ol>ol>ol>ol>ol>li::before {width: 11.3em;}
-	ol.alg li .katex {
+	ol.algc li.expand {
+		text-overflow: unset;
+		white-space: normal;
+	}
+	ol.algc li::before {
+		top: 1.4em;
+	}
+	ol.algc li {
+		margin-left: 0;
+		padding-left: 2.4em;
+		margin-top: -1.3em;
+	}
+	ol.algc {
+		padding-left: 0;
+	}
+	ol.alg li::before {color: rgb(172, 123, 0)}
+	ol.algc li::before {color: var(--darkBlue)}
+	ol.alg>ol>li, ol.algc>ol>li { padding-left: 0.7em;}
+	ol.alg>ol>li::before, ol.algc>ol>li::before { right: 3.2em; }
+
+	ol.alg>ol>ol>li, ol.algc>ol>ol>li { padding-left: 2em; }
+	ol.alg>ol>ol>li::before, ol.algc>ol>ol>li::before { right: 4.4em; }
+
+	ol.alg>ol>ol>ol>li, ol.algc>ol>ol>ol>li { padding-left: 3em;}
+	ol.alg>ol>ol>ol>li::before,
+	ol.algc>ol>ol>ol>li::before {right: 5.4em;}
+
+	ol.alg>ol>ol>ol>ol>ol>li,
+	ol.algc>ol>ol>ol>ol>ol>li {padding-left: 4em;}
+	ol.alg>ol>ol>ol>ol>ol>ol>li::before,
+	ol.algc>ol>ol>ol>ol>ol>ol>li::before  {right: 6.4em;}
+
+	ol.alg>ol>ol>ol>ol>ol>ol>ol>li, 
+	ol.algc>ol>ol>ol>ol>ol>ol>ol>li {padding-left: 5em;}
+	ol.alg>ol>ol>ol>ol>ol>ol>ol>li::before, 
+	ol.algc>ol>ol>ol>ol>ol>ol>ol>li::before { right: 7.4em; }
+
+	ol.alg li .katex,
+	ol.algc li .katex {
 		font-size: 1.2em !important;
+	}
+	li.highlight_match, li.highlight_match * {
+		color: var(--darkRed) !important;
 	}
 	/* Table for counting operations - algorithmic analysis */
 	table.alg {
@@ -1600,7 +1669,7 @@
 	div.compare div.ds-stack {
 		margin: 0;
 	}
-	div.split {
+	div.split, div.pseudosource {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 	}
@@ -1608,6 +1677,15 @@
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr;
 		column-gap: 10px;
+	}
+	div.horizon {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-evenly;
+	}
+	div.horizon pre {
+		margin: 5px;
+		flex-grow: 1;
 	}
 /* Aside */
 	aside {
@@ -1704,6 +1782,8 @@
 		margin: 1px auto;
 		padding: 0.5rem 0.6rem;
 		overflow: auto;
+		box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
+		border-radius: 0.3em !important;
 	}
 	pre details {
 		display: inline;
@@ -1761,8 +1841,7 @@
 		-moz-tab-size: 3;
 		-o-tab-size: 3;
 		tab-size: 3;
-		border-top: thin solid var(--lightGrey);
-		border-bottom: thin solid var(--lightGrey);
+		
 
 		-webkit-hyphens: none;
 		-moz-hyphens: none;
@@ -1863,8 +1942,6 @@
 	}
 /* Language - Bash */
 	pre[class*="language-bash"] {
-		border-top: solid thin var(--lightGrey);
-		border-bottom: solid thin var(--lightGrey);
 		background: var(--codeBlueGreyBG);
 		color: var(--textColor);
 	}
@@ -1872,14 +1949,11 @@
 	pre[class*="language-scheme"] + pre[class*="language-bash"], 
 	pre[class*="language-javascript"] + pre[class*="language-bash"] {
 		color: var(--textColor);
-		border-bottom: thin solid var(--commentGrey);
 		background: var(--page);
 	}
 	pre[class*="language-c"] + pre[class*="language-bash"], 
 	pre[class*="language-cpp"] + pre[class*="language-bash"] {
 		color: var(--codeWhite);
-		border-top: thin solid var(--commentGrey);
-		border-bottom: thin solid var(--commentGrey);
 		background: var(--codeBlackBG);
 	}
 
@@ -1920,13 +1994,10 @@
 	code[class*="language-scheme"],
 	pre[class*="language-scheme"] {
 		color: rgb(54, 54, 54); /* base00 */
-		border-radius: 0;
 	}
 
 	:not(pre) > code[class*="language-scheme"],
 	pre[class*="language-scheme"] {
-		border-top: thin solid var(--lightGrey);
-		border-bottom: thin solid var(--lightGrey);
 		background-color: rgb(242, 249, 249); /* base3 */
 	}
 
@@ -2026,9 +2097,6 @@
 	}
 	:not(pre) > code[class*="language-javascript"],
 	pre[class*="language-javascript"] {
-		border-radius: none !important;
-		border-top: thin solid var(--lightGrey);
-		border-bottom: thin solid var(--lightGrey);
 		background-color: var(--codeBlueGreyBG);
 	}
 	code[class*="language-javascript"]>.token.dom {color: rgb(195, 115, 3);}
@@ -2645,10 +2713,6 @@
 		color: var(--HaskellPrimary);
 		background-color: var(--HaskellBackground);
 	}
-	pre[class*="language-haskell"] {
-		border-top: solid thin var(--lightGrey);
-		border-bottom: solid thin var(--lightGrey);
-	}
 
 	code[class*="language-haskell"] > .token.comment,
 	code[class*="language-haskell"] > .token.block-comment,
@@ -2733,10 +2797,6 @@
 	pre[class*="language-rust"] code {
 		color: var(--rustPrimary);
 		background-color: var(--rustBackground);
-	}
-	pre[class*="language-rust"] {
-		border-top: solid thin var(--lightGrey);
-		border-bottom: solid thin var(--lightGrey);
 	}
 	
 	code[class*="language-rust"] > .token.comment,
@@ -2823,12 +2883,6 @@
 		color: grey;
 	}
 
-	:not(pre) > code[class*="language-html"],
-	pre[class*="language-html"] {
-		border-top: solid thin grey;
-		border-bottom: solid thin grey;
-		background: var(--codeBlueGreyBG);
-	}
 	code[class*="language-html"]>.token.comment,
 	code[class*="language-html"]>.token.prolog,
 	code[class*="language-html"]>.token.doctype,
@@ -2905,6 +2959,38 @@
 	.language-markup .token.attr-name,
 	.language-markup .token.punctuation {
 		color: hsl(33, 33%, 52%); /* #AC885B */
+	}
+/* Language - Verilog */
+	pre[class*="language-verilog"] {
+		background-color: #1E3163;
+	}
+	pre[class*="language-verilog"] code {
+		color: var(--codeWhite);
+	}
+	code[class*="language-verilog"] .token.keyword-module, 
+	code[class*="language-verilog"] .token.keyword-endmodule {
+		color: tomato;
+	}
+	code[class*="language-verilog"] .token.keyword-input {
+		color: rgb(255, 245, 158);
+	}
+	code[class*="language-verilog"] .token.keyword-output {
+		color: rgb(255, 191, 131);
+	}
+	code[class*="language-verilog"] .token.comment {
+		color: rgb(156, 190, 212);
+	}
+	code[class*="language-verilog"] .token.operator {
+		color: gold;
+	}
+	code[class*="language-verilog"] .token.punctuation {
+		color: greenyellow;
+	}
+	code[class*="language-verilog"] .token.number {
+		color: var(--codeBrightBlue);
+	}
+	code[class*="language-verilog"] .token.function {
+		color: #f7aeff;
 	}
 /* Multilingual Code Illustrations */
 	div.demo {
@@ -3543,6 +3629,9 @@
 	.mord.texttt {
 		font-family: var(--mono) !important;
 		font-size: 0.85em !important;
+	}
+	.latin_fallback {
+		font-family: "Fira";
 	}
 /* Memory Grid */
 	div.ram {

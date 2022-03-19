@@ -5,6 +5,7 @@
 {% endblock %} {% load static %} {% block content %}
 <h1>Assembly</h1>
 <section id="intro">
+	<div id="nandGate"></div>
 	<p>
 		In this module, we examine some basic ideas in assembly language. This
 		will provide much of the foundations for later discussions. To do so,
@@ -60,6 +61,149 @@
 	</p>
 </section>
 
+<section id="signals">
+	<h2>Signals</h2>
+	<p>
+		Before we get to a functioning computer, we must assemble its
+		components. Before we assemble its components, we must understand
+		Boolean logic from the computer's perspective. And before we understand
+		the computer's perspective, we must understand what <i>bits</i> are.
+		And to understand what bits are, we must study <b>signals</b>.
+	</p>
+
+	<section id="whats_a_signal">
+		<h3>What's a Signal?</h3>
+		<p>
+			If we look at the Great Wall of China, we see that it's not just some
+			massive, vertical wall. It has considerable thickness for people to
+			travel along the wall. Every few meters or so, there's a large tower.
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/great_wall_of_china.svg' %}"
+				alt=""
+				loading="lazy"
+				style="width: 200px"
+			/>
+		</figure>
+		<p>
+			These large, protruding structures are called <i>beacon towers</i>.
+			They were used for storing supplies and sheltering soldiers. But more
+			importantly, they were used to transmit messages. When a sentinel saw
+			intruders approaching during the day, the soldier would set smoke (if
+			the threat occurred during the day) or light a fire (if the threat
+			occurred at night). The sentinel in the neighboring tower would see
+			the signal and perform the same, that tower's neighboring tower would
+			see the signal and do the same, and that tower's neighbor, etc.
+		</p>
+		<p>
+			The message transmitted was simple: Smoke or fire, there was an
+			intruder; else, just another day along the wall. This was a fairly
+			limited form of communication. More complicated messages like
+			<q>Running low on water at tower ${5}$</q> had to be delivered by
+			messenger. Nevertheless, China's beacon towers present a
+			straightforward introduction to the notion of a <i>signal</i>.
+		</p>
+		<p>
+			Mathematically, a <b>signal</b> is just a function ${s(t).}$ What
+			separates it from other functions, however, is what it represents:
+			The variation of some <i>physical quantity</i> with respect to some
+			parameter, most commonly <i>time</i>. Because it measure some
+			physical quantity, the key characteristic of a signal is that its
+			range is an <i>interval</i> &mdash; a set consisting of real numbers
+			between some real number ${a}$ and a real number ${b.}$
+		</p>
+		<p>
+			For example, for the soldiers along the Great Wall, the signal can be
+			mathematically modeled as:
+		</p>
+		<figure>
+			$$ s(\text{beacon}) = \begin{cases}
+			\text{intruder}~~~~~~~~~~\text{if}~~~\text{beacon} \in \{ \text{fire,
+			smoke} \} \\ \text{no intruder}~~~~~\text{else} \end{cases} $$
+		</figure>
+		<p>
+			We can write this more abstractly. Denote ${\text{beacon}}$ as ${b,}$
+			the existence of a fire or smoke as ${1,}$ and the nonexistence of a
+			fire or smoke as ${0:}$
+		</p>
+		<figure>
+			$$ s(b) = \begin{cases} \exists(\text{intruder}) ~~~ b=1 \\
+			\nexists(\text{intruder}) ~~~b=0 \end{cases} $$
+		</figure>
+		<p>
+			From this definition of a signal, we can see that many kinds of
+			functions qualify as signals. For example, if we took temperature
+			readings on a particular from ${8}$AM to ${8}$PM and found that the
+			trendline resembled a graph ${2t^2,}$ the function ${T(t) = 2t^2}$
+			constitutes a signal. Plug in a time, and we get back a
+			<i>variation</i> of the temperature. This is the defining
+			characteristic of a signal: it's a function that returns some
+			<i>object</i> &mdash; perhaps a number, or the fact that an intruder
+			is approaching &mdash; from an interval.
+		</p>
+		<p>
+			For electronics, e.g., a computer, a signal is a function
+			representing some variation in a measurement of electricity with
+			respect to time. That measurement could be electrical voltage or a
+			pulse of current. For our purposes, we'll think of the measure in
+			terms of current pulses, but really, it doesn't matter. The important
+			point is that the measurement is one among a finite set of possible
+			measurements.
+		</p>
+	</section>
+
+	<section id="analog_v_digital">
+		<h3>Analog versus Digital</h3>
+		<p>
+			The terms <i>analog</i> and <i>digital</i> refer to the signal's
+			codomain. For example, the sine function, ${y = \sin(x),}$ is an
+			<b>analog signal</b>. Its codomain is the interval ${\{ y \in \R \mid
+			-1 \leq y \leq 1 \}.}$ We say classify it as an analog signal because
+			it can output infinitely many signals &mdash; there are infinitely
+			many real numbers between ${-1}$ and ${1.}$
+		</p>
+		<div id="sine_graph"></div>
+		<p>
+			A <b>digital signal</b>, however, restricts the codomain to a subset
+			of the analog signal's codomain. For example, consider the function:
+		</p>
+		<figure>
+			$$ s(t) = \dfrac{\sin(2 \pi f t)}{2\lvert \sin(2 \pi f t) \rvert } +
+			\dfrac{1}{2} $$
+		</figure>
+		<p>
+			Where ${f,}$ the <i>frequency</i>, is ${1,}$ and ${t}$ is the time.
+			This function results in a <b>square wave</b> whose graph appears as:
+		</p>
+		<div id="analog_sine_graph"></div>
+		<p>
+			Notice that we've now restricted the codomain even further: The
+			signal can only be ${0}$ or ${1.}$ This is a key feature of digital
+			signals, and it is what's used by electronic devices to make the
+			measurements of electricity we mentioned earlier. Interpreting the
+			graph above, the ${y}$-axis is the electrical measurement &mdash;
+			perhaps volts (units of voltage) or amperes (units of electric
+			current) &mdash; and the ${x}$-axis is time.
+		</p>
+		<p>
+			In essence, restricting the domain means we're restricting the number
+			of possible outputs. And by restricting the number of possible
+			outputs to just two &mdash; ${0}$ or ${1}$ &mdash; we enter a world
+			where pretty much everything is black and white, true or false. This
+			greatly reduces complexity, because now we can model everything with
+			a switch:
+		</p>
+		<div id="bit_1"></div>
+		<p>
+			This single switch is called a <b>bit</b>. Using enough of these
+			bits, we can implement Boolean and arithmetic operations. And from
+			these basic operations, we can emulate <i>memory</i>, all the way up
+			to a full-fledged, functioning computer.
+		</p>
+	</section>
+</section>
+
 <section id="boolean_logic">
 	<h2>Boolean Logic</h2>
 	<p>
@@ -68,38 +212,37 @@
 		wide variety of operations.
 	</p>
 	<p>
-		<span class="topic">AND.</span> The logical <var>AND</var> is modeled
-		as such:
+		<span class="topic">AND.</span> The logical <var>AND</var> has the
+		following truth table:
 	</p>
-	<figure>
-		$$ \begin{array}{c:c:c:c} & \texttt{x} & \texttt{y} & \texttt{AND} \\
-		\hline & 0 & 0 & 0 \\ & 0 & 1 & 0 \\ & 1 & 0 & 0 \\ & 1 & 1 & 1
-		\end{array} $$
-	</figure>
+	<div id="and_truth_table"></div>
 	<p>
-		Formally, the logical <var>AND</var> is represented with ${\land.}$
+		Formally, the logical <var>AND</var> is represented with the symbol
+		${\land,}$ or, in the case of bitwise operations, the ampersand
+		<var>&amp;</var>. The operation <var>a∧b</var> returns true if, and
+		only if, both <var>a</var> and <var>b</var> are true. Otherwise, it
+		returns false.
 	</p>
 	<p>
-		<span class="topic">OR.</span> The logical <var>OR</var> is modeled as.
+		<span class="topic">OR.</span> The logical <var>OR</var> has the
+		following truth table:
 	</p>
-	<figure>
-		$$ \begin{array}{c:c:c:c} & \texttt{x} & \texttt{y} & \texttt{OR} \\
-		\hline & 0 & 0 & 0 \\ & 0 & 1 & 1 \\ & 1 & 0 & 1 \\ & 1 & 1 & 1
-		\end{array} $$
-	</figure>
+	<div id="or_truth_table"></div>
 	<p>
 		In formal logic, the logical <var>OR</var> is represented with the
-		symbol ${\lor.}$
+		symbol ${\lor,}$ or, in bitwise notation, the pipe character
+		<var>|</var>. Examining the truth table, we see that
+		<var>a|b</var> returns false if and only if <var>a</var> and
+		<var>b</var> are both false. Otherwise, it returns true.
 	</p>
 	<p>
 		<span class="topic">NOT.</span> The logical <var>NOT</var> is a
 		<i>unary operator</i>. In formal logic, we represent the logical
-		<var>NOT</var> with the symbol ${\neg.}$
+		<var>NOT</var> with the symbol ${\neg,}$ and in bitwise logic, we use
+		the exclamation mark <var>!</var> (some texts use the tilde,
+		<var>~</var>). The truth table:
 	</p>
-	<figure>
-		$$ \begin{array}{c:c:c} & \texttt{x} & \texttt{NOT} \\ \hline & 0 & 1
-		\\ & 1 & 0 \end{array} $$
-	</figure>
+	<div id="not_truth_table"></div>
 	<p>
 		With just these three operations &mdash; <var>AND</var>, <var>OR</var>,
 		and <var>NOT</var> &mdash; we can create much more elaborate and
@@ -712,7 +855,7 @@
 			src="{% static 'images/elementary_logic_gates.svg' %}"
 			alt="Elementary logic gates"
 			loading="lazy"
-			style="width: 30%"
+			style="width: 100px"
 		/>
 	</figure>
 	<p>
@@ -725,9 +868,10 @@
 			src="{% static 'images/and_gate.svg' %}"
 			alt="Elementary logic gates"
 			loading="lazy"
+			style="width: 100px"
 		/>
 		<div>
-			<pre class="language-pseudo"><code>
+			<pre class="language-verilog"><code>
 				if (a == 1 and b==1)
 				then out=1 else out=0
 			</code></pre>
@@ -745,9 +889,10 @@
 			src="{% static 'images/or_gate.svg' %}"
 			alt="Elementary logic gates"
 			loading="lazy"
+			style="width: 100px"
 		/>
 		<div>
-			<pre class="language-pseudo"><code>
+			<pre class="language-verilog"><code>
 				if (a==1 or b==1)
 				then out=1 else out=0
 			</code></pre>
@@ -765,9 +910,10 @@
 			src="{% static 'images/not_gate.svg' %}"
 			alt="Elementary logic gates"
 			loading="lazy"
+			style="width: 100px"
 		/>
 		<div>
-			<pre class="language-pseudo"><code>
+			<pre class="language-verilog"><code>
 				if (in==0)
 				then out=1 else out=0
 			</code></pre>
@@ -788,7 +934,7 @@
 			src="{% static 'images/nand_gate_schematic.svg' %}"
 			alt="Elementary logic gates"
 			loading="lazy"
-			style="width: 40%"
+			style="width: 200px"
 		/>
 	</figure>
 	<p>
@@ -804,19 +950,15 @@
 			src="{% static 'images/nand_gate.svg' %}"
 			alt="Elementary logic gates"
 			loading="lazy"
+			style="width: 100px"
 		/>
 		<div>
-			<pre class="language-pseudo"><code>
+			<pre class="language-verilog"><code>
 				if (a==1 and b==1)
 				then out=0 else out=1
 			</code></pre>
 		</div>
-		<div>
-			$$ \begin{array}{c:c:c:c} & \texttt{a} & \texttt{b} &\texttt{out} \\
-			\hline & \texttt{0} & \texttt{0} & \texttt{1} \\ & \texttt{0} &
-			\texttt{1} & \texttt{1} \\ & \texttt{1} & \texttt{0} & \texttt{1} \\
-			& \texttt{1} & \texttt{1} & \texttt{0} \end{array} $$
-		</div>
+		<div id="nand_truth_table"></div>
 	</div>
 
 	<section id="circuit_implementations">
@@ -835,7 +977,7 @@
 			src="{% static 'images/and_circuit.svg' %}"
 			alt="and circuit"
 			loading="lazy"
-			style="width: 60%"
+			style="width: 250px"
 		/>
 		<figcaption><var>AND</var> circuit</figcaption>
 	</figure>
@@ -845,7 +987,7 @@
 			src="{% static 'images/or_circuit.svg' %}"
 			alt="or circuit"
 			loading="lazy"
-			style="width: 60%"
+			style="width: 200px"
 		/>
 		<figcaption><var>OR</var> circuit</figcaption>
 	</figure>
@@ -872,19 +1014,14 @@
 			</p>
 		</figure>
 		<p>Specifying this as a truth table:</p>
-		<figure>
-			$$ \begin{array}{c:c:c:c} & \texttt{a} & \texttt{b} & \texttt{out} \\
-			\hline & \texttt{0} & \texttt{0} & \texttt{0} \\ & \texttt{0} &
-			\texttt{1} & \texttt{1} \\ & \texttt{1} & \texttt{0} & \texttt{1} \\
-			& \texttt{1} & \texttt{1} & \texttt{0} \\ \end{array} $$
-		</figure>
+		<div id="xor_truth_table"></div>
 		<p>This particular gate is called a <b>XOR gate</b>:</p>
 		<figure>
 			<img
 				src="{% static 'images/xor_gate.svg' %}"
 				alt="or circuit"
 				loading="lazy"
-				style="width: 40%"
+				style="width: 130px"
 			/>
 			<figcaption><var>XOR</var> gate</figcaption>
 		</figure>
@@ -895,7 +1032,7 @@
 			circuits. For the <var>XOR</var> gate, we would write the following
 			in an <var>.hdl</var> file:
 		</p>
-		<pre class="language-pseudo"><code>
+		<pre class="language-verilog"><code>
 			/** Xor gate: out = (a And Not(b)) Or (Not(a) And b)) */
 			CHIP Xor {
 				IN a, b;
@@ -930,12 +1067,12 @@
 				src="{% static 'images/XOR_implementation.svg' %}"
 				alt="or circuit"
 				loading="lazy"
-				style="width: 80%"
+				style="width: 350px"
 			/>
 			<figcaption><var>XOR</var> implementation</figcaption>
 		</figure>
 		<p>In our <var>hdl</var> file, we write:</p>
-		<pre class="language-pseudo"><code>
+		<pre class="language-verilog"><code>
 			/** Xor gate: out = (a And Not(b)) Or (Not(a) And b)) */
 			CHIP Xor {
 				IN a, b;
@@ -958,7 +1095,7 @@
 				src="{% static 'images/hdl_xor.svg' %}"
 				alt="or circuit"
 				loading="lazy"
-				style="width: 100%"
+				style="width: 350px"
 			/>
 		</figure>
 	</section>
@@ -1035,24 +1172,28 @@
 				${1,}$ the multiplexor outputs <var>b</var>.
 			</p>
 			<p>The HDL description:</p>
-			<pre class="language-pseudo"><code>
+			<pre class="language-verilog"><code>
 				if (sel==0)
 					out=a
 				else
 					out=b
 			</code></pre>
 			<p>The truth table:</p>
-			<figure>
-				$$ \begin{array}{c:c:c:c:} & \texttt{a} & \texttt{b} & \texttt{sel}
-				& \texttt{out} \\ \hline & 0 & 0 & 0 & 0 \\ & 0 & 1 & 0 & 0 \\ & 1
-				& 0 & 0 & 1 \\ & 1 & 1 & 0 & 1 \\ & 0 & 0 & 1 & 0 \\ & 0 & 1 & 1 &
-				1 \\ & 1 & 0 & 1 & 0 \\ & 1 & 1 & 1 & 1 \end{array} $$
-			</figure>
+			<div id="mux_truth_table"></div>
 			<p>The multiplexor also has an abbreviated truth table:</p>
-			<figure>
-				$$ \begin{array}{c:c:c} & \texttt{sel} & \texttt{out} \\ \hline & 0
-				& \texttt{a} \\ & 1 & \texttt{b} \\ \end{array} $$
-			</figure>
+			<div id="abbreviated_mux_truth_table"></div>
+			<p>The multiplexor's HDL appears as follows:</p>
+			<pre class="language-verilog"><code>
+				CHIP AndMuxOr {
+					IN a, b, sel;
+					OUT out;
+
+					PARTS:
+					And (a=a, b=b, out=andOut);
+					Or (a=a, b=b, out=orOut);
+					Mux (a=andOut, b=orOut, sel=sel, out=out);
+				}
+			</code></pre>
 		</section>
 		<section id="dmux_gate">
 			<h4>Demultiplexor</h4>
@@ -1070,16 +1211,4334 @@
 			</figure>
 			<p>
 				We can think of the demultiplexor as the inverse of a multiplexor.
+				It receives a single input, and outputs either an
+				<var>a</var> output or <var>b</var> output. The hardware
+				description:
+			</p>
+			<pre class="language-verilog"><code>
+				if (sel==0)
+					{a,b}={in,0}
+				else
+					{a,b}={0,in}
+			</code></pre>
+			<p>The truth table:</p>
+			<div id="demux_truth_table"></div>
+			<p>
+				Using a demultiplexor and multiplexor together allows us to stream
+				bits of information efficiently:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/mux_demux_stream.svg' %}"
+					alt="mux demux stream"
+					loading="lazy"
+					style="width: 300px"
+				/>
+			</figure>
+			<p>
+				In the circuit above, the <var>sel</var> bits are connected to an
+				<i>oscillator</i> returning <var>0</var>s and <var>1</var>s
+				alternatively. The output of the <var>Mux</var> is a single stream
+				of bits, which is then fed into the <var>DMux</var> where the
+				original stream is outputted. This allows us to transmit large
+				messages as a single stream of bits &mdash; far more cost-efficient
+				than transmitting multiple streams.
 			</p>
 		</section>
 		<section id="not16_gate"></section>
-		<section id="and16_gate"></section>
+		<section id="and16_gate">
+			<h4>AND16</h4>
+			<p>
+				The <b>AND16 gate</b> is a ${16}$-bit <var>AND</var> gate. At its
+				core, it really is just an <var>AND</var> gate, but instead of just
+				two single-bit buses as input, it takes two ${16}$-bit bus inputs.
+				This results in outputs like:
+			</p>
+			<figure>
+				$$ \begin{aligned} \texttt{a} &= 1 0 1 0 1 0 1 1 0 1 0 1 1 1 0 \\
+				\texttt{b} &= 0 0 1 0 1 1 0 1 0 0 0 1 0 1 0 \\ \hline \texttt{out}
+				&= 0 0 1 0 1 0 0 1 0 0 0 1 0 1 0 \end{aligned} $$
+			</figure>
+		</section>
 		<section id="or16_gate"></section>
 		<section id="mux16_gate"></section>
 		<section id="or8way_gate"></section>
-		<section id="mux4way16_gate"></section>
+		<section id="mux4way16_gate">
+			<h4>Mux4Way16</h4>
+			<p>
+				The <b>Mux4Way16 gate</b> is a 4-way 16-bit multiplexor. In other
+				words, a multiplexor that takes four 16-bit buses as inputs, a
+				2-bit bus as a selection input, and a 16-bit bus as output. The
+				truth table:
+			</p>
+			<div id="mux4way16_truth_table"></div>
+		</section>
 		<section id="dmux4way_gate"></section>
 		<section id="dmux8way_gate"></section>
+	</section>
+</section>
+
+<section id="alu">
+	<h2>The ALU</h2>
+	<p>
+		The <b>Arithmetic Logic Unit (ALU)</b> can be thought of as the
+		computer's brain. Using the elementary logic gates, we can implement
+		<b>adders</b> &mdash; chips designed to add numbers. Once we can
+		perform addition, a whole host of other operations are available
+		&mdash; subtraction, numeric comparison, and other logical operations.
+		The ALU is essentially a packaging of all these new, complex
+		operations. And once we have an ALU, we can begin building a
+		<i>CPU</i>. Before we begin implementing these adders, however, we must
+		review binary arithmetic.
+	</p>
+
+	<section id="bitstreams_and_words">
+		<h3>Bitstreams & Words</h3>
+		<p>
+			Suppose we have boxes that can only be filled with either a single
+			<var>0</var> or a single <var>1</var>. The boxes are arranged
+			linearly to form a package, and packages are unique depending on how
+			the boxes are arranged. With just ${1}$ box, how many possible
+			packages are there? From combinatorics, we have two possible
+			packages:
+		</p>
+		<div class="horizon">
+			<div id="array_of_1"></div>
+			<div id="array_of_0"></div>
+		</div>
+		<p>
+			Now suppose we had two boxes. If we had two boxes, then we have four
+			possible packages:
+		</p>
+		<div class="horizon">
+			<div id="array_of_4_1"></div>
+			<div id="array_of_4_2"></div>
+			<div id="array_of_4_3"></div>
+			<div id="array_of_4_4"></div>
+		</div>
+		<p>
+			And if we had three boxes, we would have eight possible packages:
+		</p>
+		<div class="horizon">
+			<div id="array_of_8_1"></div>
+			<div id="array_of_8_2"></div>
+			<div id="array_of_8_3"></div>
+			<div id="array_of_8_4"></div>
+		</div>
+		<br />
+		<div class="horizon">
+			<div id="array_of_8_5"></div>
+			<div id="array_of_8_6"></div>
+			<div id="array_of_8_7"></div>
+			<div id="array_of_8_8"></div>
+		</div>
+		<p>
+			In general, if we have ${n}$ bits, where ${n}$ is a positive integer,
+			we have ${2^n}$ possible packages. This analysis extends to
+			computation. For computers, the boxes are <b>bits</b>, and the
+			packages are <b>bitstreams</b> (sequences of bits):
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Number of Bits</th>
+				<th>Number of Possible Bitstreams</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${1}$</td>
+					<td>${2^1 = 2}$</td>
+				</tr>
+				<tr>
+					<td>${2}$</td>
+					<td>${2^2 = 4}$</td>
+				</tr>
+				<tr>
+					<td>${3}$</td>
+					<td>${2^3 = 8}$</td>
+				</tr>
+				<tr>
+					<td>${4}$</td>
+					<td>${2^4 = 16}$</td>
+				</tr>
+				<tr>
+					<td>${5}$</td>
+					<td>${2^5 = 32}$</td>
+				</tr>
+				<tr>
+					<td>${6}$</td>
+					<td>${2^6 = 64}$</td>
+				</tr>
+				<tr>
+					<td>${7}$</td>
+					<td>${2^7 = 128}$</td>
+				</tr>
+				<tr>
+					<td>${8}$</td>
+					<td>${2^8 = 256}$</td>
+				</tr>
+				<tr>
+					<td>${9}$</td>
+					<td>${2^9 = 512}$</td>
+				</tr>
+				<tr>
+					<td>${10}$</td>
+					<td>${2^{10} = 1024}$</td>
+				</tr>
+				<tr>
+					<td>${11}$</td>
+					<td>${2^{11} = 2048}$</td>
+				</tr>
+				<tr>
+					<td>${12}$</td>
+					<td>${2^{12} = 4096}$</td>
+				</tr>
+				<tr>
+					<td>${\vdots}$</td>
+					<td>${\vdots}$</td>
+				</tr>
+				<tr>
+					<td>${16}$</td>
+					<td>${2^{16} = 65~536}$</td>
+				</tr>
+				<tr>
+					<td>${32}$</td>
+					<td>${2^{32} = 4~294~967~296}$</td>
+				</tr>
+				<tr>
+					<td>${64}$</td>
+					<td>${2^{64} = 18~446~744~073~709~551~616}$</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Notice that if we have ${32}$ bits, we have over ${4}$ billion
+			possible bitstreams. And with ${64}$ bits, we have over ${18}$
+			quintillion (or ${18}$ billion billion) possible bit streams. Keep
+			these numbers in mind as we continue.
+		</p>
+		<p>
+			Ok, so we have all of the possible bit streams. Now what? Well, we
+			can give those bitstreams <i>meaning</i>. And once we give a
+			particular bistream a unique meaning, that bistream is called a
+			<b>word</b>. For example, we can assign the bitstreams to numbers,
+			using <i>binary representation</i>, giving us <i>words</i> that
+			represent numbers:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Decimal Number</th>
+				<th>Binary Number</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${0}$</td>
+					<td><var>0</var></td>
+				</tr>
+				<tr>
+					<td>${1}$</td>
+					<td><var>1</var></td>
+				</tr>
+				<tr>
+					<td>${2}$</td>
+					<td><var>10</var></td>
+				</tr>
+				<tr>
+					<td>${3}$</td>
+					<td><var>11</var></td>
+				</tr>
+				<tr>
+					<td><span class="redText">${4}$</span></td>
+					<td>
+						<var><span class="redText">100</span></var>
+					</td>
+				</tr>
+				<tr>
+					<td>${5}$</td>
+					<td><var>101</var></td>
+				</tr>
+				<tr>
+					<td>${6}$</td>
+					<td><var>110</var></td>
+				</tr>
+				<tr>
+					<td>${7}$</td>
+					<td><var>111</var></td>
+				</tr>
+				<tr>
+					<td><span class="redText">${8}$</span></td>
+					<td>
+						<var><span class="redText">1000</span></var>
+					</td>
+				</tr>
+				<tr>
+					<td>${9}$</td>
+					<td><var>1001</var></td>
+				</tr>
+				<tr>
+					<td>${10}$</td>
+					<td><var>1010</var></td>
+				</tr>
+				<tr>
+					<td>${11}$</td>
+					<td><var>1011</var></td>
+				</tr>
+				<tr>
+					<td>${12}$</td>
+					<td><var>1100</var></td>
+				</tr>
+				<tr>
+					<td>${13}$</td>
+					<td><var>1101</var></td>
+				</tr>
+				<tr>
+					<td>${14}$</td>
+					<td><var>1110</var></td>
+				</tr>
+				<tr>
+					<td>${15}$</td>
+					<td><var>1111</var></td>
+				</tr>
+				<tr>
+					<td><span class="redText">${16}$</span></td>
+					<td>
+						<var><span class="redText">10000</span></var>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Look at the binary number representations. Those are really just
+			bitstreams. More importantly, at each power of ${2,}$ we need an
+			additional bit. This demonstrates that with ${k}$ bits, the largest
+			decimal number we can represent is ${2^k-1}$ (minus ${1}$ because we
+			must represent ${0}$; i.e., the count starts from ${0}$). For
+			example, with just ${1}$ bit, the biggest number we can represent is
+			${2^1 - 1 = 1.}$ With ${2}$ bits, the biggest number we can represent
+			is ${2^2 - 1 = 3.}$ With ${8}$ bits, the biggest number we can
+			represent is ${2^8 - 1 = 255.}$ And with ${32}$ bits, the biggest
+			number we can represent is ${2^{32} - 1 = 4~294~967~295.}$<sup></sup>
+		</p>
+		<div class="note">
+			<p>
+				Note that these numbers change if we're representing negative
+				numbers. For example, suppose we wanted to represent both positive
+				numbers and their negative counterparts. How we represent the
+				negative numbers (to be covered shortly) impacts the range of
+				decimal numbers we can represent. For example, if we used the
+				<i>signed-magnitude approach</i>, we use the first bit to indicate
+				the signum &mdash; <var>1</var> for negative, and <var>0</var> for
+				positive. This leaves us with just ${7}$ bits for the actual
+				numbers. And with just ${7}$ bits, the largest decimal we can
+				represent is ${2^7 - 1 = 127.}$ Thus, the largest number we can
+				represent is ${127,}$ and the smallest number we can represent is
+				${-127.}$ ${127}$ bitstreams are used to represent the negative
+				numbers, ${127}$ bitstreams for the positive numbers, and ${2}$
+				bitstreams for zero (<var>00000000</var> and <var>10000000</var>).
+				This exhausts all of the possible bit streams: ${127+127+2=256.}$
+			</p>
+		</div>
+		<p>
+			For simple computers, only so many numbers can be represented &mdash;
+			there's a ceiling on how many bits are used to make a bitstream. In
+			other words, returning to our box-package analogy, there's a limit on
+			how many boxes the computer can fit into a single package. That limit
+			is called a <b>word size</b>.
+		</p>
+		<p>
+			For example, for computers with a word size of ${8}$ bits, there are
+			${256}$ possible bitstreams, or ${256}$ possible words. For computers
+			with a word size of ${32}$ bits, there are a little over ${4}$
+			billion possible words.
+		</p>
+	</section>
+
+	<section id="binary_arithmetic">
+		<h3>Binary Arithmetic</h3>
+		<p>
+			Because binary numbers are just representations of numbers, we can
+			perform addition over binary numbers. Later, when we consider how to
+			represent negative numbers, subtraction and numeric comparisons
+			(i.e., <var>&lt;</var>, <var>&gt;</var>, <var>&geq;</var>,
+			<var>&leq;</var>, and <var>=</var>) are trivial. More complex
+			operations like multiplication and division, however, are implemented
+			with higher level software rather than the ALU.
+		</p>
+		<p>
+			Binary addition is fairly straightforward. We just add the ones and
+			zeros:
+		</p>
+		<figure>
+			$$ \begin{aligned} &0~0~1 \\ +~&0~1~0 \\ \hline &0~1~1 \end{aligned}
+			$$
+		</figure>
+		<p>If we converted the numbers to decimal, we get:</p>
+		<figure>
+			$$ \begin{aligned} &1 \\ +~&2 \\ \hline &3 \end{aligned} $$
+		</figure>
+		<p>
+			Easy enough. But what happens when we get ${11_{[2]}+11_{[2]}?}$
+			Well, we can think about a simpler problem, ${1_{[2]}+1_{[2]}.}$ In
+			terms of decimal numbers, ${1_{[10]} + 1_{[10]} = 2_{[10]}.}$ We know
+			that ${2}$ in binary is ${10_{[2]}.}$ Thus, ${1_{[2]} + 1_{[2]} =
+			10_{[2]}.}$ This means that when we perform binary addition, the
+			addition ${1_{[2]} + 1_{[2]}}$ results in a
+			<b>carry bit</b> of ${1_{[2]}.}$ Accordingly, we have the following
+			carry over combinations:
+		</p>
+		<div class="horizon">
+			$$ \begin{aligned} 1~\phantom{1} & \\ 0~1& \\ +~~~0~1& \\ \hline 1~0&
+			\end{aligned} $$ $$ \begin{aligned} 1~\phantom{1} & \\ 1~1& \\
+			+~~~0~1& \\ \hline 1~0~0& \end{aligned} $$ $$ \begin{aligned}
+			1~\phantom{1} & \\ 1~1& \\ +~~~1~1& \\ \hline 1~1~0& \end{aligned} $$
+		</div>
+		<p>
+			For example, suppose we want to compute ${1101_{[2]} + 0111_{[2]}}$
+			(in decimal, ${13 + 7}$). We have:
+		</p>
+		<figure>
+			$$ \begin{aligned}
+			\color{purple}{1}~\color{green}{1}~\color{blue}{1}~\color{firebrick}{1}~\phantom{1}&
+			\\ 1~1~0~1& \\ +~~~0~1~1~1& \\ \hline
+			1~\color{purple}{0}~\color{green}{1}~\color{blue}{0}~\color{firebrick}{0}&
+			\end{aligned} $$
+		</figure>
+		<p>
+			We can see that this is correct, given that ${10100_{[2]}}$ is ${20}$
+			in decimal.
+		</p>
+		<p>
+			Considering the output above, suppose our computer's word size is
+			${4.}$ If the word size is ${4,}$ then the computation of
+			${1101_{[2]} + 0111_{[2]}}$ results in a number whose binary
+			representation exceeds the word size:
+		</p>
+		<figure>
+			$$ \begin{aligned} 1~1~0~1& \\ +~~~0~1~1~1& \\ \hline
+			{\color{indianred}1}~0~1~0~0& \end{aligned} $$
+		</figure>
+		<p>
+			When a computation results in a word that exceeds the computer's word
+			size, we have an <b>overflow</b>. What happens when an overflow
+			occurs? For most ALUs, nothing. The carry bit that does not fit into
+			the word is simply ignored, and we end up with:
+		</p>
+		<figure>
+			$$ \begin{aligned} 1~1~0~1& \\ +~~~0~1~1~1& \\ \hline 0~1~0~0&
+			\end{aligned} $$
+		</figure>
+		<p>
+			Thus, for the computer with a word size of ${4,}$ computing ${13 +
+			7}$ results in ${4.}$ This illustrates a critical point about
+			computers: The addition performed is not real integer addition. There
+			are infinitely many integers, but computers can only handle a subset
+			&mdash; the integers whose binary representations can fit within its
+			word size. More formally, computer addition is actually
+			<b>${\bmod~2^{\omega}}$ addition</b>, where ${\omega}$ is the word
+			size. Thus, for the computer with a word size of ${4,}$ we have:
+		</p>
+		<figure>
+			$$ \begin{aligned} 13~+_{2^4}~7 &= 13~+_{16}~7 \\ &= \text{rem}(13+7,
+			16) \\ &= \text{rem}(20, 16) \\ &= 4 \end{aligned} $$
+		</figure>
+		<p>
+			Note that we get this result because we're only representing positive
+			integers. When we discuss negative integer representation, we'll see
+			how an overflow leads to some interesting, albeit similar, results.
+		</p>
+	</section>
+	<section id="adders">
+		<h3>Adders</h3>
+		<p>
+			Now that we understand binary arithmetic, we can now discuss
+			<b>adders</b> &mdash; logic gates for performing addition. As we saw
+			earlier, when we perform binary addition, there are really just two
+			cases we have to consider: Adding two bits (no carryover occurs) and
+			adding three bits (a carryover occurs). Accordingly, to implement an
+			adder, we need two simpler adders:
+		</p>
+		<ol>
+			<li>
+				The <b>half-adder</b> &mdash; a logic gate that adds two bits.
+			</li>
+			<li>
+				The <b>full-adder</b> &mdash; a logic gate that adds three bits.
+			</li>
+		</ol>
+		<p>
+			Once we have these two simpler adders, we can implement a
+			<b>multibit-adder</b> &mdash; a logic gate that adds two
+			<i>numbers</i>.
+		</p>
+		<section id="half_adder">
+			<h4>Half-adder</h4>
+			<p>
+				The <i>half adder</i> has one, and only one, job: Adding two bits.
+				Suppose the bits are called <var>a</var> and <var>b</var>. Because
+				we have two bits, there are ${2^2 = 4}$ permutations for
+				<var>a</var> and <var>b</var>:
+			</p>
+			<div id="half_adder_a_and_b"></div>
+			<p>If we compute the sum for each of the rows:</p>
+			<div id="half_adder_a_and_b_sum"></div>
+			<p>
+				Notice that the last row results in the sum <var>10</var>. Because
+				a bit can only be either <var>0</var> or <var>1</var>, we need a an
+				additional column &mdash; a second output &mdash; indicating the
+				carry bit, if any:
+			</p>
+			<div id="half_adder_a_and_b_sum_carry"></div>
+			<p>
+				Do we notice a pattern in this truth table? Well, for starters, we
+				see that the <var>sum</var> column's values are really the result
+				of ${a ⊻ b.}$ In other words, <var>XOR(a, b)</var>. And the
+				<var>carry</var> column's values are the result of ${a ∧ b,}$ or
+				<var>AND(a,b)</var>.
+			</p>
+			<p>Thus, we have the HDL implementation:</p>
+			<pre class="language-verilog"><code>
+				CHIP HalfAdder {
+					IN a, b;
+					OUT sum, carry;
+
+					PARTS:
+						Xor(a=a, b=b, out=sum);
+						And(a=a, b=b, out=carry);
+				}
+			</code></pre>
+		</section>
+
+		<section id="full_adder">
+			<h4>Full-adder</h4>
+			<p>
+				Now that we have a half-adder, let's consider the full-adder. The
+				full-adder's purpose is to add three bits. Let's say those bits are
+				called <var>a</var>, <var>b</var>, and <var>c</var>. Just as we saw
+				with the half adder, the full-adder has two outputs: a
+				<var>sum</var> and a <var>carry</var>. With three bits, we have
+				${2^3 = 8}$ permutations. Laid out as a truth table:
+			</p>
+			<div id="full_adder_truth_table"></div>
+			<p>
+				While it may seem difficult to determine how we would implement the
+				full-adder, it's helpful to start by just considering
+				<var>a</var> and <var>b</var> first. If we add these two bits
+				together, there's a carry bit and a sum bit. The sum bit from
+				adding <var>a</var> and <var>b</var> must then be added to
+				<var>c</var>. The result is the final sum, and a final carry. The
+				final sum is straightforward &mdash; we pass <var>a</var> and
+				<var>b</var> to a half adder, and pass its sum and
+				<var>c</var> into another half adder.
+			</p>
+			<div class="horizon">
+				<div id="half_adder_a_and_b_sum_carry_sum1"></div>
+				<div id="full_adder_truth_table_expanded"></div>
+			</div>
+			<p>
+				But what about the final carry? Well, if we think a little more
+				carefully about adding three bits, we have a carry of
+				<var>1</var> if we get a carry from adding <var>a</var> and
+				<var>b</var>, <em>or</em> if we get a carry from adding
+				<var>sum1</var> and <var>c</var>. Accordingly, we have the
+				implementation:
+			</p>
+			<pre class="language-verilog"><code>
+				CHIP FullAdder {
+					IN a, b, c; 
+					OUT sum, carry;
+			
+					PARTS:
+						HalfAdder(a=a, b=b, sum=sum1, carry=carry1);
+						HalfAdder(a=c, b=sum1, sum=sum, carry=carry2);
+						Or(a=carry1, b=carry2, out=carry);
+				}
+			</code></pre>
+		</section>
+
+		<section id="multi_bit_adder">
+			<h4>Multibit-adder</h4>
+			<p>
+				Now that we have a full-adder and a half-adder, the multibit-adder
+				is almost trivial. Let's say we're working with ${16}$-bit
+				integers. This means we want a ${16}$-bit adder &mdash; an adder
+				with two ${16}$-bit inputs, and one ${16}$-bit output. If we again
+				recall how binary addition works, we add from right to left. The
+				right-most column is a simple half-adder, since there is no carry
+				bit when we first perform the addition. All other columns must be
+				computed with a full-adder.
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/multibit_adder_illustrate.svg' %}"
+					alt="multibit-adder"
+					loading="lazy"
+					style="width: 400px"
+				/>
+			</figure>
+			<p>Thus, we have the following implementation:</p>
+			<pre class="language-verilog"><code>
+				CHIP Add16 {
+					IN a[16], b[16];
+					OUT out[16];
+				
+					PARTS:
+						HalfAdder(a=a[0], b=b[0], sum=out[0], carry=c0);
+						FullAdder(a=c0, b=a[1], c=b[1], sum=out[1], carry=c1);
+						FullAdder(a=c1, b=a[2], c=b[2], sum=out[2], carry=c2);
+						FullAdder(a=c2, b=a[3], c=b[3], sum=out[3], carry=c3);
+						FullAdder(a=c3, b=a[4], c=b[4], sum=out[4], carry=c4);
+						FullAdder(a=c4, b=a[5], c=b[5], sum=out[5], carry=c5);
+						FullAdder(a=c5, b=a[6], c=b[6], sum=out[6], carry=c6);
+						FullAdder(a=c6, b=a[7], c=b[7], sum=out[7], carry=c7);
+						FullAdder(a=c7, b=a[8], c=b[8], sum=out[8], carry=c8);
+						FullAdder(a=c8, b=a[9], c=b[9], sum=out[9], carry=c9);
+						FullAdder(a=c9, b=a[10], c=b[10], sum=out[10], carry=c10);
+						FullAdder(a=c10, b=a[11], c=b[11], sum=out[11], carry=c11);
+						FullAdder(a=c11, b=a[12], c=b[12], sum=out[12], carry=c12);
+						FullAdder(a=c12, b=a[13], c=b[13], sum=out[13], carry=c13);
+						FullAdder(a=c13, b=a[14], c=b[14], sum=out[14], carry=c14);
+						FullAdder(a=c14, b=a[15], c=b[15], sum=out[15], carry=c15);
+				}
+			</code></pre>
+		</section>
+	</section>
+	<section id="negative_numbers">
+		<h3>Negative Integers</h3>
+		<p>
+			So far, we've only been working with nonnegative integers, ${0, 1, 2,
+			3, \ldots}$ and so on. There are plenty of things we can do with
+			nonnegatives, our lives would be much easier if we had negative
+			integers as well. So how do we represent negative integers? It turns
+			out that we have several choices.
+		</p>
+		<section id="sign_bit">
+			<h4>Sign Bit Representation</h4>
+			<p>
+				One way is to reserve the first bit of a word as the
+				<b>sign bit</b> &mdash; a bit corresponding to the integers's
+				signum; <var>0</var> for positive, <var>1</var> for negative. This
+				approach is called <b>sign bit representation</b>.
+			</p>
+			<div class="horizon">
+				<table class="alg">
+					<thead>
+						<th>Word</th>
+						<th>Decimal</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<var><span class="redText">1</span> 0 0 0</var>
+							</td>
+							<td>
+								<span class="redText"><var>-</var>${0}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="redText">1</span> 0 0 1</var>
+							</td>
+							<td>
+								<span class="redText"><var>-</var>${1}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="redText">1</span> 0 1 0</var>
+							</td>
+							<td>
+								<span class="redText"><var>-</var>${2}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="redText">1</span> 0 1 1</var>
+							</td>
+							<td>
+								<span class="redText"><var>-</var>${3}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="redText">1</span> 1 0 0</var>
+							</td>
+							<td>
+								<span class="redText"><var>-</var>${4}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="redText">1</span> 1 0 1</var>
+							</td>
+							<td>
+								<span class="redText"><var>-</var>${5}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="redText">1</span> 1 1 0</var>
+							</td>
+							<td>
+								<span class="redText"><var>-</var>${6}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="redText">1</span> 1 1 1</var>
+							</td>
+							<td>
+								<span class="redText"><var>-</var>${7}$</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="alg">
+					<thead>
+						<th>Word</th>
+						<th>Decimal</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<var><span class="blueText">0</span> 0 0 0</var>
+							</td>
+							<td>
+								<span class="blueText"><var>+</var>${0}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="blueText">0</span> 0 0 1</var>
+							</td>
+							<td>
+								<span class="blueText"><var>+</var>${1}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="blueText">0</span> 0 1 0</var>
+							</td>
+							<td>
+								<span class="blueText"><var>+</var>${2}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="blueText">0</span> 0 1 1</var>
+							</td>
+							<td>
+								<span class="blueText"><var>+</var>${3}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="blueText">0</span> 1 0 0</var>
+							</td>
+							<td>
+								<span class="blueText"><var>+</var>${4}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="blueText">0</span> 1 0 1</var>
+							</td>
+							<td>
+								<span class="blueText"><var>+</var>${5}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="blueText">0</span> 1 1 0</var>
+							</td>
+							<td>
+								<span class="blueText"><var>+</var>${6}$</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<var><span class="blueText">0</span> 1 1 1</var>
+							</td>
+							<td>
+								<span class="blueText"><var>+</var>${7}$</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p>
+				With sign bit representation, the first bit is reserved for the
+				integer's signum, and the remaining bits represent a nonnegative
+				integer. Intuitive as it may be, sign bit representation has
+				downsides; so much so that it's the least popular approach for
+				representing negatives.
+			</p>
+			<p>
+				First, we have two distinct representations for zero: ${-0}$ and
+				${+0.}$ While those coming from languages like JavaScript may be
+				comfortable with this notion, it flies in the face of mathematics
+				and requires further implementations for handling the two cases of
+				zero. This kind of complexity at such a low level is undesirable
+				&mdash; it's very, very easy to entangle ourselves in elaborate
+				case-handling schemes.
+			</p>
+			<p>
+				Second, subtraction is not straightforward. From mathematics, we
+				know that subtraction is just the addition of a nonnegative and a
+				negative. If we tried doing so with sign bit representation, we get
+				strange results. For example, suppose we wanted to compute ${5-2.}$
+				Using sign bit representation, we have:
+			</p>
+			<figure>
+				$$ \begin{aligned} 0~1~0~1 & \\ 1~0~1~0 & \\ \hline 1~1~1~1
+				\end{aligned} $$
+			</figure>
+			<p>
+				Clearly, this is not the right answer. We expected to get ${3,}$
+				but instead we got ${1~1~1~1,}$ which is ${-7.}$ The fact is, the
+				binary additional algorithm <em>does not</em> work with sign bit
+				representation. Instead, we have to perform a more elaborate
+				procedure. First, we determine which of the two numbers is greater.
+				In this case, it's ${5.}$ This means that the sign of the sum is
+				<var>1</var>. Then, we perform subtraction on the non-sign bits. If
+				we encounter ${0-1,}$ we borrow from the leftmost column, and
+				compute ${1:}$
+			</p>
+			<figure>
+				$$ \begin{aligned} 0~1~\phantom{1}& \\ \cancel{1}~\cancel{0}~1 & \\
+				-~~~0~\cancel{1}~0 & \\ \hline 0~1~1 \end{aligned} $$
+			</figure>
+			<p>Then we add the sign for the larger number:</p>
+			<figure>$$ 0~0~1~1 $$</figure>
+			<p>
+				which give us the correct answer, ${3.}$ This is a needlessly
+				complicated process requiring an entirely separate logic gate, a
+				<b>subtractor</b>, with the following truth table:
+			</p>
+			<div id="sign_bit_subtractor"></div>
+			<p>
+				Third, we're reducing the number of bits available for
+				representation. With sign bit representation, if we have a word
+				size ${\omega,}$ the largest number we can represent is ${2^{\omega
+				- 1}-1.}$ For example, consider the table above. Suppose a
+				computer's word size is ${4.}$ With sign bit representation, the
+				largest number we can represent is ${7.}$ If it weren't for that
+				additional representation of ${0,}$ we'd at least have ${8.}$
+			</p>
+		</section>
+
+		<section id="ones_complement">
+			<h4>One's Complement Representation</h4>
+			<p>
+				Another representation approach is <b>one's complement</b>. With
+				one's complement, negative numbers are formed by <q>flipping</q> or
+				<q>reflecting</q> all of the bits &mdash; turn all the ones into
+				zeros, and all the zeros into ones. For example, the binary number
+				${1011_{\texttt{b}},}$ flipped, is ${0100_{\texttt{b}}.}$ This
+				<q>flipped</q> form of ${1011_{\texttt{b}},}$ the binary number
+				${0100_{\texttt{b}},}$ is called the <b>complement</b> of
+				${1011_{\texttt{b}},}$ and the operation of reflecting or flipping
+				the digits is called <b>complementing</b>. Through complementing,
+				the most significant bit communicates the number's sign. Note,
+				however, that this is <em>not</em> sign bit.
+			</p>
+			<div class="horizon">
+				<table class="alg">
+					<thead>
+						<th>Word</th>
+						<th>Decimal</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><var>0111</var></td>
+							<td><var>+</var> ${7}$</td>
+						</tr>
+						<tr>
+							<td><var>0110</var></td>
+							<td><var>+</var> ${6}$</td>
+						</tr>
+						<tr>
+							<td><var>0101</var></td>
+							<td><var>+</var> ${5}$</td>
+						</tr>
+						<tr>
+							<td><var>0100</var></td>
+							<td><var>+</var> ${4}$</td>
+						</tr>
+						<tr>
+							<td><var>0011</var></td>
+							<td><var>+</var> ${3}$</td>
+						</tr>
+						<tr>
+							<td><var>0010</var></td>
+							<td><var>+</var> ${2}$</td>
+						</tr>
+						<tr>
+							<td><var>0001</var></td>
+							<td><var>+</var> ${1}$</td>
+						</tr>
+						<tr>
+							<td><var>0000</var></td>
+							<td><var>+</var> ${0}$</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="alg">
+					<thead>
+						<th>Word</th>
+						<th>Decimal</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><var>1000</var></td>
+							<td><var>-</var> ${7}$</td>
+						</tr>
+						<tr>
+							<td><var>1001</var></td>
+							<td><var>-</var> ${6}$</td>
+						</tr>
+						<tr>
+							<td><var>1010</var></td>
+							<td><var>-</var> ${5}$</td>
+						</tr>
+						<tr>
+							<td><var>1011</var></td>
+							<td><var>-</var> ${4}$</td>
+						</tr>
+						<tr>
+							<td><var>1100</var></td>
+							<td><var>-</var> ${3}$</td>
+						</tr>
+						<tr>
+							<td><var>1101</var></td>
+							<td><var>-</var> ${2}$</td>
+						</tr>
+						<tr>
+							<td><var>1110</var></td>
+							<td><var>-</var> ${1}$</td>
+						</tr>
+						<tr>
+							<td><var>1111</var></td>
+							<td><var>-</var> ${0}$</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p>
+				Compared to sign bit representation, subtraction in one's
+				complement is a little simpler. For example, to compute ${a-b}$ in
+				binary, where ${a}$ and ${b}$ are positive integers, we perform the
+				following procedure:
+			</p>
+			<ol>
+				<li>
+					Compute the one's complement of the ${b.}$ Let ${b_c}$ be the
+					result.
+				</li>
+				<li>Compute ${a + b_c.}$ Let ${S}$ be the result.</li>
+				<li>
+					If ${a + b_c}$ results in a carry over ${C,}$ drop ${C}$ and add
+					${1}$ to the least significant bit of ${S.}$ Else, return ${S.}$
+				</li>
+			</ol>
+			<p>
+				For example, suppose we wanted to compute ${7-2.}$ In binary, this
+				amounts to computing:
+			</p>
+			<figure>
+				$$ \begin{aligned} 0~1~1~1 &\\ -~~~0~0~1~0 &\\ \hline \end{aligned}
+				$$
+			</figure>
+			<p>
+				We compue the one's complement of ${0010_{\texttt{b}},}$ which is
+				${1101_{\texttt{b}},}$ corresponding to ${-2.}$ We then add this
+				result to the minuend, ${0111_{\texttt{b}}:}$
+			</p>
+			<figure>
+				$$ \begin{aligned} 0~1~1~1 &\\ +~~~1~1~0~1 &\\ \hline 1~0~1~0~0&
+				\end{aligned} $$
+			</figure>
+			<p>
+				Notice that this results in an overflow bit. We drop this bit and
+				add it to the least significant bit of our result:
+			</p>
+			<figure>
+				$$ \begin{aligned} 0~1~0~0 &\\
+				+~~~\phantom{0}~\phantom{0}~\phantom{0}~1 &\\ \hline 0~1~0~1 &
+				\end{aligned} $$
+			</figure>
+			<p>
+				The result is in line with our expected answer, ${5.}$ Undoubtedly,
+				one's complement representation leads to an easier implementation
+				of subtraction compared to sign bit representation. To find the
+				complement of a given word, all we have to do is invert the ones
+				and zeros &mdash; passing the bitstream into a NOT-gate.
+			</p>
+			<p>
+				Although one's complement provides a simpler way to implement
+				subtraction, it still shares problems with sign bit representation.
+				We still have two representations for the integer zero: For a 4-bit
+				word size computer, ${1111_{\texttt{b}}}$ and
+				${0000_{\texttt{b}}.}$
+			</p>
+		</section>
+
+		<section id="twos_complement">
+			<h4>Two's Complement Representation</h4>
+			<p>
+				As much as one's complement falls short, its development led to the
+				most common form of sign representation &mdash;
+				<b>two's complement representation</b>. In two's complement
+				representation, we represent signed numbers with two's complements,
+				rather than one's complements. What is the two's complement of a
+				number? It's just the result of complementing that number and
+				adding ${1.}$
+			</p>
+			<p>
+				For example, consider the number ${1}$ in binary. Positive ${1}$ is
+				represented as:
+			</p>
+			<figure>$$ 0~0~0~1_{\texttt{b}} $$</figure>
+			<p>
+				To find its two's complement, we first compute its one's
+				complement:
+			</p>
+			<figure>
+				$$ \begin{aligned} \texttt{c}~~0~0~0~1 & \\ \hline 1~1~1~0 &
+				\end{aligned} $$
+			</figure>
+			<p>Then we add ${1_{\texttt{b}}}$ to the result:</p>
+			<figure>
+				$$ \begin{aligned} 1~1~1~0 &\\
+				+~~~\phantom{0}~\phantom{0}~\phantom{0}~1 &\\ \hline 1~1~1~1 &
+				\end{aligned} $$
+			</figure>
+			<p>
+				The binary number ${1111_{\texttt{b}}}$ corresponds to ${-1.}$ Like
+				sign bit representation and one's complement, the most significant
+				bit is used to represent the sign.
+			</p>
+			<div class="horizon">
+				<table class="alg">
+					<thead>
+						<th>Word</th>
+						<th>Decimal</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><var>0111</var></td>
+							<td><var>+</var>${7}$</td>
+						</tr>
+						<tr>
+							<td><var>0110</var></td>
+							<td><var>+</var>${6}$</td>
+						</tr>
+						<tr>
+							<td><var>0101</var></td>
+							<td><var>+</var>${5}$</td>
+						</tr>
+						<tr>
+							<td><var>0100</var></td>
+							<td><var>+</var>${4}$</td>
+						</tr>
+						<tr>
+							<td><var>0011</var></td>
+							<td><var>+</var>${3}$</td>
+						</tr>
+						<tr>
+							<td><var>0010</var></td>
+							<td><var>+</var>${2}$</td>
+						</tr>
+						<tr>
+							<td><var>0001</var></td>
+							<td><var>+</var>${1}$</td>
+						</tr>
+						<tr>
+							<td><var>0000</var></td>
+							<td>${0}$</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="alg">
+					<thead>
+						<th>Word</th>
+						<th>Decimal</th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><var>1111</var></td>
+							<td><var>-</var>${1}$</td>
+						</tr>
+						<tr>
+							<td><var>1110</var></td>
+							<td><var>-</var>${2}$</td>
+						</tr>
+						<tr>
+							<td><var>1101</var></td>
+							<td><var>-</var>${3}$</td>
+						</tr>
+						<tr>
+							<td><var>1100</var></td>
+							<td><var>-</var>${4}$</td>
+						</tr>
+						<tr>
+							<td><var>1011</var></td>
+							<td><var>-</var>${5}$</td>
+						</tr>
+						<tr>
+							<td><var>1010</var></td>
+							<td><var>-</var>${6}$</td>
+						</tr>
+						<tr>
+							<td><var>1001</var></td>
+							<td><var>-</var>${7}$</td>
+						</tr>
+						<tr>
+							<td><var>1000</var></td>
+							<td><var>-</var>${8}$</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p>
+				To compute ${a + b,}$ we simply use the binary addition algorithm.
+				If there's an overflow bit, we discard it. To compute ${a - b,}$ we
+				apply the binary algorithm to ${a + b_c,}$ where ${b_c}$ is the
+				two's complement of ${b,}$ again discarding an overflow bit, if
+				any.
+			</p>
+			<p>For example, suppose we wanted to compute ${6-5}$ in binary:</p>
+			<figure>
+				$$ \begin{aligned} 0~1~1~0 &\\ +~~~1~0~1~1 &\\ \hline
+				{\color{firebrick}1}~0~0~0~1 & \\ \end{aligned} $$
+			</figure>
+			<p>
+				Above, we disregard the overflow bit ${1_{\texttt{b}},}$ leaving us
+				with the answer ${0001_{\texttt{b}},}$ which corresponds to the
+				decimal ${1,}$ the expected result of ${6-5.}$
+			</p>
+			<p>
+				With two's complement, we're getting a little of the best from
+				one's complement and sign bit representation. Addition and
+				subtraction are easy to implement. While we don't have as much
+				readability as sign bit representation, we're still using the most
+				significant bit to represent the number's sign. This isn't a
+				particularly large tradeoff, given that most computer users aren't
+				directly manipulating bits. But perhaps most importantly, we have
+				exactly one representation of zero. At the end of the day, this is
+				what we truly wanted. Having just one, unique representation for
+				zero greatly simplifies the ALU's implementation.
+			</p>
+		</section>
+	</section>
+	<section id="the_alu">
+		<h3>The Arithmetic Logic Unit</h3>
+		<p>
+			So, we now know how to perform addition and subtraction with logic
+			gates. Our next step is examining the
+			<b>arithmetic logic unit (ALU)</b>. Schematically, the ALU looks
+			like:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/ALU_schematic.svg' %}"
+				alt="ALU diagram"
+				loading="lazy"
+				style="width: 350px"
+			/>
+		</figure>
+		<p>
+			The first thing to note is that the ALU is just another chip &mdash;
+			it's an abstraction of some process. And just like the chips we've
+			seen so far, it has inputs and outputs. Two inputs called
+			<var>input1</var> and <var>input2</var>, and a third input denoed
+			${f.}$ That third input ${f}$ is <i>function</i>. The ALU takes these
+			three inputs, and returns the output
+			<var>${f}$(input1, input2)</var>.
+		</p>
+		<p>
+			The function ${f}$ is one out of a set of pre-defined arithmetic and
+			logical functions. That set determines what the ALU can and cannot
+			do. For most ALUs, the set includes
+			<b>arithmetic functions</b> (integer addition, subtraction, and for
+			some, multiplication and division), <b>logical functions</b> (AND,
+			OR, XOR, NOT, and so on), and even
+			<b>bitwise functions</b> (bitwise-AND, bitwise-NOT, etc.).
+		</p>
+		<p>
+			One of the hardest decisions an ALU designer must make is determining
+			which operations the ALU should perform. Making these decisions is
+			more economics than it is computer science. Hardware-implemented
+			operations are much, much faster than operations implemented via
+			software. So in that sense, there's potential for performance gains.
+			That, however, can backfire. With more operations, the ALU becomes
+			much more complex, and with greater complexity, the more difficult it
+			is to debug and maintain the ALU. Moreover, excessive operations can
+			lead to <i>slower</i> and more expensive ALUs. Chips are a valuable
+			commodity, and at the hardware level, we do not want to waste what
+			little real estate we have.
+		</p>
+		<p>
+			The ALU schematic above is a common diagram for denoting the ALU
+			among other components. Here's another, more detailed diagram:
+		</p>
+		<figure>
+			<img
+				src="{% static 'images/ALU_intro1.svg' %}"
+				alt="ALU diagram 2"
+				loading="lazy"
+				style="width: 350px"
+			/>
+		</figure>
+		<p>
+			Notice how the ALU really is just another chip. We can think of it as
+			a bigger, more formidable logic gate. Where the logic gates we've
+			been working with can be thought of as small boutique shops, the ALU
+			is a massive retail store.
+		</p>
+		<p>
+			Examining the diagram above, we see that the ALU has ${11}$ pins. The
+			blue arrows indicate single-bit buses, and the red arrows indicate
+			${16}$-bit buses. The single-bit bus inputs, <var>zx</var>,
+			<var>nx</var>, <var>zy</var>, <var>ny</var>, <var>f</var>, and
+			<var>no</var> all feed either a ${0}$ or ${1}$ into the ALU. These
+			inputs are called <b>control bits</b>. Notice that there are ${6}$ of
+			these bits. With ${6}$ bits, we have ${2^6 = 64}$ possible
+			bitstreams. Those bit streams can then be assigned to particular
+			functions.
+		</p>
+		<p>
+			Indeed, this is how we <q>pass functions</q> to the ALU. We pass
+			specific values for each of the control bits, and the ALU performs
+			its operation: Determine which function we're asking for. Here is the
+			truth table for just a few of the possible functions:
+		</p>
+		<div id="ALU_sample_table"></div>
+		<p>
+			For example, if we send the control bit sequence (called the
+			<b>control input</b>):
+		</p>
+		<div id="control_input_neg"></div>
+		<p>
+			The ALU computes <var>10 + 3</var>, and outputs <var>13</var>. The
+			ALU <q>knows</q> to perform these operations because each of the
+			control bits are sent to particular gates. The specifications:
+		</p>
+		<div class="horizon">
+			<pre class="language-verilog"><code>
+				// The zx input:
+				if (zx ≡ 1) ⟹ x = 0;
+			</code></pre>
+			<pre class="language-verilog"><code>
+				// The nx input:
+				if (nx ≡ 1) ⟹ x = ¬x;
+			</code></pre>
+			<pre class="language-verilog"><code>
+				// The zy input:
+				if (zy ≡ 1) ⟹ y = 0;
+			</code></pre>
+			<pre class="language-verilog"><code>
+				// The ny input:
+				if (ny ≡ 1) ⟹ y = ¬y;
+			</code></pre>
+			<pre class="language-verilog"><code>
+				// The f input:
+				if (f ≡ 1) ⟹ out = x + y;
+			</code></pre>
+			<pre class="language-verilog"><code>
+				// The f input:
+				if (f ≡ 0) ⟹ out = x & y;
+			</code></pre>
+			<pre class="language-verilog"><code>
+				// The no input:
+				if (no ≡ 1) ⟹ out = ¬out;
+			</code></pre>
+			<pre class="language-verilog"><code>
+				// The zr output:
+				if (out ≡ 0) ⟹ zr = 1;
+				else: zr = 0;
+			</code></pre>
+			<pre class="language-verilog"><code>
+				// The ng output:
+				if (out &lt; 0) ⟹ ng = 1;
+				else: ng = 0;
+			</code></pre>
+		</div>
+		<p>
+			Following these specifications, let's consider an example. Suppose we
+			wanted to compute <var>!x</var>. For simplicity, let's just say we're
+			using four bits.
+		</p>
+		<p>
+			To compute <var>!x</var>, we must first determine what the control
+			input is. In this case, it's the sequence:
+		</p>
+		<div id="not_sequence"></div>
+		<p>
+			Suppose our <var>x</var> input is <var>1101</var> and our
+			<var>y</var> input is <var>1001</var>.
+		</p>
+		<p>
+			We pass this control input to the ALU, and the respective control bit
+			gates execute. First, the gate corresponding to <var>zx</var>. Here,
+			its input is <var>0</var>, so we leave <var>x</var> and
+			<var>y</var> alone:
+		</p>
+		<pre class="language-verilog"><code>
+			x: 1100
+			y: 1011
+		</code></pre>
+		<p>
+			Next, the gate corresponding to <var>nx</var>. Here, <var>nx</var> is
+			<var>0</var>, so again we leave <var>x</var> and <var>y</var> alone:
+		</p>
+		<pre class="language-verilog"><code>
+			x: 1101
+			y: 1011
+		</code></pre>
+		<p>
+			Next, <var>zy</var>. Here, we see that <var>ny</var> is <var>1</var>,
+			so we zero the <var>y</var> input:
+		</p>
+		<pre class="language-verilog"><code>
+			x: 1100
+			y: 0000
+		</code></pre>
+		<p>
+			Then we have <var>ny</var>. Again we have <var>ny</var> as
+			<var>1</var>. This means we must negate the <var>y</var> input:
+		</p>
+		<pre class="language-verilog"><code>
+			x: 1100
+			y: 1111
+		</code></pre>
+		<p>
+			Next up, <var>f</var>. If <var>f</var> is <var>1</var>, we compute
+			<var>x+y</var>. Here, <var>f</var> is <var>0</var>, so we instead
+			compute the bitwise-AND:
+		</p>
+		<pre class="language-verilog"><code>
+			x:   1100
+			y:   1111
+			out: 1100 
+		</code></pre>
+		<p>
+			Finally, we have <var>no</var> set to <var>1</var>. So, we compute
+			the bitwise-NOT:
+		</p>
+		<pre class="language-verilog"><code>
+			x:   1100
+			y:   1111
+			out: 0011
+		</code></pre>
+		<p>
+			Examining the final <var>out</var> value, we see that we get the
+			negation of <var>x</var> &mdash; <var>0011</var>.
+		</p>
+	</section>
+	<section id="alu_implementation">
+		<h3>Implementing the ALU</h3>
+		<p>
+			With a high-level understanding of how the ALU operates, we can now
+			examine its implementation. As said earlier, we're only looking at a
+			subset of the ALU's possible functions. For an ALU with a control
+			input of ${6}$ single-bit buses, we have ${64}$ possible control
+			inputs. The schematic below illustrates only ${18}$ of the possible
+			control inputs.
+		</p>
+		<img
+			src="{% static 'images/ALU_implement.svg' %}"
+			alt="Sample implementation"
+			loading="lazy"
+		/>
+	</section>
+	<p>
+		Let's break down the implementation in HDL. First, we need the ALU's
+		<var>IN</var> and <var>OUT</var> pins:
+	</p>
+	<pre class="language-verilog"><code>
+		CHIP ALU {
+			IN
+				x[16], y[16],
+				zx,
+				nx,
+				zy,
+				ny,
+				f,
+				no;
+			OUT
+				out[16]
+				zr,
+				ng;
+		}
+	</code></pre>
+	<p>
+		Now we examine the parts. First, the <var>zx</var> input feeds into a
+		gate that zeros the <var>x[16]</var> input if <var>zx</var> is
+		<var>1</var>. To implement an if-statement, we need a multiplexor:
+	</p>
+	<pre class="language-verilog"><code>
+		// zx input
+		Mux16(a[0..15]=x, b[0..15]=false, sel=zx, out=zxoutputx);
+	</code></pre>
+	<p>
+		Above, the muliplexor's <var>b</var> input is always <var>0</var>,
+		since we're only concerned with the <var>x[16]</var> input. The
+		<var>sel</var> input is then used to toggle the multiplexor &mdash; if
+		<var>x = 1</var>, then zero <var>x[16]</var>, otherwise, leave
+		<var>x[16]</var> alone. We'll call the result <var>zxoutputx</var>.
+	</p>
+	<p>
+		Next, the <var>nx</var> control bit. We use this control bit to
+		determine if the <var>x</var> input should be negated (bitwise-NOT). To
+		do so, we have <var>zxoutputx</var> feed into two inputs &mdash; one
+		feeding into a NOT16-gate (whose output is called <var>notx</var>), and
+		the other feeding into the <var>a</var> input of MUX16-gate. The
+		NOT16-gate's output is then fed into the <var>b</var> input of the
+		MUX16-gate. The MUX16-gate has its <var>sel</var> input receive the
+		<var>nx</var> control bit, and its output called <var>nxoutputx</var>.
+		If <var>nx</var> is <var>1</var>, we output the <var>nxoutputx</var> is
+		<var>notx</var>, otherwise is <var>nxoutputx</var>.
+	</p>
+	<pre class="language-verilog"><code>
+		// nx input
+		Not16(in[0..15]=zxoutputx, out[0..15]=notx);
+    Mux16(a[0..15]=zxoutputx, b[0..15]=notx, sel=nx, out[0..15]=nxoutputx);
+	</code></pre>
+	<p>
+		After the <var>nx</var> control bit, we have the <var>zy</var> control
+		bit. This control bit toggles a gate that zeroes the
+		<var>y[16]</var> input. The implementation is the same as the
+		<var>zx</var> control, the only difference being we're using
+		<var>y[16]</var> as the input and leaving <var>x[16]</var> alone.
+	</p>
+	<pre class="language-verilog"><code>
+		// zy bit
+		Mux16(a[0..15]=y, b[0..15]=false, sel=zy, out[0..15]=zyoutputy);
+	</code></pre>
+	<p>
+		Similar to the <var>nx</var> control's implementation, the
+		<var>ny</var> control determines whether to apply the bitwise-NOT to
+		the <var>y[16]</var> input.
+	</p>
+	<pre class="language-verilog"><code>
+    // ny bit
+    Not16(in[0..15]=zyoutputy, out[0..15]=noty);
+    Mux16(a[0..15]=zyoutputy, b[0..15]=noty, sel=ny, out[0..15]=nyoutputy);
+	</code></pre>
+	<p>
+		These implementations take care of the unary operations. The
+		<var>f</var> control bit introduces the binary operations. First, if
+		the <var>f</var> control bit is <var>1</var>, we compute
+		<var>x + y</var>. Otherwise, we compute <var>x & y</var> (bitwise-AND).
+		Once again, we're modelling an if-statement, so we need Mux16-gate.
+		Because the operations we're implementing take <var>x</var> and
+		<var>y</var> as operands, we have to feed the <var>nxoutputx</var> and
+		<var>nyoutputy</var> outputs into two gates: a Add16-gate and an
+		And16-gate. The Mux16-gate then determines which of the two to output,
+		depending on its <var>sel</var> input, the <var>f</var> control bit:
+	</p>
+	<pre class="language-verilog"><code>
+    // f bit
+    Add16(a[0..15]=nxoutputx, b[0..15]=nyoutputy, out[0..15]=xplusy);
+    And16(a[0..15]=nxoutputx, b[0..15]=nyoutputy, out[0..15]=xandy);
+    Mux16(a[0..15]=xandy, b[0..15]=xplusy, sel=f, out[0..15]=fout);
+	</code></pre>
+	<p>
+		We'll call the output of the Mux16-gate <var>fout</var>. The last
+		control bit is <var>NO</var>. If <var>NO</var> is <var>1</var>, we
+		negate <var>fout</var>. Otherwise, we leave <var>fout</var> alone. So,
+		we need another Mux16-gate. One of Mux16-gate's inputs receives the
+		result of feeding <var>fout</var> into a Not16-gate, the other
+		<var>fout</var> directly:
+	</p>
+	<pre class="language-verilog"><code>
+    // no bit
+    Not16(in[0..15]=fout, out[0..15]=notfout);
+
+    // Output 'out'
+    Mux16(
+        a[0..15]=fout, 
+        b[0..15]=notfout, 
+        sel=no, 
+        out=out
+    );
+	</code></pre>
+	<p>
+		We've now taken care of all the control bits. All that remains is the
+		<var>zr</var> and <var>ng</var> outputs. The <var>zr</var> output
+		determines whether the result of the final computation is zero, and the
+		<var>ng</var> output determines whether result of final computation is
+		negative. Both outputs depend on what <var>out</var> outputs. If
+		<var>out</var> is <var>0</var>, then <var>zr</var> outputs
+		<var>1.</var> Otherwise, <var>zr</var> outputs <var>0</var>. If
+		<var>out</var> is a negative number, then <var>ng</var> outputs
+		<var>1</var>. Otherwise, <var>ng</var> outputs
+		<var>0.</var>
+	</p>
+	<p>
+		Of these outputs, <var>ng</var> is the easiest. To determine if
+		<var>out</var> is negative, we just need the most significant bit of
+		<var>out</var>. So, in our final Mux16-gate, we can extract the bit at
+		the index <var>15</var> and output that as <var>ng</var>:
+	</p>
+	<pre class="language-verilog"><code>
+		// no bit
+		Not16(in[0..15]=fout, out[0..15]=notfout);
+
+		Mux16(
+			a[0..15]=fout, 
+			b[0..15]=notfout, 
+			sel=no, 
+			out[16]=ng, // 'ng'
+			out=out // 'out'
+		);
+	</code></pre>
+	<p>
+		For the <var>zr</var> output, we must first determine if
+		<var>out</var> is zero. Since we're using two's-complement
+		representation, the value zero occurs when all of the bits are zero.
+		There are many ways to do this. The approach we'll use is to separately
+		output two halves of the Mux16-gate's output bits: one called
+		<var>lowFinalOut</var>, corresponding to <var>out[0..7]</var>, the
+		other called <var>highFinalOut</var>, corresponding to
+		<var>out[8..15]</var>. We then feed these inputs into two separate
+		Or8Way-gates respectively. Then, we feed the outputs of these two
+		Or8Way gates into an OR-gate. The output of the OR-gate, called
+		<var>AorBOut</var>, is then fed into a NOT-gate, whose output is
+		<var>zr</var>:
+	</p>
+	<pre class="language-verilog"><code>
+    // 'out', 'ng' outputs
+    Mux16(
+        a[0..15]=fout, 
+        b[0..15]=notfout, 
+        sel=no, 
+        out[0..7]=lowFinalOut,
+        out[8..15]=highFinalOut,
+        out[15]=ng,
+        out=out
+    );
+
+    // zr output
+    Or8Way(in[0..7]=lowFinalOut, out=lowOut);
+    Or8Way(in[0..7]=highFinalOut, out=highOut);
+    Or(a=lowout, b=highOut, out=AorBOut);
+    Not(in=AorBOut, out=zr);
+	</code></pre>
+	<p>
+		To illustrate why this works, suppose the final <var>out</var> is
+		<var>1001 0010 0101 1101</var>. It follows that
+		<var>lowFinalOut</var> is <var>0101 1101</var>, and
+		<var>highFinalOut</var> is <var>1001 0010</var>. Passing these two
+		inputs into separate Or8Way-gates, we get <var>1</var> and
+		<var>1</var>. Passing <var>1</var> and <var>1</var> into an OR-gate, we
+		get <var>1</var>. And passing that into a NOT-gate, we get
+		<var>0</var>. This is correct, given that the final <var>out</var>
+		<var>1001 0010 0101 1101</var> is not zero.
+	</p>
+	<p>
+		Alternatively, suppose the final <var>out</var> is
+		<var>0000 0000 0000 0000</var>. We thus have <var>0000 0000</var> for
+		<var>lowFinalOut</var> and <var>0000 0000</var> for
+		<var>highFinalOut</var>. Passing these to two <var>Or8Way</var>'s, we
+		get <var>0</var> and <var>0</var>. Passing <var>0</var> and
+		<var>0</var> into an OR-gate, we get <var>0</var>. And passing
+		<var>1</var> into a NOT-gate, we get <var>1</var>. Again this is
+		correct, given that the final <var>out</var>
+		<var>0000 0000 0000 0000</var> is zero.
+	</p>
+	<p>
+		As we can likely tell, an ALU with just ${6}$ control inputs &mdash;
+		called a <b>${6}$-bit ALU</b> &mdash; is already fairly complex. Early
+		computers had ${4}$- and ${8}$-bit ALUs (thus capable of implementing
+		${16}$ operations and ${256}$ hardware-based operations respectively).
+		Later, computers progressed to ${32}$-bit ALUs (over ${4}$ billion
+		possible operations), and today, ${64}$-bit ALUs (over ${18}$
+		quintillion possible operations). Again, just because we have these
+		possibilities does not mean designers exhaust all of them. Gates are
+		<i>expensive</i>, and it's not at all unreasonable for designers to
+		only use some of the possible bitstreams. For example, computers that
+		used the Z80 processor in the 1970s could very well have implemented an
+		${8}$-bit ALU, since the Z80 had a word size of ${8}$ bits.
+		Nevertheless, the designers stuck with just ${4}$ control bits, saving
+		power and transistor costs.
+	</p>
+</section>
+
+<section id="time">
+	<h2>Implementing Time</h2>
+	<p>
+		The gates we've implemented so far all execute instantenously. We can
+		perform Boolean and arithmetic operations, but the operations occur all
+		at once. This is because our implementations have been pure
+		applications of <b>combinatorial logic</b> &mdash; the logical analysis
+		of <i>fixed</i> propositions, or propositions whose truth values are
+		predetermined. Computers, however, operate on
+		<b>sequential logic</b> &mdash; the logical analysis of
+		<i>variable</i> propositions, or propositions whose truth values are
+		not predetermined. The key difference between these two forms of logic:
+		Combinatorial logic does not account for time, or change, but
+		sequential logic does. With sequential logic, we're concerned with what
+		happend <q>previously</q>. For computers, the ability to
+		<q>remember</q> &mdash; <i>memory</i> &mdash; is everything. It's what
+		gives the digital calculator an upperhand over an abacus.
+	</p>
+	<p>
+		Once we implement a way for our machine to recall, or remember, we
+		suddenly have several features:
+	</p>
+	<ol>
+		<li>Hardware components can be reused.</li>
+		<li>
+			State can be saved. This allows us to perform <i>loops</i> &mdash;
+			repeating computations.
+		</li>
+		<li>Imposing speed limits.</li>
+	</ol>
+	<p>
+		The final feature may seem odd, but it's crucial that computers do not
+		perform computations faster than it can.
+	</p>
+	<p>
+		In the real world, <i>time</i> is a continuous scalar &mdash; a line
+		with infinitely many points. Computers, however, are finite things, so
+		they can only understand discrete values. Thus, we need a way to
+		represent time for a computer. To do so, we divide time into discrete,
+		equal-sized blocks.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/computer_time.svg' %}"
+			alt="computer time divide"
+			loading="lazy"
+			style="width: 350px"
+		/>
+	</figure>
+	<p>
+		In computer terms, the length of each block is called a
+		<b>cycle</b> &mdash; the computer's unit of time. Question: How do we
+		divide time with a computer? With a device called a <b>clock</b>, or
+		more generally, an electronic oscillator. The clock is a circuit that
+		takes direct current (DC), and converts it into alternating current
+		(AC) &mdash; <var>0</var> and <var>1</var>. This results in square
+		waves, and each period of the square wave &mdash; the time between
+		going from <var>1</var> (called a <i>tick</i>) to <var>0</var> (called
+		a <i>tock</i>) and back to <var>1</var> &mdash; is the length of a
+		block, or a cycle.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/computer_time_square_wave.svg' %}"
+			alt="computer time divide"
+			loading="lazy"
+			style="width: 350px"
+		/>
+	</figure>
+	<p>
+		With this clock, we can assign each block a unique integer. The first
+		block is <var>t=1</var>, the second block is <var>t=2</var>, the third
+		block is <var>t=3</var>, and so on. And within each of these blocks, we
+		can execute some operation with the gates we implemented. For example,
+		maybe at <var>t=1</var> a logical <var>AND</var> is performed, then at
+		<var>t=2</var> a logical <var>NOT</var> is performed, then an
+		<var>ADD16</var>, etc:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/sequential_functions.svg' %}"
+			alt="computer time divide"
+			loading="lazy"
+			style="width: 500px"
+		/>
+	</figure>
+	<p>
+		Notice what we've accomplished &mdash; sequential operations; perform
+		an <var>AND()</var>, then a <var>NOT()</var>, then an
+		<var>ADD16()</var>. Let's iron out some of the details.
+	</p>
+	<p>
+		The first problem with our approach is that the clock takes time to go
+		from <var>0</var> to <var>1</var> (called the <b>rise time</b>) and
+		from <var>1</var> to <var>0</var> (called the <b>fall time</b>). These
+		are delays.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/jitter.svg' %}"
+			alt="computer time divide"
+			loading="lazy"
+			style="width: 500px"
+		/>
+	</figure>
+	<p>
+		The fact is, signals never make instantaneous transitions from
+		<var>0</var> to <var>1</var>. This extends to the logic gates
+		themselves &mdash; it takes time for charges to build up and dissipate.
+		This delay, called <b>propogation delay</b>, slows down the speed at
+		which bits travel from one gate to another.
+	</p>
+	<p>
+		Fortunately, there's a fix: Just make the blocks shorter. In other
+		words, instead of defining the cycle as strictly the time it takes to
+		go from <var>0</var> to <var>1</var>, we define the cycle as something
+		shorter than that:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/true_cycle.svg' %}"
+			alt="computer time divide"
+			loading="lazy"
+			style="width: 500px"
+		/>
+	</figure>
+	<p>
+		By defining the blocks in this way, we leave some time to account for
+		delays; i.e., allowing the system to stabilize. In doing so, we do not
+		have to concern ourselves with the complexities of delay handling.
+	</p>
+	<p>
+		With this notion of time, sequential logic is now more apparent. To
+		repeat, with combinatorial logic, we were effectively computing:
+	</p>
+	<figure>$$ \texttt{out}(t) = f(\texttt{in}(t)) $$</figure>
+	<p>
+		In other words, the output of some Boolean function ${f}$ at time ${t}$
+		is the the result of operating on an input fed to the function at time
+		${t.}$ This is instantaneous:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/combinatorial_logic.svg' %}"
+			alt="computer time divide"
+			loading="lazy"
+			style="width: 250px"
+		/>
+	</figure>
+	<p>With sequential logic, we can now perform the following:</p>
+	<figure>$$ \texttt{out}(t) = f(\texttt{in}(t-1)) $$</figure>
+	<p>
+		I.e., the output of some Boolean function ${f}$ at time ${t}$ is the
+		result of operating on an input fed to the function at time ${t-1.}$
+		I.e., whatever input was fed in the previous cycle:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/sequential_logic.svg' %}"
+			alt="computer time divide"
+			loading="lazy"
+			style="width: 250px"
+		/>
+	</figure>
+	<p>
+		Because of this ability to use the output of the previous cycle, we do
+		not necessarily have to output different bit, or bitstream, at each
+		cycle. Instead, we can pass a single bit or bitstream through all of
+		the wires, modifying that bit or bitstream as it passes through the
+		gates:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/state_sequential.svg' %}"
+			alt="computer time divide"
+			loading="lazy"
+			style="width: 400px"
+		/>
+	</figure>
+	<p>
+		This evidences a key point in computing: Sequential logic is what
+		introduces the notion of bits, or more broadly, objects, having a
+		<i>state</i>. And because states exist, we can perform state-dependent
+		computations:
+	</p>
+	<figure>$$ \texttt{state}(t) = f(\texttt{state(t-1)}) $$</figure>
+	<p>
+		Indeed, it is precisely because sequential logic that we have a common
+		dividing factor among programming languages &mdash; mutability (using a
+		single object and changing its state) versus non-mutability (producing
+		new objects and recalling as needed).
+	</p>
+</section>
+
+<section id="memory">
+	<h2>Primitive Memory</h2>
+	<p>
+		So, we know that operations can be performed strictly within certain
+		blocks of time. The question then, is, how do we move information from
+		one block to another? In other words, let's say the block is ${t,}$ and
+		the block before it is ${t-1.}$ How do we move information from ${t-1}$
+		to ${t?}$ Through a special chip called a <i>flip-flop</i>.
+	</p>
+	<p>
+		To understand how the flip-flop works, it's helpful to consider its
+		cousin, the <b>SR latch (Set-resest latch)</b>. The SR latch is a chip
+		with two outputs, <var>Q</var> and ${\overline{\texttt{Q}}.}$ The
+		values of these two ouputs depends on its two inputs,
+		<var>set</var> and <var>reset</var>.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/SR_latch.svg' %}"
+			alt="flip flop"
+			loading="lazy"
+			style="width: 150px"
+		/>
+	</figure>
+	<p>
+		There are two types of latches: (1) the
+		<b>active-high SR latch (HSRLatch)</b> and (2) the
+		<b>active-low SR latch (LSRLatch)</b>. For the HSRLatch, we have the
+		following truth table:
+	</p>
+	<div id="hsr_latch"></div>
+	<p>
+		We can obtain this truth table by <i>cross-coupling</i> two nor-gates:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/hsrLatch.svg' %}"
+			alt="lsr latch"
+			loading="lazy"
+			style="width: 190px"
+		/>
+	</figure>
+	<p>
+		In the truth table above, <var>NC</var> indicates <i>no-change</i>,
+		meaning that the the outputs of <var>Q</var> and
+		${\overline{\texttt{Q}}}$ remain in their present state &mdash; either
+		<var>(Q=0, ${\overline{\texttt{Q}}}$=0)</var>,
+		<var>(Q=0, ${\overline{\texttt{Q}}}$=1)</var>, or
+		<var>(Q=1, ${\overline{\texttt{Q}}}$=0)</var>. Notice that from the
+		truth table, we see the HSRLatch's mechanism. If <var>set=1</var>, then
+		<var>Q=1</var>. <var>Q</var> stays as <var>1</var> until
+		<var>reset=1</var>. Only when <var>reset=1</var> and
+		<var>set=1</var> does <var>Q</var> go back to <var>0</var>, and
+		<var>${\overline{\texttt{Q}}}$=1</var>. Contrast this with the
+		LSRLatch's truth table:
+	</p>
+	<div id="lsr_latch"></div>
+	<p>The LSRLatch is implemented by cross-coupling two nand-gates:</p>
+	<figure>
+		<img
+			src="{% static 'images/lsrLatch.svg' %}"
+			alt="lsr latch"
+			loading="lazy"
+			style="width: 190px"
+		/>
+	</figure>
+	<p>
+		Compared to the HSRLatch, the <var>set</var> and
+		<var>reset</var> inputs for the LSRLatch are always set to
+		<var>1</var>. When <var>set=0</var>, the
+		<var>${\overline{\texttt{Q}}}$</var> output sends <var>1</var>. It
+		stays at <var>1</var> until <var>set=0</var> and <var>reset=1</var>.
+		And when both <var>set=0</var> and <var>reset=0</var>, the two outputs
+		go back to <var>1</var>.
+	</p>
+	<p>
+		In both of the truth tables, <var>NC</var>, which indicates no-change.
+		If we think about this a little more carefully, we can see that this is
+		effectively a way of <i>persisting</i> data &mdash; <var>Q</var> and
+		<var>${\overline{\texttt{Q}}}$</var> do not change until either the
+		<var>set</var> or <var>reset</var> inputs change. Thus, we now have a
+		way of saving, or remembering, data.
+	</p>
+	<p>
+		The first obvious problem with the SR latch is the fact that we can
+		accidentally change <var>set</var> and <var>reset</var>, thereby losing
+		the current state. The fact is, the SR latches are fragile chips. It's
+		too easy to lose the current state.
+	</p>
+	<p>
+		The second problem is indicated by the <var>⊥</var> symbols (the
+		logical symbol for a contradiction) in the truth tables. These are
+		considered <i>indeterminate states</i> &mdash; for those particular
+		values of <var>set</var> and <var>reset</var>, the ouputs
+		<var>Q</var> and <var>${\overline{\texttt{Q}}}$</var> could be
+		anything.
+	</p>
+	<p>
+		Because of these two problems, SR latches are not commonly used
+		directly. Instead, they're more of a component for a more common chip
+		&mdash; the <b>flip flop</b>. The flip flop is a essentially a latch
+		without the risk of accidentally changing the <var>set</var> and
+		<var>reset</var> inputs (i.e., a solution to the first problem). To
+		prevent accidental setting or resetting, we need two more nand-gates,
+		and an <var>enable</var> pin:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/flipflop.svg' %}"
+			alt="flip flop"
+			loading="lazy"
+			style="width: 300px"
+		/>
+	</figure>
+
+	<p>
+		By using two additional nand-gates and an <var>enable</var> pin, we can
+		no longer accidentally set or reset the SR latch. If the
+		<var>enable</var> pin is fed the <var>clock</var>'s output (inputs
+		oscillating between <var>0</var> and <var>1</var>), we get the
+		following truth table:
+	</p>
+	<div id="flip_flop_truth_table"></div>
+	<p>
+		Notice that when the
+		<var>clock</var> feeds <var>0</var>, no change occurs &mdash; the
+		current state persists. Only when the <var>clock</var> feeds
+		<var>1</var> do we have the opportunity to change the current state.
+		Because of this characteristic, we can write a more expressive truth
+		table:
+	</p>
+	<div id="flip_flop_truth_table_2"></div>
+	<p>
+		In the table above, ${\texttt{T}_{n}}$ corresponds to the current state
+		of the SR latch's output (the output <var>Q</var>), and
+		${\texttt{T}_{n-1}}$ corresponds to the previous state of the SR
+		latch's output. We still, however, have the problem of an indeterminate
+		state &mdash; the situation where <var>clock=1</var>, <var>s=1</var>,
+		and <var>r=1</var>.
+	</p>
+	<p>
+		How might we get around this problem? Well, let's look at the truth
+		table. The indeterminate state occurs when <var>set=1</var> and
+		<var>reset=1</var>. More generally, we only enter the indeterminate
+		state when <var>set</var> and <var>reset</var> are the same.
+		Accordingly, we can get around this problem by: (1) instead of inputs
+		directly into the <var>set</var> and <var>reset</var> pins, we instead
+		pass a single input to a pin called <var>in</var>, (2) the input fed
+		into <var>in</var> goes in two directions: (a) to the
+		<var>set</var> pin, and (b) to a NOT-gate. The output of the NOT-gate
+		is then fed into the <var>reset</var> pin:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/dflipflop.svg' %}"
+			alt="A dflip-flop gate"
+			loading="lazy"
+			style="width: 400px"
+		/>
+	</figure>
+	<p>
+		Using this approach, we never reach a point where <var>set</var> and
+		<var>reset</var> are the same. Thus, our truth table now looks like:
+	</p>
+	<div id="dflipflop_truth_table"></div>
+	<p>
+		This particular gate is called a <b>data flip flop)</b> or
+		<b>D flip flop</b> (abbrevated <b>DFF</b>). Because the D flip-flop is
+		the most basic component for implementing memory, it's generally
+		encapsulated as a single chip with the following diagram:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/flip-flop_gate.svg' %}"
+			alt="flip flop"
+			loading="lazy"
+			style="width: 150px"
+		/>
+	</figure>
+	<p>
+		In the diagram, the small triangle corresponds to the
+		<var>clock</var> input. Because of this encapsulation, we have the
+		following truth table for the D flip-flop:
+	</p>
+	<div id="dflipflop_final_truth_table"></div>
+	<p>
+		In the table above, we see that we still have the ability to persist
+		state. We lose the previous state only if the clock is <var>1</var> and
+		we change the input for <var>in</var>. If we keep <var>in</var> at
+		<var>0</var>, then the <var>out</var> remains <var>0</var>. Only when
+		we we change <var>out</var> to <var>1</var> and the clock is
+		<var>1</var> does the state change to <var>1</var>. Accordingly, this
+		truth table can be thought of as:
+	</p>
+	<div id="dflipflop_simplified"></div>
+	<p>Viewed in this way, we see that:</p>
+	<figure>$$ \large \texttt{out(T)} = \texttt{in(T-1)} $$</figure>
+	<p>
+		In other words, the output of the D flip-flop is whatever the previous
+		input was. That's memory. But, as hinted at by this section's title,
+		it's <i>primitive</i>. We can only remember what the
+		<i>previous input</i> was. This is useful, but it also means that once
+		we change inputs, the previous output is lost. And for many
+		applications, we <i>want</i> to recall the previous output:
+	</p>
+	<figure>$$ \large \texttt{out(T)} = \texttt{out(T-1)} $$</figure>
+	<p>
+		This is, in fact, what classical computer storage is. To implement this
+		behavior, we need a special chip called a <i>register</i>.
+	</p>
+</section>
+
+<section id="registers">
+	<h2>Registers</h2>
+	<p>
+		If we examine the D flip-flop closely, it's apparent that the chip
+		does, in fact, output <var>out(T-1)</var>. That's just the current
+		<var>out</var> viewed by the next <var>out</var>. This means that, to
+		get <var>out = out(T-1)</var>, we just need a way to toggle the D
+		flip-flop's output. If it's <var>1</var>, return <var>in(T-1)</var>,
+		and if it's <var>0</var>, return <var>out(T-1)</var>. Now, how do
+		implement if-then with the gates we have so far? With a multiplexor:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/1bit_register.svg' %}"
+			alt="1 bit register"
+			loading="lazy"
+			style="width: 350px"
+		/>
+	</figure>
+	<p>
+		In the schematic above, we have a Mux-gate feeding into a DFF. The
+		Mux-gate then has a <var>sel</var> input called <var>load</var>, and
+		two inputs &mdash; whatever we pass as <var>in</var> currently, and
+		<var>out</var>, whatever the DFF is outputting currently. If the
+		<var>load</var> bit is <var>1</var>, then the output is whatever the
+		last input was. If the <var>load</var> bit is <var>0</var>, then the
+		output is whatever the last output was. In HDL:
+	</p>
+	<pre class="language-verilog"><code>
+		CHIP Bit {
+			IN in, load;
+			OUT out;
+	
+			PARTS:
+			DFF(in=muxOut, out=out, out=dffOut);
+			Mux(a=dffOut, b=in, sel=load, out=muxOut);
+		}
+	</code></pre>
+	<p>
+		This chip is called a <b>${1}$-bit register</b>, or a
+		<b>binary cell</b>, and we encapsulate it as such:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/binary_cell.svg' %}"
+			alt="binary cell"
+			loading="lazy"
+			style="width: 150px"
+		/>
+	</figure>
+	<p>
+		This is a big, big breakthrough. Why? Because we can line ${8}$ of them
+		up into an array, using a single multiplexor to provide the load bit:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/8_bit_register.svg' %}"
+			alt="8-bit register"
+			loading="lazy"
+			style="width: 400px"
+		/>
+	</figure>
+	<p>
+		The result: A <b>multibit register</b>. More specifically, the register
+		above is an ${8}$-bit register, reminiscent of early computers. Today,
+		we have ${16,}$ ${32,}$ ${64,}$ and even ${128}$-bit registers. The
+		number of binary cells used to construct a single register &mdash; be
+		it ${4}$ or ${128}$ &mdash; is called the register's <b>width</b>. At
+		any given moment, these registers store some piece of data &mdash; what
+		we know as <b>words</b>.
+	</p>
+</section>
+
+<section id="computer_memory">
+	<h2>Computer Memory</h2>
+	<p>
+		In computer science, the word <q>memory</q> is a general term, or
+		abstraction, for any device or system that provides a means to persist
+		data across time. Hence, the term is somewhat ambiguous, because there
+		are numerous examples of such devices. This is evidenced by the fact
+		that laypersons, upon hearing the word <q>memory,</q> often think of
+		the ${1}$TB or ${512}$TB hard drive mentioned in laptop ads. But when
+		placed in a computer science lecture, they might be confused by the
+		speaker talking about memory in terms of something smaller than the
+		hard drive they thought of &mdash; ${8}$GB, ${16}$GB, ${32}$GB, or more
+		recently, ${64}$GB. This confusion results from the fact that the
+		speaker and the layperson are thinking of two different <i>forms</i> of
+		memory. The speaker is thinking about <i>main memory</i>, and the
+		layperson is thinking about <i>secondary memory</i>.
+	</p>
+	<p>
+		The registers we saw in the previous section constitute the computer's
+		<b>main memory</b>. Main memory itself consists of two types:
+		<b>Random Access Memory (RAM)</b> and <b>Read-only Memory (ROM)</b>.
+		RAM is the memory we'll address first in the next section, and it's
+		what we have so far with the registers we've made.
+	</p>
+	<p>
+		With the registers we've made, we can see that there are two states:
+		(1) save, or (2) change. ROM is memory without the second state; we can
+		<i>read</i> the data saved, but we cannot <i>write</i> (i.e., change)
+		it. We will examine ROM in more detail later. Both RAM and ROM comprise
+		the computer's main memory.
+	</p>
+	<p>
+		Unlike main memory, <b>secondary memory</b> is memory
+		<i>outside</i> the computer's motherboard. Thus, secondary memory is
+		more akin to a <i>peripheral</i> like a keyboard, mouse, or monitor.
+		Secondary memory is what many laypersons think of when they hear the
+		word <q>memory</q> in the computer context. It includes devices like
+		hard disk drives (HDD) and solid state drives (SSDs). However, it also
+		includes devices and systems that don't immediately spring to mind:
+	</p>
+	<ol>
+		<li>
+			<i>Punch cards.</i> The earliest computers were gargantuan machines
+			that were really just powerful calculators, with instructions fed via
+			punch cards.
+		</li>
+		<li>
+			<i>Magnetic tape.</i> Think casettes and VHS tapes. This also
+			includes floppy disks, which, while now more commonly relegated to
+			the <i>save</i> icon, are still in use by Boeing 747's and the U.S.
+			nuclear weapons forces.
+		</li>
+		<li>
+			<i>Magnetic core.</i> The predominant form of RAM from 1955 to 1975,
+			magnetic core is the precursor for the modern <i>flash memory</i>, a
+			kind of secondary memory. Flash memory includes devices like SD
+			cards, USB thumb drives, microSDs, and solid-state drives.
+		</li>
+		<li>
+			<i>Magnetic drums.</i> Modern hard disk drives, like the large HDD's
+			built into laptops trace their roots to magnetic drums, one of the
+			earliest forms of secondary memory.
+		</li>
+		<li>
+			<i>Cloud storage.</i> Given how secondary memory is used, modern
+			cloud storage is arguably secondary memory. Examples include Amazon's
+			<i>AWS</i>, <i>Microsoft Azure</i>, <i>Google Cloud</i>,
+			<i>Dropbox</i>, <i>Box</i>, and many more.
+		</li>
+	</ol>
+	<p>
+		All memory, main or secondary, can be classified as one of two types:
+		<b>volatile</b> and <b>non-volatile</b>. With everything we know so
+		far, it's clear that everything we've built only works if our machine
+		has access to electricity. The distinction between volatile and
+		non-volatile memory boils down to how they answer the following
+		question: What happens to the saved data when the elecricity's cut off?
+		For volatile memory, it's all lost. Accordingly, because of the way RAM
+		is implemented (as we'll see in the next section), RAM is considered
+		volatile memory. For non-volatile memory, nothing &mdash; the last
+		saved data persists even when the electricity's cut off. Examples of
+		non-volatile memory include ROM and most forms of secondary memory.
+	</p>
+</section>
+
+<section id="ram">
+	<h2>RAM</h2>
+	<p>
+		RAM is a chip the computer uses to store a program's instructions, and
+		the data those instructions operate on. This is a very high-level
+		overview. To understand what this means, let's see how the RAM is
+		built. To do so, let's review how registers work.
+	</p>
+	<p>
+		As we saw earlier, we can arrange ${w}$ binary cells to form an
+		${w}$-bit register. Knowing that, we can now forget about the
+		register's implementation details and just think of it as a single
+		chip:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/multibit_register.svg' %}"
+			alt=""
+			loading="lazy"
+			style="width: 350px"
+		/>
+	</figure>
+
+	<p>
+		In the diagram above, the register consumes its inputs with a ${w}$-bit
+		bus, and produces with a ${w}$-bit bus of outputs. The register has a
+		<b>width</b>, ${w,}$ which is the number of binary cells comprising the
+		register. As we'll see in later sections, because we never actually
+		work with bitstreams directly when we're programming in a high-level
+		language (at that level of abstraction, we're working with registers
+		indirectly), the register's width is also called the <b>word size</b>.
+	</p>
+	<p>
+		Alongside the word size, the register also has a <b>state</b> &mdash;
+		the current sequence of outputs in each of the register's ${w}$ binary
+		cells. Because those outputs can be given meaning, the register's state
+		can also be defined as the current <i>value</i> being expressed by the
+		register. Or even more abstractly, the current <i>data</i> stored in
+		the register.
+	</p>
+	<p>
+		As we saw with the register's implementation, with the use of a
+		<var>load</var> bit, there are two actions we can perform: (1) access,
+		or in computer science terms, <b>read</b>, the data currently stored in
+		the register, or (2) change, or <b>write</b>, the data inside the
+		register. To read the register, we simply set the <var>load</var> bit
+		to <var>0</var>.
+	</p>
+	<pre class="language-verilog"><code>
+		// Read the register
+		set out = 0;
+	</code></pre>
+	<p>To write the register:</p>
+	<pre class="language-verilog"><code>
+		// Write the register
+		set in   = v;
+		set load = 1;
+	</code></pre>
+	<p>
+		where <var>v</var> is the new value we want the register to store. So
+		we have a single register. Implementing a ${16}$-bit register in HDL is
+		just a matter of wiring together ${16}$ binary cells:
+	</p>
+	<pre class="language-verilog"><code>
+		module Register (in[16], load, out[16]);
+
+			input in[16], load;
+			output out[16];
+		
+			PARTS:
+				Bit(in=in[0],  load=load,  out=out[0]);
+				Bit(in=in[1],  load=load,  out=out[1]);
+				Bit(in=in[2],  load=load,  out=out[2]);
+				Bit(in=in[3],  load=load,  out=out[3]);
+				Bit(in=in[4],  load=load,  out=out[4]);
+				Bit(in=in[5],  load=load,  out=out[5]);
+				Bit(in=in[6],  load=load,  out=out[6]);
+				Bit(in=in[7],  load=load,  out=out[7]);
+				Bit(in=in[8],  load=load,  out=out[8]);
+				Bit(in=in[9],  load=load,  out=out[9]);
+				Bit(in=in[10], load=load,  out=out[10]);
+				Bit(in=in[11], load=load,  out=out[11]);
+				Bit(in=in[12], load=load,  out=out[12]);
+				Bit(in=in[13], load=load,  out=out[13]);
+				Bit(in=in[14], load=load,  out=out[14]);
+				Bit(in=in[15], load=load,  out=out[15]);
+
+		endmodule
+	</code></pre>
+	<p>
+		Where does the RAM come in? Well, RAM is just a chip that encapsulates
+		a <i>stack</i> of these registers:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/ram_registers.svg' %}"
+			alt="ram registers"
+			loading="lazy"
+			style="width: 600px"
+		/>
+	</figure>
+	<p>
+		In the schematic above, we see that the RAM consists of a stack of
+		registers. If there are ${n}$ registers, we say that the RAM
+		constitutes ${n}$-register memory, or, in short, RAM${n.}$ Thus, for an
+		${8}$ register RAM, we have RAM8, and for a ${64}$ register RAM, we
+		have RAM64.
+	</p>
+	<p>
+		The RAM has ${5}$ pins: four pins for inputs, and one pin for output.
+		The four pins:
+	</p>
+	<ol>
+		<li>An <var>in</var> pin to feed new data into some register.</li>
+		<li>
+			A <var>load</var> pin to toggle between reading and writing some
+			register.
+		</li>
+		<li>A <var>clock</var> pin to feed the clock's output.</li>
+		<li>And an <var>address</var> pin to feed an address.</li>
+	</ol>
+	<p>
+		Wait. What address? Well, since the registers are stacked, they
+		inherently have order. The topmost register can be interpreted as the
+		first register, and the bottommost register can be interpreted as the
+		last register. And because they have an inherent order, each register
+		has a <i>unique</i> place among the other registers.
+	</p>
+	<p>
+		Thus, by address, we mean a particular bitstream that, when passed to
+		some computation, produces a partricular register's place in the stack.
+		This is demonstrated by the diagram: Notice that all of the inputs are
+		fed into a dashed box labeled <i>direct access logic</i>.
+	</p>
+	<p>
+		This box represents the RAM's separate internal logic. It's not really
+		a chip (hence the dashed box); it's the algorithm underlying the RAM's
+		mechanism. So what does this direct access logic do? It takes the
+		address passed and determines which register we're referring to. Once
+		it makes that determination, it either reads or writes the data inside
+		that particular register, depending on the <var>load</var> bit. If the
+		<var>load</var> bit is <var>0</var>, it sends the bits passed to
+		<var>in</var> to the correct register. And if we want to read a
+		particular register's data, we simply pass that register's address to
+		the RAM. The RAM identifies the address, and its <var>out</var> becomes
+		the final <var>out</var>.
+	</p>
+	<pre class="language-verilog"><code>
+		/* 
+		*
+		* Let: 
+		*   S ≔ state of the selected register
+		*   α ≔ unique some address
+		*   𝑣 ≔ some value
+		*
+		*/
+
+		// To read:
+		set(address) = α
+		set(in)      = 𝑣
+
+		// To write:
+		set(address) = α
+		set(in)      = 𝑣
+		set(load)    = 1
+
+		if load ≡ 1 then {
+			S   = in
+			out = S      // from the next cycle onward
+		}
+		else out = S
+	</code></pre>
+	<p>
+		Again, registers do not have hardcoded addresses. It's pure logic. We
+		think of them as having addresses because once we take a step back and
+		abstract away the implementation details, they truly seem to have
+		addresses. So what do these addresses look like? They're just unique
+		bitstreams. For example, suppose we have a RAM8. This RAM consists of
+		${8}$ registers. To give them unique addresses, we just need ${3}$
+		bits, since ${3}$ bits produces eight unique bitstreams:
+	</p>
+	<div id="ram8"></div>
+	<p>
+		With RAM4, that's four registers, so we need ${2}$ bits, since ${2^2 =
+		4.}$ Based on this analysis, we have the following proposition:
+	</p>
+	<dfn>
+		<small>Definition: Minimum Address Width</small>
+		<p>
+			Given a RAM${n,}$ where ${n}$ is the number of registers in the RAM,
+			the number of ${k}$ bits needed to assign unique addresses to each
+			register is:
+		</p>
+		<figure>$$ k = \log_{2}n $$</figure>
+	</dfn>
+	<p>
+		In the diagram above, we indicate this proposition by denoting the
+		<var>address</var> input as a bus of ${k}$ width.
+	</p>
+	<p>
+		Before doing so, we should state some implications of this design
+		approach:
+	</p>
+	<ol>
+		<li>
+			Given a sequence of ${n}$ addressable registers, the addresses are
+			${0}$ to ${n-1.}$
+		</li>
+		<li>
+			At any given point in time, only <em>one</em> register in the RAM is
+			selected.
+		</li>
+	</ol>
+	<p>
+		So what does the implementation look like? It turns out that all we
+		need is an ${8}$-way demultiplexor and an ${8}$-way demultiplexor:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/ram_detail.svg' %}"
+			alt="RAM implementation"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		Recall that with an ${n}$-way demultiplexor, we feed some input into
+		the multiplexor, and depending on the sequence of <var>sel</var> lines,
+		it selects one, and only one, of its ${n}$ output pins to output from.
+		The same goes for the ${n}$-way multiplexor; depending on the sequence
+		of its <var>sel</var> lines, it selects one, and only one, of its ${n}$
+		input pins to take input from. Thus, in the schematic above, the
+		<var>sel</var> line is actually a ${3}$-bit bus. That bus takes an
+		<i>address</i>, and it's fed to both the 8-way multiplexor and 8-way
+		demultiplexor as <var>sel</var> inputs. Depending on the particular
+		sequence of bits passed to it, both gates select the corresponding
+		register. In HDL:
+	</p>
+	<pre class="language-verilog"><code>
+		module RAM8(in[16], load, address[3]);
+
+			input  in[16], load, address[3];
+			output out[16];
+	
+			PARTS:
+				DMux8Way(
+					in=load, 
+					sel=address, 
+					a=load0, b=load1, c=load2, d=load3, 
+					e=load4, f=load5, g=load6, h=load7
+				);
+
+				Register(in=in, load=load0, out=out0);
+				Register(in=in, load=load1, out=out1);
+				Register(in=in, load=load2, out=out2);
+				Register(in=in, load=load3, out=out3);
+				Register(in=in, load=load4, out=out4);
+				Register(in=in, load=load5, out=out5);
+				Register(in=in, load=load6, out=out6);
+				Register(in=in, load=load7, out=out7);
+
+				Mux8Way16(
+					a=out0, b=out1, c=out2, 
+					d=out3, e=out4, f=out5, 
+					g=out6, h=out7, 
+					sel=address, 
+					out=out
+				);
+
+		endmodule
+	</code></pre>
+	<p>
+		Examining this implementation, we see that implementing larger RAM
+		chips is almost trivial. A RAM64 chip is just a stack of ${8}$ RAM8
+		chips. Thus, we again employ an ${8}$-way demultiplexor and an
+		${8}$-way multiplexor, only this time we're wiring RAM8 chips instead
+		of RAM64 chips. And since a RAM64 chip requires ${6}$ bits to form
+		unique addresses, we use ${3}$ bits to access the ${8}$ RAM8 chips, and
+		${3}$ bits to access the registers inside each ${8}$ RAM8 chip:
+	</p>
+	<pre class="language-verilog"><code>
+		module RAM64(in[16], load, address[6], out[16])
+				input  in[16], load, address[6];
+				output out[16];
+		
+			PARTS:
+				DMux8Way(
+					in=load, 
+					sel=address[3..5], 
+					a=load0, b=load1, c=load2, d=load3, 
+					e=load4, f=load5, g=load6, h=load7
+				);
+
+				RAM8(in=in, load=load0, address=address[0..2], out=out0);
+				RAM8(in=in, load=load1, address=address[0..2], out=out1);
+				RAM8(in=in, load=load2, address=address[0..2], out=out2);
+				RAM8(in=in, load=load3, address=address[0..2], out=out3);
+				RAM8(in=in, load=load4, address=address[0..2], out=out4);
+				RAM8(in=in, load=load5, address=address[0..2], out=out5);
+				RAM8(in=in, load=load6, address=address[0..2], out=out6);
+				RAM8(in=in, load=load7, address=address[0..2], out=out7);
+
+				Mux8Way16(
+					a=out0, b=out1, c=out2, d=out3, 
+					e=out4, f=out5, g=out6, h=out7, 
+					sel=address[3..5], 
+					out=out
+				);
+
+		endmodule
+	</code></pre>
+	<p>
+		We now have RAM. This is really quite remarkable. We went from fire
+		signals to computer memory.
+	</p>
+</section>
+
+<section id="program_counter">
+	<h2>Program Counter</h2>
+	<p>
+		With RAM, we have full-fledged memory. And now that we have memory, we
+		can store <i>instructions</i>. That's a tall order, so before we
+		address that problem, let's tackle a smaller problem: How do we get the
+		computer to remember where it was in a set of instructions?
+	</p>
+	<p>
+		To understand why this problem should be addressed, suppose we had a
+		robot called <i>Bap</i>. Bap is a mechanical chef &mdash; provide a
+		recipe, and Bap executes. Suppose Bap is given the following set of
+		instructions:
+	</p>
+	<ol class="alg">
+		<li>Heat skillet.</li>
+		<li>Get egg.</li>
+		<li>Crack egg into skillet.</li>
+		<li>Wait 4 minutes.</li>
+		<li>Remove egg and put into plate.</li>
+	</ol>
+	<p>
+		Bap executes the first step and heats the skillet. After a few minutes,
+		we hear the fire alarm go off. Running to the kitchen, we see a cloud
+		of smoke, the robot staring into a blackening plate. What happened? Bap
+		never left the first step; it had no idea which of the steps to execute
+		next. All Bap knows is that there's some instruction with a number next
+		to it.
+	</p>
+	<p>
+		The <b>program counter (PC)</b>, or more generally, a <b>counter</b>,
+		is a chip that solves this problem. The idea is simple: There's a large
+		screen next to the robot, displaying a number. That number corresponds
+		to the instruction's number. When the screen displays ${0,}$ Bap
+		executes step ${0;}$ screen displays ${1,}$ the robot executes step
+		${1;}$ screen displays ${2,}$ execute step ${2;}$ and so on. That
+		screen is program counter.
+	</p>
+	<p>
+		Program counters are not limited to just incrementing its current
+		count. In the algorithm above, if the counter ends at <var>4</var>, Bap
+		will cook just ${1}$ egg. But what if we wanted Bap to cook a hundred?
+		Well, we just reset the counter to a particular number after
+		<var>4</var>. That is, once the counter reaches <var>4</var>, reset it
+		to <var>2</var> (not <var>0</var>, since the skillet is already
+		heated). In this way, we can get as many fried eggs as we'd like.
+	</p>
+	<p>
+		From our iron chef, we see that the program counter provides a feature
+		we don't have yet: Providing the computer a way to keep track of which
+		instruction should be <i>fetched</i> and <i>executed</i> next. To do
+		so, the PC has three operations:
+	</p>
+	<ol>
+		<li>
+			<var><mark>reset()</mark></var
+			>: Fetch the first instruction (<var>PC = 0</var>).
+		</li>
+		<li>
+			<var><mark>next()</mark></var
+			>: Fetch the next instruction (<var>PC++</var>).
+		</li>
+		<li>
+			<var><mark>goto(${n}$)</mark></var> Fetch the instruction ${n}$ (<var
+				>PC = ${n}$</var
+			>)
+		</li>
+	</ol>
+	<p>The PC's implementation:</p>
+	<pre class="language-verilog"><code>
+		module PC(in[16], load, inc, reset);
+
+			input  in[16], load, inc, reset;
+			output out[16];
+		
+			PARTS:
+				Mux16(a=in, b=false, sel=reset, out=in1);
+		
+				Or(a=load, b=reset, out=sw1);
+				Mux16(a=loopOut, b=in1, sel=sw1, out=registerIn);
+		
+				Or(a=sw1, b=inc, out=regload);
+				Register(in=regsterIn, load=registerLoad, out=registerOut, out=out);
+		
+				Inc16(in=registerOut, out=inc1);
+				Mux16(a=registerOut, b=inc1, sel=inc, out=loopOut);
+
+		endmodule;
+	</code></pre>
+</section>
+
+<section id="machine_language">
+	<h2>Machine Language</h2>
+	<p>
+		With our work so far, we now have three key chips: Registers (which can
+		be wired together to form RAM or ROM), an ALU (for performing hardware
+		level arithmetic and logical operations), and a PC (to keep track of
+		which instruction to perform). The next step is to find a way to pass
+		data between all three of these chips. But before we begin thinking
+		about implementing the connections and designing how the information
+		should flow, we should set a goal. That is, answering the following
+		question: How does the user control the machine?
+	</p>
+	<p>
+		Answering this question requires us to forget about all of the
+		low-level hardware details, focusing instead on what the end-product
+		looks like. Why this sudden jump? Because we must organize our work.
+		The fact is, a full-fledged computer is complex in its implementation
+		details. Without a clear goal in mind, we risk producing poor designs
+		or losing traction in certain areas. The remedy is a common software
+		design technique called the <b>top-down approach</b>
+		&mdash; we establish the final product's behavior and appearance to the
+		user, then break it down into its component parts. In doing so, we gain
+		an organized workflow defined by clear paths to particular endpoints.
+	</p>
+	<p>
+		Fortunately, the renowned mathematician and computer scientist John von
+		Neumann gives us the final product's high-level design:
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/von_neumann_architecture.svg' %}"
+			alt=""
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		Notice how the diagram above looks very much like the chips we've
+		designed so far. This is no coincidence. Servers, laptops, desktops,
+		tablets, mobile phones, smart watches &mdash; they're all chips called
+		<b>computer systems</b>. There are various ways to design a computer
+		system, just as there are various ways to design latches and
+		flip-flops. The design above is called the
+		<b>von Neumann architecture</b>. Other designs include the
+		<i>Harvard architecture</i>, the <i>dataflow architecture</i>, the
+		<i>transport triggered architecture</i>, and several others. Of these
+		various architectures, the von Neumann architecture is undoubtedly the
+		most common, so we will structure our final product accordingly.
+	</p>
+	<p>The computer system works as such:</p>
+	<ol>
+		<li>Input &mdash; data &mdash; is fed to the computer.</li>
+		<li>
+			The data is fed into memory. Inside the memory, there is some program
+			that instructs the CPU what to do with the data.
+		</li>
+		<li>The memory sends these instructions to the CPU.</li>
+		<li>
+			The CPU executes the instructions, and the resulting outputs are
+			returned as the computer system's output.
+		</li>
+	</ol>
+	<p>
+		Our first focus is on the second step &mdash; the program containing
+		the CPU's instructions. All of these instructions, as a whole, comprise
+		the computer system's <b>machine language</b>. Machine language
+		instructions can be classified into three categories:
+	</p>
+	<ol>
+		<li>
+			<b>Data instructions.</b> These instructions tell the CPU to perform
+			a particular operation. We can also think of these instructions as
+			<i>operation instructions</i>. For example, an instruction to add, an
+			instruction to subtract, negate, and so on.
+		</li>
+		<li>
+			<b>Control instructions.</b> These instructions tell the CPU which
+			instruction to perform next. For example, if the CPU is currently at
+			the fourth instruction in the program, the fifth instruction might
+			say, <q>Go back to instruction three.</q>
+		</li>
+		<li>
+			<b>Address instructions.</b> These instructions can be thought of as
+			<i>operand instructions</i> &mdash; they tell the CPU what to operate
+			on. As we know, data is stored in memory. Data instructions tell the
+			CPU where in memory it can find the necessary data it needs to
+			perform its operation instructions. For example, suppose the
+			instruction sent to the CPU is to execute <var>x = 9 + 8</var>. This
+			instruction consists of two operation instructions, <var>+</var> and
+			<var>=</var>. However, it also consists of addresses: The register
+			storing <var>9</var>, the register storing <var>8</var>, and the
+			register referred to as <var>x</var>. To actually perform the
+			operation, the CPU must know where the <var>x</var>, <var>9</var>,
+			and <var>8</var> are in memory.
+		</li>
+	</ol>
+	<p>
+		So what do these machine language instructions look like? They're just
+		ones and zeroes. For example, a machine language might have the
+		instruction <var>1000101</var> mean <q>perform addition.</q> Or it
+		might have the instruction <var>1010111</var> mean
+		<q>go to step four.</q> It's entirely up to the computer system's
+		architect.
+	</p>
+	<p>
+		Once we have machine language instructions implemented and a way to
+		feed these instructions to memory, the computer system is essentially
+		complete. For example, to compute <var>a = 1 + 9</var>, the user could
+		just pass the following inputs in order:
+	</p>
+	<ol class="alg">
+		<li>0010 0110 0001</li>
+		<li>0010 0111 1001</li>
+		<li>1001 0110 0111</li>
+		<li>0010 1111 1001</li>
+	</ol>
+	<p>
+		To say that this isn't user-friendly is an understatement. Think about
+		all of the complicated we have computers do in the modern era. If the
+		only way we could command a computer is to manually feed ones and
+		zeros, daily computer tasks we take for granted like returning the
+		current time would be difficult to write, let alone more complicated
+		operations like simulating pressure systems.
+	</p>
+	<p>
+		Because machine languages are unwieldy, computer scientists,
+		specifically <b>programming language designers</b>, create programming
+		languages that allow us to instead write something like:
+	</p>
+	<ol class="alg">
+		<li>let a = 1 + 9</li>
+	</ol>
+	<p>
+		This data input is an instruction in some
+		<b>high-level language</b>. That language might be C, Java, Python,
+		JavaScript, etc. How these instructions are understood by the computer
+		is a complicated process that we'll explore in great detail later. The
+		idea, however, is that the instructions are fed to a program called the
+		<b>compiler</b>, which transforms these instructions into the
+		computer's machine language. To transform the high-level language
+		instruction into a machine language instruction, the compiler designer
+		must define the high-level language instructions in terms of machine
+		language instructions.
+	</p>
+	<p>
+		All the possible instructions in a given computer system's machine
+		language is called the computer system's <b>instruction set</b>. The
+		computer system's instruction set is its most valuble interface.
+		Without an instruction set, there's no way to connect hardware to
+		software.
+	</p>
+	<p>
+		How is this connection made? By and large, by tying the machine
+		language instructions directly to hardware. For example, a machine
+		language instruction for addition might translate to having the ALU
+		output from its
+		<var>x+y</var> pin. These instructions are called
+		<i>simple instructions</i> &mdash; instructions directly tied to
+		hardware. However, the machine language can also have
+		<i>compound instructions</i> &mdash; an instruction to execute a
+		sequence of simple or other compound instructions. In doing so, we can
+		provide unique instructions for operations not directly implemented by
+		the hardware. Because of the ability to write both simple and composite
+		instructions, the computer architect must answer several questions when
+		designing the computer system's machine language:
+	</p>
+	<ol>
+		<li>
+			<i
+				>What operations should be encapsulated into a single
+				instruction?</i
+			>
+			For example, do we want a unique instruction for division? Computing
+			remainders? Squaring?
+		</li>
+		<li>
+			<i
+				>What control mechanisms do we want encapsulated into a single
+				instruction?</i
+			>
+			Maybe we want specific instructions for <var>if</var>,
+			<var>else-if</var>, and <var>else</var>. Or specific instructions for
+			a while loop.
+		</li>
+		<li>
+			<i
+				>What data types, if any, do we want the instruction set to
+				support?</i
+			>
+			At the machine language level, a <i>data type</i> is an instruction
+			that indicates how many bits comprise a single a unit of data. The
+			machine language might have no data types, in which cases every piece
+			of data is defined restricted to the computer's
+			<i>word size</i> &mdash; a register's width. If the word size is
+			${16}$ bits, the user can only work with ${16}$ bits at any given
+			moment. Alternatively, we might have many data types &mdash; ${8}$
+			bits, ${16}$ bits, ${32}$ bits, and so on. This allows us to directly
+			support floating point arithmetic directly within hardware.
+		</li>
+	</ol>
+
+	<p>
+		Answering these questions requires analyzing tradeoffs. The more
+		instructions we have, the bigger the instruction set. And the bigger
+		the instruction set, the easier it is to create and support complex
+		operations on the computer system. But that also means we get a more
+		expensive bill, in terms of time and money. The larger an instruction
+		set is over a smaller silicon area, the more time it takes to execute
+		instructions. We can reduce that time by getting more silicon, but that
+		requires more funding and resigning ourselves to a larger device.
+	</p>
+
+	<section id="assembly_language">
+		<h3>Assembly Language</h3>
+		<p>
+			To help the compiler designers (and later, as we'll see, operating
+			system designers) construct these definitions, the computer architect
+			provides <i>mnemonics</i> for the machine language instructions. For
+			example, suppose the computer system has a machine language
+			instruction:
+		</p>
+		<div id="machine_language_instruct_add"></div>
+		<p>
+			The make these machine language instructions easier to work with, the
+			computer architect creates a system of mnemonics to organize and
+			easily identify instructions in the machine language:
+		</p>
+		<div id="assembly_language_instruct_add"></div>
+		<p>
+			In this case, the mnemonic <var>ADD</var> corresponds to the machine
+			language instruction <var>010001</var>, and means the operation
+			instruction <q>perform addition</q>. The mnemonic
+			<var>R2</var> corresponds to the instruction <var>0011</var>, which
+			means <q>register 2</q>. And the mnemonic <var>R1</var> corresponds
+			to the instruction <var>0010</var>, which means
+			<q>register 1.</q> Putting it all together, when the compiler or
+			operating system designer writes:
+		</p>
+		<ol class="alg">
+			<li>ADD R2 R1</li>
+		</ol>
+		<p>
+			They're writing the instruction,
+			<q>Add the contents of registers 1 and 2,</q> which translates to
+			<var>01000100110010</var>. These mnemonics &mdash; <var>ADD</var>,
+			<var>R1</var>, <var>R2</var>, and many others &mdash; are called
+			<b>assembly language instructions</b>, and they constitute the
+			computer system's <b>assembly language</b>. Since assembly language
+			instructions are just mnemonics for machine language instructions,
+			the computer system's <i>instruction set</i> can also be defined as
+			the set of all possible assembly language instructions we can write
+			in the computer system.
+		</p>
+		<p>
+			But wait. How does the computer understand <var>ADD</var>,
+			<var>R2</var>, and <var>R1</var>? Isn't this the same problem we saw
+			with compilers? While it may seem like it's turtles all the way down,
+			the last turtle is the <b>assembler</b> &mdash; a program that
+			converts the assembly language instructions to machine language
+			instructions. This program is written in machine language; at least
+			at first. Later, when we examine an assembler's implementation, we'll
+			see a technique called <i>bootstrapping</i>, which makes modern
+			assembler design easier than it sounds.
+		</p>
+		<p>
+			In designing an assembly language, we want to keep it extremely
+			simple while also providing some form of readability (that is, after
+			all, why assembly language is provided in the first place).
+			Accordingly, some operations are so common that assembly language
+			designers provide more concise syntax. For example, instead of having
+			the user write <var>R2</var>, a better design would be to have the
+			user write:
+		</p>
+		<ol class="alg">
+			<li>ADD Mem[249] Mem[250]</li>
+		</ol>
+		<p>
+			Recall that main memory is just a giant stack of registers, each with
+			unique addresses. Thus, the symbol <var>Mem</var> indicates that
+			we're writing a data instruction (i.e., access a particular
+			register), and the numbers <var>249</var> and <var>250</var> refer to
+			the index of that register in main memory. Thus, wherever we write
+			<var>Mem[250]</var>, we're referring to the register with the index
+			<var>250</var>.
+		</p>
+		<p>
+			We can go a step further and provide an even better design: Instead
+			of having the user write <var>Mem[250]</var>, we can design the
+			assembly language to understand:
+		</p>
+		<ol class="alg">
+			<li>ADD x y</li>
+		</ol>
+		<p>
+			Here, <var>x</var> and <var>y</var> are called a <b>symbols</b> or
+			<b>names</b> the user provides to refer to particular registers. When
+			the user sends these instructions to the assembler, the assembler
+			sees these symbols, and automatically translates the <var>x</var> and
+			<var>y</var> into some unoccupied memory location. For example, if
+			the registers <var>Mem[135]</var> and <var>Mem[136]</var> are free,
+			<var>x</var> and <var>y</var> are translated into
+			<var>Mem[135]</var> and <var>Mem[136]</var>.
+		</p>
+	</section>
+</section>
+
+<section id="memory_hierarchy">
+	<h2>Memory Organization</h2>
+	<p>
+		Thinking about how the assembler might translate these symbols into
+		memory addresses, we notice an additional factor we have to consider
+		when designing the computer system's instruction set &mdash;
+		<i>addressing</i>. If the computer system has a large amount of memory,
+		then our computer must work with long memory addresses. And the longer
+		a memory address is, the longer it takes for the CPU to perform its
+		operations, since it can only execute its instructions once it's
+		received all of the addresses bits. This time delay is further
+		increased by the fact that the CPU also has to access the long address.
+	</p>
+	<p>
+		Fortunately, von Neumann provided a solution to this problem: Instead
+		of implementing main memory as just one giant block, we implement it as
+		a <b>memory hierarchy</b>:
+	</p>
+	<img
+		src="{% static 'images/memory_hierarchy.svg' %}"
+		alt="memory hierarchy"
+		loading="lazy"
+	/>
+	<p>
+		Memory hierarchy is system for organizing memory. The idea is that we
+		take all of the computer's registers, and divvy them up into four
+		places. A small amount of registers are given to the CPU. These
+		registers are called the <b>processor registers</b>. A slightly larger
+		amount of registers are placed immediately next to the CPU. These
+		registers are called <b>caches</b>. A large amount of registers are
+		placed in <i>main memory</i>, close to the cache but further from the
+		CPU. The largest amount of registers are found in the
+		<i>disk</i> (i.e., secondary memory); close to main memory but the
+		furthest from the CPU.
+	</p>
+	<p>
+		When arranged in this sequential manner, we see that the closer we are
+		to the CPU, the shorter the address. Thus, the processor registers are
+		the fastest registers to read and write, followed by the cache and main
+		memory. The disk's registers are the furthest from the CPU, and take
+		the longest to read and write.
+	</p>
+
+	<section id="processor_registers">
+		<h3>Processor Registers</h3>
+		<p>
+			Given how fast processor registers are, they're used for a few key
+			operations. Some of the registers are <b>data registers</b>. These
+			registers are used to store the necessary data for completing an
+			operation's execution. For example, if the CPU must execute
+			<var>ADD x y</var>, the data contents of <var>x</var> and
+			<var>y</var> are stored inside the data registers to perform the
+			computation.
+		</p>
+		<p>
+			Some of the registers are <b>address registers</b>. These registers
+			are used to store some address outside the CPU, perhaps in main
+			memory. For example, suppose the instruction <var>DEF x y</var> means
+			<q>assign the value in <var>y</var> to the address <var>x</var>.</q>
+			To execute this instruction, the CPU might store the value stored in
+			<var>y</var> in some data register, then store the address
+			correspoding to <var>y</var> inside an address register.
+		</p>
+	</section>
+
+	<section id="addressing_mode">
+		<h3>Addressing Modes</h3>
+		<p>
+			Using memory hierarchy, we have different ways to read and write
+			registers, called <b>addressing modes</b>. These modes are triggered
+			by the way the assembly language instructions are written.
+		</p>
+		<p>
+			<b>Immediate addressing</b> is the fastest addressing mode. We're
+			explicitly providing data to the CPU:
+		</p>
+		<ol class="alg">
+			<li>ADD 1 2</li>
+		</ol>
+		<p>
+			<b>Register addressing</b> is the next fastest addressing mode. If
+			the data's already stored inside the CPU's data registers, we can
+			simply provide the Assembly language's instruction representing the
+			registers:
+		</p>
+		<ol class="alg">
+			<li>ADD R1 R2</li>
+		</ol>
+		<p>
+			<b>Direct addressing</b> is the next fastest. Here, we're explicitly
+			specifying the address:
+		</p>
+		<ol class="alg">
+			<li>ADD R1 M[321]</li>
+		</ol>
+		<p>
+			Finally, the slowest form of addressing is indirect addressing. Here,
+			we're using symbols to denote addresses, so the CPU must wait to
+			receive the addresses:
+		</p>
+		<ol class="alg">
+			<li>ADD x y</li>
+		</ol>
+	</section>
+</section>
+
+<section id="instruction_sets">
+	<h2>Instruction Sets</h2>
+	<p>
+		Within the memory hierarchy, registers comprising the computer's main
+		memory fall into one of two, physically separate chips: RAM (Random
+		Access Memory) and ROM (Read-only Memory). RAM is what's used to store
+		the data the user passes as inputs to the computer system. As such, we
+		can think of RAM as <i>data memory</i>. For example, the register
+		<var>RAM[347]</var> might store the value <var>9</var>, in which case
+		<var>RAM[347] = 9</var>. Or, as a ${16}$-bit value:
+	</p>
+	<figure>
+		<div>
+			<var>RAM[347] = 0000 0000 0000 1001</var>
+		</div>
+	</figure>
+	<p>
+		In contrast, the ROM is what's used to store the computer's machine
+		language instructions. For example, suppose the instruction for
+		<var>ADD</var> is the number <var>4402</var>. This instruction might be
+		stored in the ROM register <var>ROM[289]</var>, in which case
+		<var>ROM[289] = 4402</var>. Or, in binary:
+	</p>
+	<figure>
+		<div>
+			<var>ROM[289] = 0001 0001 0011 0010</var>
+		</div>
+	</figure>
+	<p>
+		The ROM, RAM, and CPU are the computer system's most important chips.
+		Accordingly, the wires transporting the bits to and from these chips
+		have special names. If the computer system is comprised of, say,
+		strictly ${16}$-bit registers, a <q>bus</q> is a bundle of ${16}$
+		wires. The bus moving instructions from the ROM to the CPU comprise the
+		<b>instruction bus</b>. The bus transporting data from RAM to the CPU
+		comprises the <b>data bus</b>. And the buses transporting addresses
+		from the RAM to the CPU comprise the <b>address buses</b>.
+	</p>
+	<p>
+		Machine language instructions, at the end of the day, are just numbers.
+		Accordingly, the number of bits that the computer architect decides to
+		use to form a single instruction determines how many possible
+		instructions the machine language can express. This number is called
+		the computer system's <b>instruction size.</b> For example, if the
+		instruction size is ${16,}$ there are ${2^{16} = 65~536}$ possible
+		instructions. Again, that doesn't mean we have the architect must use
+		all of those possibilities.
+	</p>
+	<p>
+		Nevertheless, because of how many instructions we might want to
+		support, it's helpful to organize the instructions. To do so, we can
+		associate a select number of registers to associate instructions with.
+		Say we select three registers &mdash; a data register, an address
+		register, a control register, and some register in the RAM. Next, we
+		give them names: The <i>D-register</i>, the <i>A-register</i>, the
+		<i>C-register</i>, and the <i>M-register</i>.
+	</p>
+	<p>
+		Once we've selected these three registers, we give them a particular
+		intepretation. That is to say, we pretend like they have a particular
+		meaning when we design the instruction set. In this case, we'll
+		interpret the D-register as the register storing data, the A-register
+		as the register storing an address, and the M-register the register
+		address stored in the A-register.
+	</p>
+	<p>
+		With these registers selected, we can organize our instruction set into
+		<b>instruction classes</b> &mdash; groups of instructions that share
+		some common functionality. For example, the an instruction set might
+		consist of two instruction classes: A-instructions (instructions for
+		<i>addressing</i>) and C-instructions (instructions for
+		<i>controlling</i> the order instructions are executed). Later, we'll
+		see why organizing our instructions into discrete, distinguishable
+		groups &mdash; instruction classes &mdash; is so useful. For now, let's
+		go over what these instructions classes do.
+	</p>
+
+	<section id="a_instructions">
+		<h3>A-instructions</h3>
+		<p>
+			An A-instruction is short for <i>addressing instruction</i>.
+			A-instructions are what allow us to communicate to the CPU that we're
+			referring to a particular register. This is done by setting the
+			A-register to a particular value. For instance, the machine language
+			might have the instruction:
+		</p>
+		<ol class="alg">
+			<li>@17</li>
+		</ol>
+		<p>
+			which tells the CPU to set the A-register to <var>17</var>. By
+			setting the A-register to <var>17</var>, the M-register is now
+			<var>RAM[17]</var>. The machine language might then allow us to
+			write:
+		</p>
+		<ol class="alg">
+			<li>@17</li>
+			<li>M=5</li>
+		</ol>
+		<p>
+			which stores he value <var>5</var> inside the RAM memory address
+			<var>RAM[17]</var>.
+		</p>
+	</section>
+
+	<section id="c_instructions">
+		<h3>C-instructions</h3>
+		<p>
+			A <b>C-instruction</b> (short for <i>control instruction</i>) tells
+			the CPU what instruction to perform next. A C-instruction might have
+			the form:
+		</p>
+		<ul class="syntax">
+			<li><b>⟨DEST⟩ =</b> ⟨COMP⟩ <b>: ⟨JUMP⟩</b></li>
+		</ul>
+		<p>
+			In the syntax above, <var>DEST</var> stands for <i>destination</i>,
+			<var>COMP</var> for <i>computation</i>, and <var>JUMP</var> for
+			<i>jump</i>. Both <var>DEST</var> and <var>JUMP</var> are optional.
+			We could just jump.
+		</p>
+		<p>
+			The <var>COMP</var> field can be set to any of the following
+			computations:
+		</p>
+		<table style="margin: 0 auto">
+			<thead>
+				<th colspan="3">Possible <var>COMP</var> Values</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>0</var></td>
+					<td><var>1</var></td>
+					<td><var>-1</var></td>
+				</tr>
+				<tr>
+					<td><var>D</var></td>
+					<td><var>A</var></td>
+					<td><var>!D</var></td>
+				</tr>
+				<tr>
+					<td><var>!A</var></td>
+					<td><var>-D</var></td>
+					<td><var>-A</var></td>
+				</tr>
+				<tr>
+					<td><var>D+1</var></td>
+					<td><var>A+1</var></td>
+					<td><var>D-1</var></td>
+				</tr>
+				<tr>
+					<td><var>D+A</var></td>
+					<td><var>D-A</var></td>
+					<td><var>A-D</var></td>
+				</tr>
+				<tr>
+					<td><var>D&A</var></td>
+					<td><var>D|A</var></td>
+					<td><var>M</var></td>
+				</tr>
+				<tr>
+					<td><var>!M</var></td>
+					<td><var>-M</var></td>
+					<td><var>M+1</var></td>
+				</tr>
+				<tr>
+					<td><var>M-1</var></td>
+					<td><var>D+M</var></td>
+					<td><var>D-M</var></td>
+				</tr>
+				<tr>
+					<td><var>M-D</var></td>
+					<td><var>D&M</var></td>
+					<td><var>D|M</var></td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			In the table above, the <var>D</var>, <var>A</var>, and
+			<var>M</var> all refer to registers. Thus, <var>D</var> stands for
+			the D-register, <var>A</var> for the A-register, and <var>M</var> for
+			the M-register.
+		</p>
+		<p>
+			The <var>DEST</var> field is where indicate the register we want the
+			result stored in. It can be set to any of the following:
+		</p>
+		<table style="margin: 0 auto">
+			<thead>
+				<th colspan="4">Possible <var>DEST</var> Values</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>null</var></td>
+					<td><var>M</var></td>
+					<td><var>D</var></td>
+					<td><var>MD</var></td>
+				</tr>
+				<tr>
+					<td><var>A</var></td>
+					<td><var>AD</var></td>
+					<td><var>AM</var></td>
+					<td><var>AMD</var></td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			In the table above, <var>null</var> means we do not want the value
+			stored. Single letters indicate a single register, and multiple
+			letters indicate multiple registers. Thus, if <var>DEST</var> is set
+			to <var>D</var>, the result is stored in the D-register. If
+			<var>DEST</var> is set to <var>AM</var>, the result is stored in the
+			A- and M-registers. If <var>DEST</var> is set to <var>AMD</var>, the
+			result is stored in the A-, M-, and D-registers.
+		</p>
+		<p>The <var>JUMP</var> field can be set to any of the following:</p>
+		<table style="margin: 0 auto">
+			<thead>
+				<th colspan="4">Possible <var>JUMP</var> Values</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>null</var></td>
+					<td><var>JGT</var></td>
+					<td><var>JEQ</var></td>
+					<td><var>JGE</var></td>
+				</tr>
+				<tr>
+					<td><var>JLT</var></td>
+					<td><var>JNE</var></td>
+					<td><var>JLE</var></td>
+					<td><var>JMP</var></td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			The <var>JUMP</var> field works by comparing the result of the
+			computation to <var>0</var>. Some examples will clarify how
+			<var>JUMP</var> &mdash; and C-instructions more generally &mdash;
+			work.
+		</p>
+		<section id="assignment">
+			<h4>Assignment</h4>
+			<p>
+				Suppose we want to store the value <var>-5</var> to the D-register.
+				We can do so by writing:
+			</p>
+			<ol class="alg">
+				<li>D=-1</li>
+			</ol>
+			<p>
+				Suppose we want to store the value <var>8</var> in register
+				<var>128</var> in main memory. This implies storing <var>8</var> in
+				<var>RAM[128]</var>. Because this register is not one of the
+				<var>DEST</var> registers (i.e., not a processor register), we
+				first need an A-instruction:
+			</p>
+			<ol class="alg">
+				<li>@RAM[128] <var>// A=128, M=RAM[128]</var></li>
+			</ol>
+			<p>
+				The result of this A-instruction is that the A-register now stores
+				the address <var>128</var>. And if the A-register stores the
+				address <var>128</var>, the M-register is <var>RAM[128]</var>.
+				Since <var>M</var> is one of the possible <var>DEST</var> values,
+				all that's left is a C-instruction:
+			</p>
+			<ol class="alg">
+				<li>@RAM[128] <var>// A=128, M=RAM[128]</var></li>
+				<li>M=8</li>
+			</ol>
+			<p>
+				As an aside, seeing how this is done in assembly demonstrates just
+				how convenient higher-level languages are. In a sense, source code
+				(code written in a higher-level language) is really just syntactic
+				sugar for Assembly code (which is just syntactic sugar for binary
+				code). When we write some high-level code like:
+			</p>
+			<pre class="language-c"><code>
+				int x = 5;
+			</code></pre>
+			<p>
+				The equivalent Assembly code might look something like (suppose
+				<var>x</var> is the address <var>15</var>):
+			</p>
+			<ol class="alg">
+				<li>@10 <var>// Store 10 in the A-register</var></li>
+				<li>D=10 <var>// Store A's value in the D-register</var></li>
+				<li>@15 <var>// Store 15 in the A-register</var></li>
+				<!-- prettier-ignore -->
+				<li>M=D<var>// Assign the value 10 to RAM[15] (the address called x)</var>
+				</li>
+			</ol>
+		</section>
+		<section id="conditional_control">
+			<h4>Conditional Control</h4>
+			<p>
+				Now suppose we want to jump to an instruction if the D-register's
+				value is
+				<var>0</var>. Notice that this is similar to the guard clause for a
+				while-loop. To communicate this instruction, we again start with an
+				A-instruction:
+			</p>
+			<ol class="alg">
+				<li>@56 <var>// A=56, M=ROM[56]</var></li>
+			</ol>
+			<p>Following this line, we write:</p>
+			<ol class="alg">
+				<li>@56 <var>// A=56, M=ROM[56]</var></li>
+				<li>D-1; JEQ <var>// if (D-1 ≡ 0), goto A</var></li>
+			</ol>
+			<p>
+				This instruction <var>JEQ</var> means
+				<q>jump if equal to <var>0</var></q
+				>. Putting it all together, we're communicating the command,
+				<q
+					>If subtracting ${1}$ from the value D-register's stored value is
+					${0,}$ jump to the instruction stored in <var>ROM[56]</var>.</q
+				>
+			</p>
+		</section>
+	</section>
+
+	<section id="opcodes">
+		<h3>Opcodes</h3>
+		<p>
+			As we've mentioned before, a computer system's machine language can
+			be expressed in two ways:
+		</p>
+		<ol>
+			<li>binary code, and</li>
+			<li>symbolic code</li>
+		</ol>
+		<p>
+			The machine language's binary code can be thought of as its purest,
+			or raw, form. The symbolic code, however, is the more human-readable
+			form, and it's what comprises the computer system's assembly
+			language. That is, the symbolic code is just a more convenient way to
+			write the same instruction in binary code:
+		</p>
+		<div id="symbolic_binary"></div>
+		<p>A-instructions, as we saw, have the syntax:</p>
+		<ul class="syntax">
+			<li>
+				<span class="orangeText">@</span
+				><span class="blueText">⟨VALUE⟩</span>
+			</li>
+		</ul>
+		<p>
+			where <var>${0 \leq \texttt{⟨VALUE⟩} \leq 32~767}$</var>. Why does
+			${\texttt{⟨VALUE⟩}}$ have this bound? To answer this question, we
+			answer a related question: How does the CPU know that some sequence
+			<var>0000 0000 0001 0001</var> is an A-instruction and not just some
+			number?
+		</p>
+		<p>
+			Through an <b>opcode</b> (short for <i>operation code</i>). When we
+			write the instruction:
+		</p>
+		<ul class="syntax">
+			<li>
+				<span class="orangeText">@</span><span class="blueText">21</span>
+			</li>
+		</ul>
+		<p>we're really sending to the CPU is:</p>
+		<div id="a_instruction_array"></div>
+		<p>
+			The most-significant bit, colored orange above, is the
+			<i>opcode</i>. This bit is what tells the CPU that the bitstream is
+			an A-instruction. The ${15}$ bits following the opcode, colored blue,
+			correspond to the value we want loaded into the A-register. That
+			value is <var>000 0000 0001 0101</var>, which is <var>21</var> in
+			decimal. Examining this value, we see why we have the bound
+			<var>${0 \leq \texttt{⟨VALUE⟩} \leq 32~767).}$</var> Because we have
+			${15}$ bits to work with, we can represent ${2^{15} = 32~768}$
+			possible numbers. Starting at ${0,}$ the largest value we can
+			represent is ${2^{15} - 1 = 32~767.}$
+		</p>
+		<p>
+			The same idea &mdash; using opcodes to signal to the CPU what
+			instruction we're referring to &mdash; applies to C-instructions.
+			Recall the Assembly syntax for the C-instruction:
+		</p>
+		<ul class="syntax">
+			<li>
+				<span class="redText">⟨DEST⟩</span> =
+				<span class="blueText">⟨COMP⟩</span>;
+				<span class="greenText">⟨JUMP⟩</span>
+			</li>
+		</ul>
+		<p>In binary syntax, this is the ${16}$-bit instruction:</p>
+		<div id="c_instruction_binary"></div>
+		<p>
+			Once more, the most-significant bit, colored orange above, is the
+			opcode. This tells the CPU that this is a C-instruction. It should
+			now be clear why dividing our instruction set into discrete groups is
+			needed. Recall that we only have two kinds of instructions,
+			A-instructions and C-instructions. If opcodes in the machine language
+			consist of just ${1}$ bit, then computer system's instruction set can
+			be divided into ${2}$ kinds of instructions, since there are two
+			unique sequences, <var>0</var> or <var>1</var> (${2^1 = 2}$). If we
+			reserve ${2}$ bits for an opcode, then the instruction set can be
+			divided into ${2^2 = 4}$ kinds of instructions.<sup></sup>
+		</p>
+		<div class="note">
+			<p>
+				The hypothetical machine language we've been working with is
+				extremely simple. The x86 architecture, which underlies the Intel
+				processors used by many computers today, can use up to ${2}$ bytes
+				for opcodes &mdash; ${1}$ byte, followed by another byte. This
+				leads to ${2^8 + 2^8 = 512}$ possible instruction classes. While
+				it's unlikely that Intel uses all ${512}$ possibilities, such large
+				opcode sizes indicate just how massive the x86 instruction set is
+				&mdash; it has more instructions than there are pages in the Z80
+				architecture's instruction set manual. It's likely that no one
+				&mdash; perhaps not even Intel &mdash; knows how many instructions
+				the x86 has. As we'll see in the
+				<span class="title">assembler</span> section, machine languages are
+				constructed by building on top of previous machine languages,
+				alongside supporting backwards compatibility. This means that a
+				significant amount of instructions in the x86 originate in much
+				older, no longer documented architectures like the i8086.
+			</p>
+		</div>
+		<p>
+			Following the opcode are two bits. These bits are called
+			<b>padding bits</b>, and by convention, they're set to <var>1</var>.
+			We'll see shortly why a machine language instruction might want to
+			use padding.
+		</p>
+		<p>
+			Following the padding bits are seven bits (colored blue) are used to
+			specify the computation (<var>COMP</var>) we want performed. The
+			first bit, labeled <var>a</var>, is called the
+			<b>computation bit</b>. The ${6}$ bits following, labeled
+			${\texttt{c}_n,}$ are the <b>control bits</b> sent to the ALU. All
+			together, these bits comprise the <b>computation bitfield</b>. As we
+			saw in the <span class="title">alu</span> section, the ALU uses these
+			control bits to determine which computation to carry out.
+		</p>
+		<p>
+			Following the control bits are the
+			<b>destination bits</b> colored red, which comprise the destination
+			the <b>destination bitfield</b> (<var>DEST</var>). And following
+			these bits are the <b>jump bits</b>, colored green, which the
+			comprise the <b>jump bitfield</b> (<var>JUMP</var>).
+		</p>
+		<section id="computation_bits">
+			<h4>Computation Bitfield</h4>
+			<p>
+				The computation field consists of ${7}$ bits, ${1}$ bit to specify
+				the computation, and ${6}$ bits to instruct the ALU. As we saw,
+				with ${6}$ bits, the ALU can perform ${2^6 = 64}$ unique
+				operations. Thus, with ${7}$ bits, we can specify ${128}$ unique
+				computations. We won't list all of the possible computations, but a
+				small subset of the possible computations might look like:
+			</p>
+			<div id="computation_field"></div>
+		</section>
+
+		<section id="destination_field">
+			<h4>The Destination Bitfield</h4>
+			<p>
+				The destination bitfield &mdash; <var>DEST</var> &mdash; specifies
+				the location we want stored. Because the destination bitfield
+				consists of ${3}$ bits, we have ${2^3}$ possible bitfields we can
+				assign meaning to:
+			</p>
+			<div id="destination_bitfield"></div>
+		</section>
+
+		<section id="jump_field">
+			<h4>The Jump Bitfield</h4>
+			<p>
+				Finally, we have the jump bitfield &mdash; <var>JUMP</var> &mdash;
+				which specifies the condition for jumping. Here, we have ${3}$
+				bits, so there are ${2^3 = 8}$ possible conditions we can express:
+			</p>
+			<div id="jump_bitfield"></div>
+		</section>
+
+		<section id="padding_bits">
+			<h4>Padding Fields</h4>
+			<p>
+				Having laid out all the possible C-instructions, we can likely
+				guess why a machine language instruction might use padding bits.
+				When designing a machine language, the computer architect might
+				only have a small amount of instructions he or she wants to
+				implement. However, if instructions in the language are always
+				${n}$-bits long &mdash; in our cases, ${16}$ &mdash; padding bits
+				are useful for establishing separation between the different
+				bitfields, and to restrict instructions to certain lengths.
+			</p>
+		</section>
+	</section>
+</section>
+
+<section id="input_and_output">
+	<h2>Peripherals</h2>
+	<p>
+		One question that might have been looming in the back of our minds: How
+		do we connect peripherals? That is, how does the computer system take
+		input from, or return output to, devices like the keyboard, mouse,
+		camera, printers, speakers, monitors, etc.?
+	</p>
+	<p>
+		There are many ways to connect peripherals and they vary across
+		devices. The most common connection method is
+		<b>memory-mapped input-output (MMIO)</b>. MMIO assumes that the
+		peripheral has its own registers and processor (which for most
+		peripherals is the case). When the user passes input to the peripheral,
+		the input is transformed into ones and zeros, and the peripheral's
+		processor, following its internal logic, stores them in the
+		peripheral's registers. These registers are directly <i>mapped</i> to
+		registers reserved for input and output on the computer system, called
+		<b>device control registers</b>. And because of the device control
+		registers are directly mapped, or directly connected, to the
+		peripheral's registers, the computer system can access the device's
+		registers as if the registers were part of the computer system.
+	</p>
+	<p>
+		Now, some peripherals take inputs from the computer. For example,
+		consider a printer. Modern printers have a plethora of settings: Print
+		black and white, print color, use a particular paper dimension, etc.
+		Because of these functionalities, these peripherals are very much like
+		computer systems &mdash; they have complex circuitry implementing
+		memory, a processor, a program counter, ALU, and so on. More
+		importantly, they also have their own machine language. Thus, to send
+		instructions to these peripherals via our computer system, we must send
+		the sequence of bits as set defined by the peripheral's instruction
+		set.
+	</p>
+	<p>
+		This is done by special programs called <b>device drivers</b>, which
+		usually come with the peripheral. The device driver is essentially a
+		manual instructing the CPU which sequence of bits it should send to the
+		peripheral's register. Think of an HP printer. To get the printer to
+		work on our computer, it usually comes with a small booklet instructing
+		us to download and install some accompanying software. That software
+		contains the peripheral's device driver.
+	</p>
+	<section id="primary_peripherals">
+		<h3>Main Peripherals</h3>
+		<p>
+			There are numerous peripherals we can connect to computer systems:
+			Mice, trackpads, microphones, speakers, disk readers, USB ports,
+			Ethernet ports, Bluetooth and Wifi antennae, and so on. The two most
+			important peripherals, however, are the
+			<i>keyboard</i> and <i>display</i>, collectively called the
+			<b>main peripherals</b>. They're the most important because without
+			these peripherals, controlling the computer system is next to
+			impossible. All other peripherals are luxuries, or
+			<i>nice-to-haves</i>. We don't need trackpads or mice to control the
+			computer, because we can accomplish the same navigation with a
+			command line. We also don't need microphones, speakers, or even a way
+			to connect to the internet, because none of those are necessary for
+			controlling the computer. They're tremendously useful, but they
+			aren't indespensible. Accordingly, it's helpful to give special
+			attention to how the keyboard and monitor connect to the computer
+			system.
+		</p>
+
+		<section id="screen">
+			<h4>Displays</h4>
+			<p>
+				A modern display unit (e.g., a laptop screen or a monitor) is a
+				matrix of electronic devices called <b>physical pixels</b>. These
+				physical pixels can be either red, green, or blue in color. How
+				these pixels accomplish this is more electrical engineering than
+				computer science, so we won't delve beyond this rudimentary
+				understanding. Additionally, to keep things simple, we're going to
+				use a simpler display &mdash; the pixels can only be black or
+				white, as was the case for early computers. That said, we can
+				visualize the display unit as follows:
+			</p>
+			<div id="display_pixel_array"></div>
+			<p>
+				Each of the black squares above is a physical pixel. All together,
+				they comprise the display.
+			</p>
+			<p>
+				Now, from basic data structures and algorithms, we know that
+				matrices for a computer are just arrays of arrays. Accordingly,
+				each of pixel in the matrix can be identified with a pair of
+				indices:
+			</p>
+			<div id="display_pixel_array_indexed"></div>
+			<p>
+				To turn the top-left pixel white, we change the color for the pixel
+				with the index <var>[3][6]</var> (interpreted as
+				<var>[row][column]</var>):
+			</p>
+			<div id="display_pixel_array_indexed_topLeft"></div>
+			<p>By manipulating these pixels, we can display various shapes:</p>
+			<div id="display_pixel_array_shape"></div>
+			<p>
+				Above, we can see what looks like the number <var>1</var>, as
+				rendered by a display unit with the <b>display resolution</b>
+				<var>9⨉5</var> (<var>9</var> pixels by <var>5</var> pixels). The
+				more pixels we have, the <q>sharper</q> the images look:
+			</p>
+			<figure>
+				<img
+					src="{% static 'images/resolution_1.svg' %}"
+					alt="image resolution"
+					loading="lazy"
+					style="width: 250px"
+				/>
+				<figcaption>
+					Resolutions <var>3⨉3</var>, <var>6⨉6</var>, <var>12⨉12.</var> A
+					typical modern display might be <var>1024⨉768.</var>
+				</figcaption>
+			</figure>
+			<p>
+				We can analogize the phenomenon to basic integral calculus: the
+				smaller and smaller we make the blocks (i.e., fitting more pixels
+				into a set area), the more things appear smooth. This basic idea
+				leads to the <b>ppi (pixels per inch)</b> unit &mdash; the number
+				of pixels fit into a ${1 \text{in} \times 1 \text{in}}$ square. For
+				example, if the displays above were ${1 \times 1}$ squares, we
+				would have the ppis: ${9 \text{ppi},}$ ${36 \text{ppi},}$ and ${144
+				\text{ppi}.}$<sup></sup>
+			</p>
+			<div class="note">
+				<p>
+					This is why more tech-savvy consumers ask more about a display's
+					${\text{ppi}}$ than its resolution. A display with a massive
+					resolution is of no use if it consists of just ${4}$ pixels.
+					Separately, the terms 360p, 720p, 1080p, and 4k all refer to
+					resolution. Specifically, the number of rows of pixels (i.e., the
+					height of the display in terms pixels).
+				</p>
+			</div>
+			<p>
+				Understanding the display in this manner, we see that to control
+				the display, we need registers that map to each of the pixels. And
+				in fact, each pixel in a connected display maps to some binary cell
+				in a RAM register. The registers housing these cells are placed
+				together in a designated data memory area called the
+				<b>screen memory map</b>. How big is this memory map?
+			</p>
+			<p>
+				Well, suppose we had a display with the resolution
+				<var>512⨉256</var>. This means that the display consists of
+				${131072}$ pixels. If our computer system's registers can only be
+				${16}$-bits wide, a total of ${{131072}/{16} = 8192}$ registers are
+				needed to control the display. Thus, each of the pixels in the
+				display unit map to registers with indices ${0}$ to ${8191.}$ With
+				these mappings, to turn a particular pixel on, we change some
+				binary cell in one of the registers to <var>1</var> inside that
+				pixel's register, and to turn the pixel off, we change the cell's
+				value to <var>0</var>.
+			</p>
+			<p>
+				Question: How do we map each pixel in the display to their
+				respective registers? This is somewhat of a challenging question.
+				We need a way to represent a ${2}$-dimensional structure as a
+				${1}$-dimensional structure.
+			</p>
+			<p>
+				To solve this problem, we must understand our constraints. If a
+				computer's register width is ${16}$ bits, read-write operations can
+				only be done ${16}$ bits at a time. Why? Because the registers can
+				only hold ${16}$ bits at any given moment. This means that data
+				values <i>and</i> operations can only be ${16}$ bits long. Thus, to
+				change a particular pixel's value, we have to go to that pixel's
+				register using a ${16}$-bit address, feed its ${16}$ bits to the
+				CPU, and write the CPU's output ${16}$ bits back to the pixel's
+				${16}$-bit address.
+			</p>
+			<p>
+				Ok, so a register can only contain ${16}$ bits. Our display has a
+				resolution of <var>512⨉256</var>. Interpreting this in terms of
+				matrices, the display consists of ${256}$ rows and ${512}$ columns.
+				Viewed in this way, a pixel's location in memory can be found by
+				using some formula of two numbers: a <i>row index</i>
+				<var>row</var>, and a <i>column index</i> <var>col</var>. Earlier,
+				we calculated that we have ${8192}$ registers to work with, each of
+				which can only hold ${16}$ bits. With ${16}$ bits, we can represent
+				${256}$ unique numbers. Our display has ${256}$ rows, each of which
+				has ${512}$ pixels. Dividing ${8192}$ (the number of registers
+				we're using) by ${256}$ (the number of unique numbers we can
+				represent in each register) we get:
+			</p>
+			<figure>$$ \dfrac{8192}{256} = 32 $$</figure>
+			<p>
+				Thus, each row in the display can be represented with ${32}$
+				sixteen-bit <i>words</i> (i.e., the combined bitstream of the
+				${32}$ registers). That is, every ${32}$ registers among the
+				${8192}$ registers represents a row. Because each word (i.e., row)
+				has ${16}$ bits, we get:
+			</p>
+			<figure>$$16 \times 32 = 512$$</figure>
+			<p>
+				which maps to the number of columns we have. Thus, each pixel can
+				be turned on or off by changing the value of the ${(\texttt{col}
+				\bmod 16)^{\text{th}}}$ bit in the register:
+			</p>
+			<figure>
+				$$ \texttt{RAM}[32 \cdot \texttt{row} + (\text{col} \text{ div }
+				16)]$$
+			</figure>
+			<p>
+				To illustrate this mapping technique, let's consider a simpler
+				example with a smaller screen and a computer system with a smaller
+				register width, say ${4.}$ Suppose we have an
+				<var>8⨉4</var> display. We'll give each pixel a label for
+				visualization purposes:
+			</p>
+			<div id="smaller_screen"></div>
+			<p>
+				Because we have an <var>8⨉4</var> display, there are ${32}$ pixels.
+				And because our registers can only hold ${2}$ bits at most, we need
+				${\dfrac{32}{2} = 16}$ registers total. Given that our computer
+				system only has a register width of ${2}$ bits, we can't fit every
+				row of pixels into a single register. Because of this limitation,
+				we represent each row with ${4}$ consecutive ${2}$-bit words. I.e.,
+				every four registers constitutes a row:
+			</p>
+			<div id="screen_registers"></div>
+			<p>
+				Thus, if we want to turn on the pixel <var>c</var>, we first
+				determine its row-column index: <var>[0][2]</var>. Using the row
+				and column indices, we go to the specific register:
+			</p>
+			<figure>
+				$$ \begin{aligned} \texttt{RAM}[4 \cdot \texttt{row} +
+				(\texttt{col} \text{ div } 2)] &= \texttt{RAM}[4 \cdot 0 + (2
+				\text{ div } 2)] \\ &= \texttt{RAM}[0 + 1] \\ &= \texttt{RAM}[1] \\
+				\end{aligned} $$
+			</figure>
+			<p>
+				Once we're at that register, we change the bit whose index is
+				${\texttt{col} \bmod 2.}$ In this case, that's the bit with the
+				index ${2 \bmod 2 = 0.}$ To turn the corresponding pixel on, we
+				change that bit from a <var>0</var> to a <var>1</var>:
+			</p>
+			<div class="horizon">
+				<div id="screen_registers_select"></div>
+				<div id="smaller_screen_on"></div>
+			</div>
+			<p>
+				Because we have a formula for addressing the pixels, we can place
+				all of the pixels' registers in a single chip called
+				<var>SCREEN</var>, and refer to any given pixel by writing:
+			</p>
+			<ul class="syntax">
+				<li>SCREEN[A]</li>
+			</ul>
+			<p>
+				where <var>A</var> is the address of the pixel's corresponding
+				register. This is purely for testing. In production, a display's
+				memory map isn't necessarily a separate chip. Instead, it's first
+				register, or <i>base address</i>, is designated somewhere in RAM,
+				and accessing the screen's pixels is done with:
+			</p>
+			<ul class="syntax">
+				<li>RAM[b + A]</li>
+			</ul>
+			<p>
+				where <var>b</var> is the base address. And to turn the pixel on or
+				off, we set the <var>${c}$ % 16</var>th bit of the content in its
+				register to <var>0</var> or <var>1</var>. For example,
+			</p>
+			<p>
+				To display images, the physical display is continuously refreshed,
+				according to the bits stored in screen memory map's registers. This
+				happens many, many times each second. By manipulating the bits in
+				these registers, at each frame, what's shown on the physical
+				display changes.
+			</p>
+		</section>
+
+		<section id="keyboard">
+			<h4>Keyboard</h4>
+			<p>
+				Compared to the display, keyboards are much simpler. Like the
+				display, some data memory (RAM) is reserved for the
+				<b>keyboard memory map</b>. It turns out, however, that we really
+				only need ${16}$ bits to receive input from a keyboard.
+				Accordingly, on a ${16}$-bit computer, the keyboard memory map is a
+				single ${16}$-bit register that maps to the keyboard.
+			</p>
+			<p>
+				Again like the display, a keyboard is a matrix of <i>keys</i>. The
+				keys are connected together in a circuit, forming what's called a
+				<b>key matrix</b>. In the default state (no typing), the circuit is
+				broken at points directly below each key. Pressing a key is
+				essentially a switch &mdash; it closes the circuit and current
+				flows to the processor. By designing the circuit a particular way,
+				we can generate unique ways of <q>closing the circuit.</q> For
+				example, pressing the <var>k</var> key might result in feeding some
+				bitstream <var>00101011</var> to the keyboard's processor.
+			</p>
+			<p>
+				This input tells the processor where the keyboard's circuit closed,
+				and using its internal logic, it outputs a nonnegative integer
+				called the <b>scan code</b>, usually a bitstream of of ${8}$ bits
+				(${1}$ byte). That scan code is the integer representation of a
+				particular key on the keyboard; every key has a unique scan code.
+				How these scan codes are assigned to keys is determined by a
+				<b>keyboard standard</b> &mdash; some agreed upon set of rules for
+				which numbers represent which keys.
+			</p>
+			<p>
+				Once a key is pressed, the keyboard's processor outputs the scan
+				code to the computer system, the computer system receives the scan
+				doe as input, and stores it in the keyboard memory map. Once it's
+				inside the keyboard memory map, the rest is up to the computer
+				system. For example, on a keyboard that follows the PS2 standard,
+				the <var>F</var> key has the scan code <var>43</var>. If the
+				keyboard outputs ${1}$ byte (most scan codes are ${1}$ or ${2}$
+				bytes long), pressing the <var>f</var> key sends the bitstream
+				<var>0010 1011</var> to the keyboard memory map. What happens after
+				that is up to the computer system. Maybe it results in manipulating
+				the display's pixels to show the character <var>f.</var> To do so,
+				the computer uses a <b>lookup table</b> to determine what character
+				the bitstream <var>0010 1011</var> means. If the computer uses an
+				ASCII lookup table, it sees that the scancode <var>43</var> maps to
+				<var>102</var> &mdash; the ASCII code for the character lowercase
+				<var>f</var> &mdash; and renders accordingly.
+			</p>
+			<p>
+				An important point to keep in mind about this whole process is that
+				as long as the keyboard is connected to a power source (e.g.,
+				connecting the cable via USB, or, for Bluetooth keyboards, a
+				separate battery) the keyboard is always <q>on.</q> That is to say,
+				the keyboard is constantly sending bitstreams to the computer
+				following its own internal clock. When no key is pressed, the
+				keyboard outputs the scan code <var>0000 0000</var>.
+			</p>
+		</section>
+	</section>
+</section>
+
+<section id="assembly_programs">
+	<section id="intro">
+		<h2>Assembly Programs</h2>
+		<p>
+			In this section, we examine what some of the most common programming
+			idioms look like in Assembly. As we'll see, many of the idioms we use
+			every day take much longer to write in Assembly. Writing Assembly
+			programs is perhaps the greatest way to appreciate higher-level
+			languages.
+		</p>
+	</section>
+
+	<section id="symbols">
+		<h3>Symbols</h3>
+		<p>
+			Some Assembly languages provide <b>symbols</b>. We can think of these
+			as special characters that allow Assembly programmers to write more
+			semantically meaningful code. For example, the Assembly language
+			might allow its user to write:
+		</p>
+		<ol class="alg">
+			<li>@R25;</li>
+		</ol>
+		<p>
+			Here, the symbol <var>R</var> indicates a register. By providing this
+			symbol, the programmer can distinguish between some memory address
+			<var>R25</var> and the number <var>25</var>.
+		</p>
+	</section>
+
+	<section id="branching">
+		<h3>Branching</h3>
+		<p>
+			Many programming languages provide some form of
+			<i>branching.</i> For example, in C, we might write:
+		</p>
+		<pre class="language-c"><code>
+			if (n > 0) {
+				x = 1;
+			} else {
+				x = 0;
+			}
+		</code></pre>
+		<p>
+			Once again, much of this syntactic sugar for Assembly. We have no
+			notion of if-else in Assembly. Instead, we have the
+			<var>goto</var> instructions (C-instructions). The C program above,
+			in Assembly, might look like:
+		</p>
+		<ol class="alg">
+			<li>@R0 <var>// A=0, M=RAM[0]</var></li>
+			<li>D=M <var>// D=RAM[0]</var></li>
+			<li>@8 <var>// A=8</var></li>
+			<li>D;JGT <var>// If RAM[0] > 0 goto line 8</var></li>
+			<li>@R1 <var>// A=1 M=RAM[1]</var></li>
+			<li>M=0 <var>// RAM[1]=0</var></li>
+			<li>@10 <var>// A=10</var></li>
+			<li>0;JMP <var>// end of program</var></li>
+			<li>@R1 <var>// A=1, M=RAM[1]</var></li>
+			<li>M=1 <var>// RAM[1]=1</var></li>
+			<li>@10 <var>// A=10</var></li>
+			<li>0;JMP <var>// end of program</var></li>
+		</ol>
+		<p>
+			Notice the amount of comments we've provided above. Without the
+			comments and line numbers, the assembly code looks like:
+		</p>
+		<pre class="language-pseudo"><code>
+			@R0
+			D=M
+			@8
+			D;JGT
+			@R1
+			M=0
+			@10
+			0;JMP
+			@R1
+			M=1
+			@10
+			0;JMP
+		</code></pre>
+		<p>
+			This is extremely cryptic code, and it's another reason why we have
+			high-level languages. Because of how cryptic Assembly can be,
+			comments and documentation are even more critical in low-level
+			programming. Unless we work with compilers, operating systems, or
+			low-level systems in general, chances are, we aren't encountering
+			Assembly very often. As such, it's unlikely that we, or others, would
+			understand what the program above does ${6}$ months from now, let
+			alone several years. Always document Assembly code as much as
+			possible. As Donald Knuth once explained, our primary task as
+			programmers isn't to tell computers what to do &mdash; it's to
+			explain to other humans what want the computer to do.
+		</p>
+		<p>
+			Because of how important documentation is, many Assembly languages
+			provide a <b>label</b> construct. Labels are essentially symbols, or
+			names, to mark particular locations in the Assembly file. For
+			example, our Assembly code above can be written as:
+		</p>
+		<ol class="alg">
+			<li>@R0 <var>// A=0, M=RAM[0]</var></li>
+			<li>D=M <var>// D=RAM[0]</var></li>
+			<li>@POSITIVE <var>// This is a label</var></li>
+			<li>D;JGT <var>// If RAM[0] > 0 goto label POSITIVE</var></li>
+			<li>@R1 <var>// A=1 M=RAM[1]</var></li>
+			<li>M=0 <var>// RAM[1]=0</var></li>
+			<li>@END <var>// Label indicating the end of the program</var></li>
+			<li>0;JMP <var>// end of program</var></li>
+			<li>(POSITIVE) <var>// Declare label POSITIVE</var></li>
+			<li>@R1 <var>// A=1, M=RAM[1]</var></li>
+			<li>M=1 <var>// RAM[1]=1</var></li>
+			<li>(END) <var>// Declare label END</var></li>
+			<li>@END</li>
+			<li>0;JMP <var>// end of program</var></li>
+		</ol>
+	</section>
+
+	<section id="variables">
+		<h3>Variables</h3>
+		<p>
+			What do variables look like in Assembly? For example, suppose we
+			wanted to perform the classic switch idiom, presented in most
+			introductory programming courses:
+		</p>
+		<pre class="language-c"><code>
+			void switch(int* a, int* b) {
+				int temp = *a;
+				*a = *b;
+				*b = temp;
+			}
+
+			int main() {
+				int x = 1;
+				int y = 2;
+				switch(x,y);
+				return 0;
+			}
+		</code></pre>
+		<p>The same program in some Assembly language might look like:</p>
+		<!-- prettier-ignore -->
+		<ol class="alg">
+			<li>@R1 <var>// A=1, M=RAM[1]</var></li>
+			<li>D=M <var>// D=RAM[1]</var></li>
+			<li>@TEMP <var>// A=${n}$, M=RAM[${n}$]</var></li>
+			<li>M=D <var>// RAM[${n}$]=RAM[1]; store bits in RAM[1] in RAM[${n}]$</var></li>
+			<li>@R0 <var>// A=0; M=RAM[0]</var></li>
+			<li>D=M <var>// D=RAM[0]</var></li>
+			<li>@R1 <var>// A=1; M=RAM[1]</var></li>
+			<li>M=D <var>// RAM[1]=RAM[0]; store bits in RAM[0] in RAM[1]</var></li>
+			<li>@TEMP <var>// A=${n}$, M=RAM[${n}$]</var></li>
+			<li>D=M <var>// D=RAM[${n}$]</var></li>
+			<li>@R0 <var>// A=0, M=RAM[0]</var></li>
+			<li>M=D <var>// RAM[0]=RAM[${n}$]; store bits in RAM[${n}$] in RAM[0]</var></li>
+			<li>(END)</li>
+			<li>@END</li>
+			<li>0;JMP</li>
+		</ol>
+		<p>
+			In the code above, <var>TEMP</var> is just some variable name. When
+			we write <var>@TEMP</var>, what we're really writing is
+			<var>A=${n,}$</var> where ${n}$ is some number corresponding to a
+			free memory location. Thus, when we write <var>@TEMP</var>, we tell
+			the computer to find some location in memory that's not currently
+			occupied. If the computer finds, say, memory location
+			<var>RAM[27]</var>, the <var>@TEMP</var> symbol is replaced with
+			<var>@27</var>, and we get <var>A=27, M=RAM[27]</var>.
+		</p>
+	</section>
+
+	<section id="iteration">
+		<h3>Iteration</h3>
+		<p>
+			How about iteration? What does this look like in Assembly? For
+			example, consider some code that computes the sum of the natural
+			numbers up to ${n:}$
+		</p>
+		<pre class="language-c"><code>
+			int sum = 0;
+			int i = 1;
+			int n = 100;
+			while (i <= n) {
+				sum += i;
+				i++;
+			}
+		</code></pre>
+		<p>
+			In Assembly, the code would appear as the code below. To aid in
+			understanding the code, comments are written in a separate block to
+			right. Notice that the variables are really just consecutive memory
+			addresses that the CPU finds, per the machine language specification:
+		</p>
+		<div class="pseudosource">
+			<ol class="alg">
+				<li><var>// First, declare the necessary variables</var></li>
+				<ol>
+					<li>@R0</li>
+					<li>D=M</li>
+					<li>@n</li>
+					<li>M=D</li>
+					<li>@i</li>
+					<li>M=1</li>
+					<li>@sum</li>
+					<li>M=0</li>
+				</ol>
+				<li><var>// Now write the logic</var></li>
+				<li>(LOOP)</li>
+				<ol>
+					<li>@i</li>
+					<li>D=M</li>
+					<li>@n</li>
+					<li>D=D-M</li>
+					<li>@STOP</li>
+					<li>D;JGT</li>
+					<li>@sum</li>
+					<li>D=M</li>
+					<li>@i</li>
+					<li>D=D+M</li>
+					<li>@sum</li>
+					<li>M=D</li>
+					<li>@i</li>
+					<li>M=M+1</li>
+					<li>@LOOP</li>
+					<li>0;JMP</li>
+				</ol>
+				<li>(STOP)</li>
+				<ol>
+					<li>@sum</li>
+					<li>D=M</li>
+					<li>@R1</li>
+					<li>M=D</li>
+				</ol>
+				<li>(END)</li>
+				<ol>
+					<li>@END</li>
+					<li>0;JMP</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li><i>Comment</i></li>
+				<li>
+					This translates to <var>@0</var>, which means <var>A=0</var>,
+					which in turn means <var>M=RAM[0]</var>.
+				</li>
+				<li>
+					<var>D=RAM[0]</var>. The D-register stores <var>RAM[0]</var>.
+				</li>
+				<li>
+					This line translates to <var>@16</var> (really, some number),
+					which translates to <var>M=RAM[16]</var>. That's a memory
+					address, but we're call it <var>n</var>.
+				</li>
+				<li>
+					<var>M=RAM[0]</var>, which means <var>RAM[16] = RAM[0]</var>.
+				</li>
+				<li>
+					Equivalent to writing <var>int i;</var> in a higher-level
+					language. Translates to <var>@17</var>, which implies
+					<var>A=17</var>, which implies <var>M=RAM[17]</var>. Notice that
+					this is the next memory address after <var>RAM[16]</var>.
+				</li>
+				<li>
+					In C, this would look like <var>i = 1.</var> Translates to
+					<var>RAM[17]=1</var>. I.e., store the value <var>1</var> inside
+					the register <var>RAM[17]</var>.
+				</li>
+				<li>
+					Translates to: <var>@18</var>, which implies <var>A=18</var>,
+					which implies <var>M=RAM[18]</var>. I.e., the symbol
+					<var>sum</var> is the address <var>RAM[18]</var>.
+				</li>
+				<li>
+					<var>RAM[18]=0</var>. This is what happens when we write
+					<var>sum=0</var>.
+				</li>
+				<li><i>Comment.</i></li>
+				<li>Point in program: <var>LOOP</var></li>
+				<li>
+					<var>A=i</var>, which implies <var>A=17</var>, which implies
+					<var>M=RAM[17]</var>.
+				</li>
+				<li>
+					Recall that <var>D=RAM[0]</var>. Thus, this line means
+					<var>RAM[0]=RAM[17]</var> &mdash; store the data inside register
+					<var>RAM[0]</var> inside the register <var>RAM[17]</var>.
+				</li>
+				<li>
+					<var>A=n</var>, which implies <var>A=18</var>, which implies
+					<var>M=RAM[18]</var>.
+				</li>
+				<li>
+					Recall that <var>D=RAM[0]</var>. Thus, this line means:
+					<var>RAM[0]=RAM[0]-RAM[18]</var>. I.e., compute the value inside
+					<var>RAM[0]</var> currently minus the value inside
+					<var>RAM[18]</var>, and store that result inside
+					<var>RAM[0]</var>.
+				</li>
+				<li>Fork in program: <var>STOP</var>.</li>
+				<li>
+					If <var>D ≡ 0</var>, jump to the <var>STOP</var> point. Put
+					differently, if <var>i > n</var>, <var>goto STOP</var>.
+				</li>
+				<li><var>A=18</var>, which implies <var>M=RAM[18]</var>.</li>
+				<li>
+					Recall that <var>D=RAM[0]</var>. This amounts to
+					<var>D=RAM[18]</var>.
+				</li>
+				<li><var>A=17</var>, which implies <var>M=RAM[17]</var>.</li>
+				<li>
+					Recall that <var>D=RAM[0]</var> and <var>M=RAM[17]</var>. Thus,
+					this line means, <var>RAM[0]=RAM[0]+RAM[17]</var>.
+				</li>
+				<li><var>A=18</var>, which implies <var>M=RAM[18]</var>.</li>
+				<li>
+					Recall that <var>D=RAM[0]</var>. Thus, this line translates to
+					<var>RAM[0]=RAM[18]</var>.
+				</li>
+				<li><var>A=17</var>, which implies <var>M=RAM[17]</var>.</li>
+				<li>
+					<var>RAM[17]=RAM[17]+1</var>. I.e., increment the value inside
+					register <var>RAM[17]</var>.
+				</li>
+				<li>Fork in program: <var>LOOP</var></li>
+				<li>Automatically jump back to the point <var>LOOP</var>.</li>
+				<li>Point in program: <var>STOP</var></li>
+				<li><var>A=18</var>, which implies <var>M=RAM[18]</var></li>
+				<li>
+					Recall that <var>D=RAM[0]</var>. Thus, this line translates to
+					<var>RAM[0]=RAM[18]</var> &mdash; store the contents of register
+					<var>RAM[18]</var> inside register <var>RAM[0]</var>.
+				</li>
+				<li><var>A=1</var>, which implies <var>M=RAM[1]</var>.</li>
+				<li>
+					<var>RAM[1]=RAM[0]</var>. That is, store the contents of register
+					<var>RAM[0]</var> inside register <var>RAM[1]</var>.
+				</li>
+				<li>Point in program: END</li>
+				<li>Fork in program: END</li>
+				<li>End program.</li>
+			</ol>
+		</div>
+	</section>
+
+	<section id="pointers">
+		<h3>Pointers</h3>
+		<p>Consider the following code:</p>
+		<pre class="language-c"><code>
+			const int n = 5;
+			int arr[n];
+			for (int i = 0; i &lt; n; i++) {
+				arr[i] = -1;
+			}
+		</code></pre>
+		<p>
+			A fairly simple program that assigns to each index in the array
+			<var>arr</var> the value <var>-1</var>, resulting in:
+		</p>
+		<div id="pointer_demo_array"></div>
+		<p>
+			Accomplishing the same task in Assembly takes many more lines. Before
+			we see the program, we should point out a few things about arrays,
+			and pointers more generally.
+		</p>
+		<p>
+			First, there's no such thing as an <q>array</q> at the hardware
+			level. An array is just an abstraction &mdash; a mental construct we,
+			as programmers, have concocted to help think about problems. More
+			specifically, arrays exist because the high-level language designer
+			provided syntax for them. That syntax is syntactic sugar for a
+			particular sequence of instructions in Assembly. When the computer
+			system's assembler translates these instructions into machine code,
+			all the CPU does is execute them. The CPU does not know what an
+			<q>array</q> is.
+		</p>
+		<p>
+			The array instructions, however, are unique in that they always have
+			two key components: (1) some <i>base address</i> and (2) some
+			positive integer. As we know, arrays are contiguous (its values are
+			immediately next to one another). This is made possible because the
+			CPU uses the base address and that constant to read and write
+			registers.
+		</p>
+		<div class="pseudosource">
+			<ol class="alg">
+				<li><var>// Declare the variables</var></li>
+				<ol>
+					<li>@100</li>
+					<li>D=A</li>
+					<li>@arr</li>
+					<li>M=D</li>
+					<li><var>// n=5</var></li>
+					<li>@5</li>
+					<li>D=A</li>
+					<li>@n</li>
+					<li>M=D</li>
+					<li><var>// initialize i=0</var></li>
+					<li>@i</li>
+					<li>M=0</li>
+				</ol>
+				<li>(LOOP)</li>
+				<ol>
+					<li><var>// if (i == n) goto END</var></li>
+					<li>@i</li>
+					<li>D=M</li>
+					<li>@n</li>
+					<li>D=D-M</li>
+					<li>@END</li>
+					<li>D;JEQ</li>
+					<li><var>// RAM[arr+i] = -1</var></li>
+					<li>@arr</li>
+					<li>D=M</li>
+					<li>@i</li>
+					<li>A=D+M</li>
+					<li>M=-1</li>
+					<li><var>// i++</var></li>
+					<li>@i</li>
+					<li>M=M+1</li>
+					<li>@LOOP</li>
+					<li>0;JMP</li>
+				</ol>
+				<li>(END)</li>
+				<ol>
+					<li>@END</li>
+					<li>0;JMP</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li>
+					<i>Comment</i>. Following the code example, we're setting
+					<var>n=5</var>.
+				</li>
+				<li>
+					<var>A=100</var> which implies <var>M=RAM[100]</var>. This will
+					be the array's base address.
+				</li>
+				<li><var>D=100</var></li>
+				<li><var>A=17</var> (some number), <var>M=RAM[17]</var></li>
+				<li>
+					<var>RAM[17]=D</var>, which implies <var>RAM[17]=100</var>. In
+					other words, <var>RAM[17]</var> stores the address
+					<var>100</var>.
+				</li>
+				<li>
+					<i>Comment</i>. This code block corresponds to setting
+					<var>n = 5</var>.
+				</li>
+				<li><var>A=5</var>.</li>
+				<li>
+					<var>D=5</var>. I.e., <var>D</var> stores the number
+					<var>5</var>.
+				</li>
+				<li>
+					<var>A=19</var> (some address the computer can find). This
+					implies <var>M=RAM[19]</var>.
+				</li>
+				<li>
+					<var>RAM[19]=5</var>. Store the value <var>5</var> in the
+					register <var>RAM[19]</var>.
+				</li>
+				<li><i>Comment.</i> Now we're initializing <var>i</var>.</li>
+				<li>
+					<var>A=20</var> (some address the computer can find). This
+					implies <var>M=RAM[20]</var>.
+				</li>
+				<li><var>RAM[20]=0</var>. Set <var>i=0</var>.</li>
+				<li>Line label: <var>LOOP</var></li>
+				<li>
+					<i>Comment.</i> This is where we start looping. If
+					<var>i</var> is equal to <var>n</var>, jump to the line labeled
+					<var>END</var>.
+				</li>
+				<li><var>A=20</var>, i.e., <var>M=RAM[20]</var>.</li>
+				<li><var>D=RAM[20]</var>.</li>
+				<li><var>A=19</var>, i.e., <var>M=RAM[19]</var>.</li>
+				<li>
+					<var>D=RAM[20]-RAM[19]</var>. That is, compute the current value
+					inside <var>RAM[20]</var> minus the current value in
+					<var>RAM[19]</var> and store it in <var>D</var>.
+				</li>
+				<li>
+					Jump to the line labeled <var>END</var> if this next line is
+					true.
+				</li>
+				<li>Jump if <var>D</var> is <var>0</var>. Otherwise, continue.</li>
+				<li>
+					<i>Comment.</i> This is where we increment the register number.
+				</li>
+				<li><var>A=100</var>, which implies <var>M=RAM[100]</var>.</li>
+				<li>
+					<var>D=RAM[100]</var> (<var>D</var> stores the address
+					<var>RAM[100]</var>).
+				</li>
+				<li>
+					<var>A=20</var>, which implies <var>M=RAM[20]</var>. I.e., turn
+					your attention to <var>i</var>.
+				</li>
+				<li>
+					<var>A=100+RAM[20] => A=100+0 => M=RAM[100]</var>. Notice what
+					this line does: We've incremented the register number. Now
+					<var>M=RAM[100]</var>.
+				</li>
+				<li>
+					<var>RAM[100]=-1</var>. Assign <var>-1</var> into the register
+					<var>RAM[100]</var>.
+				</li>
+				<li><i>Comment.</i> We're about to increment <var>i</var>.</li>
+				<li><var>A=20 => M=RAM[20]</var>. I.e., look at <var>i</var>.</li>
+				<li>
+					<var>RAM[20]=RAM[20]+1</var>. That is, increment the current
+					value inside <var>RAM[20]</var>. Thus, <var>RAM[20]=1</var>.
+				</li>
+				<li>
+					Jumping point: <var>LOOP</var>. If the condition below is true,
+					jump to the line labeled <var>LOOP</var>.
+				</li>
+				<li>Immediately jump to the line labeled <var>LOOP</var>.</li>
+				<li>Line label: <var>END</var></li>
+				<li>
+					Jumping point: <var>END</var>. If the condition below is true,
+					jump the line labeled <var>END</var>.
+				</li>
+				<li>Immediately jump to the line labeled <var>END</var>.</li>
+			</ol>
+		</div>
+		<p>
+			Based on the above code, there are a few things to observe: First, we
+			can see that the variables <var>arr</var> and <var>i</var> are used
+			specifically for addressing &mdash; <var>arr</var> gives the base
+			address, and <var>i</var> is used to increment the address number. In
+			a higher-level language like C, these variables are called
+			<b>pointers</b>. More specifically, pointers are what allow us to
+			utilize register indices, rather than the contents of those registers
+			themselves.
+		</p>
+		<p>
+			Viewed in this way, we see that <i>pointer arithmetic</i> really
+			isn't that different from regular integer arithmetic. It's just
+			computer arithmetic with some constraints. Moreover, pointer
+			arithmetic is just arithmetic on register indices &mdash; we're using
+			register indices as data.
+		</p>
+	</section>
+
+	<section id="input_and_output">
+		<h3>Input & Output</h3>
+		<p>
+			Recall that with the display and keyboard, there are two regions (a
+			contiguous sequence of registers) in RAM dedicated to receiving their
+			inputs: The
+			<i>screen memory map</i> for the display, and the
+			<i>keyboard memory map</i> for the keyboard. Both regions have a
+			<i>base address</i> &mdash; the first register in the sequence, after
+			which all the other registers follow. The display has a base address
+			called <var>SCREEN</var>, and the keyboard has a base address called
+			<var>KBD</var>. The screen memory map consists of roughly ${8000}$
+			registers, while the keyboard memory map consists of just one
+			${16}$-bit register.
+		</p>
 	</section>
 </section>
 
@@ -1793,5 +6252,12 @@
 		task.
 	</p>
 </section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/sys_assembly.js"
+></script>
 
 {% endblock %}
