@@ -1,12 +1,18 @@
 import { cdemo } from "../CDemo.mjs";
+import * as csmd from "../csmd.mjs";
+import { CSMD } from "../csmd.mjs";
 
-const introTree = {
+// const introTree = ;
+// cdemo.renderTree(introTree);
+
+const tree_intro = new csmd.Tree({
 	id: "introTree",
+	width: 500,
+	height: 400,
+	container_height: 35,
 	leveled: "true",
 	heightMarked: "true",
-	width: 500,
-	height: 250,
-	treeData: [
+	data: [
 		{ child: "1", parent: "", annotate: "root" },
 		{ child: "2", parent: "1", edgeLabel: "1" },
 		{ child: "3", parent: "1", edgeLabel: "2" },
@@ -23,14 +29,15 @@ const introTree = {
 		{ child: "11", parent: "6", edgeLabel: "13" },
 		{ child: "13", parent: "10", edgeLabel: "14" },
 	],
-};
-cdemo.renderTree(introTree);
+}).render();
 
-const binaryTreeIntro = {
+const binaryTreeIntro = new csmd.Tree({
 	id: "binaryTreeIntro",
 	width: 400,
-	height: 200,
-	treeData: [
+	height: 300,
+	container_width: 60,
+	container_height: 45,
+	data: [
 		{ child: "1", parent: "", annotate: "root" },
 		{ child: "2", parent: "1", annotate: "left child" },
 		{ child: "3", parent: "1", annotate: "right child" },
@@ -47,56 +54,56 @@ const binaryTreeIntro = {
 		{ child: "14", parent: "7" },
 		{ child: "15", parent: "7" },
 	],
-};
-cdemo.renderTree(binaryTreeIntro);
+}).render();
 
-const skewLeftBinaryTree = {
+const skewLeftBinaryTree = new csmd.Tree({
 	id: "skewLeftBinaryTree",
-	skew: "left",
 	width: 450,
 	height: 200,
-	treeData: [
+	container_height: 20,
+	data: [
 		{ child: "1", parent: "" },
 		{ child: "2", parent: "1" },
-		{ child: "3", parent: "2" },
-		{ child: "4", parent: "3" },
+		{ child: "3", parent: "1", display: "none" },
+		{ child: "4", parent: "2" },
+		{ child: "5", parent: "2", display: "none" },
 	],
-};
-cdemo.renderTree(skewLeftBinaryTree);
+}).render();
 
-const linearBinaryTree = {
+const linearBinaryTree = new csmd.Tree({
 	id: "linearBinaryTree",
 	width: 450,
 	height: 200,
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "1", parent: "" },
-		{ child: "2", parent: "1" },
-		{ child: "3", parent: "2" },
-		{ child: "4", parent: "3" },
+		{ child: "2", parent: "1", display: "none" },
+		{ child: "3", parent: "1"},
+		{ child: "4", parent: "1", display: "none" },
 	],
-};
-cdemo.renderTree(linearBinaryTree);
+}).render();
 
-const skewRightBinaryTree = {
+const skewRightBinaryTree = new csmd.Tree({
 	id: "skewRightBinaryTree",
-	skew: "right",
 	width: 450,
 	height: 200,
-	treeData: [
+	container_height: 20,
+	data: [
 		{ child: "1", parent: "" },
-		{ child: "2", parent: "1" },
-		{ child: "3", parent: "2" },
-		{ child: "4", parent: "3" },
+		{ child: "2", parent: "1", display: "none" },
+		{ child: "3", parent: "1" },
+		{ child: "4", parent: "3", display: "none" },
+		{ child: "5", parent: "3" },
 	],
-};
-cdemo.renderTree(skewRightBinaryTree);
+}).render();
 
-const tree_path_0 = {
+const tree_path_0 = new csmd.Tree({
 	id: "tree_path_0",
 	width: 350,
 	height: 350,
-	paddingBottom: "45%",
-	treeData: [
+	container_width: 50,
+	container_height: 41,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A" },
@@ -113,15 +120,15 @@ const tree_path_0 = {
 		{ child: "O", parent: "G" },
 		{ child: "P", parent: "G" },
 	],
-};
-cdemo.renderTree(tree_path_0);
+}).render();
 
-const tree_path_1 = {
+const tree_path_1 = new csmd.Tree({
 	id: "tree_path_1",
 	width: 350,
 	height: 350,
-	paddingBottom: "45%",
-	treeData: [
+	container_width: 50,
+	container_height: 41,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A", path: "red" },
@@ -138,15 +145,15 @@ const tree_path_1 = {
 		{ child: "O", parent: "G" },
 		{ child: "P", parent: "G" },
 	],
-};
-cdemo.renderTree(tree_path_1);
+}).render();
 
-const tree_path_2 = {
+const tree_path_2 = new csmd.Tree({
 	id: "tree_path_2",
 	width: 350,
 	height: 350,
-	paddingBottom: "45%",
-	treeData: [
+	container_width: 50,
+	container_height: 41,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A", path: "red" },
 		{ child: "C", parent: "A" },
@@ -163,16 +170,16 @@ const tree_path_2 = {
 		{ child: "O", parent: "G" },
 		{ child: "P", parent: "G" },
 	],
-};
-cdemo.renderTree(tree_path_2);
+}).render();
 
-const tree_depth_0 = {
+const tree_depth_0 = new csmd.Tree({
 	id: "tree_depth_0",
 	depth: "mark",
 	width: 350,
 	height: 350,
-	paddingBottom: "45%",
-	treeData: [
+	container_width: 50,
+	container_height: 41,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A" },
@@ -189,16 +196,16 @@ const tree_depth_0 = {
 		{ child: "O", parent: "G" },
 		{ child: "P", parent: "G" },
 	],
-};
-cdemo.renderTree(tree_depth_0);
+}).render();
 
-const tree_height_0 = {
+const tree_height_0 = new csmd.Tree({
 	id: "tree_height_0",
 	heightMarked: true,
 	width: 350,
 	height: 350,
-	paddingBottom: "45%",
-	treeData: [
+	container_width: 45,
+	container_height: 37,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A" },
@@ -215,15 +222,15 @@ const tree_height_0 = {
 		{ child: "O", parent: "G" },
 		{ child: "P", parent: "G" },
 	],
-};
-cdemo.renderTree(tree_height_0);
+}).render();
 
-const parent_child_tree = {
+const parent_child_tree = new csmd.Tree({
 	id: "parent_child_tree",
 	width: 350,
 	height: 250,
-	paddingBottom: "35%",
-	treeData: [
+	container_width: 50,
+	container_height: 20,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -231,43 +238,43 @@ const parent_child_tree = {
 		{ child: "e", parent: "b" },
 		{ child: "f", parent: "b" },
 	],
-};
-cdemo.renderTree(parent_child_tree);
+}).render();
 
-const tree_order_3 = {
+const tree_order_3 = new csmd.Tree({
 	id: "tree_order_3",
 	width: 350,
-	height: 100,
-	paddingBottom: "25%",
-	treeData: [
+	height: 250,
+	container_width: 50,
+	container_height: 15,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(tree_order_3);
+}).render();
 
-const tree_order_5 = {
+const tree_order_5 = new csmd.Tree({
 	id: "tree_order_5",
 	width: 350,
 	height: 250,
-	paddingBottom: "45%",
-	treeData: [
+	container_width: 50,
+	container_height: 15,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
 		{ child: "d", parent: "b" },
 		{ child: "d", parent: "b" },
 	],
-};
-cdemo.renderTree(tree_order_5);
+}).render();
 
-const tree_order_8 = {
+const tree_order_8 = new csmd.Tree({
 	id: "tree_order_8",
-	width: 400,
-	height: 350,
-	paddingBottom: "55%",
-	treeData: [
+	width: 350,
+	height: 250,
+	container_width: 50,
+	container_height: 30,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -284,15 +291,15 @@ const tree_order_8 = {
 		{ child: "n", parent: "h" },
 		{ child: "l", parent: "h" },
 	],
-};
-cdemo.renderTree(tree_order_8);
+}).render();
 
-const foliage_count = {
+const foliage_count = new csmd.Tree({
 	id: "foliage_count",
-	width: 400,
-	height: 350,
-	paddingBottom: "55%",
-	treeData: [
+	width: 350,
+	height: 250,
+	container_width: 50,
+	container_height: 30,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -310,15 +317,15 @@ const foliage_count = {
 		{ child: "o", parent: "l" },
 		{ child: "p", parent: "l" },
 	],
-};
-cdemo.renderTree(foliage_count);
+}).render();
 
-const tree_ancestor = {
+const tree_ancestor = new csmd.Tree({
 	id: "tree_ancestor",
 	width: 350,
-	height: 200,
-	paddingBottom: "45%",
-	treeData: [
+	height: 250,
+	container_width: 50,
+	container_height: 35,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -333,15 +340,15 @@ const tree_ancestor = {
 		{ child: "l", parent: "f" },
 		{ child: "m", parent: "f", display: "none" },
 	],
-};
-cdemo.renderTree(tree_ancestor);
+}).render();
 
-const tree_strict_descendants = {
+const tree_strict_descendants = new csmd.Tree({
 	id: "tree_strict_descendants",
 	width: 350,
-	height: 200,
-	paddingBottom: "45%",
-	treeData: [
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a", display: "none" },
@@ -352,15 +359,15 @@ const tree_strict_descendants = {
 		{ child: "j", parent: "e", path: true },
 		{ child: "k", parent: "e", display: "none" },
 	],
-};
-cdemo.renderTree(tree_strict_descendants);
+}).render();
 
-const tree_strict_ancestors = {
+const tree_strict_ancestors = new csmd.Tree({
 	id: "tree_strict_ancestors",
 	width: 350,
-	height: 200,
-	paddingBottom: "45%",
-	treeData: [
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a", path: true },
 		{ child: "c", parent: "a", display: "none" },
@@ -371,15 +378,15 @@ const tree_strict_ancestors = {
 		{ child: "j", parent: "e" },
 		{ child: "k", parent: "e", display: "none" },
 	],
-};
-cdemo.renderTree(tree_strict_ancestors);
+}).render();
 
-const tree_siblings = {
+const tree_siblings = new csmd.Tree({
 	id: "tree_siblings",
 	width: 350,
-	height: 200,
-	paddingBottom: "45%",
-	treeData: [
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -390,15 +397,15 @@ const tree_siblings = {
 		{ child: "j", parent: "e" },
 		{ child: "k", parent: "e", display: "none" },
 	],
-};
-cdemo.renderTree(tree_siblings);
+}).render();
 
-const node_degree = {
+const node_degree = new csmd.Tree({
 	id: "node_degree",
 	width: 350,
-	height: 200,
-	paddingBottom: "45%",
-	treeData: [
+	height: 285,
+	container_width: 50,
+	container_height: 45,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -416,15 +423,15 @@ const node_degree = {
 		{ child: "o", parent: "e" },
 		{ child: "p", parent: "e" },
 	],
-};
-cdemo.renderTree(node_degree);
+}).render();
 
-const k_equals_2 = {
+const k_equals_2 = new csmd.Tree({
 	id: "k_equals_2",
 	width: 350,
-	height: 200,
-	paddingBottom: "45%",
-	treeData: [
+	height: 285,
+	container_width: 50,
+	container_height: 41,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -441,15 +448,15 @@ const k_equals_2 = {
 		{ child: "n", parent: "g" },
 		{ child: "o", parent: "g", display: "none" },
 	],
-};
-cdemo.renderTree(k_equals_2);
+}).render();
 
-const k_equals_4 = {
+const k_equals_4 = new csmd.Tree({
 	id: "k_equals_4",
 	width: 350,
-	height: 200,
-	paddingBottom: "45%",
-	treeData: [
+	height: 285,
+	container_width: 50,
+	container_height: 35,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -465,14 +472,15 @@ const k_equals_4 = {
 		{ child: "m", parent: "f" },
 		{ child: "n", parent: "f" },
 	],
-};
-cdemo.renderTree(k_equals_4);
+}).render();
 
-const abt1 = {
+const abt1 = new csmd.Tree({
 	id: "abt1",
 	width: 350,
 	height: 200,
-	treeData: [
+	container_width: 50,
+	container_height: 30,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A" },
@@ -481,10 +489,9 @@ const abt1 = {
 		{ child: "F", parent: "C" },
 		{ child: "G", parent: "C" },
 	],
-};
-cdemo.renderTree(abt1);
+}).render();;
 
-const abt1_array = {
+const abt1_array = new csmd.StaticArray({
 	id: "abt1_array",
 	indexed: true,
 	data: [
@@ -496,10 +503,9 @@ const abt1_array = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderStaticArray(abt1_array);
+}).render();
 
-const abt1_array_level1 = {
+const abt1_array_level1 = new csmd.StaticArray({
 	id: "abt1_array_level1",
 	indexed: true,
 	data: [
@@ -511,10 +517,9 @@ const abt1_array_level1 = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderStaticArray(abt1_array_level1);
+}).render();
 
-const abt1_array_level2 = {
+const abt1_array_level2 = new csmd.StaticArray({
 	id: "abt1_array_level2",
 	indexed: true,
 	data: [
@@ -526,10 +531,9 @@ const abt1_array_level2 = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderStaticArray(abt1_array_level2);
+}).render();
 
-const abt1_array_level3 = {
+const abt1_array_level3 = new csmd.StaticArray({
 	id: "abt1_array_level3",
 	indexed: true,
 	data: [
@@ -541,8 +545,7 @@ const abt1_array_level3 = {
 		{ val: "F" },
 		{ val: "G" },
 	],
-};
-cdemo.renderStaticArray(abt1_array_level3);
+}).render();
 
 const lbt1 = {
 	id: "lbt1",
@@ -560,11 +563,13 @@ const lbt1 = {
 };
 cdemo.renderTree(lbt1);
 
-const perfect_abt1 = {
+const perfect_abt1 = new csmd.Tree({
 	id: "perfect_abt1",
 	width: 350,
 	height: 200,
-	treeData: [
+	container_width: 50,
+	container_height: 25,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A" },
@@ -573,10 +578,9 @@ const perfect_abt1 = {
 		{ child: "F", parent: "C" },
 		{ child: "G", parent: "C" },
 	],
-};
-cdemo.renderTree(perfect_abt1);
+}).render();
 
-const perfect_abt1_array = {
+const perfect_abt1_array = new csmd.StaticArray({
 	id: "perfect_abt1_array",
 	indexed: true,
 	data: [
@@ -588,14 +592,15 @@ const perfect_abt1_array = {
 		{ val: "F" },
 		{ val: "G" },
 	],
-};
-cdemo.renderStaticArray(perfect_abt1_array);
+}).render();
 
-const complete_abt1 = {
+const complete_abt1 = new csmd.Tree({
 	id: "complete_abt1",
 	width: 350,
 	height: 200,
-	treeData: [
+	container_width: 50,
+	container_height: 25,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A" },
@@ -604,10 +609,9 @@ const complete_abt1 = {
 		{ child: "F", parent: "C" },
 		{ child: "G", parent: "C", display: "none" },
 	],
-};
-cdemo.renderTree(complete_abt1);
+}).render();
 
-const complete_abt1_array = {
+const complete_abt1_array = new csmd.StaticArray({
 	id: "complete_abt1_array",
 	indexed: true,
 	data: [
@@ -619,14 +623,15 @@ const complete_abt1_array = {
 		{ val: "F" },
 		{ val: "" },
 	],
-};
-cdemo.renderStaticArray(complete_abt1_array);
+}).render();
 
-const incomplete_abt1 = {
+const incomplete_abt1 = new csmd.Tree({
 	id: "incomplete_abt1",
 	width: 350,
 	height: 200,
-	treeData: [
+	container_width: 50,
+	container_height: 25,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A" },
@@ -635,10 +640,9 @@ const incomplete_abt1 = {
 		{ child: "F", parent: "C", display: "none" },
 		{ child: "G", parent: "C" },
 	],
-};
-cdemo.renderTree(incomplete_abt1);
+}).render();
 
-const incomplete_abt1_array = {
+const incomplete_abt1_array = new csmd.StaticArray({
 	id: "incomplete_abt1_array",
 	indexed: true,
 	data: [
@@ -650,92 +654,85 @@ const incomplete_abt1_array = {
 		{ val: "" },
 		{ val: "G" },
 	],
-};
-cdemo.renderStaticArray(incomplete_abt1_array);
+}).render();
 
-const _3node_preorder = {
+const _3node_preorder = new csmd.Tree({
 	id: "_3node_preorder",
 	width: 200,
-	height: 200,
-	divWidth: "40%",
-	paddingBottom: "20%",
-	treeData: [
+	height: 105,
+	container_width: 30,
+	container_height: 16,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(_3node_preorder);
+}).render();
 
-const _3node_preorder_visit = {
+const _3node_preorder_visit = new csmd.Tree({
 	id: "_3node_preorder_visit",
 	width: 200,
-	height: 200,
-	divWidth: "40%",
-	paddingBottom: "20%",
-	treeData: [
+	height: 105,
+	container_width: 30,
+	container_height: 16,
+	data: [
 		{ child: "a", parent: "", focus: "salmon", annotate: 1 },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(_3node_preorder_visit);
+}).render();
 
-const _3node_preorder_left_subtree = {
+const _3node_preorder_left_subtree = new csmd.Tree({
 	id: "_3node_preorder_left_subtree",
 	width: 200,
-	height: 200,
-	divWidth: "40%",
-	paddingBottom: "20%",
-	treeData: [
+	height: 105,
+	container_width: 30,
+	container_height: 16,
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", focus: "salmon", annotate: 2 },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(_3node_preorder_left_subtree);
+}).render();
 
-const _3node_preorder_right_subtree = {
+const _3node_preorder_right_subtree = new csmd.Tree({
 	id: "_3node_preorder_right_subtree",
 	width: 200,
-	height: 200,
-	divWidth: "40%",
-	paddingBottom: "20%",
-	treeData: [
+	height: 105,
+	container_width: 30,
+	container_height: 16,
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", annotate: 2 },
 		{ child: "c", parent: "a", focus: "salmon", annotate: 3 },
 	],
-};
-cdemo.renderTree(_3node_preorder_right_subtree);
+}).render();
 
-const _2nodeleft_preorder = {
+const _2nodeleft_preorder = new csmd.Tree({
 	id: "_2nodeleft_preorder",
 	width: 200,
-	height: 200,
-	divWidth: "40%",
-	paddingBottom: "20%",
-	treeData: [
+	height: 105,
+	container_width: 30,
+	container_height: 16,
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", annotate: 2 },
 		{ child: "c", parent: "a", display: "none" },
 	],
-};
-cdemo.renderTree(_2nodeleft_preorder);
+}).render();
 
-const _2noderight_preorder = {
+const _2noderight_preorder = new csmd.Tree({
 	id: "_2noderight_preorder",
 	width: 200,
-	height: 200,
-	divWidth: "40%",
-	paddingBottom: "20%",
-	treeData: [
+	height: 105,
+	container_width: 30,
+	container_height: 16,
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", display: "none" },
 		{ child: "c", parent: "a", annotate: 2 },
 	],
-};
-cdemo.renderTree(_2noderight_preorder);
+}).render();
 
 const _3node_inorder = {
 	id: "_3node_inorder",
@@ -2054,3 +2051,318 @@ const inorder_stack_growth = {
 cdemo.renderStackGrowth(inorder_stack_growth);
 
 
+const level_order_traversal_sample = new csmd.Tree({
+	id: "level_order_traversal_sample",
+	width: 500,
+	leveled: true,
+	directed: true,
+	height: 250,
+	data: [
+		{ child: "8", parent: ""},
+		{ child: "3", parent: "8", edgeLabel: '0x1'},
+		{ child: "9", parent: "8", edgeLabel: '0x2'},
+		{ child: "7", parent: "3", edgeLabel: '0x3'},
+		{ child: "10", parent: "3", display: 'none'},
+		{ child: "6", parent: "9", edgeLabel: '0x4'},
+		{ child: "12", parent: "6", display: 'none'},
+		{ child: "2", parent: "6", edgeLabel: '0x5'},
+		{ child: "4", parent: "9", edgeLabel: '0x6'},
+		{ child: "5", parent: "7", edgeLabel: '0x7'},
+		{ child: "11", parent: "7", display: 'none'},
+	],
+}).render();
+
+const sample_data_traversal_generation = new csmd.StaticArray({
+	id: 'sample_data_traversal_generation',
+	data: [
+		{ val: "A" },
+		{ val: "B" },
+		{ val: "C" },
+	]
+}).render();
+
+const tg1 = new csmd.Tree({
+	id: "tg1",
+	width: 250,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "A", parent: ""},
+		{ child: "B", parent: "A"},
+		{ child: "C", parent: "A"},
+	],
+}).render();
+
+const tg2 = new csmd.Tree({
+	id: "tg2",
+	width: 250,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "A", parent: ""},
+		{ child: "B", parent: "A"},
+		{ child: "E", parent: "A", display: 'none'},
+		{ child: "C", parent: "B"},
+		{ child: "F", parent: "B", display: 'none'},
+	],
+}).render();
+
+const tg3 = new csmd.Tree({
+	id: "tg3",
+	width: 250,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "A", parent: ""},
+		{ child: "B", parent: "A"},
+		{ child: "E", parent: "A", display: 'none'},
+		{ child: "F", parent: "B", display: 'none'},
+		{ child: "C", parent: "B"},
+	],
+}).render();
+
+const tg4 = new csmd.Tree({
+	id: "tg4",
+	width: 250,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "A", parent: ""},
+		{ child: "E", parent: "A", display: 'none'},
+		{ child: "B", parent: "A"},
+		{ child: "C", parent: "B"},
+		{ child: "F", parent: "B", display: 'none'},
+	],
+}).render();
+
+const tg5 = new csmd.Tree({
+	id: "tg5",
+	width: 250,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "A", parent: ""},
+		{ child: "E", parent: "A", display: 'none'},
+		{ child: "B", parent: "A"},
+		{ child: "F", parent: "B", display: 'none'},
+		{ child: "C", parent: "B"},
+	],
+}).render();
+
+const tg_pre_array = new csmd.StaticArray({
+	id: 'tg_pre_array',
+	data: [
+		{ val: "4" },
+		{ val: "7" },
+		{ val: "9" },
+		{ val: "6" },
+		{ val: "3" },
+		{ val: "2" },
+		{ val: "5" },
+		{ val: "8" },
+		{ val: "1" },
+	]
+}).render();
+
+const tg_in_array = new csmd.StaticArray({
+	id: 'tg_in_array',
+	data: [
+		{ val: "7" },
+		{ val: "6" },
+		{ val: "9" },
+		{ val: "3" },
+		{ val: "4" },
+		{ val: "5" },
+		{ val: "8" },
+		{ val: "2" },
+		{ val: "1" },
+	]
+}).render();
+
+const tg_true_tree = new csmd.Tree({
+	id: "tg_true_tree",
+	width: 250,
+	height: 250,
+	container_width: 40,
+	container_height: 20,
+	data: [
+		{ child: "4", parent: ""},
+		{ child: "7,6,9,3", parent: "4", noCircle: true},
+		{ child: "5,8,2,1", parent: "4", noCircle: true},
+	],
+}).render();
+
+const tg_true_tree2 = new csmd.Tree({
+	id: "tg_true_tree2",
+	width: 250,
+	height: 250,
+	container_width: 40,
+	container_height: 20,
+	data: [
+		{ child: "4", parent: ""},
+		{ child: "7", parent: "4"},
+		{ child: "5,8,2,1", parent: "4", noCircle: true},
+		{ child: "6,9,3", parent: "7", noCircle: true, display: 'none'},
+		{ child: "6,9,3", parent: "7", noCircle: true},
+	],
+}).render();
+
+const tg_true_tree3 = new csmd.Tree({
+	id: "tg_true_tree3",
+	width: 350,
+	height: 250,
+	container_width: 50,
+	container_height: 20,
+	data: [
+		{ child: "4", parent: ""},
+		{ child: "7", parent: "4"},
+		{ child: "5,8,2,1", parent: "4", noCircle: true},
+		{ child: "12", parent: "7", noCircle: true, display: 'none'},
+		{ child: "9", parent: "7"},
+		{ child: "6", parent: "9"},
+		{ child: "3", parent: "9"},
+	],
+}).render();
+
+const tg_true_tree4 = new csmd.Tree({
+	id: "tg_true_tree4",
+	width: 350,
+	height: 250,
+	container_width: 40,
+	container_height: 20,
+	data: [
+		{ child: "4", parent: ""},
+		{ child: "7", parent: "4"},
+		{ child: "2", parent: "4"},
+		{ child: "12", parent: "7", noCircle: true, display: 'none'},
+		{ child: "9", parent: "7"},
+		{ child: "6", parent: "9"},
+		{ child: "3", parent: "9"},
+		{ child: "5,8", parent: "2", noCircle: true},
+		{ child: "1", parent: "2", noCircle: true},
+	],
+}).render();
+
+const tg_true_tree5 = new csmd.Tree({
+	id: "tg_true_tree5",
+	width: 350,
+	height: 250,
+	container_width: 40,
+	container_height: 20,
+	data: [
+		{ child: "4", parent: ""},
+		{ child: "7", parent: "4"},
+		{ child: "2", parent: "4"},
+		{ child: "12", parent: "7", display: 'none'},
+		{ child: "9", parent: "7"},
+		{ child: "6", parent: "9"},
+		{ child: "3", parent: "9"},
+		{ child: "5", parent: "2" },
+		{ child: "17", parent: "5", display: 'none' },
+		{ child: "8", parent: "5" },
+		{ child: "1", parent: "2"},
+	],
+}).render();
+
+const bst_intro = new csmd.Tree({
+	id: "bst_intro",
+	width: 350,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "30", parent: ""},
+		{ child: "15", parent: "30"},
+		{ child: "50", parent: "30"},
+		{ child: "10", parent: "15"},
+		{ child: "20", parent: "15"},
+		{ child: "40", parent: "50"},
+		{ child: "60", parent: "50"},
+	],
+}).render();
+
+const bst_array_1 = new csmd.StaticArray({
+	id: 'bst_array_1',
+	data: [
+		{ val: "10" },
+		{ val: "15" },
+		{ val: "20" },
+		{ val: "30" },
+		{ val: "40" },
+		{ val: "50" },
+		{ val: "60" },
+	]
+}).render();
+
+const bst_search_example = new csmd.Tree({
+	id: "bst_search_example",
+	width: 350,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "30", parent: ""},
+		{ child: "15", parent: "30"},
+		{ child: "50", parent: "30"},
+		{ child: "10", parent: "15"},
+		{ child: "20", parent: "15"},
+		{ child: "40", parent: "50"},
+		{ child: "60", parent: "50"},
+	],
+}).render();
+
+const bst_search_example1 = new csmd.Tree({
+	id: "bst_search_example1",
+	width: 350,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "30", parent: "", annotate: 'p', focus: 'lavender'},
+		{ child: "15", parent: "30"},
+		{ child: "50", parent: "30"},
+		{ child: "10", parent: "15"},
+		{ child: "20", parent: "15"},
+		{ child: "40", parent: "50"},
+		{ child: "60", parent: "50"},
+	],
+}).render();
+
+const bst_search_example2 = new csmd.Tree({
+	id: "bst_search_example2",
+	width: 350,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "30", parent: ""},
+		{ child: "15", parent: "30"},
+		{ child: "50", parent: "30", annotate: 'p', focus: 'lavender'},
+		{ child: "10", parent: "15"},
+		{ child: "20", parent: "15"},
+		{ child: "40", parent: "50"},
+		{ child: "60", parent: "50"},
+	],
+}).render();
+
+const bst_search_example3 = new csmd.Tree({
+	id: "bst_search_example3",
+	width: 350,
+	height: 250,
+	container_width: 50,
+	container_height: 25,
+	data: [
+		{ child: "30", parent: ""},
+		{ child: "15", parent: "30"},
+		{ child: "50", parent: "30"},
+		{ child: "10", parent: "15"},
+		{ child: "20", parent: "15"},
+		{ child: "40", parent: "50", annotate: 'p', focus: 'lavender'},
+		{ child: "60", parent: "50"},
+	],
+}).render();

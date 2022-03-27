@@ -175,6 +175,9 @@ urlpatterns = [
 
 	path("pl_overview", views.pl_overview, name="pl_overview"),
 
+	path("pl_ast_interpreter", views.pl_ast_interpreter, name="pl_ast_interpreter"),
+
+
 	#! ML Paths (ml-paths)
 	path("ml_preface", views.ml_preface, name="ml_preface"),
 
@@ -247,9 +250,13 @@ urlpatterns = [
 
 	path("cpp_queue", views.cpp_queue, name="cpp_queue"),
 
-	path("cpp_tree", views.cpp_tree, name="cpp_tree"),
+	path("cpp_tree_theory", views.cpp_tree_theory, name="cpp_tree_theory"),
+
+	path("cpp_binary_trees", views.cpp_binary_trees, name="cpp_binary_trees"),
 
 	path("cpp_hashTables", views.cpp_hashTables, name="cpp_hashTables"),
+
+	path("cpp_generics", views.cpp_generics, name="cpp_generics"),
 
 
 	# C# paths
@@ -307,6 +314,10 @@ urlpatterns = [
 	path("des_shell", views.des_shell, name="des_shell"),
 
 	path("des_regex", views.des_regex, name="des_regex"),
+
+	path("des_orchestration", views.des_orchestration, name="des_orchestration"),
+
+	path("des_licensing", views.des_licensing, name="des_licensing"),
 
 ]
 

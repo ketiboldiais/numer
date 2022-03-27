@@ -96,14 +96,14 @@
 			--CLiteral: rgb(214, 248, 255);
 			--CFunction: rgb(255, 237, 121);
 		/* Haskell Colors */
-			--HaskellBackground: rgb(251, 241, 255);
-			--HaskellPrimary: rgb(105, 59, 115);
-			--HaskellKeyword: rgb(206, 0, 229);
+			--HaskellBackground: rgb(58, 58, 58);
+			--HaskellPrimary: rgb(255, 255, 255);
+			--HaskellKeyword: rgb(252, 221, 255);
 			--HaskellComment: rgb(182, 148, 103);
-			--HaskellOperator: lavender;
-			--HaskellLiteral: rgb(0, 109, 187);
-			--HaskellFunction: rgb(0, 90, 192);
-			--HaskellFunctionName: rgb(84, 0, 103);
+			--HaskellOperator: rgb(255, 34, 237);
+			--HaskellLiteral: rgb(255, 217, 0);
+			--HaskellFunction: rgb(0, 119, 255);
+			--HaskellFunctionName: rgb(67, 255, 230);
 		/* Rust Colors */
 			--rustBackground: rgb(255, 254, 246);
 			--rustPrimary: rgb(83, 49, 2);
@@ -410,7 +410,7 @@
 
 /* Figure element styling */
 	figure {
-		margin: 5%;
+		margin: 0 5%;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -443,6 +443,28 @@
 		height: 100%;
 		width: 100%;
 	}
+/* Runtime table */
+	table#operation_cost_table td, 
+	table#operation_cost_table th {
+		border-color: none;
+	}
+	table#operation tr td:nth-child(2) {
+		border: none;
+		border-spacing: 2px;
+	}
+	table#operation_cost_table td[colspan='4'] {
+		color: white;
+		background-color: var(--darkBlue);
+		border-bottom: solid 2px gold;
+		border-top: solid 2px gold;
+	}
+	td.con {background-color: #e0ffa3; color: var(--darkGreen)}
+	td.log {background-color: #fff8be; color: brown}
+	td.linlog {background-color: #0091ff;}
+	td.lin {background-color: #8c00ff;}
+	td.pol {background-color: #ffd261; color: orangered;}
+	td.cub {background-color: #ff00b3;}
+	td.exp {background-color: rgb(255, 0, 0)}
 /* Image styles */
 	figure img {margin: 0 auto;}
 	/* Image widths for SVGs */
@@ -633,12 +655,10 @@
 	}
 /* Paragraph styles */
 	p {
-		font-size: 0.9rem;
+		font-size: inherit;
 		text-align: left;
-	}
-	section > p {
 		line-height: calc(1ex / 0.32);
-		margin: calc(0.7ex / 0.32) 0;
+		margin: calc(0.85ex / 0.32) 0;
 	}
 /* PopUp - Class names are used in JavaScript code */
 	.pop {
@@ -1136,6 +1156,12 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 	}
+	table p {
+		margin: 4px;
+	}
+	table pre code {
+		font-size: 0.85em !important;
+	}
 	table.computation {border: none;}
 	table.computation * {font-size: 0.98em;}
 	table.computation th,
@@ -1144,7 +1170,6 @@
 		border: none;
 		text-align: left; 
 	}
-	table td p {margin: 0; padding: 0;}
 	th,td {
 		border: solid thin var(--lightGrey);
 		text-align: left;
@@ -1326,39 +1351,69 @@
 	}
 /* API Table */
 	table.api table {
-		width: fit-content;
+		border: none;
 	}
+	table.api ul {margin-left: 0.3em}
+	table.api ul li {
+		padding: 0.2em 0;
+		margin: 0;
+	}
+	table.api td[colspan] {background-color: rgb(39, 39, 39);}
+	table.api td.blue {color: cyan}
+	table.api td.green {color: rgb(138, 255, 71)}
 	table.api p {
-		font-size: 0.7em;
+		font-size: 0.95em;
 	}
 	table.api {
-		font-size: 0.8rem;
+		font-family: 'system-ui';
+		font-size: 0.65rem;
+		overflow-x: scroll;
+		color: white;
 		display: block;
 		width: fit-content;
 		margin: 0 auto;
-		padding: 0.4em;
-		background-color: var(--wheat);
-		border: solid thin rgb(221, 221, 221);
-		border-radius: 0.7em;
-		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+		padding: 0.8em;
+		background-color: rgb(73, 73, 73);
+		border-collapse:collapse;
+		border: none;
+		border-radius: 0.3em;
+		box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.8);
 	}
 	table.api pre code {
 		font-size: 0.6rem;
 	}
-	table.api td, 
+	table.api tr td {padding: 1px 3px;}
+	table.api th {color: gold}
+	table.api td, table.api th { border: none; }
+	table.api tr td:not(:first-child) {border-left: solid thin goldenrod}
 	table.api th {
-		border: none;
+		border-bottom: solid thin goldenrod;
+		padding: 0 0.5em;
 	}
-	table.api th {
-		border-bottom: solid thin var(--lightGrey);
-		padding: 0.2em 0.5em;
+	table.api tr:not(:last-child)>td {
+		border-bottom: solid thin goldenrod;
 	}
-	table.api td {
-		padding: 0.4em;
-		border-bottom: solid thin var(--lightGrey);
-		border-left: solid thin var(--lightGrey);
-		border-right: solid thin var(--lightGrey);
+	table.api.uml tr td table {margin: -1px -3px;}
+	table.api.uml {font-size: 0.7rem;}
+	table.api.uml tr td:first-child:not(td[colspan]) {
+		font-family: "Fira"; 
+		white-space: nowrap; 
+		font-size: 0.6rem;}
+	table.api table td {
+		width: 100%;
 	}
+	table.api.syntax {
+		font-size: 0.7rem;
+		margin: 0 20%;
+	}
+	table.api.syntax thead th {
+		padding: 0.2em 0 1em 0;
+		font-size: 0.85rem;
+		font-weight: normal;
+		text-align: center;
+	}
+	table.api.syntax td {padding: 0.8em 0;}
+	table.api.syntax var {font-size: inherit; color: cyan}
 /* Matrix */
 	table.matrix {
 		width: fit-content;
@@ -1406,7 +1461,6 @@
 		margin: 0 0.6em;
 	}
 /* Algorithms - Pseudocode */
-
 	ol.alg, ol.algc {
 		color: var(--textColor);
 		text-rendering: optimizeLegibility;
@@ -1414,7 +1468,8 @@
 		counter-reset: lineNumber -1;
 		list-style: none;
 		margin: 5px 2px;
-		padding: 0.1em 1em 0 0.5em;
+		margin-top: 0;
+		padding: 3px 1em 0 0.5em;
 		overflow-x: auto;
 		overflow-y: hidden;
 	}
@@ -1437,7 +1492,7 @@
 		white-space: nowrap;
 		padding: 2px 0;
 		margin: 2px 0;
-		margin-top: -1.2em;
+		margin-top: -13px;
 		margin-left: 2em;
 		font-size: 0.65rem;
 		counter-increment: lineNumber;
@@ -1457,7 +1512,7 @@
 	ol.alg li::before,  ol.algc li::before{
 		display: block;
 		position: relative;
-		top: 1.1em;
+		top: 1.12em;
 		right: 2.4em;
 		content: counter(lineNumber);
 		font-family: "system-ui";
@@ -1474,15 +1529,15 @@
 	ol.algc li {
 		margin-left: 0;
 		padding-left: 2.4em;
-		margin-top: -1.3em;
+		margin-top: -18px;
 	}
 	ol.algc {
 		padding-left: 0;
 	}
 	ol.alg li::before {color: rgb(172, 123, 0)}
 	ol.algc li::before {color: var(--darkBlue)}
-	ol.alg>ol>li, ol.algc>ol>li { padding-left: 0.7em;}
-	ol.alg>ol>li::before, ol.algc>ol>li::before { right: 3.2em; }
+	ol.alg>ol>li, ol.algc>ol>li { padding-left: 1em;}
+	ol.alg>ol>li::before, ol.algc>ol>li::before { right: 3.4em; }
 
 	ol.alg>ol>ol>li, ol.algc>ol>ol>li { padding-left: 2em; }
 	ol.alg>ol>ol>li::before, ol.algc>ol>ol>li::before { right: 4.4em; }
@@ -1503,7 +1558,7 @@
 
 	ol.alg li .katex,
 	ol.algc li .katex {
-		font-size: 1.2em !important;
+		font-size: 0.98em !important;
 	}
 	li.highlight_match, li.highlight_match * {
 		color: var(--darkRed) !important;
@@ -1676,7 +1731,7 @@
 	div.tripart {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr;
-		column-gap: 10px;
+		column-gap: 5px;
 	}
 	div.horizon {
 		display: flex;
@@ -1824,9 +1879,8 @@
 		width: auto;
 		height: fit-content;
 	}
-	
 /* Language - Pseudo */
-	pre[class*="language-pseudo"] {
+	pre[class="language-pseudo"] {
 		padding: 0.8em;
 		background-color: rgb(246, 248, 250);
 		box-shadow: none;
@@ -1848,111 +1902,110 @@
 		-ms-hyphens: none;
 		hyphens: none;
 	}
-	pre[class*="language-pseudo"] code {
+	pre[class="language-pseudo"] code {
 		font-family: "Fira";
 		text-rendering: optimizeLegibility;
 	}
 
 /* Language - Java */
-	code[class*="language-java"], 
-	pre[class*="language-java"] {
+	code[class="language-java"], 
+	pre[class="language-java"] {
 		color: rgb(255, 247, 228); /* base00 */
 	}
-	:not(pre) > code[class*="language-java"],
-	pre[class*="language-java"] {
+	:not(pre) > code[class="language-java"],
+	pre[class="language-java"] {
 		background-color: var(--codeNavyBG);
 	}
 	/* Inline code */
-	:not(pre) > code[class*="language-java"] {
+	:not(pre) > code[class="language-java"] {
 		padding: .1em;
 		border-radius: .3em;
 	}
 
-	code[class*="language-java"]>.token.comment,
-	code[class*="language-java"]>.token.prolog,
-	code[class*="language-java"]>.token.doctype,
-	code[class*="language-java"]>.token.cdata {
+	code[class="language-java"]>.token.comment,
+	code[class="language-java"]>.token.prolog,
+	code[class="language-java"]>.token.doctype,
+	code[class="language-java"]>.token.cdata {
 		color: rgb(134,112,124); /* base01 */
 		color: #a89984; /* base1 */
 	}
-	code[class*="language-java"]>.token.punctuation {
+	code[class="language-java"]>.token.punctuation {
 		color: rgb(221, 138, 184); /* base01 */
 	}
-	code[class*="language-java"]>.token.namespace {
+	code[class="language-java"]>.token.namespace {
 		opacity: .7;
 	}
-	code[class*="language-java"]>.token.property,
-	code[class*="language-java"]>.token.tag,
-	code[class*="language-java"]>.token.number,
-	code[class*="language-java"]>.token.constant,
-	code[class*="language-java"]>.token.symbol,
-	code[class*="language-java"]>.token.deleted {
+	code[class="language-java"]>.token.property,
+	code[class="language-java"]>.token.tag,
+	code[class="language-java"]>.token.number,
+	code[class="language-java"]>.token.constant,
+	code[class="language-java"]>.token.symbol,
+	code[class="language-java"]>.token.deleted {
 		color: #ffe590; /* blue */
 	}
-	code[class*="language-java"]>.token.boolean,
-	code[class*="language-java"]>.token.class-name {
+	code[class="language-java"]>.token.boolean,
+	code[class="language-java"]>.token.class-name {
 		color: #b7ffed;
 	}
-	code[class*="language-java"]>.token.selector,
-	code[class*="language-java"]>.token.attr-name,
-	code[class*="language-java"]>.token.string,
-	code[class*="language-java"]>.token.char,
-	code[class*="language-java"]>.token.builtin,
-	code[class*="language-java"]>.token.url,
-	code[class*="language-java"]>.token.inserted {
+	code[class="language-java"]>.token.selector,
+	code[class="language-java"]>.token.attr-name,
+	code[class="language-java"]>.token.string,
+	code[class="language-java"]>.token.char,
+	code[class="language-java"]>.token.builtin,
+	code[class="language-java"]>.token.url,
+	code[class="language-java"]>.token.inserted {
 		color: #9fff7c;
 	}
-	code[class*="language-java"]>.token.entity {
+	code[class="language-java"]>.token.entity {
 		color: #657b83; /* base00 */
 		background: #eee8d5; /* base2 */
 	}
-	code[class*="language-java"]>.token.atrule,
-	code[class*="language-java"]>.token.attr-value,
-	code[class*="language-java"]>.token.keyword {
+	code[class="language-java"]>.token.atrule,
+	code[class="language-java"]>.token.attr-value,
+	code[class="language-java"]>.token.keyword {
 		color: rgb(218, 174, 248); /* green */
 	}
-	code[class*="language-java"]>.token.function,
-	code[class*="language-java"]>.token.operator {
+	code[class="language-java"]>.token.function,
+	code[class="language-java"]>.token.operator {
 		color: rgb(255, 126, 126);
 	}
-	code[class*="language-java"]>.token.regex,
-	code[class*="language-java"]>.token.important,
-	code[class*="language-java"]>.token.variable {
+	code[class="language-java"]>.token.regex,
+	code[class="language-java"]>.token.important,
+	code[class="language-java"]>.token.variable {
 		color: #cb4b16; /* orange */
 	}
-	code[class*="language-java"]>.token.important,
-	code[class*="language-java"]>.token.bold {
+	code[class="language-java"]>.token.important,
+	code[class="language-java"]>.token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-java"]>.token.italic {
+	code[class="language-java"]>.token.italic {
 		font-style: italic;
 	}
-	code[class*="language-java"]>.token.entity {
+	code[class="language-java"]>.token.entity {
 		cursor: help;
 	}
-	code[class*="language-java"]>pre[data-line] {
+	code[class="language-java"]>pre[data-line] {
 		position: relative;
 		padding: 1em 0 1em 3em;
 	}
-	code[class*="language-java"]>span.inline-color {
+	code[class="language-java"]>span.inline-color {
 		display: block;
 		/* To prevent visual glitches again */
 		height: 120%;
 		width: 120%;
 	}
 /* Language - Bash */
-	pre[class*="language-bash"] {
+	pre[class="language-bash"] {
 		background: var(--codeBlueGreyBG);
 		color: var(--textColor);
 	}
-	/* Code blocks */
-	pre[class*="language-scheme"] + pre[class*="language-bash"], 
-	pre[class*="language-javascript"] + pre[class*="language-bash"] {
+	pre[class="language-scheme"] + pre[class="language-bash"], 
+	pre[class="language-javascript"] + pre[class="language-bash"] {
 		color: var(--textColor);
 		background: var(--page);
 	}
-	pre[class*="language-c"] + pre[class*="language-bash"], 
-	pre[class*="language-cpp"] + pre[class*="language-bash"] {
+	pre[class="language-c"] + pre[class="language-bash"], 
+	pre[class="language-cpp"] + pre[class="language-bash"] {
 		color: var(--codeWhite);
 		background: var(--codeBlackBG);
 	}
@@ -1991,85 +2044,85 @@
 		content: attr(data-prompt);
   }
 /* Language - Lisp */
-	code[class*="language-scheme"],
-	pre[class*="language-scheme"] {
+	code[class="language-scheme"],
+	pre[class="language-scheme"] {
 		color: rgb(54, 54, 54); /* base00 */
 	}
 
-	:not(pre) > code[class*="language-scheme"],
-	pre[class*="language-scheme"] {
+	:not(pre) > code[class="language-scheme"],
+	pre[class="language-scheme"] {
 		background-color: rgb(242, 249, 249); /* base3 */
 	}
 
 
 
-	code[class*="language-scheme"]>.token.comment { 
+	code[class="language-scheme"]>.token.comment { 
 		color: rgb(99, 144, 144); 
 	}
 
-	code[class*="language-scheme "]>.token.prolog,
-	code[class*="language-scheme"]>.token.doctype,
-	code[class*="language-scheme"]>.token.cdata {
+	code[class="language-scheme "]>.token.prolog,
+	code[class="language-scheme"]>.token.doctype,
+	code[class="language-scheme"]>.token.cdata {
 		color: #acc3c3; /* base1 */
 	}
 
-	code[class*="language-scheme"]>.token.punctuation { 
+	code[class="language-scheme"]>.token.punctuation { 
 		color: rgb(71, 71, 71); 
 	}
 
-	code[class*="language-scheme"] .token.function,
-	code[class*="language-scheme"]>.token.operator { 
+	code[class="language-scheme"] .token.function,
+	code[class="language-scheme"]>.token.operator { 
 		color:rgb(0, 70, 141);
 	}
 
-	code[class*="language-scheme"] .token.property,
-	code[class*="language-scheme"] .token.tag,
-	code[class*="language-scheme"] .token.boolean,
-	code[class*="language-scheme"] .token.char,
-	code[class*="language-scheme"] .token.string,
-	code[class*="language-scheme"] .token.number {
+	code[class="language-scheme"] .token.property,
+	code[class="language-scheme"] .token.tag,
+	code[class="language-scheme"] .token.boolean,
+	code[class="language-scheme"] .token.char,
+	code[class="language-scheme"] .token.string,
+	code[class="language-scheme"] .token.number {
 		color: rgb(59, 120, 207); /* blue */
 	}
 
 
-	code[class*="language-scheme"] .token.url,
-	code[class*="language-scheme"] .token.inserted {
+	code[class="language-scheme"] .token.url,
+	code[class="language-scheme"] .token.inserted {
 		color: #d75a00; /* cyan */
 	}
 
-	code[class*="language-scheme"] .token.car {
+	code[class="language-scheme"] .token.car {
 		color: #82ead9; /* yellow */
 	}
 
-	code[class*="language-scheme"] .token.atrule,
-	code[class*="language-scheme"] .token.attr-value,
-	code[class*="language-scheme"] .token.keyword {
+	code[class="language-scheme"] .token.atrule,
+	code[class="language-scheme"] .token.attr-value,
+	code[class="language-scheme"] .token.keyword {
 		color: #cd0000; /* green */
 	}
 
 	
-	code[class*="language-scheme"] .token.class-name {
+	code[class="language-scheme"] .token.class-name {
 		color: rgb(206, 149, 250); 
 	}
 
-	code[class*="language-scheme"] .token.regex,
-	code[class*="language-scheme"] .token.important,
-	code[class*="language-scheme"] .token.variable {
+	code[class="language-scheme"] .token.regex,
+	code[class="language-scheme"] .token.important,
+	code[class="language-scheme"] .token.variable {
 		color: #cb4b16; /* orange */
 	}
 
-	code[class*="language-scheme"] .token.important,
-	code[class*="language-scheme"] .token.bold {
+	code[class="language-scheme"] .token.important,
+	code[class="language-scheme"] .token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-scheme"] .token.italic {
+	code[class="language-scheme"] .token.italic {
 		font-style: italic;
 	}
 
-	code[class*="language-scheme"] .token.entity {
+	code[class="language-scheme"] .token.entity {
 		cursor: help;
 	}
-	code[class*="language-scheme"] .redText {
+	code[class="language-scheme"] .redText {
 		color: rgb(255, 91, 91);
 	}
 
@@ -2079,10 +2132,10 @@
 	}
 
 	/* Inline code */
-	:not(pre) > code[class*="language-scheme"] .token {
+	:not(pre) > code[class="language-scheme"] .token {
 		color: white !important;
 	}
-	:not(pre) > code[class*="language-scheme"] {
+	:not(pre) > code[class="language-scheme"] {
 		padding: .2em;
 		border-radius: .3em;
 		display: inline-block;
@@ -2091,865 +2144,841 @@
 	}
 
 /* Language - JavaScript */
-	code[class*="language-javascript"],
-	pre[class*="language-javascript"] {
+	code[class="language-javascript"],
+	pre[class="language-javascript"] {
 		color: var(--codeBlackText);
 	}
-	:not(pre) > code[class*="language-javascript"],
-	pre[class*="language-javascript"] {
+	:not(pre) > code[class="language-javascript"],
+	pre[class="language-javascript"] {
 		background-color: var(--codeBlueGreyBG);
 	}
-	code[class*="language-javascript"]>.token.dom {color: rgb(195, 115, 3);}
-	code[class*="language-javascript"]>.token.comment,
-	code[class*="language-javascript"]>.token.block-comment {
+	code[class="language-javascript"]>.token.dom {color: rgb(195, 115, 3);}
+	code[class="language-javascript"]>.token.comment,
+	code[class="language-javascript"]>.token.block-comment {
 		color: var(--jsComment);
 	}
-	code[class*="language-javascript"]>.token.prolog,
-	code[class*="language-javascript"]>.token.doctype,
-	code[class*="language-javascript"]>.token.cdata {
+	code[class="language-javascript"]>.token.prolog,
+	code[class="language-javascript"]>.token.doctype,
+	code[class="language-javascript"]>.token.cdata {
 		color: #ababab;
 	}
-	code[class*="language-javascript"]>.token.punctuation {
+	code[class="language-javascript"]>.token.punctuation {
 		color: rgb(61, 61, 61); /* base00 */
 	}
-	code[class*="language-javascript"]>.token.tag,
-	code[class*="language-javascript"]>.token.attr-name,
-	code[class*="language-javascript"]>.token.namespace,
-	code[class*="language-javascript"]>.token.deleted {
+	code[class="language-javascript"]>.token.tag,
+	code[class="language-javascript"]>.token.attr-name,
+	code[class="language-javascript"]>.token.namespace,
+	code[class="language-javascript"]>.token.deleted {
 		color: #ad1015;
 	}
-	code[class*="language-javascript"]>.token.function-name {
+	code[class="language-javascript"]>.token.function-name {
 		color: rgb(34, 113, 124);
 	}
-	code[class*="language-javascript"]>.token.string,
-	code[class*="language-javascript"]>.token.char,
-	code[class*="language-javascript"]>.token.boolean,
-	code[class*="language-javascript"]>.token.number {
+	code[class="language-javascript"]>.token.string,
+	code[class="language-javascript"]>.token.char,
+	code[class="language-javascript"]>.token.boolean {
 		color: var(--darkRed);
 	}
-	code[class*="language-javascript"]>.token.operator {
+	code[class="language-javascript"]>.token.number {
+		color: var(--darkBlue);
+	}
+
+	code[class="language-javascript"]>.token.operator {
 		color: rgb(8, 99, 129);
 	}
-	code[class*="language-javascript"]>.token.attr-value,
-	code[class*="language-javascript"]>.token.regex,
-	code[class*="language-javascript"]>.token.variable
-	code[class*="language-javascript"]>.token.function,
-	code[class*="language-javascript"]>.token.function.function,
-	code[class*="language-javascript"]>.token.property,
-	code[class*="language-javascript"]>.token.class-name,
-	code[class*="language-javascript"]>.token.entity,
-	code[class*="language-javascript"]>.token.url,
-	code[class*="language-javascript"]>.token.constant,
-	code[class*="language-javascript"]>.token.symbol {
+	code[class="language-javascript"]>.token.attr-value,
+	code[class="language-javascript"]>.token.regex,
+	code[class="language-javascript"]>.token.variable
+	code[class="language-javascript"]>.token.function,
+	code[class="language-javascript"]>.token.function.function,
+	code[class="language-javascript"]>.token.property,
+	code[class="language-javascript"]>.token.class-name,
+	code[class="language-javascript"]>.token.entity,
+	code[class="language-javascript"]>.token.url,
+	code[class="language-javascript"]>.token.constant,
+	code[class="language-javascript"]>.token.symbol {
 		color: rgb(173, 0, 0);
 	}
-	code[class*="language-javascript"]>.token.selector,
-	code[class*="language-javascript"]>.token.important,
-	code[class*="language-javascript"]>.token.atrule,
-	code[class*="language-javascript"]>.token.keyword,
-	code[class*="language-javascript"]>.token.builtin {
+	code[class="language-javascript"]>.token.selector,
+	code[class="language-javascript"]>.token.important,
+	code[class="language-javascript"]>.token.atrule,
+	code[class="language-javascript"]>.token.keyword,
+	code[class="language-javascript"]>.token.builtin {
 		color: rgb(145, 24, 175);
 	}
-	code[class*="language-javascript"]>.token.keyword-this {
+	code[class="language-javascript"]>.token.keyword-this {
 		color: rgb(26, 166, 143);
 		font-style: italic;
 	}
-	code[class*="language-javascript"]>.token.important,
-	code[class*="language-javascript"]>.token.bold {
+	code[class="language-javascript"]>.token.important,
+	code[class="language-javascript"]>.token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-javascript"]>.token.italic {
+	code[class="language-javascript"]>.token.italic {
 		font-style: italic;
 	}
-	code[class*="language-javascript"]>.token.entity {
+	code[class="language-javascript"]>.token.entity {
 		cursor: help;
 	}
-	code[class*="language-javascript"]>.token.inserted {
+	code[class="language-javascript"]>.token.inserted {
 		color: green;
 	}
-	code[class*="language-javascript"] span.code-annotation {
+	code[class="language-javascript"] span.code-annotation {
 		color: rgb(71, 71, 71);
 		font-style: italic;
 	}
 /* Language - C */
-	pre[class*="language-c"] {
+	pre[class="language-c"] {
 		background-color: var(--CBackground);
 	}
-	pre[class*="language-c"] {
+	pre[class="language-c"] {
 		color: var(--CPrimary);
 	}
-	code[class*="language-c"]>.token.comment {
+	code[class="language-c"]>.token.comment {
 		color: var(--CComment); 
 	}
-	code[class*="language-c"]>.token.prolog,
-	code[class*="language-c"]>.token.doctype,
-	code[class*="language-c"]>.token.cdata {
+	code[class="language-c"]>.token.prolog,
+	code[class="language-c"]>.token.doctype,
+	code[class="language-c"]>.token.cdata {
 		color: var(--codeBrightBlue); /* base1 */
 	}
-	code[class*="language-c"]>.token.punctuation {
+	code[class="language-c"]>.token.punctuation {
 		color: var(--commentGrey);
 	}
-	code[class*="language-c"]>.token.operator {
+	code[class="language-c"]>.token.operator {
 		color: var(--COperator);
 	}
-	code[class*="language-c"]>.token.property,
-	code[class*="language-c"]>.token.tag,
-	code[class*="language-c"]>.token.boolean,
-	code[class*="language-c"]>.token.number,
-	code[class*="language-c"] .token.string,
-	code[class*="language-c"]>.token.constant,
-	code[class*="language-c"]>.token.symbol {
+	code[class="language-c"]>.token.property,
+	code[class="language-c"]>.token.tag,
+	code[class="language-c"]>.token.boolean,
+	code[class="language-c"]>.token.number,
+	code[class="language-c"]>.token.string,
+	code[class="language-c"]>.token.constant,
+	code[class="language-c"]>.token.symbol {
 		color: var(--CLiteral);
 	}
-	code[class*="language-c"] .token.selector,
-	code[class*="language-c"] .token.attr-name,
-	code[class*="language-c"] .token.char,
-	code[class*="language-c"] .token.builtin,
-	code[class*="language-c"] .token.url,
-	code[class*="language-c"] .token.inserted {
+	code[class="language-c"]>.token.selector,
+	code[class="language-c"]>.token.attr-name,
+	code[class="language-c"]>.token.char,
+	code[class="language-c"]>.token.builtin,
+	code[class="language-c"]>.token.url,
+	code[class="language-c"]>.token.inserted {
 		color: #f3f3f3; /* cyan */
 	}
-	code[class*="language-c"] .token.entity {
+	code[class="language-c"]>.token.entity {
 		color: #657b83; /* base00 */
 		background: #eee8d5; /* base2 */
 	}
-	code[class*="language-c"] .token.atrule,
-	code[class*="language-c"] .token.attr-value {
+	code[class="language-c"]>.token.atrule,
+	code[class="language-c"]>.token.attr-value {
 		color: var(--codeLimeGreen);
 	}
-	code[class*="language-c"] .token.keyword,
-	code[class*="language-c"] .token.directive-hash {
+	code[class="language-c"]>.token.keyword,
+	code[class="language-c"]>.token.directive-hash {
 		color: var(--CKeyword);
 	}
-	code[class*="language-c"] .token.function,
-	code[class*="language-c"] .token.class-name {
+	code[class="language-c"]>.token.function,
+	code[class="language-c"]>.token.class-name {
 		color: var(--CFunction); /* yellow */
 	}
-	code[class*="language-c"] .token.regex,
-	code[class*="language-c"] .token.important,
-	code[class*="language-c"] .token.variable {
+	code[class="language-c"]>.token.regex,
+	code[class="language-c"]>.token.important,
+	code[class="language-c"]>.token.variable {
 		color: var(--codeRedOrange); /* orange */
 	}
-	code[class*="language-c"] .token.important,
-	code[class*="language-c"] .token.bold {
+	code[class="language-c"]>.token.important,
+	code[class="language-c"]>.token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-c"] .token.italic {
+	code[class="language-c"]>.token.italic {
 		font-style: italic;
 	}
-	code[class*="language-c"] .token.entity {
+	code[class="language-c"]>.token.entity {
 		cursor: help;
 	}
-	/* Inline code */
-	:not(pre) > code[class*="language-c"] .token {
-		color: white !important;
-	}
-	:not(pre) > code[class*="language-c"] {
-		padding: .2em;
-		border-radius: .3em;
-		display: inline-block;
-		margin: 1px;
-		box-shadow: none;
-	}
-	span.inline-color {
-		display: block;
-		/* To prevent visual glitches again */
-		height: 120%;
-		width: 120%;
-	}
 /* Language - C++ */
-	code[class*="language-cpp"],
-	pre[class*="language-cpp"] {
-		color: white;
+	code[class="language-cpp"],
+	pre[class="language-cpp"] {
+		color: var(--textColor);
 	}
-	pre[class*="language-cpp"] {
-		background-color: var(--codeBlackBG);
+	pre[class="language-cpp"] {background-color: var(--page);}
+
+	code[class="language-cpp"] >.token.comment,
+	code[class="language-cpp"] >.token.prolog,
+	code[class="language-cpp"] >.token.doctype,
+	code[class="language-cpp"] >.token.cdata {
+		color: hsl(181, 28%, 69%); /* #777777 */
 	}
-	code[class*="language-cpp"] >.token.comment,
-	code[class*="language-cpp"] >.token.prolog,
-	code[class*="language-cpp"] >.token.doctype,
-	code[class*="language-cpp"] >.token.cdata {
-		color: hsl(0, 0%, 47%); /* #777777 */
+	code[class="language-cpp"] >.token.punctuation {
+		color: rgb(85, 85, 85);
 	}
-	code[class*="language-cpp"] >.token.punctuation {
-		color: rgb(255, 255, 255);
+	code[class="language-cpp"] >.token.function {
+		color: rgb(207, 0, 0);
 	}
-	code[class*="language-cpp"] >.token.namespace {
-		opacity: .7;
+	code[class="language-c"]>.token.class-name {
+		color: rgb(0, 81, 187);
 	}
-	code[class*="language-cpp"] >.token.function {
-		color: rgb(99, 225, 230);
-	}
-	code[class*="language-c"]>.token.class-name {
-		color: rgb(255, 127, 67);
-	}
-	code[class*="language-cpp"] >.token.string {
-		color: rgb(238, 240, 68);
-	}
-	code[class*="language-cpp"] >.token.keyword.keyword-this {
+	code[class="language-cpp"] >.token.keyword.keyword-this {
 		color: rgb(255, 72, 72);
 		font-style: italic;
 	}
-	code[class*="language-cpp"] >.token.tag,
-	code[class*="language-cpp"] >.token.boolean,
-	code[class*="language-cpp"] >.token.char,
-	code[class*="language-cpp"] >.token.number,
-	code[class*="language-cpp"] >.token.deleted {
-		color: rgb(252, 143, 41)
+	code[class="language-cpp"] >.token.tag,
+	code[class="language-cpp"] >.token.boolean,
+	code[class="language-cpp"] >.token.string,
+	code[class="language-cpp"] >.token.char,
+	code[class="language-cpp"] >.token.number,
+	code[class="language-cpp"] >.token.deleted {
+		color: rgb(0, 126, 175);
 	}
-	code[class*="language-cpp"] >.token.keyword,
-	code[class*="language-cpp"] >.token.property,
-	code[class*="language-cpp"] >.token.selector,
-	code[class*="language-cpp"] >.token.constant,
-	code[class*="language-cpp"] >.token.symbol,
-	code[class*="language-cpp"] >.token.builtin {
-		color: rgb(255, 68, 109);
+	code[class="language-cpp"] >.token.keyword,
+	pre[class="language-cpp"]>code[class="language-cpp"] >.token.property,
+	code[class="language-cpp"] >.token.selector,
+	code[class="language-cpp"] >.token.constant,
+	code[class="language-cpp"] >.token.symbol,
+	code[class="language-cpp"] >.token.builtin {
+		color: rgb(0, 82, 189);
 	}
-	code[class*="language-cpp"] >.token.attr-name,
-	code[class*="language-cpp"] >.token.attr-value,
-	code[class*="language-cpp"] >.token.entity,
-	code[class*="language-cpp"] >.token.url,
-	code[class*="language-cpp"] >.language-css .token.string,
-	code[class*="language-cpp"] >.style .token.string,
-	code[class*="language-cpp"] >.token.variable,
-	code[class*="language-cpp"] >.token.inserted {
-		color: hsl(103, 100%, 72%); /* #8F9D6A */
+	code[class="language-cpp"] >.token.attr-name,
+	code[class="language-cpp"] >.token.attr-value,
+	code[class="language-cpp"] >.token.entity,
+	code[class="language-cpp"] >.token.url,
+	code[class="language-cpp"] >.token.variable,
+	code[class="language-cpp"] >.token.inserted {
+		color: hsl(103, 100%, 32%); /* #8F9D6A */
 	}
-	code[class*="language-cpp"] >.token.operator {
-		color: var(--CPPOperator);
+	code[class="language-cpp"] >.token.operator {
+		color: var(--darkRed);
 	}
-	code[class*="language-cpp"]>.token.class-name {
-    color: var(--CPPClassName);
+	code[class="language-c"] .token.keyword,
+	code[class="language-cpp"] .token.directive-hash {
+    color: rgb(146, 0, 172);
 	}
-	code[class*="language-cpp"] .token.directive-hash {
-    color: rgb(240 153 255);
-	}
-	code[class*="language-cpp"] .token.keyword-else, 
-	code[class*="language-cpp"] .token.keyword-if {
+	code[class="language-cpp"] .token.keyword-else, 
+	code[class="language-cpp"] .token.keyword-if {
 		color: var(--CPPConditional);
 	}
 	
-	code[class*="language-cpp"] >.token.atrule {
+	code[class="language-cpp"] >.token.atrule {
 		color: hsl(218, 22%, 55%); /* #7587A6 */
 	}
-	code[class*="language-cpp"] >.token.regex,
-	code[class*="language-cpp"] >.token.important {
+	code[class="language-cpp"] >.token.regex,
+	code[class="language-cpp"] >.token.important {
 		color: hsl(42, 75%, 65%); /* #E9C062 */
 	}
-	code[class*="language-cpp"] >.token.important,
-	code[class*="language-cpp"] >.token.bold {
+	code[class="language-cpp"] >.token.important,
+	code[class="language-cpp"] >.token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-cpp"] >.token.italic {
+	code[class="language-cpp"] >.token.italic {
 		font-style: italic;
 	}
-	code[class*="language-cpp"] >.token.entity {
+	code[class="language-cpp"] >.token.entity {
 		cursor: help;
 	}
-	code[class*="language-cpp"] >pre[data-line] {
+	code[class="language-cpp"] >pre[data-line] {
 		padding: 1em 0 1em 3em;
 		position: relative;
 	}
 	/* Markup */
-	code[class*="language-cpp"] >.language-markup .token.tag,
-	code[class*="language-cpp"] >.language-markup .token.attr-name,
-	code[class*="language-cpp"] >.language-markup .token.punctuation {
+	code[class="language-cpp"] >.language-markup .token.tag,
+	code[class="language-cpp"] >.language-markup .token.attr-name,
+	code[class="language-cpp"] >.language-markup .token.punctuation {
 		color: hsl(33, 33%, 52%); /* #AC885B */
 	}
 /* Language - Prolog */
-	code[class*="language-prolog"]>.token.comment,
-	code[class*="language-prolog"]>.token.prolog,
-	code[class*="language-prolog"]>.token.doctype,
-	code[class*="language-prolog"]>.token.cdata {
+	code[class="language-prolog"]>.token.comment,
+	code[class="language-prolog"]>.token.prolog,
+	code[class="language-prolog"]>.token.doctype,
+	code[class="language-prolog"]>.token.cdata {
 		color: hsl(0, 0%, 47%); /* #777777 */
 	}
 
-	code[class*="language-prolog"]>.token.punctuation {
+	code[class="language-prolog"]>.token.punctuation {
 		opacity: .7;
 	}
 
-	code[class*="language-prolog"]>.token.namespace {
+	code[class="language-prolog"]>.token.namespace {
 		opacity: .7;
 	}
 
-	code[class*="language-prolog"]>.token.tag,
-	code[class*="language-prolog"]>.token.boolean,
-	code[class*="language-prolog"]>.token.number,
-	code[class*="language-prolog"]>.token.deleted {
+	code[class="language-prolog"]>.token.tag,
+	code[class="language-prolog"]>.token.boolean,
+	code[class="language-prolog"]>.token.number,
+	code[class="language-prolog"]>.token.deleted {
 		color: hsl(14, 58%, 55%); /* #CF6A4C */
 	}
 
-	code[class*="language-prolog"]>.token.keyword,
-	code[class*="language-prolog"]>.token.property,
-	code[class*="language-prolog"]>.token.selector,
-	code[class*="language-prolog"]>.token.constant,
-	code[class*="language-prolog"]>.token.symbol,
-	code[class*="language-prolog"]>.token.builtin {
+	code[class="language-prolog"]>.token.keyword,
+	code[class="language-prolog"]>.token.property,
+	code[class="language-prolog"]>.token.selector,
+	code[class="language-prolog"]>.token.constant,
+	code[class="language-prolog"]>.token.symbol,
+	code[class="language-prolog"]>.token.builtin {
 		color: hsl(53, 89%, 79%); /* #F9EE98 */
 	}
 
-	code[class*="language-prolog"]>.token.attr-name,
-	code[class*="language-prolog"]>.token.attr-value,
-	code[class*="language-prolog"]>.token.string,
-	code[class*="language-prolog"]>.token.char,
-	code[class*="language-prolog"]>.token.operator,
-	code[class*="language-prolog"]>.token.entity,
-	code[class*="language-prolog"]>.token.url,
-	code[class*="language-prolog"]>.language-css .token.string,
-	code[class*="language-prolog"]>.style .token.string,
-	code[class*="language-prolog"]>.token.variable,
-	code[class*="language-prolog"]>.token.inserted {
+	code[class="language-prolog"]>.token.attr-name,
+	code[class="language-prolog"]>.token.attr-value,
+	code[class="language-prolog"]>.token.string,
+	code[class="language-prolog"]>.token.char,
+	code[class="language-prolog"]>.token.operator,
+	code[class="language-prolog"]>.token.entity,
+	code[class="language-prolog"]>.token.url,
+	code[class="language-prolog"]>.language-css .token.string,
+	code[class="language-prolog"]>.style .token.string,
+	code[class="language-prolog"]>.token.variable,
+	code[class="language-prolog"]>.token.inserted {
 		color: hsl(76, 21%, 52%); /* #8F9D6A */
 	}
 
-	code[class*="language-prolog"]>.token.atrule {
+	code[class="language-prolog"]>.token.atrule {
 		color: hsl(218, 22%, 55%); /* #7587A6 */
 	}
 
-	code[class*="language-prolog"]>.token.regex,
-	code[class*="language-prolog"]>.token.important {
+	code[class="language-prolog"]>.token.regex,
+	code[class="language-prolog"]>.token.important {
 		color: hsl(42, 75%, 65%); /* #E9C062 */
 	}
 
-	code[class*="language-prolog"]>.token.important,
-	code[class*="language-prolog"]>.token.bold {
+	code[class="language-prolog"]>.token.important,
+	code[class="language-prolog"]>.token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-prolog"]>.token.italic {
+	code[class="language-prolog"]>.token.italic {
 		font-style: italic;
 	}
 
-	code[class*="language-prolog"]>.token.entity {
+	code[class="language-prolog"]>.token.entity {
 		cursor: help;
 	}
 
-	code[class*="language-prolog"]>pre[data-line] {
+	code[class="language-prolog"]>pre[data-line] {
 		padding: 1em 0 1em 3em;
 		position: relative;
 	}
 
 	/* Markup */
-	code[class*="language-prolog"]>.language-markup .token.tag,
-	code[class*="language-prolog"]>.language-markup .token.attr-name,
-	code[class*="language-prolog"]>.language-markup .token.punctuation {
+	code[class="language-prolog"]>.language-markup .token.tag,
+	code[class="language-prolog"]>.language-markup .token.attr-name,
+	code[class="language-prolog"]>.language-markup .token.punctuation {
 		color: hsl(33, 33%, 52%); /* #AC885B */
 	}
 /* Language - Swift */
-	code[class*="language-swift"],
-	pre[class*="language-swift"] {
+	code[class="language-swift"],
+	pre[class="language-swift"] {
 		color: rgb(39, 39, 39); /* base00 */
 		background-color: rgb(255, 255, 255);
 	}
 
 	/* Keywords */
-	code[class*="language-swift"] > .token.comment,
-	code[class*="language-swift"] > .token.block-comment,
-	code[class*="language-swift"] > .token.prolog,
-	code[class*="language-swift"] > .token.doctype,
-	code[class*="language-swift"] > .token.cdata {
+	code[class="language-swift"] > .token.comment,
+	code[class="language-swift"] > .token.block-comment,
+	code[class="language-swift"] > .token.prolog,
+	code[class="language-swift"] > .token.doctype,
+	code[class="language-swift"] > .token.cdata {
 		color: rgb(109, 127, 141);
 	}
 
 	
-	code[class*="language-swift"] > .token.operator {
+	code[class="language-swift"] > .token.operator {
 		color: rgb(0, 103, 221);
 	}
 
-	code[class*="language-swift"] > .token.punctuation	{
+	code[class="language-swift"] > .token.punctuation	{
 		color: rgb(39,39,39);
 	}
 
-	code[class*="language-swift"] > .token.builtin {
+	code[class="language-swift"] > .token.builtin {
 		color:rgb(35, 111, 116);
 	}
 	
-	code[class*="language-swift"] > .token.property,
-	code[class*="language-swift"] > .token.tag,
-	code[class*="language-swift"] > .token.boolean,
-	code[class*="language-swift"] > .token.number,
-	code[class*="language-swift"] > .token.function-name,
-	code[class*="language-swift"] > .token.constant,
-	code[class*="language-swift"] > .token.symbol,
-	code[class*="language-swift"] > .token.string,
-	code[class*="language-swift"] > .token.char,
-	code[class*="language-swift"] > .token.deleted {
+	code[class="language-swift"] > .token.property,
+	code[class="language-swift"] > .token.tag,
+	code[class="language-swift"] > .token.boolean,
+	code[class="language-swift"] > .token.number,
+	code[class="language-swift"] > .token.function-name,
+	code[class="language-swift"] > .token.constant,
+	code[class="language-swift"] > .token.symbol,
+	code[class="language-swift"] > .token.string,
+	code[class="language-swift"] > .token.char,
+	code[class="language-swift"] > .token.deleted {
 		color: rgb(230, 19, 19);
 	}
 	
-	code[class*="language-swift"] > .token.selector,
-	code[class*="language-swift"] > .token.attr-name,
-	code[class*="language-swift"] > .token.function,
-	code[class*="language-swift"] > .token.inserted {
+	code[class="language-swift"] > .token.selector,
+	code[class="language-swift"] > .token.attr-name,
+	code[class="language-swift"] > .token.function,
+	code[class="language-swift"] > .token.inserted {
 		color: rgb(93,0,178);
 	}
 
 
 	
-	code[class*="language-swift"] > .token.entity,
-	code[class*="language-swift"] > .token.url,
-	code[class*="language-swift"] > .token.variable {
+	code[class="language-swift"] > .token.entity,
+	code[class="language-swift"] > .token.url,
+	code[class="language-swift"] > .token.variable {
 		color: #0f854e;
 	}
 	
-	code[class*="language-swift"] > .token.atrule,
-	code[class*="language-swift"] > .token.attr-value,
-	code[class*="language-swift"] > .token.keyword,
-	code[class*="language-swift"] > .token.class-name {
+	code[class="language-swift"] > .token.atrule,
+	code[class="language-swift"] > .token.attr-value,
+	code[class="language-swift"] > .token.keyword,
+	code[class="language-swift"] > .token.class-name {
 		color: rgb(192, 0, 163);
 	}
 	
-	code[class*="language-swift"] > .token.regex,
-	code[class*="language-swift"] > .token.important {
+	code[class="language-swift"] > .token.regex,
+	code[class="language-swift"] > .token.important {
 		color: rgb(255, 221, 158);
 	}
 	
-	code[class*="language-swift"] > .language-css .token.string,
-	code[class*="language-swift"] > .style .token.string {
+	code[class="language-swift"] > .language-css .token.string,
+	code[class="language-swift"] > .style .token.string {
 		color: #a67f59;
 		background: rgba(255, 255, 255, 0.5);
 	}
 	
-	code[class*="language-swift"] > .token.important {
+	code[class="language-swift"] > .token.important {
 		font-weight: normal;
 	}
 	
-	code[class*="language-swift"] > .token.bold {
+	code[class="language-swift"] > .token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-swift"] > .token.italic {
+	code[class="language-swift"] > .token.italic {
 		font-style: italic;
 	}
 	
-	code[class*="language-swift"] > .token.entity {
+	code[class="language-swift"] > .token.entity {
 		cursor: help;
 	}
 	
-	code[class*="language-swift"] > .token.namespace {
+	code[class="language-swift"] > .token.namespace {
 		opacity: .7;
 	}
 /* Language - Python */
-	code[class*="language-python"],
-	pre[class*="language-python"] {
+	code[class="language-python"],
+	pre[class="language-python"] {
 		color: var(--codeWhite);
 	}
 
-	:not(pre) > code[class*="language-python"],
-	pre[class*="language-python"] {
+	:not(pre) > code[class="language-python"],
+	pre[class="language-python"] {
 		background: var(--codeLightNavBG);
 	}
 
-	code[class*="language-python"] > .token.comment,
-	code[class*="language-python"] > .token.triple-quoted-string.string,
-	code[class*="language-python"] > .token.block-comment,
-	code[class*="language-python"] > .token.prolog,
-	code[class*="language-python"] > .token.doctype,
-	code[class*="language-python"] > .token.cdata {
+	code[class="language-python"] > .token.comment,
+	code[class="language-python"] > .token.triple-quoted-string.string,
+	code[class="language-python"] > .token.block-comment,
+	code[class="language-python"] > .token.prolog,
+	code[class="language-python"] > .token.doctype,
+	code[class="language-python"] > .token.cdata {
 		color: var(--commentBlue);
 	}
 
-	code[class*="language-python"] > .token.punctuation {
+	code[class="language-python"] > .token.punctuation {
 		color: rgb(255, 255, 255);
 	}
 
-	code[class*="language-python"] > .token.tag,
-	code[class*="language-python"] > .token.attr-name,
-	code[class*="language-python"] > .token.namespace,
-	code[class*="language-python"] > .token.deleted {
+	code[class="language-python"] > .token.tag,
+	code[class="language-python"] > .token.attr-name,
+	code[class="language-python"] > .token.namespace,
+	code[class="language-python"] > .token.deleted {
 		color: #e2777a;
 	}
 
-	code[class*="language-python"] > .token.function-name {
+	code[class="language-python"] > .token.function-name {
 		color: #70f7e0;
 	}
 
-	code[class*="language-python"] > .token.boolean,
-	code[class*="language-python"] > .token.number,
-	code[class*="language-python"] > .token.function {
+	code[class="language-python"] > .token.boolean,
+	code[class="language-python"] > .token.number,
+	code[class="language-python"] > .token.function {
 		color: rgb(255, 118, 111);
 	}
 
-	code[class*="language-python"] > .token.property,
-	code[class*="language-python"] > .token.class-name,
-	code[class*="language-python"] > .token.constant,
-	code[class*="language-python"] > .token.symbol {
+	code[class="language-python"] > .token.property,
+	code[class="language-python"] > .token.class-name,
+	code[class="language-python"] > .token.constant,
+	code[class="language-python"] > .token.symbol {
 		color: #2cf8ff;
 	}
 
-	code[class*="language-python"] > .token.selector,
-	code[class*="language-python"] > .token.important,
-	code[class*="language-python"] > .token.atrule,
-	code[class*="language-python"] > .token.keyword {
+	code[class="language-python"] > .token.selector,
+	code[class="language-python"] > .token.important,
+	code[class="language-python"] > .token.atrule,
+	code[class="language-python"] > .token.keyword {
 		color: #feb1ff;
 	}
 
-	code[class*="language-python"] > .token.builtin {color: rgb(139, 255, 211)}
-	code[class*="language-python"] > .token.string-interpolation {color: #f8c555}
-	code[class*="language-python"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	code[class="language-python"] > .token.builtin {color: rgb(139, 255, 211)}
+	code[class="language-python"] > .token.string-interpolation {color: #f8c555}
+	code[class="language-python"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
 
-	code[class*="language-python"] > .token.string,
-	code[class*="language-python"] > .token.char,
-	code[class*="language-python"] > .token.attr-value,
-	code[class*="language-python"] > .token.regex,
-	code[class*="language-python"] > .token.variable {
+	code[class="language-python"] > .token.string,
+	code[class="language-python"] > .token.char,
+	code[class="language-python"] > .token.attr-value,
+	code[class="language-python"] > .token.regex,
+	code[class="language-python"] > .token.variable {
 		color: #ffdf9b;
 	}
 
-	code[class*="language-python"] > .token.operator,
-	code[class*="language-python"] > .token.entity,
-	code[class*="language-python"] > .token.url {
+	code[class="language-python"] > .token.operator,
+	code[class="language-python"] > .token.entity,
+	code[class="language-python"] > .token.url {
 		color: #6fe7e5;
 	}
 
-	code[class*="language-python"] > .token.important,
-	code[class*="language-python"] > .token.bold {
+	code[class="language-python"] > .token.important,
+	code[class="language-python"] > .token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-python"] > .token.italic {
+	code[class="language-python"] > .token.italic {
 		font-style: italic;
 	}
 
-	code[class*="language-python"] > .token.entity {
+	code[class="language-python"] > .token.entity {
 		cursor: help;
 	}
 
-	code[class*="language-python"] > .token.inserted {
+	code[class="language-python"] > .token.inserted {
 		color: green;
 	}
 /* Language - SML */
-	code[class*="language-sml"],
-	pre[class*="language-sml"] {
+	code[class="language-sml"],
+	pre[class="language-sml"] {
 		color: var(--codeWhite);
 	}
 
-	:not(pre) > code[class*="language-sml"],
-	pre[class*="language-sml"] {
+	:not(pre) > code[class="language-sml"],
+	pre[class="language-sml"] {
 		background: var(--codePurpleBG);
 	}
 
-	code[class*="language-sml"] > .token.comment,
-	code[class*="language-sml"] > .token.triple-quoted-string.string,
-	code[class*="language-sml"] > .token.block-comment,
-	code[class*="language-sml"] > .token.prolog,
-	code[class*="language-sml"] > .token.doctype,
-	code[class*="language-sml"] > .token.cdata {
+	code[class="language-sml"] > .token.comment,
+	code[class="language-sml"] > .token.triple-quoted-string.string,
+	code[class="language-sml"] > .token.block-comment,
+	code[class="language-sml"] > .token.prolog,
+	code[class="language-sml"] > .token.doctype,
+	code[class="language-sml"] > .token.cdata {
 		color: var(--commentLavender);
 	}
 
-	code[class*="language-sml"] > .token.punctuation {
+	code[class="language-sml"] > .token.punctuation {
 		color: var(--punctuationLavender);
 	}
 
-	code[class*="language-sml"] > .token.tag,
-	code[class*="language-sml"] > .token.attr-name,
-	code[class*="language-sml"] > .token.namespace,
-	code[class*="language-sml"] > .token.deleted {
+	code[class="language-sml"] > .token.tag,
+	code[class="language-sml"] > .token.attr-name,
+	code[class="language-sml"] > .token.namespace,
+	code[class="language-sml"] > .token.deleted {
 		color: #ff5056;
 	}
 
-	code[class*="language-sml"] > .token.function-name, 
-	code[class*="language-sml"] > .token.function {
+	code[class="language-sml"] > .token.function-name, 
+	code[class="language-sml"] > .token.function {
 		color: rgb(236, 218, 159);
 	}
 
-	code[class*="language-sml"] > .token.number {
+	code[class="language-sml"] > .token.number {
 		color: rgb(255, 157, 0);
 	}
 
-	code[class*="language-sml"] > .token.boolean,
-	code[class*="language-sml"] > .token.property,
-	code[class*="language-sml"] > .token.constant,
-	code[class*="language-sml"] > .token.symbol {
+	code[class="language-sml"] > .token.boolean,
+	code[class="language-sml"] > .token.property,
+	code[class="language-sml"] > .token.constant,
+	code[class="language-sml"] > .token.symbol {
 		color: rgb(119, 255, 153);
 	}
 
-	code[class*="language-sml"] > .token.class-name {
+	code[class="language-sml"] > .token.class-name {
 		color: rgb(255, 146, 255);
 	}
 
 
-	code[class*="language-sml"] > .token.selector,
-	code[class*="language-sml"] > .token.important,
-	code[class*="language-sml"] > .token.atrule,
-	code[class*="language-sml"] > .token.keyword {
+	code[class="language-sml"] > .token.selector,
+	code[class="language-sml"] > .token.important,
+	code[class="language-sml"] > .token.atrule,
+	code[class="language-sml"] > .token.keyword {
 		color: rgb(64, 215, 226);
 	}
 
-	code[class*="language-sml"] > .token.builtin {color: rgb(167, 228, 110)}
-	code[class*="language-sml"] > .token.string-interpolation {color: #f8c555}
-	code[class*="language-sml"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	code[class="language-sml"] > .token.builtin {color: rgb(167, 228, 110)}
+	code[class="language-sml"] > .token.string-interpolation {color: #f8c555}
+	code[class="language-sml"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
 
-	code[class*="language-sml"] > .token.string,
-	code[class*="language-sml"] > .token.char,
-	code[class*="language-sml"] > .token.attr-value,
-	code[class*="language-sml"] > .token.regex,
-	code[class*="language-sml"] > .token.variable {
+	code[class="language-sml"] > .token.string,
+	code[class="language-sml"] > .token.char,
+	code[class="language-sml"] > .token.attr-value,
+	code[class="language-sml"] > .token.regex,
+	code[class="language-sml"] > .token.variable {
 		color: #f8c555;
 	}
 
-	code[class*="language-sml"] > .token.operator,
-	code[class*="language-sml"] > .token.entity,
-	code[class*="language-sml"] > .token.url {
+	code[class="language-sml"] > .token.operator,
+	code[class="language-sml"] > .token.entity,
+	code[class="language-sml"] > .token.url {
 		color: rgb(247, 97, 92);
 	}
 
-	code[class*="language-sml"] > .token.important,
-	code[class*="language-sml"] > .token.bold {
+	code[class="language-sml"] > .token.important,
+	code[class="language-sml"] > .token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-sml"] > .token.italic {
+	code[class="language-sml"] > .token.italic {
 		font-style: italic;
 	}
 
-	code[class*="language-sml"] > .token.entity {
+	code[class="language-sml"] > .token.entity {
 		cursor: help;
 	}
 
-	code[class*="language-sml"] > .token.inserted {
+	code[class="language-sml"] > .token.inserted {
 		color: green;
 	}
 /* Language - Haskell */
-	pre[class*="language-haskell"],
-	pre[class*="language-haskell"] code {
+	pre[class="language-haskell"],
+	pre[class="language-haskell"] code {
 		color: var(--HaskellPrimary);
 		background-color: var(--HaskellBackground);
 	}
 
-	code[class*="language-haskell"] > .token.comment,
-	code[class*="language-haskell"] > .token.block-comment,
-	code[class*="language-haskell"] > .token.prolog,
-	code[class*="language-haskell"] > .token.doctype,
-	code[class*="language-haskell"] > .token.cdata {
+	code[class="language-haskell"] > .token.comment,
+	code[class="language-haskell"] > .token.block-comment,
+	code[class="language-haskell"] > .token.prolog,
+	code[class="language-haskell"] > .token.doctype,
+	code[class="language-haskell"] > .token.cdata {
 		color: var(--HaskellComment);
 	}
 
-	code[class*="language-haskell"] > .token.punctuation {
+	code[class="language-haskell"] > .token.punctuation {
 		color: var(--HaskellPrimary);
 	}
-	code[class*="language-haskell"] > .token.hvariable {
+	code[class="language-haskell"] > .token.hvariable {
 		color: var(--HaskellFunctionName);
 	}
-	code[class*="language-haskell"] > .token.tag,
-	code[class*="language-haskell"] > .token.attr-name,
-	code[class*="language-haskell"] > .token.namespace,
-	code[class*="language-haskell"] > .token.deleted {
+	code[class="language-haskell"] > .token.tag,
+	code[class="language-haskell"] > .token.attr-name,
+	code[class="language-haskell"] > .token.namespace,
+	code[class="language-haskell"] > .token.deleted {
 		color: var(--HaskellPrimary);
 	}
 
-	code[class*="language-haskell"] > .token.function-name {
+	code[class="language-haskell"] > .token.function-name {
 		color: var(--HaskellFunction);
 	}
 
-	code[class*="language-haskell"] > .token.boolean,
-	code[class*="language-haskell"] > .token.string,
-	code[class*="language-haskell"] > .token.char,
-	code[class*="language-haskell"] > .token.number,
-	code[class*="language-haskell"] > .token.function {
+	code[class="language-haskell"] > .token.boolean,
+	code[class="language-haskell"] > .token.string,
+	code[class="language-haskell"] > .token.char,
+	code[class="language-haskell"] > .token.number,
+	code[class="language-haskell"] > .token.function {
 		color: var(--HaskellLiteral);
 	}
 
-	code[class*="language-haskell"] > .token.property,
-	code[class*="language-haskell"] > .token.class-name,
-	code[class*="language-haskell"] > .token.constant,
-	code[class*="language-haskell"] > .token.symbol {
+	code[class="language-haskell"] > .token.property,
+	code[class="language-haskell"] > .token.class-name,
+	code[class="language-haskell"] > .token.constant,
+	code[class="language-haskell"] > .token.symbol {
 		color: var(--HaskellPrimary);
 	}
 
-	code[class*="language-haskell"] > .token.selector,
-	code[class*="language-haskell"] > .token.operator,
-	code[class*="language-haskell"] > .token.important,
-	code[class*="language-haskell"] > .token.atrule,
-	code[class*="language-haskell"] > .token.keyword {
+	code[class="language-haskell"] > .token.selector,
+	code[class="language-haskell"] > .token.operator,
+	code[class="language-haskell"] > .token.important,
+	code[class="language-haskell"] > .token.atrule,
+	code[class="language-haskell"] > .token.keyword {
 		color: var(--HaskellKeyword);
 	}
 
-	code[class*="language-haskell"] > .token.string-interpolation {color: #f8c555}
-	code[class*="language-haskell"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	code[class="language-haskell"] > .token.string-interpolation {color: #f8c555}
+	code[class="language-haskell"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
 
 
-	code[class*="language-haskell"] > .token.attr-value,
-	code[class*="language-haskell"] > .token.regex,
-	code[class*="language-haskell"] > .token.variable {
+	code[class="language-haskell"] > .token.attr-value,
+	code[class="language-haskell"] > .token.regex,
+	code[class="language-haskell"] > .token.variable {
 		color: rgb(199,255,145);
 	}
 
-	code[class*="language-haskell"] > .token.entity,
-	code[class*="language-haskell"] > .token.url {
+	code[class="language-haskell"] > .token.entity,
+	code[class="language-haskell"] > .token.url {
 		color: #6fe7e5;
 	}
 
-	code[class*="language-haskell"] > .token.important,
-	code[class*="language-haskell"] > .token.bold {
+	code[class="language-haskell"] > .token.important,
+	code[class="language-haskell"] > .token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-haskell"] > .token.italic {
+	code[class="language-haskell"] > .token.italic {
 		font-style: italic;
 	}
 
-	code[class*="language-haskell"] > .token.entity {
+	code[class="language-haskell"] > .token.entity {
 		cursor: help;
 	}
 
-	code[class*="language-haskell"] > .token.inserted {
+	code[class="language-haskell"] > .token.inserted {
 		color: green;
 	}
 /* Language - Rust */
-	pre[class*="language-rust"],
-	pre[class*="language-rust"] code {
+	pre[class="language-rust"],
+	pre[class="language-rust"] code {
 		color: var(--rustPrimary);
 		background-color: var(--rustBackground);
 	}
 	
-	code[class*="language-rust"] > .token.comment,
-	code[class*="language-rust"] > .token.block-comment,
-	code[class*="language-rust"] > .token.prolog,
-	code[class*="language-rust"] > .token.doctype,
-	code[class*="language-rust"] > .token.cdata {
+	code[class="language-rust"] > .token.comment,
+	code[class="language-rust"] > .token.block-comment,
+	code[class="language-rust"] > .token.prolog,
+	code[class="language-rust"] > .token.doctype,
+	code[class="language-rust"] > .token.cdata {
 		color: var(--rustComment);
 	}
 	
-	code[class*="language-rust"] > .token.punctuation {
+	code[class="language-rust"] > .token.punctuation {
 		color: var(--rustPrimary);
 	}
 	
-	code[class*="language-rust"] > .token.tag,
-	code[class*="language-rust"] > .token.attr-name,
-	code[class*="language-rust"] > .token.namespace,
-	code[class*="language-rust"] > .token.deleted {
+	code[class="language-rust"] > .token.tag,
+	code[class="language-rust"] > .token.attr-name,
+	code[class="language-rust"] > .token.namespace,
+	code[class="language-rust"] > .token.deleted {
 		color: var(--rustPrimary);
 	}
 	
-	code[class*="language-rust"] > .token.boolean,
-	code[class*="language-rust"] > .token.string,
-	code[class*="language-rust"] > .token.char,
-	code[class*="language-rust"] > .token.number {
+	code[class="language-rust"] > .token.boolean,
+	code[class="language-rust"] > .token.string,
+	code[class="language-rust"] > .token.char,
+	code[class="language-rust"] > .token.number {
 		color: var(--rustLiteral);
 	}
-	code[class*="language-rust"] > .token.function {
+	code[class="language-rust"] > .token.function {
 		color: var(--rustFunction);
 	}
 
-	code[class*="language-rust"] > .token.function-definition.function {
+	code[class="language-rust"] > .token.function-definition.function {
 		color: var(--rustFunctionDefinition);
 	}
 	
-	code[class*="language-rust"] > .token.property,
-	code[class*="language-rust"] > .token.class-name,
-	code[class*="language-rust"] > .token.constant,
-	code[class*="language-rust"] > .token.symbol {
+	code[class="language-rust"] > .token.property,
+	code[class="language-rust"] > .token.class-name,
+	code[class="language-rust"] > .token.constant,
+	code[class="language-rust"] > .token.symbol {
 		color: var(--rustPrimary);
 	}
 	
-	code[class*="language-rust"] > .token.selector,
-	code[class*="language-rust"] > .token.operator,
-	code[class*="language-rust"] > .token.important,
-	code[class*="language-rust"] > .token.atrule,
-	code[class*="language-rust"] > .token.keyword {
+	code[class="language-rust"] > .token.selector,
+	code[class="language-rust"] > .token.operator,
+	code[class="language-rust"] > .token.important,
+	code[class="language-rust"] > .token.atrule,
+	code[class="language-rust"] > .token.keyword {
 		color: var(--rustKeyword);
 	}
 	
-	code[class*="language-rust"] > .token.string-interpolation {color: #f8c555}
-	code[class*="language-rust"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	code[class="language-rust"] > .token.string-interpolation {color: #f8c555}
+	code[class="language-rust"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
 	
 	
-	code[class*="language-rust"] > .token.attr-value,
-	code[class*="language-rust"] > .token.regex,
-	code[class*="language-rust"] > .token.variable {
+	code[class="language-rust"] > .token.attr-value,
+	code[class="language-rust"] > .token.regex,
+	code[class="language-rust"] > .token.variable {
 		color: rgb(199,255,145);
 	}
 	
-	code[class*="language-rust"] > .token.entity,
-	code[class*="language-rust"] > .token.url {
+	code[class="language-rust"] > .token.entity,
+	code[class="language-rust"] > .token.url {
 		color: #6fe7e5;
 	}
 	
-	code[class*="language-rust"] > .token.important,
-	code[class*="language-rust"] > .token.bold {
+	code[class="language-rust"] > .token.important,
+	code[class="language-rust"] > .token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-rust"] > .token.italic {
+	code[class="language-rust"] > .token.italic {
 		font-style: italic;
 	}
 	
-	code[class*="language-rust"] > .token.entity {
+	code[class="language-rust"] > .token.entity {
 		cursor: help;
 	}
 	
-	code[class*="language-rust"] > .token.inserted {
+	code[class="language-rust"] > .token.inserted {
 		color: green;
 	}
 /* Language - HTML */
-	code[class*="language-html"],
-	pre[class*="language-html"] {
+	code[class="language-html"],
+	pre[class="language-html"] {
 		color: grey;
 	}
 
-	code[class*="language-html"]>.token.comment,
-	code[class*="language-html"]>.token.prolog,
-	code[class*="language-html"]>.token.doctype,
-	code[class*="language-html"]>.token.cdata {
+	code[class="language-html"]>.token.comment,
+	code[class="language-html"]>.token.prolog,
+	code[class="language-html"]>.token.doctype,
+	code[class="language-html"]>.token.cdata {
 		color: hsl(0, 0%, 47%); /* #777777 */
 	}
 
-	code[class*="language-html"]>.token.punctuation {
+	code[class="language-html"]>.token.punctuation {
 		opacity: .7;
 	}
 
-	code[class*="language-html"]>.token.namespace {
+	code[class="language-html"]>.token.namespace {
 		opacity: .7;
 	}
 
-	code[class*="language-html"]>.token.tag,
-	code[class*="language-html"]>.token.boolean,
-	code[class*="language-html"]>.token.number,
-	code[class*="language-html"]>.token.deleted {
+	code[class="language-html"]>.token.tag,
+	code[class="language-html"]>.token.boolean,
+	code[class="language-html"]>.token.number,
+	code[class="language-html"]>.token.deleted {
 		color: hsl(0, 0%, 29%); /* #CF6A4C */
 	}
 
-	code[class*="language-html"]>.token.keyword,
-	code[class*="language-html"]>.token.property,
-	code[class*="language-html"]>.token.selector,
-	code[class*="language-html"]>.token.constant,
-	code[class*="language-html"]>.token.symbol,
-	code[class*="language-html"]>.token.builtin {
+	code[class="language-html"]>.token.keyword,
+	code[class="language-html"]>.token.property,
+	code[class="language-html"]>.token.selector,
+	code[class="language-html"]>.token.constant,
+	code[class="language-html"]>.token.symbol,
+	code[class="language-html"]>.token.builtin {
 		color: hsl(53, 89%, 79%); /* #F9EE98 */
 	}
 
-	code[class*="language-html"]>.token.attr-name,
-	code[class*="language-html"]>.token.attr-value,
-	code[class*="language-html"]>.token.string,
-	code[class*="language-html"]>.token.char,
-	code[class*="language-html"]>.token.operator,
-	code[class*="language-html"]>.token.entity,
-	code[class*="language-html"]>.token.url,
-	code[class*="language-html"]>.language-css .token.string,
-	code[class*="language-html"]>.style .token.string,
-	code[class*="language-html"]>.token.variable,
-	code[class*="language-html"]>.token.inserted {
+	code[class="language-html"]>.token.attr-name,
+	code[class="language-html"]>.token.attr-value,
+	code[class="language-html"]>.token.string,
+	code[class="language-html"]>.token.char,
+	code[class="language-html"]>.token.operator,
+	code[class="language-html"]>.token.entity,
+	code[class="language-html"]>.token.url,
+	code[class="language-html"]>.language-css .token.string,
+	code[class="language-html"]>.style .token.string,
+	code[class="language-html"]>.token.variable,
+	code[class="language-html"]>.token.inserted {
 		color: hsl(76, 21%, 52%); /* #8F9D6A */
 	}
 
-	code[class*="language-html"]>.token.atrule {
+	code[class="language-html"]>.token.atrule {
 		color: hsl(218, 22%, 55%); /* #7587A6 */
 	}
 
-	code[class*="language-html"]>.token.regex,
-	code[class*="language-html"]>.token.important {
+	code[class="language-html"]>.token.regex,
+	code[class="language-html"]>.token.important {
 		color: hsl(42, 75%, 65%); /* #E9C062 */
 	}
 
-	code[class*="language-html"]>.token.important,
-	code[class*="language-html"]>.token.bold {
+	code[class="language-html"]>.token.important,
+	code[class="language-html"]>.token.bold {
 		font-weight: bold;
 	}
-	code[class*="language-html"]>.token.italic {
+	code[class="language-html"]>.token.italic {
 		font-style: italic;
 	}
 
-	code[class*="language-html"]>.token.entity {
+	code[class="language-html"]>.token.entity {
 		cursor: help;
 	}
 
-	code[class*="language-html"]>pre[data-line] {
+	code[class="language-html"]>pre[data-line] {
 		padding: 1em 0 1em 3em;
 		position: relative;
 	}
@@ -2961,35 +2990,35 @@
 		color: hsl(33, 33%, 52%); /* #AC885B */
 	}
 /* Language - Verilog */
-	pre[class*="language-verilog"] {
+	pre[class="language-verilog"] {
 		background-color: #1E3163;
 	}
-	pre[class*="language-verilog"] code {
+	pre[class="language-verilog"] code {
 		color: var(--codeWhite);
 	}
-	code[class*="language-verilog"] .token.keyword-module, 
-	code[class*="language-verilog"] .token.keyword-endmodule {
+	code[class="language-verilog"] .token.keyword-module, 
+	code[class="language-verilog"] .token.keyword-endmodule {
 		color: tomato;
 	}
-	code[class*="language-verilog"] .token.keyword-input {
+	code[class="language-verilog"] .token.keyword-input {
 		color: rgb(255, 245, 158);
 	}
-	code[class*="language-verilog"] .token.keyword-output {
+	code[class="language-verilog"] .token.keyword-output {
 		color: rgb(255, 191, 131);
 	}
-	code[class*="language-verilog"] .token.comment {
+	code[class="language-verilog"] .token.comment {
 		color: rgb(156, 190, 212);
 	}
-	code[class*="language-verilog"] .token.operator {
+	code[class="language-verilog"] .token.operator {
 		color: gold;
 	}
-	code[class*="language-verilog"] .token.punctuation {
+	code[class="language-verilog"] .token.punctuation {
 		color: greenyellow;
 	}
-	code[class*="language-verilog"] .token.number {
+	code[class="language-verilog"] .token.number {
 		color: var(--codeBrightBlue);
 	}
-	code[class*="language-verilog"] .token.function {
+	code[class="language-verilog"] .token.function {
 		color: #f7aeff;
 	}
 /* Multilingual Code Illustrations */
@@ -3731,7 +3760,7 @@
 	dfn {
 		font-style: normal;
 		display: block;
-		width: 50%;
+		width: 85%;
 		margin: 2% auto;
 		padding: 0;
 	}
@@ -3812,6 +3841,49 @@
 		font-size: 0.65rem !important;
 		width: 100%;
 		margin: 0;
+	}
+/* Mermaid Styling */
+/* Code Tabs */
+	.tabs > ul {
+		list-style-type: none;
+		display: block;
+		padding: 2px 0;
+		font-size: 0.7rem;
+		border-bottom: 1px solid var(--lightGrey);
+		margin-bottom: 15px; 
+	}
+	.tabs > ul > li {
+		font-family: "Fira";
+		margin: 0px 10px;
+		display: inline;
+		padding: 2px 10px;
+		margin-left: 3px;
+		margin-right: 0px;
+		border: 1px solid var(--lightGrey);
+		color: var(--lightGrey);
+		background: rgb(231, 231, 231);
+		border-bottom: 1px solid var(--lightGrey);
+		text-decoration: none;
+		cursor: pointer;
+		border-top: solid thin var(--lightGrey);
+		border-left: solid thin var(--lightGrey);
+		border-right: solid thin var(--lightGrey);
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+	}
+	.tabs > ul > li.current {
+		color: var(--textColor);
+		background-color: white;
+		border-bottom: 1px solid white;
+	}
+	.tabs > div {
+		display: none;
+	}
+	.tabs > div.pseudosource.reveal {
+		display: grid;
+	}
+	.tabs > div.reveal {
+		display: block;
 	}
 /* Code Highlighting */
 	pre code mark {

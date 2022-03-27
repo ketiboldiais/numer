@@ -15,17 +15,35 @@
 	</p>
 	<div id="array0"></div>
 	<p>
+		There are two kinds of array data structures: <b>static arrays</b> and
+		<b>dynamic arrays</b>. Static arrays are arrays of fixed size, while
+		dynamic arrays can lengthen and shorten at their ends. Because of this
+		difference, what ADT we can represent with an array differs, depending
+		on the kind of array we're using.
+	</p>
+	<figure>
+		<!-- prettier-ignore -->
+		<div class="mermaid">
+      flowchart TB
+        A[arrays] --> B[static arrays];
+        A[arrays] --> C[dynamic arrays];
+        B[static arrays] --> D[sequences];
+        B[static arrays] --> E[sequences];
+        C[dynamic arrays] --> F[vectors];
+    </div>
+	</figure>
+	<p>
 		The sequence data type consists of two subtypes: (a) the
-		<span class="term">tuple</span><sup></sup> and (b) the
+		<span class="term">sequence</span><sup></sup> and (b) the
 		<span class="term">list</span>.<sup></sup>
-		The tuple type is a sequence with a fixed size. I.e., the number of
+		The sequence type is a sequence with a fixed size. I.e., the number of
 		elements in the sequence does not change. The list type is a sequence
 		with a dynamic size; the sequence can grow or shrink through the
 		insertion, shifting, or removing of elements in the sequence.
 	</p>
 	<div class="note">
 		<p>
-			The tuple is also called a
+			The sequence is also called a
 			<i>static sequence</i>.
 		</p>
 	</div>
@@ -35,44 +53,335 @@
 			<i>vector</i> or <i>dynamic sequence</i>.
 		</p>
 	</div>
+	<p>The table below presents a cost-benefit analysis of static arrays.</p>
+
+	<table id="cba1">
+		<td>
+			<section>
+				<p>
+					<b>Quick access.</b> Because array's have a fixed size, accessing
+					the array's elements takes constant time &mdash; ${O(1).}$ This
+					is, in fact, the greatest selling point for static arrays.
+				</p>
+				<p>
+					Say we have some array <var>arr</var>. To access some element
+					<var>arr[i]</var>, we only perform <em>one</em> memory access to
+					read or write the data. This is not the case for the dynamic
+					array. With dynamic arrays, we have to perform one memory access
+					to read the array's reference, then a second memory access for
+					the array element itself.
+				</p>
+			</section>
+		</td>
+		<td>
+			<section>
+				<p>
+					<b>Rigidity.</b> Once an array is initialized, they have a fixed
+					length that cannot be changed. For example, when we write:
+				</p>
+				<pre class="language-cpp"><code>
+          int main() {
+            int arr[] = {1,5,4,3,2};
+            int arr_size = sizeof(arr)/sizeof(int);
+            console.log(arr_size);
+          }
+        </code></pre>
+				<pre class="language-bash"><code>
+          5
+        </code></pre>
+				<p>
+					The output <var>5</var> is the size of <var>arr</var>, and it
+					will remain <var>5</var> so long as <var>arr</var> exists.
+				</p>
+			</section>
+			<section>
+				<p>
+					<b>Passing by reference.</b> Depending on what we're using the
+					array for, passing-by-reference can be a cost to ease of use. For
+					example, consider a function that takes an array as a parameter.
+					When we pass the array argument for that parameter, it's not the
+					actual array that's passed &mdash; it's the address to the first
+					element of that array.
+				</p>
+				<p>
+					Because an address is passed, if we want to iterate over the
+					array inside the function, we must provide the array's length.
+				</p>
+			</section>
+		</td>
+	</table>
 </section>
 
 <section id="array_basic_operations">
-	<h2>Tuples: Basic Operations</h2>
-	<p>
-		We turn our attention first to the tuple. Because tuples are of fixed
-		size, whenever we talk about tuples, we talk about some ${n-}$tuple.
-		For example, 2-tuple is could a <i>double</i>. A 3-tuple is called a
-		<i>triple</i>. A 4-tuple is a <i>quadruple</i>, and so on. Because
-		tuples are of fixed size, they necessarily have a smaller API.
-	</p>
+	<h2>Sequence ADT</h2>
+	<p>The sequence ADT has the following API:</p>
 
-	<p>
-		Examining these data and properties, we proceed to examining
-		implementation approaches. The first implementation approach we
-		consider is the
-		<i>static array</i>. While the static array is the simplest of all data
-		structures, it is one of the most important. Numerous data structures
-		depend on arrays, so we spend a considerable amount of time exploring
-		them in depth.
-	</p>
-
+	<table class="api uml">
+		<thead>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Time Complexity</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td colspan="3" class="blue">Properties</td>
+			</tr>
+			<tr>
+				<td>_array:[T]</td>
+				<td>
+					The static array that store's objects of type <var>T</var>.
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>_size:size_t</td>
+				<td>
+					The maximum amount of elements that can be placed in the
+					sequence.
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>_length:size_t</td>
+				<td>The current amount of elements in the sequence.</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="3" class="green">Methods</td>
+			</tr>
+			<tr>
+				<td>Create() ⟹ Sequence</td>
+				<td>Creates a new instance of the sequence.</td>
+				<td>
+					<table>
+						<tr>
+							<td>bc</td>
+							<td>${O(1)}$</td>
+						</tr>
+						<tr>
+							<td>ac</td>
+							<td>${O(n)}$</td>
+						</tr>
+						<tr>
+							<td>wc</td>
+							<td>${O(n)}$</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>Insert(index:size_t, element:T) ⟹ void</td>
+				<td>
+					Inserts a new element of type <var>T</var> in the sequence at the
+					sequence's position <var>index</var>.
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td>bc</td>
+							<td>${O(1)}$</td>
+						</tr>
+						<tr>
+							<td>ac</td>
+							<td>${O(n)}$</td>
+						</tr>
+						<tr>
+							<td>wc</td>
+							<td>${O(n)}$</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>Append(element:T) ⟹ T</td>
+				<td>
+					Inserts an <var>element</var> at the end of the sequence. If
+					<var>element</var> replaces an element, the replaced element is
+					returned. Otherwise, <var>element</var> is returned.
+				</td>
+				<td>${O(1)}$</td>
+			</tr>
+			<tr>
+				<td>Prepend(element:T)</td>
+				<td>
+					Inserts an <var>element</var> at the beginning of the sequence.
+					If <var>element</var> replaces an element, the replaced element
+					is returned. Otherwise, <var>element</var> is returned.
+				</td>
+				<td>${O(1)}$</td>
+			</tr>
+			<tr>
+				<td>Delete(index:size_t) ⟹ T</td>
+				<td>
+					Deletes the element at the position <var>index</var> in the
+					sequence.
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td>bc</td>
+							<td>${O(1)}$</td>
+						</tr>
+						<tr>
+							<td>ac</td>
+							<td>${O(n)}$</td>
+						</tr>
+						<tr>
+							<td>wc</td>
+							<td>${O(n)}$</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>Find(index:size_t) ⟹ T</td>
+				<td>
+					Returns the element at position <var>index</var> in the sequence.
+				</td>
+				<td>${O(1)}$</td>
+			</tr>
+			<tr>
+				<td>Search(element:T) ⟹ bool</td>
+				<td>
+					Returns <var>true</var> if the sequence contains
+					<var>element</var>, otherwise <var>false</var>.
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td>bc</td>
+							<td>${O(1)}$</td>
+						</tr>
+						<tr>
+							<td>ac</td>
+							<td>${O(n)}$</td>
+						</tr>
+						<tr>
+							<td>wc</td>
+							<td>${O(n),}$ ${O(\lg n)}$</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>IsEmpty() ⟹ bool</td>
+				<td>
+					Returns <var>true</var> if the sequence contains no elements,
+					otherwise <var>false</var>.
+				</td>
+				<td>${O(1)}$</td>
+			</tr>
+			<tr>
+				<td>IsFull() ⟹ bool</td>
+				<td>
+					Returns <var>true</var> if the sequence's <var>_size</var> is
+					equal to its <var>_length</var>, otherwise <var>false</var>.
+				</td>
+				<td>${O(1)}$</td>
+			</tr>
+			<tr>
+				<td>length() ⟹ size_t</td>
+				<td>Returns the sequence's current <var>_length</var>.</td>
+				<td>${O(1)}$</td>
+			</tr>
+			<tr>
+				<td>print() ⟹ void</td>
+				<td>Prints the sequence to the console.</td>
+				<td>
+					<table>
+						<tr>
+							<td>bc</td>
+							<td>${O(1)}$</td>
+						</tr>
+						<tr>
+							<td>ac</td>
+							<td>${O(n)}$</td>
+						</tr>
+						<tr>
+							<td>wc</td>
+							<td>${O(n)}$</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>reverse() => void</td>
+				<td>Reverses the sequence's elements.</td>
+				<td>
+					<table>
+						<tr>
+							<td>bc</td>
+							<td>${O(1)}$</td>
+						</tr>
+						<tr>
+							<td>ac</td>
+							<td>${O(n)}$</td>
+						</tr>
+						<tr>
+							<td>wc</td>
+							<td>${O(n)}$</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>shift(direction:Direction) ⟹ void</td>
+				<td>Shifts the elements.</td>
+				<td>
+					<table>
+						<tr>
+							<td>bc</td>
+							<td>${O(1)}$</td>
+						</tr>
+						<tr>
+							<td>ac</td>
+							<td>${O(n)}$</td>
+						</tr>
+						<tr>
+							<td>wc</td>
+							<td>${O(n)}$</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>rotate(direction:Direction) ⟹ void</td>
+				<td>Rotates the elements.</td>
+				<td>
+					<table>
+						<tr>
+							<td>bc</td>
+							<td>${O(1)}$</td>
+						</tr>
+						<tr>
+							<td>ac</td>
+							<td>${O(n)}$</td>
+						</tr>
+						<tr>
+							<td>wc</td>
+							<td>${O(n)}$</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 	<section id="auxiliary_functions">
 		<h3>Auxiliary Functions</h3>
 
 		<p>
-			Implementing our tuple ADT as a class, there are a few auxiliary
+			Implementing our sequence ADT as a class, there are a few auxiliary
 			functions that we will use as helpers for more complex procedures.
 			These helper functions are explained below.
 		</p>
 
 		<section id="array_constructor">
-			<h4>Tuple Constructor</h4>
+			<h4>Sequence Constructor</h4>
 			<p>
-				To construct a tuple, we must create an array. There are two ways
-				to create arrays: dynamically or statically. Let's consider the
-				dynamic approach. The first step is to declare a pointer. For now,
-				let's stick to
+				To construct a sequence, we must create an array. There are two
+				ways to create arrays: dynamically or statically. Let's consider
+				the dynamic approach. The first step is to declare a pointer. For
+				now, let's stick to
 				<var>int</var> type data:
 			</p>
 			<ol class="alg">
@@ -114,18 +423,18 @@
 		</section>
 
 		<section id="array_destructor">
-			<h4>Tuple Destructor</h4>
+			<h4>Sequence Destructor</h4>
 			<p>
-				Alongside the tuple's constructor, we also want a destructor. This
-				serves as a way of cleaning up whatever memory we've allocated for
-				our tuple.
+				Alongside the sequence's constructor, we also want a destructor.
+				This serves as a way of cleaning up whatever memory we've allocated
+				for our sequence.
 			</p>
 		</section>
 
 		<section id="is_full">
 			<h4>Full-capacity Tester</h4>
 			<p>
-				Given that arrays have a fixed size, our tuple ADT should also
+				Given that arrays have a fixed size, our sequence ADT should also
 				include a
 				<b>capacity tester</b>. This returns <var>true</var> if we've
 				reached the maximum possible size for the array, and
@@ -180,12 +489,12 @@
 		<section id="print_an_array">
 			<h4>Print</h4>
 			<p>
-				First, the <var>print()</var> operation. To print a tuple, we must
-				iterate over each of the tuple's element, displaying each element
-				to the console (i.e., with something lik <var>cout</var> or
+				First, the <var>print()</var> operation. To print a sequence, we
+				must iterate over each of the sequence's element, displaying each
+				element to the console (i.e., with something lik <var>cout</var> or
 				<var>printf</var>). Because we're iterating over each element, the
 				<var>print()</var> operation has a time complexity of ${O(n)}$
-				given the ${n-}$tuple. This is linear time.
+				given the ${n-}$sequence. This is linear time.
 			</p>
 		</section>
 
@@ -195,16 +504,17 @@
 				Second, the
 				<var>append(${x}$)</var> operation, where ${x}$ is an element. To
 				append an element ${x,}$ we insert the element ${x}$ at the very
-				end of the tuple. In other words, &#8220;Insert this element ${x}$
-				at the first instance of free space.&#8221; Thus, given an array of
-				length 10 and size 5, <var>append(${x}$)</var> inserts the element
-				${x}$ at ${i = 6.}$ For <var>append(${x}$)</var>, we can think of
-				this as performing three distinct operations &mdash; accessing the
-				array at ${i = \textit{length},}$ assigning the element ${x}$ to
-				that particular index, and updating the ${\textit{length}}$
-				property. Hence, ${O(3).}$ Applying complexity analysis, this is
-				really ${f(n) = 3.}$ Rewriting this as ${f(n) = 3n^0,}$ we have
-				${O(n^0),}$ which reduces to ${O(1).}$ I.e., constant time.
+				end of the sequence. In other words, &#8220;Insert this element
+				${x}$ at the first instance of free space.&#8221; Thus, given an
+				array of length 10 and size 5, <var>append(${x}$)</var> inserts the
+				element ${x}$ at ${i = 6.}$ For <var>append(${x}$)</var>, we can
+				think of this as performing three distinct operations &mdash;
+				accessing the array at ${i = \textit{length},}$ assigning the
+				element ${x}$ to that particular index, and updating the
+				${\textit{length}}$ property. Hence, ${O(3).}$ Applying complexity
+				analysis, this is really ${f(n) = 3.}$ Rewriting this as ${f(n) =
+				3n^0,}$ we have ${O(n^0),}$ which reduces to ${O(1).}$ I.e.,
+				constant time.
 			</p>
 		</section>
 
@@ -214,35 +524,35 @@
 				With the
 				<var>insert(${i}$, ${x}$)</var> operation, we're inserting an
 				element ${x}$ at the index ${i.}$ For example, suppose we have the
-				tuple ${(0, 1, 2, 3, 4, \_, \_, \_).}$ This is a tuple of size 8,
-				with length 5. If we write <var>insert(${2}$, ${9}$)</var>, we
-				would have the tuple ${(0, 9, 1, 2, 3, 4, \_, \_).}$ Notice that
-				this causes a shift. To perform this shift, have to use a loop. In
-				pseudocode:
+				sequence ${(0, 1, 2, 3, 4, \_, \_, \_).}$ This is a sequence of
+				size 8, with length 5. If we write <var>insert(${2}$, ${9}$)</var>,
+				we would have the sequence ${(0, 9, 1, 2, 3, 4, \_, \_).}$ Notice
+				that this causes a shift. To perform this shift, have to use a
+				loop. In pseudocode:
 			</p>
 			<figure class="math-display">
 				<div>
 					<pre class="language-pseudo"><code>
-						insert(index, x) {
-							for (i = length; i > index, i--) {
-								A[i] = A[i - 1];
-							}
-							A[index] = x;
-							length++;
-						}
-					</code></pre>
+            insert(index, x) {
+              for (i = length; i > index, i--) {
+                A[i] = A[i - 1];
+              }
+              A[index] = x;
+              length++;
+            }
+          </code></pre>
 				</div>
 			</figure>
 			<p>
-				The operation of inserting an element into a tuple provides an
+				The operation of inserting an element into a sequence provides an
 				opportunity to examine the different forms of complexity analysis.
-				If we insert the element at the very end of the tuple &mdash;
+				If we insert the element at the very end of the sequence &mdash;
 				<var>insert(${length}$, ${x}$)</var> &mdash; no shifting occurs.
 				Accordingly, this operation has a time complexity of order
 				${O(1),}$ constant time. However, if we insert the element at the
 				very beginning &mdash; <var>insert(${0}$, ${x}$)</var> &mdash; then
 				we must shift <span class="underlineText">all</span> the elements.
-				Given a tuple of length ${n,}$ this operation would require
+				Given a sequence of length ${n,}$ this operation would require
 				iterating over all ${n}$ elements. This operation's time complexity
 				is of order ${O(n).}$
 			</p>
@@ -311,12 +621,12 @@
 			<figure class="math-display">
 				<div>
 					<pre class="language-pseudo"><code>
-						deleteElementAt(index):
-							element = A[index];
-							for (i = index; i < array.length - 1; i++):
-								A[i] = A[i + 1];
-							length--;
-					</code></pre>
+            deleteElementAt(index):
+              element = A[index];
+              for (i = index; i < array.length - 1; i++):
+                A[i] = A[i + 1];
+              length--;
+          </code></pre>
 				</div>
 			</figure>
 			<p>
@@ -370,106 +680,106 @@
 			<div class="implementation">
 				<p>Here is an implementation of the classes above:</p>
 				<pre class="language-c"><code>
-					#include &lt;iostream&gt;
+          #include &lt;iostream&gt;
 
-					class Array {
-						int *array;
-						int size;
-						int arrayLength;
-						public:
-							Array(int arraySize = 10);
-							~Array();
-							bool isFull();
-							bool isEmpty();
-							int sizeOf();
-							int length();
-							void append(int e);
-							void insert(int val, int index);
-							void deleteElementAt(int index);
-							void print();
-					};
-					
-					Array :: Array(int arraySize) {
-						size = arraySize;
-						array = new int[arraySize];
-						arrayLength = 0;
-					}
-					
-					Array :: ~Array() {
-						delete [] array;
-					}
-					
-					bool Array :: isFull() {
-						if (arrayLength == size - 1) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-					
-					bool Array :: isEmpty() {
-						if (arrayLength == 0) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-					
-					int Array :: sizeOf() {
-						return size;
-					}
-					
-					int Array :: length() {
-						return arrayLength;
-					}
-					
-					void Array :: append(int e) {
-						if (!isFull()) {
-							array[arrayLength] = e;
-							arrayLength++;
-						} else {
-							std::cout << "Array is full.\n";
-						}
-					}
-					
-					void Array :: insert(int val, int index) {
-						if (index < size) {
-							for (int i = arrayLength; i > index;) {
-								array[i] = array[i - 1];
-							}
-							array[index] = val;
-							arrayLength++;
-						} else {
-							std::cout << "Invalid index.\n";
-						}
-					}
-					
-					void Array :: deleteElementAt(int index) {
-						for (int i = index; i < arrayLength - 1; i++) {
-							array[i] = array[i+1];
-						}
-						arrayLength--;
-					}
-					
-					void Array :: print() {
-						std::cout << "[ ";
-						for (int i = 0; i < arrayLength; i++) {
-							std::cout << array[i] << " ";
-						}
-						std::cout << "]\n";
-					}
-					
-					int main() {
-						Array arr = Array(5);
-						for (int i = 0; i < 4; i++) {
-							arr.append(i);
-						}
-						arr.print();
-						arr.deleteElementAt(2);
-						arr.print();
-						return 0;
-					}
-				</code></pre>
+          class Array {
+            int *array;
+            int size;
+            int arrayLength;
+            public:
+              Array(int arraySize = 10);
+              ~Array();
+              bool isFull();
+              bool isEmpty();
+              int sizeOf();
+              int length();
+              void append(int e);
+              void insert(int val, int index);
+              void deleteElementAt(int index);
+              void print();
+          };
+          
+          Array :: Array(int arraySize) {
+            size = arraySize;
+            array = new int[arraySize];
+            arrayLength = 0;
+          }
+          
+          Array :: ~Array() {
+            delete [] array;
+          }
+          
+          bool Array :: isFull() {
+            if (arrayLength == size - 1) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+          
+          bool Array :: isEmpty() {
+            if (arrayLength == 0) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+          
+          int Array :: sizeOf() {
+            return size;
+          }
+          
+          int Array :: length() {
+            return arrayLength;
+          }
+          
+          void Array :: append(int e) {
+            if (!isFull()) {
+              array[arrayLength] = e;
+              arrayLength++;
+            } else {
+              std::cout << "Array is full.\n";
+            }
+          }
+          
+          void Array :: insert(int val, int index) {
+            if (index < size) {
+              for (int i = arrayLength; i > index;) {
+                array[i] = array[i - 1];
+              }
+              array[index] = val;
+              arrayLength++;
+            } else {
+              std::cout << "Invalid index.\n";
+            }
+          }
+          
+          void Array :: deleteElementAt(int index) {
+            for (int i = index; i < arrayLength - 1; i++) {
+              array[i] = array[i+1];
+            }
+            arrayLength--;
+          }
+          
+          void Array :: print() {
+            std::cout << "[ ";
+            for (int i = 0; i < arrayLength; i++) {
+              std::cout << array[i] << " ";
+            }
+            std::cout << "]\n";
+          }
+          
+          int main() {
+            Array arr = Array(5);
+            for (int i = 0; i < 4; i++) {
+              arr.append(i);
+            }
+            arr.print();
+            arr.deleteElementAt(2);
+            arr.print();
+            return 0;
+          }
+        </code></pre>
 			</div>
 		</div>
 	</section>
@@ -493,12 +803,12 @@
 		<figure class="math-display">
 			<div>
 				<pre class="language-pseudo"><code>
-					get(int index) {
-						if ( (index >= 0) ∧ (index < length) ) {
-							⟹ return A[index];
-						} 
-					}
-				</code></pre>
+          get(int index) {
+            if ( (index >= 0) ∧ (index < length) ) {
+              ⟹ return A[index];
+            } 
+          }
+        </code></pre>
 			</div>
 		</figure>
 		<p>
@@ -520,12 +830,12 @@
 		<figure class="math-display">
 			<div>
 				<pre class="language-pseudo"><code>
-					get(int x, int index) {
-						if ( (index >= 0) ∧ (index < length) ) {
-							⟹ A[index] = x;
-						} 
-					}
-				</code></pre>
+          get(int x, int index) {
+            if ( (index >= 0) ∧ (index < length) ) {
+              ⟹ A[index] = x;
+            } 
+          }
+        </code></pre>
 			</div>
 		</figure>
 		<p>
@@ -583,15 +893,15 @@
 		<figure class="math-display">
 			<div>
 				<pre class="language-pseudo"><code>
-				arrayLinearSearch(x) {
-					for (i = 0; i < length; i++) {
-						if (key == A[i]){
-							return i;
-						}
-					}
-					return -1;
-				}
-			</code></pre>
+        arrayLinearSearch(x) {
+          for (i = 0; i < length; i++) {
+            if (key == A[i]){
+              return i;
+            }
+          }
+          return -1;
+        }
+      </code></pre>
 			</div>
 		</figure>
 		<p>
@@ -695,16 +1005,16 @@
 		<figure class="math-display">
 			<div>
 				<pre class="language-pseudo"><code>
-				arrayLinearSearch(x) {
-					for (i = 0; i < length; i++) {
-						if (key == T[i]){
-							swap(T[i], T[i-1])
-							return i - 1;
-						}
-					}
-					return -1;
-				}
-			</code></pre>
+        arrayLinearSearch(x) {
+          for (i = 0; i < length; i++) {
+            if (key == T[i]){
+              swap(T[i], T[i-1])
+              return i - 1;
+            }
+          }
+          return -1;
+        }
+      </code></pre>
 			</div>
 		</figure>
 		<p>
@@ -730,16 +1040,16 @@
 		<figure class="math-display">
 			<div>
 				<pre class="language-pseudo"><code>
-					arrayLinearSearch(x) {
-						for (i = 0; i < length; i++) {
-							if (key == T[i]){
-								swap(T[i], T[0])
-								return 0;
-							}
-						}
-						return -1;
-					}
-				</code></pre>
+          arrayLinearSearch(x) {
+            for (i = 0; i < length; i++) {
+              if (key == T[i]){
+                swap(T[i], T[0])
+                return 0;
+              }
+            }
+            return -1;
+          }
+        </code></pre>
 			</div>
 		</figure>
 	</section>
@@ -880,22 +1190,22 @@
 		<figure class="math-display">
 			<div>
 				<pre class="language-pseudo"><code>
-					BinarySearch(k, low, high) {
-						while (low <= high) {
-							middle = floor((low + high) / 2);
-							if (k == T[mean]) {
-								return mean;
-							}
-							else if (k < T[mean]) {
-								high = mean - 1;
-							}
-							else {
-								low = mean + 1;
-							}
-						}
-						return -1;
-					}
-				</code></pre>
+          BinarySearch(k, low, high) {
+            while (low <= high) {
+              middle = floor((low + high) / 2);
+              if (k == T[mean]) {
+                return mean;
+              }
+              else if (k < T[mean]) {
+                high = mean - 1;
+              }
+              else {
+                low = mean + 1;
+              }
+            }
+            return -1;
+          }
+        </code></pre>
 			</div>
 		</figure>
 		<p>
@@ -905,22 +1215,22 @@
 		<figure class="math-display">
 			<div>
 				<pre class="language-pseudo"><code>
-					BinarySearch(k, low, high) {
-						if (low <= high) {
-							mean = floor((low + high) / 2);
-							if (k == T[mean]) {
-								return mean;
-							}
-							else if (key < T[mean]) {
-								return BinarySearch(low, mean - 1, key);
-							}
-							else {
-								return BinarySearch(mean + 1, high, key);
-							}
-						}
-						return -1;
-					}
-				</code></pre>
+          BinarySearch(k, low, high) {
+            if (low <= high) {
+              mean = floor((low + high) / 2);
+              if (k == T[mean]) {
+                return mean;
+              }
+              else if (key < T[mean]) {
+                return BinarySearch(low, mean - 1, key);
+              }
+              else {
+                return BinarySearch(mean + 1, high, key);
+              }
+            }
+            return -1;
+          }
+        </code></pre>
 			</div>
 		</figure>
 		<p>
@@ -1165,6 +1475,24 @@
 				<p>${\Omega (\log n)}$</p>
 			</div>
 		</figure>
+		<div class="demo">
+			<button>Java</button>
+			<div class="implementation">
+				<p>Below is an implementation in Java.</p>
+				<pre class="language-java"><code>
+          public static int binarySearch(int[] a, int key) {
+            int lo = 0;
+            int hi = a.length - 1;
+            while (lo <= hi) {
+              int mid = lo + ((hi-lo) / 2);
+              if (key &lt; a[mid]) hi = mid - 1;
+              else if (key &gt; a[mid]) lo = mid + 1;
+              else return mid;
+            }
+          }
+        </code></pre>
+			</div>
+		</div>
 	</section>
 </section>
 
@@ -1196,16 +1524,16 @@
 	<figure class="math-display">
 		<div>
 			<pre class="language-pseudo"><code>
-				max() {
-					max = u[0];
-					for (int i = 1; i < length; i++) {
-						if (u[i] > max) {
-							max = u[i];
-						}
-					}
-					return max;
-				}
-			</code></pre>
+        max() {
+          max = u[0];
+          for (int i = 1; i < length; i++) {
+            if (u[i] > max) {
+              max = u[i];
+            }
+          }
+          return max;
+        }
+      </code></pre>
 		</div>
 	</figure>
 	<p>
@@ -1217,16 +1545,16 @@
 	<figure class="math-display">
 		<div>
 			<pre class="language-pseudo"><code>
-				max() {
-					max = u[0]; <span class="redText">&larr; 1 operation</span>
-					for (int i = 1; i < length; i++) { <span class="redText">&larr; n operations</span>
-						if (u[i] > max) { <span class="redText">&larr; n - 1 operations</span>
-							max = u[i];
-						}
-					}
-					return max; <span class="redText">&larr; 1 operation</span>
-				}
-			</code></pre>
+        max() {
+          max = u[0]; <span class="redText">&larr; 1 operation</span>
+          for (int i = 1; i < length; i++) { <span class="redText">&larr; n operations</span>
+            if (u[i] > max) { <span class="redText">&larr; n - 1 operations</span>
+              max = u[i];
+            }
+          }
+          return max; <span class="redText">&larr; 1 operation</span>
+        }
+      </code></pre>
 		</div>
 	</figure>
 	<p>
@@ -4825,11 +5153,11 @@
 		example, suppose we initialized the following array:
 	</p>
 	<pre class="language-c"><code>
-		int main() {
-			int A[3] = {8, 3, 5};
-			return 0;
-		}
-	</code></pre>
+    int main() {
+      int A[3] = {8, 3, 5};
+      return 0;
+    }
+  </code></pre>
 	<p>
 		As we know, the identifier <var>A</var> is an identifier for array's
 		base address &mdash; the address of <var>A[0]</var>. Suppose the
@@ -4907,7 +5235,6 @@
 	</p>
 </section>
 
-<!-- <script src="../../../static/numerc/array.js"></script> -->
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script type="module" src="../../../static/numerc/csmd.mjs"></script>
 <script

@@ -88,6 +88,29 @@ function showNav() {
 	});
 }
 
+function tabSwitch() { 
+	const tabDivs = document.querySelectorAll('.tabs');
+	for (let i = 0; i < tabDivs.length; i++) { 
+		const tabNav = tabDivs[i].querySelector('ul');
+		const tabs = tabNav.querySelectorAll('li');
+		tabs[0].classList.add('current');
+		const tabContent = tabDivs[i].querySelectorAll('div');
+		tabContent[0].classList.add('reveal')
+		for (let j = 0; j < tabs.length; j++) {
+			tabs[j].addEventListener('click', () => {
+				for (let k = 0; k < tabContent.length; k++) {
+					if (tabContent[k].classList.contains('reveal')) {
+						tabContent[k].classList.remove('reveal');
+						tabs[k].classList.remove('current');
+					}
+					tabContent[j].classList.add('reveal');
+					tabs[j].classList.add('current');
+				}
+			})
+		}
+	}
+}
+
 // Pseudosource div contains two OLs - ol.alg and ol.algc
 // ol.alg contains pseudocode, ol.algc contains explanatory comments for that pseudocode
 // For each li in ol.alg, if that li is clicked, the corresponding li in ol.algc is highlighted.
@@ -125,4 +148,5 @@ function pseudocode() {
 	referenceListHeader();
 	marginNote();
 	pseudocode();
+	tabSwitch();
 })();

@@ -1,0 +1,185 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on software licensing" />
+{% endblock %} {% block title %}
+<title>Software Licensing</title>
+{% endblock %} {% block content %}
+<h1>Software Licensing</h1>
+<section id="intro">
+	<p>
+		<q>Don't repeat yourself.</q> This is arguably the most oft-repeated
+		phrase in software engineering. The idea behind the phrase is simple:
+		If it's been written, don't write it again. This concept is so deeply
+		rooted in software engineering that its acronym might as well be
+		written across stone tables &mdash; DRY. Professors recite DRY as a
+		foundational principle in programming, senior engineers as a sound
+		piece of wisdom, and colleagues as a witticism.
+	</p>
+	<p>
+		And rightly so. The modern software developer's most valuable resource
+		isn't broadband internet, ${64}$-bit registers, or quad-core
+		processors. Those are all luxuries. The developer can get by with
+		dial-up, ${16}$-bit registers, and floppy disks, however bleak it may
+		be. The developer's most valuable resource is, and always has been,
+		<i>human time.</i>
+	</p>
+	<p>
+		The fact is, when we allocate the seconds spent sleeping, eating,
+		drinking, fulfilling social obligations, and dealing with &mdash; to
+		quote Justice Stevens &mdash; <q>life's vagaries,</q> only a small
+		fraction of the developer's lifespan is left for actual
+		development.<sup></sup> The software developer's existence is a never
+		ending battle on two fronts &mdash; allocating time to keep their
+		software functioning, and allocating time to keep themselves
+		functioning. Recognizing this challenge, DRY serves as a time saving
+		measure. To understand how, we must briefly define software.
+	</p>
+	<div class="note">
+		<p>
+			<i>Crawford v. Marion County Election Board</i>, 553 U.S. 181 (2008).
+		</p>
+	</div>
+	<p>
+		From a high-level view, software isn't that different from any other
+		product. For example, consider a Boeing 747. The 747 is a remarkably
+		complex machine. It has numerous components &mdash; a flightdeck,
+		cabin, fuselage, powerplant, landing gear, aerodynamics system,
+		communications system, and so on. These are all major components,
+		comprised of smaller components. The aerodynamics system consists of
+		two wings, a vertical tail, and two stabilizers. Within each of these
+		components are smaller components. A wing consists of ailerons,
+		spoilers, and flaps. Each of these components consists of components,
+		each of those components consist of components, and so on.
+	</p>
+	<p>
+		Software is no different. Take Microsoft Word for example. Clicking on
+		the Word icon, a window opens, and we see an instance of software with
+		a dizzying array of components. There's a toolbar, a menu bar, and a
+		document window. Within each of these components are more components.
+		The toolbar consists of many tabs: <i>Home</i>, <i>Insert</i>,
+		<i>Page Layout</i>, <i>View</i>, and more. Within <i>Home</i>, we see
+		components for changing the font family, font size, text color, and so
+		on.
+	</p>
+	<p>
+		Looking closely at some of <i>Word</i>'s components, we might notice
+		that some are text fields (the user can pass any input they'd like),
+		some are dropdown menus (the user can only specify one among multiple),
+		and others are buttons (the user can only specify on or off). This is
+		where we see DRY in action: To manufacture the buttons, we don't make
+		hundreds of different button designs. We make a single, general button
+		design, and <i>reuse</i> that design to manufacture all of the buttons.
+		Some buttons are longer than others, so we make variant of the general
+		design for long buttons, and use this generalized variant for the
+		longer buttons. Some are shorter, so we make a variant of the general
+		design for short buttons, and use this variant for the shorter buttons.
+		This saves a considerable amount of time. It is faster to write one
+		design and share it across a thousand components than it is to write a
+		thousand designs for a thousand components.
+	</p>
+	<p>
+		Because of DRY, software developers have a gut instinct when they
+		encounter difficult problems in the production process: Go to Google
+		and search for existing solutions. For example, rendering a 3D sphere
+		on a website is a fairly challenging problem. The software developer
+		could write their own code in WebGL, but unless they know what they're
+		doing, that could easily take months. A faster solution would be to use
+		an existing solution like ThreeJS, a piece of software that outputs
+		WebGL code in just a few lines. If the software developer opts to use
+		ThreeJS &mdash; a software product made by another software developer
+		&mdash; ThreeJS is called a <b>dependency</b>.
+	</p>
+	<p>
+		This application of DRY &mdash; using dependancies &mdash; is not
+		without its risks. The risk most software developers are aware of is
+		<i>dependency support</i>. By using a dependency, the developer's
+		personal product is tied to a product she has no control over. If the
+		dependency malfunctions or its manufacturer ceases to support it, the
+		software developer's personal product suffers the consequences.
+	</p>
+	<p>
+		That risk, however, only occurs if the software developer can use the
+		dependency in the first place. Whether a dependency can be used turns
+		on a variety of factors: How stable is the dependency? I.e., how much
+		will the software developer have to change her product in response to
+		the dependency's changes? How large is the dependency? How fast is the
+		dependency? These are all production and shipping factors. Not included
+		in this list, and unfortunately often ignored, is
+		<i>licensing</i>: Can the software developer comply with the dependecy's
+		license?
+	</p>
+	<p>
+		Failing to comply with a dependency's license is a compliance risk that
+		can lead to significant legal costs. This article attempts to aid
+		developers avoid this risk in four parts. Part I presents an overview
+		of foundational law behind software licenses. Part II provides an
+		overview of the most common licenses and their risks. Part III presents
+		various ways to mitigate those risks. The article then concludes with
+		some remarks on deciding which software licenses to use when releasing
+		software products.
+	</p>
+</section>
+
+<section id="software_licenses">
+	<h2>Software Licensing Law</h2>
+	<p>
+		In the United States, software is considered a literary work.<sup
+		></sup> And because software is a literary work, it is protected under
+		U.S. copyright law. This protection gives the software creator the
+		right to copy: the exclusive right to reproduce, publish, sell, and
+		distribute the software. Because this right is exclusive, software
+		creators can prevent others from reproducing, publishing, selling, or
+		distributing their software by exercising their right to copy &mdash;
+		filing, or threatening to file, a copyright infringement claim in
+		court.
+	</p>
+	<div class="note">
+		<p>17 U.S.C. § 117 (1998).</p>
+	</div>
+	<p>
+		A software license is ultimately a contract of the right to copy,
+		between two parties: A
+		<i>licensor</i> (the software's creator), and a <i>licensee</i> (the
+		software's user). In exchange for a specified set of promises by the
+		licensee, the licensor promises not to exercise her right to copy,
+		either partially or entirely.
+	</p>
+	<p>
+		That said, not all software is licensed. Some software is released to
+		the public without any licensing. Such software is considered
+		<b>public domain software</b>, and is not copyright protected. Public
+		domain software is fairly rare today, but there are a few examples:
+		SQLite, youtube-dl, CERN's httpd, and SHA-3.
+	</p>
+	<p>
+		Other software is not released to the public at all, held exclusively
+		by its creators. This software is considered
+		<b>private unlicensed software</b>, and <i>is</i> copyright protected.
+		Examples include Sony's secret in-house game engines, or Electronic
+		Art's Frostbite game engine.
+	</p>
+	<p>
+		This article will not address unlicensed software beyond these two
+		meager paragraphs. For our purposes, it's sufficient to say that using
+		public domain software carries low legal risk, if any, and using
+		private unlicensed software is extremely risky and should not be done.
+	</p>
+	<p>
+		Returning to licenses: What a licensee's promises are, and how the
+		licensor limits her right to copy, varies by license. Some licenses
+		require many promises from the licensee, others one or two. Some
+		licenses require the licensor to forgo exercising her right to copy at
+		all times, others under specified conditions. Fortunately, because
+		software licenses share the common thread of contracting the right to
+		copy, we can classify them by type.
+	</p>
+</section>
+
+<section id="license_categories">
+	<h2>Software License Types</h2>
+	<p>
+		There are two main types of software licenses under copyright law: (1)
+		<b>proprietary licenses</b> (also called <b>closed source licenses</b>)
+		and (2) <b>free licenses</b> (also called <b>open source licenses</b>).
+	</p>
+</section>
+{% endblock %}

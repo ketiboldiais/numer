@@ -811,7 +811,7 @@
 	</code></pre>
 	<p>
 		Notice the square brackets <var><mark>[]</mark></var
-		>. In regex, writing <var>/gr[ae]y</var> specifies the pattern:
+		>. In regex, writing <var>/gr[ae]y/</var> specifies the pattern:
 	</p>
 	<ol>
 		<li>The first character is <var>g</var>,</li>
@@ -961,7 +961,7 @@
 			<b>character set shorthands</b> &mdash; shorter ways to denote a
 			particular character set. These shorthands are:
 		</p>
-		<table class="alg">
+		<table class="api">
 			<thead>
 				<th>Shorthand Character</th>
 				<th>Character Set Denoted</th>
@@ -969,44 +969,32 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>
-						<var><mark>\d</mark></var>
-					</td>
+					<td>${\Large \color{yellowgreen} \setminus \texttt{d}}$</td>
 					<td><var>[0-9]</var></td>
 					<td>Matches <i>any one</i> digit character.</td>
 				</tr>
 				<tr>
-					<td>
-						<var><mark>\D</mark></var>
-					</td>
+					<td>${\Large \color{yellowgreen} \setminus \texttt{D}}$</td>
 					<td><var>[^0-9]</var></td>
 					<td>Matches <i>any one</i> non-digit character.</td>
 				</tr>
 				<tr>
-					<td>
-						<var><mark>\w</mark></var>
-					</td>
+					<td>${\Large \color{yellowgreen} \setminus \texttt{w}}$</td>
 					<td><var>[a-zA-Z0-9_]</var></td>
 					<td>Matches <i>any one</i> word character.</td>
 				</tr>
 				<tr>
-					<td>
-						<var><mark>\W</mark></var>
-					</td>
+					<td>${\Large \color{yellowgreen} \setminus \texttt{W}}$</td>
 					<td><var>[^a-zA-Z0-9_]</var></td>
 					<td>Matches <i>any one</i> non-word character.</td>
 				</tr>
 				<tr>
-					<td>
-						<var><mark>\s</mark></var>
-					</td>
+					<td>${\Large \color{yellowgreen} \setminus \texttt{s}}$</td>
 					<td><var>[ \n\r\t\f]</var></td>
 					<td>Matches <i>any one</i> space character.</td>
 				</tr>
 				<tr>
-					<td>
-						<var><mark>\S</mark></var>
-					</td>
+					<td>${\Large \color{yellowgreen} \setminus \texttt{S}}$</td>
 					<td><var>[^ \n\r\t\f]</var></td>
 					<td>Matches <i>any one</i> non-space character.</td>
 				</tr>
@@ -1014,6 +1002,261 @@
 		</table>
 	</section>
 </section>
+
+<section id="pattern_repetition">
+	<h2>Pattern Repetition</h2>
+	<p>
+		In regular expression syntax, there are three metacharacters that
+		indicate whether a character should repeat, and how much it should
+		repeat. Below is a table of these three metacharacters. An important
+		note: For all of these metacharacters, they apply to the leftmost
+		previous item in the regular expression. Thus, in the table below, the
+		metacharacters apply to the ${\square,}$ where ${\square}$ is either a
+		character, a character set, or a pattern of characters.
+	</p>
+	<table class="api">
+		<thead>
+			<th>Metacharacter</th>
+			<th>Meaning</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${\Large \square \color{yellowgreen} \texttt{?}}$</td>
+				<td>Matches zero or one occurrence of ${\square.}$</td>
+			</tr>
+			<tr>
+				<td>${\Large \square \color{yellowgreen} \texttt{+}}$</td>
+				<td>Matches one or more occurrences of ${\square.}$</td>
+			</tr>
+			<tr>
+				<td>${\Large \square \color{yellowgreen}\texttt{*}}$</td>
+				<td>Matches zero or more occurrences of ${\square.}$</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		Let's consider some applications. Consider the following code and its
+		output:
+	</p>
+	<pre class="language-javascript"><code>
+			const text = "Sixth shiek's sheep.";
+			const x = /s?/g;
+			const y = /s+/g;
+			const z = /s*/g;
+			const result_x = text.match(x);
+			const result_y = text.match(y);
+			const result_z = text.match(z);
+			console.log(result_x);
+			console.log(result_y);
+			console.log(result_z);
+		</code></pre>
+	<pre class="language-bash"><code>
+			[
+				'',  '', '', '', '', '',  's',
+				'',  '', '', '', '', 's', '',
+				's', '', '', '', '', '',  ''
+			]
+			[ 's', 's', 's' ]
+			[
+				'',  '', '', '', '', '',  's',
+				'',  '', '', '', '', 's', '',
+				's', '', '', '', '', '',  ''
+			]
+		</code></pre>
+	<p>The output tells us a few things:</p>
+	<ul>
+		<li>
+			<var>result_x</var> is bound to the value of
+			<var>text.match(x)</var>, and <var>text.match(x)</var> returns the
+			result of matching against the regular expression <var>/s?/g</var>.
+			Accordingly, the array returned contains all of matches to
+			<var>s</var>, as well as all of the non-matches &mdash; returned as
+			empty strings.
+		</li>
+		<li>
+			<var>result_y</var> is bound to the value of
+			<var>text.match(y)</var>, and <var>text.match(y)</var> returns the
+			result of matching against <var>/s+/g</var>. Thus, the array returned
+			consists of all, and only, the occurrences of <var>s</var>.
+		</li>
+		<li>
+			<var>result_z</var> is bound to the value of
+			<var>text.match(z)</var>, and <var>text.match(z)</var> returns the
+			result of matching against <var>/s*/g</var>. Hence, the array
+			returned consists of all the characters that match <var>s</var>.
+		</li>
+	</ul>
+	<p>
+		While the results of <var>/s?/g</var> and <var>/s+/g</var> look the
+		same, both <var>?</var> and <var>+</var> operate differently. Consider
+		this source code's output:
+	</p>
+	<pre class="language-javascript"><code>
+			const text = "Sixth shiek's sheep.";
+			const x = /s[a-z]?/g;
+			const y = /s[a-z]+/g;
+			const result_x = text.match(x);
+			const result_y = text.match(y);
+			console.log(result_x);
+			console.log(result_y);
+		</code></pre>
+	<pre class="language-bash"><code>
+			[ 'sh', 's', 'sh' ]
+			[ 'shiek', 'sheep' ]
+		</code></pre>
+	<p>
+		For the regular expression <var>/s[a-z]?/g</var>, we're looking for the
+		pattern <var>s${\square}$</var>, where ${\square}$ is zero or exactly
+		one of the characters <var>a</var> through <var>z</var>. For the
+		regular expression <var>/s[a-z]+/g</var>, we're looking for the pattern
+		<var>s${\square}$</var>, where ${\square}$ is zero, one, or more of the
+		characters <var>a</var> through <var>z</var>.
+	</p>
+
+	<section id="greediness_lazy">
+		<h3>Lazification</h3>
+		<p>
+			Regular expressions, by default, are <i>greedy</i> &mdash; they try
+			to match as many characters, or patterns, as possible. Consider the
+			following string, two lines of HTML:
+		</p>
+		<pre class="language-javascript"><code>
+			const htmlTags = " &lt;p&gt;A paragraph.&lt;/p&gt; &lt;p&gt;A paragraph.&lt;/p&gt;";
+		</code></pre>
+		<p>
+			Suppose we wanted to only extract the first paragraph tag and its
+			contents. To do so, let's write the regular expression. We know that
+			the text is surrounded by paragraph tags, so we start by writing:
+		</p>
+		<pre class="language-javascript"><code>
+			const htmlTags = " &lt;p&gt;A paragraph.&lt;/p&gt; &lt;p&gt;A paragraph.&lt;/p&gt;";
+			const pattern = /&lt;p&gt;&lt;\/p&gt;/;
+		</code></pre>
+		<p>
+			Next, we whatever's in between the tags, so we use the wild card
+			character <var><mark>.</mark></var
+			>, as well as the pattern repetition character
+			<var><mark>*</mark></var
+			>:
+		</p>
+		<pre class="language-javascript"><code>
+			const htmlTags = "&lt;p&gt;A paragraph.&lt;/p&gt;&lt;p&gt;A paragraph.&lt;/p&gt;";
+			const pattern = /&lt;p&gt;.*&lt;\/p&gt;/;
+		</code></pre>
+		<p>Examining the output:</p>
+		<pre class="language-javascript"><code>
+			const htmlTags = "&lt;p&gt;A paragraph.&lt;/p&gt;&lt;p&gt;A paragraph.&lt;/p&gt;";
+			const pattern = /&lt;p&gt;.*&lt;\/p&gt;/;
+			console.log(pattern);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[
+				'&lt;p&gt;A paragraph.&lt;/p&gt;&lt;p&gt;A paragraph.&lt;/p&gt;',
+				index: 0,
+				input: '&lt;p&gt;A paragraph.&lt;/p&gt;&lt;p&gt;A paragraph.&lt;/p&gt;',
+				groups: undefined
+			]
+		</code></pre>
+		<p>
+			We matched the whole string. Why? Because the regular expression is
+			<i>greedy</i> &mdash; it will match everything between
+			<var>&gt;p&lt;</var> and <var>&gt;/p&lt;</var>. Which in this case,
+			includes the tags in between. To prevent this from occurring, we have
+			to <i>lazify</i> the regular expression; we want it to be lazy. To do
+			so, we use the <var>?</var> metacharacter. We can think of
+			<var>?</var> as a metacharacter that tells the regular expression to
+			take it easy &mdash; <q>Just find one match.</q>
+		</p>
+		<pre class="language-javascript"><code>
+			const htmlTags = "&lt;p&gt;A paragraph.&lt;/p&gt;&lt;p&gt;A paragraph.&lt;/p&gt;";
+			const pattern = /&lt;p&gt;.*?&lt;\/p&gt;/;
+			const content = htmlTags.match(pattern);
+			console.log(content);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[
+				'&lt;p&gt;A paragraph.&lt;/p&gt;',
+				index: 0,
+				input: '&lt;p&gt;A paragraph.&lt;/p&gt;A paragraph.&lt;/p&gt;',
+				groups: undefined
+			]
+		</code></pre>
+	</section>
+
+	<section id="specifying_the_amount_of_repetitions">
+		<h3>Repetition Specification</h3>
+		<p>
+			For some patterns, we want to specify how often a particular
+			character or pattern should repeat. To specify the amount, we use the
+			following syntax:
+		</p>
+		<table class="api syntax">
+			<thead>
+				<th>{min, max}</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<p>
+							<var>min</var> and <var>max</var> are both nonnegative
+							integers, where <var>min</var> is the minimum amount of
+							matches, and <var>max</var> is the maximum amount of matches.
+							Thus, writing <var>${\square}${1,3}</var> will return all of
+							the matches consisting of 1, 2, and 3 of the pattern
+							<var>${\square}$</var>.
+						</p>
+						<p>
+							The <var>max</var> parameter is optional. Writing
+							<var>{2}</var> means, match exactly 2 occurrences. Writing
+							<var>{2,}</var> means, match 2 or more occurrences.
+						</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Let's an example. For the string below, say we want to find all of
+			substrings consisting of three through five letters:
+		</p>
+		<pre class="language-javascript"><code>
+			const htmlTags = "Look, it's a bird!";
+			const pattern = /\w{3,5}/g;
+			const content = htmlTags.match(pattern);
+			console.log(content);
+		</code></pre>
+		<pre class="language-bash"><code>
+			[ 'Look', 'bird' ]
+		</code></pre>
+	</section>
+</section>
+
+<section id="anchored_expressions">
+	<h2>Anchored Expressions</h2>
+	<p>
+		Anchored expressions are how we define position within a regular
+		expression. For example, suppose we wanted to match a word at the end
+		oro beginning of a given string. To do so, we must use anchored
+		expressions. There are two metacharacters that underlie anchored
+		expressions:
+	</p>
+	<table class="api">
+		<thead>
+			<th>Metacharacter</th>
+			<th>Meaning</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${\huge \color{yellowgreen} \texttt{\^{}}}$</td>
+				<td>Anchors the match to the <em>start</em> of the line.</td>
+			</tr>
+			<tr>
+				<td>${\Large \color{yellowgreen} \texttt{\${}}}$</td>
+				<td>Anchors the match to the <em>end</em> of the line.</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+
 <script src="../../../static/numerc/staticArray.js"></script>
 
 {% endblock %}

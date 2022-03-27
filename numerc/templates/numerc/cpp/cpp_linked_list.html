@@ -110,13 +110,7 @@
 		${x_{n-1}}$ point to ${x_{n+1}.}$
 	</p> -->
 	<p>Here's a closer look at the linked list:</p>
-	<figure>
-		<img
-			src="{% static 'images/linked_list_focus.svg' %}"
-			alt="linked list"
-			loading="lazy"
-		/>
-	</figure>
+	<div id="LLintro"></div>
 	<p>
 		In the diagram above, each of the boxes are called <b>nodes</b>. A
 		linked list node consists of two parts: (1) substantive data and (2)
@@ -148,43 +142,7 @@
 		particular syntax to refer to individual nodes. Suppose we had the
 		following linked list:
 	</p>
-	<ul class="linkedlist">
-		<ul class="head">
-			<li>
-				<div>root</div>
-				<div>0x100</div>
-				<div>0x050</div>
-			</li>
-		</ul>
-		<ul>
-			<li>
-				<div>7</div>
-				<div>0x200</div>
-				<div>0x100</div>
-			</li>
-		</ul>
-		<ul>
-			<li>
-				<div>5</div>
-				<div>0x300</div>
-				<div>0x200</div>
-			</li>
-		</ul>
-		<ul>
-			<li>
-				<div>3</div>
-				<div>0x400</div>
-				<div>0x300</div>
-			</li>
-		</ul>
-		<ul>
-			<li>
-				<div>1</div>
-				<div>0</div>
-				<div>0x400</div>
-			</li>
-		</ul>
-	</ul>
+	<div id="LL_notation"></div>
 	<p>
 		When we write ${r,}$ we are referring to the pointer to the first node
 		in the list. When we write ${h,}$ or ${n_1,}$ we are referring to the
@@ -227,22 +185,59 @@
 	<section id="node_implementation">
 		<h3>Implementing the Node Data Structure</h3>
 		<p>
-			To implement the node data structure, we use a record. In C, we would
-			write this record as:
+			To implement the node data structure, we use a record. The record
+			looks something like:
 		</p>
-		<pre class="language-c"><code>
-			struct Node {
-				int data;
-				struct Node* next;
-			}
-		</code></pre>
-		<p>We could also write this in C++ as:</p>
-		<pre class="language-cpp"><code>
-			struct Node {
-				int data;
-				Node* next;
-			}
-		</code></pre>
+		<div class="pseudosource">
+			<ol class="alg">
+				<li>struct Node:</li>
+				<ol>
+					<li>T data;</li>
+					<li>Node* next;</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li>Declare a structure.</li>
+				<li>
+					The <var>data</var> field will store the actual substantive data.
+					Here, it's some generic type <var>T</var>.
+				</li>
+				<li>
+					The <var>next</var> field will store a pointer <var>next</var>,
+					which points to the next node in the list.
+				</li>
+			</ol>
+		</div>
+		<p>Below are a few implementations in some popular languages.</p>
+		<div class="demo">
+			<button>C</button>
+			<button>C++</button>
+			<button>Java</button>
+			<div class="implementation">
+				<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* next;
+					}
+				</code></pre>
+			</div>
+			<div class="implementation">
+				<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node* next;
+					}
+				</code></pre>
+			</div>
+			<div class="implementation">
+				<pre class="language-java"><code>
+					private class Node {
+						int data;
+						Node next;
+					}
+				</code></pre>
+			</div>
+		</div>
 		<p>
 			A linked list's data field determines its type. Thus,
 			<var>int data</var> indicates a linked list of type <var>int</var>,
@@ -364,31 +359,64 @@
 		</figure>
 		<p>
 			Thus, to instantiate a node, we must first have a pointer to the
-			node. In C, this would be implemented as:
+			node:
 		</p>
-		<pre class="language-c"><code>
-			struct Node {
-				int data;
-				struct Node* next;
-			};
-			
-			int main() {
-				struct Node* h = NULL;
-				return 0;
-			}
-		</code></pre>
-		<p>Alternatively, in C++</p>
-		<pre class="language-cpp"><code>
-			struct Node {
-				int data;
-				Node *next;
-			};
-			
-			int main() {
-				Node* h = NULL;
-				return 0;
-			}
-		</code></pre>
+		<div class="tabs">
+			<ul>
+				<li>Pseudocode</li>
+				<li>C</li>
+				<li>C++</li>
+			</ul>
+			<div class="pseudosource">
+				<ol class="alg">
+					<li>struct Node:</li>
+					<ol>
+						<li>T data;</li>
+						<li>Node* next;</li>
+					</ol>
+					<li>main():</li>
+					<ol>
+						<li>Node* root = NULL;</li>
+					</ol>
+				</ol>
+				<ol class="algc">
+					<li>The node definition.</li>
+					<li>The <var>data</var> field.</li>
+					<li>The <var>next</var> field.</li>
+					<li>The <var>main()</var> function.</li>
+					<li>
+						Instantiate a pointer to a node called <var>root</var>.
+						Initially set it to <var>NULL</var>.
+					</li>
+				</ol>
+			</div>
+			<div class="c">
+				<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* next;
+					};
+					
+					int main() {
+						struct Node* h = NULL;
+						return 0;
+					}
+				</code></pre>
+			</div>
+			<div class="cpp">
+				<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node *next;
+					};
+					
+					int main() {
+						Node* h = NULL;
+						return 0;
+					}
+				</code></pre>
+			</div>
+		</div>
 		<p>
 			Above, we've instantiated a <var>Node*</var> pointer, currently
 			pointing to nowhere (the list is empty). Importantly, the pointer
@@ -402,158 +430,230 @@
 			Now that we've got a head, let's create our first node in the heap.
 			In C, we write:
 		</p>
-		<pre class="language-c"><code>
-			#include &lt;stdio.h&gt;
-	
-			struct Node {
-				int data;
-				struct Node* next;
-			};
-			
-			int main() {
-				struct Node* h    = NULL;
-				struct Node* temp = malloc(sizeof(struct Node));
-				return 0;
-			}
-		</code></pre>
-		<p>
-			Notice the second to last line of the code above. Recall that the
-			<var><mark>malloc()</mark></var> function takes the following form:
-		</p>
-		<figure>
-			<ul class="syntax">
-				<li>malloc(sizeof(${d_t}$))</li>
+		<div class="tabs">
+			<ul>
+				<li>Pseudocode</li>
+				<li>C</li>
 			</ul>
-			<figcaption>where ${d_t}$ is a data type</figcaption>
-		</figure>
-		<p>
-			The <var>malloc()</var> function takes allocates the requested memory
-			${d_t,}$ and returns a pointer to the address of the memory allocated
-			in the <em>heap</em>. That pointer, however, is a
-			<em>void pointer</em>. Thus, we must type cast:
-		</p>
-		<pre class="language-c"><code>
-			#include &lt;stdio.h&gt;
-	
-			struct Node {
-				int data;
-				struct Node* next;
-			};
+			<div class="pseudosource">
+				<ol class="alg">
+					<li>struct Node:</li>
+					<ol>
+						<li>T data;</li>
+						<li>Node* next;</li>
+					</ol>
+					<li>main():</li>
+					<ol>
+						<li>Node* root = NULL;</li>
+						<li>Node* temp = malloc(sizeof(Node));</li>
+					</ol>
+				</ol>
+				<ol class="algc">
+					<li>The node definition.</li>
+					<li>The <var>data</var> field.</li>
+					<li>The <var>next</var> field.</li>
+					<li>The <var>main()</var> function.</li>
+					<li>
+						Instantiate a pointer to a node called <var>root</var>.
+						Initially set it to <var>NULL</var>.
+					</li>
+					<li>Allocate enough space in the heap for a node.</li>
+				</ol>
+			</div>
+			<div class="c">
+				<pre class="language-c"><code>
+					#include &lt;stdio.h&gt;
 			
-			int main() {
-				struct Node* h    = NULL;
-				struct Node* temp = (struct Node*) malloc(sizeof(struct Node));
-				return 0;
-			}
-		</code></pre>
-		<p>In sum, when we write:</p>
-		<figure>
-			<pre class="language-c"><code>
-				struct Node* temp = (struct Node*) malloc(sizeof(struct Node));
-			</code></pre>
-		</figure>
+					struct Node {
+						int data;
+						struct Node* next;
+					};
+					
+					int main() {
+						struct Node* h    = NULL;
+						struct Node* temp = malloc(sizeof(struct Node));
+						return 0;
+					}
+				</code></pre>
+			</div>
+		</div>
 		<p>
-			We perform the following operations: (1) Allocate enough heap memory
-			for the size of a <var>Node.</var> (2) Type cast the returned
-			<var>void*</var> pointer to a <var>Node*</var> pointer. Assign that
-			pointer to <var>temp</var>. The code thus far looks like the
-			following in memory:
+			Notice line ${5.}$ Herere, we're allocating space in the heap for a
+			<var>Node</var> struct. The <var>malloc()</var> function takes
+			allocates the requested memory and returns a pointer to the address
+			of the memory allocated in the <em>heap</em>. The code thus far looks
+			like the following in memory:
 		</p>
-		<figure>
-			<img
-				src="{% static 'images/unlinked_node.svg' %}"
-				alt="unlinked nodes"
-				loading="lazy"
-				class="forty-p"
-			/>
-		</figure>
+		<div id="register1"></div>
 		<p>
 			Now that we have a node, we can initialize its fields by
 			dereferencing
 			<var>temp</var>:
 		</p>
-		<pre class="language-c"><code>
-			struct Node {
-				int data;
-				struct Node* next;
-			}
-			
-			int main() {
-				struct  Node* h    = NULL;
-				struct  Node* temp = malloc(sizeof(struct Node));
-				(*temp).data       = 1;
-				(*temp).next       = NULL;
-				return 0;
-			}
-		</code></pre>
-		<p>Now <var>temp</var> has values in both its data and next fields:</p>
-		<figure>
-			<img
-				src="{% static 'images/unlinked_node1.svg' %}"
-				alt="unlinked nodes"
-				loading="lazy"
-				class="fifty-p"
-			/>
-		</figure>
-		<p>
-			Note that both C and C++ provide syntactic sugar for dereferencing
-			object pointers through the arrow operator. Furthermore, in C++,
-			instead of using
-			<var>malloc()</var>, we can use the
-			<var><mark>new</mark></var> operator:
-		</p>
-		<pre class="language-cpp"><code>
-			struct Node {
-				int data;
-				Node* next;
-			}
-			
-			int main() {
-				Node* h          = 0;
-				Node* temp       = new Node();
-				      temp->data = 1;
-				      temp->next = 0;
-				return 0;
-			}
-		</code></pre>
-		<p>
-			In the pseudocode illustrations, we will use C++'s more concise
-			syntax. Now, all that's left to do is write the address of the newly
-			created node to our head:<sup></sup>
-		</p>
-		<div class="note">
-			<p>Alternatively, in C++:</p>
-			<pre class="language-pseudo"><code>
-				struct Node {
-					int data;
-					Node* next;
-				}
-				
-				int main() {
-					Node* h          = 0;
-					Node* temp       = new Node();
-					      temp->data = 1;
-					      temp->next = 0;
-					      h          = temp;
-					return 0;
-				}
-			</code></pre>
+		<div class="tabs">
+			<ul>
+				<li>Pseudocode</li>
+				<li>C</li>
+				<li>C++</li>
+			</ul>
+			<div class="pseudosource">
+				<ol class="alg">
+					<li>struct Node:</li>
+					<ol>
+						<li>T data;</li>
+						<li>Node* next;</li>
+					</ol>
+					<li>main():</li>
+					<ol>
+						<li>Node* root = NULL;</li>
+						<li>Node* temp = malloc(sizeof(Node));</li>
+						<li>(*temp).data = 1;</li>
+						<li>(*temp).next = NULL;</li>
+					</ol>
+				</ol>
+				<ol class="algc">
+					<li>The node definition.</li>
+					<li>The <var>data</var> field.</li>
+					<li>The <var>next</var> field.</li>
+					<li>The <var>main()</var> function.</li>
+					<li>
+						Instantiate a pointer to a node called <var>root</var>.
+						Initially set it to <var>NULL</var>.
+					</li>
+					<li>Allocate enough space in the heap for a node.</li>
+					<li>
+						Store the value <var>1</var> inside the node
+						<var>temp</var> points to.
+					</li>
+					<li>
+						Set <var>temp</var>'s pointee node's <var>next</var> pointer to
+						<var>NULL</var>.
+					</li>
+				</ol>
+			</div>
+			<div class="c">
+				<p>The same code in C:</p>
+				<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* next;
+					}
+					
+					int main() {
+						struct  Node* h    = NULL;
+						struct  Node* temp = malloc(sizeof(struct Node));
+						(*temp).data       = 1;
+						(*temp).next       = NULL;
+						return 0;
+					}
+				</code></pre>
+			</div>
+			<div class="cpp">
+				<p>
+					C++ provides derferencing through the arrow pointer (as does C).
+					C++ also provides the <var>new</var> operator in place of
+					<var>malloc()</var>:
+				</p>
+				<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node* next;
+					}
+					
+					int main() {
+						Node* h          = 0;
+						Node* temp       = new Node();
+									temp->data = 1;
+									temp->next = 0;
+						return 0;
+					}
+				</code></pre>
+			</div>
 		</div>
-		<pre class="language-c"><code>
-			struct Node {
-				int data;
-				struct Node* next;
-			}
-			
-			int main() {
-				struct  Node* h    = NULL;
-				struct  Node* temp = malloc(sizeof(struct Node));
-				(*temp).data       = 1;
-				(*temp).next       = NULL;
-				        h          = temp;
-				return 0;
-			}
-		</code></pre>
+		<p>In memory, we now have:</p>
+		<div id="register2"></div>
+		<p>
+			Now, all that's left to do is to link the address of the newly
+			created node to our head:
+		</p>
+		<div class="tabs">
+			<ul>
+				<li>Pseudocode</li>
+				<li>C</li>
+				<li>C++</li>
+			</ul>
+			<div class="pseudosource">
+				<ol class="alg">
+					<li>struct Node:</li>
+					<ol>
+						<li>T data;</li>
+						<li>Node* next;</li>
+					</ol>
+					<li>main():</li>
+					<ol>
+						<li>Node* root = NULL;</li>
+						<li>Node* temp = malloc(sizeof(Node));</li>
+						<li>(*temp).data = 1;</li>
+						<li>(*temp).next = NULL;</li>
+						<li>root = temp;</li>
+					</ol>
+				</ol>
+				<ol class="algc">
+					<li>The node definition.</li>
+					<li>The <var>data</var> field.</li>
+					<li>The <var>next</var> field.</li>
+					<li>The <var>main()</var> function.</li>
+					<li>
+						Instantiate a pointer to a node called <var>root</var>. Initially
+						set it to <var>NULL</var>.
+					</li>
+					<li>Allocate enough space in the heap for a node.</li>
+					<li>
+						Store the value <var>1</var> inside the node
+						<var>temp</var> points to.
+					</li>
+					<li>
+						Set <var>temp</var>'s pointee node's <var>next</var> pointer to
+						<var>NULL</var>.
+					</li>
+					<li>Make <var>root</var> point to <var>temp</var>.</li>
+				</ol>
+			</div>
+			<div class="c">
+				<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* next;
+					}
+					
+					int main() {
+						struct  Node* h    = NULL;
+						struct  Node* temp = malloc(sizeof(struct Node));
+						(*temp).data       = 1;
+						(*temp).next       = NULL;
+										h          = temp;
+						return 0;
+					}
+				</code></pre>
+			</div>
+			<div class="cpp">
+				<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node* next;
+					}
+					
+					int main() {
+						Node* h          = 0;
+						Node* temp       = new Node();
+									temp->data = 1;
+									temp->next = 0;
+									h          = temp;
+						return 0;
+					}
+				</code></pre>
+			</div>
+		</div>
 		<p>
 			Writing the code above results in the diagram below. Suppose the
 			allocated memory in the heap has the address <var>200</var>. The
@@ -9617,6 +9717,15 @@
 	</div>
 </section>
 
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../../../static/numerc/linked_list.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/CDemo.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/cpp_linkedList.js"
+></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="../../../static/numerc/linkedList.js"></script>
 <script src="../../../static/numerc/networkGraph.js"></script>

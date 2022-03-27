@@ -1,0 +1,723 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on treewalk interpreters" />
+{% endblock %} {% block title %}
+<title>Interpreters</title>
+{% endblock %} {% block content %}
+<h1>Interpreters</h1>
+<section id="intro">
+	<p>
+		We begin by examining the treewalk interpreter. In the execution
+		timeline, the treewalk interpreter can be found at the end of graph
+		below:
+	</p>
+	<div id="ast_graph"></div>
+
+	<p>Suppose we had the following source code:</p>
+	<pre class="language-pseudo"><code>
+		x = 15;
+		y = x + 10 - 5;
+	</code></pre>
+	<p>
+		From this source code, the parser might generate the abstract syntax
+		tree (AST):
+	</p>
+	<div id="sample_ast"></div>
+	<p>
+		Passing this AST to the parser, the result could be a parse tree that
+		looks like:
+	</p>
+	<pre class="language-pseudo"><code>
+		{
+			type: 'Program',
+			statements: [{
+					type: 'Assignment',
+					left: {
+						type: 'Identifier',
+						value: 'x'
+					},
+					right: {
+						type: 'Literal',
+						value: '15'
+					}
+				},
+				{
+					type: 'Assignment',
+					left: {
+						type: 'Identifier',
+						value: 'y'
+					},
+					right: {
+						type: 'Operation',
+						value: '-',
+						left: {
+							type: 'Operation',
+							value: '+',
+							left: {
+								type: 'Identifier',
+								value: 'x'
+							},
+							right: {
+								type: 'Literal',
+								value: '10'
+							}
+						},
+						right: {
+							type: 'Literal',
+							value: '5'
+						},
+					}
+				}
+			]
+		}
+	</code></pre>
+	<p>
+		What the AST actually looks like in practice is entirely up to the
+		language designer.
+	</p>
+	<p>
+		Contrasting the treewalk interpreter against the bytecode interpreter,
+		we see that the bytecode interpreter takes an extra step:
+	</p>
+	<div id="bytecode_interpreter"></div>
+	<p>
+		That is, instead of the AST being sent directly to an interpreter, it's
+		first sent to a <i>bytecode emitter</i>. The bytecode emitter takes the
+		AST and produces a linear sequence, or array, of instructions
+		(<i>bytecode</i>). This sequence is then sent to an interpreter for
+		execution. Bytecode looks similar to Assembly. For example, see the
+		code below (ellipses indicating further lines):
+	</p>
+	<pre class="language-pseudo"><code>
+		&vellip;
+		istore_2
+		iload_1
+		ifle 16
+		iload_1
+		aload_0
+		iload_1
+		iconst_1
+		isub
+		invokevirtual #2
+		&vellip;
+	</code></pre>
+	<p>
+		Why might we take this extra step? Ultimately, because executing a
+		sequence of instructions is simpler and cheaper (both in terms of time
+		and memory) than executing an elaborate tree of instructions. For the
+		purposes of executing instructions, linear data structures like arrays
+		&mdash; which is really what bytecode is; an array of instructions
+		&mdash; are just more efficient.
+	</p>
+	<p>
+		Because bytecode interpreters take Assembly-like instructions as input,
+		they are more often called <b>virtual machines</b>. Virtual machines
+		can be broadly classified into two categories,
+		<b>register-based machines</b> and <b>stack-based</b> machines.
+	</p>
+	<div id="stack_v_reg"></div>
+	<p>
+		With stack-based machines, the results of executing instructions are
+		stored at the top of a stack data structure. To keep track of the
+		stack's top, stack-based machines can take one of two approaches: (1)
+		use a pointer that always points at the stack's top (called the
+		<b>stack pointer</b>), or (2) store the address of the stack's top in a
+		specific register. And to keep track of the current instruction, the
+		stack-based machine uses an <b>instruction pointer</b>.
+	</p>
+	<p>For example, suppose we had the following bytecode:</p>
+	<pre class="language-pseudo"><code>
+		push $15
+		set %0
+		push %0
+		push $10
+		add
+		push $5
+		sub
+	</code></pre>
+	<p>
+		Within the stack-based machine, there are three places relevant to
+		executing the bytecode above. First, there's an array of instructions,
+		with the current instruction pointed at by the instruction pointer
+		(<var>ip</var>). Second, there are registers dedicated to storing
+		variables. And third, there's a stack for storing the results of the
+		instructions.
+	</p>
+	<p>
+		The first instruction is <var>push $15</var>. This pushes the value
+		<var>15</var> onto the result stack:
+	</p>
+	<div class="tripart">
+		<div id="stack_instruction"></div>
+		<div id="result_instruction"></div>
+	</div>
+	<p>
+		The next instruction is to set <var>%0</var>. This sets the register
+		<var>%0</var> to store the current result in the stack:
+	</p>
+	<div class="tripart">
+		<div id="stack_instruction1"></div>
+		<div id="result_instruction1"></div>
+		<div id="var_instruction1"></div>
+	</div>
+	<p>The instruction to push <var>%0</var> onto the instruction stack:</p>
+	<div class="tripart">
+		<div id="stack_instruction2"></div>
+		<div id="result_instruction2"></div>
+		<div id="var_instruction2"></div>
+	</div>
+	<p>Followed by <var>push $10</var>:</p>
+	<div class="tripart">
+		<div id="stack_instruction3"></div>
+		<div id="result_instruction3"></div>
+		<div id="var_instruction3"></div>
+	</div>
+	<p>Then we get to <var>add</var>, which results in <var>25</var>:</p>
+	<div class="tripart">
+		<div id="stack_instruction4"></div>
+		<div id="result_instruction4"></div>
+		<div id="var_instruction4"></div>
+	</div>
+	<p>
+		The process continues for the remaining instructions. Notice that the
+		stack pointer merely points to the results of the instructions. Frames
+		are popped off throughout the process.
+	</p>
+	<p>
+		This is in contrast to register-based machines, where instructions are
+		stored in <i>virtual registers</i>, much like how results are stored in
+		a real CPU's processor registers. More specifically, the result of
+		executing an instruction is stored in an <i>accumulator register</i>.
+	</p>
+	<p>
+		The bytecode sent to the bytecode interpreter might look something
+		like:
+	</p>
+	<pre class="language-pseudo"><code>
+		mov r1, $15
+		add r1, $10
+		sub r1, $5 
+	</code></pre>
+	<p>The virtual machine's registers are then initialized:</p>
+	<div id="virtual_registers"></div>
+	<p>
+		Once the registers are set, all the bytecode interpreter must do is
+		execute the instructions.
+	</p>
+</section>
+
+<section id="compilers">
+	<h2>Compilers</h2>
+	<p>
+		As a reminder, compilers are the programs that handle all of the static
+		time processes &mdash; they consist of tokenizers and parsers,
+		<i>at a minimum</i>. As mentioned previously, once the parser outputs
+		its abstract syntax tree, we can go straight to an interpreter, in
+		which case the compiler's job concludes. Of course, we don't have to
+		stop there:
+	</p>
+	<div id="compiler_map"></div>
+	<p>
+		As the graph above illustrates, we could send the AST to a
+		<b>code generator</b>, which outputs some intermediate representation
+		(labeled <var>IR</var> above). That intermediate representation could
+		then be sent to another compiler or straight to an interpreter.
+	</p>
+
+	<section id="aot_compilers">
+		<h3>AOT Compilers</h3>
+		<p>
+			<b>Ahead-of-time (AOT) compilers</b>, in particular, take this
+			approach. The source code is sent to a tokenizer. The tokenizer then
+			sends its tokens to the parser. The parser sends the AST to a code
+			generator, which then outputs some intermediate representation. At
+			some point, this intermediate representation is translated into
+			machine code, and is sent to the interpreter &mdash; either a real or
+			virtual CPU.<sup></sup>
+		</p>
+		<div class="note">
+			<p>
+				Because of how complex compilers are, compiler engineers are
+				generally categorized into two roles: front-end engineers (those
+				who handle the tokenizer and parser), and back-end engineers (those
+				who handle everything after the AST is outputted).
+			</p>
+		</div>
+		<p>
+			At this point, we might ask,
+			<q
+				>Does this mean we have to make different compilers for all the
+				different machine languages?</q
+			>
+			In short, yes and no. Someone <i>has</i> to write the different
+			compilers, but in this day and age, chances are, there's already a
+			compiler for some machine language. For example, the
+			<i>LLVM (Low Level Virtual Machine) compiler</i> covers essentially
+			all of the machine languages we can think of &mdash; x86, arm, warm,
+			and so on. This has allowed more individuals to focus on front-end
+			work (which tends to be more attractive, as it implicates heuristics
+			and often interesting questions about linguistics and computer
+			science).
+		</p>
+		<p>
+			If we use the LLVM compiler, the parser's output AST is sent to the
+			LLVM code generator (a bytecode emitter). This code generator outputs
+			LLVM IR, which is then sent to the LLVM compiler, which then outputs
+			the relevant machine code.
+		</p>
+		<p>
+			Many of the compilers we're familiar with are, in fact, subprojects
+			of LLVM. Clang, for example, is a <i>compiler front end</i> for the
+			C, C++, and Objective-C languages. The <i>compiler backend</i> is the
+			LLVM compiler. Suppose we wrote the following source code in a
+			<var>.cpp</var> file:
+		</p>
+		<pre class="language-cpp"><code>
+			int main() {
+				int x = 1;
+				int y = 2;
+				int z = x + y;
+				return 0;
+			}
+		</code></pre>
+		<p>Entering in the command line:</p>
+		<pre class="language-bash command-line"><code>
+			clang++ source.cpp
+		</code></pre>
+		<p>
+			We get several files, one of which is something called
+			<var>a.out</var>. The <var>a</var> in this file stands for
+			<i>assembly</i>. If look at the contents of this file:
+		</p>
+		<pre class="language-bash command-line" data-output="2-15"><code>
+			objdump -D a.out | less
+	
+			a.out:  file format mach-o 64-bit x86-64
+	
+			Disassembly of section __TEXT,__text:
+	
+			0000000100003f90 &lt;_main&gt;:
+			100003f90: 55                           pushq   %rbp
+			100003f91: 48 89 e5                     movq    %rsp, %rbp
+			100003f94: 31 c0                        xorl    %eax, %eax
+			100003f96: c7 45 fc 00 00 00 00         movl    $0, -4(%rbp)
+			100003f9d: c7 45 f8 01 00 00 00         movl    $1, -8(%rbp)
+			100003fa4: c7 45 f4 02 00 00 00         movl    $2, -12(%rbp)
+			100003fab: 8b 4d f8                     movl    -8(%rbp), %ecx
+			100003fae: 03 4d f4                     addl    -12(%rbp), %ecx
+		</code></pre>
+		<p>
+			The code above is just a snippet of the output. There are many more
+			lines. Running <var>objdump</var>, we get the contents of the
+			<var>a.out</var> file in x86 Assembly. The actual contents of the
+			<var>a.out</var> file, are, in fact, pure binary:
+		</p>
+		<pre class="language-bash command-line" data-output="2-13"><code>
+			od -x a.out
+			0000000      facf    feed    0007    0100    0003    0000    0002    0000
+			0000020      000f    0000    0318    0000    0085    0020    0000    0000
+			0000040      0019    0000    0048    0000    5f5f    4150    4547    455a
+			0000060      4f52    0000    0000    0000    0000    0000    0000    0000
+			0000100      0000    0000    0001    0000    0000    0000    0000    0000
+			0000120      0000    0000    0000    0000    0000    0000    0000    0000
+			0000140      0000    0000    0000    0000    0019    0000    00e8    0000
+			0000160      5f5f    4554    5458    0000    0000    0000    0000    0000
+			0000200      0000    0000    0001    0000    4000    0000    0000    0000
+			0000220      0000    0000    0000    0000    4000    0000    0000    0000
+			0000240      0005    0000    0005    0000    0002    0000    0000    0000
+			0000260      5f5f    6574    7478    0000    0000    0000    0000    0000
+		</code></pre>
+		<p>
+			We can also look at the Assembly contents of <var>a.out</var> by
+			passing the <var>-S</var> option to the <var>clang++</var> command:
+		</p>
+		<pre class="language-bash command-line" data-output="3-26"><code>
+			clang++ souce.cpp -S
+			cat source.S
+				.section	__TEXT,__text,regular,pure_instructions
+				.build_version macos, 11, 0	sdk_version 11, 3
+				.globl	_main                           ## -- Begin function main
+				.p2align	4, 0x90
+			_main:                                  ## @main
+				.cfi_startproc
+			## %bb.0:
+				pushq	%rbp
+				.cfi_def_cfa_offset 16
+				.cfi_offset %rbp, -16
+				movq	%rsp, %rbp
+				.cfi_def_cfa_register %rbp
+				xorl	%eax, %eax
+				movl	$0, -4(%rbp)
+				movl	$1, -8(%rbp)
+				movl	$2, -12(%rbp)
+				movl	-8(%rbp), %ecx
+				addl	-12(%rbp), %ecx
+				movl	%ecx, -16(%rbp)
+				popq	%rbp
+				retq
+				.cfi_endproc
+																							## -- End function
+			.subsections_via_symbols
+		</code></pre>
+		<p>
+			We can also look at the LLVM IR by passing the
+			<var>-emit-llvm</var> option. Doing so produces a
+			<var>source.ll</var> file:
+		</p>
+		<pre class="language-bash command-line" data-output="3-33"><code>
+			clang++ source.cpp -S -emit-llvm
+			cat source.ll
+	
+			; ModuleID = 'source.cpp'
+			source_filename = "source.cpp"
+			target datalayout = "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+			target triple = "x86_64-apple-macosx11.0.0"
+	
+			; Function Attrs: noinline norecurse nounwind optnone ssp uwtable
+			define i32 @main() #0 {
+				%1 = alloca i32, align 4
+				%2 = alloca i32, align 4
+				%3 = alloca i32, align 4
+				%4 = alloca i32, align 4
+				store i32 0, i32* %1, align 4
+				store i32 1, i32* %2, align 4
+				store i32 2, i32* %3, align 4
+				%5 = load i32, i32* %2, align 4
+				%6 = load i32, i32* %3, align 4
+				%7 = add nsw i32 %5, %6
+				store i32 %7, i32* %4, align 4
+				ret i32 0
+			}
+	
+			attributes #0 = { noinline norecurse nounwind optnone ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "darwin-stkchk-strong-link" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="true" "probe-stack"="___chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="penryn" "target-features"="+cx16,+cx8,+fxsr,+mmx,+sahf,+sse,+sse2,+sse3,+sse4.1,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+	
+			!llvm.module.flags = !{!0, !1, !2}
+			!llvm.ident = !{!3}
+	
+			!0 = !{i32 2, !"SDK Version", [2 x i32] [i32 11, i32 3]}
+			!1 = !{i32 1, !"wchar_size", i32 4}
+			!2 = !{i32 7, !"PIC Level", i32 2}
+			!3 = !{!"Apple clang version 12.0.5 (clang-1205.0.22.11)"}
+		</code></pre>
+	</section>
+
+	<section id="jit_compilers">
+		<h3>JIT Compilers</h3>
+		<p>
+			<b>Just-in-time (JIT) compilers</b> are compilers that translate the
+			code <i>while</i> the program is being executed. With JIT compilers,
+			an AST is sent to a bytecode emitter, which then sends its output to
+			an interpreter. Importantly, the bytecode emitter doesn't wait to
+			finish generating all of its bytecode before sending it to the
+			interpreter. It continuously sends bytecode to the interpreter, and
+			the interpreter executes its virtual machine code. What makes JIT
+			compilers unique is that the interpreter can call the code generator
+			at points during the execution to generate <i>real machine code</i>.
+		</p>
+		<p>
+			This is particularly useful when the interpreter receives bytecode
+			for some very complicated function called repeatedly. For example, we
+			might have a function that solves some differential equation with
+			various inputs. Compiling and interpreting this function repeatedly
+			is a significant performance cost. To get around this cost, the
+			interpreter calls the code generator to generate real machine code,
+			which is then sent directly to the CPU for execution, rather than the
+			virtual CPU. The generated real machine code is then stored somewhere
+			in cache memory, which the interpreter can reuse on the next function
+			call. In short, JIT compilers capitalize on the fact that sometimes,
+			recompiling or waiting before compiling outweighs the usual
+			compile-execute sequence. Hence the descriptor <q>just-in-time.</q>
+		</p>
+		<p>
+			Of course, this is not without its costs. When the interpreter calls
+			the code generator, it must pause executing its virtual machine code
+			and wait for the CPU to execute the real machine code. Only after the
+			CPU finishes its executing the real machine code does control
+			<i>jump</i>
+			back to the interpreter. Accordingly, JIT compilers have a
+			significant labor cost &mdash; its engineers must engage in a careful
+			balancing act of determining exactly when the code generator should
+			be called. If it's called too often for simple functions, the JIT
+			compiler is slower than an AOT compiler; if it's called too little,
+			it doesn't fare that much better than an AOT compiler.
+		</p>
+	</section>
+
+	<section id="transpilers">
+		<h3>Transpilers</h3>
+		<p>
+			The final route we can take is passing the AST to a
+			<b>transpiler</b>. With this approach, the AST is fed to an
+			<b>AST transformer</b>, which turns the AST into a form understood by
+			a code generator. The code generator then outputs some high-level
+			language &mdash; it could be JavaScript (a popular choice), C, Java,
+			Python, or really, any other language. That high-level language is
+			then fed to a compiler. That compiler in turn can take any of the
+			routes we've mentioned &mdash; it might be an AOT compiler, a JIT
+			compiler, or another transpiler.
+		</p>
+		<p>
+			As we can likely tell, the AST is a purely front-end compiler. The
+			backend is handled entirely by whatever the high-level language's
+			compiler does. Note that this doesn't mean that transpiled languages
+			are somehow <q>less useful</q> or <q>less valuable.</q> Numerous
+			languages used in industry are transpiled languages: Typescript
+			(JavaScript+type-checking to pure JavaScript), Sass (CSS syntax
+			closer to traditional programming to pure CSS), HAML (Markdown-like
+			syntax to pure HTML), Emscripten (LLVM bytecode to JavaScript),
+			Cfront (C++ to C), and many others.
+		</p>
+		<p>
+			Transpilers are also particularly useful when we need to
+			<i>port</i> codebases. For example, it could very well be a painful
+			task to transition an iOS application written originally in
+			Objective-C to Swift. Transpiled languages like Swiftify can make
+			that transition much easier by negating the need to rewrite the code
+			base by hand.
+		</p>
+	</section>
+</section>
+
+<section id="writing_an_interpreter">
+	<h2>Designing a Programming Language</h2>
+	<p>
+		Just as there are many possible routes in the compile-interpreter
+		process, there are many routes we can take to designing a programming
+		language. Many designers, however, start by deciding what their
+		abstract syntax tree should look like. This is akin to a proof of
+		concept. By designing the AST first, we have a clear goal to work
+		towards.
+	</p>
+	<p>
+		For the following materials, we will design a language that transpiles
+		to JavaScript.
+	</p>
+	<section id="the_ast">
+		<h3>The AST</h3>
+		<p>Suppose our language supported the following line of code:</p>
+		<ol class="alg">
+			<li>total = current + 150;</li>
+		</ol>
+		<p>Using JavaScript, we can model this statement as an object:</p>
+		<pre class="language-javascript"><code>
+			{
+				type: 'Assignment',
+				left: {
+					type: 'Identifier',
+					value: 'total'
+				},
+				right: {
+					type: 'Addition',
+					left: {
+						type: 'Identifier',
+						value: 'current'
+					},
+					right: {
+						type: 'Literal',
+						value: 150
+					}
+				}
+			}
+		</code></pre>
+		<p>
+			Instead of using property names, however, we can use indices. In
+			doing so, we agree that an expression's <var>type</var> will always
+			have an index of <var>0</var>, and all other subparts of the
+			expression take the next indices:
+		</p>
+		<pre class="language-javascript"><code>
+			{
+				0: 'Assignment',
+				1: {
+					0: 'Identifier',
+					1: 'total'
+				},
+				2: {
+					0: 'Addition',
+					1: {
+						0: 'Identifier',
+						1: 'current'
+					},
+					2: {
+						0: 'Literal',
+						1: 150
+					}
+				}
+			}
+		</code></pre>
+		<p>By using indices, our object is now just an array:</p>
+		<pre class="language-javascript"><code>
+			[
+				'Assignment',
+				[
+					'Identifier',
+					'total'
+				],
+				[
+					'Addition',
+					[
+						'Identifier',
+						'current'
+					],
+					[
+						'Literal',
+						150
+					]
+				]
+			]
+		</code></pre>
+		<p>
+			We can clean it up a bit more by using the actual symbols in the
+			code, as well as more concise names:
+		</p>
+		<pre class="language-javascript"><code>
+			[
+				'set',
+				[
+					'Identifier',
+					'total'
+				],
+				[
+					'+',
+					[
+						'Identifier',
+						'current'
+					],
+					[
+						'Literal',
+						150
+					]
+				]
+			]
+		</code></pre>
+		<p>
+			Next, we can adopt a few more conventions. First, we don't need a
+			type called <var>Identifier</var>, since the string itself is an
+			identifier:
+		</p>
+		<pre class="language-javascript"><code>
+			[
+				'set',
+				[
+					'total'
+				],
+				[
+					'+',
+					[
+						'current'
+					],
+					[
+						'Literal',
+						150
+					]
+				]
+			]
+		</code></pre>
+		<p>
+			Second, we don't really need the type <var>Literal</var>, since the
+			number alone is the literal:
+		</p>
+		<pre class="language-javascript"><code>
+			[
+				'set',
+				[
+					'total'
+				],
+				[
+					'+',
+					[
+						'current'
+					],
+					[
+						150
+					]
+				]
+			]
+		</code></pre>
+		<p>
+			Third, since we've gotten rid of those types, we now have singletons
+			&mdash; arrays with just one element. That's not necessary; those
+			elements can stand on their own:
+		</p>
+		<pre class="language-javascript"><code>
+			[
+				'set',
+					'total'
+				[
+					'+',
+						'current',
+						150
+				]
+			]
+		</code></pre>
+		<p>The end result is much simpler:</p>
+		<pre class="language-javascript"><code>
+			['set', 'total' ['+', 'current', 150]]
+		</code></pre>
+		<p>
+			For those coming from a language like Scheme or Racket, this final
+			format above might look familiar when replaced with parentheses:
+		</p>
+		<pre class="language-scheme"><code>
+			(set total (+ current 150))
+		</code></pre>
+		<p>
+			This is called an <b>S-expression</b> (short for
+			<i>symbol expression</i>). The advantage to modelling an AST like an
+			S-expression is that it maps to JavaScript arrays and Python lists
+			easily. This in turn means that we don't necessarily need a special
+			parser, and can jump straight to an interpreter. That said, here is
+			our first piece of syntax in the language:
+		</p>
+		<table class="api syntax">
+			<thead>
+				<th>
+					( ${\texttt{T}~~}$ ${\texttt{op}_0~~ \texttt{op}_1~~ \ldots ~~
+					\texttt{op}_n~~}$ )
+				</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						Where ${\texttt{T}}$ is the expression's type, and
+						${\texttt{op}_0 \ldots \texttt{op}_n}$ are the operands.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>With this basic syntax, we can write the following:</p>
+		<ol class="alg">
+			<li>(+ 1 2)</li>
+			<li>(set x 5)</li>
+			<li>(if (> x 10)</li>
+			<ol>
+				<li>(print 'x is greater than 10')</li>
+				<li>(print 'x is less than 10'))</li>
+			</ol>
+		</ol>
+		<p>We also have function declarations:</p>
+		<ol class="alg">
+			<li>(def func (x)</li>
+			<ol>
+				<li>(+ x 5))</li>
+			</ol>
+		</ol>
+		<p>As well as lambda expressions:</p>
+		<ol class="alg">
+			<li>(lambda (x) (* x x) 10)</li>
+		</ol>
+		<p>
+			Now that we have a basic idea of the syntax, let's state features we
+			want the language to support:
+		</p>
+		<ol class="alg">
+			<li></li>
+		</ol>
+	</section>
+</section>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/pl_ast_interpreter.js"
+></script>
+{% endblock %}

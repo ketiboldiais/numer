@@ -41,8 +41,8 @@
 		For our purposes, however, we'll be focusing on those languages we
 		instinctively think of when we hear &#8220;programming language&#8221;:
 		languages like C++, Java, Python, Lisp, etc. As we continue our study,
-		we'll sooner realize there isn't a bright-line rule for what
-		constitutes a programming language.
+		we'll realize there isn't a bright-line rule for what constitutes a
+		programming language.
 	</p>
 </section>
 
@@ -70,8 +70,15 @@
 	</p>
 </section>
 
-<section id="language_process">
-	<h2>From Source Code to Machine Code</h2>
+<section id="overview">
+	<h2>From Source Code to Execution</h2>
+	<p>The path from source code to execution can be visualized as such:</p>
+	<div id="lang_map"></div>
+	<p>
+		As we can see, there are numerous possible paths we can take to go from
+		source code to execution. In this section, we examine some of these
+		paths.
+	</p>
 	<p>
 		From our vantage point, let's outline the path from source code to
 		machine code. There are numerous paths we can take, but again, the idea
@@ -82,8 +89,21 @@
 	</p>
 
 	<section id="lexing">
+		<h3>Lexing</h3>
 		<p>
-			<span class="topic">Lexing.</span> When we tell the computer to run
+			The compiler's first job is <b>front-end implementation</b>. This is
+			where the compiler must organize the data representing the user's
+			code so that it's ready for the next stage. The first step is
+			<i>scanning</i>, also called <i>lexing</i>.
+		</p>
+		<p>
+			A program called the <b>lexer</b> (or <i>scanner</i>), takes a stream
+			of characters and groups them together into <b>tokens</b> &mdash; the
+			equivalent of a <q>word</q> in the language (tokens can be one or
+			many characters long).
+		</p>
+		<p>
+			When we tell the computer to run
 			<span class="monoText">main.t</span>, the source code is sent to a
 			program called the <span class="term">lexer</span> or
 			<span class="term">scanner</span>, as a linear stream of characters.
@@ -133,9 +153,19 @@
 	</section>
 
 	<section id="parsing">
+		<h3>Parsing</h3>
 		<p>
-			<span class="topic">Parsing.</span> As the lexer generates tokens, it
-			sends tokens, as a linear stream, to the
+			<b>Parsing</b> is the stage where a language's syntax is given
+			grammar. The parser takes a stream of tokens and builds a tree
+			structure representing the grammar's nested structure.
+			<b>Grammar</b> is a language's set of rules for how larger
+			expressions and statements are composed from tokens. The parser's
+			output is a <b>parse tree</b> (a.k.a.
+			<b>abstract syntax tree (AST)</b>).
+		</p>
+		<p>
+			As the lexer generates tokens, it sends tokens, as a linear stream,
+			to the
 			<span class="term">parser</span>. The parser's job is to apply
 			<span class="term">grammar</span> &mdash; the rules defining how
 			smaller pieces of syntax can be arranged to form larger expressions
@@ -158,51 +188,12 @@
 	</section>
 
 	<section id="static_analysis">
+		<h3>Static Analysis</h3>
 		<p>
-			<span class="topic">Static Analysis.</span> It is after parsing where
-			language implementations diverge. Language designers make difference
-			choices about what to do with the AST. In some
+			It is after parsing where language implementations diverge. Language
+			designers make difference choices about what to do with the AST. In
+			some
 		</p>
-	</section>
-
-	<section id="lexing">
-		<h3>Stage 1: Lexical analysis</h3>
-		<p>
-			The compiler's first job is <b>front-end implementation</b>. This is
-			where the compiler must organize the data representing the user's
-			code so that it's ready for the next stage. The first step is
-			<i>scanning</i>, also called <i>lexing</i>.
-		</p>
-		<p>
-			A program called the <b>lexer</b> (or <i>scanner</i>), takes a stream
-			of characters and groups them together into <b>tokens</b> &mdash; the
-			equivalent of a <q>word</q> in the language (tokens can be one or
-			many characters long).
-		</p>
-	</section>
-
-	<section id="parsing">
-		<h3>Stage 2: Parsing</h3>
-		<p>
-			<b>Parsing</b> is the stage where a language's syntax is given
-			grammar.
-		</p>
-		<p>
-			The parser takes a stream of tokens and builds a tree structure
-			representing the grammar's nested structure.
-		</p>
-		<p>
-			<b>Grammar</b> is a language's set of rules for how larger
-			expressions and statements are composed from tokens.
-		</p>
-		<p>
-			The parser's output is a <b>parse tree</b> (a.k.a.
-			<b>abstract syntax tree (AST)</b>).
-		</p>
-	</section>
-
-	<section id="static_analysis">
-		<h3>State 3: Static Analysis</h3>
 		<p>
 			After lexing and parsing, the program has
 			<b>syntactic structure</b>, but it doesn't have
@@ -252,7 +243,7 @@
 	</section>
 
 	<section id="mid_end_implementation">
-		<h3>Mid-end Implementation</h3>
+		<h3>Detour: Mid-end Implementation</h3>
 		<p>
 			Source code must be translated into a language that can be understood
 			by the architecture the program will run in &mdash; the
@@ -291,7 +282,7 @@
 	</section>
 
 	<section id="backend_implementation">
-		<h3>Backend Implementation</h3>
+		<h3>Detour: Backend Implementation</h3>
 		<p>
 			Here, the compiler performs <b>code generation (code gen)</b>. The
 			intermediate representation is taken as an input, and outputs
@@ -364,7 +355,7 @@
 	</section>
 
 	<section id="ending_runtime">
-		<h3>Finis: Runtime</h3>
+		<h3>Final Stage: Runtime</h3>
 		<p>
 			Once the compiler has completed code generation, we're left with a
 			set of instructions ready for execution. All that's left to do is to
@@ -467,12 +458,10 @@
 			An <b>interpreter</b> is a program that takes source code and
 			executes it immediately. That process may or may not including
 			compiling. <i>Interpreting</i> refers to the implementation technique
-			embodied in this program &mdash; source code input, execute.
-		</p>
-		<p>
-			This means that some programs are compilers but not interpreters,
-			some programs are interpreters but not compilers, and some programs
-			are both compilers and interpreters.
+			embodied in this program &mdash; source code input, execute. This
+			means that some programs are compilers but not interpreters, some
+			programs are interpreters but not compilers, and some programs are
+			both compilers and interpreters.
 		</p>
 		<p>
 			For example, Clang and GCC are compilers that take C code and comple
@@ -491,6 +480,36 @@
 			then executing.
 		</p>
 		<p>
+			Broadly, we can classify interpreters into two categories: (1)
+			<b>recursive intrepreters</b> (also called
+			<i>AST-based intrepreters</i> or <i>tree-walk interpreters</i>) and
+			<b>bytecode interpreters (also called virtual machines)</b>. The key
+			difference between these two intepreters is the format of their
+			inputs. Tree-walk interpreters take a tree data structure, while
+			bytecode interpreters take an array of encoded instructions. Bytcode
+			interpreters look much more like assemblers, hence their alternative
+			name <i>virtual machine</i>.
+		</p>
+		<p>
+			Similarly, compilers can be classified into two categories: (1)
+			<b>AOT (ahead-of-time) compilers</b>, (2)
+			<b>JIT (just-in-time) compilers</b>, and (3)
+			<b>AST-transformers (transpilers)</b>. AOT compilers are compilers
+			that compile their source code input <i>before</i> execution.
+			Examples of AOT compilers include many of the C++ compilers. Some of
+			these compilers are particularly interesting because an interpreter
+			can step in at certain points for various checks. JIT compilers are
+			compilers that compile code <i>during</i>, rather than before, the
+			program's execution. Examples include <var>javac</var>, the Java
+			Virtual Machine's compiler.
+		</p>
+		<p>
+			Ultimately, all source code ends up as machine code and sent to the
+			final interpreter of them all &mdash; the CPU. Once the CPU receives
+			this machine code, it <i>decodes</i> and <i>executes</i> the
+			instructions.
+		</p>
+		<p>
 			All of these examples illustrate why the purported distinction
 			between an
 			<q>interpreted language</q> and a <q>compiled language</q> are
@@ -503,5 +522,12 @@
 		</p>
 	</section>
 </section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/pl_overview.js"
+></script>
 
 {% endblock %}

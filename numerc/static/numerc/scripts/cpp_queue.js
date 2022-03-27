@@ -1,4 +1,35 @@
 import { cdemo } from "../CDemo.mjs";
+
+import * as csmd from "../csmd.mjs";
+
+const first_queue = new csmd.Queue({
+	id: 'first_queue',
+	indexed: true,
+	data: [
+		{val: 'A'},
+		{val: 'B'},
+		{val: 'C'},
+		{val: 'D'},
+	]
+}).render()
+
+const queue_front_rear = new csmd.Queue({
+	width: 80,
+	svg_width: 300,
+	svg_height: 500,
+	id: 'queue_front_rear',
+	data: [
+		{ val: 3 },
+		{ val: 7 },
+		{ val: 5 },
+		{ val: 8 },
+		{ val: 4 },
+		{ val: 0 },
+		{ val: 1 },
+		{ val: 9 },
+	]
+}).render();
+
 const frpArray = {
 	id: "frpArray",
 	indexed: true,

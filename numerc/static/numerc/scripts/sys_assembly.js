@@ -743,7 +743,7 @@ const screen_registers = new csmd.TruthTable({
 
 const screen_registers_select = new csmd.TruthTable({
 	id: "screen_registers_select",
-	focus: [[1,0]],
+	focus: [[1, 0]],
 	headers: ["register", "bit1(pixel)", "bit2(pixel)", "row"],
 	rows: [
 		["0", 0, 0, "0"],
@@ -767,7 +767,7 @@ const screen_registers_select = new csmd.TruthTable({
 
 const smaller_screen_on = new csmd.Matrix({
 	id: "smaller_screen_on",
-	focus: [[0,2]],
+	focus: [[0, 2]],
 	indexed: true,
 	data: [
 		["0", "0", "1", "0", "0", "0", "0", "0"],
@@ -788,3 +788,310 @@ const pointer_demo_array = new csmd.StaticArray({
 		{ val: "-1" },
 	],
 }).render();
+
+const fetch_execute_1 = new csmd.TruthTable({
+	id: "fetch_execute_1",
+	headers: ["time", "event"],
+	rows: [
+		["t${_0}$ - t${_1}$", "Fetch"],
+		["t${_1}$ - t${_2}$", "Execute"],
+		["t${_2}$ - t${_3}$", "Fetch"],
+		["t${_3}$ - t${_4}$", "Execute"],
+		["${\\vdots}$", "${\\vdots}$"],
+		["t${_{n-1}}$ - t${_n}$", "Execute"],
+	],
+}).render();
+
+const cpu1 = new csmd.Circuit({
+	id: "cpu1",
+	name: "CPU",
+	in: ["inM[16]", "instruction[16]", "reset[1]"],
+	out: ["outM[16]", "writeM[16]", "addressM[1]", "pc[16]"],
+}).render();
+
+const cpu_digraph = new csmd.Digraph({
+	id: "cpu_digraph",
+	dataset: [
+		["instruction", "MUX16"],
+		["c", "A-register"],
+	],
+	data: {
+		nodes: [{ name: "instruction" }, { name: "MUX16" }],
+		edges: [{ source: 1, target: 0 }],
+	},
+}).render();
+
+const a_instruction_cpu_input = new csmd.StaticArray({
+	id: "a_instruction_cpu_input",
+	data: [
+		{ val: 0, focus: "orange" },
+		{ val: 0, focus: "blue" },
+		{ val: 0, focus: "blue" },
+		{ val: 0, focus: "blue" },
+
+		{ val: 1, focus: "blue" },
+		{ val: 0, focus: "blue" },
+		{ val: 1, focus: "blue" },
+		{ val: 1, focus: "blue" },
+
+		{ val: 1, focus: "blue" },
+		{ val: 0, focus: "blue" },
+		{ val: 1, focus: "blue" },
+		{ val: 1, focus: "blue" },
+
+		{ val: 1, focus: "blue" },
+		{ val: 0, focus: "blue" },
+		{ val: 0, focus: "blue" },
+		{ val: 1, focus: "blue" },
+	],
+}).render();
+
+const c_instruction_cpu_input = new csmd.StaticArray({
+	id: "c_instruction_cpu_input",
+	data: [
+		{ val: 1, focus: "orange" },
+		{ val: 1 },
+		{ val: 1 },
+		{ val: 0, focus: "blue" },
+
+		{ val: 0, focus: "blue" },
+		{ val: 1, focus: "blue" },
+		{ val: 1, focus: "blue" },
+		{ val: 1, focus: "blue" },
+
+		{ val: 1, focus: "blue" },
+		{ val: 1, focus: "blue" },
+		{ val: 0, focus: "red" },
+		{ val: 1, focus: "red" },
+
+		{ val: 0, focus: "red" },
+		{ val: 1, focus: "green" },
+		{ val: 1, focus: "green" },
+		{ val: 1, focus: "green" },
+	],
+}).render();
+
+const c_instruction_cpu_input2 = new csmd.StaticArray({
+	id: "c_instruction_cpu_input2",
+	data: [
+		{ val: 1, focus: "orange" },
+		{ val: 1 },
+		{ val: 1 },
+		{ val: 0, focus: "blue" },
+
+		{ val: 0, focus: "blue" },
+		{ val: 1, focus: "blue" },
+		{ val: 1, focus: "blue" },
+		{ val: 1, focus: "blue" },
+
+		{ val: 1, focus: "blue" },
+		{ val: 1, focus: "blue" },
+		{ val: 0, focus: "red" },
+		{ val: 1, focus: "red" },
+
+		{ val: 0, focus: "red" },
+		{ val: 1, focus: "green" },
+		{ val: 1, focus: "green" },
+		{ val: 1, focus: "green" },
+	],
+}).render();
+
+const cpu_internal = new csmd.Digraph({
+	id: "cpu_internal",
+	width: 100,
+	collide: 30,
+	height: 105,
+	svg_width: 500,
+	svg_height: 520,
+	strength: -80,
+	distance: 1,
+	data: {
+		nodes: [
+			{ name: "instruction", focus: ["#B8FFD0", "green"] }, // 0
+			{ name: "inM", focus: ["#B8FFD0", "green"] }, // 1
+			{ name: "reset", focus: ["#B8FFD0", "green"] }, // 2
+			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 3
+			{ name: "A-register", focus: ["#99FEFF", "#316B83"] }, // 4
+			{ name: "D-register", focus: ["#99FEFF", "#316B83"] }, // 5
+			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 6
+			{ name: "ALU", focus: ["#99FEFF", "#316B83"] }, // 7
+			{ name: "outM", focus: ["#FFDCF7", "#B983FF"] }, // 8
+			{ name: "writeM", focus: ["#FFDCF7", "#B983FF"] }, // 9
+			{ name: "addressM", focus: ["#FFDCF7", "#B983FF"] }, // 10
+			{ name: "PC", focus: ["#99FEFF", "#316B83"] }, // 11
+			{ name: "pc", focus: ["#F5B5FC", "#B983FF"] }, // 12
+			{ name: "c" }, // 13 cm
+			{ name: "c" }, // 14 ca
+			{ name: "c" }, // 15 cd
+			{ name: "Cs" }, // 16 caluin
+			{ name: "Cs" }, // 17 caluout
+			{ name: "c" }, // 18 cm2
+			{ name: "c" }, // 19 cpc
+			{ name: "C" }, // 20 cwm
+			{ name: "A-register-out", focus: ["lightgrey", "grey"] }, // 21 apin
+			{ name: "ALU-out", focus: ["lightgrey", "grey"] }, // 22 alupin
+			{ name: "ALU-out", focus: ["lightgrey", "grey"] }, // 23 pind
+			{ name: "Memory-address-out", focus: ["lightgrey", "grey"] }, // 24 pinpic
+		],
+		edges: [
+			{ source: 0, target: 3 },
+			{ source: 3, target: 4 },
+			{ source: 13, target: 3 },
+			{ source: 14, target: 4 },
+			{ source: 15, target: 5 },
+			{ source: 16, target: 7 },
+			{ source: 7, target: 17 },
+			{ source: 18, target: 6 },
+			{ source: 19, target: 11 },
+			{ source: 20, target: 9 },
+			{ source: 9, target: 8 },
+			{ source: 4, target: 21 },
+			{ source: 21, target: 6 },
+			{ source: 6, target: 7 },
+			{ source: 7, target: 22 },
+			{ source: 22, target: 23 },
+			{ source: 22, target: 8 },
+			{ source: 23, target: 5 },
+			{ source: 23, target: 3 },
+			{ source: 5, target: 7 },
+			{ source: 1, target: 6 },
+			{ source: 24, target: 10 },
+			{ source: 21, target: 24 },
+			{ source: 24, target: 11 },
+			{ source: 24, target: 10 },
+			{ source: 2, target: 11 },
+			{ source: 11, target: 12 },
+		],
+	},
+}).render();
+
+const alu_internal = new csmd.Digraph({
+	id: "alu_internal",
+	width: 100,
+	collide: 50,
+	height: 100,
+	svg_width: 480,
+	svg_height: 490,
+	strength: 1,
+	distance: 1,
+	data: {
+		nodes: [
+			{ name: "instruction", focus: ["#B8FFD0", "green"] }, // 0
+			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 1
+			{ name: "A-register", focus: ["#99FEFF", "#316B83"] }, // 2
+			{ name: "c" }, // 3 c[M1]
+			{ name: "c" }, // 4 c[A]
+			{ name: "c" }, // 5 c[D]
+			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 6
+			{ name: "ALU", focus: ["#99FEFF", "#316B83"] }, // 7
+			{ name: "D-register", focus: ["#99FEFF", "#316B83"] }, // 8
+			{ name: "Cs" }, // 9 ALU's input C's
+			{ name: "Cs" }, // 10 ALU's Cs
+			{ name: "ALU-out", focus: ["lightgrey", "grey"] }, // 11
+			{ name: "outM", focus: ["#FFDCF7", "#B983FF"] }, // 12
+			{ name: "inM", focus: ["#B8FFD0", "green"] }, // 13
+			{ name: "c" }, // 14 c[M2]
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 1, target: 2 },
+			{ source: 2, target: 6 },
+			{ source: 6, target: 7 },
+			{ source: 7, target: 11 },
+			{ source: 11, target: 8 },
+			{ source: 11, target: 12 },
+			{ source: 3, target: 1 },
+			{ source: 4, target: 2 },
+			{ source: 5, target: 8 },
+			{ source: 9, target: 7 },
+			{ source: 7, target: 10 },
+			{ source: 13, target: 6 },
+			{ source: 8, target: 7 },
+			{ source: 14, target: 6 },
+		],
+	},
+}).render();
+
+const instruction_handling = new csmd.Digraph({
+	id: "instruction_handling",
+	width: 100,
+	collide: 35,
+	height: 50,
+	svg_width: 450,
+	svg_height: 250,
+	strength: 1,
+	distance: 1,
+	data: {
+		nodes: [
+			{ name: "instruction", focus: ["#B8FFD0", "green"] }, // 0
+			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 1
+			{ name: "A-register", focus: ["#99FEFF", "#316B83"] }, // 2
+			{ name: "c" }, // 3 c[M]
+			{ name: "c" }, // 4 c[A]
+			{ name: "to ALU", focus: ["lightgrey", "grey"] }, // 5
+			{ name: "from ALU", focus: ["lightgrey", "grey"] }, // 6
+			{ name: "addressM", focus: ["#FFDCF7", "#B983FF"] }, // 7
+		],
+		edges: [
+			{ source: 0, target: 1, label: "0000 1011 1011 1001" },
+			{ source: 1, target: 2 },
+			{ source: 3, target: 1 },
+			{ source: 4, target: 2 },
+			{ source: 2, target: 5 },
+			{ source: 6, target: 2 },
+			{ source: 2, target: 7 },
+		],
+	},
+}).render();
+
+const control_unit_internal = new csmd.Digraph({
+	id: "control_unit_internal",
+	width: 100,
+	collide: 90,
+	height: 78,
+	svg_width: 490,
+	svg_height: 380,
+	strength: 1,
+	distance: 1,
+	data: {
+		nodes: [
+			{ name: "A-register output", focus: ["lightgrey", "grey"] }, // 0
+			{ name: "PC", focus: ["#99FEFF", "#316B83"] }, // 1
+			{ name: "c" }, // 2 c[pc]
+			{ name: "pc", focus: ["#FFDCF7", "#B983FF"] }, // 3
+			{ name: "reset", focus: ["#B8FFD0", "green"] }, // 4
+		],
+		edges: [
+			{ source: 0, target: 1 },
+			{ source: 2, target: 1 },
+			{ source: 1, target: 3, label: "program counter output" },
+			{ source: 4, target: 1, label: "reset bit" },
+		],
+	},
+}).render();
+
+// const links = Object.values(sample.dataset.reduce((p, c) => (p[JSON.stringify(c)] = c, p), {})).flat();
+// console.log(links);
+// const nodes = [];
+// for (let i = 0; i < links.length; i++) {
+// 	let node = {};
+// 	node['name'] = links[i];
+// 	nodes.push(node);
+// }
+// console.log(nodes);
+
+// const edges = [];
+// sample.data.edges.forEach((e) => {
+// 	let sourceNode = nodes.filter((n) => {
+// 		return n.name === e.source;
+// 	})[0],
+// 		targetNode = nodes.filter((n) => {
+// 			return n.name === e.target;
+// 		})[0];
+// 	edges.push({
+// 		source: sourceNode,
+// 		target: targetNode,
+// 	})
+// })
+
+// console.log(edges);

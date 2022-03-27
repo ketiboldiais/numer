@@ -11,26 +11,27 @@
 {% endblock %} {% block title %}
 <title>Complexity Analysis</title>
 {% endblock %} {% block content %}
-<h1>Complexity Analysis: The Analysis of Algorithms</h1>
+<h1>Algorithmic Analysis</h1>
 <section id="intro">
 	<p>
 		<span class="drop">T</span>his section provides a general overview of
 		algorithmic analysis in programming terms. We present the motivating
-		question, its answer, as well as illustrations of the answer applied. The
-		materials that follow assume a basic understanding of functions, limits,
-		sequences, and series (i.e., comfort with ideas from a basic calculus and
-		discrete mathematics course). For a thorough mathematical justification of
-		algorithmic analysis,
+		question, its answer, as well as illustrations of the answer applied.
+		The materials that follow assume a basic understanding of functions,
+		limits, sequences, and series (i.e., comfort with ideas from a basic
+		calculus and discrete mathematics course). For a thorough mathematical
+		justification of algorithmic analysis,
 		<a href="{% url 'numerm:disc_algorithms' %}"
-			><i>see</i> <em>Review of Mathematics: Analysis of Algorithms</em>.</a
+			><i>see</i>
+			<em>Review of Mathematics: Analysis of Algorithms</em>.</a
 		>
 	</p>
 	<p>
 		One concern for analyzing algorithms is
-		<span class="italicsText">efficiency</span>. While this is the most common
-		concern, it is second to another &mdash;
-		<span class="italicsText">correctness</span>. If an algorithm is incorrect,
-		its efficiency is unimportant.<sup></sup>
+		<span class="italicsText">efficiency</span>. While this is the most
+		common concern, it is second to another &mdash;
+		<span class="italicsText">correctness</span>. If an algorithm is
+		incorrect, its efficiency is unimportant.<sup></sup>
 		In these materials, we suppose that we've gotten over the correctness
 		hurdle, and focus on efficiency.
 	</p>
@@ -41,129 +42,208 @@
 		</p>
 	</div>
 	<p>
-		The most common procedure for analyzing algorithms is determining the amount
-		of <span class="italicsText">time</span> an algorithm takes to execute. In
-		essence, how long it takes a given algorithm to solve a particular problem.
-		To do so, however, we need some agreed-upon method for quantifying time. We
-		can't rely on units like seconds, because every machine is different.
-		Solving some differential equation on a small mobile phone will be slower
-		than running the same search on a super computer. Although it may be useful
-		to know how fast the search runs on one device over another, it's not the
-		principal concern in the analysis of algorithms. The search algorithm is the
-		same for both the small mobile and the super computer. What we want to know
-		is how the algorithm compares to another search algorithm,
+		The most common procedure for analyzing algorithms is determining the
+		amount of <span class="italicsText">time</span> an algorithm takes to
+		execute. In essence, how long it takes a given algorithm to solve a
+		particular problem. To do so, however, we need some agreed-upon method
+		for quantifying time. We can't rely on units like seconds, because
+		every machine is different. Solving some differential equation on a
+		small mobile phone will be slower than running the same search on a
+		super computer. Although it may be useful to know how fast the search
+		runs on one device over another, it's not the principal concern in the
+		analysis of algorithms. The search algorithm is the same for both the
+		small mobile and the super computer. What we want to know is how the
+		algorithm compares to another search algorithm,
 		<span class="italicsText">regardless of device</span>.
 	</p>
 	<div class="mainIdea">
 		<p>
-			Time complexity is the way we measure how much time an algorithm takes to
-			execute (the algorithm's <span class="italicsText">runtime</span>)
-			according to its input size.
+			Time complexity is the way we measure how much time an algorithm
+			takes to execute (the algorithm's
+			<span class="italicsText">runtime</span>) according to its input
+			size.
 		</p>
 	</div>
 	<p>
 		Occasionally, analyzing algorithms requires determining the amount of
-		<span class="italicsText">space</span> an algorithm takes to execute. For
-		example, one algorithm ${A}$ might be faster than algorithm ${B}$ but
-		requires a significant amount of memory. Determining space complexity can
-		often be immensely. Perhaps algorithms ${C}$ and ${D}$ take the same amount
-		of time, but ${C}$ consumes less memory.
+		<span class="italicsText">space</span> an algorithm takes to execute.
+		For example, one algorithm ${A}$ might be faster than algorithm ${B}$
+		but requires a significant amount of memory. Determining space
+		complexity can often be immensely. Perhaps algorithms ${C}$ and ${D}$
+		take the same amount of time, but ${C}$ consumes less memory.
 	</p>
 	<p>
-		So how do we determine the amount of time or space an algorithm takes? The
-		first step is to count the number of
-		<span class="underlineText">fundamental operations</span> performed as a
-		function of ${n,}$ where ${n}$ is the number of input values. The
-		fundamental operations can be defined as the set of the following
-		operations:
+		So how do we determine the amount of time or space an algorithm takes?
+		The first step is to count the number of
+		<span class="underlineText">fundamental operations</span> performed as
+		a function of ${n,}$ where ${n}$ is the number of input values. In the
+		pseudocode below, each line in the program on the left presents a
+		unique operation. On the right are the time complexities for each line,
+		along with comments (click on the comment to expand, or program line to
+		see the accompanying comment).
 	</p>
-	<ul>
-		<li>
-			Comparison operations:
-			<span class="monoText"> &gt; &lt; &leq; &geq; == !=</span>
-		</li>
-		<li>Arithmetic operations: <span class="monoText">- + * / %</span></li>
-		<li>Assignment operation: <span class="monoText">=</span></li>
-		<li>Bitwise operations: <span class="monoText"> & | ^ ~ << >> </span></li>
-		<li>Return operation: <span class="monoText">return</span></li>
-		<li>
-			Casting operation:
-			<span class="monoText">(${data~type}$) ${some~value}$</span>
-		</li>
-		<li>Boolean operations: <span class="monoText">&& || !</span></li>
-		<li>
-			Evaluation of Conditionals: <span class="monoText">if, elseif, else</span>
-		</li>
-	</ul>
-	<p>Overloaded operators perform multiple operations:</p>
-	<ul>
-		<li>
-			<span class="monoText">x++</span> is shorthand for
-			<span class="monoText">x = x + 1</span>, which consists of two operations:
-			addition (<span class="monoText">+</span>) and assignment (<span
-				class="monoText"
-				>=</span
-			>).
-		</li>
-		<li>
-			<span class="monoText">x--</span> is shorthand for
-			<span class="monoText">x = x - 1</span>, which consists of two operations:
-			subtraction (<span class="monoText">-</span>) and assignment (<span
-				class="monoText"
-				>=</span
-			>).
-		</li>
-		<li>
-			<span class="monoText">x+=y</span> is shorthand for
-			<span class="monoText">x = x + y</span>, which consists of two operations:
-			addition (<span class="monoText">+</span>) and assignment (<span
-				class="monoText"
-				>=</span
-			>).
-		</li>
-		<li>
-			<span class="monoText">x-=y</span> is shorthand for
-			<span class="monoText">x = x - y</span>, which consists of two operations:
-			subtraction (<span class="monoText">-</span>) and assignment (<span
-				class="monoText"
-				>=</span
-			>).
-		</li>
-		<li>
-			<span class="monoText">x*=y</span> is shorthand for
-			<span class="monoText">x = x * y</span>, which consists of two operations:
-			multiplication (<span class="monoText">*</span>) and assignment (<span
-				class="monoText"
-				>=</span
-			>).
-		</li>
-		<li>
-			<span class="monoText">x/=y</span> is shorthand for
-			<span class="monoText">x = x / y</span>, which consists of two operations:
-			division (<span class="monoText">/</span>) and assignment (<span
-				class="monoText"
-				>=</span
-			>).
-		</li>
-		<li>
-			<span class="monoText">x%=y</span> is shorthand for
-			<span class="monoText">x = x % y</span>, which consists of two operations:
-			the remainder operation (<span class="monoText">%</span>) and assignment
-			(<span class="monoText">=</span>).
-		</li>
-		<li>
-			The ternary operator,
-			<span class="monoText">condition ? ${result_1}$ : ${result_2}$</span> can
-			consist of multiple operations. It evaluates the condition, the results
-			(if necessary), and potentially an assignment.
-		</li>
-	</ul>
+	<div class="pseudosource">
+		<ol class="alg">
+			<li><var>// declaration</var></li>
+			<ol>
+				<li>let a;</li>
+			</ol>
+			<li><var>// assignment</var></li>
+			<ol>
+				<li>let a = 0;</li>
+				<li>let b = 1;</li>
+				<li>
+					let c = (${\texttt{E}_0}$) ? (${\texttt{E}_1}$) :
+					(${\texttt{E}_2}$)
+				</li>
+			</ol>
+			<li><var>// arithmetic operations</var></li>
+			<ol>
+				<li>a - b;</li>
+				<li>a + b;</li>
+				<li>a * b;</li>
+				<li>a / b;</li>
+				<li>a % b;</li>
+				<li>a++;</li>
+				<li>a--;</li>
+				<li>a+=b;</li>
+				<li>a-=b;</li>
+				<li>a*=b;</li>
+				<li>a/=b;</li>
+				<li>a%=b;</li>
+			</ol>
+			<li><var>// bitwise operations</var></li>
+			<ol>
+				<li>a & b;</li>
+				<li>a | b;</li>
+				<li>a^b;</li>
+				<li>~a;</li>
+				<li>a&lt;&lt;b</li>
+				<li>a&gt;&gt;b</li>
+			</ol>
+			<li><var>// comparison operations</var></li>
+			<ol>
+				<li>a > b;</li>
+				<li>a &lt; b;</li>
+				<li>a >= b;</li>
+				<li>a <= b;</li>
+				<li>a == b;</li>
+				<li>a === b;</li>
+				<li>a != b;</li>
+			</ol>
+			<li><var>// casting operations</var></li>
+			<ol>
+				<li>(T) a;</li>
+			</ol>
+			<li><var>// branching structures</var></li>
+			<ol>
+				<li>if (${\texttt{C}}$) { ${\texttt{E}}$ }</li>
+				<li>else if (${\texttt{C}}$) { ${\texttt{E}}$ }</li>
+				<li>else { ${\texttt{E}}$ }</li>
+			</ol>
+		</ol>
+		<ol class="algc">
+			<li>
+				<span class="greyText">
+					${\varnothing}$ Comments are typically removed by compilers
+					before execution.</span
+				>
+			</li>
+
+			<li>
+				${O(1).}$ At the hardware level, declaration requires the CPU to
+				search for available registers. Accordingly, declaration could
+				potentially take ${O(\texttt{N}),}$ where ${N}$ is the number of
+				registers available for program usage. However, because computer
+				systems have a constant number of ${\texttt{N}}$ registers, we say
+				that the declaration takes ${O(1)}$ time.
+			</li>
+
+			<li>
+				<span class="greyText">${\varnothing}$ Comments are ignored.</span>
+			</li>
+
+			<li>
+				${O(2).}$ We declare <var>a</var>, <em>and</em> assign it
+				<var>0</var>. Again, because the CPU must search for available
+				registers, initialization can potentially take ${O(\texttt{N} +
+				x),}$ where ${\texttt{N}}$ is the number of registers, and ${x}$ is
+				the number of machine language instructions the CPU must execute to
+				store the value <var>1</var> inside the register. Because both
+				${\texttt{N}}$ and ${x}$ are constants, we say that this operation
+				takes ${O(2)}$ time, or more generally, ${O(1)}$ time.
+			</li>
+			<li>${O(2).}$ <i>See</i> previous comment.</li>
+			<li>
+				${[O(1 + \texttt{T}(\texttt{E}_0) + \texttt{T}(\texttt{E}_1)), O(1
+				+ \texttt{T}(\texttt{E}_0) + \texttt{T}(\texttt{E}_2))].}$ Ternary
+				operations have variable time complexities. Ultimately, it depends
+				on the time complexity of checking the guard clause
+				${\texttt{E}_0,}$ and executing either the true-block
+				${\texttt{E}_1}$ or false-block ${\texttt{E}_2.}$
+			</li>
+			<li>
+				<span class="greyText">${\varnothing}$ Comments are ignored.</span>
+			</li>
+
+			<li>${O(1).}$</li>
+
+			<li>${O(1).}$</li>
+			<li>${O(1).}$</li>
+			<li>${O(1).}$</li>
+			<li>${O(1).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(2).}$</li>
+			<li>
+				<span class="greyText">${\varnothing}$ Comments are ignored.</span>
+			</li>
+
+			<li>${O(1).}$</li>
+
+			<li>${O(1).}$</li>
+			<li>${O(1).}$</li>
+			<li>${O(1).}$</li>
+			<li>${O(1).}$</li>
+			<li>${O(1).}$</li>
+			<li>
+				<span class="greyText">${\varnothing}$ Comments are ignored.</span>
+			</li>
+
+			<li>${O(1).}$</li>
+			<li>${O(1).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(1).}$</li>
+			<li>${O(2).}$</li>
+			<li>${O(1).}$</li>
+			<li>
+				<span class="greyText">${\varnothing}$ Comments are ignored.</span>
+			</li>
+			<li>${O(1).}$</li>
+			<li>
+				<span class="greyText">${\varnothing}$ Comments are ignored.</span>
+			</li>
+			<li>${O(1 + \texttt{T}(\texttt{C}) + \texttt{T}(\texttt{E})).}$</li>
+			<li>${O(1 + \texttt{T}(\texttt{C}) + \texttt{T}(\texttt{E})).}$</li>
+			<li>
+				${O(c + 1 + \texttt{T}(\texttt{E})),}$ where ${c}$ is the time
+				complexity of reaching the else-block. I.e., the time complexity of
+				checking all of the preceding <var>if</var> and
+				<var>else if</var> conditions.
+			</li>
+		</ol>
+	</div>
 	<p>
-		We list the operations as exhaustively as we can because in these first few
-		sections we will count all of the operations. However, as we progress, we
-		will learn that we rarely count every operation. Some operations are
-		counted, others ignored. That said, let's consider an example. Suppose we
-		had the following algorithm:
+		We list the operations as exhaustively as we can because in these first
+		few sections we will count all of the operations. However, as we
+		progress, we will learn that we rarely count every operation. Some
+		operations are counted, others ignored. That said, let's consider an
+		example. Suppose we had the following algorithm:
 	</p>
 	<figure>
 		<ol class="alg">
@@ -176,94 +256,68 @@
 		</ol>
 	</figure>
 	<p>Counting the number of operations:</p>
+	<div class="pseudosource">
+		<ol class="alg">
+			<li>int sum = 0;</li>
+			<li>int i = 0;</li>
+			<li>i &lt; n;</li>
+			<li>sum + i;</li>
+			<li>sum = sum;</li>
+			<li>i++;</li>
+			<li>return sum;</li>
+		</ol>
+		<ol class="algc">
+			<li>${1.}$</li>
+			<li>${1.}$</li>
+			<li>
+				${n + 1.}$ The comparison is performed after each execution of the
+				loop's body. Thus, it is true ${n}$ times and false once.
+			</li>
+			<li>
+				${n.}$ The addition operation is performed only if the test
+				condition (the preceding comparison operation) returns
+				<var>true</var>. Thus, it is performed ${n}$ times.
+			</li>
+			<li>
+				${n.}$ The assignment operation is performed only if the test
+				condition returns <var>true</var>. Thus, it is performed ${n}$
+				times.
+			</li>
+			<li>
+				${n.}$ The increment is performed only if the test condition
+				returns <var>true</var>. Thus, it is performed ${n}$ times.
+			</li>
+			<li>
+				${1.}$ The <var>return</var> operation is performed exactly once.
+			</li>
+		</ol>
+	</div>
+	<p>
+		Summing the number of executions for each operation, ${\texttt{T}(n),}$
+		we get:
+	</p>
 	<figure>
-		<table class="alg">
-			<thead>
-				<th>Operation</th>
-				<th>Number of Executions</th>
-				<th>Comment</th>
-			</thead>
-			<tbody>
-				<tr>
-					<td><span class="monoText">int sum = 0;</span></td>
-					<td>1</td>
-					<td rowspan="2">These operations are performed exactly once.</td>
-				</tr>
-				<tr>
-					<td><span class="monoText">int i = 0;</span></td>
-					<td>1</td>
-				</tr>
-				<tr>
-					<td><span class="monoText">i < n;</span></td>
-					<td>${n + 1}$</td>
-					<td>
-						This comparison is performed after each execution of the loop's body
-						(it is <span class="monoText">true</span> ${n}$ times and
-						<span class="monoText">false</span> once).
-					</td>
-				</tr>
-				<tr>
-					<td><span class="monoText">i++;</span></td>
-					<td>${n + 1}$</td>
-					<td>
-						This operation (incrementing) is performed only if the test
-						condition (the comparison operation) returns
-						<span class="monoText">true</span>. Thus, it is performed ${n}$
-						times.
-					</td>
-				</tr>
-				<tr>
-					<td><span class="monoText">sum + i</span></td>
-					<td>${n}$</td>
-					<td>
-						The addition operation is performed only if the test condition (the
-						comparison operation) returns true. Thus, it is performed ${n}$
-						times.
-					</td>
-				</tr>
-				<tr>
-					<td><span class="monoText">sum = sum + i;</span></td>
-					<td>${n}$</td>
-					<td>
-						The assignment operation is performed only if the test condition
-						(the comparison operation) returns true. Thus, it is performed ${n}$
-						times.
-					</td>
-				</tr>
-				<tr>
-					<td><span class="monoText">return sum;</span></td>
-					<td>${n}$</td>
-					<td>
-						The <span class="monoText">return</span> operation is performed
-						exactly once.
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</figure>
-	<p>Summing the number of executions for each operation (call it ${S}$):</p>
-	<figure>
-		<div>
-			$$ \begin{aligned} S &= 1 + 1 + (n+1) + (n+1) + n + n + n \\[1em] &= n + n
-			+ n + n + n + 1 + 1 + 1 + 1 \\[1em] &= 5n + 4 \end{aligned} $$
-		</div>
+		$$ \begin{aligned} \texttt{T}(n) &= 1 + 1 + (n+1) + n + n + n \\ &= 1 +
+		1 + n + 1 + n + n + n \\ &= 1 + 1 + 1 + n + n + n + n \\ &= 3 + 4n
+		\end{aligned} $$
 	</figure>
 	<p>
-		This sum represents the running time function of the algorithm: ${f(n) =
-		5n+4.}$ When we conduct complexity analysis, we want to express this runtime
-		in terms of Big-O notation. To do so, we perform the following:
+		The final expression gives us a function of the algorithm's total run
+		time: ${\texttt{T}(n) = 4n + 3.}$ When we conduct complexity analysis,
+		we want to express this runtime in terms of Big-O notation. To do so,
+		we want to:
 	</p>
 	<ol>
 		<li>Remove the constants.</li>
 		<li>Remove the lowest terms.</li>
 	</ol>
 	<p>
-		In this case, the constant is ${5,}$ and the lowest term is ${4.}$ Dropping
-		the constant and the lowest term, we have some function ${g(n) = n,}$ and we
-		express this as ${O(n).}$ We call this
-		<span class="term">linear time</span>, and we say that &#8220;The algorithm
-		above runs no faster than ${n,}$&#8221; or &#8220;The runtime complexity is
-		${O(n).}$&#8221;
+		In this case, the constant is ${5,}$ and the lowest term is ${4.}$
+		Dropping the constant and the lowest term, we have some function ${g(n)
+		= n,}$ and we express this as ${O(n).}$ We call this
+		<span class="term">linear time</span>, and we say that &#8220;The
+		algorithm above runs no faster than ${n,}$&#8221; or &#8220;The runtime
+		complexity is ${O(n).}$&#8221;
 	</p>
 	<p>Now, compare the algorithm above with the following:</p>
 	<figure>
@@ -283,7 +337,9 @@
 				<tr>
 					<td><span class="monoText">n + 1</span></td>
 					<td>1</td>
-					<td rowspan="4">All of these operations perform exactly once.</td>
+					<td rowspan="4">
+						All of these operations perform exactly once.
+					</td>
 				</tr>
 				<tr>
 					<td><span class="monoText">n * result(n + 1)</span></td>
@@ -303,320 +359,104 @@
 	<p>Summing the number of executions:</p>
 	<figure>
 		<div>
-			$$ \begin{aligned} S &= 1 + 1 + 1 + 1\\[1em] &= 4 \end{aligned} $$
+			$$ \begin{aligned} \texttt{T}(n) &= 1 + 1 + 1 + 1\\[1em] &= 4
+			\end{aligned} $$
 		</div>
 	</figure>
 	<p>
-		This algorithm has a running time function of ${f(n) = 4.}$ Whenever the
-		running time function is constant, we say that the algorithm runs on
-		<span class="term">constant time</span>, and we denote this with ${O(1).}$
-		This is a concise way of saying that algorithm's runtime does not depend on
-		the input size ${n.}$ We can throw as many ${n}$ as we would like at the
-		algorithm, and the runtime will never change. It's constant.
+		This algorithm has a running time function of ${\texttt{T}(n) = 4.}$
+		Whenever the running time function is constant, we say that the
+		algorithm runs on
+		<span class="term">constant time</span>, and we denote this with
+		${O(1).}$ This is a concise way of saying that algorithm's runtime does
+		not depend on the input size ${n.}$ We can throw as many ${n}$ as we
+		would like at the algorithm, and the runtime will never change. It's
+		constant.
 	</p>
 	<p>
-		Compare these two algorithms. Clearly, the first algorithm is slower than
-		the second. We have function ${g(n) = n,}$ and ${g(n) = 1.}$ If we plot
-		these two functions:
+		Compare these two algorithms. Clearly, the first algorithm is slower
+		than the second. We have function ${g(n) = n,}$ and ${g(n) = 1.}$ If we
+		plot these two functions:
 	</p>
 	<figure>
 		<img
 			src="{% static 'images/linear_v_constant.svg' %}"
 			alt="Linear versus constant time"
 			loading="lazy"
-			class="thirty-p"
+			style="width: 300px"
 		/>
 		<figcaption>
 			where ${n}$ is the size of the input and ${t}$ is time
 		</figcaption>
 	</figure>
 	<p>
-		we see that ${g(n)}$ will always grow faster than ${g(1).}$ This indicates
-		that ${g(1)}$ will always be faster than ${g(n)}$ &mdash; ${g(1)}$ never
-		grows to begin with.
+		we see that ${g(n)}$ will always grow faster than ${g(1).}$ This
+		indicates that ${g(1)}$ will always be faster than ${g(n)}$ &mdash;
+		${g(1)}$ never grows to begin with.
 	</p>
 </section>
 
-<section id="exercises">
-	<h2 class="pset">Exercises</h2>
+<section id="cases">
+	<h2>Cases</h2>
 	<p>
-		Compute the Big-O complexity of the algorithms below, attempting to count
-		the exact number of operations.
+		How well an algorithm performs depends on its inputs. Consider the
+		simple linear search:
 	</p>
-
-	<ol class="ex grid">
-		<li class="grid-item">
-			<pre class="language-cpp"><code>
-				int main() {
-					int n = 10; // n could be any number
-					int sum = 0;
-					float pi = 3.14;
-
-					for (int i = 1; i < n; i += 3) {
-						cout << pi << endl;
-						for (int j = 1; j < n; j+= 2) {
-							sum += 1;
-							cout << sum << endl;
-						}
-					}
-				}
-			 </code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<p>We can determine the number of operations by way of a table:</p>
-				<table class="alg">
-					<thead>
-						<th>Operation</th>
-						<th>Number of Executions</th>
-						<th>Comment</th>
-					</thead>
-					<tbody>
-						<tr>
-							<td><span class="monoText">int n = 10;</span></td>
-							<td>1</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><span class="monoText">int sum = 0;</span></td>
-							<td>1</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><span class="monoText">float pie = 3.14;</span></td>
-							<td>1</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><span class="monoText">int i = 1;</span></td>
-							<td>1</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><span class="monoText">i < n;</span></td>
-							<td>${\left\lfloor \dfrac{n}{3} \right\rfloor + 1}$</td>
-							<td>
-								The test condition is checked after each iteration. Thus, it's
-								checked at iteration ${1,}$ then iteration ${1+3=4,}$ then
-								${4+3=7,}$ then ${7+3=10}$ &mdash; a total of ${4}$ executions.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">i += 3;</span></td>
-							<td>${\left\lfloor \dfrac{n}{3} \right\rfloor}$</td>
-							<td>
-								The increment is performed only if the test condition is true.
-								Thus, starting at ${i = 1,}$ the first increment occurs: ${i = 1
-								+ 3 = 4.}$ At ${i = 4,}$ the second increment occurs: ${i = 4 +
-								3 = 7.}$ At ${i = 7,}$ the third increment occurs: ${i = 7 + 3 =
-								10.}$ After the third increment, ${i \nless 10,}$ so no further
-								increments are made.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">cout << pi << endl;</span></td>
-							<td>${\left\lfloor \dfrac{n}{3} \right\rfloor}$</td>
-							<td>
-								Like the increment, the print line occurs only if the outer
-								for-loop's test condition is true. Thus, there are three
-								executions.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">int j = 1;</span></td>
-							<td>${\left\lfloor \dfrac{n}{3} \right\rfloor}$</td>
-							<td>
-								Like the print line, the initializer for the inner for-loop
-								occurs only if the outer for-loop's test condition is true.
-								Thus, this initialization executes three times.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">j < n;</span></td>
-							<td>
-								${\left\lfloor \dfrac{n}{3} \right\rfloor \left( \left\lfloor
-								\dfrac{n}{2} \right\rfloor + 1 \right)}$
-							</td>
-							<td>
-								The test condition for inner for-loop is checked after each
-								iteration. Thus, it's checked at iteration ${1,}$ then at
-								iteration ${1 + 2 = 3,}$ then ${3 + 2 = 5,}$ then ${5 + 2 = 7,}$
-								then ${7 + 2 = 9,}$ then ${9 + 2 = 11.}$ This is a total of
-								${6}$ iterations. Because the inner for-loop executes at each
-								iteration of the outer for-loop, we multiply the number of
-								iterations of the inner for-loop by the number of iterations for
-								the outer-for loop.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">j += 2;</span></td>
-							<td>
-								${\left\lfloor \dfrac{n}{3} \right\rfloor \left( \left\lfloor
-								\dfrac{n}{2} \right\rfloor \right)}$
-							</td>
-							<td>
-								The increment occurs only if the test condition is true. Thus,
-								we have an increment after ${j = 1,}$ then another increment
-								after ${j = 3,}$ another after ${j = 5,}$ another after ${j =
-								7,}$ and the last one after ${j = 9.}$ This is a total of ${5}$
-								increments, which translates to the number of times the inner
-								for-loop's body is executed. We multiply this number by the
-								number of times the outer for-loop's body is executed.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">sum += 1;</span></td>
-							<td>
-								${\left\lfloor \dfrac{n}{3} \right\rfloor \left( \left\lfloor
-								\dfrac{n}{2} \right\rfloor \right)}$
-							</td>
-							<td>
-								This assignment executes the number of times the inner
-								for-loop's body is executed &mdash; ${5.}$ We then multiply this
-								number by the number of times the outer for-loop's body is
-								executed.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">cout << sum << endl;</span></td>
-							<td>
-								${\left\lfloor \dfrac{n}{3} \right\rfloor \left( \left\lfloor
-								\dfrac{n}{2} \right\rfloor \right)}$
-							</td>
-							<td>
-								The print line executes the number of times the inner for-loop's
-								body is executed, which is ${5.}$ We again multiply this number
-								by the number of times the outer for-loop's body is executed.
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<p>
-					The running time complexity is the sum of all the execution times
-					above:
-				</p>
-				<figure>
-					<div>
-						<p>
-							$\small 1 + 1 + 1 + 1 + \dfrac{n}{3} + 1 + \dfrac{n}{3} +
-							\dfrac{n}{3} + \dfrac{n}{3}\left( \dfrac{n}{2} + 1 \right) +
-							\left( \dfrac{n}{3} \right)\left( \dfrac{n}{2} \right) + \left(
-							\dfrac{n}{3} \right)\left( \dfrac{n}{2} \right) + \left(
-							\dfrac{n}{3} \right)\left( \dfrac{n}{2} \right)$
-						</p>
-					</div>
-				</figure>
-				<p>Simplifying (where ${S}$ is the sum above):</p>
-				<figure>
-					<div>
-						$$ \begin{aligned} S &= 5 + \dfrac{5n}{3} + \dfrac{4n^2}{6} \\[1em]
-						&= 5 + \dfrac{5n}{3} + \dfrac{2n^2}{3} \\[1em] &= \dfrac{2n^2 + 5n +
-						15}{3} \end{aligned} $$
-					</div>
-				</figure>
-				<p>
-					To find the Big O complexity, we drop the leading constants: ${2, 5,
-					15, \dfrac{1}{3}.}$ This leaves us with ${n + n^2.}$ And then we drop
-					the lower order terms, in this case, ${n.}$ This leaves us with
-					${n^2.}$ Thus, the time complexity for the program above is
-					${O(n^2).}$
-				</p>
-			</details>
+	<ol class="alg">
+		<li>bool LinearSearch(TYPE[] array, TYPE key):</li>
+		<ol>
+			<li>int n = array.Length();</li>
+			<li>for (int i = 0; i &lt; n; i++):</li>
+			<ol>
+				<li>if (arr[i] == key): return true;</li>
+			</ol>
+			<li>return false;</li>
+		</ol>
+	</ol>
+	<p>
+		If the key is found at <var>arr[0]</var>, the algorithm executes in
+		just one iteration. If the key is found at <var>arr[n-1]</var>, the
+		algorithm executes in <var>n</var> iterations (with
+		<var>n</var> evaluations of the loop's condition). If the key isn't
+		found anywhere in the array, the algorithm executes in
+		<var>n</var> iterations, with <var>n+1</var> evaluations of the loop's
+		condition. Thus, there are three unique scenarios:
+	</p>
+	<ol>
+		<li>Key is found after just one iteration.</li>
+		<li>Key is found after ${n}$ iterations.</li>
+		<li>Key is not found.</li>
+	</ol>
+	<p>
+		Because of this phenomenon, algorithmic analysis can be performed in
+		three different ways:
+	</p>
+	<ol>
+		<li>
+			The <b>best-case time</b> of an algorithm is the algorithm's
+			<em>smallest possible run-time</em>, over all possible fixed-size
+			inputs. The algorithmic analysis for determining an algorithm's
+			best-case time is called the <i>best-case analysis</i>. When someone
+			gives us an algorithm's best-case time ${t,}$ they're essentially
+			telling us that the algorithm has a speed limit ${t}$ &mdash; it
+			can't get any faster than ${t.}$
 		</li>
-
-		<li class="grid-item">
-			<pre class="language-cpp"><code>
-				int main() {
-					int n = 10; // n could be any number
-					int sum = 0;
-					float pi = 3.14;
-
-					for (int i = n; i >= 1; i -= 3) {
-						cout << pi << endl;
-						for (int j = n; j >= 0; j--) {
-							sum += 1;
-						}
-					}
-					cout << sum << endl;
-				}
-			</code></pre>
-			<details class="answer">
-				<summary>Solution</summary>
-				<table class="alg">
-					<thead>
-						<th>Operation</th>
-						<th>Number of Executions</th>
-						<th>Comment</th>
-					</thead>
-					<tbody>
-						<tr>
-							<td><span class="monoText">int n = 10;</span></td>
-							<td>1</td>
-							<td rowspan="4">
-								These are basic steps. They execute exactly once.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">int sum = 0;</span></td>
-							<td>1</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">float pi = 3.14</span></td>
-							<td>1</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">int i = n;</span></td>
-							<td>1</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">i >= 1</span></td>
-							<td>${\left\lceil \dfrac{n}{3} \right\rceil + 1}$</td>
-							<td>
-								Where ${n = 10,}$ the condition is evaluated ${5}$ times (it is
-								true ${\left\lceil \dfrac{n}{3} \right\rceil}$ times and false
-								once).
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">i -= 3</span></td>
-							<td>${\left\lceil \dfrac{n}{3} \right\rceil}$</td>
-							<td>
-								The decrement is performed only if the test condition is true.
-								Thus, we have a decrement after ${i = 10,}$ after ${i = 7,}$
-								after ${i = 3,}$ and finally after ${i = 1.}$ This yields a
-								total of ${4}$ decrements, corresponding to the expression
-								${\left\lceil \dfrac{n}{3} \right\rceil.}$ This is effectively
-								the number of times the loop executes.
-							</td>
-						</tr>
-						<tr>
-							<td><span class="monoText">cout << pi << endl;</span></td>
-							<td>${\left\lceil \dfrac{n}{3} \right\rceil}$</td>
-							<td>
-								The print line is performed only if the test condition is true,
-								which corresponds to the number of times the decrement operation
-								executes, which in turn corresponds to the number of times the
-								body of the loop executes.
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</details>
+		<li>
+			The <b>worst-case time</b> of an algorithm is the algorithm's
+			<em>largest possible run-time</em>, over all possible fixed-size
+			inputs. The algorithmic analysis for determining an algorithm's
+			best-case time is called the <i>worst-case analysis</i>. When we're
+			given an algorithm's worst-case time ${w,}$ we're being told,
+			<q>Thie algorithm can't get any slower than ${w.}$</q>
+		</li>
+		<li>
+			The <b>average-case time</b> of an algorithm is the algorithm's
+			<em>average possible run-time</em>, over all possible fixed-size
+			inputs. The algorithmic analysis for determining an algorithm's
+			best-case time is called the <i>average-case analysis</i>. When we're
+			given an algorithm's average-case time ${a}$, we're being told,
+			<q>On average, the algorithm has run time of ${a.}$</q>
 		</li>
 	</ol>
-</section>
-
-<section id="performance">
-	<h2>On Performance</h2>
-	<p>
-		Why is complexity analysis so useful? Because it's a way of quantifying
-		<i>performance</i>. And in programming, performance is currency. Modularity,
-		security, extensibility, maintainability, readability, feature-richness,
-		user-friendliness, portability, compatibility &mdash; these are all
-		<i>commodities</i> that we can buy with performance. No performance? Say
-		goodbye to all these commodities. We can write the most readable code, but
-		if it takes days to produce a single output, none of that readability
-		matters. Accordingly, complexity analysis is what allows us to ask,
-		<q>Do I have enough ${x}$ to get away with ${y}$?</q>
-	</p>
 </section>
 {% endblock %}

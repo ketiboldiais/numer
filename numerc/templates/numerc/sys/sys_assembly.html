@@ -5523,21 +5523,406 @@
 			register indices as data.
 		</p>
 	</section>
+</section>
 
-	<section id="input_and_output">
-		<h3>Input & Output</h3>
+<section id="buses">
+	<h2>The von Neumann Architecture</h2>
+	<p>
+		We now have a broad understanding how our computer system should be
+		structured. The next step is to put all of our components together
+		&mdash; the registers, CPU, input and output, and many others. To do
+		so, we begin by examining how information flows in the von Neumann
+		architecture.
+	</p>
+	<section id="buses">
+		<h3>Buses</h3>
 		<p>
-			Recall that with the display and keyboard, there are two regions (a
-			contiguous sequence of registers) in RAM dedicated to receiving their
-			inputs: The
-			<i>screen memory map</i> for the display, and the
-			<i>keyboard memory map</i> for the keyboard. Both regions have a
-			<i>base address</i> &mdash; the first register in the sequence, after
-			which all the other registers follow. The display has a base address
-			called <var>SCREEN</var>, and the keyboard has a base address called
-			<var>KBD</var>. The screen memory map consists of roughly ${8000}$
-			registers, while the keyboard memory map consists of just one
-			${16}$-bit register.
+			One way to think about a computer system is to imagine it as a large,
+			sprawling city. Each of the components &mdash; the CPU, ALU, RAM,
+			ROM, PC, and so on &mdash; are large plants with roads connecting
+			them. These roads are <i>wires</i>. All of these roads, however,
+			eventually connect to three major highways called <b>buses</b>. A bus
+			is simply a collection of many wires. These three major buses are:
+		</p>
+		<ol>
+			<li>
+				<b>The control bus</b>. This bus transfers
+				<i>control information</i> &mdash; the actual instructions telling
+				which component to do what at any given moment.
+			</li>
+			<li>
+				<b>The address bus</b>. This bus transfers
+				<i>address information</i> &mdash; the bits that tell the CPU where
+				particular registers are located.
+			</li>
+			<li>
+				<b>The data bus</b>. This bus transfers
+				<i>data information</i> &mdash; the actual bits stored in
+				registers.
+			</li>
+		</ol>
+		<p>Here's a general schematic of what these buses look like:</p>
+		<img
+			src="{% static 'images/buses_von_neumann_architecture.svg' %}"
+			alt=""
+			loading="lazy"
+		/>
+
+		<p>Let's go over these connections individually.</p>
+	</section>
+	<section id="alu_vn">
+		<h3>The ALU</h3>
+		<p>
+			First, there's a data bus connection to the ALU. The ALU, as we know,
+			performs all of the computer's computations. Operations like
+			addition, subtraction, negation, logical and bitwise operations, and
+			so on. The ALU receives data information from the data bus, and
+			returns its results back to the data bus, where it's sent to either
+			main main memory or the processor registers.
+		</p>
+		<p>
+			Alongside the data bus, the ALU also has a connection to the control
+			bus. The ALU needs this connection for two reasons:
+		</p>
+		<ol>
+			<li>
+				The ALU only works if it receives its control bits, and these
+				control bits must be sent through the control bus.
+			</li>
+			<li>
+				Because instructions are just bits, and the actual sequence and
+				execution of instructions is performed through the ALU's
+				computations, the ALU is also responsible for sending instructions.
+				Those instructions must be sent through the control bus.
+			</li>
+		</ol>
+	</section>
+	<section id="processor_registers_vn">
+		<h3>The Processor Registers</h3>
+		<p>
+			Second, the processor registers. Processor registers are used to
+			store intermediate results during computations, so they need a
+			connection to the data bus. Results from the ALU are sent to the data
+			bus, then sent to the registers. When the ALU needs one of its
+			intermediate results to perform a computation, the contents of the
+			register storing those intermediate results are sent to the data bus
+			and to the ALU.
+		</p>
+		<p>
+			The processor registers also need a connection to the address bus. As
+			we know, some processor registers &mdash; address registers &mdash;
+			are used to specify addresses. When we want to access a particular
+			register
+			<var>RAM[874]</var>, the following sequence occurs:
+		</p>
+		<ol>
+			<li>Control bits are sent to the ALU.</li>
+			<li>The ALU sends instructions to memory.</li>
+			<li>
+				Memory sends the bits comprising the address of that particular
+				register to the the proccessor registers, where's it's stored in
+				one of the address registers.
+			</li>
+		</ol>
+		<p>
+			Additionally, the registers also have connection to the control bus.
+			To specify which register stores what data and which register to
+			output data from, instructions must be sent from the the ALU. And
+			once again, instructions must be sent through the control bus.
+		</p>
+	</section>
+	<section id="ram">
+		<h3>The RAM</h3>
+		<p>
+			The last major component is main memory. Like the registers, main
+			memory has three connections: a connection to the control bus, a
+			connection to the address bus, and a connection to the data bus.
+			These three connections are necessary because:
+		</p>
+		<ol>
+			<li>
+				The ALU needs to know the addresses of registers in main memory to
+				use those registers. Those addresses must be sent through the
+				address bus.
+			</li>
+			<li>
+				For main memory to output its addresses, it must receive
+				instructions from the ALU, and those instructions must be sent
+				through the control bus.
+			</li>
+			<li>
+				The registers in main memory store data. To store data, it must
+				receive the data in the first place, and data must be sent through
+				the data bus.
+			</li>
+		</ol>
+		<p>
+			Examining memory, we see two regions of registers:
+			<b>data memory</b> and <b>program memory</b>. Data memory registers
+			are used to store actual, <i>substantive data</i> &mdash; user input,
+			integers, address number, keyboard input, screen input, and so on.
+			Program memory registers consist of <i>procedural data</i> &mdash;
+			the instructions for what to do with the substantive data. The
+			program memory registers contain the actual sequence of instructions.
+			These instructions are sent to the control bus and fed to the ALU.
+		</p>
+	</section>
+
+	<section id="fetch_execute_cycle">
+		<h3>Fetch-execute Cycle</h3>
+		<p>
+			Seeing all of these buses, we might wonder: How on earth do all of
+			these components work together? How do they stay in sync? The answer
+			is through the computer's <b>fetch-execute cycle</b>.
+		</p>
+		<p>
+			As labyrinthine as it may be, the complexity is greatly reduced by a
+			fundamental limitation in computing: A single processor &mdash; a
+			chip consisting of one ALU, PC, and a few registers &mdash; can only
+			execute one instruction at a time.<sup></sup> This isn't just some
+			design choice; it's rooted in the very theory of computation that
+			gives us computers in the first place. Computer systems, at their
+			core, are extremely limited Turing machines. Because Turing machines
+			have infinite memory, the operations a computer system can perform
+			are a subset of the Turing machine's operations. Thus, if some
+			operation is outside the Turing machine's set of operations &mdash;
+			i.e., the Turing machine cannot perform it &mdash; that operation is
+			outside the computer system's set of operations as well. There are
+			several such operations, one of which is executing more than one
+			instruction at a single point in time.
+		</p>
+		<div class="note">
+			<p>
+				Note that we're not talking about multicore or parallel processors.
+				We'll discuss those in later sections. We're only talking about the
+				single, simple processor we've been working with.
+			</p>
+		</div>
+		<p>
+			Because of this limitation, computer systems operate by following a
+			specific schedule called the <b>fetch-execute cycle</b>. The
+			fetch-execute cycle is a very simple schedule:
+		</p>
+		<div id="fetch_execute_1"></div>
+		<p>
+			At any given moment in time, the CPU is doing one of these two things
+			&mdash; fetching an instruction from program memory, or executing an
+			instruction. Fetch, execute, fetch, execute, fetch, execute &hellip;
+			that's all a CPU knows, and that's all it does. How does the CPU know
+			when to fetch and execute? To answer this question, let's take a
+			closer look at the CPU.
+		</p>
+	</section>
+
+	<section id="cpu">
+		<h3>The CPU</h3>
+		<p>
+			The <b>CPU</b> (<i>Central Processing Unit</i>), or simply
+			<i>processor</i>, is often characterized as the computer system's
+			brain &mdash; it's where decisions are made. Like other chips in the
+			computer system, the CPU is a chip composed of several chips: (1) the
+			ALU, (2) a chip called the <b>control unit</b>, and (3) processor
+			registers.
+		</p>
+		<p>
+			As a chip, the CPU receives two inputs:
+			<i>procedural data</i> (instructions, i.e., operations) and
+			<i>substantive data</i> (the data the instructions operate on, i.e.,
+			the operands). Once a CPU is given an instruction, it performs two
+			functions:
+		</p>
+		<ol>
+			<li>Executing the received execution, and</li>
+			<li>
+				in the process of executing the received instruction, determines
+				which instruction to execute next.
+			</li>
+		</ol>
+		<p>
+			To understand how it accomplishes this, let's consider the diagram of
+			some very simple ${16}$-bit CPU:
+		</p>
+		<div id="cpu1"></div>
+		<p>The table below describes each of these pins.</p>
+		<table class="api">
+			<thead>
+				<th>Pin</th>
+				<th>Bus</th>
+				<th>Description</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>inM</var></td>
+					<td>${16}$</td>
+					<td>
+						This input pin receives ${16}$-bit bitstream from data memory.
+						This bitstream corresponds to the value inside the currently
+						selected register. For example, if the currently selected
+						register is <var>RAM[28]</var>, and <var>RAM[28]</var> contains
+						the bits <var>01101010</var>, the bitstream
+						<var>01101010</var> is fed through this pin.
+					</td>
+				</tr>
+				<tr>
+					<td><var>instruction</var></td>
+					<td>${16}$</td>
+					<td>
+						This input pin receives a ${16}$-bit bitstream from the
+						currently selected register in instruction memory. The
+						bitstreams fed through this pin are the instructions the CPU
+						must execute. For example, if the currently selected register
+						in instruction memory is <var>RAM[762]</var>, and
+						<var>RAM[762]</var> contains some instruction
+						<var>1001011</var>, the bitstream <var>1001011</var> is fed
+						through this pin.
+					</td>
+				</tr>
+				<tr>
+					<td><var>reset</var></td>
+					<td>${1}$</td>
+					<td>
+						This input pin receives exactly one bit, called the
+						<b>reset bit</b>, directly from the user. We'll discuss what
+						this bit does in a later section.
+					</td>
+				</tr>
+				<tr>
+					<td><var>outM</var>, <var>writeM</var>, <var>addressM</var></td>
+					<td>${16,~1,~15}$</td>
+					<td>
+						The CPU's output pins are best understood together. As we'll
+						see later, every instruction in the computer system is
+						structured in such a way that it allows the CPU to determine
+						whether or not to write to data memory. Thus, the substantive
+						output of a CPU is a collection of three outputs:
+						<var>outM</var>, which consists of the data that must be stored
+						in data memory (if any), <var>writeM</var>,
+						<var>addressM</var> (which specifies which register to send the
+						data to), and <var>writeM</var> (which toggles the register to
+						store the data).
+					</td>
+				</tr>
+				<tr>
+					<td><var>pc</var></td>
+					<td>${15}$</td>
+					<td>
+						The <var>pc</var> pin outputs a stream of ${15}$ bits. These
+						bits comprise the address of a register in instruction memory.
+						That register contains the bits for the next instruction to be
+						executed.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Below is a graph of the CPU's internal components. The green nodes
+			are the inputs; the red nodes are multiplexors; the blue nodes are
+			significant chips; the yellow nodes are control bits; and the purple
+			nodes are outputs.
+		</p>
+		<div id="cpu_internal"></div>
+		<p>
+			Although it seems like there's a lot to unpack here, in reality, the
+			CPU is much simpler than it appears. For the next few sections, we'll
+			steadily untangle the diagram above.
+		</p>
+	</section>
+	<section id="decoding">
+		<h3>Decoding</h3>
+		<p>
+			We begin by looking at the <var>instruction</var> pin. The diagram
+			below presents a closer view of this particular part of the CPU:
+		</p>
+		<div id="instruction_handling"></div>
+		<p>
+			As mentioned earlier, the instruction pin receives a bitstream of
+			machine language instructions. In the diagram, we use the instruction
+			<var>0000 1011 1011 1001</var> as an example. For the CPU to
+			understand what this instruction is, it must <b>decode</b> the
+			instruction. How? By using the instruction's <i>opcode</i>:
+		</p>
+		<dvi id="a_instruction_cpu_input"></dvi>
+		<p>
+			The most significant bit (the <var>0</var> colored orange above) is
+			the opcode that tells the CPU that this instruction is an
+			A-instruction. Because of this opcode, the CPU knows to put the blue
+			bits (a ${15}$ bit value) inside the A-register. Indeed, that's
+			precisely what the gate does (ignore all of the other parts for now).
+		</p>
+		<p>
+			So that's an A-instruction. What about a C-instruction? Recall that a
+			C-instruction looks like:
+		</p>
+		<dvi id="c_instruction_cpu_input"></dvi>
+		<p>
+			The orange bit is the opcode, the blue bits are the ALU control bits,
+			the red bits are the destination load bits, and the red bits are the
+			jump bits. These are the four different fields the CPU must decode
+			the instruction into.
+		</p>
+		<p>
+			The C-instruction is precisely why we feed instructions into a Mux16
+			rather than just straight into an A-register. A-instructions are
+			simple &mdash; they go straight to the A-register. C-instructions,
+			however, require computations from the ALU. In that situation, the
+			instruction must pass from the A-register to the ALU, then from the
+			ALU back to the Mux16. And to toggle the Mux16 to receive the ALU
+			output, a control bit is passed to the Mux16.
+		</p>
+		<p>
+			So now we know how the CPU receives instructions. Let's look at the
+			ALU:
+		</p>
+		<div id="alu_internal"></div>
+		<p>
+			Examining the ALU, we see that there are inputs coming from three
+			different sources. A stream of control bits (the blue bits in the
+			C-instruction), a bitstream from the D-register, or a bitstream from
+			a Mux16. That Mux16 outputs either a bitstream from the A-register,
+			or the input bitstream <var>inM</var>. Which bitstream the Mux16
+			outputs is determined by one of the bits in the instruction.
+		</p>
+		<p>
+			The ALU's outputs are fanned out to three different pins: (1) The
+			D-register, (2) the A-register, and (3) the output pin
+			<var>outM</var>. That does not necessarily mean that the ALU's output
+			<i>will</i> be kept at those destinations. Whether the D-register
+			accepts the output is determined by the control bit it receives.
+			Whether the A-register accepts the output is determined by the
+			control bit it receives. And whether <var>outM</var> accepts the
+			output is determined by the control bit it receives.
+		</p>
+		<p>
+			These control bits are provided by the instruction's
+			<b>destination bits</b> &mdash; the red bits in the C-instruction:
+		</p>
+		<dvi id="c_instruction_cpu_input2"></dvi>
+		<p>
+			The first red bit is the control bit for the A-register. The second
+			red bit is the control bit for the D-register. And the third control
+			bit is corresponds to <var>writeM</var>, which determines whether
+			<var>outM</var> accepts the ALU's output.
+		</p>
+	</section>
+	<section id="control_unit">
+		<h3>Control Unit</h3>
+		<p>
+			There's one output from the ALU we didn't address in the previous
+			section &mdash; the control bit output. Recalling the ALU section, we
+			saw that there were two output bits called <var>zr</var> and
+			<var>ng</var>. These output bits indicate if the result of the last
+			computation was zero (<var>zr</var>) or negative <var>(ng)</var>.
+			These bits are used by the <b>control unit</b>, a collection of chips
+			that includes the program counter:
+		</p>
+		<div id="control_unit_internal"></div>
+		<p>
+			At this point, we can now address the <var>reset</var> bit. The
+			<var>reset</var> bit is what's sent when we push the power button on
+			a computer system. That power button is better thought of as a
+			<i>reset button</i>. The computer system has a built in program
+			&mdash; we can think of it as being burned into ROM &mdash; that
+			automatically runs when the reset button is pushed.
 		</p>
 	</section>
 </section>
@@ -6254,6 +6639,7 @@
 </section>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 <script type="module" src="../../../static/numerc/csmd.mjs"></script>
 <script
 	type="module"

@@ -12,6 +12,10 @@ const array0 = new csmd.StaticArray({
 });
 array0.render();
 
+const cba1 = new csmd.CBA({
+	id: 'cba1',
+}).render();
+
 const length_getter_1 = new csmd.StaticArray({
 	id: "length_getter_1",
 	indexed: true,

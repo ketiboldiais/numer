@@ -320,6 +320,9 @@ def pl_briefHistory(request):
 def pl_overview(request):
 		return render(request, "numerc/ml/pl_overview.html")
 
+def pl_ast_interpreter(request):
+		return render(request, "numerc/ml/pl_ast_interpreter.html")
+
 #! ML View (mlv)
 def ml_preface(request):
 		return render(request, "numerc/sml/ml_preface.html")
@@ -428,11 +431,17 @@ def cpp_stack(request):
 def cpp_queue(request):
 	return render(request, "numerc/cpp/cpp_queue.html")
 
-def cpp_tree(request):
-	return render(request, "numerc/cpp/cpp_trees.html")
+def cpp_tree_theory(request):
+	return render(request, "numerc/cpp/cpp_tree_theory.html")
+
+def cpp_binary_trees(request):
+	return render(request, "numerc/cpp/cpp_binary_trees.html")
 
 def cpp_hashTables(request):
 	return render(request, "numerc/cpp/cpp_hashTables.html")
+
+def cpp_generics(request):
+	return render(request, "numerc/cpp/cpp_generics.html")
 
 
 
@@ -517,3 +526,9 @@ def des_shell(request):
 
 def des_regex(request):
 	return render(request, "numerc/des/des_regex.html")
+
+def des_orchestration(request):
+	return render(request, "numerc/des/des_orchestration.html")
+
+def des_licensing(request):
+	return render(request, "numerc/des/des_licensing.html")
