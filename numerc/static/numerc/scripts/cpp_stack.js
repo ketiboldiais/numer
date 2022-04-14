@@ -1,4 +1,4 @@
-import * as csmd from "../csmd.mjs";
+import * as csmd from "../csmd/CSMD.mjs";
 
 const one_stack = new csmd.Stack({
 	height: 10,

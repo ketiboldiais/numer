@@ -685,37 +685,211 @@
 			</tbody>
 		</table>
 		<p>With this basic syntax, we can write the following:</p>
-		<ol class="alg">
-			<li>(+ 1 2)</li>
-			<li>(set x 5)</li>
-			<li>(if (> x 10)</li>
-			<ol>
-				<li>(print 'x is greater than 10')</li>
-				<li>(print 'x is less than 10'))</li>
-			</ol>
-		</ol>
+		<pre class="language-scheme"><code>
+			(+ 1 2)
+			(set x 5)
+			(if (&gt; x 5)
+					(print 'x is greater than 10')
+					(print 'x is less than 10'))
+		</code></pre>
 		<p>We also have function declarations:</p>
-		<ol class="alg">
-			<li>(def func (x)</li>
-			<ol>
-				<li>(+ x 5))</li>
-			</ol>
-		</ol>
+		<pre class="language-scheme"><code>
+			(def func (x) 
+								(+ x 5))
+		</code></pre>
 		<p>As well as lambda expressions:</p>
-		<ol class="alg">
-			<li>(lambda (x) (* x x) 10)</li>
-		</ol>
+		<pre class="language-scheme"><code>
+			(lambda (a) (* a  a) 10)
+		</code></pre>
 		<p>
-			Now that we have a basic idea of the syntax, let's state features we
-			want the language to support:
+			Now that we have a basic idea of the syntax, let's state features, or
+			properties, we want the language to support:
 		</p>
-		<ol class="alg">
-			<li></li>
-		</ol>
+		<table class="api blue">
+			<thead>
+				<th>Properties</th>
+				<th>Comment</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Functional programming.</td>
+					<td>
+						Lambda functions, and first class functions &mdash; functions
+						can be nameless, assigned to variables, passed as arguments,
+						and returned as values.
+					</td>
+				</tr>
+				<tr>
+					<td>Object-oriented programming.</td>
+					<td>Support for classes, prototypes, and inheritance.</td>
+				</tr>
+				<tr>
+					<td>Imperative programming.</td>
+					<td>Support for iteration and conditional branching.</td>
+				</tr>
+				<tr>
+					<td>Simple syntax.</td>
+					<td>Everything is an S-expression (no statements).</td>
+				</tr>
+				<tr>
+					<td>No explicit return.</td>
+					<td>The last evaluated expression is the result.</td>
+				</tr>
+				<tr>
+					<td>Static scope.</td>
+					<td>All functions are closures.</td>
+				</tr>
+				<tr>
+					<td>Namespaces and modules.</td>
+					<td>Code can be imported, exported, and isolated.</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			One interesting feature we might note above is the fourth &mdash;
+			everything is an expression; there are no statements. This is a
+			feature often found in languages with strong functional programming
+			support. In programming, a <b>statement</b> is a syntactic unit
+			&mdash; maybe a line or several lines of code &mdash; that performs a
+			particular task. They're commands. <q>Add ${5}$ and ${6}$,</q>
+			<q>Put your laundry in the basket.</q> Because statements are
+			imperative, they cannot be reduced to anything further.
+		</p>
+		<p>
+			Expressions are also syntactic units, but they may or may not perform
+			a particular task. In contrast to statements, expressions are
+			<i>declarative</i> &mdash; they ultimately reduce to some value.
+			<q>${5 + 6}$</q> reduces to ${11.}$
+			<q>Put your laundry in the basket</q> reduces to having a basket
+			filled with laundry. Because expressions reduce to values, they can
+			be stored, used, or simply ignored.
+		</p>
+		<p>
+			For example, in JavaScript, the while-loop's syntax is a statement:
+		</p>
+		<pre class="language-javascript"><code>
+			while (i &lt; 5) {
+				i++
+			}
+		</code></pre>
+		<p>Because this line is a statement, we can't write something like:</p>
+		<pre class="language-javascript"><code>
+			const result = while (i &lt; 10) {
+				i++;
+			}
+		</code></pre>
+		<p>
+			However, in our language, it's perfectly reasonable, because
+			everything is an expression:
+		</p>
+		<pre class="language-scheme"><code>
+			(set (result (while (&lt; i 10)
+									 (i++))))
+		</code></pre>
 	</section>
 </section>
+
+<section id="environments">
+	<h2>Variable Assignment & Declaration</h2>
+	<p>
+		To implement our grammar for variable assignment and declaration, we
+		should review the concept of an environment. An environment is the
+		context in which code is executed. For example, consider the following
+		JavaScript code's output:
+	</p>
+	<pre class="language-javascript"><code>
+		let x = 5;
+		let y = 7;
+		console.log(`x = ${x}`);
+		(function () {
+			let a = 1;
+			x = a + y;
+		}());
+		console.log(`x = ${x}`);
+	</code></pre>
+	<pre class="language-bash"><code>
+		x = 5
+		x = 8
+	</code></pre>
+	<p>
+		As expected, the value of <var>x</var> is modified, given the
+		self-executing function. Removing the extraneous details, we can think
+		of this source code as consisting of two blocks:
+	</p>
+	<pre class="language-javascript"><code>
+		// EV1 =====================
+		let x = 5;
+		let y = 7;
+		// EV2 =====================
+		{ // EV2
+			let a = 1;
+			x = a + y;
+		}
+		// =========================
+	</code></pre>
+	<p>
+		Everything inside the braces is one block, and everything outside the
+		braces is another. These are two different environments, which we've
+		commented in the code above as <var>EV1</var> and
+		<var>EV2</var> respectively. In reality, there's one more environment
+		in which all environments exist, called the <i>global environment</i>:
+	</p>
+	<pre class="language-javascript"><code>
+		// EV_GLOBAL ===============
+		// EV1 =====================
+		let x = 5;
+		let y = 7;
+		// EV2 =====================
+		{
+			let a = 1;
+			x = a + y;
+		}
+		// =========================
+	</code></pre>
+	<p>
+		Notice that there aren't matching boundaries at the bottom. This is to
+		signify a key principle in languages like JavaScript: Every environment
+		consists of (1) an <b>environment record</b> &mdash; where the actual
+		variables, expressions, and statements exist, and (2) an
+		<b>optional reference</b> to the parent environment. When
+		<var>EV2</var>
+		encounters something not in its environment &mdash; the variable
+		<var>x</var> &mdash; it goes to its parent reference, travels to planet
+		<var>EV1</var> and checks if it's there. In this case, it is. But if it
+		weren't, it would have traveled all the way to the global environment
+		to check if it's there.
+	</p>
+	<div id="environment_graph"></div>
+	<p>
+		The arrows' directions above are an important detail.
+		<var>EV2</var> can travel to <var>EV1</var> to see if something exists
+		there, but <var>EV1</var> cannot travel to <var>EV2</var> to do the
+		same. Likewise, <var>EV2</var> and <var>EV1</var> can travel to the
+		global environment <var>EV_GLOBAL</var> to see if something's there,
+		but <var>EV_GLOBAL</var> is prohibited from doing the same.
+	</p>
+	<p>
+		This is the key idea behind <b>static scoping</b> (also called
+		<i>lexical scoping</i>) &mdash; where bindings are defined is
+		determined by the program's physical (lexical) structure. The vast
+		majority of modern programming languages use static scoping.
+	</p>
+</section>
+<section id="implementing_the_environment">
+	<h2>Implementing the Environment</h2>
+	<p>Our environment's API will have the following functionalities:</p>
+	<ol>
+		<li>Variables are defined in the environment.</li>
+		<li>New values are assigned to variables in the environment.</li>
+		<li>Variables can be looked up.</li>
+	</ol>
+	<p>
+		To implement these features, we'll create a new class in a file called
+		<var>Environment.js</var>.
+	</p>
+</section>
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<script type="module" src="../../../static/numerc/csmd.mjs"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
 <script
 	type="module"
 	src="../../../static/numerc/scripts/pl_ast_interpreter.js"

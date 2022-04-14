@@ -5922,8 +5922,78 @@
 			a computer system. That power button is better thought of as a
 			<i>reset button</i>. The computer system has a built in program
 			&mdash; we can think of it as being burned into ROM &mdash; that
-			automatically runs when the reset button is pushed.
+			automatically runs when the reset button is pushed. We'll discuss the
+			details at great length in a later section, but for now, we'll leave
+			it at that.
 		</p>
+		<p>
+			So, the control unit. Let's say we passed the following instruction:
+		</p>
+		<figure>$$ \texttt{111~acccccc~ddd~jjj} $$</figure>
+		<p>
+			Obviously, this is not in binary. We're using letters for the sake of
+			illustration; every place in the bitstream is really a
+			<var>1</var> or <var>0</var>. From our simple machine language, we
+			knowt that he <var>1</var> indicates that this is a control
+			instruction.
+		</p>
+		<p>
+			And as we know, the last three bits &mdash; the <var>jjj</var> abovea
+			&mdash; are the <i>jump bits</i>. If the jump bits are all
+			<var>0</var>, then no jumping occurs. If the jump bits are all
+			<var>1</var>, then we have an unconditional jump. Any other
+			combination of zeroes and ones corresponds to a conditional jump.
+			That's the specification. The question then, is, how do we implement
+			this specification in hardware terms? That is, how does the CPU
+			<i>know</i> which bit sequence means what? The answer is through the
+			<b>program counter (PC)</b>, the chip at the very heart of the
+			control unit.
+		</p>
+		<p>
+			The PC's principle responsibility is to always output the address of
+			thec register containing the next instruction. To implement this
+			property, we begin by using the following specifications:
+		</p>
+		<ol>
+			<li>
+				The program counter, denoted <var>PC</var>, always contains some
+				value. Accordingly, it is a kind of register.
+			</li>
+			<li>
+				To start or restart the program's execution, the program counter is
+				set to <var>0</var>: <var><mark>PC=0</mark></var
+				>. Thus, before a program begins executing, <var>PC=0</var>.
+			</li>
+			<li>
+				To execute the program's first instruction, we increment the
+				programv counter: <var><mark>PC++</mark></var
+				>.
+			</li>
+			<li>
+				If the jump bits are all <var>0</var> (no jump instructions), we
+				continue incrementing: <var>PC++</var>.
+			</li>
+			<li>
+				If all the jump bits are <var>1</var> (unconditional jump), then we
+				set <var>PC</var> to the contents of the A-register:
+				<var><mark>PC=A</mark></var
+				>.<sup></sup>
+			</li>
+			<div class="note">
+				<p>
+					This particular specification rests on the assumption that the
+					programmer knows what their doing &mdash; they've ensured that
+					the instruction they want executed again has been placed in the
+					A-register.
+				</p>
+			</div>
+			<li>
+				If some of the jump bits are <var>1</var> and others <var>0</var>,
+				then there is a conditional jump &mdash;
+				<var><mark>PC=A else PC++</mark></var
+				>.
+			</li>
+		</ol>
 	</section>
 </section>
 
@@ -6639,8 +6709,7 @@
 </section>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-<script type="module" src="../../../static/numerc/csmd.mjs"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
 <script
 	type="module"
 	src="../../../static/numerc/scripts/sys_assembly.js"

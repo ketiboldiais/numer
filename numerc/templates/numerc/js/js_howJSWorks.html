@@ -14,54 +14,55 @@
 		languages, JavaScript has a unique relationship to web browsers.
 	</p>
 	<p>
-		As we know, in order to execute a program, the computer must perform two
-		things: (1) allocate space in memory for our program's data and (2) provide
-		a thread from the CPU to actually execute the program's instructions.
-		JavaScript is no different. Whenever we execute JavaScript source code,
-		memory is allocated and a thread is provided.
+		As we know, in order to execute a program, the computer must perform
+		two things: (1) allocate space in memory for our program's data and (2)
+		provide a thread from the CPU to actually execute the program's
+		instructions. JavaScript is no different. Whenever we execute
+		JavaScript source code, memory is allocated and a thread is provided.
 	</p>
 	<p>
-		As we also know, to allocate memory and request a thread, the computer must
-		be instructed to do so. The computer, however, only understands 1s and 0s.
-		We could write our instructions in 1s and 0s, but that would be cumbersome.
-		Because of this difficulty, computer engineers created assembly, which
-		abstracts those 1s and 0s into English instructions. However, assembly is
-		unique to the computer's architecture, and computers have different
-		architectures. If all we had was assembly, we'd have to learn different
-		assembly languages to write our programs. Because of this difficulty, we
-		have low-level languages like C, which abstract away assembly into
-		human-readable code.
+		As we also know, to allocate memory and request a thread, the computer
+		must be instructed to do so. The computer, however, only understands 1s
+		and 0s. We could write our instructions in 1s and 0s, but that would be
+		cumbersome. Because of this difficulty, computer engineers created
+		assembly, which abstracts those 1s and 0s into English instructions.
+		However, assembly is unique to the computer's architecture, and
+		computers have different architectures. If all we had was assembly,
+		we'd have to learn different assembly languages to write our programs.
+		Because of this difficulty, we have low-level languages like C, which
+		abstract away assembly into human-readable code.
 	</p>
 	<p>
 		With C, however, we have to be very careful and strict about the way we
-		write our instructions. Most significantly, the programmer bears the burden
-		of managing memory. Fail to meet that burden, and the program crashes. And
-		it's very easy to manage memory poorly.
+		write our instructions. Most significantly, the programmer bears the
+		burden of managing memory. Fail to meet that burden, and the program
+		crashes. And it's very easy to manage memory poorly.
 	</p>
 	<p>
-		Because of this difficulty, we have higher-level languages like JavaScript.
-		These languages do all the things that would make our lives more difficult.
-		They manage memory, provide syntactic sugar (faster, shorter, or more
-		intuitive ways to write instructions), and idioms (readily made constructs
-		for accomplishing common programming tasks).
+		Because of this difficulty, we have higher-level languages like
+		JavaScript. These languages do all the things that would make our lives
+		more difficult. They manage memory, provide syntactic sugar (faster,
+		shorter, or more intuitive ways to write instructions), and idioms
+		(readily made constructs for accomplishing common programming tasks).
 	</p>
 	<p>
-		For these higher-level languages to work, however, they have to be reduced
-		to 1s and 0s (again, computers only understand 1s and 0s). There are many
-		ways to achieve this reduction. In modern JavaScript, that reduction is
-		achieved through a JavaScript engine. A JavaScript engine is a program that
-		aids in the execution of JavaScript source code. How it aids that execution
-		depends on the engine; there are many different engines, varying by browser.
+		For these higher-level languages to work, however, they have to be
+		reduced to 1s and 0s (again, computers only understand 1s and 0s).
+		There are many ways to achieve this reduction. In modern JavaScript,
+		that reduction is achieved through a JavaScript engine. A JavaScript
+		engine is a program that aids in the execution of JavaScript source
+		code. How it aids that execution depends on the engine; there are many
+		different engines, varying by browser.
 	</p>
 	<p>
 		On Google Chrome and Microsoft Edge, the JavaScript engine is V8. On
 		Firefox, it's SpiderMoney. On Safari, it's JavaScriptCore. On Internet
-		Explorer, it's Chakra. The way these engines are implemented determines what
-		they do in the path from source code to bits.
+		Explorer, it's Chakra. The way these engines are implemented determines
+		what they do in the path from source code to bits.
 	</p>
 	<p>
-		Let's look at V8, by far the most widely-used engine. First, suppose we have
-		the following HTML file:
+		Let's look at V8, by far the most widely-used engine. First, suppose we
+		have the following HTML file:
 	</p>
 	<pre class="language-html"><code>
 		&lt;html&gt;
@@ -76,20 +77,17 @@
 	</code></pre>
 	<p>
 		When we loading this HTML page, the
-		<span class="term">HTML parser</span> (roughly, the program that translates
-		HTML code to machine-readable code) works from top to bottom, eventually
-		reaching the line
-		<span class="monoText"
-			>&lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;</span
-		>. Encountering this line, the HTML parser requests the contents of
-		<span class="monoText">app.js</span>. That request is sent to wherever
-		<span class="monoText">app.js</span> is located; it could be stored locally
-		on our computer, or on a server somewhere. Either or, the request is sent,
-		and in response, a <span class="italicsText">stream</span> of bytes are
-		returned to a program called the
-		<span class="term">byte stream decoder</span>, or
-		<span class="term">lexer</span>. Let's say
-		<span class="monoText">app.js</span> contains the following code:
+		<b>HTML parser</b> (roughly, the program that translates HTML code to
+		machine-readable code) works from top to bottom, eventually reaching
+		the line
+		<var>&lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;</var>.
+		Encountering this line, the HTML parser requests the contents of
+		<var>app.js</var>. That request is sent to wherever
+		<var>app.js</var> is located; it could be stored locally on our
+		computer, or on a server somewhere. Either or, the request is sent, and
+		in response, a <i>stream</i> of bytes are returned to a program called
+		the <b>byte stream decoder</b>, or <b>lexer</b>. Let's say
+		<var>app.js</var> contains the following code:
 	</p>
 	<pre class="language-javascript"><code>
 		function giveMe5() {
@@ -97,187 +95,178 @@
 		}
 	</code></pre>
 	<p>
-		The bytes streaming to the lexer are hexadecimal numbers. For example, based
-		on the source code above, the lexer receives
-		<span class="monoText">65</span>, <span class="monoText">75</span>,
-		<span class="monoText">6e</span>, <span class="monoText">63</span>,
-		<span class="monoText">74</span>, <span class="monoText">69</span>,
-		<span class="monoText">6f</span>, and <span class="monoText">6e</span>,
-		which translates to the word <span class="monoText">function</span>.
-		Recognizing this as a keyword, the lexer generates a
-		<span class="term">token</span> for the word
-		<span class="monoText">function</span>. A token is akin to a word &mdash;
-		it's a sequence of characters that has a particular meaning in the language.
-		What constitutes a token is determined by what the language defines as a
+		The bytes streaming to the lexer are hexadecimal numbers. For example,
+		based on the source code above, the lexer receives
+		<var>65</var>, <var>75</var>, <var>6e</var>, <var>63</var>,
+		<var>74</var>, <var>69</var>, <var>6f</var>, and <var>6e</var>, which
+		translates to the word <var>function</var>. Recognizing this as a
+		keyword, the lexer generates a <b>token</b> for the word
+		<var>function</var>. A token is akin to a word &mdash; it's a sequence
+		of characters that has a particular meaning in the language. What
+		constitutes a token is determined by what the language defines as a
 		token; i.e., a <i>keyword</i>. This is why we are prohibited from using
-		keywords, or reserved words, in a given language. The lexer will perform the
-		same process for the rest of the stream. It tokenizes and labels
-		<span class="monoText">giveme5</span> as an <i>identifier</i>,
-		<span class="monoText">(</span> and <span class="monoText">)</span> as
-		<i>punctuators</i>, etc.
+		keywords, or reserved words, in a given language. The lexer will
+		perform the same process for the rest of the stream. It tokenizes and
+		labels <var>giveme5</var> as an <i>identifier</i>, <var>(</var> and
+		<var>)</var> as <i>punctuators</i>, etc.
 	</p>
 	<p>
-		As the lexer does its work generating tokens, the tokens are sent to the
-		<span class="term">parser</span>, a program that organizes these tokens. The
-		parser essentially takes the tokens, and places them into a
-		<span class="term">parse tree</span> or an
-		<span class="term">abstract syntax tree</span> (AST). How does the parser do
-		this? By taking a token in, and checking which
-		<span class="term">syntax rule</span> applies. These are the rules, or
-		idioms, we first encounter when learning a new language: Variable
-		declarations, function declarations, arithmetic operations, return
-		statements, and so on. We can think of the AST as a tree representation of
-		our program.
+		As the lexer does its work generating tokens, the tokens are sent to
+		the
+		<b>parser</b>, a program that organizes these tokens. The parser
+		essentially takes the tokens, and places them into a
+		<b>parse tree</b> or an <b>abstract syntax tree</b> (AST). How does the
+		parser do this? By taking a token in, and checking which
+		<b>syntax rule</b> applies. These are the rules, or idioms, we first
+		encounter when learning a new language: Variable declarations, function
+		declarations, arithmetic operations, return statements, and so on. We
+		can think of the AST as a tree representation of our program.
 	</p>
 	<p>
-		The parser, however, does a bit more than other parsers. It also checks that
-		our program is following the syntax rules. If it encounters a violation,
-		we'll get a syntax error.
+		The parser, however, does a bit more than other parsers. It also checks
+		that our program is following the syntax rules. If it encounters a
+		violation, we'll get a syntax error.
 	</p>
 	<p>
 		Once the parser is done, the AST is sent to the V8 engine. More
 		specifically, it's sent to the V8 engine's
-		<span class="term">ignition interpreter</span>. More broadly, the ignition
-		interpreter is an example of a
-		<span class="term">register machine</span> (this just some fancy naming;
+		<b>ignition interpreter</b>. More broadly, the ignition interpreter is
+		an example of a <b>register machine</b> (this just some fancy naming;
 		it's just another program).
 	</p>
 	<p>
-		The ignition interpreter is itself a collection of programs. One of those
-		programs is the <span class="term">bytecode generator</span>, the first main
-		point the AST is sent to. The bytcode generator takes the AST and translates
-		it into <span class="term">bytecode</span>. The resulting bytecode is then
-		sent to <span class="term">bytecode optimizers</span>, which make small
-		optimizations. These optimizations pertain to cache issues, as well as
-		optimizations-related to our machine. For example, if we're on an
-		Intel-based machine like a Mac, the translation is done according to the
-		constraints for Intel-based machines. If we're on an ARM-based machine, the
-		translation is done according to those constraints.
+		The ignition interpreter is itself a collection of programs. One of
+		those programs is the <b>bytecode generator</b>, the first main point
+		the AST is sent to. The bytcode generator takes the AST and translates
+		it into <b>bytecode</b>. The resulting bytecode is then sent to
+		<b>bytecode optimizers</b>, which make small optimizations. These
+		optimizations pertain to cache issues, as well as optimizations-related
+		to our machine. For example, if we're on an Intel-based machine like a
+		Mac, the translation is done according to the constraints for
+		Intel-based machines. If we're on an ARM-based machine, the translation
+		is done according to those constraints.
 	</p>
 	<p>
-		The ignition interpreter is called a register machine because much of the
-		bytecode it produces instructions &mdash; bytecode &mdash; for our machine's
-		registers. For example, if we examined the bytecode for our function above,
-		we'd see a lot of what appears to be very cryptic code. We won't reproduce
-		that bytecode here because of how large it is, but somewhere in there are
-		the lines:
+		The ignition interpreter is called a register machine because much of
+		the bytecode it produces instructions &mdash; bytecode &mdash; for our
+		machine's registers. For example, if we examined the bytecode for our
+		function above, we'd see a lot of what appears to be very cryptic code.
+		We won't reproduce that bytecode here because of how large it is, but
+		somewhere in there are the lines:
 	</p>
 	<pre class="language-bash"><code>
 		24 S> 0x32a24d2319fa6 @   0 : 0c 05   LdaSmi[5]
 		33 S> 0x32a24d2319fa8 @   2 : ab      Return[5]
 	</code></pre>
 	<p>
-		The expression <span class="monoText">LdaSmi[5]</span> is the instruction
-		&#8220;Load into the accumulator the small integer 5.&#8221; The next
-		expression, <span class="monoText">Return[5]</span> is what we expect
-		&mdash; return <span class="monoText">5</span>.
+		The expression <var>LdaSmi[5]</var> is the instruction &#8220;Load into
+		the accumulator the small integer 5.&#8221; The next expression,
+		<var>Return[5]</var> is what we expect &mdash; return <var>5</var>.
 	</p>
 	<p>
-		Once the bytcode is generated and optimized, it's sent to the V8 engine's
-		compiler, called <i>TurboFan</i>. Assuming there are no compiler time
-		errors, the compiler translates all of the bytecode into machine code, the
-		language understood by our computer. Our machine executes those machine
-		langage instructions, resulting in what we see from running our JavaScript
-		source code &mdash; maybe it's an animation, a pop-up, or some other dynamic
-		change to the HTML page.
+		Once the bytcode is generated and optimized, it's sent to the V8
+		engine's compiler, called <i>TurboFan</i>. Assuming there are no
+		compiler time errors, the compiler translates all of the bytecode into
+		machine code, the language understood by our computer. Our machine
+		executes those machine langage instructions, resulting in what we see
+		from running our JavaScript source code &mdash; maybe it's an
+		animation, a pop-up, or some other dynamic change to the HTML page.
 	</p>
 </section>
 
 <section id="next_gen_js">
 	<h2>ES5 v. ES6</h2>
 	<p>
-		When reading JavaScript-related articles, we might encounter acronyms like
-		&#8220;ES5&#8221; and &#8220;ES6&#8221;. The &#8220;ES&#8221; in these
-		acronyms stands for &#8220;ECMAScript&#8221; &mdash; the standard behind
-		JavaScript. We can think of ECMAScript as a specification, and JavaScript as
-		an implementation of that specification. There are other languages that
-		implement ECMAScript, such as ActionScript (used for Flash), and JScript
-		(Microsoft's implementation of ECMAScript; now legacy).
+		When reading JavaScript-related articles, we might encounter acronyms
+		like &#8220;ES5&#8221; and &#8220;ES6&#8221;. The &#8220;ES&#8221; in
+		these acronyms stands for &#8220;ECMAScript&#8221; &mdash; the standard
+		behind JavaScript. We can think of ECMAScript as a specification, and
+		JavaScript as an implementation of that specification. There are other
+		languages that implement ECMAScript, such as ActionScript (used for
+		Flash), and JScript (Microsoft's implementation of ECMAScript; now
+		legacy).
 	</p>
 	<p>
-		ECMAScript began as a specification for a scripting language, created by the
-		software engineer Brendan Eich during his tenure at Netscape (the company
-		behind the Netscape browser, the dominant browser during the internet's
-		early years). Netscape asked Eich to create the language after noticing an
-		investment opportunity at the dawn of the internet era: a web-focused
-		language that resembled the most popular language at the time &mdash; Java.
-		This specification was initially called Mocha, then LiveScript. Netscape's
-		marketing team, observing Java's success, asked Sun Microsystems (the
-		company that created Java) for a license to use the name
-		&#8220;JavaScript&#8221;. License granted, the language was finally named
-		&#8220;JavaScript&#8221;, the name we know today.
+		ECMAScript began as a specification for a scripting language, created
+		by the software engineer Brendan Eich during his tenure at Netscape
+		(the company behind the Netscape browser, the dominant browser during
+		the internet's early years). Netscape asked Eich to create the language
+		after noticing an investment opportunity at the dawn of the internet
+		era: a web-focused language that resembled the most popular language at
+		the time &mdash; Java. This specification was initially called Mocha,
+		then LiveScript. Netscape's marketing team, observing Java's success,
+		asked Sun Microsystems (the company that created Java) for a license to
+		use the name &#8220;JavaScript&#8221;. License granted, the language
+		was finally named &#8220;JavaScript&#8221;, the name we know today.
 	</p>
 	<p>
 		Recognizing the potential in Eich's work, Microsoft began its own
-		implementation of the specification, JScript. By then, Netscape was losing
-		its hold on the browser market to Internet Explorer. Microsoft poured
-		substantial capital into its web products: Internet Explorer offered all the
-		features Netscape provided with greater stability across machines, and there
-		was a cherry on top: free web servers. Netscape couldn't compete. In swan
-		song, Netscape requested ECMA International (a non-profit that specializes
-		in creating technology standards) to establish JavaScript standards. After
-		negotations between Microsoft, Netscape, and Sun Microsystems, the standard
-		was named ECMAScript.
+		implementation of the specification, JScript. By then, Netscape was
+		losing its hold on the browser market to Internet Explorer. Microsoft
+		poured substantial capital into its web products: Internet Explorer
+		offered all the features Netscape provided with greater stability
+		across machines, and there was a cherry on top: free web servers.
+		Netscape couldn't compete. In swan song, Netscape requested ECMA
+		International (a non-profit that specializes in creating technology
+		standards) to establish JavaScript standards. After negotations between
+		Microsoft, Netscape, and Sun Microsystems, the standard was named
+		ECMAScript.
 	</p>
 	<p>
 		The ECMAScript committee released several versions of the ECMAScript
 		standard after its introduction, but halted in 1999. This decade-long
-		slumber, alongside Internet Explorer's domination in the browser market, led
-		to Microsoft neglecting much of its software development in the web
-		industry. And as with any product ceasing improvement, new products
-		appeared: Firefox (led by Brendan Eich); Google Chrome, Opera, Safari,
-		Midori, and a whole host of other browsers. Perhaps witnessing more users
-		dragging Internet Explorer to the trash, ECMAScript awoke and released a new
-		standard in 2009 &mdash; ES5. JavaScript only increased in popularity, and
-		this led to another release: ES6. The ECMAScript specification can be found
-		<a href="https://262.ecma-international.org/12.0/" target="_blank">here.</a>
+		slumber, alongside Internet Explorer's domination in the browser
+		market, led to Microsoft neglecting much of its software development in
+		the web industry. And as with any product ceasing improvement, new
+		products appeared: Firefox (led by Brendan Eich); Google Chrome, Opera,
+		Safari, Midori, and a whole host of other browsers. Perhaps witnessing
+		more users dragging Internet Explorer to the trash, ECMAScript awoke
+		and released a new standard in 2009 &mdash; ES5. JavaScript only
+		increased in popularity, and this led to another release: ES6. The
+		ECMAScript specification can be found
+		<a href="https://262.ecma-international.org/12.0/" target="_blank"
+			>here.</a
+		>
 	</p>
 	<p>
-		Today, ECMAScript is the standard that determines what features, or proposed
-		features, are included, removed, or ignored in JavaScript. This is an
-		ongoing process. The committee continues to
+		Today, ECMAScript is the standard that determines what features, or
+		proposed features, are included, removed, or ignored in JavaScript.
+		This is an ongoing process. The committee continues to
 		<a href="https://github.com/tc39/proposals" target="_blank"
 			>take and consider proposals</a
-		>. Owing to the massive amount of websites and applications that rely on
-		JavaScript, ECMAScript is particularly stringent and careful about changing
-		existing standards or adding new features, with the largest leap occurring
-		between ES5 and ES6. ES6 contains many new features, and as such, not every
-		browser supports the specification. For example, ES5 only provided one way
-		to declare variables: using the keyword <span class="monoText">var</span>.
-		With ES6, two other ways were introduced:
-		<span class="monoText">let</span> and <span class="monoText">const</span>.
-		Implementing these changes is a slow process, and browsers are steadily
-		moving towards full support. ES6 support is excellent on Google Chrome, as
-		well as the other major browsers like Firefox and Safari. Older browsers
-		like Internet Explorer, however, have essentially no support.
+		>. Owing to the massive amount of websites and applications that rely
+		on JavaScript, ECMAScript is particularly stringent and careful about
+		changing existing standards or adding new features, with the largest
+		leap occurring between ES5 and ES6. ES6 contains many new features, and
+		as such, not every browser supports the specification. For example, ES5
+		only provided one way to declare variables: using the keyword
+		<var>var</var>. With ES6, two other ways were introduced:
+		<var>let</var> and <var>const</var>. Implementing these changes is a
+		slow process, and browsers are steadily moving towards full support.
+		ES6 support is excellent on Google Chrome, as well as the other major
+		browsers like Firefox and Safari. Older browsers like Internet
+		Explorer, however, have essentially no support.
 	</p>
 </section>
 
 <section id="var_let_const">
-	<h3>
-		<span class="monoText">var</span>, <span class="monoText">let</span>, &
-		<span class="monoText">const</span>
-	</h3>
+	<h3>var, let, & const</h3>
 	<p>
 		JavaScript provides three different ways to declare variables: with
-		<span class="monoText">var</span>, <span class="monoText">let</span>, and
-		<span class="monoText">const</span>. As we learned earlier,
-		<span class="monoText">var</span> is the original approach to variable
-		declaration, and <span class="monoText">let</span> and
-		<span class="monoText">const</span> were introduced in ES6. But this isn't
-		the only differences. The additional difference concerns
-		<span class="italicsText">scope</span>. Two facts embody this difference:
+		<var>var</var>, <var>let</var>, and <var>const</var>. As we learned
+		earlier, <var>var</var> is the original approach to variable
+		declaration, and <var>let</var> and <var>const</var> were introduced in
+		ES6. But this isn't the only differences. The additional difference
+		concerns <i>scope</i>. Two facts embody this difference:
 	</p>
 	<ol>
 		<li>
-			A variable declared with <span class="monoText">var</span> resides in
-			either a <span class="italicsText">function scope</span> or
-			<span class="italicsText">global scope</span>.
+			A variable declared with <var>var</var> resides in either a
+			<i>function scope</i> or <i>global scope</i>.
 		</li>
 		<li>
-			A variable declared with <span class="monoText">let</span> or
-			<span class="monoText">const</span> resides only in a
-			<span class="italicsText">block scope</span>.
+			A variable declared with <var>let</var> or <var>const</var> resides
+			only in a <i>block scope</i>.
 		</li>
 	</ol>
 	<p>To understand these differences, consider the following output:</p>
@@ -304,11 +293,10 @@
 	</code></pre>
 	<p>
 		This is the expected output. The functions
-		<span class="monoText">f()</span> and <span class="monoText">g()</span> have
-		access to the global variables <span class="monoText">x</span> and
-		<span class="monoText">y</span>, but within the global scope (i.e., outside
-		the block scopes of <span class="monoText">f()</span> and
-		<span class="monoText">g()</span>), we cannot access the variables therein.
+		<var>f()</var> and <var>g()</var> have access to the global variables
+		<var>x</var> and <var>y</var>, but within the global scope (i.e.,
+		outside the block scopes of <var>f()</var> and <var>g()</var>), we
+		cannot access the variables therein.
 	</p>
 	<p>Now consider the following code:</p>
 	<pre class="language-javascript"><code>
@@ -325,9 +313,9 @@
 		3
 	</code></pre>
 	<p>
-		Using <span class="monoText">var</span>, it looks like we can access the
-		variable <span class="monoText">i</span>, even though it's exclusively in
-		the for-loop's block. Trying this with <span class="monoText">let</span>:
+		Using <var>var</var>, it looks like we can access the variable
+		<var>i</var>, even though it's exclusively in the for-loop's block.
+		Trying this with <var>let</var>:
 	</p>
 	<pre class="language-javascript"><code>
 		let arr = ["a", "b", "c"];
@@ -361,30 +349,27 @@
 	</code></pre>
 	<p>
 		Now things are more interesting. Because the condition was true, it
-		<span class="monoText">m</span> was assigned the value
-		<span class="monoText">0</span>. What looks odd is that we're able to access
-		<span class="monoText">m</span> outside the if-statement's truth block when
-		we use <span class="monoText">var</span> but not when we use
-		<span class="monoText">let</span>. This is results from the two facts
-		mentioned previously: Variables declared with
-		<span class="monoText">var</span> are scoped to either a global or function
-		scope, and variables declared with <span class="monoText">let</span> are
-		scoped to the block scope. In the example above, because
-		<span class="monoText">m</span> was declared with
-		<span class="monoText">var</span> within a block scope, the variable
-		<span class="monoText">m</span> essentially exists in the global scope. This
-		is why we can access it outside the if-statement's block and the for-loop's
-		header &mdash; both of these scopes are block scopes, and variables declared
-		with <span class="monoText">var</span> do not scope to them.
+		<var>m</var> was assigned the value <var>0</var>. What looks odd is
+		that we're able to access <var>m</var> outside the if-statement's truth
+		block when we use <var>var</var> but not when we use <var>let</var>.
+		This is results from the two facts mentioned previously: Variables
+		declared with <var>var</var> are scoped to either a global or function
+		scope, and variables declared with <var>let</var> are scoped to the
+		block scope. In the example above, because <var>m</var> was declared
+		with <var>var</var> within a block scope, the variable
+		<var>m</var> essentially exists in the global scope. This is why we can
+		access it outside the if-statement's block and the for-loop's header
+		&mdash; both of these scopes are block scopes, and variables declared
+		with <var>var</var> do not scope to them.
 	</p>
 </section>
 
 <section id="javascript_and_undefined">
-	<h3>JavaScript and <span class="monoText">undefined</span></h3>
+	<h3>JavaScript and <q>undefined</q></h3>
 	<p>
 		We've noted that variables, when first created, are assigned the value
-		<span class="monoText">undefined</span>. What does this mean? We can see
-		that this is the case when we write the following:
+		<var>undefined</var>. What does this mean? We can see that this is the
+		case when we write the following:
 	</p>
 
 	<pre class="language-javascript"><code>
@@ -407,9 +392,9 @@
 			</code></pre>
 
 	<p>
-		But isn't the value <span class="monoText">undefined</span> a value? Yes, it
-		is, but it's a special value in Javascript. Specifically, it's a value that
-		means that the value has not been set. We can see this with the following
+		But isn't the value <var>undefined</var> a value? Yes, it is, but it's
+		a special value in Javascript. Specifically, it's a value that means
+		that the value has not been set. We can see this with the following
 		code:
 	</p>
 
@@ -430,21 +415,20 @@
 			</code></pre>
 
 	<p>
-		We see that <span class="monoText">a</span> is
-		<span class="monoText">undefined</span>. The above code confirms that a
-		variable, declared but unassigned, has the default value of
-		<span class="monoText">undefined</span> If we completely declined to declare
-		the variable <span class="monoText">a</span> and tried to pass it as an
-		argument, we get an <span class="monoText">uncaught reference error</span>.
-		We get an error because we attempted to use a variable that the parser did
-		not store in memory during its initial run. Why didn't the parser store it
-		in memory? Because we didn't declare at all in the first place.
+		We see that <var>a</var> is <var>undefined</var>. The above code
+		confirms that a variable, declared but unassigned, has the default
+		value of <var>undefined</var> If we completely declined to declare the
+		variable <var>a</var> and tried to pass it as an argument, we get an
+		<var>uncaught reference error</var>. We get an error because we
+		attempted to use a variable that the parser did not store in memory
+		during its initial run. Why didn't the parser store it in memory?
+		Because we didn't declare at all in the first place.
 	</p>
 	<p>
 		Note what all of this means. The value
-		<span class="monoText">undefined</span> doesn't mean "does not exist." It is
-		an actual value&mdash;the value of reserved memory space. More specifically,
-		it's a value that means "a value set by Javascript." This is also indicative
+		<var>undefined</var> doesn't mean "does not exist." It is an actual
+		value&mdash;the value of reserved memory space. More specifically, it's
+		a value that means "a value set by Javascript." This is also indicative
 		of a warning. We should never write something like this:
 	</p>
 
@@ -472,28 +456,25 @@
 
 	<p>
 		When we ourselves assign the value
-		<span class="monoText">undefined</span> to a variable, it can quickly become
-		very difficult to decipher whether a variable's value of
-		<span class="monoText">undefined</span> was set by us or JavaScript. It is
-		always best practice to leave the value
-		<span class="monoText">undefined</span> to JavaScript. By complying with
-		this practice, whenever we see the value
-		<span class="monoText">undefined</span>, we know that we did not set a value
-		for a particular variable&mdash;it was set by JavaScript.
+		<var>undefined</var> to a variable, it can quickly become very
+		difficult to decipher whether a variable's value of
+		<var>undefined</var> was set by us or JavaScript. It is always best
+		practice to leave the value <var>undefined</var> to JavaScript. By
+		complying with this practice, whenever we see the value
+		<var>undefined</var>, we know that we did not set a value for a
+		particular variable&mdash;it was set by JavaScript.
 	</p>
 </section>
 
 <section id="kinds_of_objects">
+	<h2>Kinds of Objects</h2>
 	<p>
-		<span class="topic">Kinds of Objects.</span> As mentioned in the section on
-		primitive types, objects are a <span class="italicsText">type</span> in
-		JavaScript. Arrays are a special kind of object, where the "keys" are the
-		indices of the values. Another kind of object is the
-		<span class="term">Set object</span>. The
-		<span class="italicsText">Set object</span> is a set of values. Yet another
-		kind of object is the <span class="term">Map object</span>. The
-		<span class="italicsText">Map object</span> is an object that maps keys to
-		values.
+		As mentioned in the section on primitive types, objects are a
+		<i>type</i> in JavaScript. Arrays are a special kind of object, where
+		the "keys" are the indices of the values. Another kind of object is the
+		<b>Set object</b>. The <i>Set object</i> is a set of values. Yet
+		another kind of object is the <b>Map object</b>. The
+		<i>Map object</i> is an object that maps keys to values.
 	</p>
 </section>
 
@@ -502,37 +483,36 @@
 	<p>
 		In a single program, multiple commands are executed. We say that a
 		language's execution is
-		<span class="italicsText">single threaded</span> when the language executes
-		only <span class="underlineText">one</span> command at a time.
+		<i>single threaded</i> when the language executes only
+		<span class="underlineText">one</span> command at a time.
 	</p>
 	<p>
-		When it comes to browsers, there are multiple programs running. JavaScript
-		is not the only program running. If we were to look at JavaScript's
-		operations under the browser's hood, it may appear that JavaScript is
-		anything but a single-threaded language. Nevertheless, it behaves and is a
-		single-threaded language.
+		When it comes to browsers, there are multiple programs running.
+		JavaScript is not the only program running. If we were to look at
+		JavaScript's operations under the browser's hood, it may appear that
+		JavaScript is anything but a single-threaded language. Nevertheless, it
+		behaves and is a single-threaded language.
 	</p>
 	<p>
 		Moreover, not only is JavaScript single-threaded, it is also
-		<span class="term">synchronous</span>. This just means it's a language that
-		executes only <span class="underlineText">one</span> line of code at a time.
+		<b>synchronous</b>. This just means it's a language that executes only
+		<span class="underlineText">one</span> line of code at a time.
 	</p>
 	<p>
-		In conjunction, JavaScript is a single-threaded and synchronous programming
-		language. This means only one thing happens at a time.
+		In conjunction, JavaScript is a single-threaded and synchronous
+		programming language. This means only one thing happens at a time.
 	</p>
 </section>
 
 <section id="function_exection_and_execution_stack">
-	<h3>Function Execution & Execution Stack</h3>
+	<h2>Function Execution & Execution Stack</h2>
 	<p>
-		Invocation is just another word for "running a function." In JavaScript, we
-		invoke a function with parentheses
-		<span class="monoText">()</span>. Once we write something like
-		<span class="monoText">functionName()</span>, we have
-		<span class="italicsText">invoked</span> a function&mdash;we've told
-		JavaScript to <span class="italicsText">run</span> a function. So what
-		exactly happens when you invoke a function in JavaScript?
+		Invocation is just another word for "running a function." In
+		JavaScript, we invoke a function with parentheses
+		<var>()</var>. Once we write something like <var>functionName()</var>,
+		we have <i>invoked</i> a function&mdash;we've told JavaScript to
+		<i>run</i> a function. So what exactly happens when you invoke a
+		function in JavaScript?
 	</p>
 	<p>Suppose we have the following code:</p>
 
@@ -548,55 +528,51 @@
 
 	<p>
 		In the above code, we have two functions: function
-		<span class="monoText">b</span>, which does nothing, and function
-		<span class="monoText">a</span>, which invokes function
-		<span class="monoText">b</span>. Then, we call function
-		<span class="monoText">a</span>. What is the output here?
+		<var>b</var>, which does nothing, and function <var>a</var>, which
+		invokes function <var>b</var>. Then, we call function <var>a</var>.
+		What is the output here?
 	</p>
 	<p>
 		First, we know that when we run this code, a
-		<span class="italicsText">global execution context</span> is created. The
-		parser creates the variable <span class="monoText">this</span>, and a global
-		object (in the browser, the <span class="monoText">window</span> object).
-		The function's we've written above are global, so they are included in the
-		<span class="monoText">window</span> object, and memory is reserved for the
-		functions. This all occurs in the
-		<span class="italicsText">creation phase</span>. Once this is all done, the
-		interpreter begins executing the program line by line. Remember, this is
-		just the creation phase. That very last line,
-		<span class="monoText">a()</span>, is a function call, but it is not
-		executed. This is just the phase where the parser readies the program.
+		<i>global execution context</i> is created. The parser creates the
+		variable <var>this</var>, and a global object (in the browser, the
+		<var>window</var> object). The function's we've written above are
+		global, so they are included in the <var>window</var> object, and
+		memory is reserved for the functions. This all occurs in the
+		<i>creation phase</i>. Once this is all done, the interpreter begins
+		executing the program line by line. Remember, this is just the creation
+		phase. That very last line, <var>a()</var>, is a function call, but it
+		is not executed. This is just the phase where the parser readies the
+		program.
 	</p>
 	<p>
-		Once the interpreter begins the execution phase, it goes line by line. It
-		goes down the program, then encounters, the statement
-		<span class="monoText">a();</span>. This statement tells the interpreter
-		that we're invoking a function. When the interpreter sees a function
-		invocation, it places the function in a data structure called the
-		<span class="term">execution stack</span>. A
-		<span class="italicsText">stack</span> is just what it sounds like&mdash;one
-		function on top of the other. Whichever function is at the top is the
-		function that it is currently running.
+		Once the interpreter begins the execution phase, it goes line by line.
+		It goes down the program, then encounters, the statement
+		<var>a();</var>. This statement tells the interpreter that we're
+		invoking a function. When the interpreter sees a function invocation,
+		it places the function in a data structure called the
+		<b>execution stack</b>. A <i>stack</i> is just what it sounds
+		like&mdash;one function on top of the other. Whichever function is at
+		the top is the function that it is currently running.
 	</p>
 
 	<p>
 		Once the function is placed in the
-		<span class="term">call stack</span>, the interpreter begins executing the
-		function, line by line. If, while executing the current function, the
-		interpreter encounters another function, the interpreter undergoes the same
-		process. It places the nested function in the
-		<span class="italicsText">call stack</span>, creates an execution context
-		for that nested function (i.e., it reenters another creation phase), and
-		begins executing that function. This is how every function in JavaScript is
-		handled&mdash;the interpreter undergoes a creation phase for every function,
-		then executes the code line by line.
+		<b>call stack</b>, the interpreter begins executing the function, line
+		by line. If, while executing the current function, the interpreter
+		encounters another function, the interpreter undergoes the same
+		process. It places the nested function in the <i>call stack</i>,
+		creates an execution context for that nested function (i.e., it
+		reenters another creation phase), and begins executing that function.
+		This is how every function in JavaScript is handled&mdash;the
+		interpreter undergoes a creation phase for every function, then
+		executes the code line by line.
 	</p>
 	<p>
 		Thus, in the code above, the interpreter executions function
-		<span class="monoText">a()</span>, then begins executing function
-		<span class="monoText">b()</span>. Once function
-		<span class="monoText">b()</span> finishes executing, it is
-		<span class="term">popped off</span> the stack.
+		<var>a()</var>, then begins executing function <var>b()</var>. Once
+		function <var>b()</var> finishes executing, it is <b>popped off</b> the
+		stack.
 	</p>
 	<p>Now suppose we had the following code:</p>
 
@@ -612,82 +588,76 @@
 				var d;
 			</code></pre>
 
-	<p>What are the steps the interpreter goes through with the code above?</p>
+	<p>
+		What are the steps the interpreter goes through with the code above?
+	</p>
 	<p>
 		First, the interpreter enters creation phase. It creates a
-		<span class="italicsText">global execution context</span>, and pushes that
-		into the call stock.
+		<i>global execution context</i>, and pushes that into the call stock.
 	</p>
 	<p>
-		Then it begins executing the code (inside the global execution context).
+		Then it begins executing the code (inside the global execution
+		context).
 	</p>
 	<p>
-		In the global execution context, it reenters the creation phase. It sees a
-		function called <span class="monoText">a</span>, and saves it to memory. It
-		then sees a function called <span class="monoText">b</span>, and allocates
-		that to memory. The interpreter sees a function call,
-		<span class="monoText">a()</span>, but it does not execute, since it's still
-		in the creation phase. It moves on and sees
-		<span class="monoText">var d</span>, a variable that we have declared but
-		not assigned. The interpreter saves the variable
-		<span class="monoText">a</span> to memory, and assigns it the value
-		<span class="monoText">undefined</span>.
+		In the global execution context, it reenters the creation phase. It
+		sees a function called <var>a</var>, and saves it to memory. It then
+		sees a function called <var>b</var>, and allocates that to memory. The
+		interpreter sees a function call, <var>a()</var>, but it does not
+		execute, since it's still in the creation phase. It moves on and sees
+		<var>var d</var>, a variable that we have declared but not assigned.
+		The interpreter saves the variable <var>a</var> to memory, and assigns
+		it the value <var>undefined</var>.
 	</p>
 	<p>
-		Now that the interpreter has finished going through all of our lines during
-		the creation phase, it begins the execution phase. This is where the
-		interpreter acts synchronously&mdash;it goes line by line through the global
-		execution context. The first few lines do not output anything&mdash;they
-		merely define the functions
-		<span class="monoText">a</span> and <span class="monoText">b</span>. Once
-		the interpreter moves past these definitions, it encounters our function
-		call, <span class="monoText">a()</span>. The function
-		<span class="monoText">a</span> is invoked, so the interpreter creates an
-		execution context for that function&mdash;it reenters a creation phase. It
-		moves past the function call <span class="monoText">b()</span>, allocates
-		memory for <span class="monoText">var c</span>, and assigns it the value
-		<span class="monoText">undefined</span>. The interpreter then pushes this
-		new execution context to the call stack, and begins executing.
+		Now that the interpreter has finished going through all of our lines
+		during the creation phase, it begins the execution phase. This is where
+		the interpreter acts synchronously&mdash;it goes line by line through
+		the global execution context. The first few lines do not output
+		anything&mdash;they merely define the functions
+		<var>a</var> and <var>b</var>. Once the interpreter moves past these
+		definitions, it encounters our function call, <var>a()</var>. The
+		function <var>a</var> is invoked, so the interpreter creates an
+		execution context for that function&mdash;it reenters a creation phase.
+		It moves past the function call <var>b()</var>, allocates memory for
+		<var>var c</var>, and assigns it the value <var>undefined</var>. The
+		interpreter then pushes this new execution context to the call stack,
+		and begins executing.
 	</p>
 	<p>
-		During the function <span class="monoText">a</span>'s execution, the
-		interpreter encounters the function call <span class="monoText">b()</span>.
-		The interpreter then reenters another creation phase, creating the execution
-		context for the function <span class="monoText">b</span>. While parsing
-		through function <span class="monoText">b</span> It sees
-		<span class="monoText">var d</span>. So, it saves it to memory (local to the
-		function <span class="monoText">b</span>), and assigns it the value
-		<span class="monoText">undefined</span>. The interpreter then pushes the
-		function <span class="monoText">b</span>'s execution context to the stack,
-		and begins executing <span class="monoText">b</span>. The function
-		<span class="monoText">b</span> does not output anything (it merely declares
-		a variable <span class="monoText">d</span>), but the function finishes
-		executing <span class="monoText">b</span> nevertheless. Once the function
-		<span class="monoText">b</span> has finished executing, its execution
-		context is <span class="italicsText">popped off</span> the call stack, and
-		the interpreter continues executing function
-		<span class="monoText">a</span>.
+		During the function <var>a</var>'s execution, the interpreter
+		encounters the function call <var>b()</var>. The interpreter then
+		reenters another creation phase, creating the execution context for the
+		function <var>b</var>. While parsing through function <var>b</var> It
+		sees <var>var d</var>. So, it saves it to memory (local to the function
+		<var>b</var>), and assigns it the value <var>undefined</var>. The
+		interpreter then pushes the function <var>b</var>'s execution context
+		to the stack, and begins executing <var>b</var>. The function
+		<var>b</var> does not output anything (it merely declares a variable
+		<var>d</var>), but the function finishes executing
+		<var>b</var> nevertheless. Once the function <var>b</var> has finished
+		executing, its execution context is <i>popped off</i> the call stack,
+		and the interpreter continues executing function <var>a</var>.
 	</p>
 	<p>
-		The function <span class="monoText">a</span> does not output anything, it
-		merely declares a variable called <span class="monoText">c</span>. The
-		interpreter finishes executing <span class="monoText">a</span>.
+		The function <var>a</var> does not output anything, it merely declares
+		a variable called <var>c</var>. The interpreter finishes executing
+		<var>a</var>.
 	</p>
 	<p>
-		Now that all of the functions have finished executing, the interpreter has
-		finished executing the global execution context, and it is popped off the
-		call the stack.
+		Now that all of the functions have finished executing, the interpreter
+		has finished executing the global execution context, and it is popped
+		off the call the stack.
 	</p>
 </section>
 
 <section id="variable_environments">
-	<h3>Variable Environments</h3>
+	<h2>Variable Environments</h2>
 	<p>
 		The the term
-		<span class="term">variable environment</span> refers to
-		<span class="italicsText">where</span> a variable lives. The variable
-		environment determines how variables relate to each other in memory. Suppose
-		we had the following code:
+		<b>variable environment</b> refers to <i>where</i> a variable lives.
+		The variable environment determines how variables relate to each other
+		in memory. Suppose we had the following code:
 	</p>
 
 	<pre class="language-javascript"><code>
@@ -707,79 +677,71 @@
 
 	<p>
 		In the code above, we declared a variable
-		<span class="monoText">X</span> inside the function
-		<span class="monoText">b</span> without assigning it any value, then
-		declared another variable, with the same name,
-		<span class="monoText">X</span>, outside the function
-		<span class="monoText">b</span>, but assigned it the value
-		<span class="monoText">1</span>. Furthermore, we called the function
-		<span class="monoText">a</span>, and inside the function
-		<span class="monoText">a</span>, we call the function
-		<span class="monoText">b</span>. What's going to happen here? More
-		specifically, what is the value of the variable
-		<span class="monoText">X</span> at any point in time?
+		<var>X</var> inside the function <var>b</var> without assigning it any
+		value, then declared another variable, with the same name,
+		<var>X</var>, outside the function <var>b</var>, but assigned it the
+		value <var>1</var>. Furthermore, we called the function <var>a</var>,
+		and inside the function <var>a</var>, we call the function
+		<var>b</var>. What's going to happen here? More specifically, what is
+		the value of the variable <var>X</var> at any point in time?
 	</p>
 	<p>It all comes down to execution contexts.</p>
 	<p>
 		First, the interpreter begins creating a global execution context. The
 		interpreter runs through the code: (1) It sees the function
-		<span class="monoText">b</span>, and assigns it to memory. (2) It sees the
-		function <span class="monoText">a</span>, and assigns it to memory. (3) It
-		sees the variable <span class="monoText">var x</span>, and assigns it to
-		memory with the value <span class="monoText">undefined</span>. (4) It sees a
-		function call, <span class="monoText">a();</span>, but it moves past this
-		(this is the creation phase). Thus, the interpreter finishes creating the
-		global execution context, and pushes it into the call stack.
+		<var>b</var>, and assigns it to memory. (2) It sees the function
+		<var>a</var>, and assigns it to memory. (3) It sees the variable
+		<var>var x</var>, and assigns it to memory with the value
+		<var>undefined</var>. (4) It sees a function call, <var>a();</var>, but
+		it moves past this (this is the creation phase). Thus, the interpreter
+		finishes creating the global execution context, and pushes it into the
+		call stack.
 	</p>
 	<p>
-		Once the global execution context has been created, the interpreter begins
-		executing the code. The first few lines are simply function definitions, so
-		the interpreter moves past these lines. It then sees that we've assigned the
-		value <span class="monoText">1</span> to the variable
-		<span class="monoText">a</span>, so it executes the line:
-		<span class="monoText">var a</span> has the value
-		<span class="monoText">1</span>. The interpreter moves on to the next line,
-		and sees a function call <span class="monoText">a()</span>. So, it begins
-		creating an execution context for the function
-		<span class="monoText">a</span>.
+		Once the global execution context has been created, the interpreter
+		begins executing the code. The first few lines are simply function
+		definitions, so the interpreter moves past these lines. It then sees
+		that we've assigned the value <var>1</var> to the variable
+		<var>a</var>, so it executes the line: <var>var a</var> has the value
+		<var>1</var>. The interpreter moves on to the next line, and sees a
+		function call <var>a()</var>. So, it begins creating an execution
+		context for the function <var>a</var>.
 	</p>
 	<p>
-		During the function <span class="monoText">a</span>'s creation phase, the
-		interpreter encounters a variable called <span class="monoText">X</span>.
-		The interpreter saves <span class="monoText">X</span> to memory, with the
-		value <span class="monoText">undefined</span>. More specifically, the
-		<span class="term">variable environment</span> for the function
-		<span class="monoText">a</span>'s execution context. This is a crucial point
-		to remember: Every execution context has its own variable environment. The
-		interpreter continues, sees a function call,
-		<span class="monoText">b()</span>, but does not execute (we're still in the
-		creation phase). This concludes the creation phase, and the interpreter
-		places <span class="monoText">a</span> to the call stack, to be executed.
+		During the function <var>a</var>'s creation phase, the interpreter
+		encounters a variable called <var>X</var>. The interpreter saves
+		<var>X</var> to memory, with the value <var>undefined</var>. More
+		specifically, the <b>variable environment</b> for the function
+		<var>a</var>'s execution context. This is a crucial point to remember:
+		Every execution context has its own variable environment. The
+		interpreter continues, sees a function call, <var>b()</var>, but does
+		not execute (we're still in the creation phase). This concludes the
+		creation phase, and the interpreter places <var>a</var> to the call
+		stack, to be executed.
 	</p>
 	<p>
 		Once the creation phase has finished, the interpreter begins executing
-		function <span class="monoText">a</span>. It sees the statement
-		<span class="monoText">var X = 2</span>, so it assigns to
-		<span class="monoText">X</span> the value <span class="monoText">2</span>.
-		Then it sees a function call, <span class="monoText">b()</span>, and begins
-		another creation phase.
+		function <var>a</var>. It sees the statement <var>var X = 2</var>, so
+		it assigns to <var>X</var> the value <var>2</var>. Then it sees a
+		function call, <var>b()</var>, and begins another creation phase.
 	</p>
 	<p>
-		During <span class="monoText">b</span>'s creation phase, the interpreter
-		sees <span class="monoText">var X</span>, and saves it to memory, with the
-		value <span class="monoText">undefined</span>. And again, saved as
-		<span class="monoText">X</span> specific to
-		<span class="monoText">b</span>'s variable environment.
+		During <var>b</var>'s creation phase, the interpreter sees
+		<var>var X</var>, and saves it to memory, with the value
+		<var>undefined</var>. And again, saved as <var>X</var> specific to
+		<var>b</var>'s variable environment.
 	</p>
 	<p>
 		The variable environment determines
-		<span class="term">scope</span>&mdash;where exactly can JavaScript see the
-		variable. Each of the <span class="monoText">X</span>s above are unique to
-		the functions. Every time you call a function, you get your own execution
-		context. Thus, even though the <span class="monoText">X</span>s are declared
-		three separate times, they are all distinct.
+		<b>scope</b>&mdash;where exactly can JavaScript see the variable. Each
+		of the <var>X</var>s above are unique to the functions. Every time you
+		call a function, you get your own execution context. Thus, even though
+		the <var>X</var>s are declared three separate times, they are all
+		distinct.
 	</p>
-	<p>These concepts are made apparent with the output from the code above:</p>
+	<p>
+		These concepts are made apparent with the output from the code above:
+	</p>
 
 	<pre class="language-javascript"><code>
 				1
@@ -788,26 +750,21 @@
 			</code></pre>
 
 	<p>
-		We see the value <span class="monoText">1</span> first because the
-		interpreter executed the function
-		<span class="monoText">console.log(X)</span>, and the value of
-		<span class="monoText">X</span> is the value of
-		<span class="monoText">X</span> in the global execution context's variable
-		environment, which is <span class="monoText">1</span>. Then we see the value
-		<span class="monoText">2</span>, because the interpreter executed function
-		<span class="monoText">a</span> next. Function
-		<span class="monoText">a</span> outputs to the console its value of the
-		variable <span class="monoText">X</span>, which is 2. Then we see
-		<span class="monoText">undefined</span>, because within function
-		<span class="monoText">a</span>, function <span class="monoText">b</span> is
-		executed. Function <span class="monoText">b</span> outputs to the console
-		its value of <span class="monoText">X</span>, which is
-		<span class="monoText">undefined</span>.
+		We see the value <var>1</var> first because the interpreter executed
+		the function <var>console.log(X)</var>, and the value of
+		<var>X</var> is the value of <var>X</var> in the global execution
+		context's variable environment, which is <var>1</var>. Then we see the
+		value <var>2</var>, because the interpreter executed function
+		<var>a</var> next. Function <var>a</var> outputs to the console its
+		value of the variable <var>X</var>, which is 2. Then we see
+		<var>undefined</var>, because within function <var>a</var>, function
+		<var>b</var> is executed. Function <var>b</var> outputs to the console
+		its value of <var>X</var>, which is <var>undefined</var>.
 	</p>
 </section>
 
 <section id="scope_chain">
-	<h3>The Scope Chain</h3>
+	<h2>The Scope Chain</h2>
 	<p>Suppose we had the following code:</p>
 
 	<pre class="language-javascript"><code>
@@ -824,9 +781,9 @@
 
 	<p>
 		The code is similar to the previous example, accept that in function
-		<span class="monoText">b</span>, we're not declaring the variable
-		<span class="monoText">x</span>. Instead, we're only going to output it to
-		the console. What do we think is going to happen in the console?
+		<var>b</var>, we're not declaring the variable <var>x</var>. Instead,
+		we're only going to output it to the console. What do we think is going
+		to happen in the console?
 	</p>
 	<p>Well, the console outputs:</p>
 
@@ -835,36 +792,34 @@
 	</code></pre>
 
 	<p>
-		Our code is outputting 1 because we didn't initialize any variable called
-		<span class="monoText">x</span> in the function
-		<span class="monoText">b</span>. When we do something like this (using a
-		variable that we haven't declared inside the function itself), JavaScript
-		doesn't just stop and say, "I don't know what to do, you didn't initialize
-		this variable." Recall that when JavaScript's interpreter creates an
-		execution context, it does a few extra things: it creates that execution
-		context as an object, a variable called <span class="monoText">this</span>,
-		and an <span class="term">outer environment</span>.
+		Our code is outputting 1 because we didn't initialize any variable
+		called
+		<var>x</var> in the function <var>b</var>. When we do something like
+		this (using a variable that we haven't declared inside the function
+		itself), JavaScript doesn't just stop and say, "I don't know what to
+		do, you didn't initialize this variable." Recall that when JavaScript's
+		interpreter creates an execution context, it does a few extra things:
+		it creates that execution context as an object, a variable called
+		<var>this</var>, and an <b>outer environment</b>.
 	</p>
 	<p>
 		In JavaScript, every execution context has a
-		<span class="term">reference</span> to its outer environment. Here, the
-		function <span class="monoText">b</span>'s outer environment is its global
-		execution context. The global execution context is also function
-		<span class="monoText">a</span>'s outer environment. What kind of outer
-		environment are we referring to?
+		<b>reference</b> to its outer environment. Here, the function
+		<var>b</var>'s outer environment is its global execution context. The
+		global execution context is also function <var>a</var>'s outer
+		environment. What kind of outer environment are we referring to?
 	</p>
 	<p>
 		We're referring to the
-		<span class="term">lexical environment</span>. Function
-		<span class="monoText">b</span> sits on top of the global environment. In
-		other words, it is not inside function <span class="monoText">a</span>. It
-		is inside the the global execution context, sitting at the same level as the
-		line <span class="monoText">var x = 1</span>.
+		<b>lexical environment</b>. Function <var>b</var> sits on top of the
+		global environment. In other words, it is not inside function
+		<var>a</var>. It is inside the the global execution context, sitting at
+		the same level as the line <var>var x = 1</var>.
 	</p>
 	<p>
 		If we use a variable inside a funtion but do not declare it beforehand
-		(inside the function), JavaScript will look for the variable in its outer
-		environment.
+		(inside the function), JavaScript will look for the variable in its
+		outer environment.
 	</p>
 </section>
 {% endblock %}

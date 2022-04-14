@@ -3,7 +3,9 @@
 {% endblock %} {% block title %}
 <title>Racket Basics</title>
 {% endblock %} {% block content %}
+
 <h1>Racket Basics</h1>
+
 <section id="intro">
 	<p>
 		<span class="drop">R</span>acket is the modern successor to Scheme, and
@@ -275,6 +277,3577 @@
 			<span class="underlineText">runtime error</span>.
 		</p>
 	</section>
+</section>
+
+<section id="naming">
+	<h2>Variables and Environment</h2>
+	<p>
+		Any useful programming language will provide a way for us to
+		<span class="italicsText">name</span> data objects, allowing us to refer to
+		such objects. In programming, a
+		<span class="italicsText">name</span> identifies a
+		<span class="italicsText">variable</span>. A variable has a
+		<span class="italicsText">value</span>, and that value is the object
+		assigned to that variable. In Scheme, we name things with the keyword
+		<span class="monoText">define</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(define num 7)
+	</code></pre>
+	<p>
+		Above, we defined a variable named <span class="monoText">num</span>, and
+		assigned to it the data object <span class="monoText">7</span>. If we enter
+		<span class="monoText">num</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(define num 7)
+		num
+	</code></pre>
+	<pre class="language-bash"><code>
+		7
+	</code></pre>
+	<p>
+		The ability to name data objects is a language's simplest
+		<span class="italicsText">means of abstraction</span>. With ability to name
+		data objects, we can begin writing more complex expressions:
+	</p>
+	<pre class="language-scheme"><code>
+		(define pi 3.14)
+		(define radius 2)
+		(define height 5)
+		(define cylinder-volume (* pi (* radius radius) height))
+
+		cylinder-volume
+	</code></pre>
+	<pre class="language-bash"><code>
+		62.8
+	</code></pre>
+	<p>
+		In Lisp, there are no set conventions for how variables should be named. A
+		common convention, however, is to use dashes to indicate spaces. As an
+		aside, Lisp programmers generally do not care much for syntax. Accordingly,
+		compared to other languages, Lisp generally has few instances of
+		<span class="italicsText">syntactic sugar</span>. There is an argument to be
+		made that syntactic sugar complicates, rather than simplifies, languages.
+		Quoting Alan Perlis, &#8220;Syntactic sugar causes cancer of the
+		semicolon.&#8221;
+	</p>
+	<p>
+		<span class="exh">Exercise.</span> Add the following definitions in Lisp:
+	</p>
+	<pre class="language-scheme"><code>
+		(define x 3)
+		(define y 4)
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			(define x 3)
+			(define y 4)
+			(+ x y)
+		</code></pre>
+		<pre class="language-bash"><code>
+			7
+		</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Suppose
+		<span class="monoText">x</span> and <span class="monoText">y</span> are the
+		coordinates of a Cartesian point, ${(3, 4).}$ Write an expression computing
+		the distance of this point from the point ${(0,0).}$
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>Recall that the distance formula is:</p>
+		<figure class="math-display">
+			<div>
+				<p>
+					${d = \sqrt{(\Delta x)^2 + (\Delta y)^2} = \sqrt{(x_2 - x_1)^2 + (y_2
+					- y_1)^2}}$
+				</p>
+			</div>
+		</figure>
+		<pre class="language-scheme"><code>
+			(define x1 3)
+			(define y1 4)
+			(define x2 0)
+			(define y2 0)
+			(define delta_x (- x2 x1))
+			(define delta_y (- y2 y1))
+
+			(define dist 
+				(sqrt (+ (sqr delta_x) 
+							(sqr delta_y))))
+			
+			dist
+		</code></pre>
+		<pre class="language-bash"><code>
+			5
+		</code></pre>
+	</details>
+</section>
+
+<section id="compound_predicates">
+	<p>
+		<span class="topic">Constructing Compound Predicates.</span> We can
+		construct more complex compound predicates with the symbols
+		<span class="monoText">and</span>, <span class="monoText">or</span>, and
+		<span class="monoText">not</span>. Of these three,
+		<span class="monoText">and</span> and <span class="monoText">or</span> are
+		special forms, while <span class="monoText">not</span> is an ordinary
+		procedure. For all compound predicates, the interpreter evaluates from left
+		to right.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">and</span>.</span> The symbol
+		<span class="monoText">and</span> denotes logical conjunction. It takes the
+		general form:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(and ⟨expression-1⟩ ... ⟨expression-n⟩)
+		</code></pre>
+	</figure>
+	<p>
+		The compound predicate
+		<span class="monoText">(and ⟨expression-1⟩ ... ⟨expression-n⟩)</span>
+		evaluates to true if, and only if, all of its expressions evaluate to true.
+		If, as the interpreter evaluates from left to right, it reaches an
+		expression that evaluates to false, the entire compound predicate evaluates
+		to false.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">or</span>.</span> The symbol
+		<span class="monoText">or</span> denotes inclusive disjunction. The general
+		form:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(or ⟨expression-1⟩ ... ⟨expression-n⟩)
+		</code></pre>
+	</figure>
+	<p>
+		The <span class="monoText">or</span> predicate evaluates to true as soon as
+		the interpreter evaluates one of its expressions to true. If the interpreter
+		evaluates all of its expressions and none of the expressions evaluate to
+		true (i.e., all of the predicates expressions evaluate to false), then the
+		entire predicate is false.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">not</span>.</span> The symbol
+		<span class="monoText">not</span> executes logical negation. General form:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(not ⟨expression⟩)
+		</code></pre>
+	</figure>
+	<p>
+		The <span class="monoText">not</span> operation &#8220;reverses&#8221; the
+		evaluated value of its expression. If
+		<span class="monoText">⟨expression⟩</span> evaluates to true, then the
+		predicate evaluates to false. Inversely, if the
+		<span class="monoText">⟨expression⟩</span> evaluates to false, then the
+		predicate evaluates to true.
+	</p>
+	<p>
+		Compound predicates are critical for case analysis. Often, a particular case
+		requires multiple conditions. For example, consider the open sentence ${5 <
+		x < 10.}$ This sentence consists of two smaller open sentences: ${x > 5,}$
+		and ${x < 10.}$ Thus, to express the propositional function in Lisp, we
+		write:
+	</p>
+	<pre class="language-scheme"><code>
+		(and (> x 5) (< x 10))
+	</code></pre>
+	<p>
+		Accordingly, the code above represents the compound inequality ${5 < x <
+		10.}$ Another example: How might we test for whether one number is greater
+		than or equal to another number? Suppose the numbers are ${x}$ and ${y.}$
+		Thus, what we want to test is whether ${x \geq y.}$ Like the previous
+		example, this open sentence is a compound predicate. It consists of two
+		smaller open sentences, ${x > y}$ and ${x = y.}$ Hence:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (>= x y) (or (> x y) (= x y)))
+	</code></pre>
+	<p>
+		However, if ${x > y}$ or ${x = y,}$ then it must be true that ${x \nless
+		y.}$ Thus, a simpler case analysis would be to just test whether ${x \nless
+		y:}$
+	</p>
+	<pre class="language-scheme"><code>
+		(define (>= x y) (not (< x y)))
+	</code></pre>
+	<p>
+		This rewriting evidences a helpful tactic in case analysis. If we know that
+		a case we want to test for always rules out some other case(s), one way to
+		test whether our case is true is to test for the negative of the ruled out
+		case(s). For if a ruled out case is true, then our actual case cannot be
+		true.
+	</p>
+</section>
+
+<section id="conditional_expressions">
+	<h3>Case Analysis</h3>
+	<p>
+		Our ability to use procedures is significantly limited without the ability
+		to only execute them under certain conditions. For example, consider the
+		mathematical definition of absolute value:
+	</p>
+	<figure class="math-display">
+		<div>
+			$$ \lvert x \rvert = \begin{cases} x &\text{if } x > 0 \\ 0 &\text{if } x
+			= 0 \\ -x &\text{if } x < 0 \end{cases} $$
+		</div>
+	</figure>
+	<p>
+		This is an example of <span class="italicsText">case analysis</span> &mdash;
+		If ${x,}$ then ${y;}$ else if ...; otherwise ...; else ...; etc. Lisp
+		notates case analysis with the keyword <span class="monoText">cond</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (abs x)
+			(cond ((> x 0) x)
+					((= x 0) 0)
+					((< x 0) (- x))))
+	</code></pre>
+	<p>Lisp's general form for a conditional expression is the following:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(cond (⟨predicate 1⟩ ⟨consequent 1⟩)
+					(⟨predicate 2⟩ ⟨consequent 2⟩)
+					(⟨predicate 3⟩ ⟨consequent 3⟩)
+					⋮
+					(⟨predicate n⟩ ⟨consequent n⟩))
+					(⟨predicate n+1⟩ ⟨consequent n+1⟩))
+		</code></pre>
+	</figure>
+	<p>
+		The symbol <span class="monoText">cond</span> is followed by parentheses
+		containing a <span class="italicsText">clause</span> &mdash; the pair of
+		expressions <span class="monoText">⟨predicate n⟩</span> and
+		<span class="monoText">⟨consequent n⟩</span>. The
+		<span class="monoText">⟨predicate⟩</span> is an expression that evaluates to
+		one of two values: true (in Lisp, <span class="monoText">#t</span>) or false
+		(<span class="monoText">#f</span>). If
+		<span class="monoText">⟨predicate n⟩</span> evaluates to
+		<span class="monoText">#f</span>, then the interpreter next evaluates
+		<span class="monoText">⟨predicate n+1⟩</span>. The moment the interpreter
+		reaches a <span class="monoText">⟨predicate⟩</span> that evaluates to
+		<span class="monoText">#t</span>, the interpreter returns the value of the
+		corresponding <span class="monoText">⟨consequent⟩</span>. If none of the
+		predicates are true, then the value of <span class="monoText">cond</span> is
+		<span class="monoText">undefined</span>.
+	</p>
+	<p>
+		A predicate can be a procedure or an expression. The only requirement is
+		that the the predicate evaluates to true or false. In the conditional
+		expression above, the symbols <span class="monoText"><, >, = </span> were
+		used to denote less than, greater than, and equal to. These symbols are
+		<span class="italicsText">primitive predicates</span>.
+	</p>
+	<p>
+		A common convention in Lisp is to use square brackets,
+		<span class="monoText">[]</span> for
+		<span class="monoText">cond</span> structures. For example, the two function
+		definitions below are equivalent:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (checker x)
+			(if (> x 10) "yes"
+					(if (< x 10) "no" "maybe")))
+
+		;; This^ is equivalent to:
+
+		(define (checker x)
+			(cond [(> x 10) "yes"] 
+					[(< x 10) "no"]
+					[else "maybe"]))
+	</code></pre>
+
+	<p>
+		<span class="topic"
+			>Evaluation Rules: <span class="monoText">cond.</span></span
+		>
+		To evaluate <span class="monoText">cond</span>, Lisp follows the following
+		procedure:
+	</p>
+	<ol>
+		<li>
+			If there are no question-answer pairs (the expressions inside the square
+			brackets <span class="monoText">[]</span>), then return an error.
+		</li>
+		<li>
+			Else, evaluate the first <span class="monoText">[Q A]</span>. Replace the
+			entire <span class="monoText">cond</span> with a new
+			<span class="monoText">cond</span> where the first question has been
+			replaced by its value.
+		</li>
+		<li>
+			If the value of the first <span class="monoText">[Q A]</span> is
+			<span class="monoText">true</span>, replace the entire
+			<span class="monoText">cond</span> expression with the
+			<span class="monoText">A</span> in the
+			<span class="monoText">[Q A]</span>.
+		</li>
+		<li>
+			If the value of the first <span class="monoText">[Q A]</span> is
+			<span class="monoText">false</span>, then replace the first
+			<span class="monoText">[Q A]</span> with a new
+			<span class="monoText">cond</span> that does not have the first
+			<span class="monoText">[Q A]</span>.
+		</li>
+		<li>Repeat the process.</li>
+		<li>
+			Else, if the first <span class="monoText">[Q A]</span> evaluates to
+			neither <span class="monoText">true</span> nor
+			<span class="monoText">false</span>, return an error.
+		</li>
+	</ol>
+
+	<p>Visually:</p>
+
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(cond
+				[(> 1 2) "bigger"]
+				[(= 1 2) "equal"]
+				[(< 1 2) "smaller"])
+				
+			(cond
+				[#false "bigger"]
+				[(= 1 2) "equal"]
+				[(< 1 2) "smaller"])
+
+			(cond
+				[(= 1 2) "equal"]
+				[(< 1 2) "smaller"])
+
+			(cond
+				[#false "equal"]
+				[(< 1 2) "smaller"])
+
+			(cond
+				[(< 1 2) "smaller"])
+
+			(cond
+				[#true "smaller"])
+			
+			"smaller"
+		</code></pre>
+	</figure>
+
+	<p>
+		<span class="topic"><span class="monoText">else</span>.</span> The absolute
+		value procedure above can be rewritten as:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (abs x)
+			(cond ((< x 0) (- x))
+					(else x)))
+	</code></pre>
+	<p>
+		The code commands the interpreter: If $x$ is less than zero, return ${-x;}$
+		otherwise, return ${x.}$ The <span class="monoText">else</span> symbol is
+		akin to a <span class="italicsText">default consequence</span>. If none of
+		the preceding predicates returns true, the
+		<span class="monoText">else</span> consequence will execute.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">if</span>.</span> The same
+		procedure can be written in another way:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (abs x)
+			(if (< x 0)
+					(- x)
+					x))
+	</code></pre>
+	<p>
+		Here, we see the symbol <span class="monoText">if</span>. This symbol tells
+		the interpreter to evaluate the predicate following the symbol,
+		<span class="monoText">(< x 0)</span>.
+	</p>
+	<p>
+		Like <span class="monoText">def</span>, <span class="monoText">if</span> is
+		a special form. We use <span class="monoText">if</span> when we have exactly
+		two cases in a case analysis. Its general form:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(if <span class="redText">⟨predicate⟩</span> <span class="redText">⟨consequent⟩</span> <span class="redText">⟨alternative⟩</span>)
+		</code></pre>
+	</figure>
+	<p>
+		With an <span class="monoText">if</span> conditional, the interpreter first
+		evaluates the <span class="monoText">⟨predicate⟩</span>. If the predicate
+		evaluates to true, then the interpreter evaluates the
+		<span class="monoText">⟨consequent⟩</span> and returns its value. We call
+		this the <span class="term">truth block</span> &mdash; the expressions
+		therein execute if the predicate is true. If the
+		<span class="monoText">⟨predicate⟩</span> evaluates to false, then the
+		interpreter evaluates the <span class="monoText">⟨alternative⟩</span> and
+		returns its value. We call this the
+		<span class="term">false block</span> &mdash; the expressions therein
+		execute if the predicate is false.
+	</p>
+	<p>
+		<span class="topic"
+			>Evaluation Rule: <span class="monoText">if</span> Expressions.</span
+		>
+		For <span class="monoText">if</span> expressions, the interpreter first
+		evaluates the predicate, and returns its value &mdash; either
+		<span class="monoText">#true</span> or <span class="monoText">#false</span>.
+		If the value is <span class="monoText">#true</span>, then the interpreter
+		replaces the entire expression with the consequent, and evaluates. If the
+		value is <span class="monoText">#false</span>, then the interpreter replaces
+		the entire expression with the alternative and evaluates. If the value is
+		neither <span class="monoText">#true</span> nor
+		<span class="monoText">#false</span>, then the interpreter returns an error.
+	</p>
+</section>
+
+<section id="evaluating_combinations">
+	<h4>The Evaluation Rule</h4>
+	<p>Consider the following expression:</p>
+	<pre class="language-scheme"><code>
+		(+ 2 (* 3 4) (- (+ 1 2) 3))
+	</code></pre>
+	<p>
+		This expression begins with a primitive operator,
+		<span class="monoText">+</span>. Because it starts with a primitive
+		operators, we call this expression a
+		<span class="term">primitive call</span>. Inside the expression above, we
+		have several operands:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p><span class="monoText">2</span></p>
+			<p><span class="monoText">(* 3 4)</span></p>
+			<p><span class="monoText">(- (+ 1 2) 3)</span></p>
+		</div>
+	</figure>
+	<p>
+		These are all subexpressions. The second and third subexpressions themselves
+		contain further subexpressions. How does Lisp interpret the overall
+		expression?
+	</p>
+	<p>
+		The first key point is that the interpreter reads the expression from left
+		to right. From left to right, the interpreter itself follows a procedure:
+		(1) First evaluate the
+		<span class="italicsText">subexpressions</span> (reduce the operands to
+		values); (2) Second, apply the procedure that is the value of the most
+		leftmost subexpression (the operator) to the arguments that are the values
+		of other subexpressions (the operands). In other words:
+	</p>
+	<figure class="math-display">
+		<ol>
+			<li>Reduce the operands to values;</li>
+			<li>then apply the left-most operator to the values.</li>
+		</ol>
+	</figure>
+	<p>
+		Thus, in the expression above, Lisp first looks at
+		<span class="monoText">2</span>. It evaluates
+		<span class="monoText">2</span> to <span class="monoText">2</span> and moves
+		to next subexpression. It sees <span class="monoText">(* 3 2)</span>. Lisp
+		evalues this subexpression to a value. It evaluates
+		<span class="monoText">3</span> to <span class="monoText">3</span>, and
+		<span class="monoText">2</span> to <span class="monoText">2</span>, and
+		applies the the value of the left-most operator,
+		<span class="monoText">*</span>, evaluating the subexpression to
+		<span class="monoText">6</span>. Then goes to the next subexpression:
+		<span class="monoText">(- (+ 1 3) 3)</span>. It sees the first operand,
+		<span class="monoText">(+ 1 2)</span>, and begins evaluating. It evaluates
+		<span class="monoText">1</span> to <span class="monoText">1</span> and
+		<span class="monoText">2</span> to <span class="monoText">2</span>, and
+		applies the value of the left-most operator,
+		<span class="monoText">+</span>. The subexpression reduces to
+		<span class="monoText">3</span>. Then it goes to the next subexpression,
+		<span class="monoText">3</span>, and evaluates it to
+		<span class="monoText">3</span>. Then it applies the left-most operator,
+		<span class="monoText">-</span>. Thus, the overall subexpression evaluates
+		to <span class="monoText">0</span>. Lisp now has the all the operands
+		evaluated: <span class="monoText">2</span>,
+		<span class="monoText">12</span>, and <span class="monoText">0</span>. It
+		applies the value of the left most operator,
+		<span class="monoText">+</span>. Therefore, the entire expression returns
+		<span class="monoText">14</span>. Putting it all together:
+	</p>
+	<pre class="language-scheme"><code>
+		(+ 2 (* 3 4) (- (+ 1 2) 3))
+		(+ 2 12 (- (+ 1 2) 3))
+		(+ 2 12 (- 3 3))
+		(+ 2 12 0)
+		14
+	</code></pre>
+	<p>The general intuition: Left to right, inside to outside.</p>
+	<p>
+		What does this imply? To evaluate a combination, the interpreter must first
+		evaluate each <span class="italicsText">element</span> in the combination.
+		This shows us that evaluation is a
+		<span class="italicsText">recursive</span> process &mdash; one of its steps
+		requires invoking itself. To illustrate, the following code:
+	</p>
+	<pre class="language-scheme"><code>
+		(* (+ 9 (* 4 6))
+			(+ 1 3 6))
+	</code></pre>
+	<pre class="language-bash"><code>
+		330
+	</code></pre>
+	<p>can be written as an <span class="italicsText">expression tree</span>:</p>
+	<figure>
+		<img
+			src="images/expression_tree.svg"
+			alt="expression tree"
+			loading="lazy"
+			class="eighty-p"
+		/>
+	</figure>
+	<p>
+		From the diagram, we can see that in each node, there is an operator or
+		operand. Each node is one of two kinds: either (a) a
+		<span class="italicsText">branch node</span> &mdash; a node with branches
+		stemming; or (b) a <span class="italicsText">leaf node</span> &mdash; a node
+		with no branches stemming. The leaf nodes are either operators or numbers.
+		The values of each combination of operators and operands flow upwards,
+		<span class="italicsText">combining</span> at higher and higher levels. This
+		phenomenon is called <span class="italicsText">tree accumulation</span>.
+	</p>
+	<p>
+		But what about the leaf nodes? Even if their primitive types, aren't they
+		also evaluated? Yes, they are. To be precise, the tree above is incomplete.
+		Further down the leaf nodes, there are additional evaluations. But, we, as
+		the programmers, do not worry about those evaluations. They are only handled
+		by the interpreter. The values of the numerals we typed are the numbers they
+		name; the values of the primitive operators are the machine instruction
+		sequences carrying out the operation; and the values of other names are the
+		objects associated with those names in the environment.
+	</p>
+</section>
+
+<section id="exception_to_the_evaluation_rule">
+	<p>
+		<span class="topic">Exception to the Evaluation Rule.</span> The evaluation
+		rule does not apply to <span class="monoText">define</span>. When we write
+		<span class="monoText">(define pi 3.14)</span>,
+		<span class="monoText">define</span> does not apply to two separate objects,
+		<span class="monoText">pi</span> and <span class="monoText">3.14</span>. The
+		very purpose of <span class="monoText">define</span> is to bind
+		<span class="monoText">3.14</span> to <span class="monoText">pi</span>.
+		Thus, <span class="monoText">define</span> is an exception to the evaluation
+		rule.
+	</p>
+	<p>
+		Such exceptions are called <span class="italicsText">special forms</span>.
+		Each special form has an evaluation rule unique to that special form. The
+		set of all the different kinds of expressions a language provides is called
+		the language's <span class="italicsText">syntax</span>.
+	</p>
+</section>
+
+<section id="exercises_evaluations">
+	<p>
+		<span class="exh">Exercise.</span> For each expression in the sequence
+		below, what is the result printed by the interpreter in response to each
+		expression? Assume the sequence is evaluated in the order presented:
+	</p>
+	<pre class="language-scheme"><code>
+		10
+		(+ 5 3 4)
+		(- 9 1)
+		(/ 6 2)
+		(+ (* 2 4) (- 4 6))
+		(define a 3)
+		(define b (+ a 1))
+		(+ a b (* a b))
+		(= a b)
+		(if (and (> b a) (< b (* a b)))
+			b
+			a)
+		(cond ((= a 4) 6)
+				((= b 4) (+ 6 7 a))
+				(else 25))
+		(+ 2 (if (> b a) b a))
+		(* (cond ((> ab) a)
+					((< a b) b)
+					(else -1))
+			(+ a 1))
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			10 ;; print 10
+
+			(+ 5 3 4) ;; print 12
+
+			(- 9 1) ;; print 8
+
+			(/ 6 2) ;; print 3
+
+			(+ (* 2 4) (- 4 6)) ;; print 6
+			
+			(define a 3)
+
+			(define b (+ a 1))
+
+			;; a = 3, b = 3 + 1 = 4
+			;; (3) + (4) + (12) = 19
+			;; print 19
+			(+ a b (* a b))
+
+			;; a = 3, b = 4
+			;; 3 is not equal to 4
+			;; print #false
+			(= a b)
+
+			;; a = 3, b = 4
+			;; 4 > 3 and 4 < 12? true
+			;; print b (the consequent):
+				;; print 4
+			(if (and (> b a) (< b (* a b)))
+				b
+				a)
+
+			;; a = 3, b = 4
+			;; a = 4? false
+			;; b = 4? true
+			;; print 6 + 7 + 3:
+				;; print 16
+			(cond ((= a 4) 6)
+					((= b 4) (+ 6 7 a))
+					(else 25))
+			
+			;; a = 3, b = 4
+			;; 4 > 3? true
+			;; return 4
+			;; print 2 + 4:
+				;; print 6
+			(+ 2 (if (> b a) b a))
+
+			;; a = 3, b = 4
+			;; 3 > 4? false
+			;; 3 < 4? true
+			;; return 4
+			;; print 4 * (3 + 1) = 4 * 4:
+				;; print 16
+			(* (cond ((> a b) a)
+						((< a b) b)
+						(else -1))
+				(+ a 1))
+		</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Translate the following into prefix form:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\dfrac{5 + 4 + (2 - (3 - (6 + \frac{4}{5})))}{3(6 - 2)(2 - 7)}}$</p>
+		</div>
+	</figure>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			(/ (+ 5 
+					4 
+					(- 2 
+						(- 3 
+							(+ 6 
+								(/ 4 5)))))
+				(* 3 
+					(- 6 2) 
+					(- 2 7)))
+		</code></pre>
+		<pre class="language-bash"><code>
+			-0.246
+		</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Define a procedure that takes three
+		numbers as arguments and returns the sum of the squares of the two larger
+		numbers.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			(define (square num) 
+				(* num num))
+			(define (sum-of-squares x y z)
+				(+ (square x) (square y) (square z)))
+		</code></pre>
+	</details>
+	<li>
+		The model of evaluation allows us to write combinations whose operators are
+		compound expressions. How does this procedure behave:
+	</li>
+	<pre class="language-scheme"><code>
+		(define (a-plus-abs-b a b)
+			((if (> b 0) + -) a b))
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			If ${b}$ is positive, then the expression
+			<span class="monoText">(if (> b 0) + -)</span> evaluates to
+			<span class="monoText">+</span>. I.e., ${a + b.}$ Otherwise, the
+			expression evaluates to ${a - b.}$ This effectively computes ${a + \lvert
+			b \rvert.}$
+		</p>
+	</details>
+	<p>
+		Ben attempts to determine whether his interpreter uses applicative order or
+		normal order evaluation. To do so, he writes the following procedures:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (p) (p))
+		(define (test x y)
+			(if (= x 0) 0 y))
+	</code></pre>
+	<p>What behavior will Ben observe when he evaluates the following:</p>
+	<pre class="language-scheme"><code>
+		(test 0 (p))
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			In applicative-order evaluation, we evaluate all of the arguments entirely
+			then apply:
+		</p>
+		<pre class="language-pseudo"><code>
+			(test 0 (p))
+			(if (= 0 0) 0 (p))
+			(if (= 0 0) 0 (p))
+		</code></pre>
+		<p>
+			Here, the evaluation will never terminate because
+			<span class="monoText">(p)</span> will always keep expanding to itself.
+		</p>
+		<p>In normal-order evaluation, we evaluate as we go.</p>
+		<pre class="language-pseudo"><code>
+			(test 0 (p))
+			(if (= x 0) 0 (p))
+			(if (#true) 0 (p))
+			0
+		</code></pre>
+		<p>
+			With normal-order evaluation, Ben will see an output of
+			<span class="monoText">0</span>.
+		</p>
+	</details>
+</section>
+
+<section id="strings_in_lisp">
+	<h4>Strings</h4>
+	<p>
+		In Lisp, strings are delimited with double quotes. Strings themselves are
+		expressions with values, just as numbers are expressions with values:
+	</p>
+	<pre class="language-scheme"><code>
+		"Hello world!"
+	</code></pre>
+	<pre class="language-bash"><code>
+		"Hello world!"
+	</code></pre>
+	<p>
+		Like other programming languages, we can
+		<span class="italicsText">concatenate</span> strings; i.e., put them
+		together:
+	</p>
+	<pre class="language-scheme"><code>
+		(string-append "Goodbye" " " "world!")
+	</code></pre>
+	<pre class="language-bash"><code>
+		"Goodbye world!"
+	</code></pre>
+	<p>
+		We can also obtain the length of a string with
+		<span class="monoText">string-length</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(string-length "ney")
+	</code></pre>
+	<pre class="language-bash"><code>
+		3
+	</code></pre>
+	<p>If we want to isolate a substring inside the string:</p>
+	<pre class="language-scheme"><code>
+		(substring "Goodbye" 0 4)
+	</code></pre>
+	<pre class="language-bash"><code>
+		"Good"
+	</code></pre>
+	<p>
+		<span class="monoText">substring</span> isolates the substring defined the
+		string's index of first number (in this case
+		<span class="monoText">0</span>) and the index at the second number minus 1
+		(in this case <span class="monoText">4</span>, so the substring's last
+		character is the the character at the string's index 3). We minus one
+		because the first index starts at <span class="monoText">0</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(substring "01234" 0 3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		"012"
+	</code></pre>
+	<p>
+		Zero-based indexing is the most common source of
+		<span class="italicsText">off-by-one errors</span> &mdash; failing to take
+		account for an additional element in the sequence.
+	</p>
+	<p>
+		<span class="exh">Exercise.</span> Concatenate the strings defined below
+		with a space separating them:
+	</p>
+	<pre class="language-scheme"><code>
+		(define prefix "Mr.")
+		(define suffix "Holmes")
+	</code></pre>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			(define prefix "Mr.")
+			(define suffix "Holmes")
+			(string-append prefix " " suffix)
+		</code></pre>
+		<pre class="language-bash"><code>
+			"Mr. Holmes"
+		</code></pre>
+	</details>
+</section>
+
+<section id="defining_constants">
+	<h4>Defining Constants</h4>
+	<p>
+		Constant definitions are what allow us to
+		<span class="italicsText">name</span> expressions &mdash; more specifically,
+		they allow us to name values. This in turn leads to more modularized,
+		readable, and changeable programs.
+	</p>
+	<p>
+		Suppose, for example, we want a canvas, or window, where images cannot go
+		beyond. This is a rectangle, so we need a width and a height. Because the
+		canvas shouldn't change, we want the width and the height to be constant:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		(define WIDTH 400)
+		(define HEIGHT 600)
+	</code></pre>
+	<p>
+		These are two constants, written in all capital letters out of convention.
+		Now, because the values <span class="monoText">400</span> and
+		<span class="monoText">600</span> have been defined as
+		<span class="monoText">WIDTH</span> and
+		<span class="monoText">HEIGHT</span> respectively, we can perform
+		computations with them:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		(define WIDTH 400)
+		(define HEIGHT 600)
+		(* WIDTH HEIGHT)
+	</code></pre>
+	<pre class="language-bash"><code>
+		240000
+	</code></pre>
+	<p>The general form of a constant definition:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			<span class="blueText">(</span> <span class="blueText">define</span> <span class="redText">⟨<span class="italicsText">name</span>⟩</span> <span class="redText">⟨<span class="italicsText">expression</span>⟩</span> <span class="blueText">)</span>
+		</code></pre>
+	</figure>
+	<p>
+		The <span class="monoText">⟨name⟩</span> of an expression can be any ASCII
+		character &mdash; numbers, letters, symbols.
+	</p>
+	<p>
+		<span class="topic">Evaluation Rule for Constant Definitions.</span> To
+		evaluate a constant definition, the interpreter first evaluates the
+		expression defined and obtains the value. That value is then is then
+		recorded as the value of the constant with the given name.
+	</p>
+	<p>
+		When the interpreter encounters a defined constant name, it evaluates the
+		name to its record value. Thus:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(define WIDTH 400)
+			(WIDTH --> 400)
+
+			(define HEIGHT 600)
+			(HEIGHT --> 600)
+
+			(* WIDTH HEIGHT)
+			(* (WIDTH --> 400) HEIGHT)
+			(* 400 HEIGHT)
+			(* 400 (HEIGHT --> 600))
+			(* 400 600)
+			240000
+		</code></pre>
+	</figure>
+</section>
+
+<section id="compound_procedures">
+	<h4>Compound Procedures&mdash;Functions</h4>
+	<p>
+		The ability to name primitives is a very simple and limited means of
+		abstraction. A much more power means of abstraction is the ability to name
+		and treat compound operations as discrete entites &mdash;
+		<span class="italicsText">procedure definitions</span>. Here is a simple
+		procedure definition:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (square x) 
+			(* x x))
+	</code></pre>
+	<p>
+		This procedure definition computes the square of
+		<span class="monoText">x</span>. The general form of a procedural
+		definition:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			<span class="blueText">(define </span><span class="blueText">(</span><span class="redText">⟨<span class="italicsText">name</span>⟩</span> <span class="redText">⟨<span class="italicsText">formal parameters</span>⟩</span><span class="blueText">)</span> 
+				<span class="redText">⟨<span class="italicsText">body</span>⟩</span><span class="blueText">)</span>
+		</code></pre>
+	</figure>
+	<p>
+		In the general form, the <span class="monoText">⟨name⟩</span> is the symbol
+		associated with the procedure definition in the environment. The
+		<span class="monoText">⟨formal parameters⟩</span> are the names used within
+		procedure's body to refer to the arguments, or inputs, passed to the
+		procedure. the <span class="monoText">⟨body⟩</span> is an expression that
+		returns the value of the procedure application when the
+		<span class="monoText">⟨formal parameters⟩</span> are replaced by the actual
+		arguments passed.
+	</p>
+	<p>
+		Once a procedure is defined, we can use it to perform complex operations:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (square x) 
+			(* x x))
+		(square 5)
+		(square (+ 6 3))
+		(square (square 2))
+		(+ (square 5) (square 2))
+	</code></pre>
+	<pre class="language-bash"><code>
+		25
+		81
+		16
+		29
+	</code></pre>
+	<p>
+		If we can then use a defined procedure in the body of another procedure.
+		Suppose we want a procedure that computes ${x^2 + y^2:}$
+	</p>
+	<pre class="language-scheme"><code>
+		(define (square x)
+			(* x x))
+		(define (sum-of-squares x y) 
+			(+ (square x) (square y)))
+		
+		(sum-of-squares 2 4)
+	</code></pre>
+	<pre class="language-bash"><code>
+		24
+	</code></pre>
+
+	<p>
+		<span class="topic">Functions.</span> Functions in programming are similar
+		to functions in mathematics. You pass in two or more arguments into the
+		function, and you get back one, and only one, output. Question: Are these
+		two functions the same:
+	</p>
+
+	<figure class="math-display">
+		<div>
+			<p>${f(x) = 2x + 6}$</p>
+			<p>${g(x) = 2(x + 3)}$</p>
+		</div>
+	</figure>
+
+	<p>
+		Trick question. We say that the functions above are the same functions, but
+		<span class="italicsText">different procedures</span>. We get the same
+		output, but the steps towards reaching that output are different. If we
+		passed in the value 1:
+	</p>
+	<div class="compare">
+		<pre class="language-pseudo"><code>
+			f(1) = 2(1) + 6
+			f(1) = 2 + 6
+			f(1) = 8
+		</code></pre>
+		<pre class="language-pseudo"><code>
+			f(1) = 2(1 + 3)
+			f(1) = 2(4)
+			f(1) = 8
+		</code></pre>
+	</div>
+	<p>
+		A <span class="italicsText">function</span> is an expression. A
+		<span class="italicsText">procedure</span> is a sequence of steps to
+		<span class="italicsText">compute</span> a function. Inside the computer,
+		there aren't any &#8220;functions.&#8221; At the most basic level, all that
+		a computer can do is answer yes or no questions. Accordingly, inside the
+		computer, there are only procedures. Because of this fact, the words
+		&#8220;function&#8221; and &#8220;procedure&#8221; are often used
+		interchangeably. We will highlight distinctions when necessary, but for the
+		most part, they refer to the same idea &mdash; a series of steps performing
+		a computation.
+	</p>
+
+	<p>
+		Functions are what allow us to get rid of redundancy &mdash; the public
+		enemy number one of programming. Consider, for example, the following code:
+	</p>
+	<pre class="language-scheme"><code>
+		(above (circle 10 "solid" "red")
+				(circle 10 "solid" "yellow")
+				(circle 10 "solid" "green"))
+	</code></pre>
+	<p>
+		Notice how <span class="monoText">circle 10 "solid"</span> appears multiple
+		times. This is redundant. The only thing that changes is the color.
+		Functions are a perfect remedy for this. In programming, functions are
+		similar to functions in mathematics. We have a general rule that assigns
+		inputs to outputs. For example, the reciprocal function:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${f(x) = \dfrac{1}{x}}$</p>
+		</div>
+	</figure>
+	<p>
+		Instead of writing ${1/1,}$ ${1/2,}$ ${1/3,}$ etc. every time, we can just
+		write ${f(x) = \frac{1}{x}.}$ In the context of programming, the ${(x)}$ in
+		${f(x)}$ is the <span class="term">parameter</span>, and represents the
+		varying value, ${x.}$ The ${\frac{1}{x}}$ is the function's body, and it
+		sets forth the <span class="italicsText">rule of assignment</span> &mdash;
+		which inputs for ${x}$ map to which outputs of ${f(x).}$ I.e., if ${x = 2,}$
+		then ${f(2) = \frac{1}{2},}$ if ${x = 3,}$ then ${f(3) = \frac{1}{3}.}$
+	</p>
+	<p>
+		Thus, we might write a function for the redundant code above as the
+		following:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (bulb c)
+			(circle 40 "solid" c))
+	</code></pre>
+	<p>We can then call the function to create a new circle:</p>
+	<pre class="language-scheme"><code>
+		(bulb "purple")
+	</code></pre>
+	<p>The code above can now be reduced to:</p>
+	<pre class="language-scheme"><code>
+		(above (bulb "red")
+			(bulb "yellow")
+			(bulb "green"))
+	</code></pre>
+</section>
+
+<section id="substitution_model">
+	<p>
+		<span class="topic"
+			>How does the interpreter evaluate compound procedures?</span
+		>
+		The interpreter evaluates compound procedures the same way it evaluates
+		primitive procedures. Recall that with primitive procedures, the interpreter
+		evaluates the elements of the combination, then applies the procedure (the
+		value of the combination's operator) to the arguments (the values of the
+		combination's operands). The same process applies to compound procedures:
+		The interpreter evaluates the <span class="monoText">⟨body⟩</span> with each
+		<span class="monoText">⟨formal parameter⟩</span> replaced by the argument
+		passed.
+	</p>
+	<p>Consider, for example, this compound procedure:</p>
+	<pre class="language-scheme"><code>
+		(define (square x)
+			(* x x))
+		(define (sum-of-squares x y) 
+			(+ (square x) (square y)))
+		(define (func n) 
+			(sum-of-squares (+ n 1) (* n 2)))
+		
+		(func 3)
+	</code></pre>
+	<pre class="language-bash"><code>
+		52
+	</code></pre>
+	<p>
+		Like primitive procedures, we can see how the compound procedure
+		<span class="monoText">(func 3)</span> with the
+		<span class="italicsText">substitution model</span>:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(f 3)
+			(sum-of-squares (+ n 1) (+ n 2))
+			(sum-of-squares (+ 3 1) (* 3 2))
+			(+ (square 4) (square 6))
+			(+ (* 4 4) (* 6 6))
+			(+ (16) (36))
+			52
+		</code></pre>
+	</figure>
+	<p>
+		Thus, the single statement <span class="monoText">(func 3)</span> represents
+		this entire expression tree:
+	</p>
+	<figure>
+		<img src="images/func_3.svg" alt="func 3" loading="lazy" class="eighty-p" />
+	</figure>
+	<p>
+		Putting it all together, the substitution model for evaluating functions is
+		the following:
+	</p>
+	<figure class="math-display">
+		<ol>
+			<li>
+				First reduce the operands to their respective values (the arguments
+				passed in).
+			</li>
+			<li>
+				Second, replace the function call with the body of the function where
+				every occurence of a parameter is replaced by its corresponding
+				argument.
+			</li>
+		</ol>
+	</figure>
+	<p>One more example for clarity:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(define (summate a b)
+				(+ a b))
+			
+			(summate (+ 1 3) 5)
+			(summate 4 5)
+			(+ a b)
+			(+ 4 5)
+			9
+		</code></pre>
+	</figure>
+</section>
+
+<section id="applicative_v_normal_order">
+	<h4>Order: Applicative v. Normal</h4>
+	<p>There are two ways to evaluate combinations:</p>
+	<div class="compare">
+		<ol>
+			<p><span class="boldText">Applicative-Order Evaluation</span></p>
+			<li>Evaluate the combination's subexpressions.</li>
+			<li>
+				Apply the procedure that is the value of the leftmost subexpression (the
+				operator) to the arguments that are the values of the other
+				subexpressions (the operands).
+			</li>
+		</ol>
+		<ol>
+			<p><span class="boldText">Normal-Order Evaluation</span></p>
+			<li>
+				Substitute operand expressions for paramters until only primitive
+				operators remain.
+			</li>
+			<li>Then perform the evaluation.</li>
+		</ol>
+	</div>
+	<p>
+		The <span class="italicsText">applicative-order evaluation</span>, or
+		&#8220;evaluate the arguments and then apply,&#8221; is the evaluation
+		method we've seen so far, and is what Lisp uses when evaluating
+		combinations. <span class="italicsText">Normal-order evaluation</span>, or
+		&#8220;fully expand and then reduce,&#8221; is an alternative method used by
+		other languages. We can see how these two evaluation methods are different
+		by comparing their applications:
+	</p>
+	<pre class="language-pseudo"><code>
+		;; normal-order evaluation
+
+		(double (average 2 4))
+		(plus (average 2 4) (average 2 4))
+		(plus (divide (plus 2 4) 2) (average 2 4))
+		(plus 3 (average 2 4))
+		(plus 3 (divide (plus 2 4) 2))
+		(plus 3 (divide 6 2))
+		(plus 3 3)
+		6
+	</code></pre>
+	<pre class="language-pseudo"><code>
+		applicative-order evaluation
+
+		double (average 2 4)
+		double (divide (plus 2 4) 2)
+		double (divide 6 2)
+		double 3
+		plus 3 3
+		6
+	</code></pre>
+	<p>
+		Notice that in <span class="italicsText">normal-order evaluation</span>, all
+		of the operand expressions are expanded first, and only after everything is
+		expanded does the interpreter evaluate. Contrast this with
+		<span class="italicsText">applicative-order evaluation</span>, where the
+		interpreter evaluates-then-applies.
+	</p>
+</section>
+
+<section id="square_roots_newtons_method">
+	<h4>Example Procedure: Newton's Method</h4>
+	<p>
+		Newton's Method provides that we can compute square roots by using
+		successive approximations. We start with some guess ${g}$ as the value of
+		${\sqrt{r}.}$ Then, by averaging ${g}$ with ${r/g,}$ we can obtain better
+		guesses. For example, ${\sqrt{2}}$ would compute as follows (where ${g}$ is
+		the guess, ${r}$ is the radicand, and ${\text{avg}}$ is the average).
+	</p>
+	<figure class="table">
+		<table class="computation">
+			<thead>
+				<th>${g}$</th>
+				<th>${r/g}$</th>
+				<th>${\text{avg}}$</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${1}$</td>
+					<td>${\dfrac{2}{1} = 2}$</td>
+					<td>${\dfrac{2 + 1}{2} = 1.5}$</td>
+				</tr>
+				<tr>
+					<td>${1.5}$</td>
+					<td>${\dfrac{2}{1.5} = 1.3333}$</td>
+					<td>${\dfrac{1.3333 + 1.5}{2} = 1.4167}$</td>
+				</tr>
+				<tr>
+					<td>${1.4167}$</td>
+					<td>${\dfrac{2}{1.4167} = 1.4118}$</td>
+					<td>${\dfrac{1.4167 + 1.4118}{2} = 1.4142}$</td>
+				</tr>
+				<tr>
+					<td>${\vdots}$</td>
+					<td>${\vdots}$</td>
+					<td>${\vdots}$</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		We can see that approximations get better with each successive average. We
+		can encapsulate this algorithm with a procedure. First, we need two values:
+		${r,}$ the radicand, and ${g,}$ the guess. Second, we must think about how
+		this algorithm works. If ${g}$ is good enough, then we are done. Otherwise,
+		we repeat the process with the improved ${g}$.
+	</p>
+	<pre class="language-scheme"><code>
+		(define (sqrt-iter guess r)
+			(if (good-enough? guess r)
+				guess
+				(sqrt-iter (improve guess x) x)))
+	</code></pre>
+	<p>
+		Now, we have to define what <span class="monoText">good-enough?</span> and
+		<span class="monoText">improve</span> mean. Again, we can define these as
+		procedures:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (improve guess x)
+			(average guess (/ x guess)))
+	</code></pre>
+	<p>
+		Now we need to define <span class="monoText">average</span>, again as a
+		procedure:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (average x y)
+			(/ (+ x y) 2))
+	</code></pre>
+	<p>
+		Next, we must define <span class="monoText">good-enough?</span>. Once more,
+		a procedure. Here, we improve our answer, ${g,}$ to the point where ${g^2 -
+		r^2,}$ where ${r}$ is the radicand, evaluates to less a predetermined
+		<span class="term">tolerance value</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (good-enough? guess x)
+			(< (abs (- (square guess) x)) 0.001))
+	</code></pre>
+	<p>And of course, we should define <span class="monoText">square</span>:</p>
+	<pre class="language-scheme"><code>
+		(define (square x) (* x x))
+	</code></pre>
+	<p>Finally, we need a way to get started:</p>
+	<pre class="language-scheme"><code>
+		(define (sqrt x)
+			(sqrt-iter 1.0 x))
+	</code></pre>
+	<p>Putting it all together, we can begin testing:</p>
+	<pre class="language-scheme"><code>
+		(define (sqrt-iter guess x)
+			(if (good-enough? guess x)
+				guess
+				(sqrt-iter (improve guess x) x)))
+
+		(define (improve guess x)
+			(average guess (/ x guess)))
+
+		(define (average x y)
+			(/ (+ x y) 2))							
+
+		(define (good-enough? guess x)
+			(< (abs (- (square guess) x)) 0.001))
+
+		(define (square x) 
+			(* x x))
+
+		(define (sqrt x)
+			(sqrt-iter 1.0 x))
+		
+		(sqrt 9)
+		(sqrt (+ 80 1))
+		(sqrt (+ (sqrt 25) (sqrt 16)))
+		(square (sqrt 1000))
+	</code></pre>
+	<pre class="language-bash"><code>
+		3.0000915541313801785305561...
+		9.0000112987902160615926759...
+		3.0000955248613037789308087...
+		1000.0003699243660294780560755...
+	</code></pre>
+	<p>
+		This implementation of Newton's Method is a perfect example of
+		<span class="term">abstraction</span> &mdash; breaking a problem into
+		smaller pieces; constructing solutions to the smaller pieces; then bundling
+		them up into a larger solution that abstracts away the technical details.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/square_root_procedure_tree.svg' %}"
+			alt="expression tree"
+			class="forty-p"
+			loading="lazy"
+		/>
+	</figure>
+	<p>
+		<span class="topic">Local Names.</span> A detail that should not matter to
+		the procedure user is the implementer's choice of names for the procedure's
+		formal parameters. For example, thse two procedures should not be
+		distinguishable:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (square x) (* x x))
+		(define (square y) (* y y))
+	</code></pre>
+	<p>
+		As a consequence, parameter names in procedures must be local to the
+		procedure's body. Otherwise, the interpreter would be confused when a
+		parameter name <span class="monoText">x</span> is used in one function, and
+		another parameter name <span class="monoText">x</span> is used in another
+		function.
+	</p>
+	<p>
+		Because parameters names are local to the procedure's body, they are called
+		<span class="term">bound variables</span> &mdash; the procedure definition
+		<span class="italicsText">binds</span> the formal parameters. If a variable
+		is not bound, we call <span class="italicsText">free</span> (a
+		<span class="term">free variable</span>). The set of expressions where a
+		binding defines a name is called the <span class="term">scope</span> of that
+		name. For example, in procedures, the formal parameter's scope is the
+		procedure's body. When change a free variable to a bound variable, we are
+		said to have <span class="italicsText">captured</span> the free variable.
+	</p>
+</section>
+
+<section id="block_structuring">
+	<h4>Block Structure</h4>
+	<p>So far, the square root procedure appears as such:</p>
+	<pre class="language-scheme"><code>
+		(define (sqrt x)
+			(sqrt-iter 1.0 x))
+
+		(define (sqrt-iter guess x)
+			(if (good-enough? guess x)
+				guess
+				(sqrt-iter (improve guess x) x)))
+
+		(define (improve guess x)
+			(average guess (/ x guess)))
+
+		(define (average x y)
+			(/ (+ x y) 2))							
+
+		(define (good-enough? guess x)
+			(< (abs (- (square guess) x)) 0.001))
+
+		(define (square x) 
+			(* x x))
+	</code></pre>
+	<p>
+		All that really matters here, however, is the square root procedure. The
+		lower level details simply clutter the program. A better structure would be
+		to <span class="italicsText">localize</span> all of the procedures that
+		<span class="monoText">sqrt</span> needs, called
+		<span class="italicsText">auxiliary procedures</span>. Thus:
+	</p>
+	<pre class="language-scheme"><code>
+	(define (sqrt x)
+		(define (sqrt-iter guess x)
+			(if (good-enough? guess x)
+				guess
+				(sqrt-iter (improve guess x) x)))
+		(define (improve guess x)
+			(average guess (/ x guess)))
+		(define (average x y)
+			(/ (+ x y) 2))							
+		(define (good-enough? guess x)
+			(< (abs (- (square guess) x)) 0.001))
+		(define (square x) 
+			(* x x))	
+		(sqrt-iter 1.0 x))
+	</code></pre>
+	<p>
+		Nesting definitions in this manner is called
+		<span class="term">block structure</span>. We can, however improve the
+		structure. Notice that <span class="monoText">x</span> is bound to
+		<span class="monoText">sqrt</span>,
+		<span class="monoText">good-enough?</span>,
+		<span class="monoText">improve</span>, and
+		<span class="monoText">sqrt-iter</span>. Because
+		<span class="monoText">x</span> is bound to
+		<span class="monoText">sqrt</span>, it is a free variable for the other
+		internal definitions, so we do not need to pass it explicitly as a parameter
+		for the internal definitions:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (sqrt x)
+			(define (sqrt-iter guess)
+				(if (good-enough? guess)
+					guess
+					(sqrt-iter (improve guess))))
+			(define (improve guess)
+				(average guess (/ x guess)))
+			(define (average x guess)
+				(/ (+ x guess) 2))
+			(define (good-enough? guess)
+				(< (abs (- (square guess) x)) 0.001))
+			(define (square x)
+				(* x x))
+			(sqrt-iter 1.0))
+		</code></pre>
+</section>
+
+<section id="higher_order_functions">
+	<h3>Higher-Order Functions</h3>
+	<p>
+		A good programming ability allows us to take an abstraction like a function,
+		name the abstraction, and use that name as if it were an operator to perform
+		other computations or build other abstractions. Functions provide that
+		ability.
+	</p>
+	<p>
+		The functions we have seen so far have used primarily existing numbers or
+		other primitve data types. Functions, however, can take a function as input
+		or return functions as output. This is a powerful tool.
+	</p>
+	<p>
+		<span class="topic">Functions as Arguments.</span> Here are three functions:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (sum-integers a b)
+			(if (> a b) 
+				0 
+				(+ a (sum-integers (+ a 1) b))))
+	</code></pre>
+	<p>The function above simply computes integers in the range ${[a, b].}$</p>
+	<p>
+		This function computes the cubes of the integers in the range ${[a, b].}$
+	</p>
+	<pre class="language-scheme"><code>
+		(define (sum-cubes a b)
+			(if (> a b) 
+				0 
+				(+ (cube a) (sum-cubes (+a 1) b))))
+	</code></pre>
+	<p>
+		Finally, this function computes the sum of a sequence of terms in the series
+		${\dfrac{1}{1 \cdot 3} + \dfrac{1}{5 \cdot 7} + \dfrac{1}{9 \cdot 11} +
+		\ldots }$ (this converges to ${\dfrac{\pi}{8}}$).
+	</p>
+	<pre class="language-scheme"><code>
+		(define (pi-sum a b)
+			(if (> a b) 
+				0
+				(+ (/ 1.0 (* a (+ a 2))) 
+					(pi-sum (+ a 4) b))))
+	</code></pre>
+	<p>Notice that all three functions above have a common structure:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(define (⟨name⟩ a b)
+				(if (> a b)
+					0
+					(+ (⟨term⟩ a)
+						(⟨name⟩ (⟨next⟩ a) b))))
+		</code></pre>
+	</figure>
+	<p>
+		Anytime we see a repetitious pattern like this, that is our cue: There's an
+		abstraction lurking. Here, it is a simple mathematical summation of a
+		series:
+	</p>
+	<figure class="math-display">
+		<div>
+			<p>${\displaystyle\sum_{n=a}^{b} f(n) = f(a) + \ldots + f(b)}$</p>
+		</div>
+	</figure>
+	<p>
+		Summation notation allows us to focus purely on how the terms summate,
+		rather than on the individual terms themselves. Similarly, we can write a
+		function that provides the same type of abstraction:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (sum term a next b)
+			(if (> a b)
+				0
+				(+ (term a)
+					(sum term (next a) next b))))
+	</code></pre>
+</section>
+
+<section id="HtDD">
+	<h3><span class="monoText">HtDD</span></h3>
+	<p>
+		In this section, we explore
+		<span class="term"><span class="monoText">HtDD</span></span> ("How to Design
+		Data Definitions") design. <span class="monoText">HtDD</span> provides a
+		design approach for representing data from the problem's domain. Designing
+		data is a critical point for understanding paradigms like object-oriented
+		programming. Often, the way we solve a problem is dependent on how we
+		present the data. This is because functions can only work if they are
+		provided data, and <span class="italicsText">how</span> a function works
+		depends on the data it consumes.
+	</p>
+	<p>
+		This approach is not limited to computer science. For example, a lawyer must
+		be able to successfully argue for his client in court. But to do so, they
+		must be able to present the facts in a favorable light &mdash; they must
+		<span class="italicsText">design</span> the data representation. The design
+		approach of <span class="monoText">HtDD</span> prvodies a systematic means
+		to do so.
+	</p>
+
+	<p>
+		<span class="topic">Data Definition.</span>
+		<span class="monoText">HtDD</span> is premised on the idea that real world
+		information can be represented as data in a program. This is derived from
+		the view that every problem has a
+		<span class="term">problem domain</span> &mdash; the data provided by the
+		problem. For example, we might be asked to design a traffic light system.
+		Information in this problem's domain includes green, yellow, and red lights.
+		In computers, however, there is no such thing as a &#8220;green light&#8221;
+		or any light for that matter.
+	</p>
+	<p>
+		To solve this problem, we must
+		<span class="italicsText">represent</span> information in the problem domain
+		as data in the computer. Likewise, we must provide a way to
+		<span class="italicsText">interpret</span> that data as representing
+		information in the problem domain.
+	</p>
+	<p>The data definition consists of four to five parts:</p>
+	<figure class="math-display">
+		<ol>
+			<li>A possible <span class="italicsText">structure definition</span>.</li>
+			<li>
+				A <span class="italicsText">type comment</span> describing how to form
+				the data.
+			</li>
+			<li>
+				An <span class="italicsText">interpretation comment</span> describing
+				the correspondence between the information and the data.
+			</li>
+			<li>
+				One or more <span class="italicsText">examples</span> of the data.
+			</li>
+			<li>
+				A <span class="italicsText">template</span> for a 1 argument function
+				operating on data of the data type.
+			</li>
+		</ol>
+	</figure>
+
+	<p>
+		<span class="topic">Atomic Non-Distinct.</span> Consider the following
+		problem parameter:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>The problem requires data about the names of cities.</p>
+		</div>
+	</figure>
+	<p>
+		Because of this parameter, we need a data definition to represent the name
+		of a city. To construct a data definition, we follow the steps below.
+	</p>
+
+	<p>
+		Step 1: Form. The first step to constructing a data definition is to answer
+		the following question: What is the form of the information we seek to
+		represent? One way to answer this question is to simply write out examples
+		of this information:
+	</p>
+	<pre class="language-scheme"><code>
+		;; Information:
+			; New York City
+			; Boston
+			; Los Angeles
+			; Chicago
+			; Palo Alto
+	</code></pre>
+	<p>
+		Now the question is: How do we represent this information as data? A good
+		jumping off point is to consider the most common representations:
+	</p>
+	<figure class="table">
+		<table class="truth_table">
+			<thead>
+				<th>Information</th>
+				<th>Representation</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>atomic</td>
+					<td>simple atomic data</td>
+				</tr>
+				<tr>
+					<td>numbers within a range</td>
+					<td>interval</td>
+				</tr>
+				<tr>
+					<td>consists of a fixed number of distinct entities</td>
+					<td>enumeration</td>
+				</tr>
+				<tr>
+					<td>
+						comprised of 2 or more subclasses, at least one of which is not a
+						distinct item
+					</td>
+					<td>itemization</td>
+				</tr>
+				<tr>
+					<td>consists of two or more items that naturally belong together</td>
+					<td>compound data</td>
+				</tr>
+				<tr>
+					<td>naturally composed of different parts</td>
+					<td>references to other defined type</td>
+				</tr>
+				<tr>
+					<td>is or arbitrary (unknown) size</td>
+					<td>self-referential or mutually referential</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>
+		The above may seem vague at the moment, but we will explore them in more
+		detail as we continue. Here, the most applicable structure is
+		<span class="italicsText">atomic</span>. When say that data is
+		<span class="italicsText">atomic</span>, we mean that the data cannot be
+		broken down into any further meaningful pieces. Here, the city names are
+		just that &mdash; they are city names, and they cannot be broken down any
+		further to provide anythng meaningful. Accordingly, our data definition will
+		be atomic. We write the comment:
+	</p>
+	<pre class="language-scheme"><code>
+		;; CityName is String
+	</code></pre>
+	<p>
+		Step 1a: Interpretation. Now, we need to next include an interpretation
+		comment. This comment should answer the question, What does this data mean?
+	</p>
+	<pre class="language-scheme"><code>
+		;; CityName is String
+		;; interp. the name of a city
+	</code></pre>
+	<p>Step 2: Examples. Now we want to provide some examples:</p>
+	<pre class="language-scheme"><code>
+		;; CityName is String
+		;; interp. the name of a city
+		(define CN1 "Boston")
+		(define CN2 "Chicago")
+	</code></pre>
+	<p>Step 3: Templates. Next, we write a template for the data definition.</p>
+	<pre class="language-scheme"><code>
+		;; CityName is String
+		;; interp. the name of a city
+		(define CN1 "Boston")
+		(define CN2 "Chicago")
+
+		#;
+		(define (fn-for-city-name cn)
+			(... cn))
+		;; Template rules used
+		;; - atomic-distinct: String
+	</code></pre>
+	<p>
+		Now, let's write a function, using <span class="monoText">HtDF</span>, that
+		consumes non-primitive data (the data we defined above). We will just write
+		a simple function that returs <span class="monoText">true</span> if the city
+		name passed into it is the best city in the world. We will use
+		<span class="monoText">Chicago</span> here.
+	</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions:
+		;; CityName is String
+		;; interp. the name of a city
+		(define CN1 "Boston")
+		(define CN2 "Chicago")
+
+		#;
+		(define (fn-for-city-name cn)
+			(... cn))
+		;; Template rules used
+		;; - atomic-distinct: String
+
+
+		;; Functions:
+
+		;; CityName --> Boolean
+		;; Purpose:
+		;;	Produce true if CityName is Chicago
+
+		(check-expect (best? "Chicago") true)
+		(check-expect (best? "Boston") false)
+
+		; (define (best? cn) false) ; stub
+
+		;; took template from CityName
+		(define (best? cn)
+			(if (string=? cn "Chicago") 
+				true 
+				false))
+	</code></pre>
+
+	<p>
+		<span class="topic">Interval.</span> We use
+		<span class="italicsText">interval data</span> to represent information
+		consisting of numbers within a particular range. Consider the following
+		problem parameter:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				We are designing a program that manages ticket sales for a perfectly
+				rectangular theater. The program requires a data definition representing
+				a seat number in a row, where each row has 32 seats.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The first thing to note is the information given by the problem. Here, it is
+		the seat numbers. These seat numbers run from 1 to 32. Because these numbers
+		go from 1 to 32 &mdash; a range &mdash; they are necessarily
+		<span class="italicsText">intervals</span>. Thus, we write our type comment:
+	</p>
+
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+	</code></pre>
+
+	<p>
+		The use of the square brackets come directly from mathematics. They
+		communicate that the interval is 1 and 32
+		<span class="italicsText">inclusive</span>. If the interval was 1 and 32
+		<span class="italicsText">exclusive</span>, we would write
+		<span class="monoText">(1, 32)</span>. Next, we write the interpretation
+		comment:
+	</p>
+
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+	</code></pre>
+
+	<p>
+		Notice that we included another bit of information towards the end &mdash;
+		that 1 and 32 are aisle seats.
+		<span class="underlineText">Anything</span> that would help better
+		understand how the data corresponds to the information should always be
+		included in the interpretation comment.
+	</p>
+
+	<p>Now we write some examples:</p>
+
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+		(define SN1 1) ;aisle
+		(define SN2 12) ;middle
+		(define SN3 32) ;aisle
+	</code></pre>
+
+	<p>
+		Observe that we added comments to the examples. We want to include examples
+		that are illustrative of how the data corresponds to the information.
+		Examples done, the next step is templating:
+	</p>
+
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+		(define SN1 1) ;aisle
+		(define SN2 12) ;middle
+		(define SN3 32) ;aisle
+
+		#;
+		(define (fn-for-seat-num sn)
+			(... sn))
+
+		;; template rules used:
+		;;   - atomic non-distinct: Interval[1, 32]
+	</code></pre>
+
+	<p>Done. We are now given this problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				Using the <span class="monoText">SeatNum</span> data definition, design
+				a function that produces <span class="monoText">true</span> if the given
+				seat number is on the aisle.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Following <span class="monoText">HtDF</span>, we: (1) write the function's
+		signature, purpose, and stub; (2) write tests; (3) write templates; (4) code
+		the body; and (5) test and debug.
+	</p>
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+		(define SN1 1) ;aisle
+		(define SN2 12) ;middle
+		(define SN3 32) ;aisle
+
+		#;
+		(define (fn-for-seat-num sn)
+			(... sn))
+
+		;; template rules used:
+		;;   - atomic non-distinct: Interval[1, 32]
+
+		;; Function
+		;; SeatNum --> Boolean
+		;; produce true if SeatNum is aisle, otherwise false
+
+		(check-expect (aisle? 1) true)
+		(check-expect (aisle? 12) false)
+
+		(define (aisle? SeatNum) true)
+	</code></pre>
+	<p>Both tests ran, so we can proceed:</p>
+	<pre class="language-scheme"><code>
+		;; SeatNum is Integer[1, 32]
+		;; interp. seat numbers in a row, 1 and 32 are aisle seats
+		(define SN1 1) ;aisle
+		(define SN2 12) ;middle
+		(define SN3 32) ;aisle
+
+		#;
+		(define (fn-for-seat-num sn)
+			(... sn))
+
+		;; template rules used:
+		;;   - atomic non-distinct: Interval[1, 32]
+
+		;; Functions
+		;; SeatNum --> Boolean
+		;; produce true if SeatNum is aisle, otherwise false
+
+		(check-expect (aisle? 1) true)
+		(check-expect (aisle? 12) false)
+		(check-expect (aisle? 32) true)
+
+		;; (define (aisle? SeatNum) true)
+
+		;; (define (aisle? SeatNum)
+			;; (... seatNum))
+		
+		(define (aisle? seatNum) 
+			(cond [(or (= 1 seatNum) (= 32 seatNum)) true]
+					[else false]))
+	</code></pre>
+	<p>Testing, all tests passed.</p>
+
+	<p>
+		<span class="topic">Enumeration.</span> We use
+		<span class="italicsText">enumeration</span> when the information consists
+		of two or more <span class="underlineText">distinct</span> values. For
+		example, consider the following problem parameter:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				We are designing a program to keep track of student grades. The program
+				requires representing three letter grades: A, B, and C.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The defining characteristic for the information we seek to represent: They
+		are three, distinct values. An <span class="monoText">A</span> is an
+		<span class="monoText">A</span>, a <span class="monoText">B</span> is a
+		<span class="monoText">B</span>, and a <span class="monoText">C</span> is a
+		<span class="monoText">C</span>. They are clearly separate and unique, and
+		every letter grade can only be one of the three. We can think of these as
+		terniary values. Where binary values are true or false, terniary values
+		consist of three &mdash; <span class="monoText">A, B, C</span>;
+		<span class="monoText">black, grey, white</span>;
+		<span class="monoText">red light, yellow light, green light</span>. When we
+		encounter such values, the first option to consider is enumeration.
+	</p>
+	<p>First, the type comment:</p>
+	<pre class="language-scheme"><code>
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+	</code></pre>
+	<p>
+		Now, examples are redundant for this particular enumeration, because the
+		interpretation tells us all that we need. So, we write:
+	</p>
+	<pre class="language-scheme"><code>
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+		;; ⟨examples are redundant for enumerations⟩
+	</code></pre>
+	<p>Now we write the template:</p>
+	<pre class="language-scheme"><code>
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+		;; ⟨examples are redundant for enumerations⟩
+
+		(define (fn-for-letter-grade lg)
+			(cond [(string=? lg "A") ...]
+					[(string=? lg "B") ...]
+					[(string=? lg "C") ...]))
+	</code></pre>
+	<p>
+		Enumerations are a strong indicator of subclasses. In this case, the class
+		letter grade has three subclasses &mdash;
+		<span class="monoText">A, B, C</span>. This is particularly useful fact when
+		considering object-orientation.
+	</p>
+	<p>
+		Needless to say, enumerations only work for a finite amount of elements.
+		When there are infinitely many elements, then the appropriate data
+		definition is an interval, which collects elements that satisfy a property.
+	</p>
+
+	<p>Now we're given the following problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				Using the <span class="monoText">LetterGrade</span> data definition,
+				design a function called <span class="monoText">bump-up</span> that
+				consumes a letter grade and produces the next highest letter grade.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Again, we use <span class="monoText">HtDF</span>: (1) Write the signature,
+		purpose, and stub; (2) write the tests; (3) write the template; (4) write
+		the body; and (5) test and debug.
+	</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+		;; ⟨examples are redundant for enumerations⟩
+
+		;; (define (fn-for-letter-grade lg)
+			;; (cond [(string=? lg "A") ...]
+					;; [(string=? lg "B") ...]
+					;; [(string=? lg "C") ...]))
+
+		
+		;; Functions
+		;; bump-up
+		;; LetterGrade --> LetterGrade
+		;; consumes a LetterGrade, produces the next highest LetterGrade
+
+		(check-expect (bump-up "C") "B")
+		(check-expect (bump-up "B") "A")
+		(check-expect (bump-up "A") "A")
+
+		(define (bump-up LetterGrade) "A")
+	</code></pre>
+	<p>The tests work, so we continue:</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions
+		;; LetterGrade is one of: 
+		;;  - "A"
+		;;  - "B"
+		;;  - "C"
+		;; interp. the letter grade for a course
+		;; ⟨examples are redundant for enumerations⟩
+
+		;; (define (fn-for-letter-grade lg)
+			;; (cond [(string=? lg "A") ...]
+					;; [(string=? lg "B") ...]
+					;; [(string=? lg "C") ...]))
+
+		
+		;; Functions
+		;; bump-up
+		;; LetterGrade --> LetterGrade
+		;; consumes a LetterGrade, produces the next highest LetterGrade
+
+		(check-expect (bump-up "C") "B")
+		(check-expect (bump-up "B") "A")
+		(check-expect (bump-up "A") "A")
+
+		;; (define (bump-up LetterGrade) "A")
+
+		;; (define (bump-up LetterGrade)
+			;; (... LetterGrade))
+
+		(define (bump-up LetterGrade)
+			(cond [(string=? LetterGrade "B") "A"]
+					[(string=? LetterGrade "C") "B"]
+					[else "A"]))
+	</code></pre>
+	<p>All three tests passed.</p>
+
+	<p><span class="topic">Itemization.</span> Consider the following problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				We are designing a program for controlling the New Year's Eve countdown
+				display. Design a data definition representing the current state of the
+				countdown, which falls into one of three categories: (1) not yet
+				started; (2) from 10 to 1 seconds before midnight; (3) complete.
+			</p>
+		</div>
+	</figure>
+	<p>
+		The problem parameter tells us that the information falls into one of three
+		categories: (1) before the countdown starts; (2) during the countdown; and
+		(3) when the countdown ends. This is similar to the letter grade categories,
+		but there are some differences. Categories (1) and (2) are distinct; they
+		have a clear state &mdash; countdown hasn't started and countdown has ended.
+		But in the second category, there isn't a single distinct value &mdash; the
+		values run from 10 to 1.
+	</p>
+	<p>
+		This parameter is a good example of
+		<span class="italicsText">itemization</span> &mdash; the domain information
+		consists of 2 or more subclasses, but at least one of those subclasses is
+		<span class="underlineText">not</span> a distinct value.
+	</p>
+	<p>First, the type comment.</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"	
+	</code></pre>
+	<p>Second, the interpretation comment:</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+	</code></pre>
+	<p>Now we need examples:</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+	</code></pre>
+	<p>
+		Next, templating. This is where we encounter some complexity. Here, our data
+		consists of a range and two distinct values. This is an example of
+		<span class="term">mixed data</span> &mdash; we have a Boolean, a number,
+		and a string. This means we have to be very careful with this. Part of our
+		data definition requires using comparison operators, and we cannot use such
+		operators for strings or Booleans. Because this is a mixed data itemization,
+		we must guard against anything that is not a number being passed into the
+		comparison operators.
+	</p>
+	<p>Accordingly, we need to include a test in addition to the comparisons:</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+
+		(define (fn-for-countdown c) 
+		(cond [(false? c) (...)]
+				[(and (number? c) (<= 1 c) (<= c 10)) (...)]
+				[else (...)]))
+	</code></pre>
+	<p>
+		Notice that in the last line, we have an
+		<span class="monoText">else</span> condition, rather than using the data
+		<span class="monoText">"complete"</span>. This is because if all of the
+		above conditions are <span class="monoText">false</span>, then it
+		<span class="underlineText">must</span> be the case that the countdown has
+		ended. Running a quick test, we do not get any errors so our data definition
+		is complete.
+	</p>
+	<p>
+		But, there is a small optimization we can make. Really, we do not need the
+		comparison operators. This is because the countdown is the only
+		<span class="monoText">number</span> type value among all the other
+		subclasses. This means we can get rid of all the comparison operators:
+	</p>
+	<pre class="language-scheme"><code>
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+
+		(define (fn-for-countdown c) 
+			(cond [(false? c) (...)]
+					[(number? c) (...)]
+					[else (...)]))
+	</code></pre>
+	<p>
+		Mixed data types are often a source for improved code. Consider the
+		following problem paramter:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				We are designing a traffic light sytem that can either (a) be disabled
+				or (b) be one of <span class="monoText">red</span>,
+				<span class="monoText">yellow</span>, or
+				<span class="monoText">green</span>.
+			</p>
+		</div>
+	</figure>
+
+	<p>We might write the data defintion as the following:</p>
+	<pre class="language-scheme"><code>
+		;; TrafficLight is one of:
+			;; - false
+			;; - "red"
+			;; - "yellow"
+			;; - "green"
+		;; interp.
+			;; "false" - disabled
+			;; "red" - red light
+			;; "yellow" - yellow light
+			;; "green" - green light
+		(define TrafficLight0 false)
+		(define TrafficLight1 "red")
+		(define TrafficLight2 "yellow")
+		(define TrafficLight3 "green")
+
+		(define (fn-for-light) TrafficLight
+		(cond 
+			[(false? TrafficLight) (...)]
+			[(and (string? TrafficLight) (string=? TrafficLight "red")) (...)]
+			[(and (string? TrafficLight) (string=? TrafficLight "yellow")) (...)]
+			[(and (string? TrafficLight) (string=? TrafficLight "green")) (...)]))
+	</code></pre>
+
+	<p>
+		Notice the this is a mixed data itemization, so we used guards for strings.
+		But, the code can be simplified even further: Once we get to the condition
+		for <span class="monoText">"red"</span>, there are no other data types other
+		than string. Everything after <span class="monoText">"red"</span> is a
+		<span class="monoText">string</span> value. This evidences a rule for mixed
+		data itemizations: If all the remaining cases are the same data type, then
+		we can get rid of the guards:
+	</p>
+
+	<pre class="language-scheme"><code>
+		;; TrafficLight is one of:
+			;; - false
+			;; - "red"
+			;; - "yellow"
+			;; - "green"
+		;; interp.
+			;; "false" - disabled
+			;; "red" - red light
+			;; "yellow" - yellow light
+			;; "green" - green light
+		(define TrafficLight0 false)
+		(define TrafficLight1 "red")
+		(define TrafficLight2 "yellow")
+		(define TrafficLight3 "green")
+
+		(define (fn-for-light) TrafficLight
+		(cond 
+			[(false? TrafficLight) (...)]
+			[(string=? TrafficLight "red") (...)]
+			[(string=? TrafficLight "yellow") (...)]
+			[(string=? TrafficLight "green") (...)]))
+	</code></pre>
+
+	<p>
+		The template looks much simpler. The examples above evidence two rules for
+		mixed data itemizations: (1) If a given subclass is the last subclass of its
+		type, we can reduce the test to just the guard. (2) If all remaining
+		subclasses are of the same type, then we can eliminate the guards.
+	</p>
+
+	<p>Now we're presented with the following problem:</p>
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				Design a function that consumes
+				<span class="monoText">Countdown</span> and returns the status of the
+				countdown: either (a)
+				<span class="monoText">"countdown uninitiated"</span>; (b)
+				<span class="monoText">"countdown initiated"</span>; or (c)
+				<span class="monoText">"countdown finished"</span>.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		We follow <span class="monoText">HtDF</span>: (1) Write the signature,
+		purpose, and stub; (2) write the tests; (3) write the templates; (4) code
+		the body; and (5) test and debug.
+	</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions
+
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+
+		; (define (fn-for-countdown c) 
+			; (cond [(false? c) (...)]
+					; [(number? c) (...)]
+					; [else (...)]))
+		
+		;; Functions
+
+		;; CountDown --> string
+		;; Consumes CountDown, produces the countdown's status
+
+		(check-expect (countdown-status false) "Countdown uninitiated")
+		(check-expect (countdown-status 10) "Countdown initiated")
+		(check-expect (countdown-status 5) "Countdown initiated")
+		(check-expect (countdown-status 1) "Countdown initiated")
+		(check-expect (countdown-status 0) "Countdown finished")
+
+		(define (countdown-status CountDown) 0)
+	</code></pre>
+	<p>All tests passed, proceed:</p>
+	<pre class="language-scheme"><code>
+		;; Data definitions
+
+		;; Countdown is one of:
+		;; - false 
+		;; - Natural(1, 10);
+		;; - "Complete"
+		;; interp. 
+			;; false means countdown has not yet started
+			;; Natural(1, 10) means countdown is running
+			;; "Complete" means countdown has ended
+		(define CD1 false)
+		(define CD2 10) ;; just started
+		(define CD3 1) ;; almost over
+		(define CD4 "complete")
+
+		; (define (fn-for-countdown c) 
+			; (cond [(false? c) (...)]
+					; [(number? c) (...)]
+					; [else (...)]))
+		
+		;; Functions
+
+		;; CountDown --> string
+		;; Consumes CountDown, produces the countdown's status
+
+		(check-expect (countdown-status false) "Countdown uninitiated")
+		(check-expect (countdown-status 10) "Countdown initiated")
+		(check-expect (countdown-status 5) "Countdown initiated")
+		(check-expect (countdown-status 1) "Countdown initiated")
+		(check-expect (countdown-status 0) "Countdown initiated")
+		(check-expect (countdown-status true) "Countdown terminated")
+
+		;; (define (countdown-status CountDown) 0)
+
+		(define (countdown-status CountDown)
+			(cond [(false? CountDown) "Countdown uninitiated"]
+					[(number? CountDown) "Countdown initiated"]
+					[else "Countdown terminated"]))
+	</code></pre>
+	<p>All 6 tests passed.</p>
+	<p>
+		In all of the previous examples, we saw how designing data informs the
+		function's design, and tests' designs. The information's structure informs
+		the data structure, the data structure informs the function structure, and
+		the function structure informs the test structures. This is called
+		<span class="monoText">information flow</span>. Information flow
+		demonstrates a critical rule in systematic program design: Before we even
+		begin typing, we must identify and understand the relevant information's
+		structure.
+	</p>
+	<p>
+		Under systematic program design, data definitions are a leverage point for
+		designing and structuring a program. However, that leverage point only
+		exists if we understand the relevant information's structure. Now, not all
+		programs are conducive to this
+		<span class="italicsText">data-driven approach</span>. Some programs will
+		require different approaches. One such approach is the
+		<span class="italicsText">control-driven approach</span>, a tactic to be
+		explored in later sections. Nevertheless, the point remains: Understanding
+		the relevant information before we touch the keyboard is critical to
+		well-designed programs.
+	</p>
+</section>
+
+<section id="compound_data">
+	<h3>Compound Data</h3>
+	<p>
+		In the previous examples, we worked purely with
+		<span class="italicsText">atomic data</span> &mdash; a single value. But
+		information is not composed of single values. A point in space has three
+		values grouped together: ${(x, y, z).}$ A phone book entry consists of a
+		name and a phone number. These are all examples of information that must be
+		represented as <span class="italicsText">compound data</span>.
+	</p>
+
+	<p>
+		<span class="topic"><span class="monoText">define-struct</span>.</span> To
+		create compound data in Lisp, we use
+		<span class="monoText">define-struct</span>. Suppose we want to create a
+		data structure representing a piece of compound data &mdash; a Cartesian
+		coordinate. We write:
+	</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x_coordinate y_coordinate))
+	</code></pre>
+
+	<p>
+		The <span class="monoText">(x_coordinate y_coordinate)</span> following
+		<span class="monoText">define-struct position</span> is called a
+		<span class="italicsText">field</span>. The symbol
+		<span class="monoText">position</span> is simply the name of our data
+		structure. With the <span class="monoText">position</span> data structure
+		defined, we can now create a
+		<span class="monoText">position</span> structure with a
+		<span class="term">constructor</span>:
+	</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x_coordinate y_coordinate))
+
+		;; This is called a constructor
+		(make-position 3 6)
+	</code></pre>
+
+	<p>We can name the data structures we've created:</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x-coordinate y-coordinate))
+
+		(define origin(make-position 0 0))
+		(define point_1(make-position 3 6))
+	</code></pre>
+
+	<p>
+		If we want to access the fields
+		<span class="monoText">x-coordinate</span> or
+		<span class="monoText">y-coordinate</span>, we use
+		<span class="term">selectors</span>:
+	</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x_coordinate y_coordinate))
+
+		(define origin(make-position 0 0))
+		(define point_1(make-position 3 6))
+
+		;; these are called selectors
+		(position-x_coordinate origin)
+		(position-y_coordinate origin)
+		(position-x_coordinate point_1)
+		(position-y_coordinate point_1)
+	</code></pre>
+	<pre class="language-bash"><code>
+		0
+		0
+		3
+		6
+	</code></pre>
+
+	<p>
+		Finally, we can ask &#8220;Is this value produced by
+		<span class="monoText">make-position</span>?&#8221; with a
+		<span class="term">predicate</span>:
+	</p>
+
+	<pre class="language-scheme"><code>
+		(define-struct position (x_coordinate y_coordinate))
+
+		(define origin(make-position 0 0))
+		(define point_1(make-position 3 6))
+
+		(position? origin)
+		(position? "line")
+	</code></pre>
+	<pre class="language-bash"><code>
+		#true
+		#false
+	</code></pre>
+
+	<p>In sum, to form a structure definition, we write:</p>
+
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(define-struct ⟨<span class="italicsText">data-structure-name</span>⟩ (⟨<span class="italicsText">field-name</span>⟩ ...))
+		</code></pre>
+	</figure>
+
+	<p>
+		<span class="topic">Compound Data Definitions.</span> Now that we know how
+		to create compound data, we now apply the
+		<span class="monoText">HtDD</span> approach to construct a data definition.
+		Consider the following problem:
+	</p>
+
+	<figure class="math-display">
+		<div class="rule">
+			<p>
+				Design a data definition to represent employee names at the company. An
+				employee name consists of a first and last name.
+			</p>
+		</div>
+	</figure>
+
+	<p>
+		The key indicator of a piece of compound data is two or more values that
+		<span class="italicsText">naturally belong together</span>. In this case,
+		the problem statement evidences a clear piece of compound data &mdash; a
+		name, which consists of a first and last name. Recall the
+		<span class="monoText">HtDD</span> procedure:
+	</p>
+
+	<ol>
+		<li>Write a possible structure definition.</li>
+		<li>
+			Write a type comment defining a new type name and describing how to form
+			data.
+		</li>
+		<li>
+			Write an interpretation comment describing how the data corresponds to
+			information.
+		</li>
+		<li>Write one or more examples of the data.</li>
+		<li>Write a template for a 1 argument function operating on the data.</li>
+	</ol>
+
+	<p>
+		First step: A possible structure definition. Here, the data structure is
+		fairly straightforward:
+	</p>
+	<pre class="language-scheme"><code>
+		(define-struct employeeName (firstName lastName))
+	</code></pre>
+
+	<p>Second step: Write a type comment.</p>
+	<pre class="language-scheme"><code>
+		(define-struct employee (firstName lastName))
+		;; employee is (make-employee String String)
+		;; interp. (make-employee firstName lastName) is an employee with
+		;;   firstName := first name
+		;;   lastName := last name
+	</code></pre>
+
+	<p>Third step: Write an example.</p>
+	<pre class="language-scheme"><code>
+		(define-struct employee (firstName lastName))
+		;; employee is (make-employee String String)
+		;; interp. (make-employee firstName lastName) is an employee with
+		;;   firstName := first name
+		;;   lastName := last name
+		(define leoE(make-employee "Leonard" "Euler"))
+		(define blaiseP(make-employee "Blaise" "Pascal"))
+	</code></pre>
+
+	<p>
+		Fourth step: a template for a 1 argument function operating on the data.
+	</p>
+	<pre class="language-scheme"><code>
+		(define-struct employee (firstName lastName))
+		;; employee is (make-employee String String)
+		;; interp. (make-employee firstName lastName) is an employee with
+		;;   firstName := first name
+		;;   lastName := last name
+		(define leoE(make-employee "Leonard" "Euler"))
+		(define blaiseP(make-employee "Blaise" "Pascal"))
+
+		; (define (func-for-employee employee)
+		;	 (... (employee-firstName employee)) ;; string
+		;	 (... (employee-lastName employee))) ;; string
+	</code></pre>
+	<p>
+		In our function template, we explicitly listed the
+		<span class="italicsText">selectors</span> we can use. We do not
+		<span class="underlineText">have</span> to use the selectors, but we
+		explicitly write them out because future instances of
+		<span class="monoText">employee</span> will have those fields.
+	</p>
+
+	<p>
+		As we saw with <span class="monoText">HtDW</span>, a critical part of
+		systematic program design is breaking down a problem into smaller pieces.
+		The same idea applies to function design. When we design large, complex
+		functions, we often want to break them down into smaller, more easily
+		testable functions. This approach embodies the idea of
+		<span class="term">function composition</span> &mdash; a function performing
+		two or more operations depending on the data inputs. For example, consider a
+		self-driving car. We input a final destination, and from there, the car
+		drives us to the location. This is an example of enormously complex function
+		that performs numerous operations. However, by breaking the function down
+		into smaller <span class="italicsText">sub-functions</span>, the task is
+		less daunting. While we are not designing such gargantuan programs, the idea
+		is the same &mdash; break the problem down into smaller and smaller pieces.
+	</p>
+</section>
+
+<section id="HtDF">
+	<h3><span class="monoText">HtDF</span></h3>
+	<p>
+		In the next sections, we explore the design model
+		<span class="term">HtDF</span> (&#8220;How to Design Functions&#8221;). This
+		is a standard function design approach, and any good programmer should be
+		familiar with it. We begin first with the problem statement:
+	</p>
+	<div class="rule">
+		<p>
+			<span class="topic">Problem.</span> Design a function that takes a number
+			and produces twice that number. Call the function
+			<span class="monoText">double</span>.
+		</p>
+	</div>
+	<p>
+		This is a very simple problem, but that simplicity allows us to focus purely
+		on HtDF design principles.
+	</p>
+	<p>HtDF design consists of five steps:</p>
+	<div class="rule">
+		<ol>
+			<li>Signature, purpose, and stub.</li>
+			<li>Define examples; wrap each example in check-expect.</li>
+			<li>Template and inventory.</li>
+			<li>Code the function body.</li>
+			<li>Test and debug until correct.</li>
+		</ol>
+	</div>
+	<p>
+		<span class="topic">Step 1: Signature, Purpose, and Stub.</span> The first
+		thing to do when designing a function is to state the function's
+		<span class="term">signature</span>. The signature is supposed to tell the
+		reader what type of data the function consumes, and what type of data the
+		function produces. In other words, the signature should quickly answer the
+		questions: (a) What are input types, and (b) what are the output types?
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			type ... -> type
+		</code></pre>
+	</figure>
+	<p>In other programming languages, we might write the following:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			int --> int
+			float --> float
+			boolean --> boolean
+			string --> string
+			boolean --> int
+			int --> array
+		</code></pre>
+	</figure>
+	<p>If the function takes more than argument:</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			int, boolean --> string
+			float, string --> boolean
+		</code></pre>
+	</figure>
+	<p>For this problem, we write the following:</p>
+	<pre class="language-scheme"><code>
+		;; Number -> Number
+	</code></pre>
+	<p>
+		<span class="topic">Step 1(b): The Purpose.</span> The next thing is to
+		state the function's <span class="term">purpose</span>. The
+		<span class="italicsText">purpose</span> should provide a succinct answer to
+		the question: What does the function produce given what it consumes? Here,
+		we write:
+	</p>
+	<pre class="language-scheme"><code>
+		;; produce 2 times the given number
+	</code></pre>
+	<p>
+		Notice how we use double semicolons (<span class="monoText">;;</span>) to
+		comment out these lines. We use double semicolons rather than single
+		semicolons to indicate that these are permanently commented out. This is
+		similar to the <span class="italicsText">docstring</span> in Python and
+		JavaScript.
+	</p>
+	<p>
+		<span class="topic">Step 1(c): The Stub.</span> Next, the function's
+		<span class="term">stub</span>. The <span class="italicsText">stub</span> is
+		like a piece of scaffolding &mdash; it helps us build other parts of the
+		function. It lasts for only a brief period, and by the end of the function's
+		construction, we delete it entirely. The stub consists of three parts:
+	</p>
+	<figure class="math-display">
+		<ol>
+			<li>The function's <span class="italicsText">name</span>;</li>
+			<li>
+				The correct number of <span class="italicsText">parameters</span>;
+			</li>
+			<li>
+				A dummy output of the <span class="italicsText">correct type</span>.
+			</li>
+		</ol>
+	</figure>
+	<p>Thus, we write the following:</p>
+	<pre class="language-scheme"><code>
+		(define (double n) 0)
+	</code></pre>
+	<p>
+		If, say, we had a function that takes an
+		<span class="monoText">int</span> and outputs a
+		<span class="monoText">string</span>, we would write:
+	</p>
+	<figure class="math-display">
+		<pre class="language-pseudo"><code>
+			(define (function_name n) "foo")
+		</code></pre>
+	</figure>
+	<p>Returning to the problem, here is what we have so far:</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(define (double n) 0)
+	</code></pre>
+	<p>
+		<span class="topic">Step 2: Examples and Tests.</span> Next step, we write
+		examples and tests. These are one in the same; they serve as tests for our
+		function. We write examples early on because functions are often much easier
+		to write when we have a good idea of what they are going to do. The examples
+		should illustrate behavior. Unique to Lisp, we wrap them in
+		<span class="monoText">check-expect</span> to tell the interpreter these are
+		<span class="italicsText">unit tests</span>.
+	</p>
+	<p>For this function's examples, we write:</p>
+	<pre class="language-scheme"><code>
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+	</code></pre>
+	<p>
+		Focusing on the first example, when we use
+		<span class="monoText">check-expect</span>, the interpreter will evaluate
+		<span class="monoText">(double 3)</span>, and check if the result is
+		<span class="monoText">6</span>. If the result is
+		<span class="monoText">6</span>, then the interpreter informs us we passed
+		the test. If the result is not <span class="monoText">6</span>, then the
+		interpreter tells us we did not pass the test. Executing the code thus far:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+		(define (double n) 0)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Ran 2 tests.
+		0 tests passed.
+		Check failures:
+			Actual value 0 differs from 6, the expected value.
+			Actual value 0 differs from 8.4, the expected value.
+	</code></pre>
+	<p>
+		The fact that we are told they failed is a good sign because it tells us
+		that the tests ran in the first place. This information allows us to
+		conclude the examples are
+		<span class="italicsText">well-formed</span> &mdash; we do not have syntax
+		problems or other illegal expressions at this stage.
+	</p>
+	<p>
+		This conclusion is critical for two reasons: (1) It eliminates a potential
+		bug source from the very beginning, the function's head. This is a crucial
+		point to check, because it is often the case that a function's head is one
+		of the last places we would think of as causing a bug. (2) Even more
+		importantly, it ensures that the tests actually run. We
+		<span class="underlineText">never</span> want to be in a position where a
+		test does not run; they are supposed to find bugs.
+	</p>
+	<p>
+		With this stage is done, we comment out the stub, but leave a comment that
+		indicating it is the stub. Thus, we have:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+
+		;; stub
+		; (define (double n) 0)
+	</code></pre>
+	<p>
+		<span class="topic">Inventory, Template, and Constants.</span> Passing the
+		<span class="italicsText">Examples</span> stage, we proceed to
+		<span class="term">templating</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (double n) 
+			(... n))
+	</code></pre>
+	<p>
+		This is <span class="italicsText">template</span>. It merely captures what
+		the general contours are for this function &mdash; when we actually begin
+		coding the function, the parameter <span class="monoText">n</span> is what
+		we are going to work with.
+	</p>
+	<p>Thus, what we have so far:</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+
+		;; stub
+		; (define (double n) 0) ; stub
+
+		(define (double n)
+			(... n))
+	</code></pre>
+	<p>
+		<span class="topic">Coding the Body.</span> Now we begin coding the body.
+		Here, we copy and paste the template, then comment out the original
+		template:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+
+		;; stub
+		; (define (double n) 0)
+
+		;; template
+		; (define (double n) 
+		;   (... n))
+
+		;; function body
+		(define (double n)
+			(... n))
+	</code></pre>
+	<p>
+		Now we start thinking about what will make this function work. To do so, we
+		look back at everything we've written before: the signature, purpose,
+		examples, and template. In particular, we focus on the examples, and
+		elaborate them. To elaborate, we ask ourselves: Why are the expected results
+		<span class="monoText">6</span> and <span class="monoText">8.4</span>? To
+		answer that question, we must answer: How do we turn the inputs into the
+		expected outputs? Here, the inputs map turn into the expected results
+		because the evaluation is actually <span class="monoText">(* 2 3)</span> and
+		<span class="monoText">(* 2 4.2)</span>
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) (* 2 3))
+		(check-expect (double 4.2) (* 2 4.2))
+
+		;; stub
+		; (define (double n) 0)
+
+		;; template
+		; (define (double n) 
+		;   (... n))
+
+		;; function body
+		(define (double n)
+			(... n))
+	</code></pre>
+	<p>
+		The process of elaborating on the examples is why we spend significant time
+		studying evaluation models. We cannot elaborate on the examples if we do not
+		know how the evaluations are done.
+	</p>
+	<p>Know that, we can now code the body:</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) (* 2 3))
+		(check-expect (double 4.2) (* 2 4.2))
+
+		;; stub
+		; (define (double n) 0)
+
+		;; template
+		; (define (double n) 
+		;   (... n))
+
+		;; function body
+		(define (double n)
+			(* 2 n))
+	</code></pre>
+	<p>
+		<span class="topic">Testing and Debugging</span>. Now we test the function:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) (* 2 3))
+		(check-expect (double 4.2) (* 2 4.2))
+
+		;; stub
+		; (define (double n) 0)
+
+		;; template
+		; (define (double n) 
+		;   (... n))
+
+		;; function body
+		(define (double n)
+			(* 2 n))
+	</code></pre>
+	<pre class="language-bash"><code>
+		Both tests passed!
+	</code></pre>
+	<p>
+		If a test every fails at this stage, there are three possibilities: (1) the
+		function definition is wrong; (2) the test is wrong; (3) both the function
+		definition and the test are wrong. Before we even look at the function
+		definition, we should be 100% certain the test is correct.
+	</p>
+	<p>
+		The beauty of HtDF is that each step is aids in completing the next step.
+		The signature helps us write the purpose, the purpose helps us write a stub.
+		The stub helps us write examples, and the examples help us write templates.
+		The templates then help us write the body, as well as the tests and
+		debuggings. As long as we take the time to carefully think about each step
+		and complete them thoroughly, the next step is made all the more easy.
+	</p>
+	<p>
+		<span class="exh">Exercise.</span> Using HtDF, design and write a function
+		that pluralizes a given word. For simplicity, assume that just add
+		<span class="monoText">s</span> is enough to pluralize the word.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			We write the signature, then the purpose, then the stub, then the tests
+			and examples:
+		</p>
+		<pre class="language-scheme"><code>
+			;; string -> string
+			;; add "!" to the end the string input
+
+			(check-expect (pluralize "egg") "eggs")
+			(check-expect (pluralize "brass") "brasss")
+
+			;; stub
+			(define (pluralize str) 0)
+		</code></pre>
+		<p>Let's code the body. To do so, we elaborate the on the examples:</p>
+		<pre class="language-scheme"><code>
+			;; string -> string
+			;; produce string with s appended at the end
+
+			(check-expect (pluralize "egg") (string-append "egg" "s"))
+			(check-expect (pluralize "brass") (string-append "brass" "s"))
+
+			;; stub
+			; (define (pluralize str) 0)
+
+			(define (pluralize str) 
+				(string-append str "s"))
+		</code></pre>
+		<pre class="language-bash"><code>
+			Both tests passed!
+		</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Using HtDF, design and write a function
+		called <span class="monoText">area_of_square</span> that consumes the length
+		of one side of a square and produces the area of the square.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			;; number --> number
+			;; given length of one side of square, produce the area of the square
+			(check-expect (area_of_square 2) 4)
+			(check-expect (area_of_square 5) 25)
+
+			;; stub 
+			; (define (area_of_square side) 0)
+
+			(define (area_of_square side) 
+				(sqr side))
+		</code></pre>
+		<pre class="language-bash"><code>
+			Both tests passed!
+		</code></pre>
+	</details>
+	<p>
+		<span class="topic">HtDF and Poorly-Formed Problem Statements.</span> We
+		study program design because real-world problems are almost always poorly
+		stated. The fact is, most problems need to be addressed even if we do not
+		have a clear statement of the problem. When we encounter such a problem, the
+		first thing to consider is <span class="term">specification</span> &mdash;
+		make the problem more specific. For example, suppose the following problem:
+	</p>
+	<figure class="math-display">
+		<div class="rule">
+			<pre class="language-pseudo"><code>
+				Design a function that takes an image argument and determines whether the image is tall.
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		Step 1: The function's signature. We know that the function takes an image
+		as input, but what exactly does <span class="monoText">tall</span> mean?
+		Well, we know that the answer to this question is yes or no. Yes the image
+		is tall, no the image is not tall. These are binary values. Now, we do not
+		quite know yet what <span class="monoText">tall</span> means, but design one
+		step at a time. Right now, we are just focused on the input and output
+		types. Since the output is a binary value, we use
+		<span class="monoText">Boolean</span>:
+	</p>
+	<pre class="language-scheme"><code>
+		;; image --> Boolean
+	</code></pre>
+	<p>
+		Step 2: The function's purpose. Now we answer the next question. What is
+		this function's purpose?
+	</p>
+	<pre class="language-scheme"><code>
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+	</code></pre>
+	<p>
+		Step 3: The function's stub. The problem does not provide what to name this
+		function, so we must provide a name ourselves. To do so, we follow the
+		programming language's naming conventions. In Lisp, the convention is, if
+		the function produced a Boolean (as our function does), we append a question
+		mark to the function's name:
+	</p>
+	<pre class="language-scheme"><code>
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(define (tall? img) false)
+	</code></pre>
+	<p>
+		Step 4: Tests. Write some tests. But how many do we write? For now, let's
+		just stick with one test. We will later see that we need more than one.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+		
+		(define (tall? img) false)
+	</code></pre>
+	<p>
+		Running the tests, they fail. This means the tests are working properly, and
+		we can continue to the next step.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+	</code></pre>
+	<p>
+		Step 5: Templating. Now we write the template. Remember, this is just a
+		rough outline.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+
+		(define (tall? img)
+			(... img))
+	</code></pre>
+	<p>
+		Step 6: Write the function. Now we copy the template, comment out the
+		template, and begin writing the function:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(... img))
+	</code></pre>
+	<p>
+		So, how do we write this function. First, we think about what we know. There
+		are only two cases: Either (a) the image is tall, or (b) the image is not
+		tall. Thus, this is a case analysis problem. And where there is a case
+		analysis, there are conditional statements. Let's write three
+		<span class="monoText">if</span> condition templates:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(if (... img)
+			(... img)
+			(... img)))
+	</code></pre>
+	<p>
+		Now we ask ourselves, when is something &#8220;tall&#8221;? Well, something
+		is tall if it is horizontally longer than it is vertically wide. This means
+		we are comparing width to the height.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(if (> (image-height img) (image-width img))
+			true
+			false))
+	</code></pre>
+	<p>
+		Running the code above, the test passed. But what is the problem here? We do
+		not have enough tests. We passed the test, but we never tested whether
+		<span class="monoText">false</span> actually outputs. We did not achieve
+		<span class="term">code coverage</span> &mdash; testing every part of the
+		code. Accordingly, we need a test that verifies
+		<span class="monoText">false</span> actually outputs:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+		(check-expect (tall? (rectangle 3 2 "solid" "red")) false)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(if (> (image-height img) (image-width img))
+			true
+			false))
+	</code></pre>
+	<p>
+		Code coverage is the bare minimum for testing. Whenever we test code, we
+		must achieve complete code coverage. We say it is the bare minimum because
+		there are often several other tests we still need to provide. One of those
+		is a <span class="term">corner case</span> test. We call this
+		<span class="monoText">boundary coverage</span>. For this implementation,
+		the corner case is: What if the image and the height are the same?
+	</p>
+	<p>
+		Whenever we encounter a corner case, we must immediately perform several
+		steps: (1) write a test right away; (3) decide what
+		<span class="italicsText">should</span> happen in the corner case (in other
+		words, how should this function behave when it is given a corner case); (2)
+		finally, update all affected parts of the design (this might require
+		updating the signature, purpose, function definition, etc.).
+	</p>
+	<p>
+		Here, we are going to see that if the width and the height are the same,
+		then the image is not tall. Here, we just need to update the purpose.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall (height is greater than width)
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+		(check-expect (tall? (rectangle 3 2 "solid" "red")) false)
+		(check-expect (tall? (rectangle 2 2 "solid" "red")) false)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(if (> (image-height img) (image-width img))
+			true
+			false))
+	</code></pre>
+	<p>
+		The function passes all of the tests above. Notice that this function really
+		only uses a Boolean comparison operator, so we can make the code more
+		concise:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+
+		;; image --> Boolean
+		;; purpose: produce true if the image is tall (height is greater than width)
+		(define (tall? img)
+			(> (image-height img) (image-width img)))
+	</code></pre>
+</section>
+
+<section id="HtDW">
+	<h3><span class="monoText">HtDW</span></h3>
+	<p>
+		The <span class="term"><span class="monoText">HtDW</span></span> (&#8220;How
+		to Design Worlds&#8221;) design pattern outlines a systematic way to design
+		<span class="italicsText">interactive programs</span> &mdash; programs where
+		different pieces of data and various functions work interact with another.
+		The defining characteristic of interactive programs is the program's parts'
+		<span class="italicsText">states</span> and
+		<span class="italicsText">behaviors</span> change based on user input. For
+		example, when a first person shooter, getting hurt might turn the screen red
+		while also reducing your life line. Or, when you swipe left or right on
+		Tinder, the profile slides respectively while also storing your data. These
+		are all interactive programs, and
+		<span class="monoText">HtDW</span> provides a systematic approach to
+		designing them. First, we provide a high-level overview of
+		<span class="monoText">HtDW</span>.
+	</p>
+	<p>
+		<span class="topic">Domain Analysis.</span> The first step of
+		<span class="monoText">HtDW</span> is
+		<span class="italicsText">domain analysis</span> &mdash; understanding the
+		scope of the problem. The key substeps here are: (1) sketching program
+		scenarios; (2) identifying constant information; (3) identifying changing
+		information; and (4) identifying
+		<span class="italicsText">big-bang</span> options.
+	</p>
+	<p>
+		<span class="topic"><span class="monoText">big-bang.</span></span> The term
+		<span class="monoText">big-bang</span> is what
+		<span class="monoText">HtDW</span> uses to refer to the function call that
+		evaluates to the <span class="italicsText">initial world state</span>. In
+		other words, when call <span class="monoText">(big-bang 0)</span>, we create
+		the initial world state. Once <span class="monoText">(big-bang 0)</span> is
+		called, the rest of the program executes from there.
+	</p>
+	<p>
+		For example, we might have a program where the function call
+		<span class="monoText">(big-bang 0)</span> calls a function called
+		<span class="monoText">(render-life 0)</span>. Then,
+		<span class="monoText">(render-life 0)</span> calls
+		<span class="monoText">(next-life 0)</span>. Then,
+		<span class="monoText">(next-life 0)</span> updates some value, and calls
+		<span class="monoText">(render-life 1)</span>, then
+		<span class="monoText">(render-life 1)</span> calls
+		<span class="monoText">(next-life 1)</span> and so on. The function call
+		<span class="monoText">(big-bang 0)</span> is what started everything from
+		the very beginning. In <span class="monoText">HtDW</span>, we call this the
+		<span class="italicsText">big-bang mechanism</span>.
+	</p>
+	<p>
+		Outside of <span class="monoText">HtDW</span>, this is called a
+		<span class="monoText">big-bang</span> is a
+		<span class="italicsText">user-interface framework</span> &mdash; a blackbox
+		that integrates numerous different functionalities together.
+	</p>
+	<p>
+		<span class="topic">Creation.</span> Once we have completed a
+		<span class="italicsText">domain analysis</span>, the next step is
+		<span class="italicsText">creation</span>. At this stage, there are several
+		substeps: (1) Write the <span class="italicsText">constants</span>; (2)
+		Write data definitions, following <span class="monoText">HtDD</span>; (3)
+		Write functions, following <span class="monoText">HtDF</span>, complete two
+		substeps: (a) write the <span class="monoText">main</span> function first,
+		then (b) list the <span class="monoText">handler</span> functions &mdash;
+		those functions necessary for <span class="monoText">main</span> to work;
+		(4) write the <span class="monoText">handler</span> functions.
+	</p>
+	<p>All together:</p>
+	<ol>
+		<li>Domain analysis.</li>
+		<ul>
+			<li>Sketch the program scenarios.</li>
+			<li>Identify the constant information.</li>
+			<li>Identify the changing information.</li>
+			<li>Identify <span class="monoText">big-bang</span> options.</li>
+		</ul>
+		<li>Creation.</li>
+		<ul>
+			<li>Write the constants.</li>
+			<li>
+				Write the data definitions, following
+				<span class="monoText">HtDD</span>.
+			</li>
+			<li>
+				Write the functions, following <span class="monoText">HtDF</span>.
+			</li>
+			<ul>
+				<li>Write the <span class="monoText">main</span> function first.</li>
+				<li>
+					Create a list of <span class="monoText">handler</span> functions
+					(those functions necessary for <span class="monoText">main</span> to
+					work).
+				</li>
+			</ul>
+			<li>
+				Write the <span class="monoText">handler</span> functions, following
+				<span class="monoText">HtDF</span>.
+			</li>
+		</ul>
+	</ol>
+	<p>
+		<span class="topic">Sketching Program Scenarios.</span> When we say
+		sketching program scenarios, we literally mean sketching program scenarios.
+		We want to draw out how the program should look on a screen. This is purely
+		to ensure we have a good idea of how the program would look and behave.
+	</p>
+	<p>
+		The sketches we draw should reflect different stages of the program. They do
+		not have to be beautiful pictures; these are just sketches. The focus is to
+		get a good idea of what we <span class="italicsText">want</span>, not
+		accurate or beautiful drawings.
+	</p>
+	<p>
+		<span class="topic">Identifying Constant Information.</span> This is where
+		we identify and <span class="italicsText">write down</span> the information
+		that <span class="underlineText">never</span> changes as the program
+		executes. For example, if we are designing a program that can only display
+		at a certain size, there are the widths of the screen. If the program has
+		user input boxes, a constant might be the position of those input boxes.
+	</p>
+	<p>
+		At this stage, we do not need to list every single constant. In fact, we
+		will almost always find we need a constant as we continue writing the
+		program. Not only is this perfectly fine, it is
+		<span class="italicsText">expected</span>. As we write the program or
+		continue the <span class="monoText">HtDW</span> process, we might discover a
+		constant we had not considered. When that occurs, we write it down in our
+		list of constants.
+	</p>
+	<p>
+		<span class="topic">Changing Information.</span> The next step is to
+		identify the changing information. Here, we want to think of what actually
+		changes as the program executes. If we are designing a video game, one piece
+		of information that might change is the player's score or their life line.
+	</p>
+	<p>
+		Again, we do not have to be as exhaustive as we can here. The point is to
+		come up with as many as we can, and add information as we continue the
+		process. The more thorough we are at this point, the better of an idea we
+		have for the program's overall structure and behavior in the later stages.
+	</p>
+	<p>
+		<span class="topic"
+			>Identify <span class="monoText">big-bang</span> Options.</span
+		>
+		This is where we think about the possible ways to implement the behaviors we
+		sketched at the very first step. Once we have done so, we complete the
+		domain analysis stage.
+	</p>
+
+	<p>
+		<span class="topic"
+			>Write the <span class="monoText">main</span> Function.</span
+		>
+		After domain analysis, we proceed to
+		<span class="italicsText">creation</span>. Here, we begin writing the
+		program by writing the <span class="monoText">main</span> function. When
+		writing the <span class="monoText">main</span> function, we use the
+		<span class="monoText">HtDF</span> pattern: Signature, purpose, stub, tests
+		and examples, templating, coding, testing and debugging. The crucial point
+		here is <span class="italicsText">templating</span>.
+	</p>
+	<p>
+		Templating the <span class="monoText">main</span> function is what dictates
+		the structure of our overall program. When we template the
+		<span class="monoText">main</span> function, we ask ourselves: What do I
+		know about the overall structure of the program before I get to the details?
+		Because we are writing the <span class="monoText">main</span> function, the
+		first line of the program should state what the
+		<span class="monoText">main</span> function does.
+	</p>
+	<p>
+		<span class="topic">Constants.</span> The next line of the program is to
+		list all of the <span class="italicsText">constants</span> the program uses.
+		Here, we define all of the data that should never change when the program
+		executes. We write these constants here because (1) they should be clearly
+		visible, and (2) placing them as constants allows for quick changes later.
+		We should always run the program as we write the constants. This is to catch
+		any errors in what we write &mdash; better to find them now, while the
+		program is small, than later, when the program is large. When write these
+		constants, if it is every unclear what the constants mean, we should provide
+		comments indicating what they mean.
+	</p>
+
+	<p>
+		<span class="topic">Handler Functions Wish List.</span> As we write the
+		<span class="monoText">main</span> function, we must always write the
+		necessary handler functions as we continue. For example, suppose we are
+		writing a simple program that computes the hypotenuse of a triangle. Our
+		<span class="monoText">main</span> function might look like the following:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; takes two lengths and returns the hypotenuse
+
+		(check-expect (main 8 8) 4)
+		(check-expect (main 0 0) 0)
+
+		;; (define (main x y) 0)
+
+		(define (main x y)
+			(squareRoot (+ x-length-squared y-length-squared)))
+	</code></pre>
+	<p>
+		There are several things in the code above that are not native to Lisp.
+		Accordingly, we will need to define them, so we add them as entries to the
+		wish list:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; takes two lengths and returns the hypotenuse
+
+		(check-expect (main 8 8) 4)
+		(check-expect (main 0 0) 0)
+
+		;; (define (main x y) 0)
+
+		(define (main x y)
+			(squareRoot (+ x-length-squared y-length-squared)))
+		
+		;; handler functions
+		;; number -> number
+		(define (squareRoot num) 0)
+
+		;; number -> number
+		;; takes x-length and returns square of x-length
+		(define (x-length-squared num) 0)
+
+		;; number -> number
+		;; takes y-length and returns square of y-length
+		(define (y-length-squared num) 0)
+	</code></pre>
+	<p>
+		Handler functions will take up most of our coding time. We will often find
+		that handler functions will require writing other handler functions. That is
+		part of functional programming. The key point is to keep track of the work
+		by watching our wish list.
+	</p>
+</section>
+
+<section id="advice_on_designing_large_programs">
+	<h3>Best Practices: Program Design</h3>
+	<p>
+		We have seen many different approaches to program design in the preceding
+		materials. In practice, some problems require one approach, while eschewing
+		another. However, for all problems, there are certain principles, or
+		mantras, that we should always keep in mind.
+	</p>
+	<p>
+		First, aim for simplicity. In programming, simple is
+		<span class="underlineText">always</span> better. The more complex an
+		implementation is, the more difficult it is to debug and test. Simplicity,
+		however, does not always mean less code. Recursion almost always returns
+		shorter programs, but they can easily become unreadable and a mess to debug.
+		However, simplicity does not mean more lines of code. Conciseness is just as
+		important. At the end of the day, a program is measured by two things: (1)
+		ease of use and (2) features. We ship features, not code. Take the path of
+		least resistance &mdash; do easy things, never hard things.
+	</p>
+	<p>
+		Second, readability is invaluable. In the earlier sections, we might have
+		wondered why we spent so much time on comments and documentation, even for
+		the simplest programs. We did so because humans have limited processing
+		speeds and memory space. A program might appear simple today, but it is not
+		guaranteed to be understandable by either ourselves or others a month or
+		years later. Always comment and document.
+	</p>
+	<p>
+		Third, implementation should be easy to explain. This is a point towards
+		simplicity. If a program is structured as simply as possible, then it must
+		be easy to explain. Accordingly, ease of explanation serves as a litmus test
+		for whether we've accomplished simplicity. If we ever get to a point where
+		we cannot explain our program simply, then the implementation is poor. If we
+		ever get to a point where do not understand how our program works at all,
+		then we have created a time bomb. At no point should we ever not understand
+		how our code works.
+	</p>
+	<p>
+		<span class="topic">Object-Orientation.</span> OOP (Object-oriented
+		Programming) is a powerful tool. However, like the despotic regime of a
+		resource-rich country, that power is prone to abuse and can quickly get to
+		our heads. Flat is always better than nested. We understand flat things
+		better. We get lost in deeply nested structures.
+	</p>
+	<p>
+		Class abuse is real. There is a tendency to want to organize everything into
+		classes, compartmentalizing everything into neat boxes. Before we even
+		consider putting things into classes, we should ask ourselves: Do I
+		absolutely need this to be in a class? The code blocks below all do the same
+		thing, and unfortunately, the first is more common than the last:
+	</p>
+	<pre class="language-python"><code>
+		# obfuscated function call:
+
+		class Greeting(object):
+			def __init__(self, greeting='hello'):
+				self.greeting = greeting
+
+			def greet(self, name):
+				return '%s! %s' % (self.greeing, name)
+		
+		# de-obfuscated:
+		def greet(name):
+			ob = Greeting('hola')
+			print ob.greet('bob')
+			return
+		
+		# concise:
+		def greet(greeting, target):
+			return '%s! %s' % (greeting, target)
+	</code></pre>
+	<p>
+		<span class="topic">Libraries, Packages, and Modules.</span> There are
+		numerous packages and libraries today that make our lives easier. Whenever
+		we use a library or package, the first thing we
+		<span class="underlineText">must</span> do is read the code. Otherwise, we
+		are using code in our programs that we haven't vetted &mdash; we don't know
+		what that code's quality is, whether they have tests, or whether they do
+		what we want done.
+	</p>
+</section>
+
+<section id="self_reference">
+	<h3>Self-Reference</h3>
+	<p>
+		<span class="italicsText">Self-reference</span> is an enormously critical
+		aspect of modern programming languages. The idea of self-reference is what
+		allows us to represent an arbitrarily large amount of information. This is
+		crucial, because problems often require an analysis of the bigger,
+		overarching structures &mdash; the general case, so to speak. For example,
+		with what we know so far, we can create a data structure for, and perform
+		computations on, the amount of rice futures a company trades. The amount of
+		such rice is described as <span class="term">fixed-sized information</span>,
+		and we represent it with <span class="term">fixed-size data</span>.
+	</p>
+	<p>
+		The problem? Not all information is of fixed-size. We do not yet have the
+		ability to represent all of the different grains futures the company handles
+		&mdash; the company might deal with rice, wheat, corn, lentils, soy, quinoa,
+		and a plethora of other products. This type of information is called
+		<span class="term">arbitrarily-sized information</span> &mdash; information
+		that we do not know the size of in advance. We represent such information
+		with <span class="term">arbtirarily-sized data</span>.
+	</p>
 </section>
 
 {% endblock %}

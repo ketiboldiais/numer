@@ -7,13 +7,19 @@ function marginNote() {
 		let noteNumber = i + 1;
 		noteText.insertAdjacentHTML(
 			"afterbegin",
-			`<span class="noteNumber">${noteNumber}</span> `
+			`<span class="noteNumber">${noteNumber}</span> `,
 		);
 		noteNumbers[i].addEventListener("click", function () {
+			setTimeout(() => {
+				noteContent[i].classList.toggle("annotated-complete");
+			}, 1);
 			noteContent[i].classList.toggle("annotated");
 		});
 	}
 }
+
+
+
 
 // Add main idea header
 function mainIdeaHeader() {
@@ -52,7 +58,7 @@ function showCodeIllustration() {
 	const demos = document.querySelectorAll("div.demo");
 	const languageButtons = document.querySelectorAll("div.demo button");
 	const implements = document.querySelectorAll(
-		"div.demo div.implementation"
+		"div.demo div.implementation",
 	);
 	for (let i = 0; i < demos.length; i++) {
 		const demoHeader = document.createElement("p");
@@ -88,25 +94,25 @@ function showNav() {
 	});
 }
 
-function tabSwitch() { 
-	const tabDivs = document.querySelectorAll('.tabs');
-	for (let i = 0; i < tabDivs.length; i++) { 
-		const tabNav = tabDivs[i].querySelector('ul');
-		const tabs = tabNav.querySelectorAll('li');
-		tabs[0].classList.add('current');
-		const tabContent = tabDivs[i].querySelectorAll('div');
-		tabContent[0].classList.add('reveal')
+function tabSwitch() {
+	const tabDivs = document.querySelectorAll(".tabs");
+	for (let i = 0; i < tabDivs.length; i++) {
+		const tabNav = tabDivs[i].querySelector("ul");
+		const tabs = tabNav.querySelectorAll("li");
+		tabs[0].classList.add("current");
+		const tabContent = tabDivs[i].querySelectorAll("div");
+		tabContent[0].classList.add("reveal");
 		for (let j = 0; j < tabs.length; j++) {
-			tabs[j].addEventListener('click', () => {
+			tabs[j].addEventListener("click", () => {
 				for (let k = 0; k < tabContent.length; k++) {
-					if (tabContent[k].classList.contains('reveal')) {
-						tabContent[k].classList.remove('reveal');
-						tabs[k].classList.remove('current');
+					if (tabContent[k].classList.contains("reveal")) {
+						tabContent[k].classList.remove("reveal");
+						tabs[k].classList.remove("current");
 					}
-					tabContent[j].classList.add('reveal');
-					tabs[j].classList.add('current');
+					tabContent[j].classList.add("reveal");
+					tabs[j].classList.add("current");
 				}
-			})
+			});
 		}
 	}
 }
@@ -124,16 +130,16 @@ function pseudocode() {
 		const pseudosources_olAlgC_LI =
 			pseudosource_DIV.querySelectorAll("ol.algc li");
 		for (let j = 0; j < pseudosources_olAlg_LI.length; j++) {
-			pseudosources_olAlg_LI[j].addEventListener('click', () => {
-				pseudosources_olAlgC_LI[j].classList.toggle('expand');
-				pseudosources_olAlgC_LI[j].classList.toggle('highlight_match');
-				pseudosources_olAlg_LI[j].classList.toggle('highlight_match');
-			})
-			pseudosources_olAlgC_LI[j].addEventListener('click', () => { 
-				pseudosources_olAlgC_LI[j].classList.toggle('expand');
-				pseudosources_olAlg_LI[j].classList.toggle('highlight_match');
-				pseudosources_olAlgC_LI[j].classList.toggle('highlight_match');
-			})
+			pseudosources_olAlg_LI[j].addEventListener("click", () => {
+				pseudosources_olAlgC_LI[j].classList.toggle("expand");
+				pseudosources_olAlgC_LI[j].classList.toggle("highlight_match");
+				pseudosources_olAlg_LI[j].classList.toggle("highlight_match");
+			});
+			pseudosources_olAlgC_LI[j].addEventListener("click", () => {
+				pseudosources_olAlgC_LI[j].classList.toggle("expand");
+				pseudosources_olAlg_LI[j].classList.toggle("highlight_match");
+				pseudosources_olAlgC_LI[j].classList.toggle("highlight_match");
+			});
 		}
 	}
 }

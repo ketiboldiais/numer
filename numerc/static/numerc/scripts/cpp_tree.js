@@ -1,9 +1,5 @@
 import { cdemo } from "../CDemo.mjs";
-import * as csmd from "../csmd.mjs";
-import { CSMD } from "../csmd.mjs";
-
-// const introTree = ;
-// cdemo.renderTree(introTree);
+import * as csmd from "../csmd/csmd.mjs";
 
 const tree_intro = new csmd.Tree({
 	id: "introTree",
@@ -78,7 +74,7 @@ const linearBinaryTree = new csmd.Tree({
 	data: [
 		{ child: "1", parent: "" },
 		{ child: "2", parent: "1", display: "none" },
-		{ child: "3", parent: "1"},
+		{ child: "3", parent: "1" },
 		{ child: "4", parent: "1", display: "none" },
 	],
 }).render();
@@ -489,7 +485,7 @@ const abt1 = new csmd.Tree({
 		{ child: "F", parent: "C" },
 		{ child: "G", parent: "C" },
 	],
-}).render();;
+}).render();
 
 const abt1_array = new csmd.StaticArray({
 	id: "abt1_array",
@@ -2050,7 +2046,6 @@ const inorder_stack_growth = {
 };
 cdemo.renderStackGrowth(inorder_stack_growth);
 
-
 const level_order_traversal_sample = new csmd.Tree({
 	id: "level_order_traversal_sample",
 	width: 500,
@@ -2058,27 +2053,23 @@ const level_order_traversal_sample = new csmd.Tree({
 	directed: true,
 	height: 250,
 	data: [
-		{ child: "8", parent: ""},
-		{ child: "3", parent: "8", edgeLabel: '0x1'},
-		{ child: "9", parent: "8", edgeLabel: '0x2'},
-		{ child: "7", parent: "3", edgeLabel: '0x3'},
-		{ child: "10", parent: "3", display: 'none'},
-		{ child: "6", parent: "9", edgeLabel: '0x4'},
-		{ child: "12", parent: "6", display: 'none'},
-		{ child: "2", parent: "6", edgeLabel: '0x5'},
-		{ child: "4", parent: "9", edgeLabel: '0x6'},
-		{ child: "5", parent: "7", edgeLabel: '0x7'},
-		{ child: "11", parent: "7", display: 'none'},
+		{ child: "8", parent: "" },
+		{ child: "3", parent: "8", edgeLabel: "0x1" },
+		{ child: "9", parent: "8", edgeLabel: "0x2" },
+		{ child: "7", parent: "3", edgeLabel: "0x3" },
+		{ child: "10", parent: "3", display: "none" },
+		{ child: "6", parent: "9", edgeLabel: "0x4" },
+		{ child: "12", parent: "6", display: "none" },
+		{ child: "2", parent: "6", edgeLabel: "0x5" },
+		{ child: "4", parent: "9", edgeLabel: "0x6" },
+		{ child: "5", parent: "7", edgeLabel: "0x7" },
+		{ child: "11", parent: "7", display: "none" },
 	],
 }).render();
 
 const sample_data_traversal_generation = new csmd.StaticArray({
-	id: 'sample_data_traversal_generation',
-	data: [
-		{ val: "A" },
-		{ val: "B" },
-		{ val: "C" },
-	]
+	id: "sample_data_traversal_generation",
+	data: [{ val: "A" }, { val: "B" }, { val: "C" }],
 }).render();
 
 const tg1 = new csmd.Tree({
@@ -2088,9 +2079,9 @@ const tg1 = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "A", parent: ""},
-		{ child: "B", parent: "A"},
-		{ child: "C", parent: "A"},
+		{ child: "A", parent: "" },
+		{ child: "B", parent: "A" },
+		{ child: "C", parent: "A" },
 	],
 }).render();
 
@@ -2101,11 +2092,11 @@ const tg2 = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "A", parent: ""},
-		{ child: "B", parent: "A"},
-		{ child: "E", parent: "A", display: 'none'},
-		{ child: "C", parent: "B"},
-		{ child: "F", parent: "B", display: 'none'},
+		{ child: "A", parent: "" },
+		{ child: "B", parent: "A" },
+		{ child: "E", parent: "A", display: "none" },
+		{ child: "C", parent: "B" },
+		{ child: "F", parent: "B", display: "none" },
 	],
 }).render();
 
@@ -2116,11 +2107,11 @@ const tg3 = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "A", parent: ""},
-		{ child: "B", parent: "A"},
-		{ child: "E", parent: "A", display: 'none'},
-		{ child: "F", parent: "B", display: 'none'},
-		{ child: "C", parent: "B"},
+		{ child: "A", parent: "" },
+		{ child: "B", parent: "A" },
+		{ child: "E", parent: "A", display: "none" },
+		{ child: "F", parent: "B", display: "none" },
+		{ child: "C", parent: "B" },
 	],
 }).render();
 
@@ -2131,11 +2122,11 @@ const tg4 = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "A", parent: ""},
-		{ child: "E", parent: "A", display: 'none'},
-		{ child: "B", parent: "A"},
-		{ child: "C", parent: "B"},
-		{ child: "F", parent: "B", display: 'none'},
+		{ child: "A", parent: "" },
+		{ child: "E", parent: "A", display: "none" },
+		{ child: "B", parent: "A" },
+		{ child: "C", parent: "B" },
+		{ child: "F", parent: "B", display: "none" },
 	],
 }).render();
 
@@ -2146,16 +2137,16 @@ const tg5 = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "A", parent: ""},
-		{ child: "E", parent: "A", display: 'none'},
-		{ child: "B", parent: "A"},
-		{ child: "F", parent: "B", display: 'none'},
-		{ child: "C", parent: "B"},
+		{ child: "A", parent: "" },
+		{ child: "E", parent: "A", display: "none" },
+		{ child: "B", parent: "A" },
+		{ child: "F", parent: "B", display: "none" },
+		{ child: "C", parent: "B" },
 	],
 }).render();
 
 const tg_pre_array = new csmd.StaticArray({
-	id: 'tg_pre_array',
+	id: "tg_pre_array",
 	data: [
 		{ val: "4" },
 		{ val: "7" },
@@ -2166,11 +2157,11 @@ const tg_pre_array = new csmd.StaticArray({
 		{ val: "5" },
 		{ val: "8" },
 		{ val: "1" },
-	]
+	],
 }).render();
 
 const tg_in_array = new csmd.StaticArray({
-	id: 'tg_in_array',
+	id: "tg_in_array",
 	data: [
 		{ val: "7" },
 		{ val: "6" },
@@ -2181,7 +2172,7 @@ const tg_in_array = new csmd.StaticArray({
 		{ val: "8" },
 		{ val: "2" },
 		{ val: "1" },
-	]
+	],
 }).render();
 
 const tg_true_tree = new csmd.Tree({
@@ -2191,9 +2182,9 @@ const tg_true_tree = new csmd.Tree({
 	container_width: 40,
 	container_height: 20,
 	data: [
-		{ child: "4", parent: ""},
-		{ child: "7,6,9,3", parent: "4", noCircle: true},
-		{ child: "5,8,2,1", parent: "4", noCircle: true},
+		{ child: "4", parent: "" },
+		{ child: "7,6,9,3", parent: "4", noCircle: true },
+		{ child: "5,8,2,1", parent: "4", noCircle: true },
 	],
 }).render();
 
@@ -2204,11 +2195,11 @@ const tg_true_tree2 = new csmd.Tree({
 	container_width: 40,
 	container_height: 20,
 	data: [
-		{ child: "4", parent: ""},
-		{ child: "7", parent: "4"},
-		{ child: "5,8,2,1", parent: "4", noCircle: true},
-		{ child: "6,9,3", parent: "7", noCircle: true, display: 'none'},
-		{ child: "6,9,3", parent: "7", noCircle: true},
+		{ child: "4", parent: "" },
+		{ child: "7", parent: "4" },
+		{ child: "5,8,2,1", parent: "4", noCircle: true },
+		{ child: "6,9,3", parent: "7", noCircle: true, display: "none" },
+		{ child: "6,9,3", parent: "7", noCircle: true },
 	],
 }).render();
 
@@ -2219,13 +2210,13 @@ const tg_true_tree3 = new csmd.Tree({
 	container_width: 50,
 	container_height: 20,
 	data: [
-		{ child: "4", parent: ""},
-		{ child: "7", parent: "4"},
-		{ child: "5,8,2,1", parent: "4", noCircle: true},
-		{ child: "12", parent: "7", noCircle: true, display: 'none'},
-		{ child: "9", parent: "7"},
-		{ child: "6", parent: "9"},
-		{ child: "3", parent: "9"},
+		{ child: "4", parent: "" },
+		{ child: "7", parent: "4" },
+		{ child: "5,8,2,1", parent: "4", noCircle: true },
+		{ child: "12", parent: "7", noCircle: true, display: "none" },
+		{ child: "9", parent: "7" },
+		{ child: "6", parent: "9" },
+		{ child: "3", parent: "9" },
 	],
 }).render();
 
@@ -2236,15 +2227,15 @@ const tg_true_tree4 = new csmd.Tree({
 	container_width: 40,
 	container_height: 20,
 	data: [
-		{ child: "4", parent: ""},
-		{ child: "7", parent: "4"},
-		{ child: "2", parent: "4"},
-		{ child: "12", parent: "7", noCircle: true, display: 'none'},
-		{ child: "9", parent: "7"},
-		{ child: "6", parent: "9"},
-		{ child: "3", parent: "9"},
-		{ child: "5,8", parent: "2", noCircle: true},
-		{ child: "1", parent: "2", noCircle: true},
+		{ child: "4", parent: "" },
+		{ child: "7", parent: "4" },
+		{ child: "2", parent: "4" },
+		{ child: "12", parent: "7", noCircle: true, display: "none" },
+		{ child: "9", parent: "7" },
+		{ child: "6", parent: "9" },
+		{ child: "3", parent: "9" },
+		{ child: "5,8", parent: "2", noCircle: true },
+		{ child: "1", parent: "2", noCircle: true },
 	],
 }).render();
 
@@ -2255,17 +2246,17 @@ const tg_true_tree5 = new csmd.Tree({
 	container_width: 40,
 	container_height: 20,
 	data: [
-		{ child: "4", parent: ""},
-		{ child: "7", parent: "4"},
-		{ child: "2", parent: "4"},
-		{ child: "12", parent: "7", display: 'none'},
-		{ child: "9", parent: "7"},
-		{ child: "6", parent: "9"},
-		{ child: "3", parent: "9"},
+		{ child: "4", parent: "" },
+		{ child: "7", parent: "4" },
+		{ child: "2", parent: "4" },
+		{ child: "12", parent: "7", display: "none" },
+		{ child: "9", parent: "7" },
+		{ child: "6", parent: "9" },
+		{ child: "3", parent: "9" },
 		{ child: "5", parent: "2" },
-		{ child: "17", parent: "5", display: 'none' },
+		{ child: "17", parent: "5", display: "none" },
 		{ child: "8", parent: "5" },
-		{ child: "1", parent: "2"},
+		{ child: "1", parent: "2" },
 	],
 }).render();
 
@@ -2276,18 +2267,18 @@ const bst_intro = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "30", parent: ""},
-		{ child: "15", parent: "30"},
-		{ child: "50", parent: "30"},
-		{ child: "10", parent: "15"},
-		{ child: "20", parent: "15"},
-		{ child: "40", parent: "50"},
-		{ child: "60", parent: "50"},
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "60", parent: "50" },
 	],
 }).render();
 
 const bst_array_1 = new csmd.StaticArray({
-	id: 'bst_array_1',
+	id: "bst_array_1",
 	data: [
 		{ val: "10" },
 		{ val: "15" },
@@ -2296,7 +2287,7 @@ const bst_array_1 = new csmd.StaticArray({
 		{ val: "40" },
 		{ val: "50" },
 		{ val: "60" },
-	]
+	],
 }).render();
 
 const bst_search_example = new csmd.Tree({
@@ -2306,30 +2297,30 @@ const bst_search_example = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "30", parent: ""},
-		{ child: "15", parent: "30"},
-		{ child: "50", parent: "30"},
-		{ child: "10", parent: "15"},
-		{ child: "20", parent: "15"},
-		{ child: "40", parent: "50"},
-		{ child: "60", parent: "50"},
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "60", parent: "50" },
 	],
 }).render();
 
 const bst_search_example1 = new csmd.Tree({
 	id: "bst_search_example1",
 	width: 350,
-	height: 250,
+	height: 300,
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "30", parent: "", annotate: 'p', focus: 'lavender'},
-		{ child: "15", parent: "30"},
-		{ child: "50", parent: "30"},
-		{ child: "10", parent: "15"},
-		{ child: "20", parent: "15"},
-		{ child: "40", parent: "50"},
-		{ child: "60", parent: "50"},
+		{ child: "30", parent: "", annotate: "p", focus: "lavender" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "60", parent: "50" },
 	],
 }).render();
 
@@ -2340,13 +2331,13 @@ const bst_search_example2 = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "30", parent: ""},
-		{ child: "15", parent: "30"},
-		{ child: "50", parent: "30", annotate: 'p', focus: 'lavender'},
-		{ child: "10", parent: "15"},
-		{ child: "20", parent: "15"},
-		{ child: "40", parent: "50"},
-		{ child: "60", parent: "50"},
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30", annotate: "p", focus: "lavender" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "60", parent: "50" },
 	],
 }).render();
 
@@ -2357,12 +2348,692 @@ const bst_search_example3 = new csmd.Tree({
 	container_width: 50,
 	container_height: 25,
 	data: [
-		{ child: "30", parent: ""},
-		{ child: "15", parent: "30"},
-		{ child: "50", parent: "30"},
-		{ child: "10", parent: "15"},
-		{ child: "20", parent: "15"},
-		{ child: "40", parent: "50", annotate: 'p', focus: 'lavender'},
-		{ child: "60", parent: "50"},
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50", annotate: "p", focus: "lavender" },
+		{ child: "60", parent: "50" },
+	],
+}).render();
+
+const binary_search_trace = new csmd.CallTrace({
+	id: "binary_search_trace",
+	container_height: 10,
+	data: [
+		{ child: "search(root, 60)", parent: "" },
+		{
+			child: "search(root(50), 60)",
+			parent: "search(root, 60)",
+		},
+	],
+}).render();
+
+const binary_search_trace2 = new csmd.CallTrace({
+	id: "binary_search_trace2",
+	container_width: 85,
+	container_height: 20,
+	svg_height: 120,
+	svg_width: 550,
+	data: [
+		{ child: "search(root, 60)", parent: "" },
+		{
+			child: "search(root(50)1, 60)",
+			parent: "search(root, 60)",
+			display: "none",
+		},
+		{
+			child: "search(root(50), 60)",
+			parent: "search(root, 60)",
+		},
+		{
+			child: "search(node(50).right_child1, 60)",
+			parent: "search(root(50), 60)",
+			display: "none",
+		},
+		{
+			child: "search(root(60), 60)",
+			parent: "search(root(50), 60)",
+		},
+	],
+}).render();
+
+const tree_insert_1 = new csmd.Tree({
+	id: "tree_insert_1",
+	edgeLength: 100,
+	width: 200,
+	height: 150,
+	container_width: 30,
+	container_height: 25,
+	data: [
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "60", parent: "50" },
+	],
+}).render();
+
+const bst_delete_1 = new csmd.Tree({
+	id: "bst_delete_1",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 30,
+	container_height: 27,
+	data: [
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "60", parent: "50" },
+		{ child: "55", parent: "60" },
+		{ child: "70", parent: "60" },
+	],
+}).render();
+
+const bst_delete_2 = new csmd.Tree({
+	id: "bst_delete_2",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 30,
+	container_height: 27,
+	data: [
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "60", parent: "50" },
+		{ child: "55", parent: "60" },
+		{ child: "70", parent: "60", opacity: 0.15 },
+	],
+}).render();
+
+const bst_delete_3 = new csmd.Tree({
+	id: "bst_delete_3",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 30,
+	container_height: 27,
+	data: [
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "60", parent: "50", opacity: 0.15 },
+		{ child: "55", parent: "60" },
+		{ child: "70", parent: "60", opacity: 0.15 },
+	],
+}).render();
+
+const bst_delete_4 = new csmd.Tree({
+	id: "bst_delete_4",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 30,
+	container_height: 27,
+	data: [
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "55", parent: "50" },
+	],
+}).render();
+
+const bst_delete_5 = new csmd.Tree({
+	id: "bst_delete_5",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 30,
+	container_height: 27,
+	data: [
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "50", parent: "30", opacity: 0.1 },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+		{ child: "40", parent: "50" },
+		{ child: "55", parent: "50" },
+	],
+}).render();
+
+const bst_delete_inorder_predecesor = new csmd.Tree({
+	id: "bst_delete_inorder_predecesor",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 50,
+	container_height: 45,
+	data: [
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "40", parent: "30" },
+		{ child: "56", parent: "40", display: "none" },
+		{ child: "55", parent: "40" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+	],
+}).render();
+
+const bst_delete_inorder_successor = new csmd.Tree({
+	id: "bst_delete_inorder_successor",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 50,
+	container_height: 45,
+	data: [
+		{ child: "30", parent: "" },
+		{ child: "15", parent: "30" },
+		{ child: "55", parent: "30" },
+		{ child: "40", parent: "55" },
+		{ child: "41", parent: "55", display: "none" },
+		{ child: "10", parent: "15" },
+		{ child: "20", parent: "15" },
+	],
+}).render();
+
+const removal_degenerate_tree = new csmd.Tree({
+	id: "removal_degenerate_tree",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 30,
+	container_height: 30,
+	data: [
+		{ child: "10", parent: "" },
+		{ child: "a", parent: "10", display: "none" },
+		{ child: "90", parent: "10" },
+		{ child: "20", parent: "90" },
+		{ child: "b", parent: "90", display: "none" },
+		{ child: "c", parent: "20", display: "none" },
+		{ child: "80", parent: "20" },
+		{ child: "30", parent: "80" },
+		{ child: "d", parent: "80", display: "none" },
+		{ child: "e", parent: "30", display: "none" },
+		{ child: "70", parent: "30" },
+	],
+}).render();
+
+const t1 = new csmd.Tree({
+	id: "t1",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 40,
+	container_height: 40,
+	data: [
+		{ child: "10", parent: "" },
+		{ child: "a", parent: "10", display: "none" },
+		{ child: "90", parent: "10" },
+		{ child: "20", parent: "90" },
+		{ child: "b", parent: "90", display: "none" },
+		{ child: "c", parent: "20", display: "none" },
+		{ child: "80", parent: "20" },
+		{ child: "30", parent: "80" },
+		{ child: "d", parent: "80", display: "none" },
+		{ child: "e", parent: "30", display: "none" },
+		{ child: "70", parent: "30" },
+	],
+}).render();
+
+const t2 = new csmd.Tree({
+	id: "t2",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 40,
+	container_height: 40,
+	data: [
+		{ child: "10", parent: "" },
+		{ child: "a", parent: "10", display: "none" },
+		{ child: "90", parent: "10", arrowTo: 7 },
+		{ child: "20", parent: "90", opacity: 0.1 },
+		{ child: "b", parent: "90", display: "none" },
+		{ child: "c", parent: "20", display: "none" },
+		{ child: "80", parent: "20" },
+		{ child: "30", parent: "80" },
+		{ child: "d", parent: "80", display: "none" },
+		{ child: "e", parent: "30", display: "none" },
+		{ child: "70", parent: "30" },
+	],
+}).render();
+
+const t3 = new csmd.Tree({
+	id: "t3",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 40,
+	container_height: 40,
+	data: [
+		{ child: "10", parent: "" },
+		{ child: "a", parent: "10", display: "none" },
+		{ child: "90", parent: "10", arrowTo: 7 },
+		{ child: "20", parent: "90", opacity: 0.2 },
+		{ child: "b", parent: "90", display: "none" },
+		{ child: "c", parent: "20", display: "none" },
+		{ child: "80", parent: "20", arrowTo: 10 },
+		{ child: "30", parent: "80" },
+		{ child: "d", parent: "80", display: "none" },
+		{ child: "e", parent: "30", display: "none" },
+		{ child: "70", parent: "30" },
+	],
+}).render();
+
+const t4 = new csmd.Tree({
+	id: "t4",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 40,
+	container_height: 40,
+	data: [
+		{ child: "10", parent: "" },
+		{ child: "a", parent: "10", display: "none" },
+		{ child: "90", parent: "10" },
+		{ child: "30", parent: "90" },
+		{ child: "b", parent: "90", display: "none" },
+		{ child: "d", parent: "80", display: "none" },
+		{ child: "f", parent: "70", display: "none" },
+		{ child: "80", parent: "70" },
+		{ child: "e", parent: "30", display: "none" },
+		{ child: "70", parent: "30" },
+	],
+}).render();
+
+const t5 = new csmd.Tree({
+	id: "t5",
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 40,
+	container_height: 40,
+	data: [
+		{ child: "10", parent: "" },
+		{ child: "a", parent: "10", display: "none" },
+		{ child: "30", parent: "10" },
+		{ child: "20", parent: "90", display: "none" },
+		{ child: "b", parent: "90", display: "none" },
+		{ child: "c", parent: "20", display: "none" },
+		{ child: "f", parent: "70", display: "none" },
+		{ child: "80", parent: "70" },
+		{ child: "g", parent: "80", display: "none" },
+		{ child: "90", parent: "80" },
+		{ child: "e", parent: "30", display: "none" },
+		{ child: "70", parent: "30" },
+	],
+}).render();
+
+const bst_traversal_generation_array = new csmd.StaticArray({
+	id: "bst_traversal_generation_array",
+	indexed: true,
+	data: [
+		{ val: 30 },
+		{ val: 20 },
+		{ val: 10 },
+		{ val: 15 },
+		{ val: 25 },
+		{ val: 40 },
+		{ val: 50 },
+		{ val: 45 },
+	],
+}).render();
+
+const bst_traversal_generation_stack = new csmd.Stack({
+	id: "bst_traversal_generation_stack",
+	height: 15,
+	colorFrame: "dodgerblue",
+	colorStroke: "blue",
+	colorText: "white",
+	frames: [{ val: "" }, { val: "" }, { val: "" }],
+}).render();
+
+const bst_gen_arr1 = new csmd.StaticArray({
+	id: "bst_gen_arr1",
+	indexed: true,
+	data: [
+		{ val: 30, focus: "red" },
+		{ val: 20 },
+		{ val: 10 },
+		{ val: 15 },
+		{ val: 25 },
+		{ val: 40 },
+		{ val: 50 },
+		{ val: 45 },
+	],
+}).render();
+
+const bst_gen_trav1 = new csmd.Tree({
+	id: "bst_gen_trav1",
+	directed: true,
+	width: 350,
+	height: 250,
+	container_width: 100,
+	container_height: 10,
+	data: [
+		{ child: "30", parent: "", pointer: "p,root" },
+		// { child: "15", parent: "30" },
+		// { child: "50", parent: "30" },
+		// { child: "10", parent: "15" },
+		// { child: "20", parent: "15" },
+		// { child: "40", parent: "50" },
+		// { child: "60", parent: "50" },
+	],
+}).render();
+const bst_gen_stack1 = new csmd.Stack({
+	id: "bst_gen_stack1",
+	width: 100,
+	height: 30,
+	colorFrame: "dodgerblue",
+	colorStroke: "blue",
+	colorText: "white",
+	frames: [{ val: "" }, { val: "" }, { val: "" }],
+}).render();
+
+const bst_gen_arr2 = new csmd.StaticArray({
+	id: "bst_gen_arr2",
+	indexed: true,
+	data: [
+		{ val: 30, focus: "red" },
+		{ val: 20, focus: "red" },
+		{ val: 10 },
+		{ val: 15 },
+		{ val: 25 },
+		{ val: 40 },
+		{ val: 50 },
+		{ val: 45 },
+	],
+}).render();
+const bst_gen_trav2 = new csmd.Tree({
+	id: "bst_gen_trav2",
+	directed: true,
+	width: 350,
+	height: 250,
+	container_width: 100,
+	container_height: 40,
+	data: [
+		{ child: "30", parent: "", pointer: "root" },
+		{ child: "20", parent: "30", pointer: "t,p" },
+		{ child: "10", parent: "30", display: "none" },
+		// { child: "10", parent: "15" },
+		// { child: "20", parent: "15" },
+		// { child: "40", parent: "50" },
+		// { child: "60", parent: "50" },
+	],
+}).render();
+const bst_gen_stack2 = new csmd.Stack({
+	id: "bst_gen_stack2",
+	width: 100,
+	height: 30,
+	colorFrame: "dodgerblue",
+	colorStroke: "blue",
+	colorText: "white",
+	frames: [{ val: "" }, { val: "" }, { val: "ad(30)" }],
+}).render();
+
+const bst_gen_arr3 = new csmd.StaticArray({
+	id: "bst_gen_arr3",
+	indexed: true,
+	data: [
+		{ val: 30, focus: "red" },
+		{ val: 20, focus: "red" },
+		{ val: 10, focus: "red" },
+		{ val: 15 },
+		{ val: 25 },
+		{ val: 40 },
+		{ val: 50 },
+		{ val: 45 },
+	],
+}).render();
+const bst_gen_trav3 = new csmd.Tree({
+	id: "bst_gen_trav3",
+	directed: true,
+	width: 350,
+	height: 250,
+	container_width: 100,
+	container_height: 40,
+	data: [
+		{ child: "30", parent: "", pointer: "root" },
+		{ child: "20", parent: "30" },
+		{ child: "a", parent: "30", display: "none" },
+		{ child: "10", parent: "20", pointer: "t,p" },
+		{ child: "b", parent: "20", display: "none" },
+		// { child: "20", parent: "15" },
+		// { child: "40", parent: "50" },
+		// { child: "60", parent: "50" },
+	],
+}).render();
+const bst_gen_stack3 = new csmd.Stack({
+	id: "bst_gen_stack3",
+	width: 100,
+	height: 30,
+	colorFrame: "dodgerblue",
+	colorStroke: "blue",
+	colorText: "white",
+	frames: [{ val: "" }, { val: "ad(20)" }, { val: "ad(30)" }],
+}).render();
+
+const bst_gen_arr4 = new csmd.StaticArray({
+	id: "bst_gen_arr4",
+	indexed: true,
+	data: [
+		{ val: 30, focus: "red" },
+		{ val: 20, focus: "red" },
+		{ val: 10, focus: "red" },
+		{ val: 15, focus: "red" },
+		{ val: 25 },
+		{ val: 40 },
+		{ val: 50 },
+		{ val: 45 },
+	],
+}).render();
+const bst_gen_trav4 = new csmd.Tree({
+	id: "bst_gen_trav4",
+	directed: true,
+	width: 350,
+	height: 250,
+	container_width: 100,
+	container_height: 40,
+	data: [
+		{ child: "30", parent: "", pointer: "root" },
+		{ child: "20", parent: "30" },
+		{ child: "a", parent: "30", display: "none" },
+		{ child: "10", parent: "20" },
+		{ child: "b", parent: "20", display: "none" },
+		{ child: "c", parent: "10", display: "none" },
+		{ child: "15", parent: "10", pointer: "t,p" },
+		// { child: "40", parent: "50" },
+		// { child: "60", parent: "50" },
+	],
+}).render();
+const bst_gen_stack4 = new csmd.Stack({
+	id: "bst_gen_stack4",
+	width: 100,
+	height: 30,
+	colorFrame: "dodgerblue",
+	colorStroke: "blue",
+	colorText: "white",
+	frames: [{ val: "" }, { val: "ad(20)" }, { val: "ad(30)" }],
+}).render();
+
+const bst_gen_arr5 = new csmd.StaticArray({
+	id: "bst_gen_arr5",
+	indexed: true,
+	data: [
+		{ val: 30, focus: "red" },
+		{ val: 20, focus: "red" },
+		{ val: 10, focus: "red" },
+		{ val: 15, focus: "red" },
+		{ val: 25, focus: "red" },
+		{ val: 40 },
+		{ val: 50 },
+		{ val: 45 },
+	],
+}).render();
+const bst_gen_trav5 = new csmd.Tree({
+	id: "bst_gen_trav5",
+	directed: true,
+	width: 350,
+	height: 250,
+	container_width: 100,
+	container_height: 40,
+	data: [
+		{ child: "30", parent: "", pointer: "root" },
+		{ child: "20", parent: "30" },
+		{ child: "a", parent: "30", display: "none" },
+		{ child: "10", parent: "20" },
+		{ child: "25", parent: "20", pointer: "t,p" },
+		{ child: "c", parent: "10", display: "none" },
+		{ child: "15", parent: "10" },
+		// { child: "40", parent: "50" },
+		// { child: "60", parent: "50" },
+	],
+}).render();
+const bst_gen_stack5 = new csmd.Stack({
+	id: "bst_gen_stack5",
+	width: 100,
+	height: 30,
+	colorFrame: "dodgerblue",
+	colorStroke: "blue",
+	colorText: "white",
+	frames: [{ val: "" }, { val: "" }, { val: "ad(30)" }],
+}).render();
+
+const bst_gen_arr6 = new csmd.StaticArray({
+	id: "bst_gen_arr6",
+	indexed: true,
+	data: [
+		{ val: 30, focus: "red" },
+		{ val: 20, focus: "red" },
+		{ val: 10, focus: "red" },
+		{ val: 15, focus: "red" },
+		{ val: 25, focus: "red" },
+		{ val: 40, focus: 'red'},
+		{ val: 50 },
+		{ val: 45 },
+	],
+}).render();
+const bst_gen_trav6 = new csmd.Tree({
+	id: "bst_gen_trav6",
+	directed: true,
+	width: 350,
+	height: 250,
+	container_width: 100,
+	container_height: 40,
+	data: [
+		{ child: "30", parent: "", pointer: "root" },
+		{ child: "20", parent: "30" },
+		{ child: "40", parent: "30" },
+		{ child: "10", parent: "20" },
+		{ child: "25", parent: "20", pointer: "t,p" },
+		{ child: "c", parent: "10", display: "none" },
+		{ child: "15", parent: "10" },
+		// { child: "40", parent: "50" },
+		// { child: "60", parent: "50" },
+	],
+}).render();
+const bst_gen_stack6 = new csmd.Stack({
+	id: "bst_gen_stack6",
+	width: 100,
+	height: 30,
+	colorFrame: "dodgerblue",
+	colorStroke: "blue",
+	colorText: "white",
+	frames: [{ val: "" }, { val: "" }, { val: "" }],
+}).render();
+
+const bst_cost_arr1 = new csmd.StaticArray({
+	id: "bst_cost_arr1",
+	indexed: true,
+	data: [
+		{ val: 40 },
+		{ val: 20 },
+		{ val: 30 },
+		{ val: 60 },
+		{ val: 50 },
+		{ val: 10 },
+		{ val: 70 },
+	],
+}).render();
+const bst_cost_arr2 = new csmd.StaticArray({
+	id: "bst_cost_arr2",
+	indexed: true,
+	data: [
+		{ val: 10 },
+		{ val: 20 },
+		{ val: 30 },
+		{ val: 40 },
+		{ val: 50 },
+		{ val: 60 },
+		{ val: 70 },
+	],
+}).render();
+
+const bst_cost_tree_1 = new csmd.Tree({
+	id: "bst_cost_tree_1",
+	heightMarked: true,
+	edgeLength: 130,
+	width: 200,
+	height: 180,
+	container_width: 60,
+	container_height: 50,
+	data: [
+		{ child: "40", parent: "" },
+
+		{ child: "20", parent: "40" },
+		{ child: "10", parent: "20" },
+		{ child: "30", parent: "20" },
+
+		{ child: "60", parent: "40" },
+		{ child: "50", parent: "60" },
+		{ child: "70", parent: "60" },
+	],
+}).render();
+
+const bst_cost_tree_2 = new csmd.Tree({
+	id: "bst_cost_tree_2",
+	heightMarked: true,
+	edgeLength: 140,
+	width: 350,
+	height: 250,
+	container_width: 100,
+	container_height: 50,
+	data: [
+		{ child: "10", parent: "" },
+
+		{ child: "a", parent: "10", display: 'none'},
+		{ child: "20", parent: "10" },
+
+		{ child: "b", parent: "20", display: 'none'},
+		{ child: "30", parent: "20" },
+
+		{ child: "c", parent: "30", display: 'none'},
+		{ child: "40", parent: "30" },
+
+		{ child: "d", parent: "40", display: 'none'},
+		{ child: "50", parent: "40" },
+
+		{ child: "e", parent: "50", display: 'none'},
+		{ child: "60", parent: "50" },
+
+		{ child: "f", parent: "60", display: 'none'},
+		{ child: "70", parent: "60" },
 	],
 }).render();

@@ -1,0 +1,461 @@
+{% extends '../../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on searching algorithms." />
+{% endblock %} {% block title %}
+<title>Searching Algorithms</title>
+{% endblock %} {% block content %}
+<h1>Searching Algorithms</h1>
+<section id="intro">
+	<p>
+		This article presents an overview of solutions to a few common
+		searching problems. The solutions presented are written in pseudocode,
+		but language specific implementations occassionally provided to address
+		interesting challenges or problems with the solution in a particular
+		domain.
+	</p>
+	<p>
+		Importantly, we use the term <q>search</q> broadly in this article
+		&mdash; it includes problems involving <i>finding</i>,
+		<i>verifying existence</i>, and <i>matching</i>. Thus, this article
+		explores such algorithms as determining the maximum or minimum in a
+		sequence (finding), whether a prime number exists in a sequence
+		(existence verification), or whether a particular string is included in
+		a particular data structure (matching).
+	</p>
+</section>
+
+<section id="linear_search">
+	<h2>Linear Search</h2>
+	<p>Suppose we're given the following array, called <var>arr</var>:</p>
+	<figure class="block">
+		<div id="linear_search_1"></div>
+		<figcaption>The array <var>arr</var></figcaption>
+	</figure>
+	<p>We want to implement the following methods:</p>
+	<table class="alg">
+		<thead>
+			<th>Method</th>
+			<th>Operation</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<ul class="syntax">
+						<li>indexOf(<i>element</i>)</li>
+					</ul>
+				</td>
+				<td>Returns the index of <var>element</var>, if any.</td>
+			</tr>
+			<tr>
+				<td>
+					<ul class="syntax">
+						<li>includes(<i>element</i>)</li>
+					</ul>
+				</td>
+				<td>
+					Returns <var>true</var> if <var>element</var> exists in
+					<var>arr</var>.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<ul class="syntax">
+						<li>find(<i>element</i>)</li>
+					</ul>
+				</td>
+				<td>
+					Returns <var>element</var> if it exists in <var>arr</var>,
+					otherwise, <var>null</var>.
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<ul class="syntax">
+						<li>findIndex(<i>element</i>)</li>
+					</ul>
+				</td>
+				<td>
+					Returns the index of the first element that matches
+					<var>element</var>.
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		To implement these methods, we need a searching algorithm. The most
+		straightforward searching algorithm is <b>linear search</b> &mdash; we
+		iterate through all of the elements, performing a comparison one at a
+		time. If our query matches the element, the loop ceases and the search
+		is successful. Otherwise, the loop continues.
+	</p>
+	<p>In pseudocode:</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>linearSearch(Array* array, TYPE key) -> bool:</li>
+				<ol>
+					<li>for (int i = 0; i &lt; array->_length; i++):</li>
+					<ol>
+						<li>if (array[i] == key):</li>
+						<ol>
+							<li>return true;</li>
+						</ol>
+					</ol>
+					<li>return false;</li>
+				</ol>
+			</ol>
+		</div>
+		<div class="js">
+			<p>Here's an implementation in JavaScript:</p>
+			<pre class="language-javascript"><code>
+				const linearSearch = (arr, query) => {
+					for (let i = 0; i &lt; arr.length; i++) {
+						if (arr[i] === query) {
+							return true;
+						}
+					}
+					return false;
+				}
+			</code></pre>
+			<p>
+				For testing, we'll be using our testing module,
+				<var>test.mjs</var>:
+			</p>
+			<pre class="language-javascript"><code>
+				class Test {
+					static #testCount = 0;
+					static #testTimeCount = 0;
+					static #ns_per_sec = 1e9;
+					static #ms_per_ns = 1e-6;
+					static run(result, expected) {
+						if (result === expected) {
+							console.log(
+								`test${
+									this.#testCount
+								} passed { result: ${result}, expected: ${expected} }`,
+							);
+						} else {
+							console.log(
+								`test${
+									this.#testCount
+								} FAILED { result: ${result}, expected: ${expected} }`,
+							);
+						}
+						this.#testCount++;
+					}
+				
+					static time(method) {
+						const start = process.hrtime();
+						method;
+						const diff = process.hrtime(start)
+						const duration = diff[0] * this.#ns_per_sec + diff[1] * this.#ms_per_ns
+						console.log(`time-test${this.#testTimeCount}: ${duration}`);
+						this.#testTimeCount++;
+					}
+				
+					static testArray(elementCount) {
+						let arr = [];
+						for (let i = 0; i < elementCount; i++) {
+							arr[i] = i;
+						}
+						return arr;
+					}
+				}
+				
+				export default Test;
+			</code></pre>
+			<p>Running the tests:</p>
+			<pre class="language-javascript"><code>
+				import Test from "../test/test.mjs";
+
+				const arr = Test.testArray(10_000);
+				
+				const linearSearch = (arr, query) => {
+					for (let i = 0; i < arr.length; i++) {
+						if (arr[i] === query) {
+							return true;
+						}
+					}
+					return false;
+				};
+				
+				Test.run(linearSearch(arr, 727), true);
+				Test.run(linearSearch(arr, 328), true);
+				Test.run(linearSearch(arr, 10_010), false);
+				Test.run(linearSearch(arr, "ben"), false);
+				Test.run(linearSearch(arr, null), false);
+				Test.run(linearSearch(arr, undefined), false);
+			</code></pre>
+			<pre class="language-bash"><code>
+				test0 passed { result: true, expected: true }
+				test1 passed { result: true, expected: true }
+				test2 passed { result: false, expected: false }
+				test3 passed { result: false, expected: false }
+				test4 passed { result: false, expected: false }
+				test5 passed { result: false, expected: false }
+			</code></pre>
+			<p>Just for fun, let's see a quick time analysis.</p>
+			<pre class="language-javascript"><code>
+				import Test from "../test/test.mjs";
+
+				const arr = Test.testArray(1_000_000);
+
+				const linearSearch = (arr, query) => {
+					for (let i = 0; i < arr.length; i++) {
+						if (arr[i] === query) {
+							return true;
+						}
+					}
+					return false;
+				};
+			</code></pre>
+			<p>
+				To prevent the compiler from performing optimizations, we'll test
+				each of these arrays separately. Doing so, we get the following
+				data:
+			</p>
+			<figure>
+				<pre class="language-pseudo"><code>
+					| call                                  | time (seconds) |
+					+---------------------------------------+----------------+
+					| Test.time(linearSearch(arr, 5))       | 0.00675        |
+					| Test.time(linearSearch(arr, 1000))    | 0.00800        |
+					| Test.time(linearSearch(arr, 500_000)) | 0.00849        |
+					| Test.time(linearSearch(arr, "Ben"))   | 0.00973        |
+				</code></pre>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<section id="binary_search">
+	<h2>Binary Search</h2>
+	<p>
+		An alternative searching approach is <b>binary search</b>. The catch,
+		however, is that the elements to search through must be <i>sorted</i>.
+		For example, suppose we had the following array <var>A</var>:
+	</p>
+	<figure class="block">
+		<div id="binary_search_0"></div>
+		<figcaption>The array <var>A</var></figcaption>
+	</figure>
+	<p>
+		Examining the array, we see that the elements are sorted from least to
+		greatest, so we've met the sorted requirement. Let's pick a key. Say,
+		${38:}$
+	</p>
+	<figure class="block">
+		<div id="binary_search_1"></div>
+		<figcaption><var>key = 38</var></figcaption>
+	</figure>
+	<p>
+		Now that we have our key, we can begin the search. The first step is to
+		go to the element at the midpoint &mdash; defined in terms of indices
+		&mdash; of the search range. Since we've just started our search, our
+		search range is the entire sequence. Thus, our midpoint is:
+	</p>
+	<figure>
+		$$ \dfrac{\texttt{min} + \texttt{max}}{2} = \dfrac{0 + 10}{2} = 5 $$
+	</figure>
+	<p>
+		where <var>min</var> is the lowest index of the search range, and
+		<var>max</var> is the highest index of the search range. Given these
+		indices, we apply the following propositions:
+	</p>
+	<ol>
+		<li>
+			If <var>A[5] = key</var>, then the search terminates successfully.
+		</li>
+		<li>
+			If <var>A[5] &lt; key</var>, then continue the search to the right.
+			To do so, set <var>min = mid + 1.</var>
+		</li>
+		<li>
+			If <var>A[5] &gt; key</var>, then continue the search to the left. To
+			do so, set <var>max = mid - 1</var>.
+		</li>
+	</ol>
+	<p>In this case, <var>A[5]</var> is <var>24</var>:</p>
+	<div id="binary_search_2"></div>
+	<p>
+		Since <var>24 &lt; 38</var>, if the key exists, it must be to the
+		right. So, we again compute the midpoint:
+	</p>
+	<figure>
+		$$ \dfrac{\texttt{min} + \texttt{max}}{2} = \dfrac{6 + 10}{2} = 8 $$
+	</figure>
+	<div id="binary_search_3"></div>
+	<p>
+		Now our midpoint element is <var>A[8] = 46</var>. We apply the same
+		propositions we saw earlier: Is it equal, less than, or greater than
+		the key? Well, <var>46 &gt; 38</var>, so, if the key exists, it must be
+		to the left. Once more we compute the midpoint:
+	</p>
+	<figure>
+		$$ \dfrac{\texttt{min} + \texttt{max}}{2} = \dfrac{6 + 7}{2} = 6.5 $$
+	</figure>
+	<div id="binary_search_4"></div>
+	<p>
+		What happens if we get a fractional index? We use the flooring
+		function:
+	</p>
+	<figure>$$ \left\lfloor 6.5 \right\rfloor = 6 $$</figure>
+	<p>Thus, our midpoint is <var>A[6]</var>:</p>
+	<div id="binary_search_5"></div>
+	<p>
+		Reading the element at the midpoint index, we get <var>A[6] = 31</var>.
+		Once again, we make our checks &mdash; <var>31 &lt; 38</var>, so if the
+		key exists, it must be to the right. The midpoint:
+	</p>
+	<figure>
+		$$ \dfrac{\texttt{min} + \texttt{max}}{2} = \dfrac{6 + 8}{2} = 7 $$
+	</figure>
+	<p>
+		Performing our key checks: <var>A[7] = 38 = 38</var>. We've found our
+		key. Notice how the binary search algorithm works. We're cutting the
+		search range in half at each iteration:
+	</p>
+	<div id="binary_pattern_1"></div>
+	<div id="binary_pattern_2"></div>
+	<div id="binary_pattern_3"></div>
+	<div id="binary_pattern_4"></div>
+	<div id="binary_pattern_5"></div>
+	<div id="binary_pattern_6"></div>
+	<p>The implementation:</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>binary_search(TYPE array, TYPE key) -> bool:</li>
+				<ol>
+					<li>int min := 0</li>
+					<li>int max := array.length()</li>
+					<li>while (min <= max):</li>
+					<ol>
+						<li>
+							var int mid := ${\left\lfloor \dfrac{\texttt{min} +
+							\texttt{max}}{\texttt{2}} \right\rfloor }$
+						</li>
+						<li>if (array[mid] = key) => return true</li>
+						<li>else if (array[mid] &lt; key) => min := mid + 1</li>
+						<li>else => max := mid - 1</li>
+					</ol>
+					<li>return false;</li>
+				</ol>
+			</ol>
+		</div>
+		<div class="js">
+			<p>Here's an implementation in JavaScript:</p>
+			<pre class="language-javascript"><code>
+				const binary_search = (array, key) => {
+					let min = 0;
+					let max = array.length;
+					while (min <= max) {
+						let mid = Math.floor((min + max) * 0.5);
+						if (array[mid] === key) {
+							return true;
+						} else if (array[mid] &lt; key) {
+							min = mid + 1;
+						} else {
+							max = mid - 1;
+						}
+					}
+					return false;
+				};
+			</code></pre>
+			<p>For testing, we'll use our <var>test.mjs</var> module:</p>
+			<pre class="language-javascript"><code>
+				class Test {
+					static #testCount = 0;
+					static #testTimeCount = 0;
+					static #ns_per_sec = 1e9;
+					static #ms_per_ns = 1e-6;
+					static run(result, expected) {
+						if (result === expected) {
+							console.log(
+								`test${
+									this.#testCount
+								} passed { result: ${result}, expected: ${expected} }`,
+							);
+						} else {
+							console.log(
+								`test${
+									this.#testCount
+								} FAILED { result: ${result}, expected: ${expected} }`,
+							);
+						}
+						this.#testCount++;
+					}
+				
+					static time(method) {
+						const start = process.hrtime();
+						method;
+						const diff = process.hrtime(start)
+						const duration = diff[0] * this.#ns_per_sec + diff[1] * this.#ms_per_ns
+						console.log(`time-test${this.#testTimeCount}: ${duration}`);
+						this.#testTimeCount++;
+					}
+				
+					static testArray(elementCount) {
+						let arr = [];
+						for (let i = 0; i &lt; elementCount; i++) {
+							arr[i] = i;
+						}
+						return arr;
+					}
+				}
+				
+				export default Test;
+			</code></pre>
+			<p>Testing:</p>
+			<pre class="language-javascript"><code>
+				import Test from "../test/test.mjs";
+
+				const arr1 = Test.testArray(30);
+
+				const binary_search = (array, key) => {
+					let min = 0;
+					let max = array.length;
+					while (min <= max) {
+						let mid = Math.floor((min + max) * 0.5);
+						if (array[mid] === key) {
+							return true;
+						} else if (array[mid] &lt; key) {
+							min = mid + 1;
+						} else {
+							max = mid - 1;
+						}
+					}
+					return false;
+				};
+
+				Test.run(binary_search(arr1, 5), true);
+				Test.run(binary_search(arr1, 28), true);
+				Test.run(binary_search(arr1, 31), false);
+				Test.run(binary_search(arr1, 2), true);
+			</code></pre>
+				
+			
+			<pre class="language-bash"><code>
+				test0 passed { result: true, expected: true }
+				test1 passed { result: true, expected: true }
+				test2 passed { result: false, expected: false }
+				test3 passed { result: true, expected: true }
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../../static/numerc/scripts/cpp_search.js"
+></script>
+{% endblock %}

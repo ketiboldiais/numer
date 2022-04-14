@@ -13,12 +13,80 @@
 	<p>
 		JavaScript is an ideal language for demonstrating that object-oriented
 		programming is just one approach to problem solving. It's also a great
-		language for comparing value types (e.g., <i>records</i> and <i>structs</i>)
-		and reference types (e.g., <i>classes</i>).
+		language for comparing value types (e.g., <i>records</i> and
+		<i>structs</i>) and reference types (e.g., <i>classes</i>). To
+		understand classes, however, we must first understand
+		<i>prototypes</i>.
 	</p>
+	<section id="prototypes">
+		<h2>Prototypes</h2>
+		<p>
+			If we go to
+			<a
+				href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"
+				>MDN's JavaScript Array Documentation</a
+			>, we see numerous entries named
+			<var>Array.prototype.(some-method)</var>. What is a prototype? A
+			<b>prototype</b> is simply a template for a particular object. Recall
+			that everything in JavaScript is an object, and arrays are no
+			exception. Whenever we create a new array, an object is created
+			following a particular template. That template is the array
+			prototype, which we see as <var>Array.prototype</var> on MDN.
+		</p>
+		<p>
+			We can see what this prototype looks like by creating an array and
+			running <var>console.log()</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			const arr = [1,2,3];
+			console.log(arr);
+		</code></pre>
+		<pre class="language-bash"><code>
+			(3) [1, 2, 3]
+				0: 1
+				1: 2
+				2: 3
+				length: 3
+				[[Prototype]]: Array(0)
+					at: ƒ at()
+					concat: ƒ concat()
+					constructor: ƒ Array()
+					copyWithin: ƒ copyWithin()
+					entries: ƒ entries()
+					every: ƒ every()
+					fill: ƒ fill()
+					filter: ƒ filter()
+					find: ƒ find()
+					&vellip;
+		</code></pre>
+		<p>
+			Under the <var>[[Prototype]]</var> property, there are numerous
+			methods and properties, many of which we're familiar with &mdash;
+			<var>concat()</var>, <var>forEach()</var>, <var>pop()</var>,
+			<var>push()</var>, and so on.
+		</p>
+		<p>
+			A prototype is just another object. And because it's just another
+			object, we can add our own methods to existing prototypes. For
+			example, strings in JavaScript aren't exactly primitives, in the same
+			sense that numbers are. Instead, strings are values that have an
+			object wrapper &mdash; i.e., a prototype. And because strings have a
+			prototype &mdash; just another object &mdash; we can add our own
+			methods. Say we wanted to add a method called <var>echo()</var>,
+			which logs the string to the console. We can do so by writing:
+		</p>
+		<pre class="language-javascript"><code>
+			String.prototype.echo = function() {console.log(`${this}`)};
+			let x = "Hello";
+			x.echo();
+		</code></pre>
+		<pre class="language-bash"><code>
+			Hello
+		</code></pre>
+	</section>
 	<p>
-		For example, suppose we were writing some program for managing an investment
-		portfolio. We have an array of stocks, each stock an object:
+		For example, suppose we were writing some program for managing an
+		investment portfolio. We have an array of stocks, each stock an object:
 	</p>
 	<pre class="language-javascript"><code>
 		const stocks = [
@@ -35,8 +103,8 @@
 		]
 	</code></pre>
 	<p>
-		If we're trying to model a portfolio, it would make more sense to place the
-		list of stocks into an object called <var>portfolio</var>:
+		If we're trying to model a portfolio, it would make more sense to place
+		the list of stocks into an object called <var>portfolio</var>:
 	</p>
 	<pre class="language-javascript"><code>
 		const portfolio = {
@@ -83,11 +151,12 @@
 		8596
 	</code></pre>
 	<p>
-		Object-literals are a good way to keep related code together, but writing
-		these records explicitly reduces readability. And with reduced readability,
-		we end up walking on eggshells &mdash; the slightest mistake can sink our
-		program. Instead of writing object-literals explicitly, we can instead write
-		functions to create the objects. This illustrates a
+		Object-literals are a good way to keep related code together, but
+		writing these records explicitly reduces readability. And with reduced
+		readability, we end up walking on eggshells &mdash; the slightest
+		mistake can sink our program. Instead of writing object-literals
+		explicitly, we can instead write functions to create the objects. This
+		illustrates a
 		<i>functional programming</i> approach:
 	</p>
 	<pre class="language-javascript"><code>
@@ -122,9 +191,9 @@
 		8596
 	</code></pre>
 	<p>
-		Functional programming, however, is not the only approach we have at our
-		disposal. We can achieve similar results with object-oriented programming.
-		This is done by way of classes:
+		Functional programming, however, is not the only approach we have at
+		our disposal. We can achieve similar results with object-oriented
+		programming. This is done by way of classes:
 	</p>
 	<pre class="language-javascript"><code>
 		// Class for stocks
@@ -172,42 +241,8 @@
 	<p>
 		In the JavaScript context, we can think of classes as blueprints for
 		object-literals. We use the term <q>object-literal</q> to differentiate
-		JavaScript's approach to OOP from languages like Python, Java, and C++. In
-		general, the basic JavaScript class has the following form:
+		JavaScript's approach to OOP from languages like Python, Java, and C++.
 	</p>
-	<ol class="alg">
-		<li>class ${C}$ {</li>
-		<ol>
-			<li><span class="pop">${F_1}$</span></li>
-			<div class="popText">
-				<p>${F_1}$ to ${P_n}$ are called <b>fields</b>.</p>
-			</div>
-			<li>${F_2}$</li>
-			<li>${\vdots}$</li>
-			<li>${F_n}$</li>
-			<li><span class="pop">constructor(${p_1, p_2, \ldots, p_n}$) {</span></li>
-			<div class="popText">
-				<p>
-					The <b>constructor</b> is a function that creates an instance of a
-					class. The word <var>constructor</var> itself is a keyword.
-				</p>
-			</div>
-			<ol>
-				<li><span class="pop">this.${F_1 = p_1}$</span></li>
-				<div class="popText">
-					<p>
-						The arguments passed to the constructor are assigned to the fields.
-						Once assigned, they become <b>properties</b>.
-					</p>
-				</div>
-				<li>this.${F_2 = p_2}$</li>
-				<li>${\vdots}$</li>
-				<li>this.${F_n = p_n}$</li>
-			</ol>
-			<li>}</li>
-		</ol>
-		<li>}</li>
-	</ol>
 </section>
 
 <section id="getters_and_setters">
@@ -222,8 +257,8 @@
 			property's assigned value.
 		</li>
 		<li>
-			A <b>setter</b> is a method that, when invoked, assigns some value to an
-			object property.
+			A <b>setter</b> is a method that, when invoked, assigns some value to
+			an object property.
 		</li>
 	</ul>
 	<p>
@@ -274,28 +309,28 @@
 	</code></pre>
 	<p>
 		In essence, getters allow us to retrieve object properties, and setters
-		allow us to modify, or initialize, object properties. Moreover, they aren't
-		limited to classes. We can use the <var>get</var> and <var>set</var> keyword
-		inside object-literals as well. We will revisit getters and setters in the
-		section on access modifiers.
+		allow us to modify, or initialize, object properties. Moreover, they
+		aren't limited to classes. We can use the <var>get</var> and
+		<var>set</var> keyword inside object-literals as well. We will revisit
+		getters and setters in the section on access modifiers.
 	</p>
 </section>
 
 <section id="static_methods_and_properties">
 	<h2>Statics &amp; Non-statics</h2>
 	<p>
-		As we saw, JavaScript classes have two components: (1) <b>properties</b> and
-		(2) <b>methods</b>. Properties correspond to the class's data, and methods
-		correspond to the class's operations. There are two kinds of properties and
-		methods:
+		As we saw, JavaScript classes have two components: (1)
+		<b>properties</b> and (2) <b>methods</b>. Properties correspond to the
+		class's data, and methods correspond to the class's operations. There
+		are two kinds of properties and methods:
 	</p>
 	<ul>
 		<li>Statics</li>
 		<li>Non-statics</li>
 	</ul>
 	<p>
-		Because there are two kinds of properties and methods, we have ${2 \times 2
-		= 4}$ varieties of properties and methods:
+		Because there are two kinds of properties and methods, we have ${2
+		\times 2 = 4}$ varieties of properties and methods:
 	</p>
 	<ul>
 		<li>Static properties</li>
@@ -304,23 +339,25 @@
 		<li>Non-static methods</li>
 	</ul>
 	<p>
-		We use the term <i>statics</i> to refer to both static properties and static
-		methods, and the term <i>non-statics</i> to refer to both non-static
-		properties and non-static methods. Let's start with statics.
+		We use the term <i>statics</i> to refer to both static properties and
+		static methods, and the term <i>non-statics</i> to refer to both
+		non-static properties and non-static methods. Let's start with statics.
 	</p>
 
 	<section id="statics">
 		<h3>Static Properties &amp; Methods</h3>
 		<p>
-			Statics are properties or methods accessible on the class itself, without
-			instantiation. In other words, we can use a static property or static
-			method without having to create an instance of the class.
+			Statics are properties or methods accessible on the class itself,
+			without instantiation. In other words, we can use a static property
+			or static method without having to create an instance of the class.
 		</p>
 		<p>
-			Statics most often used for <b>helper classes</b> &mdash; classes that
-			provide utility functions and global configurations. For example,
-			JavaScript natively provides a class called <var><mark>Date</mark></var
-			>. This class contains the static method <var><mark>Date.now()</mark></var
+			Statics most often used for <b>helper classes</b> &mdash; classes
+			that provide utility functions and global configurations. For
+			example, JavaScript natively provides a class called
+			<var><mark>Date</mark></var
+			>. This class contains the static method
+			<var><mark>Date.now()</mark></var
 			>:
 		</p>
 		<pre class="language-javascript"><code>
@@ -331,8 +368,8 @@
 		</code></pre>
 		<p>
 			The <var>.now()</var> method returns the primitive integer value,
-			representing the number of milliseconds elapsed since January 1, 1970,
-			00:00:00 UTC.
+			representing the number of milliseconds elapsed since January 1,
+			1970, 00:00:00 UTC.
 		</p>
 		<p>
 			We can define our own statics with the
@@ -354,11 +391,11 @@
 			6.626e-34
 		</code></pre>
 		<p>
-			Above, we created a class called <var>Maths</var>, containing (1) a static
-			property called <var>Planck</var>, and (2) a static method called
-			<var>natNumSeries()</var>. The static property corresponds to Planck's
-			constant from physics, and the static method corresponds to the sum of the
-			natural numbers.
+			Above, we created a class called <var>Maths</var>, containing (1) a
+			static property called <var>Planck</var>, and (2) a static method
+			called <var>natNumSeries()</var>. The static property corresponds to
+			Planck's constant from physics, and the static method corresponds to
+			the sum of the natural numbers.
 		</p>
 	</section>
 
@@ -367,16 +404,16 @@
 		<p>
 			The opposite of a static is a <b>non-static</b>. In JavaScript, all
 			properties and methods are, by default, non-static &mdash; they are
-			defined <em>without</em> the <var>static</var> keyword. As we can guess,
-			non-static methods or properties can only be called on instances of the
-			class. In other words, to use a non-static property or method, we must
-			have an instance of the class &mdash; an object of that class &mdash; to
-			call the property or method.
+			defined <em>without</em> the <var>static</var> keyword. As we can
+			guess, non-static methods or properties can only be called on
+			instances of the class. In other words, to use a non-static property
+			or method, we must have an instance of the class &mdash; an object of
+			that class &mdash; to call the property or method.
 		</p>
 		<p>
 			For example, using the same <var>Maths</var> class in the previous
-			example, removing the <var>static</var> keyword, without more, leads to
-			errors:
+			example, removing the <var>static</var> keyword, without more, leads
+			to errors:
 		</p>
 		<pre class="language-javascript"><code>
 			class Maths { 
@@ -419,11 +456,11 @@
 <section id="inheritance">
 	<h2>Inheritance</h2>
 	<p>
-		A common feature of object-oriented programming is <b>inheritance</b>. We
-		can think of inheritance as a way of avoiding duplicate code. For example,
-		suppose we wrote a social media program, where users can post text, images,
-		videos, and sounds. Thinking of these entities as a whole, we see three
-		types:
+		A common feature of object-oriented programming is <b>inheritance</b>.
+		We can think of inheritance as a way of avoiding duplicate code. For
+		example, suppose we wrote a social media program, where users can post
+		text, images, videos, and sounds. Thinking of these entities as a
+		whole, we see three types:
 	</p>
 
 	<ul>
@@ -443,8 +480,8 @@
 		<li>A post URL</li>
 	</ul>
 	<p>
-		But they also might have some unique properties, and properties in common
-		with some but not others:
+		But they also might have some unique properties, and properties in
+		common with some but not others:
 	</p>
 	<ul>
 		<li>Text posts:</li>
@@ -512,12 +549,13 @@
 		}
 	</code></pre>
 	<p>
-		Notice the amount of duplicate code. Many of the methods or properties like
-		<var>post()</var> and <var>title</var> could be reused across these classes.
-		Object-oriented programming allows us to do so with inheritance. Rather than
-		creating individual classes, we create more generalized classes, and have
-		more specific classes <i>inherit</i> properties and methods from the
-		generalized classes.
+		Notice the amount of duplicate code. Many of the methods or properties
+		like
+		<var>post()</var> and <var>title</var> could be reused across these
+		classes. Object-oriented programming allows us to do so with
+		inheritance. Rather than creating individual classes, we create more
+		generalized classes, and have more specific classes
+		<i>inherit</i> properties and methods from the generalized classes.
 	</p>
 	<p>
 		To begin, instead of visualizing the complexity with lists, let's use
@@ -608,13 +646,14 @@
 		</table>
 	</figure>
 	<p>
-		In the table above, the bold cells indicate a particular class, with all of
-		the methods and properties in the class above it. Thus, the
-		<var>TextPost</var> class has the <var>tagList</var> property, as well as
-		all of the properties and methods of <var>Post</var>. But, it does not have
-		any of the methods or properties of the classes to its left, right, or
-		below. It only inherits from the row &mdash; the <b>parent class</b> &mdash;
-		directly above it. This principle is called <b>single inheritance</b>.
+		In the table above, the bold cells indicate a particular class, with
+		all of the methods and properties in the class above it. Thus, the
+		<var>TextPost</var> class has the <var>tagList</var> property, as well
+		as all of the properties and methods of <var>Post</var>. But, it does
+		not have any of the methods or properties of the classes to its left,
+		right, or below. It only inherits from the row &mdash; the
+		<b>parent class</b> &mdash; directly above it. This principle is called
+		<b>single inheritance</b>.
 	</p>
 	<p>
 		To establish inheritance, we use the
@@ -650,14 +689,606 @@
 		}
 	</code></pre>
 	<p>
-		Writing the code above, we've gained much more reusability. We don't have to
-		write, or copy-paste, code across classes. Every <var>VideoPost</var> has
-		the property <var>postDate</var>, the method <var>deletePost()</var>, the
-		method <var>play()</var>, and so on &mdash; it has all of the properties and
-		methods from the class following the keyword <var>extends</var>.
+		Writing the code above, we've gained much more reusability. We don't
+		have to write, or copy-paste, code across classes. Every
+		<var>VideoPost</var> has the property <var>postDate</var>, the method
+		<var>deletePost()</var>, the method <var>play()</var>, and so on
+		&mdash; it has all of the properties and methods from the class
+		following the keyword <var>extends</var>.
 	</p>
 </section>
-<section id="overriding_methods">
-	<h2>Overriding Methods</h2>
+
+<section id="case_study_color">
+	<h2>Case Study: Color Class</h2>
+	<p>
+		Much of object-oriented programming can seem very abstract. The best
+		way to see how OOP can be so useful is by actually applying the
+		concepts. To do so, we'll create a <var>Color</var> class. The idea is,
+		we want to be able to write something like:
+	</p>
+	<pre class="language-javascript"><code>
+		const rose = new Color('rose', [230, 126, 34]);
+	</code></pre>
+	<p>
+		and use the variable <var>rose</var> as a color whenever we need to.
+		This allows us to write more semantic code, avoiding the need to write
+		<var>const rose = "rgb(230,126,34)"</var>.
+	</p>
+
+	<section id="factory_functions">
+		<h3>Factory Functions</h3>
+		<p>
+			<b>Factory functions</b> are exactly what they sound like: They take
+			some inputs, and output some assembled product. For example, let's
+			say we want a function that takes three numbers and outputs an RGB
+			color. We can write a function <var>rgb()</var> for doing so:
+		</p>
+		<pre class="language-javascript"><code>
+			function rgb(r, g, b) {
+				return `rgb(${r}, ${g}, ${b})`;
+			}
+		</code></pre>
+		<p>
+			How about a function for producing hexadecimal colors? Again, we can
+			write another function, using the mathematics behind hexadecimal
+			colors:
+		</p>
+		<pre class="language-javascript"><code>
+			function hex(r, g, b) {
+				const offset = 1 &lt;&lt; 24;
+				const rHex = r &lt;&lt; 16;
+				const gHex = g &lt;&lt; 8;
+				return '#' + (offset + rHex + gHex + b).toString(16).slice(1);
+			}
+		</code></pre>
+		<p>
+			These functions just return strings. We could stop there, but it
+			would be great if we could define a single color and have both its
+			RGB representation and hexadecimal representation. We can do so by
+			writing a <b>factory function</b>. A factory function is just a
+			function that returns something more complicated than a literal. For
+			example, another function, or more commonly, an object:
+		</p>
+		<pre class="language-javascript"><code>
+			function newColor(r,g,b) {
+				const color = {};
+				color.r = r;
+				color.g = g;
+				color.b = b;
+
+				color.rgb = function() {
+					return `rgb(${r}, ${g}, ${b})`;
+				}
+
+				color.hex = function() {
+					const offset = 1 &lt;&lt; 24;
+					const rHex = r &lt;&lt; 16;
+					const gHex = g &lt;&lt; 8;
+					return '#' + (offset + rHex + gHex + b).toString(16).slice(1);
+				}
+				return color;
+			}
+
+			// Testing
+			const x = newColor(34, 25, 150);
+
+			console.log(x.rgb());
+			console.log(x.hex());
+
+
+			x.r = 12;
+			x.g = 28;
+			x.b = 141;
+
+			console.log(x.rgb());
+			console.log(x.hex());
+		</code></pre>
+		<p>
+			Great, it works. One thing we might want is the ability to change the
+			<var>r</var>, <var>g</var>, and <var>b</var> values by simply writing
+			<var>x.r = some_number</var>. To do so, we can use the
+			<var>this</var> keyword:
+		</p>
+		<pre class="language-javascript"><code>
+			function newColor(r,g,b) {
+				const color = {};
+				color.r = r;
+				color.g = g;
+				color.b = b;
+
+				color.rgb = function() {
+					const {r, g, b} = this; // destructure
+					return `rgb(${r}, ${g}, ${b})`;
+				}
+
+				color.hex = function() {
+					const {r, g, b} = this; // destructure
+					const offset = 1 &lt;&lt; 24;
+					const rHex = r &lt;&lt; 16;
+					const gHex = g &lt;&lt; 8;
+					return '#' + (offset + rHex + gHex + b).toString(16).slice(1);
+				}
+				return color;
+			}
+
+			// Testing
+			const x = newColor(34, 25, 150);
+
+			console.log(x.rgb());
+			console.log(x.hex());
+
+
+			x.r = 12;
+			x.g = 28;
+			x.b = 141;
+
+			console.log(x.rgb());
+			console.log(x.hex());
+		</code></pre>
+		<pre class="language-bash"><code>
+			rgb(34, 25, 150)
+			#221996
+			rgb(12, 28, 141)
+			#0c1c8d
+		</code></pre>
+
+		<section id="constructors">
+			<h3>A Better Approach: Constructors</h3>
+			<p>
+				Factory functions are nice, but they come at a cost. Everytime we
+				call <var>newColor()</var>, we make a new object, and each new
+				object has its own, unique copy of <var>rgb()</var> and
+				<var>hex()</var>. For some applications, this may be necessary, but
+				for our purposes, it's a waste of memory. Both <var>rgb()</var> and
+				<var>hex()</var> all work the same way, so there's no need for
+				every object to have its own copy.
+			</p>
+			<p>
+				To avoid this memory waste, we can instead create a
+				<b>constructor</b>:
+			</p>
+			<pre class="language-javascript"><code>
+				function Color(r,g,b) {
+					this.r = r;
+					this.g = g;
+					this.b = b;
+				}
+	
+				Color.prototype.rgb = function() {
+					const {r, g, b} = this;
+					return `rgb(${r}, ${g}, ${b})`;
+				}
+	
+				Color.prototype.hex = function() {
+					const {r, g, b} = this;
+					const offset = 1 &lt;&lt; 24;
+					const rHex = r &lt;&lt; 16;
+					const gHex = g &lt;&lt; 8;
+					return '#' + (offset + rHex + gHex + b).toString(16).slice(1);
+				}
+	
+				// Testing
+				const x = new Color(34, 25, 150);
+	
+				console.log(x.rgb());
+				console.log(x.hex());
+	
+	
+				x.r = 12;
+				x.g = 28;
+				x.b = 141;
+	
+				console.log(x.rgb());
+				console.log(x.hex());
+			</code></pre>
+			<pre class="language-bash"><code>
+				rgb(34, 25, 150)
+				#221996
+				rgb(12, 28, 141)
+				#0c1c8d
+			</code></pre>
+			<p>
+				There's a lot to unpack here, so let's take it a step at a time.
+				First, we have the actual constructor:
+			</p>
+			<pre class="language-javascript"><code>
+				function Color(r,g,b) {
+					this.r = r;
+					this.g = g;
+					this.b = b;
+				}
+			</code></pre>
+			<p>
+				On its own, this code doesn't make any sense because the keyword
+				<var>this</var> refers to the global object. So why does it work?
+				Because a special operator in JavaScript called <var>new</var>,
+				which we used further down:
+			</p>
+			<pre class="language-javascript"><code>
+				const x = new Color(34, 25, 150);
+			</code></pre>
+			<p>
+				The <var>new</var> operator is, at its core, a function that looks
+				like the following:
+			</p>
+			<pre class="language-javascript"><code>
+				function New(func) {
+					let obj = {};
+					if (func.prototype !== null) {
+							obj.__proto__ = func.prototype;
+					}
+					let ret = func.apply(obj, Array.prototype.slice.call(arguments, 1));
+					if ((typeof ret === "object" || typeof ret === "function") && ret !== null) {
+							return ret;
+					}
+					return obj;
+				}
+			</code></pre>
+			<p>Thus, we get the same result when we write:</p>
+			<pre class="language-javascript"><code>
+				function New(func) {
+					let obj = {};
+					if (func.prototype !== null) {
+							obj.__proto__ = func.prototype;
+					}
+					let ret = func.apply(obj, Array.prototype.slice.call(arguments, 1));
+					if ((typeof ret === "object" || typeof ret === "function") && ret !== null) {
+							return ret;
+					}
+					return obj;
+				}
+
+				function Color(r,g,b) {
+					this.r = r;
+					this.g = g;
+					this.b = b;
+				}
+
+				const x = New(Color, 34, 25, 150);
+
+				console.log(x)
+			</code></pre>
+			<pre class="language-bash"><code>
+				Color {r: 34, g: 25, b: 150}
+			</code></pre>
+			<p>
+				How does this work? Well, let's take a look at the
+				<var>New()</var> function first. This function takes a function as
+				an argument. Inside <var>New()</var>, we first create an empty
+				object, called <var>obj</var>:
+			</p>
+			<pre class="language-javascript"><code>
+				let obj = {};
+			</code></pre>
+			<p>After this line, we have the following:</p>
+			<pre class="language-javascript"><code>
+				if (func.prototype !== null) {
+					obj.__proto__ = func.prototype;
+				}
+			</code></pre>
+			<p>
+				This is null-check to ensure that the function we passed as an
+				argument doesn't have a <i>null reference</i>. If the reference
+				isn't <var>null</var>, we assign it as <var>obj</var>'s reference.
+				This means that the object we return, <var>obj</var>, now has the
+				same prototype as a function.
+			</p>
+			<p>Following this line, we have the following:</p>
+			<pre class="language-javascript"><code>
+				let ret = func.apply(obj, Array.prototype.slice.call(arguments, 1));
+			</code></pre>
+			<p>
+				Here, we assign the result of calling <var>func.apply()</var> with
+				the arguments <var>obj</var> and
+				<var>Array.prototype.slice.call(arguments, 1)</var>. The
+				<var>func.apply()</var> method is a method that belongs to the
+				<var>Function</var> prototype. This method allows us to apply
+				<var>func</var> to an array of arguments. Thus, when we call
+				<var>New(Color, 34, 25, 150)</var>, we end up calling:
+			</p>
+			<pre class="language-javascript"><code>
+				let ret = Color.apply(obj, [34, 25, 150])
+			</code></pre>
+			<p>
+				Because we pass <var>obj</var> into the call above, the
+				<var>this</var> keyword refers to <var>obj</var>, and we end up
+				with:
+			</p>
+			<pre class="language-javascript"><code>
+				let ret = {r: 34, g: 25, b: 150};
+			</code></pre>
+			<p>
+				The last line is just to ensure that (1) <var>ret</var> has the
+				type <var>object</var> or the type <var>function</var>, and (2) it
+				isn't <var>null</var>. If we pass those safeguards, we return the
+				object <var>ret</var>; otherwise, we return the empty object
+				<var>obj</var>.
+			</p>
+			<p>
+				This looks very much like the factory function approach, but
+				there's a key difference: It has a prototype linked to the
+				<var>Color()</var> function, and there's only one instance of the
+				<var>Color()</var> function. Because there's only one instance of
+				<var>Color()</var>, we can ensure that there is only one copy of
+				<var>rgb()</var> and <var>hex()</var> by the two functions to the
+				<var>Color()</var> prototype:
+			</p>
+			<pre class="language-javascript"><code>
+				function New(func) {
+					let obj = {};
+					if (func.prototype !== null) {
+							obj.__proto__ = func.prototype;
+					}
+					let ret = func.apply(obj, Array.prototype.slice.call(arguments, 1));
+					if ((typeof ret === "object" || typeof ret === "function") && ret !== null) {
+							return ret;
+					}
+					return obj;
+				}
+
+				function Color(r,g,b) {
+					this.r = r;
+					this.g = g;
+					this.b = b;
+				}
+	
+				Color.prototype.rgb = function() {
+					const {r, g, b} = this;
+					return `rgb(${r}, ${g}, ${b})`;
+				}
+	
+				Color.prototype.hex = function() {
+					const {r, g, b} = this;
+					const offset = 1 &lt;&lt; 24;
+					const rHex = r &lt;&lt; 16;
+					const gHex = g &lt;&lt; 8;
+					return '#' + (offset + rHex + gHex + b).toString(16).slice(1);
+				}
+
+				const x = New(Color, 34, 25, 150);
+			</code></pre>
+			<p>
+				JavaScript shortens this code by ecapsulating the
+				<var>New()</var> function in a single operator called
+				<var>new</var>:
+			</p>
+			<pre class="language-javascript"><code>
+				function Color(r,g,b) {
+					this.r = r;
+					this.g = g;
+					this.b = b;
+				}
+	
+				Color.prototype.rgb = function() {
+					const {r, g, b} = this;
+					return `rgb(${r}, ${g}, ${b})`;
+				}
+	
+				Color.prototype.hex = function() {
+					const {r, g, b} = this;
+					const offset = 1 &lt;&lt; 24;
+					const rHex = r &lt;&lt; 16;
+					const gHex = g &lt;&lt; 8;
+					return '#' + (offset + rHex + gHex + b).toString(16).slice(1);
+				}
+
+				const x = new Color(34, 25, 150);
+			</code></pre>
+			<p>
+				Moreover, it shortens all of it even further with the keyword
+				<var>class</var>.
+			</p>
+		</section>
+
+		<section id="even_better">
+			<h2>An Even Better Approach: Classes</h2>
+			<p>
+				The same exact code in the preceding section can be written as
+				such:
+			</p>
+			<pre class="language-javascript"><code>
+				class Color {
+					constructor(r, g, b) {
+						this.r = r;
+						this.g = g;
+						this.b = b;
+					}
+					rgb() {
+						const {r, g, b} = this;
+						return `rgb(${r}, ${g}, ${b})`;
+					}
+		
+					hex() {
+						const {r, g, b} = this;
+						const offset = 1 &lt;&lt; 24;
+						const rHex = r &lt;&lt; 16;
+						const gHex = g &lt;&lt; 8;
+						return '#' + (offset + rHex + gHex + b).toString(16).slice(1);
+					}
+				}
+
+				const x = new Color(34, 25, 150);
+			</code></pre>
+			<p>
+				This is pure syntactic sugar, and it accomplishes the same
+				underlying code we saw earlier. The keyword
+				<var>class</var> signals to JavaScript that we're about to create a
+				new empty object, whose prototype is whatever is defined in the
+				<var>Constructor()</var> function. The functions we write after the
+				constructor are equivalent to writing
+				<var>Color.prototype.rgb()</var> and
+				<var>Color.prototype.hex()</var>. It's all syntactic sugar. 
+			</p>
+			<pre class="language-javascript"><code>
+				class Color {
+					constructor(r, g, b) {
+						this.r = r;
+						this.g = g;
+						this.b = b;
+						this.rgb = () => {
+							return `rgb(${this.r}, ${this.g}, ${this.b})`;
+						}
+						this.hex = () => {
+							const offset = 1 &lt;&lt; 24;
+							const rHex = this.r &lt;&lt; 16;
+							const gHex = this.g &lt;&lt; 8;
+							return '#' + (offset + rHex + gHex + b).toString(16).slice(1);
+						}
+					}
+				}
+
+				const x = new Color(34, 25, 150);
+			</code></pre>
+		</section>
+	</section>
+</section>
+
+<section id="modules">
+	<h2>Modules</h2>
+	<p>
+		Modules are what allow us to take sections of code from one file and
+		place it another. In other words, to <i>export</i> code from some file
+		<var>A</var>, and <i>import</i> that code into some file <var>B</var>.
+	</p>
+	<p>First, we have the following directory structure:</p>
+	<pre class="language-dir"><code>
+		.
+		├── js
+		│   └── main.js
+		└── index.html
+	</code></pre>
+	<p>
+		Inside the <var>index.html</var> file, we'll link the
+		<var>main.js</var> file:
+	</p>
+	<pre class="language-html"><code>
+		&lt;body&gt;
+			&lt;!-- some content --&gt;
+			&lt;script <span class="redText">type=&quot;module&quot;</span> src=&quot;./js/main.js&quot;&gt;&lt;/script&gt;
+		&lt;/body&gt;
+	</code></pre>
+	<p>
+		Importantly, we must provide the <var>type="module"</var> declaration
+		to indicate that the <var>main.js</var> is a module, allowing us to use
+		the <var>import</var> and <var>export</var> statements. It also
+		implicitly includes the <var>defer</var> keyword, which tells the
+		browser to load the DOM first before loading the module. This means
+		that we could also place the <var>script</var> tag before the
+		<var>body</var> tag, contrary to the usual practice of placing the
+		<var>script</var> tag right before the closing <var>body</var> tag.
+	</p>
+	<p>
+		The <var>main.js</var> file is what we'll use as the main driver.
+		Suppose we had a function that determines if a number is odd or even.
+		We need that function inside <var>main.js</var>, but we want it in a
+		separate <var>.js</var> file for modularity's sake. So, we'll create a
+		new file called <var>MathUtils.js</var> inside our
+		<var>js</var> directory:
+	</p>
+	<pre class="language-dir"><code>
+		.
+		├── js
+		│   ├── main.js
+		│   └── MathUtils.js
+		└── index.html
+	</code></pre>
+	<p>Inside <var>MathUtils.js</var>, we write:</p>
+	<pre class="language-javascript"><code>
+		export function parityCheck(n) {
+			if (n % 2 === 0) {
+				return 'even';
+			} else {
+				return 'odd';
+			}
+		}
+	</code></pre>
+	<p>
+		Prepending the <var>export</var> keyword to the function declaration,
+		any JavaScript file that imports the <var>MathUtils.js</var> file can
+		use the <var>parityCheck()</var> function. So, to import the
+		<var>MathUtils.js</var> file into <var>main.js</var>, we go inside
+		<var>main.js</var> and write:
+	</p>
+	<pre class="language-javascript"><code>
+		import { parityCheck } from './MathUtils.js'
+	</code></pre>
+	<p>
+		The <var>export</var> keyword can be prepended to variable, constant,
+		function, and class declarations:
+	</p>
+	<pre class="language-javascript"><code>
+		export function parityCheck(n) {
+			if (n % 2 === 0) {
+				return 'even';
+			} else {
+				return 'odd';
+			}
+		}
+		export const pi = 3.14159;
+		export const e = 2.71828;
+	</code></pre>
+	<p>
+		Inside <var>main.js</var>, we can import these constants by writing:
+	</p>
+	<pre class="language-javascript"><code>
+		import { parityCheck, pi, e } from './MathUtils.js'
+	</code></pre>
+	<p>
+		This method of exporting &mdash; prepending the
+		<var>export</var> keyword to the declaration &mdash; is called
+		<b>inline exporting</b>. We can, however, be more selective about what
+		we export. Perhaps some of the functions inside <var>MathUtils.js</var>
+		should not be exported. In that case, we can write:
+	</p>
+	<pre class="language-javascript"><code>
+		function parityCheck(n) {
+			if (n % 2 === 0) {
+				return 'even';
+			} else {
+				return 'odd';
+			}
+		}
+		const pi = 3.14159;
+		const e = 2.71828;
+
+		export { parityCheck };
+	</code></pre>
+	<section id="importing_all">
+		<h3>Importing All</h3>
+		<p>
+			What if we wanted to import everything from the
+			<var>MathUtils.js</var> file? To do so, we first ensure that we've
+			indicated everything we want exported in the
+			<var>MathUtils.js</var> file:
+		</p>
+		<pre class="language-javascript"><code>
+			export function parityCheck(n) {
+				if (n % 2 === 0) {
+					return 'even';
+				} else {
+					return 'odd';
+				}
+			}
+			export const pi = 3.14159;
+			export const e = 2.71828;
+		</code></pre>
+		<p>Then, inside <var>main.js</var>, we write:</p>
+		<pre class="language-javascript"><code>
+			import * as MathUtils from "./MathUtils.js";
+		</code></pre>
+		<p>
+			Writing the above, we import everything from
+			<var>MathUtils.js</var> under the namespace <var>MathUtils</var>.
+			Because <var>MathUtils</var> is the namespace, to use the contents of
+			<var>MathUtils.js</var>, we must write:
+		</p>
+		<pre class="language-javascript"><code>
+			import * as MathUtils from "./MathUtils.js";
+
+			console.log(MathUtils.parity(2));
+			console.log(MathUtils.pi);
+			console.log(MathUtils.e);
+		</code></pre>
+	</section>
 </section>
 {% endblock %}

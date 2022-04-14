@@ -742,6 +742,7 @@
 				src="{% static 'images/binary_tree_implementation.svg' %}"
 				alt="Binary tree implementation"
 				loading="lazy"
+				style="width: 370px"
 			/>
 		</figure>
 		<p>For example, suppose we had the following binary tree:</p>
@@ -752,7 +753,7 @@
 				src="{% static 'images/lbt1_implementation.svg' %}"
 				alt="Binary tree implementation"
 				loading="lazy"
-				style="width: 200px"
+				style="width: 250px"
 			/>
 		</figure>
 		<p>
@@ -2760,8 +2761,8 @@
 						<li>int x, y;</li>
 						<li>if (root != NULL):</li>
 						<ol>
-							<li>x = count((*p).left_child);</li>
-							<li>y = count((*p).right_child);</li>
+							<li>x = TreeOrder((*root).left_child);</li>
+							<li>y = TreeOrder((*root).right_child);</li>
 							<li>return x + y + 1;</li>
 						</ol>
 						<li>return 0;</li>
@@ -2771,8 +2772,8 @@
 					<li>${O(1)}$</li>
 					<li>${O(1)}$</li>
 					<li>${O(1)}$</li>
-					<li>${[O(\lg n), O(n)]}$</li>
-					<li>${[O(\lg n), O(n)]}$</li>
+					<li>${O(\lg n) \cup O(n)}$</li>
+					<li>${O(\lg n) \cup O(n)}$</li>
 					<li>${O(1)}$</li>
 					<li>${O(1)}$</li>
 				</ol>
@@ -2782,10 +2783,51 @@
 				necessarily some arbitrary decision. For post applications, binary
 				tree processing is done with post-order traversal.
 			</p>
+			<div class="c"></div>
+			<div class="cpp"></div>
 		</div>
-		<div class="c"></div>
-		<div class="cpp"></div>
 	</div>
+	<p>
+		What if instead we wanted to only count the nodes with a degree of two?
+		To do so, we use the following:
+	</p>
+	<ol class="alg">
+		<li>TreeOrder2(Node* root) -> int :</li>
+		<ol>
+			<li>int x, y;</li>
+			<li>if (root != NULL):</li>
+			<ol>
+				<li>x = TreeOrder2((*root).left_child);</li>
+				<li>y = TreeOrder2((*root).right_child);</li>
+				<li>if ((*root).left_child && (*root).right_child):</li>
+				<ol>
+					<li>return x + y + 1;</li>
+				</ol>
+				<li>else</li>
+				<ol>
+					<li>return x + y;</li>
+				</ol>
+			</ol>
+			<li>return 0;</li>
+		</ol>
+	</ol>
+	<section id="summing_all_elements_in_a_tree">
+		<h3>Summing All Elements in a Tree</h3>
+		<p>To sum all of the elements in a tree, we use the following:</p>
+		<ol class="alg">
+			<li>TreeSum(Node* root) -> int :</li>
+			<ol>
+				<li>int x, y;</li>
+				<li>if (root != NULL):</li>
+				<ol>
+					<li>x = TreeSum((*root).left_child);</li>
+					<li>y = TreeSum((*root).right_child);</li>
+					<li>return x + y (*root).data</li>
+				</ol>
+				<li>return 0;</li>
+			</ol>
+		</ol>
+	</section>
 </section>
 
 <section id="binary_search_trees">
@@ -2952,7 +2994,37 @@
 				</li>
 			</ol>
 		</div>
-		<p>We can also take an iterative approach:</p>
+		<p>
+			To illustrate the function above, we'll apply it to the previous
+			tree. First, we pass the tree's <var>root</var> pointer, and a key.
+			Suppose we're looking for the key <var>60</var>. We make the first
+			call, <var>search(root, 60)</var>. First, we check if
+			<var>root = NULL</var>. It is not, so we can proceed.
+		</p>
+		<p>
+			We chck if <var>30 = 60</var>. No. <var>30 ≠ 60.</var> We go to the
+			next prong, which asks if <var>30 &lt; 60</var>. Again no. So, we
+			jump to the default prong &mdash; make a recursive call,
+			<var>((*root).right_child, 60)</var>. Since the right child of the
+			root is <var>50</var>, for readability, we'll denote this as
+			<var>search(root(50), 60)</var>:
+		</p>
+		<div id="binary_search_trace"></div>
+		<p>
+			Making this call, we check if <var>root(50) = NULL</var>. No. So we
+			go to the next prong, and check if <var>60 = root(50)</var>. It's not
+			&mdash; <var>60 ≠ 50</var>. Check the next prong. Is
+			<var>60 &lt; 15</var>? No. We jump to the default prong, and wow we
+			make the call <var>search(root(50).right_child, 60)</var>. This
+			translates to <var>search(root(60), 60):</var>
+		</p>
+		<div id="binary_search_trace2"></div>
+		<p>
+			Again we check if <var>root(60) = NULL</var>. It isn't, so we can
+			proceed. Prong 2: Is <var>60 = root(60).data</var>? Yes.
+			<var>60 = 60</var>. We've found our match.
+		</p>
+		<p>Alternatively, we can search with iteration:</p>
 		<div class="pseudosource">
 			<ol class="alg">
 				<li>fn search(Node* root, int key) -> Node* :</li>
@@ -3021,11 +3093,517 @@
 	</section>
 </section>
 
+<section id="inserting_into_binary_tree">
+	<h2>Inserting into a Binary Tree</h2>
+	<p>We're given the following tree:</p>
+	<div id="tree_insert_1"></div>
+	<p>The challenge:</p>
+	<p class="bq">
+		Insert a node containing the value <var>38</var> if, and only if, the
+		tree does not contain the value <var>38</var>.
+	</p>
+	<p>
+		Now that we know how to search a binary tree, this problem isn't that
+		complicated. All we have to do is search the binary tree for the value
+		<var>38</var>. If the value <var>38</var> doesn't exist, we insert the
+		node at the position that resulted in <var>root = NULL</var>.
+	</p>
+	<p>
+		Searching for the value <var>38</var>, we end up at the
+		<var>node(40)</var>. The point where <var>root = NULL</var> is when we
+		assigned <var>root</var> the value <var>node(40).left_child</var>,
+		which does not exist. Thus, the value <var>38</var> must be inserited
+		as the left-child of <var>node(40)</var>.
+	</p>
+	<p>
+		To implement the algorithm, we can use a tail pointer, call it
+		<var>t</var>, and a driver pointer, <var>d</var>. As long as
+		<var>d</var> moves, <var>t</var> follows. When <var>d</var> reaches the
+		leaf <var>node(40)</var>, <var>t</var> is at <var>node(50)</var>.
+		Because <var>38 ≠ 40</var>, <var>t</var> moves to the left-child of
+		<var>40</var>, which is <var>NULL</var>. All that's left to do is refer
+		to <var>d</var>'s left-child &mdash; pointed at by <var>t</var> &mdash;
+		to create and insert the new node <var>node(38)</var>. The procedure:
+	</p>
+	<ol class="alg">
+		<li>fn Insert(Node *root, int key):</li>
+		<ol>
+			<li>Node *t = NULL;</li>
+			<li>while (root != NULL):</li>
+			<ol>
+				<li>t = root;</li>
+				<li>if (key == (*root).data): return;</li>
+				<li>else if (key &lt; (*root).data):</li>
+				<ol>
+					<li>root = (*root).left_child;</li>
+				</ol>
+				<li>else: root = (*root).right_child;</li>
+			</ol>
+			<li>Node *new_node;</li>
+			<li>new_node = new Node(key);</li>
+			<li>if ((*new_node).data &lt; (*t).data):</li>
+			<ol>
+				<li>(*t).left_child = p;</li>
+			</ol>
+			<li>else:</li>
+			<ol>
+				<li>(*t).right_child = p;</li>
+			</ol>
+		</ol>
+	</ol>
+	<p>We can also implement this recursively:</p>
+	<ol class="alg">
+		<li>Node* insert(Node* p, int key):</li>
+		<ol>
+			<li>Node *t;</li>
+			<li>if (p == NULL):</li>
+			<ol>
+				<li>t = new Node(key);</li>
+				<li>return t;</li>
+			</ol>
+			<li>if (key &lt; (*p).data):</li>
+			<ol>
+				<li>(*p).left_child = insert((*p).left_child, key);</li>
+			</ol>
+			<li>else if (key &gt; (*p).data)</li>
+			<ol>
+				<li>(*p).right_child = insert((*p).right_child, key);</li>
+			</ol>
+			<li>return t;</li>
+		</ol>
+	</ol>
+</section>
+
+<section id="bst_constructor">
+	<h2>BST Generator</h2>
+	<p>
+		Now that we know how to insert nodes into a binary search tree,
+		generating an entire binary tree from scratch is almost trivial. We can
+		just insert keys one at a time, using the <var>Insert()</var> function
+		we saw earlier:
+	</p>
+	<ol class="alg">
+		<li>newBST(int array[], int nodeCount) -> BST* :</li>
+		<ol>
+			<li>TreeNode* first_node = newTreeNode(array[0]);</li>
+			<li>BST* new_tree = malloc(sizeof(BST));</li>
+			<li>(*new_tree).root = first_node;</li>
+			<li>for (int i = 1; i &lt; nodeCount; i++):</li>
+			<ol>
+				<li>insert((*new_tree).root, _arr[i]);</li>
+			</ol>
+			<li>return new_tree;</li>
+		</ol>
+	</ol>
+</section>
+
+<section id="deleting_from_a_binary_search_tree">
+	<h2>BST Node Removal</h2>
+	<p>We have the following tree:</p>
+	<div id="bst_delete_1"></div>
+	<p>
+		Now suppose that we're asked to delete a node associated with a
+		particular value in the tree. Call it the <i>target node</i>. How might
+		we do so? Once again, because we know how to search for nodes, deleting
+		is <i>almost</i> trivial, at least for tree's leaves. We just to search
+		for the particular node containing the key, then delete if found. For
+		the leaves, this is straightforward. If we wanted to delete the node
+		containing <var>70</var>, we just have call
+		<var>search(root, 70)</var>, then, when we get to <var>70</var>,
+		delete:
+	</p>
+	<div id="bst_delete_2"></div>
+	<p>
+		All that's left to do after deleting <var>node(70)</var> is to ensure
+		its parent, <var>node(60)</var> has its left-child pointer set to
+		<var>NULL</var>. Now, we emphasized <i>almost</i> trivial because
+		there's a bit of a troublesome case: Deleting branch nodes. For
+		example, suppose we were asked to delete the node containing
+		<var>60</var>. If we just blindly deleted the node, we'd end up with:
+	</p>
+	<div id="bst_delete_3"></div>
+	<p>
+		We've partitioned the tree, and that's likely not what we intended. But
+		even if we did, assuming the only way to access the tree was through a
+		single <var>root</var> pointer, the other tree &mdash;
+		<var>node(55)</var> &mdash; is lost in memory; from a practical
+		perspective, we've essentially destroyed it.
+	</p>
+	<p>
+		To avoid this problem: Before deletion, always check if the target node
+		is a branch node or a leaf node. If the target node is a branch node
+		with only one child, as is the case with <var>node(60)</var>, then the
+		target node must take its parent's place after deletion:
+	</p>
+	<div id="bst_delete_4"></div>
+	<p>
+		This avoids partitioning, but only for deleting uniparous nodes. What
+		if we were now asked to delete <var>node(50)</var>? Once again, blindly
+		deleting causes a partition:
+	</p>
+	<div id="bst_delete_5"></div>
+	<p>
+		There are several ways to avoid this problem. One way is to fill the
+		newly-emptied position with the target node's
+		<i>inorder predecesor</i>. In other words, fill the vacancy with the
+		node that comes before the target node within the tree's inorder
+		traversal sequence. For our tree above, the inorder traversal sequence
+		is:
+	</p>
+	<figure>
+		$$ \lang 10, 15, 20, 30, {\color{forestgreen}{40}},
+		{\color{indianred}{50}}, {\color{dodgerblue}55} \rang $$
+	</figure>
+	<p>
+		and we can see that <var>node(40)</var> comes before
+		<var>node(50)</var>. Above, we've also indicated the blue-colored
+		<var>node(55)</var>, <var>node(50)</var>'s <i>inorder successor</i>.
+		Thus, if we delete a biparous node, we can choose either the inorder
+		predecesor or the inorder successor to fill the vacancy:
+	</p>
+	<div class="col2">
+		<figure class="block">
+			<div id="bst_delete_inorder_predecesor"></div>
+			<figcaption>Inorder predecesor succession.</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="bst_delete_inorder_successor"></div>
+			<figcaption>Inorder successor succession.</figcaption>
+		</figure>
+	</div>
+	<p>
+		Given the binary search tree's structure, finding either of these
+		successors is easy enough, per the following lemmas:
+	</p>
+	<dfn>
+		<small>definition: inorder predecesor</small>
+		<p>
+			Let ${N}$ be a node in a binary search tree ${B.}$ The
+			<b>inorder predecesor</b> of ${N}$ is the rightmost child of ${B}$'s
+			left subtree.
+		</p>
+	</dfn>
+	<dfn>
+		<small>definition: inorder successor</small>
+		<p>
+			Let ${N}$ be a node in a binary search tree ${B.}$ The
+			<b>inorder successor</b> of ${N}$ is the leftmost child of ${B}$'s
+			right subtree.
+		</p>
+	</dfn>
+	<p>
+		We call this vacancy-filling technique <i>inorder-succession</i>.
+		Having given a broad overview of how the technique works, let's point
+		out some of the flaws with this technique. First, suppose we had the
+		following tree:
+	</p>
+	<div id="removal_degenerate_tree"></div>
+	<p>The inorder traversal squence for this tree is:</p>
+	<figure>$$ \lang 10, 20, 30, 70, 80, 90 \rang $$</figure>
+	<p>
+		If we deleted <var>node(20)</var> using inorder-successor-succession,
+		then we suddenly have to perform several successions:
+	</p>
+	<table class="trace">
+		<tbody>
+			<tr>
+				<td colspan="2">Step 0.</td>
+			</tr>
+			<tr>
+				<td>Before deletion. No changes.</td>
+				<td>
+					<div>$$ \lang 10, 20, 30, 70, 80, 90 \rang $$</div>
+					<div id="t1"></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">Step 1.</td>
+			</tr>
+			<tr>
+				<td>
+					Remove <var>node(20)</var>. There's a vacancy that must be
+					filled, and because we're using inorder-successor-succession,
+					<var>node(30)</var> must rise to fill the vacancy. In this case,
+					it becomes the left-child of <var>node(90)</var>.
+				</td>
+				<td>
+					<div>$$ \lang 10, 30, \square, 70, 80, 90 \rang $$</div>
+					<div id="t2"></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">Step 2.</td>
+			</tr>
+			<tr>
+				<td>
+					The previous step results in a vacancy, and now
+					<var>node(70)</var> must succeed.
+				</td>
+				<td>
+					<div>$$ \lang 10, 30, 70, \square, 80, 90 \rang $$</div>
+					<div id="t3"></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">Step 3.</td>
+			</tr>
+			<tr>
+				<td>Now <var>node(80)</var> must succeed.</td>
+				<td>
+					<div>$$ \lang 10, 30, 70, 80, \square, 90 \rang $$</div>
+					<div id="t4"></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">Step 4.</td>
+			</tr>
+			<tr>
+				<td>
+					And finally, <var>node(90)</var> must succeed, which means
+					<var>node(30)</var> must succeed.
+				</td>
+				<td>
+					<div>$$ \lang 10, 30, 70, 80, 90 \rang $$</div>
+					<div id="t5"></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		<span class="title"><b>time complexity.</b></span> Examining this
+		process, we see that the time complexity for removing nodes depends on
+		the tree's height. We must search &mdash; i.e., traverse &mdash; the
+		tree and modify accordingly.
+	</p>
+</section>
+
+<section id="bst_generation_traversal">
+	<h2>BST Traversal Generation</h2>
+	<p>
+		Earlier, we saw that we can generate a binary search tree by
+		iteratively calling the <var>insert()</var> function. We can, however,
+		also generate a BST through preorder-traversal (or
+		postorder-traversal). Moreover, unlike the previous sections where we
+		saw how we needed an additional inorder-traversal sequence, we can
+		generate a binary search tree with preorder- or postorder-traversal
+		alone. Let's start with preorder-traversal.
+	</p>
+	<p>We're given the following preorder-traversal sequence:</p>
+	<div id="bst_traversal_generation_array"></div>
+	<p>
+		Alongside this array, we also need an auxiliary data structure, a
+		stack:
+	</p>
+	<div id="bst_traversal_generation_stack"></div>
+	<p>
+		With the sequence and the stack, we can begin. We start by focusing on
+		the first element of the sequence. In this case, <var>pre[0]=30</var>.
+		We create a node and have two pointers point to it, the
+		<var>root</var> pointer, and a temporary pointer <var>p</var>:
+	</p>
+	<div class="col2">
+		<div id="bst_gen_arr1"></div>
+		<div id="bst_gen_trav1"></div>
+		<div id="bst_gen_stack1"></div>
+	</div>
+	<p>
+		Now we focus on the next element, <var>pre[1]=20</var>. We make a
+		check: <var>pre[0] &lt; 30</var>. True. Because it's true, we perform
+		the following steps:
+	</p>
+	<ol>
+		<li>Create a new node with a temporary pointer <var>t</var>.</li>
+		<li>Make <var>p</var>'s left-child pointer point to the new node.</li>
+		<li>Push the address of <var>p</var>'s pointee into the stack.</li>
+		<li>Move <var>p</var> to the newly created node.</li>
+	</ol>
+	<p>Thus, we have:</p>
+	<div class="col2">
+		<div id="bst_gen_arr2"></div>
+		<div id="bst_gen_trav2"></div>
+		<div id="bst_gen_stack2"></div>
+	</div>
+	<p>
+		Now we move to the next element in the sequence, <var>pre[2]=10</var>.
+		We perform the check again: <var>pre[2] &lt; 20</var>. True. Again, we
+		create a new node with a temporary pointer <var>t</var>, make
+		<var>p</var>'s left-child pointer to the new node, push the address of
+		<var>p</var>'s pointee into the stack, and move <var>p</var> to the
+		newly created node:
+	</p>
+	<div class="col2">
+		<div id="bst_gen_arr3"></div>
+		<div id="bst_gen_trav3"></div>
+		<div id="bst_gen_stack3"></div>
+	</div>
+	<p>
+		Move the next element, <var>pre[3]=15</var>. Check:
+		<var>pre[3] &lt; 10</var>. False. So, <var>node(15)</var> should be the
+		right-child of <var>node(10)</var>. But not so fast. We have to be
+		careful here. Suppose <var>pre[3]</var> was <var>28</var> instead. If
+		that were the case, then blindly attaching <var>node(28)</var> as the
+		right-child of <var>node(10)</var> would cause a problem &mdash;
+		<var>28</var> is greater than <var>25</var>, and any node greater than
+		<var>25</var> should be in <var>node(25)</var>'s right-subtree, not its
+		left. Accordingly, we have two possibilities when
+		<var>node(i) &lt; node(i-1)</var> (i.e., when the node we're about to
+		insert has a value less than the node we just inserted):
+	</p>
+	<ol>
+		<li><var>node(i-1) &lt; node(i) &lt; stackTop(node)</var></li>
+		<li><var>node(i-1) &lt; stackTop(node) &lt; node(i)</var></li>
+	</ol>
+	<p>
+		The first case is when the node we're about to insert has a value
+		greater than the node we just inserted, but less than the value of the
+		node at the stack's topframe. (The node at the stack's topframe is the
+		node we inserted just before the last node we inserted). If the first
+		case is true, then we proceed to inserting the new node as the
+		right-child. In this case, it is, so we perform the following:
+	</p>
+	<ol>
+		<li>Create a new node as the pointee of <var>t.</var></li>
+		<li>Make <var>p</var>'s right-child point to <var>t</var>.</li>
+		<li>Set <var>p</var>'s new pointee as <var>t</var>.</li>
+	</ol>
+	<p>
+		Importantly, we <em>do not</em> push <var>p</var> onto the stack. Why
+		don't we push <var>p</var>? Because if we pushed <var>p</var> onto the
+		stack, then the stack's topmost frame would contain the address of
+		<var>Node(10)</var>. But we don't need that address in there. The
+		stack's sole purpose is to keep track of which nodes could still have
+		children. The moment we assign a right-child to a node, there are no
+		other possible children the node can have, because the sequence we're
+		given is the inorder traversal sequence &mdash; there are no
+		left-children for a particular node once we've been given its
+		right-child.
+	</p>
+	<p>That said, performing the above results in:</p>
+	<div class="col2">
+		<div id="bst_gen_arr4"></div>
+		<div id="bst_gen_trav4"></div>
+		<div id="bst_gen_stack4"></div>
+	</div>
+	<p>
+		Now we go to the next element &mdash; <var>pre[4]=25</var>. Check once
+		more: <var>pre[4] &lt; 15</var>. False. We've hit another false case,
+		so we make the additional check we saw earlier. Is
+		<var>pre[4] &gt; (*p).data</var>? I.e., is <var>25 &gt; 15</var>? Yes.
+		Check the second possibility: Is <var>pre[4] &lt; stackTop(node)</var>?
+		No, <var>25 &nlt; 20</var>.
+	</p>
+	<p>
+		Here, the second case is true. So, we pop the stack, and move
+		<var>p</var> to that address <var>node(20)</var>. Then we must compare
+		again: <var>25 &lt; 20</var>? False. Once more we make a check: Is
+		<var>pre[4] &lt; stackTop(node)</var>? Yes. <var>25 &lt; 30.</var> Now
+		we can continue the normal course &mdash; attach <var>node(25)</var> as
+		the right-child of <var>node(20)</var>, with <var>p</var> pointing to
+		the new node:
+	</p>
+	<div class="col2">
+		<div id="bst_gen_arr5"></div>
+		<div id="bst_gen_trav5"></div>
+		<div id="bst_gen_stack5"></div>
+	</div>
+	<p>
+		Next: <var>pre[5]=40</var>. First check:
+		<var>pre[5] &lt; (*p).data</var>. False; <var>40 &nlt; 25.</var> Second
+		check: <var>pre[5] &gt; (*p).data</var>. True. Third check: Is
+		<var>pre[5] &lt; peek(stack)->data</var> False. So, we have to pop the
+		stack. <var>p = pop(stack)</var>. Now <var>p</var> points to
+		<var>node(30)</var>, and we go through checks again. This results in:
+	</p>
+	<div class="col2">
+		<div id="bst_gen_arr6"></div>
+		<div id="bst_gen_trav6"></div>
+		<div id="bst_gen_stack6"></div>
+	</div>
+	<p>The process continues for the remaining elements. The algorithm:</p>
+	<ol class="alg">
+		<li>fn createPre(int pre[], int n):</li>
+		<ol>
+			<li>Stack _stack = newStack(5);</li>
+			<li>Node *t;</li>
+			<li>int i = 0;</li>
+			<li>root = newNode();</li>
+			<li>(*root).data = pre[i];</li>
+			<li>i++;</li>
+			<li>Node* p = root;</li>
+			<li>while (i &lt; n):</li>
+			<ol>
+				<li>if (pre[i] < (*p).data):</li>
+				<ol>
+					<li>t = newNode(pre[i++]);</li>
+					<li>(*p).left_child = t;</li>
+					<li>push(_stack, p);</li>
+					<li>p = t;</li>
+				</ol>
+				<li>
+					else if ((pre[i] > (*p).data) && (pre[i] < peek(stack)->data)):
+				</li>
+				<ol>
+					<li>t = newNode(pre[i++]);</li>
+					<li>(*p).right_child = t;</li>
+					<li>p = t;</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>p = pop(stack);</li>
+				</ol>
+			</ol>
+		</ol>
+	</ol>
+</section>
+
+<section id="binary_search_tree_costs">
+	<h2>Binary Search Tree Costs</h2>
+	<p>
+		As with all data structures, there are costs to binary search trees.
+		The BST's most significant cost is the lack of control over order of
+		insertion. For example, the following traversal sequences have the same
+		keys, but generate two different trees:
+	</p>
+	<div class="split">
+		<figure class="block">
+			<div id="bst_cost_arr1"></div>
+			<div id="bst_cost_tree_1"></div>
+			<figcaption>Tree ${\texttt{T}_1}$</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="bst_cost_arr2"></div>
+			<div id="bst_cost_tree_2"></div>
+			<figcaption>Tree ${\texttt{T}_2}$</figcaption>
+		</figure>
+	</div>
+	<p>
+		Notice that ${\texttt{T}_1}$ has a height of ${2,}$ while
+		${\texttt{T}_2}$ has a height of ${6.}$ Two different heights for the
+		same set of keys! This shows that a BST's height depends on the order
+		of key insertion.
+	</p>
+	<p>
+		Can we control the order of insertion? With what we have so far, no.
+		Ultimately, how the keys are inserted is up to the user. If the user
+		inserts the keys according to ${\texttt{T}_1}$'s traversal sequence,
+		then they'll get the tree ${\texttt{T}_1.}$ But if they insert the keys
+		according to ${\texttt{T}_2}$ then they'll get the tree
+		${\texttt{T}_2.}$
+	</p>
+	<p>
+		Because of this problem, we need a way to control the height of a
+		binary search tree. Fortunately, there's a solution &mdash;
+		<a href="">AVL trees</a>.
+	</p>
+</section>
+
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script type="module" src="../../../static/numerc/CDemo.mjs"></script>
-<script type="module" src="../../../static/numerc/csmd.mjs"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
+<!-- <script type="module" src="../../../static/numerc/csmd/cdemo/cdemo.mjs"></script> -->
 <script
 	type="module"
 	src="../../../static/numerc/scripts/cpp_tree.js"
 ></script>
+
 {% endblock %}

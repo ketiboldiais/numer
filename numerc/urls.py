@@ -84,6 +84,8 @@ urlpatterns = [
 
 	path("java_design_patterns", views.java_design_patterns, name="java_design_patterns"),
 
+	path("java_blockchain", views.java_blockchain, name="java_blockchain"),
+
 	# js paths 
 	path("js_preface", views.js_preface, name="js_preface"),
 
@@ -115,56 +117,16 @@ urlpatterns = [
 
 	path("js_threeJS", views.js_threeJS, name="js_threeJS"),
 
-	#! Lisp paths (lisp-paths)
+	path("js_node", views.js_node, name="js_node"),
+
+	path("js_async", views.js_async, name="js_async"),
+
+#! Lisp paths (lisp-paths)
 	path("lisp_preface", views.lisp_preface, name="lisp_preface"),
 
 	path("lisp_expressions", views.lisp_expressions, name="lisp_expressions"),
 
-	path("lisp_naming", views.lisp_naming, name="lisp_naming"),
-
-	path("lisp_environment", views.lisp_environment, name="lisp_environment"),
-
-	path("lisp_evaluatingCombinations", views.lisp_evaluatingCombinations, name="lisp_evaluatingCombinations"),
-
-	path("lisp_strings", views.lisp_strings, name="lisp_strings"),
-	
-	path("lisp_images", views.lisp_images, name="lisp_images"),
-
-	path("lisp_constants", views.lisp_constants, name="lisp_constants"),
-
-	path("lisp_compoundProcedures", views.lisp_compoundProcedures, name="lisp_compoundProcedures"),
-
-	path("lisp_substitutionModel", views.lisp_substitutionModel, name="lisp_substitutionModel"),
-
-	path("lisp_applicativeNormal", views.lisp_applicativeNormal, name="lisp_applicativeNormal"),
-
-	path("lisp_conditionals", views.lisp_conditionals, name="lisp_conditionals"),
-
-	path("lisp_compoundPredicates", views.lisp_compoundPredicates, name="lisp_compoundPredicates"),
-
 	path("lisp_lists", views.lisp_lists, name="lisp_lists"),
-
-	path("lisp_listDataDefinitions", views.lisp_listDataDefinitions, name="lisp_listDataDefinitions"),
-
-	path("lisp_newtonsMethod", views.lisp_newtonsMethod, name="lisp_newtonsMethod"),
-
-	path("lisp_blockStructuring", views.lisp_blockStructuring, name="lisp_blockStructuring"),
-
-	path("lisp_iteration", views.lisp_iteration, name="lisp_iteration"),
-
-	path("lisp_treeRecursion", views.lisp_treeRecursion, name="lisp_treeRecursion"),
-
-	path("lisp_ordersOfGrowth", views.lisp_ordersOfGrowth, name="lisp_ordersOfGrowth"),
-
-	path("lisp_higherOrderFunctions", views.lisp_higherOrderFunctions, name="lisp_higherOrderFunctions"),
-
-	path("lisp_designingFunctions", views.lisp_designingFunctions, name="lisp_designingFunctions"),
-
-	path("lisp_designingData", views.lisp_designingData, name="lisp_designingData"),
-
-	path("lisp_selfReference", views.lisp_selfReference, name="lisp_selfReference"),
-
-	path("lisp_designingLargePrograms", views.lisp_designingLargePrograms, name="lisp_designingLargePrograms"),
 
 	path("lisp_onRecursion", views.lisp_onRecursion, name="lisp_onRecursion"),
 
@@ -222,7 +184,7 @@ urlpatterns = [
 
 	path("cpp_sorting", views.cpp_sorting, name="cpp_sorting"),
 
-	path("cpp_dynamicArrays", views.cpp_dynamicArrays, name="cpp_dynamicArrays"),
+	path("cpp_sequences", views.cpp_sequences, name="cpp_sequences"),
 
 	path("cpp_oop", views.cpp_oop, name="cpp_oop"),
 
@@ -256,7 +218,18 @@ urlpatterns = [
 
 	path("cpp_hashTables", views.cpp_hashTables, name="cpp_hashTables"),
 
+	path("cpp_graph_algorithms", views.cpp_graph_algorithms, name="cpp_graph_algorithms"),
+
 	path("cpp_generics", views.cpp_generics, name="cpp_generics"),
+
+	path("cpp_avl_trees", views.cpp_avl_trees, name="cpp_avl_trees"),
+
+	path("cpp_patterns", views.cpp_patterns, name="cpp_patterns"),
+
+	path("cpp_search", views.cpp_search, name="cpp_search"),
+
+	path("cpp_recursion", views.cpp_recursion, name="cpp_recursion"),
+
 
 
 	# C# paths

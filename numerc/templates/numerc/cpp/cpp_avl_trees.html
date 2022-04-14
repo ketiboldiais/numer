@@ -1,0 +1,644 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on AVL trees." />
+{% endblock %} {% block title %}
+<title>AVL Trees</title>
+{% endblock %} {% block content %}
+<h1>AVL Trees</h1>
+<section id="intro">
+	<p>
+		In this section, we examine <b>Adelson-Velsky &amp; Landis trees</b>,
+		commonly known as <b>AVL-trees</b>.<sup></sup> AVL-trees are
+		<i>height-balanced binary search trees.</i> Accordingly, they are a
+		subset of balanced binary trees:
+	</p>
+	<div class="note">
+		<p>
+			AVL-trees were invented in 1962, and named after their inventors,
+			Soviet mathematicians Georgy Adelson-Velsky (8 January 1922&ndash;26
+			April 2014) and Evgenii Mikhailovich Landis (6 October 1921&ndash;12
+			December 1997).
+		</p>
+		<p>
+			Born in Samara, Russia, Adelson-Velsky is known for introducing
+			<i>bitboards</i>, a bit array data structure now widely used to
+			represent game positions in computer chess. Adelson-Velsky's chess
+			program participated and won the first chess match between computer
+			programs in 1966. The AVL-tree, in particular, was borne out of
+			Adelson-Velsky's work in artificial intelligence.
+		</p>
+		<p>
+			His colleague, Evgenii Landis, was equally accomplished. Born in
+			Kharkiv, Ukraine, Landis fought in Finland as a lieutenant in the Red
+			Army, where he was wounded, frost-bitten, and severely shell-shocked.
+			The traumas of war impaired his ability to hear high-pitched tones,
+			to which Landis lamented his inability to hear violin flageolets.
+			Despite these difficulties, Landis made numerous contributions to the
+			field of partial differential equations, alongside his collaboration
+			with Adelson-Velsky in inventing the AVL-tree.
+		</p>
+	</div>
+	<div id="avl_tree_set"></div>
+	<p>
+		Given this fact, we might guess that there are various ways of defining
+		what it means to be <q>balanced.</q> And in fact, we would guess
+		correctly. The term <i>balanced tree</i>, without more, could mean many
+		things. Do we mean balanced in terms of weight? Height? Depth? Order?
+		Node categories?
+	</p>
+	<p>
+		For AVL-trees, we define <q>balanced</q> in terms of height. And to
+		construct that definition, we need a way of quantifying <i>balance</i>.
+		We do so by defining a <b>height balance factor</b>:
+	</p>
+	<dfn>
+		<small>definition: height balance factor</small>
+		<p>
+			Let ${n}$ be a node in some tree. The <i>height balance factor</i> of
+			${n}$ is defined as:
+		</p>
+		<figure>
+			$$ \textit{\textsf{BF}}(n) =
+			\textit{\textsf{H}}(\textit{\textsf{LST}}(n)) -
+			\textit{\textsf{H}}(\textit{\textsf{RST}}(n)) $$
+		</figure>
+		<p>where:</p>
+		<ul>
+			<li>
+				${\textit{\textsf{BF}}(n)}$ is the height balance factor of the
+				node ${n,}$
+			</li>
+			<li>
+				${\textit{\textsf{H}}(\textit{\textsf{LST}}(n))}$ is the height of
+				the left-subtree of the node ${n,}$ and
+			</li>
+			<li>
+				${\textit{\textsf{H}}(\textit{\textsf{RST}}(n))}$ is the height of
+				the right-subtree of the node ${n.}$
+			</li>
+		</ul>
+	</dfn>
+	<p>
+		To understand this definition, it's important to recall the definitions
+		for height:
+	</p>
+	<dfn>
+		<small>definition: height of a node</small>
+		<p>
+			Let ${n}$ be a node in some rooted tree. The height of ${n,}$ denoted
+			${\textit{\textsf{H}}(n),}$ is the number of nodes, including the
+			starting and end nodes, along the longest strictly downward path from
+			${n}$ to a leaf.<sup></sup>
+		</p>
+	</dfn>
+	<div class="note">
+		<p>
+			Note that there are two different definitions for the height of a
+			node. An alternative definition is:
+		</p>
+		<dfn>
+			<small>definition: height of a node</small>
+			<p>
+				Let ${x}$ be a node in some tree ${T.}$ The height of ${x,}$
+				denoted ${\textit{\textsf{H}}(x),}$ is the number of edges in the
+				longest strictly-downward path from ${x}$ to a leaf.
+			</p>
+		</dfn>
+		<p>
+			The key difference between this definition and the one we will use is
+			whether a leaf has a height of ${0}$ or ${1.}$ The existence of two
+			differing definitions for node height is similar to the situation of
+			natural numbers in mathematics &mdash; does the set of natural
+			numbers include ${0?}$ Some say yes, others no.
+		</p>
+		<p>
+			In response to this debate, we take the pragmatic approach. In some
+			situations, it's more convenient to define the height of a node as
+			the number of edges along the path, since this implies that a
+			balanced binary tree of height ${H}$ has ${2^H}$ leaves. If we
+			defined it as the number of nodes along the path (number of edges
+			plus ${1}$), we would have ${H + 1}$ or ${H-1}$ leaves. For the
+			purposes of AVL-trees, we use the definition presented in the main
+			text.
+		</p>
+	</div>
+	<dfn>
+		<small>definition: height of a tree</small>
+		<p>
+			Let ${\textsf{T}}$ be some rooted tree. The height of ${\textsf{T},}$
+			denoted ${\textit{\textsf{H}}(\textsf{T}),}$ is the height of its
+			root node.
+		</p>
+	</dfn>
+	<p>
+		From the height balance factor ${\textit{\textsf{BF}},}$ we have the
+		definition of an AVL tree:
+	</p>
+	<dfn>
+		<small>definition: avl-tree</small>
+		<p>
+			Let ${A}$ be a binary tree. ${A}$ is an <i>AVL-tree</i> if, and only
+			if, for every node ${n \in A,}$
+		</p>
+		<figure>$$ \textit{\textsf{BF}}(n) \in \{ -1, 0, 1 \} $$</figure>
+		<p>Or, alternatively:</p>
+		<figure>$$\lvert \textit{\textsf{BF}}(n) \rvert \leq 1 $$</figure>
+	</dfn>
+	<p>
+		Following the definition above, if the absolute value of the balance
+		factor of some node ${x}$ is greater than or equal to ${1,}$ we say
+		that the node ${x}$ is <i>height-imbalanced.</i> Moreover, to determine
+		if a particular tree ${T}$ is an AVL-tree, we must calculate the height
+		balance factor for each node in ${T.}$ If a single node in ${T}$ is
+		imbalanced, we conclude that ${T}$ is height-imbalanced. If the tree is
+		imbalanced, we can attempt to balance the tree by performing
+		<i>rotations</i>, as we'll see later.
+	</p>
+	<p>
+		That said, let's consider a few examples. Below are several binary
+		trees, with their heights indicated in blue.
+	</p>
+	<div class="split">
+		<figure class="block">
+			<div id="bst1"></div>
+			<figcaption>Tree A</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="bst2"></div>
+			<figcaption>Tree B</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="bst3"></div>
+			<figcaption>Tree C</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="bst4"></div>
+			<figcaption>Tree D</figcaption>
+		</figure>
+	</div>
+	<p>
+		Examining each tree, we have the following tables of balance factors:
+	</p>
+	<div class="col3">
+		<table class="alg rotate">
+			<thead>
+				<th></th>
+				<th>
+					<div><span>Node</span></div>
+				</th>
+				<th>
+					<div><span>Height of Left-subtree</span></div>
+				</th>
+				<th>
+					<div><span>Height of Right-subtree</span></div>
+				</th>
+				<th>
+					<div><span>Balance Factor</span></div>
+				</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td rowspan="6">Tree A</td>
+					<td>a</td>
+					<td>2</td>
+					<td>2</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>b</td>
+					<td>1</td>
+					<td>1</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>c</td>
+					<td>1</td>
+					<td>0</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>d</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>e</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>f</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+		</table>
+		<table class="alg rotate">
+			<thead>
+				<th></th>
+				<th>
+					<div><span>Node</span></div>
+				</th>
+				<th>
+					<div><span>Height of Left-subtree</span></div>
+				</th>
+				<th>
+					<div><span>Height of Right-subtree</span></div>
+				</th>
+				<th>
+					<div><span>Balance Factor</span></div>
+				</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td rowspan="5">Tree B</td>
+					<td>a</td>
+					<td>2</td>
+					<td>2</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>b</td>
+					<td>1</td>
+					<td>0</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>c</td>
+					<td>0</td>
+					<td>1</td>
+					<td>-1</td>
+				</tr>
+				<tr>
+					<td>d</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>g</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col3">
+		<table class="alg rotate">
+			<thead>
+				<th></th>
+				<th>
+					<div><span>Node</span></div>
+				</th>
+				<th>
+					<div><span>Height of Left-subtree</span></div>
+				</th>
+				<th>
+					<div><span>Height of Right-subtree</span></div>
+				</th>
+				<th>
+					<div><span>Balance Factor</span></div>
+				</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td rowspan="5">Tree C</td>
+					<td>a</td>
+					<td>3</td>
+					<td>1</td>
+					<td class="redbg">2</td>
+				</tr>
+				<tr>
+					<td>b</td>
+					<td>2</td>
+					<td>0</td>
+					<td class="redbg">2</td>
+				</tr>
+				<tr>
+					<td>c</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>d</td>
+					<td>1</td>
+					<td>0</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+		</table>
+		<table class="alg rotate">
+			<thead>
+				<th></th>
+				<th>
+					<div><span>Node</span></div>
+				</th>
+				<th>
+					<div><span>Height of Left-subtree</span></div>
+				</th>
+				<th>
+					<div><span>Height of Right-subtree</span></div>
+				</th>
+				<th>
+					<div><span>Balance Factor</span></div>
+				</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td rowspan="6">Tree D</td>
+					<td>a</td>
+					<td>4</td>
+					<td>1</td>
+					<td class="redbg">3</td>
+				</tr>
+				<tr>
+					<td>b</td>
+					<td>3</td>
+					<td>0</td>
+					<td class="redbg">3</td>
+				</tr>
+				<tr>
+					<td>c</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>d</td>
+					<td>0</td>
+					<td>2</td>
+					<td class="redbg">-2</td>
+				</tr>
+				<tr>
+					<td>i</td>
+					<td>1</td>
+					<td>0</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>j</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<p>
+		From the tables above, we can see that trees ${\texttt{C}}$ and
+		${\texttt{D}}$ are imbalanced. The same trees are presented below with
+		their balance factors indicated (red for imbalanced, green for
+		balanced).
+	</p>
+	<div class="split">
+		<figure class="block">
+			<div id="bf_mark_bst1"></div>
+			<figcaption>Tree A</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="bf_mark_bst2"></div>
+			<figcaption>Tree B</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="bf_mark_bst3"></div>
+			<figcaption>Tree C</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="bf_mark_bst4"></div>
+			<figcaption>Tree D</figcaption>
+		</figure>
+	</div>
+	<p>
+		Now that we know what it means for a tree to be imbalanced, let's
+		examine <i>rotating</i> &mdash; the act of correct height imbalances.
+	</p>
+</section>
+
+<section id="rotations">
+	<h2>Rotations</h2>
+	<p>
+		If we think carefully about height-imbalanced trees, we find that there
+		are really only four situations where a binary tree is
+		height-imbalanced. Why? Because to have a height-imbalanced binary
+		tree, we need, at a minimum, three nodes. This follows from the
+		definition of a height-balanced binary tree &mdash; to determine if a
+		binary tree is height-balanced, we must compare the left- and
+		right-subtrees of the root. And to reach the conclusion that a binary
+		tree is height-imbalanced, the root must have a right- and left-child
+		to begin with; three nodes total.
+	</p>
+	<p>
+		As we know from the <i>Catalan number formula</i>, given three nodes,
+		there are five possible binary trees:
+	</p>
+	<div class="col3">
+		<figure class="block">
+			<div id="node3t1"></div>
+			<figcaption>${\texttt{P1}}$</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="node3t2"></div>
+			<figcaption>${\texttt{P2}}$</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="node3t3"></div>
+			<figcaption>${\texttt{P3}}$</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="node3t4"></div>
+			<figcaption>${\texttt{P4}}$</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="node3t5"></div>
+			<figcaption>${\texttt{P5}}$</figcaption>
+		</figure>
+	</div>
+	<p>
+		Of the possibilities above, only ${\texttt{P5}}$ is balanced. Given
+		that all subtrees of a binary tree are binary trees, it follows that
+		there are only four possible cases for height-imbalanced trees:
+	</p>
+	<div class="col3">
+		<figure class="block">
+			<div id="imb1"></div>
+			<figcaption>LL-imbalanced</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="imb2"></div>
+			<figcaption>RR-imbalanced</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="imb3"></div>
+			<figcaption>RL-imbalanced</figcaption>
+		</figure>
+		<figure class="block">
+			<div id="imb4"></div>
+			<figcaption>LR-imbalanced</figcaption>
+		</figure>
+	</div>
+	<p>
+		Because there are only four possible cases, there are only four methods
+		for height-balancing some binary tree. These methods are called
+		<b>rotations</b>: <i>right rotation</i>, <i>left rotation</i>,
+		<i>right-left rotation</i>, and <i>left-right rotation</i>.
+	</p>
+	<section id="LL_rotation">
+		<h3>Right rotation</h3>
+		<p>
+			Suppose some user is entering a binary tree traversal sequence to
+			construct a tree ${T.}$ After the first two entries, the binary tree
+			appears as:
+		</p>
+		<div id="rotate1"></div>
+		<p>The user then enters another element:</p>
+		<div id="rotate2"></div>
+		<p>
+			At this point, the tree is imbalanced. Why? Because
+			${\texttt{node(a)}}$ has a left-subtree of height ${2,}$ and a
+			right-subtree of height ${0.}$ Thus, the tree has an overall balance
+			factor of ${\textit{\textsf{BF}} = 2 - 0 = 2.}$ We demarcate this
+			situation as ${T:LL_i}$ to convey the proposition that the tree ${T}$
+			is <i>left-left-imbalanced</i>, which in turn conveys:
+			<q
+				>An imbalance occurred at the left-subtree of the left-subtree of
+				${T.}$</q
+			>
+		</p>
+		<p>
+			Now, because we have ${T:LL_i,}$ we perform an <b>right-rotation</b>:
+		</p>
+		<div class="col3">
+			<div id="rotate3"></div>
+			<div>
+				$$ \Large \overset{\texttt{right-rotate}}{\curvearrowright} $$
+			</div>
+			<div id="rotate4"></div>
+		</div>
+		<p>The RR-rotation consists of the following steps:</p>
+		<ol>
+			<li>
+				${\texttt{node(b)},}$ the node just before the imbalance-causing
+				node &mdash; in this case, ${\texttt{node(c)}}$ &mdash; becomes the
+				new root. We call ${\texttt{node(b)}}$ the <b>pivot</b>.
+			</li>
+			<li>
+				${\texttt{node(a)},}$ formerly the root, becomes the right-child of
+				${\texttt{node(b)},}$ with ${\texttt{node(b)}'s}$ right-child as
+				its left-child. In the case above, ${\texttt{node(b)}}$'s
+				right-child is ${\texttt{NULL}.}$
+			</li>
+			<li>
+				${\texttt{node(a)}}$ remains the left-child of
+				${\texttt{node(b)}.}$
+			</li>
+		</ol>
+		<p>
+			One way to think about the right-rotation operation is to imagine
+			holding down the pivot, and pulling the node to its right down.
+			(Hence the term
+			<i>pivot</i>). Alternatively, we can think of the right-rotation as
+			it sounds like &mdash; the nodes move towards the right,
+			transitioning from the shape ${~~/~~}$ to the shape ${~~\land~~.}$
+		</p>
+		<p>
+			The right-rotation operation works regardless of how many nodes there
+			are. For example, suppose we have the following tree:
+		</p>
+		<div id="rr_many_nodes"></div>
+		<p>
+			In the diagram above, the triangles indicate that there are further
+			subtrees. Importantly, the fact that the pivot, ${\texttt{node(b)},}$
+			has a balance factor of ${1}$ indicates that this tree is left-heavy.
+			Accordingly, we have a right-rotation:
+		</p>
+		<div id="rr_many_nodes2"></div>
+	</section>
+
+	<section id="left_rotation">
+		<h3>Left rotation</h3>
+		<p>Now suppose the user enters the tree:</p>
+		<div id="lr1"></div>
+		<p>
+			Here, we have an <b>RR-imbalanced tree</b>. To balance this tree, we
+			must perform a <b>left-rotation</b>:
+		</p>
+		<div class="col3">
+			<div id="lr2"></div>
+			<div>
+				$$ \Large \overset{\texttt{left-rotate}}{\curvearrowleft} $$
+			</div>
+			<div id="lr3"></div>
+		</div>
+		<p>The procedure:</p>
+		<ol>
+			<li>The pivot ${\texttt{node(b)},}$ becomes the new root. .</li>
+			<li>
+				${\texttt{node(a)},}$ formerly the root, becomes the
+				<em>left-child</em> of ${\texttt{node(b)}.}$
+			</li>
+			<li>
+				${\texttt{node(c)}}$ remains the right-child of
+				${\texttt{node(b)}.}$
+			</li>
+		</ol>
+	</section>
+
+	<section id="rl_rotation">
+		<h3>Right-left Rotation</h3>
+		<p>Now we examine the third case. Suppose the user enters:</p>
+		<div id="rl1"></div>
+		<p>
+			We say that this tree is <b>right-left imbalanced</b>. To balance
+			this tree, we perform a right-left rotation:
+		</p>
+		<div class="col3">
+			<div id="rl2"></div>
+			<div>
+				$$ \Large \overset{\texttt{right-rotate}}{\curvearrowright} $$
+			</div>
+			<div id="rl3"></div>
+			<div>
+				$$ \Large \overset{\texttt{left-rotate}}{\curvearrowleft} $$
+			</div>
+			<div id="rl4"></div>
+		</div>
+	</section>
+
+	<section id="rl_rotation">
+		<h3>Left-right Rotation</h3>
+		<p>Now we examine the final case. Suppose the user enters:</p>
+		<div id="ll1"></div>
+		<p>
+			We say that this tree is <b>left-right imbalanced</b>. To balance
+			this tree, we perform a left-right rotation:
+		</p>
+		<div class="col3">
+			<div id="ll2"></div>
+			<div>
+				$$ \Large \overset{\texttt{left-rotate}}{\curvearrowleft} $$
+			</div>
+			<div id="ll3"></div>
+			<div>
+				$$ \Large \overset{\texttt{right-rotate}}{\curvearrowright} $$
+			</div>
+			<div id="ll4"></div>
+		</div>
+	</section>
+</section>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/cpp_avl_trees.js"
+></script>
+{% endblock %}

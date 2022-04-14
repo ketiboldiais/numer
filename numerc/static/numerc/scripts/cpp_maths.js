@@ -1,4 +1,4 @@
-import * as csmd from "../csmd.mjs";
+import * as csmd from "../csmd/csmd.mjs";
 
 const primeFactor1 = new csmd.Tree({
 	id: "primeFactor1",

@@ -1,4 +1,4 @@
-import * as csmd from "../csmd.mjs";
+import * as csmd from "../csmd/CSMD.mjs";
 
 const and_truth_table = new csmd.TruthTable({
 	id: "and_truth_table",
@@ -907,19 +907,19 @@ const cpu_internal = new csmd.Digraph({
 	distance: 1,
 	data: {
 		nodes: [
-			{ name: "instruction", focus: ["#B8FFD0", "green"] }, // 0
-			{ name: "inM", focus: ["#B8FFD0", "green"] }, // 1
-			{ name: "reset", focus: ["#B8FFD0", "green"] }, // 2
-			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 3
-			{ name: "A-register", focus: ["#99FEFF", "#316B83"] }, // 4
-			{ name: "D-register", focus: ["#99FEFF", "#316B83"] }, // 5
-			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 6
-			{ name: "ALU", focus: ["#99FEFF", "#316B83"] }, // 7
-			{ name: "outM", focus: ["#FFDCF7", "#B983FF"] }, // 8
-			{ name: "writeM", focus: ["#FFDCF7", "#B983FF"] }, // 9
-			{ name: "addressM", focus: ["#FFDCF7", "#B983FF"] }, // 10
-			{ name: "PC", focus: ["#99FEFF", "#316B83"] }, // 11
-			{ name: "pc", focus: ["#F5B5FC", "#B983FF"] }, // 12
+			{ name: "instruction", fill: ["#B8FFD0", "green"] }, // 0
+			{ name: "inM", fill: ["#B8FFD0", "green"] }, // 1
+			{ name: "reset", fill: ["#B8FFD0", "green"] }, // 2
+			{ name: "Mux16", fill: ["#FCB1B1", "#BB6464"] }, // 3
+			{ name: "A-register", fill: ["#99FEFF", "#316B83"] }, // 4
+			{ name: "D-register", fill: ["#99FEFF", "#316B83"] }, // 5
+			{ name: "Mux16", fill: ["#FCB1B1", "#BB6464"] }, // 6
+			{ name: "ALU", fill: ["#99FEFF", "#316B83"] }, // 7
+			{ name: "outM", fill: ["#FFDCF7", "#B983FF"] }, // 8
+			{ name: "writeM", fill: ["#FFDCF7", "#B983FF"] }, // 9
+			{ name: "addressM", fill: ["#FFDCF7", "#B983FF"] }, // 10
+			{ name: "PC", fill: ["#99FEFF", "#316B83"] }, // 11
+			{ name: "pc", fill: ["#F5B5FC", "#B983FF"] }, // 12
 			{ name: "c" }, // 13 cm
 			{ name: "c" }, // 14 ca
 			{ name: "c" }, // 15 cd
@@ -928,10 +928,10 @@ const cpu_internal = new csmd.Digraph({
 			{ name: "c" }, // 18 cm2
 			{ name: "c" }, // 19 cpc
 			{ name: "C" }, // 20 cwm
-			{ name: "A-register-out", focus: ["lightgrey", "grey"] }, // 21 apin
-			{ name: "ALU-out", focus: ["lightgrey", "grey"] }, // 22 alupin
-			{ name: "ALU-out", focus: ["lightgrey", "grey"] }, // 23 pind
-			{ name: "Memory-address-out", focus: ["lightgrey", "grey"] }, // 24 pinpic
+			{ name: "A-register-out", fill: ["lightgrey", "grey"] }, // 21 apin
+			{ name: "ALU-out", fill: ["lightgrey", "grey"] }, // 22 alupin
+			{ name: "ALU-out", fill: ["lightgrey", "grey"] }, // 23 pind
+			{ name: "Memory-address-out", fill: ["lightgrey", "grey"] }, // 24 pinpic
 		],
 		edges: [
 			{ source: 0, target: 3 },
@@ -976,20 +976,20 @@ const alu_internal = new csmd.Digraph({
 	distance: 1,
 	data: {
 		nodes: [
-			{ name: "instruction", focus: ["#B8FFD0", "green"] }, // 0
-			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 1
-			{ name: "A-register", focus: ["#99FEFF", "#316B83"] }, // 2
+			{ name: "instruction", fill: ["#B8FFD0", "green"] }, // 0
+			{ name: "Mux16", fill: ["#FCB1B1", "#BB6464"] }, // 1
+			{ name: "A-register", fill: ["#99FEFF", "#316B83"] }, // 2
 			{ name: "c" }, // 3 c[M1]
 			{ name: "c" }, // 4 c[A]
 			{ name: "c" }, // 5 c[D]
-			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 6
-			{ name: "ALU", focus: ["#99FEFF", "#316B83"] }, // 7
-			{ name: "D-register", focus: ["#99FEFF", "#316B83"] }, // 8
+			{ name: "Mux16", fill: ["#FCB1B1", "#BB6464"] }, // 6
+			{ name: "ALU", fill: ["#99FEFF", "#316B83"] }, // 7
+			{ name: "D-register", fill: ["#99FEFF", "#316B83"] }, // 8
 			{ name: "Cs" }, // 9 ALU's input C's
 			{ name: "Cs" }, // 10 ALU's Cs
-			{ name: "ALU-out", focus: ["lightgrey", "grey"] }, // 11
-			{ name: "outM", focus: ["#FFDCF7", "#B983FF"] }, // 12
-			{ name: "inM", focus: ["#B8FFD0", "green"] }, // 13
+			{ name: "ALU-out", fill: ["lightgrey", "grey"] }, // 11
+			{ name: "outM", fill: ["#FFDCF7", "#B983FF"] }, // 12
+			{ name: "inM", fill: ["#B8FFD0", "green"] }, // 13
 			{ name: "c" }, // 14 c[M2]
 		],
 		edges: [
@@ -1023,14 +1023,14 @@ const instruction_handling = new csmd.Digraph({
 	distance: 1,
 	data: {
 		nodes: [
-			{ name: "instruction", focus: ["#B8FFD0", "green"] }, // 0
-			{ name: "Mux16", focus: ["#FCB1B1", "#BB6464"] }, // 1
-			{ name: "A-register", focus: ["#99FEFF", "#316B83"] }, // 2
+			{ name: "instruction", fill: ["#B8FFD0", "green"] }, // 0
+			{ name: "Mux16", fill: ["#FCB1B1", "#BB6464"] }, // 1
+			{ name: "A-register", fill: ["#99FEFF", "#316B83"] }, // 2
 			{ name: "c" }, // 3 c[M]
 			{ name: "c" }, // 4 c[A]
-			{ name: "to ALU", focus: ["lightgrey", "grey"] }, // 5
-			{ name: "from ALU", focus: ["lightgrey", "grey"] }, // 6
-			{ name: "addressM", focus: ["#FFDCF7", "#B983FF"] }, // 7
+			{ name: "to ALU", fill: ["lightgrey", "grey"] }, // 5
+			{ name: "from ALU", fill: ["lightgrey", "grey"] }, // 6
+			{ name: "addressM", fill: ["#FFDCF7", "#B983FF"] }, // 7
 		],
 		edges: [
 			{ source: 0, target: 1, label: "0000 1011 1011 1001" },
@@ -1047,25 +1047,25 @@ const instruction_handling = new csmd.Digraph({
 const control_unit_internal = new csmd.Digraph({
 	id: "control_unit_internal",
 	width: 100,
-	collide: 90,
+	collide: 70,
 	height: 78,
-	svg_width: 490,
-	svg_height: 380,
+	svg_width: 440,
+	svg_height: 300,
 	strength: 1,
 	distance: 1,
 	data: {
 		nodes: [
-			{ name: "A-register output", focus: ["lightgrey", "grey"] }, // 0
-			{ name: "PC", focus: ["#99FEFF", "#316B83"] }, // 1
+			{ name: "A-register output", fill: ["lightgrey", "grey"] }, // 0
+			{ name: "PC", fill: ["#99FEFF", "#316B83"], radial: 30 }, // 1
 			{ name: "c" }, // 2 c[pc]
-			{ name: "pc", focus: ["#FFDCF7", "#B983FF"] }, // 3
-			{ name: "reset", focus: ["#B8FFD0", "green"] }, // 4
+			{ name: "pc", fill: ["#FFDCF7", "#B983FF"] }, // 3
+			{ name: "reset", fill: ["#B8FFD0", "green"] }, // 4
 		],
 		edges: [
 			{ source: 0, target: 1 },
 			{ source: 2, target: 1 },
-			{ source: 1, target: 3, label: "program counter output" },
-			{ source: 4, target: 1, label: "reset bit" },
+			{ source: 1, target: 3, label: "pc_out" },
+			{ source: 4, target: 1, label: "reset_bit" },
 		],
 	},
 }).render();

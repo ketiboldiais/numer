@@ -383,9 +383,10 @@
 /* Heading styles */
 	h1,h2,h3,h4,h5,h6,p.h7,p.h8,p.h9,p.h10,p.subheading,p.warning-heading {
 		display: block;
+		font-family: var(--serifTitle);
 		padding: 0;
 		margin: 0;
-		margin-top: 1em;
+		margin-top: 2rem;
 		color: var(--darkRed);
 	}
 	h1 {
@@ -395,41 +396,27 @@
 		text-align: center;
 		color: var(--textColor);
 	}
-	h2 {
-		font-size: 1.5em;
-		padding-bottom: 0.1em;
-		text-align: left;
-		border-bottom: thin solid;
-	}
-	h3 {
-		font-size: 1.3em;
-	}
-	h4 {
-		font-size: 1.2em;
-		font-size: 1rem;
-	}
-	h5 {font-size: 1.1rem;}
-	h6 {
-		font-size: 0.9rem; 
-		text-align: center;
-		border-bottom: none;
-	}
-	/* other headings */
-	p.subheading {
-		font-size: 95%;
-		font-weight: bold;
-		width: fit-content;
-		padding: 1px;
-	}
-	p.lemma {
-		font-size: 0.95rem;
-		font-weight: bold;
+	h2 { font-size: 1.6em; border-bottom: thin solid; }
+	h3 {font-size: 1.4em;}
+	h4 {font-size: 1.3em;}
+	h5 {font-size: 1.2em;}
+	h6 {font-size: 1.1em;}
+	p.h7,p.h8,p.h9,p.h10 {
+		font-size: 75%;
+		padding: 0;
+		margin: 0.3rem 0 0 0;
+		text-indent: 0;
 		font-style: italic;
-	}
-	p.problem {
-		font-size: 0.95rem;
 		font-weight: bold;
-		text-decoration: underline;
+	}
+	p.subheading, p.warning-heading {
+		font-size: 0.9rem;
+		font-weight: bold;
+		padding: 0.6em;
+		text-indent: 0;
+	}
+	section.exercise>p.subheading {
+		margin: 1%;
 	}
 	span.topic, small {
 		display: inline-block;
@@ -438,25 +425,34 @@
 		margin-right: 0.6em;
 		font-size: 1rem;
 	}
+	figure div span.topic{
+		font-variant: small-caps; 
+		font-weight: normal;
+	}
 	span.exh {
 		font-style: italic; 
-		font-size: 0.95rem; 
 		text-decoration: underline;
 	}
-	.listHeader {
-		font-size: inherit;
-		color: var(--darkRed);
+	span.title {
+		font-variant: small-caps;
+	}
+	span.header {
+		display: block;
+		font-family: var(--serifTitle);
+		padding: 0.3em;
+		text-align: center;
 		font-weight: bold;
-		text-align: left;
-		margin: 0.4em;
-		margin-left: -1em;
-		padding: 0;
 	}
 	.pset {
 		font-size: 0.9rem;
 		text-decoration: underline;
 		border: none;
 		color: var(--darkRed);
+	}
+	.demoHeader {
+		margin: 0.3em 0 0.1em 0;
+		font-family: var(--sansSerifTitle);
+		text-align: right;
 	}
 /* Text styles */
 	section cite {
@@ -586,18 +582,24 @@
 		box-shadow: inset 0.063rem 0.063rem 0.125rem #242424, inset -0.063rem -0.063rem 0.125rem #181818;	
 	}
 /* List styles */
-	li {
-		font-size: 0.9rem;
-		padding: 0.3em 0.7em;
+	ul li::marker { font-size: 0.7rem; }
+	ul li, ol li {
+		padding: 1px 0 0 3px;
 	}
-	ul li::marker {
-		font-size: 0.7rem;
-	}
-	ol,ul {
+	ol > ol {list-style-type:lower-latin;}
+	figure.math-display>div>ul.larg {
+		list-style-type: none; 
+		font-size: 0.85rem; 
+		width: fit-content; 
 		margin: 0;
-		padding: 0.3em;
-		padding-left: 2em;
 	}
+	figure>div ul.def {
+		list-style-type:none; 
+		width: 100%; 
+		margin: 0; 
+		margin-top: 0.5em;
+	}
+	ol.lalpha {list-style: lower-alpha;}
 	/* Circle List */
 		ol.recipe {
 			list-style: decimal;
@@ -1392,31 +1394,32 @@
 	dfn {
 		font-style: normal;
 		display: block;
-		width: 50%;
-		margin: 2% auto;
+		width: 60%;
+		margin: 4% auto;
 		padding: 0;
 	}
 	dfn p {
-		margin: 0; 
-		padding: 0.5em 0;
+		margin: 0;
+		padding: 8px 0;
 	}
-	dfn p:first-child {
-		padding-top: 0;
+	small + p{
+		padding-top: 0 !important;
 	}
 	dfn p:last-child {
-		padding-top: 0;
+		padding-bottom: 0;
+		margin-bottom: 0;
 	}
 	dfn span.topic,
-	dfn>small, dfn>dt{
+	dfn small, dfn dt{
 		display:block;
 		font-variant: small-caps;
 		margin-top: 0;
+		padding: 0;
+		text-decoration: underline;
 	}
 	dfn ul {
-		list-style: circle;
-		padding-left: 3em;
-		padding-top: 0;
-		padding-bottom: 0;
+		padding: 0 0 0 3em;
+		margin: 0;
 	}
 	dfn ul li {
 		margin: 0;
@@ -1571,8 +1574,12 @@
 	table.alg {
 		border: none;
 		width: fit-content;
+		font-family: "CMU";
 		margin: 0 auto;
 	}
+	table.alg.center td,
+	table.alg.center th { text-align: center; }
+	table.alg.c2left tr td:nth-child(2) {text-align: left;}
 	div.alg {
 		overflow-x: auto;
 	}

@@ -4,54 +4,1709 @@
 <title>React</title>
 {% endblock %} {% block content %}
 <h1>React</h1>
-<section id="intro">
-	<p>Here is a sample React program:</p>
-	<pre class="language-javascript"><code>
-		import "./styles.css";
-		import React, { useState } from "react";
-		import Field from './components/field';
-		import Languages from './components/languages';
-		import Translate from './components/translate';
 
-		export default function App() {
-			const [language, setLanguage] = useState('ru');
-			const [text, setText] = useState(''); 
-			return (
-				&lt;div&gt;
-					&lt;Field label = &quot;Enter English&quot; onChange = {setText} value = {text}/&gt;
-					&lt;Languages language = {language} onLanguageChange = {setLanguage}/&gt;
-					&lt;hr /&gt;
-					&lt;Translate text = {text} language = {language}/&gt;
-				&lt;/div&gt;
-			);
+<section id="intro">
+	<section class="outline">
+		{% include './js_outlines/js_react_outline.html' %}
+	</section>
+	<p>
+		In this section, we investigate the ReactJS, a software library for
+		building web application user interfaces. First created by Jordan Walke
+		at Facebook, React is now one of the world's most widely used frontend
+		frameworks, powering the likes of Airbnb, Dropbox, BBC, Netflix,
+		Reddit, Facebook, and many others.
+	</p>
+	<p>
+		React takes a component-based approach to design UIs. We create a
+		component <var>x</var>, use that build some other component
+		<var>x+y</var>, then use that to build another component
+		<var>x+y+z</var>, and so on. For example, we might have a UI that looks
+		like the following:
+	</p>
+	<div id="ui1"></div>
+	<p>
+		Each of the boxes is a component, likely composed of many other
+		components. Because of this component-based approach, we get both
+		reusable and maintainable code. Moreover, a component-based approach
+		lends itself to more declarative programming. Instead of telling React
+		<i>how</i> to build a component, we tell React <i>what</i> the
+		component is.
+	</p>
+</section>
+
+<section id="setup">
+	<h2>Set Up</h2>
+	<p>
+		To get started with react, go through the following checklist top to
+		bottom:
+	</p>
+	<ol class="checklist">
+		<li>
+			Ensure the latest stable release of NodeJS is installed locally.
+			Installation instructions can be found on the
+			<a href="https://nodejs.org/en/download/" target="_blank"
+				>NodeJS website</a
+			>.
+		</li>
+		<li>Create a new directory for the React application.</li>
+		<li>On the command line, <var>cd</var> into the new directory.</li>
+		<li>
+			Enter the command
+			<var><mark>npx create-react-app ⟨app-name⟩</mark>.</var> Note that
+			the <var>⟨app-name⟩</var> cannot contain capital letters.
+		</li>
+	</ol>
+	<p>That's it. We have a new React application set up.</p>
+
+	<section id="running_react_application">
+		<h3>Running a React Application</h3>
+		<p>To run the React application, we perform the following:</p>
+		<ol class="checklist">
+			<li>
+				<var>cd</var> into the application directory. I.e.,
+				<var><mark>cd ⟨app-name⟩</mark></var
+				>.
+			</li>
+			<li>
+				Enter the command <var><mark>npm start</mark></var
+				>.
+			</li>
+		</ol>
+	</section>
+
+	<section id="project_structure">
+		<h3>Project Structure</h3>
+		<p>
+			After setting up the project, we have the following project
+			structure. Suppose the project is called <var>lab</var>.
+		</p>
+		<figure>
+			<pre class="language-pseudo"><code>
+				.
+				├── lab
+				├── node_modules
+				├── public
+				│   ├── favicon.ico
+				│   ├── index.html
+				│   ├── logo192.png
+				│   ├── logo512.png
+				│   ├── manifest.json
+				│   └── robots.txt
+				├── src
+				│   ├── App.css
+				│   ├── App.js
+				│   ├── App.test.js
+				│   ├── index.css
+				│   ├── index.js
+				│   ├── logo.svg
+				│   ├── reportWebVitals.js
+				│   └── setupTests.js
+				├── .gitignore
+				├── package-lock.json
+				├── package.json
+				└── README.md
+			</code></pre>
+		</figure>
+
+		<section id="appjs">
+			<h3><var>app.js</var></h3>
+			<p>Inside the <var>App.js</var> file, we see the following code:</p>
+			<pre class="language-javascript"><code>
+				import logo from './logo.svg';
+				import './App.css';
+
+				function App() {
+					return (
+						&lt;div className=&quot;App&quot;&gt;
+							&lt;header className=&quot;App-header&quot;&gt;
+								&lt;img src={logo} className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;
+								&lt;p&gt;
+									Edit &lt;code&gt;src/App.js&lt;/code&gt; and save to reload.
+								&lt;/p&gt;
+								&lt;a
+									className="App-link"
+									href="https://reactjs.org"
+									target="_blank"
+									rel="noopener noreferrer"
+								&gt;
+									Learn React
+								&lt;/a&gt;
+							&lt;/header&gt;
+						&lt;/div&gt;
+					);
+				}
+
+				export default App;
+			</code></pre>
+			<p>
+				If we run <var>npm start</var>, a new local server is run on a some
+				port, and we see the following:
+			</p>
+			<figure class="screenshot">
+				<div class="win">
+					<div class="closeBtn"></div>
+					<div class="minBtn"></div>
+					<div class="maxBtn"></div>
+				</div>
+				<img
+					src="{% static 'images/reactStart.png' %}"
+					alt=""
+					loading="lazy"
+				/>
+			</figure>
+			<p>
+				If we change the <var>p</var> tag to <var>Hello, world!</var>, we
+				get the following:
+			</p>
+			<figure class="screenshot">
+				<div class="win">
+					<div class="closeBtn"></div>
+					<div class="minBtn"></div>
+					<div class="maxBtn"></div>
+				</div>
+				<img
+					src="{% static 'images/reactStart2.png' %}"
+					alt=""
+					loading="lazy"
+				/>
+			</figure>
+		</section>
+
+		<section id="package" class="json">
+			<h3>package.json & react-scripts</h3>
+			<p>
+				The <var>package.json</var> file contains our project's
+				dependencies, as well as the scripts required for the probject.
+				Inside the <var>package.json</var>, we see a property called
+				<var>react-scripts</var>. These are scripts built by React to help
+				us during the project's development cycle. These scripts are tied
+				to Node commands. For example, in the <var>scripts</var> property,
+				we see the following:
+			</p>
+			<pre class="language-javascript"><code>
+				"scripts": {
+					"start": "react-scripts start",
+					"build": "react-scripts build",
+					"test": "react-scripts test",
+					"eject": "react-scripts eject"
+				},
+			</code></pre>
+			<p>
+				Notice that the <var>npm start</var>, <var>npm build</var>,
+				<var>npm test</var>, and <var>npm eject</var> commands are all
+				bound to <var>react-scripts</var> commands.
+			</p>
+		</section>
+
+		<section id="node_modules">
+			<h3>node_modules</h3>
+			<p>
+				The <var>node_modules</var> folder is where all of our project's
+				dependencies are installed. This folder is automatically generated
+				when we run the <var>create-react-app</var> command, or when we run
+				<var>npm install</var>.
+			</p>
+		</section>
+
+		<section id="public">
+			<h3>public</h3>
+			<p>
+				The <var>public</var> folder contains three files:
+				<var>favicon.ico</var>, <var>index.html</var>, and
+				<var>manifest.json</var>. Let's go over each of these files.
+			</p>
+			<p>
+				The <var>manifest.json</var> file is a <b>web app manifest</b>.
+				It's a JSON file that tells the browser several pieces of
+				information about the web application, as well as how the web
+				application should behave when installed on a user's desktop or
+				mobile device. We won't be dealing with this file very often, at
+				least not until later sections.
+			</p>
+			<p>
+				The <var>favicon.ico</var> is the icon that appears in our
+				application's browser tab.
+			</p>
+			<p>The <var>index.html</var> file contains the following code:</p>
+			<pre class="language-html"><code>
+				&lt;!DOCTYPE html&gt;
+				&lt;html lang=&quot;en&quot;&gt;
+				&#x9;&lt;head&gt;
+				&#x9;&#x9;&lt;meta charset=&quot;utf-8&quot; /&gt;
+				&#x9;&#x9;&lt;link rel=&quot;icon&quot; href=&quot;%PUBLIC_URL%/favicon.ico&quot; /&gt;
+				&#x9;&#x9;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+				&#x9;&#x9;&lt;meta name=&quot;theme-color&quot; content=&quot;#000000&quot; /&gt;
+				&#x9;&#x9;&lt;meta
+				&#x9;&#x9;&#x9;name=&quot;description&quot;
+				&#x9;&#x9;&#x9;content=&quot;Web site created using create-react-app&quot;
+				&#x9;&#x9;/&gt;
+				&#x9;&#x9;&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;%PUBLIC_URL%/logo192.png&quot; /&gt;
+				&#x9;&#x9;&lt;!--
+				&#x9;&#x9;&#x9;manifest.json provides metadata used when your web app is installed on a
+				&#x9;&#x9;&#x9;user&apos;s mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+				&#x9;&#x9;--&gt;
+				&#x9;&#x9;&lt;link rel=&quot;manifest&quot; href=&quot;%PUBLIC_URL%/manifest.json&quot; /&gt;
+				&#x9;&#x9;&lt;!--
+				&#x9;&#x9;&#x9;Notice the use of %PUBLIC_URL% in the tags above.
+				&#x9;&#x9;&#x9;It will be replaced with the URL of the &grave;public&grave; folder during the build.
+				&#x9;&#x9;&#x9;Only files inside the &grave;public&grave; folder can be referenced from the HTML.
+
+				&#x9;&#x9;&#x9;Unlike &quot;/favicon.ico&quot; or &quot;favicon.ico&quot;, &quot;%PUBLIC_URL%/favicon.ico&quot; will
+				&#x9;&#x9;&#x9;work correctly both with client-side routing and a non-root public URL.
+				&#x9;&#x9;&#x9;Learn how to configure a non-root public URL by running &grave;npm run build&grave;.
+				&#x9;&#x9;--&gt;
+				&#x9;&#x9;&lt;title&gt;React App&lt;/title&gt;
+				&#x9;&lt;/head&gt;
+				&#x9;&lt;body&gt;
+				&#x9;&#x9;&lt;noscript&gt;You need to enable JavaScript to run this app.&lt;/noscript&gt;
+				&#x9;&#x9;&lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+				&#x9;&#x9;&lt;!--
+				&#x9;&#x9;&#x9;This HTML file is a template.
+				&#x9;&#x9;&#x9;If you open it directly in the browser, you will see an empty page.
+
+				&#x9;&#x9;&#x9;You can add webfonts, meta tags, or analytics to this file.
+				&#x9;&#x9;&#x9;The build step will place the bundled scripts into the &lt;body&gt; tag.
+
+				&#x9;&#x9;&#x9;To begin the development, run &grave;npm start&grave; or &grave;yarn start&grave;.
+				&#x9;&#x9;&#x9;To create a production bundle, use &grave;npm run build&grave; or &grave;yarn build&grave;.
+				&#x9;&#x9;--&gt;
+				&#x9;&lt;/body&gt;
+				&lt;/html&gt;
+								
+			</code></pre>
+			<p>
+				This is the <em>only</em> HTML file we'll have in our application.
+				Because React is used primarily to build
+				<i>single-page applications</i>, this is the lone HTML file. We
+				very rarely add code to this file. For React, the single most
+				important tag in the document is the
+				<var>&lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</var> tag. The
+				entirety of our UI is kept in that single <var>div</var>.
+			</p>
+		</section>
+		<section id="src_folder">
+			<h3>src</h3>
+			<p>
+				The <var>src</var> folder is where will be spending the brunt of
+				our time. This folder has several files:
+			</p>
+			<figure>
+				<pre class="language-pseudo"><code>
+					.
+					└── src
+							├── App.css
+							├── App.js
+							├── App.test.js
+							├── index.css
+							├── index.js
+							├── logo.svg
+							├── reportWebVitals.js
+							└── setupTests.js
+				</code></pre>
+			</figure>
+			<p>Let's start with the <var>index.js</var> file.</p>
+
+			<section id="indexjs">
+				<h4>index.js</h4>
+				<p>
+					Inside the <var>index.js</var> file, we have the following
+					code:<sup></sup>
+				</p>
+				<div class="note">
+					<p>
+						Note that, as of React 18, <var>index.js</var> file should
+						appear as:
+					</p>
+					<pre class="language-javascript"><code>
+						import React from "react";
+						import ReactDOM from "react-dom/client";
+						import "./index.css";
+						import App from "./App";
+						import reportWebVitals from "./reportWebVitals";
+
+						const root = ReactDOM.createRoot(document.getElementById("root"));
+
+						root.render(
+							&lt;React.StrictMode&gt;
+								&lt;App /&gt;
+							&lt;/React.StrictMode&gt;,
+						);
+
+						reportWebVitals();
+					</code></pre>
+				</div>
+				<pre class="language-javascript"><code>
+					import React from 'react';
+					import ReactDOM from 'react-dom';
+					import './index.css';
+					import App from './App';
+					import reportWebVitals from './reportWebVitals';
+
+					ReactDOM.render(
+						&lt;React.StrictMode&gt;
+							&lt;App /&gt;
+						&lt;/React.StrictMode&gt;,
+						document.getElementById('root')
+					);
+
+					// If you want to start measuring performance in your app, pass a function
+					// to log results (for example: reportWebVitals(console.log))
+					// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+					reportWebVitals();
+				</code></pre>
+				<p>
+					The first line tells Node to import <var>React</var> from the
+					module <var>react</var>. The <var>react</var> module is React's
+					engine. It encapsulates all of React's internal mechanisms. The
+					next block of code we want to focus in on is the following:
+				</p>
+				<pre class="language-javascript"><code>
+					ReactDOM.render(
+						&lt;React.StrictMode&gt;
+							&lt;App /&gt;
+						&lt;/React.StrictMode&gt;,
+						document.getElementById('root')
+					);
+				</code></pre>
+
+				<p>
+					Next, notice that<var>ReactDOM.render()</var> is a method call.
+					Specifically, a method call of an instance of
+					<var>react-dom</var>. <var>react-dom</var> is an API, or
+					collection, of methods and properties for developing web
+					applications.<sup></sup> One of those methods is
+					<var>render()</var>.
+				</p>
+				<div class="note">
+					<p>
+						React provides libraries for other applications. There's
+						<var>react-native</var> for mobile applications and
+						<var>react-vr</var> for virtual reality applications.
+					</p>
+				</div>
+				<p>Inside the <var>render()</var> call, we pass:</p>
+				<pre class="language-javascript"><code>
+					&lt;React.StrictMode&gt;&lt;/React.StrictMode&gt;
+				</code></pre>
+				<p>
+					This is the <var>React</var> object we passed earlier.
+					Importantly, it has a <i>property</i> &mdash;
+					<var>StrictMode</var>. This property tells the the
+					<var>ReactDOM</var> to prevent using deprecated features.
+				</p>
+				<p>
+					Next, inside <var>&lt;React.strictMode&gt;</var>, we have the tag
+					<var>&lt;App/ &gt;</var>. This is a React <b>app component</b>.
+					Following this component, we have the line
+					<var>document.getElementById('root')</var>. This is the DOM
+					element that React will control. This is the
+					<var>&lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</var> we saw in
+					the <var>index.html</var> file. Because this element is what
+					React will use to render our UI, we call this element the
+					<b>root element</b>.
+				</p>
+				<p>
+					Ok, so <var>&lt;App /&gt;</var> is rendered inside the root
+					element. But what is this app component? Well, it's a block of
+					code found in <var>App.js</var>:
+				</p>
+				<pre class="language-javascript"><code>
+					import logo from './logo.svg';
+					import './App.css';
+					
+					function App() {
+						return (
+							&lt;div className=&quot;App&quot;&gt;
+								&lt;header className=&quot;App-header&quot;&gt;
+									&lt;img src={logo} className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;
+									&lt;p&gt;
+										Hello, world!
+									&lt;/p&gt;
+									&lt;a
+										className="App-link"
+										href="https://reactjs.org"
+										target="_blank"
+										rel="noopener noreferrer"
+									&gt;
+										Learn React
+									&lt;/a&gt;
+								&lt;/header&gt;
+							&lt;/div&gt;
+						);
+					}
+					
+					export default App;					
+				</code></pre>
+				<p>
+					The last argument passed to <var>ReactDOM.render()</var> is
+					<var>document.getElementById('root')</var>. This looks like a
+					plain DOM method. So what's the document? Well, it's the
+					<var>index.html</var> file contained in the
+					<var>public</var> folder (for clarity, we've omitted the
+					comments):
+				</p>
+				<pre class="language-html"><code>
+					&lt;!DOCTYPE html&gt;
+					&lt;html lang=&quot;en&quot;&gt;
+					&lt;head&gt;
+						&lt;meta charset=&quot;utf-8&quot; /&gt;
+						&lt;link rel=&quot;icon&quot; href=&quot;%PUBLIC_URL%/favicon.ico&quot; /&gt;
+						&lt;meta 
+							name=&quot;viewport&quot; 
+							content=&quot;
+							width=device-width, 
+							initial-scale=1&quot;
+						/&gt;
+						&lt;meta 
+							name=&quot;theme-color&quot; 
+							content=&quot;#000000&quot;
+						/&gt;
+						&lt;meta
+							name=&quot;description&quot;
+							content=&quot;Web site created using create-react-app&quot;
+						/&gt;
+						&lt;link 
+							rel=&quot;apple-touch-icon&quot; 
+							href=&quot;%PUBLIC_URL%/logo192.png&quot;
+						/&gt;
+						&lt;link
+							rel=&quot;manifest&quot;
+							href=&quot;%PUBLIC_URL%/manifest.json&quot;
+						/&gt;
+						&lt;title&gt;React App&lt;/title&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+						&lt;noscript&gt;
+							You need to enable JavaScript to run this app.
+						&lt;/noscript&gt;
+						&lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+					&lt;/body&gt;
+					&lt;/html&gt;
+				</code></pre>
+				<p>
+					The key element to focus on here is the <var>div</var> with the
+					<var>id</var> of <var>root</var>. When we call
+					<var>document.getElementById('root')</var>,
+					<var>index.js</var> will search for this <var>div</var> inside
+					<var>index.html</var>. React will replace this
+					<var>div</var> with the HTML structure created from passing:
+				</p>
+				<pre class="language-javascript"><code>
+					&lt;React.StrictMode&gt;
+						&lt;App /&gt;
+					&lt;/React.StrictMode&gt;
+				</code></pre>
+				<p>into <var>ReactDom.render()</var>.</p>
+				<p>
+					This is the baseline structure for all React applications. Having
+					seen this structure, the other files and lines of code become
+					much more intuitive. We also have an <var>App.test.js</var> file
+					for unit testing.
+				</p>
+				<p>
+					We also have an <var>App.css</var> file for styling, which is
+					imported in <var>App.js</var>:
+				</p>
+				<pre class="language-javascript"><code>
+					import './App.css'
+				</code></pre>
+				<p>
+					The <var>App.css</var> file contains classes for styling the app
+					components. We also have an <var>index.css</var> file for styling
+					everything outside the root element.
+				</p>
+			</section>
+		</section>
+	</section>
+
+	<section id="react_build">
+		<h3>Scripts Revisited</h3>
+		<p>
+			Now that we have a high-level overview of the React architecture,
+			let's revisit some of the React scripts we saw earlier. First,
+			<var>react-scripts build</var>.
+		</p>
+		<section id="react_build">
+			<h4>React Build</h4>
+			<p>
+				Once we're done with a React project, we must deploy the project to
+				a server. Without any further modifications, our project is likely
+				extremely large. This is where the
+				<var>react-scripts build</var> comes in. When we run
+				<var>npm build</var> for a React project,
+				<var>react-scripts build</var> will build our project in a much
+				more optimized form. It takes all of the files comprising our
+				project, and condensing all of them down into the smallest possible
+				unit of information that can be sent on a network connection.
+			</p>
+		</section>
+		<section id="react_test">
+			<h4>React Test</h4>
+			<p>
+				We'll be using the <var>react-scripts test</var> script much later,
+				but for now, all we need to know is that
+				<var>react-scripts test</var> is executed when we run
+				<var>npm test</var> for our React project. This script is tied to
+				the <var>App.test.js</var> file:
+			</p>
+			<pre class="language-javascript"><code>
+				import { render, screen } from '@testing-library/react';
+				import App from './App';
+
+				test('renders learn react link', () => {
+					render(&lt;App /&gt;);
+					const linkElement = screen.getByText(/learn react/i);
+					expect(linkElement).toBeInTheDocument();
+				});
+			</code></pre>
+			<p>
+				When we run <var>npm test</var>, the code contained in
+				<var>App.test.js</var> is executed.
+			</p>
+		</section>
+
+		<section id="react_eject">
+			<h4>React Eject</h4>
+			<p>
+				As we know, there are numerous different browsers &mdash; Chrome,
+				Safari, Firefox, Midori, Opera, Edge, their mobile versions if any,
+				and so on. Each of these browsers have varying support for
+				JavaScript. Chrome supports ES6, but Internet Explorer does not.
+				They also have different implementations.
+			</p>
+			<p>
+				Because of this browser variety, one thing we must consider in
+				developing any web application is
+				<i>cross-platform compatibility</i>. For example, ES6 isn't
+				supported on older versions of certain browsers.<sup></sup> Because
+				of this challenge, when we run <var>npm build</var>, React uses two
+				tools to generate our condensed project &mdash; a
+				<strong>webpack</strong> and <strong>babel</strong>.
+			</p>
+			<div class="note">
+				<p>
+					This is, however, changing. At the time of this writing,
+					${95.09\%}$ of users' browsers supported ES6.
+				</p>
+			</div>
+			<p>
+				<strong>webpack</strong> is a tool that chops JavaScript, HTML, and
+				CSS code into more efficient chunks of code. Using the chunks
+				generated by <strong>webpack</strong>, React can generate a more
+				efficient condensed version of our project. For example, when a
+				user clicks on a particular button, only the absolutely necessary
+				<strong>webpack</strong> chunk is executed, even if, in our source
+				code file, there were other dependencies.
+			</p>
+			<p>
+				<strong>babel</strong> handles a different issue: It's an ES6 to
+				ES5 transpiler &mdash; it takes ES6 code, and generates its ES5
+				version. This ensures that the code can run on browsers that don't
+				support ES6, ensuring cross-platform compatibility.
+			</p>
+			<p>
+				So where does <var>react-scripts eject</var> come in? The
+				<var>react-scripts eject</var> command allows us to actually see
+				the <strong>webpack</strong> and <strong>babel</strong> outputs. As
+				powerful as <strong>webpack</strong> and
+				<strong>babel</strong> are, they don't address every case, and
+				there may be instances where we know of a better optimization
+				approach. The <var>react-scripts eject</var> command allows us to
+				inspect the output files and make modifications as needed.
+			</p>
+		</section>
+	</section>
+</section>
+
+<section id="components">
+	<h2>Components</h2>
+	<p>
+		In React, a single component is a part of the web application's UI. A
+		React application might have many components, but all of them are
+		placed inside the <i>root component</i> &mdash; the
+		<var>&lt;App /&gt;</var> component bounded to the root element. Because
+		of this component-based architecture, we can create one component,
+		apply different properties &mdash; e.g., styles or content &mdash; and
+		reuse it elsewhere.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			React's component based approach allows developers to create
+			extraordinarily complex sites, something that would many, many months
+			to develop with just plain HTML and CSS. React-based sites like
+			Facebook and Reddit, for example, consist of thousands of components.
+		</p>
+	</div>
+	<p>
+		React components are usually placed inside JavaScript files. For
+		example, the root component is contained in the file <var>App.js</var>.
+		The code we write inside these component files is JavaScript, with a
+		few React-specific syntax. What that syntax looks like depends on the
+		<i>kind</i> of component we're creating.
+	</p>
+	<p>
+		React has two approaches to frontend layout: imperative and
+		declarative. With the imperative approach, we directly feed JavaScript
+		instructions about how the frontend should look like. For example,
+		consider this code that inserts new content to a contacts
+		<var>div</var> based on an array of contacts:
+	</p>
+	<pre class="language-javascript"><code>
+		const contacts = ['Amy', 'Javier', 'Yuxian']
+		const contactsBar = document.querySelector('ul#contacts');
+		for (let i = 0; i &lt; contacts.length; i++) {
+			const newContact = document.createElement('li');
+			newContact.innerText = contacts[i];
+			contactsBar.appendChild(newContact);
 		}
 	</code></pre>
 	<p>
-		The first thing we focus on is the call to a function called
-		<var><mark>App()</mark></var
-		>. This is the <b>application function</b>, or <b>app function</b>, and it
-		is an instance of a <b>react component</b>. A react component is a plain
-		JavaScript function that accomplishes one of the following tasks:
-	</p>
-	<ol>
-		<li>
-			return <b>JSX (<q>JavaScript Syntax</q>)</b>, or
-		</li>
-		<li>Handle user events (e.g., entering text or clicking a button)</li>
-	</ol>
-	<p>
-		JSX is just a set of instructions commanding informing React what content we
-		want displayed on the screen. In the code above, the JSX consists of the
-		lines that look like HTML code. JSX is similar to HTML in many ways. It
-		consits of tags that are either self-closing or require a closing tag.
+		This is a costly and potentially complicated approach &mdash; the DOM
+		must find elements, insert elements, recalculate layouts, and so on.
+		Initially, this was the predominant approach to frontend development.
 	</p>
 	<p>
-		JSX elements can be divided into two categories, depending on the tasks they
-		accomplish:
+		The alternative is a declarative approach: We merely describe the UI's
+		layout, and JavaScript <i>reacts</i> to our description. The idea is
+		that we encapsulate state in some object, and JavaScript builds the UI
+		based on the object:
 	</p>
-	<ol>
-		<li>Elements that command React to create a normal HTML element.</li>
-		<li>Elements that tell React to show another component.</li>
-	</ol>
+	<pre class="language-javascript"><code>
+		{
+			contactsList: ['Amy', 'Javier', 'Yuxian'];
+		}
+	</code></pre>
+	<p>
+		This object is effectively a <b>virtual DOM</b>. The developer doesn't
+		interact with the real DOM directly, nor do they interact with the
+		virtual DOM. React handles all of the necessary interactions.
+	</p>
+	<p>
+		Importantly, both imperative and declarative approaches in React ensure
+		<b>one-way data flow</b>. This means that even the imperative approach
+		&mdash; directly feeding instructions &mdash; follows a model where
+		there's only one state. This is done through React's
+		<var>component</var> class, as we'll see in the section on class
+		components.
+	</p>
+	<section id="stateless_functional_component">
+		<h3>Stateless Functional Component</h3>
+		<p>
+			<i>Stateless functional components</i>, or simply
+			<i>functional components</i>, are components written as JavaScript
+			functions that return HTML code. For example:
+		</p>
+		<pre class="language-javascript"><code>
+			function Greet(props) {
+				return &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;
+			}
+		</code></pre>
+		<p>
+			If we look at the default code React provides when we first create a
+			React component &mdash; found in <var>App.js</var> &mdash; we see
+			that it's a functional component:
+		</p>
+		<pre class="language-javascript"><code>
+			function App() {
+				return (
+					&lt;div className=&quot;App&quot;&gt;
+						&lt;header className=&quot;App-header&quot;&gt;
+							&lt;img src={logo} className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;
+							&lt;p&gt;
+								Hello, world!
+							&lt;/p&gt;
+							&lt;a
+								className="App-link"
+								href="https://reactjs.org"
+								target="_blank"
+								rel="noopener noreferrer"
+							&gt;
+								Learn React
+							&lt;/a&gt;
+						&lt;/header&gt;
+					&lt;/div&gt;
+				);
+			}			
+		</code></pre>
+		<p>
+			Functional components are essentially blackboxes that takes inputs
+			called <b>properties</b> &mdash; referred to as <b>props</b> &mdash;
+			and return HTML (and as we'll see later, JSX) outputs. To see this in
+			action, let's go to the <var>App.js</var> component, and remove most
+			of the boilerplate:
+		</p>
+		<pre class="language-javascript"><code>
+			import './App.css';
+
+			function App() {
+				return (
+					&lt;div className=&quot;App&quot;&gt;
+
+					&lt;/div&gt;
+				);
+			}
+
+			export default App;
+		</code></pre>
+		<p>
+			Reloading the local server, we get a blank white page.<sup
+			></sup> Inside the <var>src</var> folder, let's create a new folder
+			called <var>components</var>. Inside the
+			<var>components</var> folder, we'll create a file called
+			<var>Greet.js</var>.<sup></sup> And inside <var>Greet.js</var>, we'll
+			write the following:
+		</p>
+		<div class="note">
+			<p>
+				As an aside, when we first start a React project, we generally want
+				to clean up all the boilerplate, starting with the root component.
+			</p>
+		</div>
+		<div class="note">
+			<p>
+				React uses PascalCase as its naming convention for component files.
+			</p>
+		</div>
+		<pre class="language-javascript"><code>
+			import React from "react";
+
+			function Greet() { 
+				return &lt;h1&gt;Hello, Yuri!&lt;/h1&gt;;
+			}
+		</code></pre>
+		<p>
+			That's it. Our first React component. Importantly, note the import
+			statement. Whenever we make a new component file, we must import
+			React. Now, although we've written a component, because it's not
+			inside our root component, we won't see anything render in the
+			browser.
+		</p>
+		<p>
+			To connect this component, we have to export the
+			<var>Greet()</var> function from <var>Greet.js</var>, import it into
+			<var>App.js</var>, and then insert it into the root app component.
+			So, first we export:
+		</p>
+		<pre class="language-javascript"><code>
+			import React from "react";
+
+			function Greet() { 
+				return &lt;h1&gt;Hello, Yuri!&lt;/h1&gt;;
+			}
+
+			export default Greet;
+		</code></pre>
+		<p>
+			then we import in <var>App.js</var> and add the function to the root
+			app component:
+		</p>
+		<pre class="language-javascript"><code>
+			import './App.css';
+			import Greet from './components/Greet';
+
+			function App() {
+				return (
+					&lt;div className=&quot;App&quot;&gt;
+						&lt;Greet&gt;&lt;/Greet&gt;
+					&lt;/div&gt;
+				);
+			}
+
+			export default App;
+		</code></pre>
+		<p>Running the code above, we get:</p>
+		<figure class="screenshot">
+			<div class="win">
+				<div class="closeBtn"></div>
+				<div class="minBtn"></div>
+				<div class="maxBtn"></div>
+			</div>
+			<img
+				src="{% static 'images/reactFunctional.png' %}"
+				alt="React component"
+				loading="lazy"
+			/>
+		</figure>
+		<p>
+			We can make the code above just a tad shorter: If there is no content
+			between the component tags, we can simply write the tag as a
+			self-closing tag:
+		</p>
+		<pre class="language-javascript"><code>
+			import './App.css';
+			import Greet from './components/Greet';
+
+			function App() {
+				return (
+					&lt;div className=&quot;App&quot;&gt;
+						&lt;Greet /&gt;
+					&lt;/div&gt;
+				);
+			}
+
+			export default App;
+		</code></pre>
+		<p>
+			We can also clean up our <var>Greet.js</var> component a bit more as
+			well. The convention in React is to use arrow functions as much as
+			possible:
+		</p>
+		<pre class="language-javascript"><code>
+			import React from "react";
+
+			const Greet = () => &lt;h1&gt;Hello, Yuri!&lt;/h1&gt;;
+
+			export default Greet;
+		</code></pre>
+
+		<section id="imports_and_exports">
+			<h4>Imports & Exports</h4>
+			<p>
+				As an aside, there are few things we should keep in mind with the
+				import and export statements. First, when we write
+			</p>
+			<pre class="language-javascript"><code>
+				export default Greet;
+			</code></pre>
+			<p>
+				we tell JavaScript that any import of the <var>Greet.js</var> file
+				will import the function <var>Greet</var>. Because of this fact, we
+				are free to use a different name for the export in
+				<var>App.js</var>:
+			</p>
+			<pre class="language-javascript"><code>
+				import GreetComponent from './components/Greet';
+			</code></pre>
+			<p>If, however, we wrote</p>
+			<pre class="language-javascript"><code>
+				import React from "react";
+	
+				export const Greet = () => &lt;h1&gt;Hello, Yuri!&lt;/h1&gt;;
+			</code></pre>
+			<p>
+				we would tell JavaScript that any import of
+				<var>Greet.js</var> will <i>specifically</i> import the function
+				<var>Greet</var>. This is called a <i>named export</i>, and it
+				requires us to use the name <var>Greet</var> in
+				<var>App.js</var> whenever we want to use the
+				<var>Greet()</var> function.
+			</p>
+		</section>
+	</section>
+	<section id="stateful_class_component">
+		<h3>Stateful Class Component</h3>
+		<p>
+			Alternatively, <b>class components</b> are components that extend the
+			<var>Component</var> class, provided by the React library. A class
+			component ultimately must have a function &mdash; a
+			<var>render()</var> method &mdash; that returns HTML. For example:
+		</p>
+		<pre class="language-javascript"><code>
+			class Greet extends React.Component {
+				render() {
+					return &lt;h1&gt;Hello, {this.props.name}&lt;/h1&gt;;
+				}
+			}
+		</code></pre>
+		<p>
+			The process for class components is similar to the functional
+			component's. We pass properties to a <var>class</var> as input, and
+			the class outputs HTML/JSX. So what's so different from this and a
+			functional component? With class components, we can maintain
+			<i>state</i> &mdash; information private to the component, which can
+			then be used to modify the component as needed.
+		</p>
+		<p>
+			To illustrate, let's first create a file called
+			<var>Salute.js</var> inside our <var>components</var> directory.
+			Inside <var>Salute.js</var>, we'll write the following:
+		</p>
+		<pre class="language-javascript"><code>
+			import React, { Component } from "react";
+
+			class Salute extends Component {
+				render() {
+					return &lt;h1&gt;Salute!&lt;/h1&gt;
+				}
+			}
+
+			export default Salute;
+		</code></pre>
+		<p>
+			Notice the import statements. We must import <var>React</var>, and we
+			must also import the <var>Component</var> class. This is because our
+			component, <var>Salute</var>, will extend the
+			<var>Component</var> class.
+		</p>
+		<p>
+			Inside <var>App.js</var>, we insert the component just as we did with
+			the functional component:
+		</p>
+		<pre class="language-javascript"><code>
+			import './App.css';
+			import Salute from './components/Salute';
+
+			function App() {
+				return (
+					&lt;div className=&quot;App&quot;&gt;
+						&lt;Salute&gt;&lt;/Salute&gt;
+					&lt;/div&gt;
+				);
+			}
+
+			export default App;
+		</code></pre>
+	</section>
+
+	<section id="functional_v_class">
+		<h3>Functional Components v. Class Components</h3>
+		<p>
+			When should we use functional components over class components, and
+			vice versa? It depends on what the use-case. The rule of thumb,
+			however, is to use functional components. If a component can be built
+			as both a functional component and a class component, we should go
+			with the functional approach.
+		</p>
+		<p>
+			Why functional? First, because they're much simpler than class
+			components. Input in, output out. This means we don't have to worry
+			about having to deal with the <var>this</var> keyword, which is
+			inherently tied to the JavaScript classes.
+		</p>
+		<p>
+			Taking the functional approach also forces us to work with data
+			<em>without</em> state. This leads to code that is much easier to
+			debug and improve. The fact is, state-dependent code, as is the case
+			with class components, adds another layer of complexity to our
+			designs &mdash; tracking state. This may not seem like a big deal,
+			but it's all too easy to write hundreds of lines of code where each
+			component has its hands on data. Such code is much more difficult to
+			reason about and trace.
+		</p>
+		<p>
+			This is not to say that class components shouldn't be used at all. If
+			state is paramount to our component, then we don't have a choice.
+			Moreover, class components are more feature-rich. We can create
+			<q>smarter</q> components, in the sense that they self-modify or
+			perform some operation when their private data is changed.
+		</p>
+	</section>
 </section>
+
+<section id="jsx">
+	<h2>JSX</h2>
+	<p>
+		One thing we might have noticed with React is the use of angle
+		brackets. These angle brackets are actually
+		<b>JavaScript XML (JSX)</b>, an extension of JavaScript syntax. With
+		JSX, we can write code that looks like XML (a superset of HTML). That
+		JSX is ultimately transpiled to JavaScript before its sent to the
+		browser. This illustrates a key point about React &mdash; we don't
+		actually have to use JSX. For example, consider the following
+		component:
+	</p>
+	<pre class="language-javascript"><code>
+		import React from "react";
+
+		const Hello = () => {
+			return (
+				&lt;div className='heading'&gt;
+					&lt;h1&gt;Hello, world!&lt;/h1&gt;
+				&lt;/div&gt;
+			)
+		}
+
+		export default Hello
+	</code></pre>
+	<p>
+		This code is semantically meaningful. We're creating a component that
+		returns a <var>div</var> containing an <var>h1</var>, with the content
+		<var>Hello, world!</var>. The same code, without JSX, is as follows:
+	</p>
+	<pre class="language-javascript"><code>
+		import React from "react";
+
+		const Hello = () => {
+			return React
+				.createElement('div', {className: 'heading'}, React
+					.createElement('h1', null, 'Hello, world!'));
+		}
+		
+		export default Hello		
+	</code></pre>
+	<p>
+		The React method <var>.createElement()</var> method is similar to the
+		<var>document.createElement()</var> provided by the DOM. The
+		difference, however, is that it does a little more. With
+		<var>React.createElement()</var>, we pass three arguments: (1) the name
+		of the HTML tag, (2) any properties that tag should have, and (3) any
+		children of the HTML tag.
+	</p>
+	<p>
+		This is partly why we must import React for all our component files,
+		even if we don't call <var>React</var> explicitly. When we write JSX,
+		React will identify the JSX and translate them to
+		<var>React.createElement()</var> or whatever method is bound to the
+		particular JSX syntax.
+	</p>
+	<p>
+		There aren't very many differences between JSX and HTML, but there are
+		a few we should watch out for:
+	</p>
+	<table class="alg">
+		<thead>
+			<th>Semantic</th>
+			<th>HTML Syntax</th>
+			<th>JSX Syntax</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>class name</td>
+				<td><var>class</var></td>
+				<td><var>className</var></td>
+			</tr>
+			<tr>
+				<td>self-closing tag</td>
+				<td><var> &lt;br&gt; </var></td>
+				<td><var> &lt;br /&gt; </var></td>
+			</tr>
+			<tr>
+				<td>event listeners</td>
+				<td><var>onclick</var></td>
+				<td><var>onClick</var></td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		As an aside, if we were working purely with the DOM, the same code we
+		wrote would look like:
+	</p>
+	<pre class="language-javascript"><code>
+		const Hello = () => {
+			const divTag = document.createElement('div');
+			divTag.classList.add('heading')
+			const h1Tag = document.createElement('h1');
+			h1Tag.innerText = 'Hello, world!';
+			divTag.appendChild(h1Tag);
+			document.querySelector('div#root').appendChild(divTag);
+		}
+		Hello();
+	</code></pre>
+	<p>
+		Comparing these three blocks of code, it's clear that JSX is both the
+		shortest and the most semantically meaningful. React's extensive use
+		and strong support of JSX is partly why it's been so successful as a
+		frontend library.
+	</p>
+</section>
+
+<section id="props">
+	<h2>Props</h2>
+	<p>
+		Looking at React projects, we might see functional components that take
+		a parameter called <var>props</var>. This is a shortening of
+		<i>properties</i>, and it allows us to pass arguments into the
+		functional components.
+	</p>
+	<p>For exmaple, consider the following code:</p>
+	<pre class="language-javascript"><code>
+		import { Component } from "react";
+		import "./App.css";
+		import Greet from "./components/Greet"
+
+
+		class App extends Component {
+			render() {
+				return (
+					&lt;div className=&quot;App&quot;&gt;
+						&lt;Greet&gt;&lt;/Greet&gt;
+					&lt;/div&gt;
+				)
+			}
+		}
+
+		export default App;
+	</code></pre>
+	<p>This code uses the <var>Greet</var> component:</p>
+	<pre class="language-javascript"><code>
+		import React from "react";
+
+		const Greet = () => &lt;h1&gt;Hello, Yuri!&lt;/h1&gt;;
+
+
+		export default Greet;
+	</code></pre>
+	<p>
+		We can pass different names to the <var>Greet</var> component by
+		including a <var>name</var> attribute to the <var>Greet</var> component
+		tag:
+	</p>
+	<pre class="language-javascript"><code>
+		import { Component } from "react";
+		import "./App.css";
+		import Greet from "./components/Greet"
+
+
+		class App extends Component {
+			render() {
+				return (
+					&lt;div className=&quot;App&quot;&gt;
+						&lt;Greet name=&quot;Hayden&quot;&gt;&lt;/Greet&gt;
+					&lt;/div&gt;
+				)
+			}
+		}
+
+		export default App;
+	</code></pre>
+	<p>
+		Then, in the <var>Greet</var> component's implementation, we write:
+	</p>
+	<pre class="language-javascript"><code>
+		import React from "react";
+
+		const Greet = (props) => &lt;h1&gt;Hello, { props.name }!&lt;/h1&gt;;
+
+		export default Greet;
+	</code></pre>
+	<p>
+		Now the page shows <var>Hello, Hayden!</var> How does this work? The
+		attributes we include in a component tag comprise an object. Thus, when
+		we write:
+	</p>
+	<pre class="language-javascript"><code>
+		&lt;Greet name=&quot;Hayden&quot; age=&quot;38&quot; school=&quot;UCLA&quot;&gt;&lt;/Greet&gt;
+	</code></pre>
+	<p>We are creating the object:</p>
+	<pre class="language-javascript"><code>
+		const props = {
+			name: "Hayden",
+			age: "38",
+			school: "UCLA"
+		}
+	</code></pre>
+	<p>
+		This object can then be passed to functional components as arguments
+		and accessed within the functional component's body implementation.
+		Importantly, <var>props</var> are immutable. Their values cannot
+	</p>
+</section>
+
+<section id="state">
+	<section id="intro">
+		<h2>State</h2>
+		<p>
+			As we know, props are passed to a component, while state is managed
+			within a component. Because props are function parameters, they are
+			immutable. State, however, consists of variables declared in the
+			function body, and as such, are mutable.
+		</p>
+		<p>
+			With functional components, we access props by simply writing
+			<var>props</var>. And with class components, we access props by
+			writing <var>this.props</var>. We can access state in functional
+			components by writing <var>useState hook</var> (we'll cover this in a
+			later section), and in class components, we can acccess state by
+			writing <var>this.state</var>.
+		</p>
+		<p>To illustrate, let's consider an example.</p>
+		<pre class="language-javascript"><code>
+			import { Component } from "react";
+			import "./App.css";
+			import Greet from "./components/Greet"
+	
+	
+			class App extends Component {
+				render() {
+					return (
+						&lt;div className=&quot;App&quot;&gt;
+							&lt;Greet&gt;&lt;/Greet&gt;
+						&lt;/div&gt;
+					)
+				}
+			}
+	
+			export default App;
+		</code></pre>
+		<p>
+			The functionality we want: A <var>Subscribe</var> button, that, when
+			clicked, displays <var>Subscribed!</var>. To implement this
+			functionality, we use React's <var>setState()</var> method. Inside
+			<var>Greet.js</var>, we write:
+		</p>
+		<pre class="language-javascript"><code>
+			import React, {Component} from "react";
+
+			class Greet extends Component {
+				constructor() {
+					super()
+					this.state = {
+						message: 'Subscribe?'
+					}
+				}
+				changeMessage() {
+					this.setState({
+						message: 'Subscribed!'
+					})
+				}
+				render() {
+					return (
+						&lt;div&gt;
+							&lt;h1&gt;{this.state.message}&lt;/h1&gt;
+							&lt;button onClick={() =&gt; {this.changeMessage()}}&gt;Subscribe&lt;/button&gt;
+						&lt;/div&gt;
+					)
+				}
+			}
+
+			export default Greet;
+		</code></pre>
+		<p>The <var>setState()</var> method has the following syntax:</p>
+		<ul class="syntax">
+			<li>setState(<i>{}</i>)</li>
+		</ul>
+		<p>
+			where <var>{}</var> is some object that will become the
+			<var>state</var> property's new paired object value. Let's see
+			another example. We want a button that increments the number
+			displayed. We'll create a new file for this, <var>counter.js</var>.
+			There, we'll write:
+		</p>
+		<pre class="language-javascript"><code>
+			import React, { Component } from "react";
+
+			class Count extends Component {
+				constructor() {
+					super();
+					this.state = {
+						count: 0,
+					};
+				}
+
+				increment() {
+					this.setState({
+						count: this.state.count + 1,
+					});
+				}
+
+				render() {
+					return (
+						&lt;div&gt;
+							&lt;h1&gt;{this.state.count}&lt;/h1&gt;
+							&lt;button
+								onClick={() => {
+									this.increment();
+								}}>
+								Increment
+							&lt;/button&gt;
+						&lt;/div&gt;
+					);
+				}
+			}
+
+			export default Count;
+		</code></pre>
+
+		<section id="prev_count">
+			<h4>Using Previous State</h4>
+			<p>
+				For some components, we might want to use the previous state. We
+				can do so by passing a callback function to the
+				<var>setState()</var> method:
+			</p>
+			<ul class="syntax">
+				<li>setState(prevState => ({<i>prevState.someProperty</i>}))</li>
+			</ul>
+			<p>For example,</p>
+			<pre class="language-javascript"><code>
+				import React, { Component } from "react";
+
+				class Count extends Component {
+					constructor() {
+						super();
+						this.state = {
+							count: 0,
+						};
+					}
+
+					increment() {
+						this.setState(prevState => ({
+							count: prevState.count + 1
+						}));
+					}
+
+					render() {
+						return (
+							&lt;div&gt;
+								&lt;h1&gt;{this.state.count}&lt;/h1&gt;
+								&lt;button
+									onClick={() => {
+										this.increment();
+									}}>
+									Increment
+								&lt;/button&gt;
+							&lt;/div&gt;
+						);
+					}
+				}
+
+				export default Count;
+			</code></pre>
+		</section>
+	</section>
+
+	<section id="mapping_array_elements">
+		<h3>Mapping Arrays to Elements</h3>
+		<p>Consider the following code:</p>
+		<pre class="language-javascript"><code>
+			import { Component } from "react";
+			import "./App.css";
+
+			class App extends Component {
+				constructor() {
+					super();
+					this.state = {
+						p1: {name: 'n1'},
+						p2: {name: 'n2'},
+						p3: {name: 'n3'} 
+					}
+				}
+				render() {
+					return (
+						&lt;div className=&quot;App&quot;&gt;
+							&lt;h1&gt;{this.state.p1.name}&lt;/h1&gt;
+							&lt;h1&gt;{this.state.p2.name}&lt;/h1&gt;
+							&lt;h1&gt;{this.state.p3.name}&lt;/h1&gt;
+						&lt;/div&gt;
+					);
+				}
+			}
+
+			export default App;
+		</code></pre>
+		<p>
+			This is pretty repetitive. We know that <var>p1</var> to
+			<var>p3</var> all have the same format. What we can do instead:
+		</p>
+		<pre class="language-javascript"><code>
+			import { Component } from "react";
+			import "./App.css";
+
+			class App extends Component {
+				constructor() {
+					super();
+					this.state = {
+						p: [{ name: "n1" }, { name: "n2" }, { name: "n3" }],
+					};
+				}
+				render() {
+					return (
+						&lt;div className=&quot;App&quot;&gt;
+							{
+								this.state.p.map((el) => {
+									return &lt;h1&gt;{el.name}&lt;/h1&gt;
+								})
+							}
+						&lt;/div&gt;
+					);
+				}
+			}
+
+			export default App;
+		</code></pre>
+
+		<section id="key_property">
+			<h4>Key Property</h4>
+			<p>
+				Running the code above, the console tells us that each element
+				should have a unique key property. If we know that the names are
+				unique, we can pass a name value:
+			</p>
+			<pre class="language-javascript"><code>
+				return &lt;h1 key={el.name}&gt;{el.name}&lt;/h1&gt;
+			</code></pre>
+			<p>
+				Problem: We could have an array where objects have the same
+				<var>name</var> property. To get around this problem, we can give
+				each object a unique <var>id</var>.
+			</p>
+			<pre class="language-javascript"><code>
+				class App extends Component {
+					constructor() {
+						super();
+						this.state = {
+							p: [
+								{ name: "n1", id: '8c91afec' },
+								{ name: "n2", id: '9bg401vdc'},
+								{ name: "n3", id: '024a942n'}
+							],
+						};
+					}
+					render() {
+						return (
+							&lt;div className=&quot;App&quot;&gt;
+								{
+									this.state.p.map((el) => {
+										return &lt;h1 key={el.id}&gt;{el.name}&lt;/h1&gt;
+									})
+								}
+							&lt;/div&gt;
+						);
+					}
+				}
+			</code></pre>
+			<p>
+				React needs a unique key value because part of the rendering
+				process is optimization. And part of the rendering process is
+				ensuring that it only performs necessary computations. For example,
+				if we changed the first object in the array <var>p</var> to contain
+				the name <var>"n0"</var>, the optimal change is to only update the
+				<var>h1</var> element associated with <var>n0</var>. To do so, it
+				needs a unique key value.
+			</p>
+		</section>
+	</section>
+
+	<section id="destructuring_props_and_state">
+		<h3>Destructuring</h3>
+		<p>
+			A common idiom in React is to destructure props and state. Let's
+			first consider destructuring props.
+		</p>
+
+		<section id="props_destructure">
+			<h4>Destructuring Props</h4>
+			<p>Consider the following:</p>
+			<pre class="language-javascript"><code>
+				import { Component } from "react";
+				import "./App.css";
+				import Greet from './components/Greet'
+	
+	
+				class App extends Component {
+					render() {
+						return (
+							&lt;div className=&quot;App&quot;&gt;
+								&lt;Greet name=&apos;David&apos; home=&apos;Jerusalem&apos; /&gt;
+							&lt;/div&gt;
+						)
+					}
+				}
+	
+				export default App;
+			</code></pre>
+			<p>
+				The props object in this example consists of two properties,
+				<var>name</var> and <var>home</var>. Inside <var>Greet.js</var>, we
+				write:
+			</p>
+			<pre class="language-javascript"><code>
+				import React, {Component} from "react";
+	
+				const Greet = ({name, home}) => {
+					return (
+						&lt;div&gt;
+							&lt;h1&gt;Hello, {name} of {home}.&lt;/h1&gt;
+						&lt;/div&gt;
+					)
+				}
+	
+				export default Greet;
+			</code></pre>
+			<p>
+				By destructuring the props object, we can directly access the
+				properties <var>name</var> and <var>home</var> without having to
+				write <var>props.name</var> and <var>props.home</var>. We could
+				have also destructured the <var>props</var> object within the
+				function's body:
+			</p>
+			<pre class="language-javascript"><code>
+				const Greet = (props) => {
+					const {name, home} = props
+					return (
+						&lt;div&gt;
+							&lt;h1&gt;Hello, {name} of {home}.&lt;/h1&gt;
+						&lt;/div&gt;
+					)
+				}
+			</code></pre>
+		</section>
+
+		<section id="state_destructure">
+			<h4>Destructuring State</h4>
+			<p>
+				To destructure state, we use the same pattern. For example, with
+				the <var>Counter.js</var> component:
+			</p>
+			<pre class="language-javascript"><code>
+				import React, { Component } from "react";
+
+				class Count extends Component {
+					constructor() {
+						super();
+						this.state = {
+							count: 0,
+						};
+					}
+
+					increment() {
+						this.setState(prevState => ({
+							count: prevState.count + 1
+						}));
+					}
+
+					render() {
+						const {count} = this.state     // destructure
+						return (
+							&lt;div&gt;
+								&lt;h1&gt;{count}&lt;/h1&gt;
+								&lt;button
+									onClick={() => {
+										this.increment();
+									}}>
+									Increment
+								&lt;/button&gt;
+							&lt;/div&gt;
+						);
+					}
+				}
+
+				export default Count;
+			</code></pre>
+		</section>
+	</section>
+</section>
+
+<section id="events">
+	<h2>Event Handling</h2>
+	<p>
+		In this section, we take a look at event handling in React. Once again,
+		we'll consider handling in terms of functional components and class
+		components.
+	</p>
+
+	<section id="events_functional_components">
+		<h3>Event Handling: Functional Components</h3>
+		<p>
+			We start with a file, <var>Click.js</var>, containing the following
+			code:
+		</p>
+		<pre class="language-javascript"><code>
+			import React from 'react'
+
+			function Click() {
+				return (
+					&lt;div&gt;
+						&lt;button&gt;Click&lt;/button&gt;
+					&lt;/div&gt;
+				)
+			}
+
+			export default Click
+		</code></pre>
+		<p>
+			We'll import this new component into our <var>App.js</var> component:
+		</p>
+		<pre class="language-javascript"><code>
+			import { Component } from "react";
+			import "./App.css";
+			import Click from "./components/Click";
+
+
+			class App extends Component {
+				render() {
+					return (
+						&lt;div className=&quot;App&quot;&gt;
+							&lt;Click /&gt;
+						&lt;/div&gt;
+					)
+				}
+			}
+
+			export default App;
+		</code></pre>
+		<p>
+			When the user clicks on the button, a click event is fired. The goal:
+			Capture that event and execute code.
+		</p>
+		<pre class="language-javascript"><code>
+			import React from 'react'
+
+			function Click() {
+				const clickHandler = () => {
+					alert("clicked!");
+				}
+				
+				return (
+					&lt;div&gt;
+						&lt;button onClick={clickHandler}&gt;Click&lt;/button&gt;
+					&lt;/div&gt;
+				)
+			}
+
+			export default Click
+		</code></pre>
+		<p>
+			Notice how we're defining the function
+			<var>clickHandler()</var> inside the function <var>Click()</var>.
+			This is permissible because functions in JavaScript are first-class.
+			Inside the <var>button</var> element, we pass the
+			<var>onClick</var> attribute. When the user clicks the button, the
+			<var>clickHandler()</var> function is executed, resulting in an
+			alert.
+		</p>
+		<p>
+			Critically, notice the lack of parentheses inside the
+			<var>onClick</var> assigned value. If we included parentheses &mdash;
+			<var>clickHandler()</var> &mdash; React would interpret the
+			expression as a function call, and <var>clickHandler()</var> would be
+			executed immediately.
+		</p>
+	</section>
+
+	<section id="events_functional_components">
+		<h3>Event Handling: Class Components</h3>
+		<p>
+			Event handling for class components is similar to that of functional
+			components, the key difference being we must use the
+			<var>this</var> keyword:
+		</p>
+		<pre class="language-javascript"><code>
+			import React, { Component } from "react";
+
+			class Click extends Component {
+				constructor() {
+					super();
+				}
+				clickHandler() {
+					alert("Clicked");
+				}
+				render() {
+					return (
+						&lt;div&gt;
+							&lt;button onClick={this.clickHandler}&gt;Click&lt;/button&gt;
+						&lt;/div&gt;
+					);
+				}
+			}
+
+			export default Click;
+		</code></pre>
+	</section>
+
+	<section id="binding_event_handlers">
+		<h2>Binding Event Handlers</h2>
+		<p>
+			Because of the <var>this</var> keyword works in JavaScript, there are
+			some nuances to binding event handlers in React.
+		</p>
+	</section>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/js_react.js"
+></script>
 {% endblock %}

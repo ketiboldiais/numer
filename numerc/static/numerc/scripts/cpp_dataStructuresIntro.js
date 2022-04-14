@@ -1,5 +1,5 @@
 import { cdemo } from "../CDemo.mjs";
-import * as csmd from "../csmd.mjs";
+import * as csmd from "../csmd/csmd.mjs";
 
 /*
 	1 - O(1) - constant
@@ -16,7 +16,7 @@ import * as csmd from "../csmd.mjs";
 	12 - O(n!) - factorial
 */  
 
-const alg_heat_map = new csmd.HeatMap({
+const alg_heat_map = new csmd.BubbleMap({
 	id: 'alg_heat_map',
 	key: {
 		0: "${\\varnothing}$",

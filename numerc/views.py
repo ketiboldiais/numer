@@ -177,6 +177,9 @@ def java_dataStructuresAndAlgorithms(request):
 def java_design_patterns(request):
 		return render(request, "numerc/java/java-design-patterns.html")
 
+def java_blockchain(request):
+		return render(request, "numerc/java/java_blockchain/java_blockchain.html")
+
 #! JavaScript Views (jsv)
 def js_preface(request):
 		return render(request, "numerc/js/js_preface.html")
@@ -229,6 +232,12 @@ def js_d3(request):
 def js_threeJS(request):
 		return render(request, "numerc/js/js_threeJS.html")
 
+def js_node(request):
+		return render(request, "numerc/js/js_node.html")
+
+def js_async(request):
+		return render(request, "numerc/js/js_async.html")
+
 
 #! Lisp Views (lispv)
 def lisp_preface(request):
@@ -237,74 +246,8 @@ def lisp_preface(request):
 def lisp_expressions(request):
 		return render(request, "numerc/lisp/lisp_expressions.html")
 
-def lisp_naming(request):
-		return render(request, "numerc/lisp/lisp_naming.html")
-
-def lisp_environment(request):
-		return render(request, "numerc/lisp/lisp_environment.html")
-
-def lisp_evaluatingCombinations(request):
-		return render(request, "numerc/lisp/lisp_evaluatingCombinations.html")
-
-def lisp_strings(request):
-		return render(request, "numerc/lisp/lisp_strings.html")
-
-def lisp_images(request):
-		return render(request, "numerc/lisp/lisp_images.html")
-
-def lisp_constants(request):
-		return render(request, "numerc/lisp/lisp_constants.html")
-
-def lisp_compoundProcedures(request):
-		return render(request, "numerc/lisp/lisp_compoundProcedures.html")
-
-def lisp_substitutionModel(request):
-		return render(request, "numerc/lisp/lisp_substitutionModel.html")
-
-def lisp_applicativeNormal(request):
-		return render(request, "numerc/lisp/lisp_applicativeNormal.html")
-
-def lisp_conditionals(request):
-		return render(request, "numerc/lisp/lisp_conditionals.html")
-
-def lisp_compoundPredicates(request):
-		return render(request, "numerc/lisp/lisp_compoundPredicates.html")
-
 def lisp_lists(request):
 		return render(request, "numerc/lisp/lisp_lists.html")
-
-def lisp_listDataDefinitions(request):
-		return render(request, "numerc/lisp/lisp_listDataDefinitions.html")
-
-def lisp_newtonsMethod(request):
-		return render(request, "numerc/lisp/lisp_newtonsMethod.html")
-
-def lisp_blockStructuring(request):
-		return render(request, "numerc/lisp/lisp_blockStructuring.html")
-
-def lisp_iteration(request):
-		return render(request, "numerc/lisp/lisp_iteration.html")
-
-def lisp_treeRecursion(request):
-		return render(request, "numerc/lisp/lisp_treeRecursion.html")
-
-def lisp_ordersOfGrowth(request):
-		return render(request, "numerc/lisp/lisp_ordersOfGrowth.html")
-
-def lisp_higherOrderFunctions(request):
-		return render(request, "numerc/lisp/lisp_higherOrderFunctions.html")
-
-def lisp_designingFunctions(request):
-		return render(request, "numerc/lisp/lisp_designingFunctions.html")
-
-def lisp_designingData(request):
-		return render(request, "numerc/lisp/lisp_designingData.html")
-
-def lisp_selfReference(request):
-		return render(request, "numerc/lisp/lisp_selfReference.html")
-
-def lisp_designingLargePrograms(request):
-		return render(request, "numerc/lisp/lisp_designingLargePrograms.html")
 
 def lisp_onRecursion(request):
 		return render(request, "numerc/lisp/lisp_onRecursion.html")
@@ -392,8 +335,8 @@ def cpp_pointers(request):
 def cpp_sorting(request):
 	return render(request, "numerc/cpp/cpp_sorting.html")
 
-def cpp_dynamicArrays(request):
-	return render(request, "numerc/cpp/cpp_dynamicArrays.html")
+def cpp_sequences(request):
+	return render(request, "numerc/cpp/cpp_sequences/cpp_sequences.html")
 
 def cpp_oop(request):
 	return render(request, "numerc/cpp/cpp_oop.html")
@@ -440,8 +383,24 @@ def cpp_binary_trees(request):
 def cpp_hashTables(request):
 	return render(request, "numerc/cpp/cpp_hashTables.html")
 
+def cpp_graph_algorithms(request):
+	return render(request, "numerc/cpp/cpp_graph_algorithms.html")
+
 def cpp_generics(request):
 	return render(request, "numerc/cpp/cpp_generics.html")
+
+def cpp_avl_trees(request):
+	return render(request, "numerc/cpp/cpp_avl_trees.html")
+
+def cpp_patterns(request):
+	return render(request, "numerc/cpp/cpp_patterns/cpp_patterns.html")
+
+def cpp_search(request):
+	return render(request, "numerc/cpp/cpp_search/cpp_search.html")
+
+def cpp_recursion(request):
+	return render(request, "numerc/cpp/cpp_recursion/cpp_recursion.html")
+
 
 
 

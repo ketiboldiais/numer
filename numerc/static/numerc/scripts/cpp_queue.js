@@ -1,6 +1,6 @@
 import { cdemo } from "../CDemo.mjs";
 
-import * as csmd from "../csmd.mjs";
+import * as csmd from "../csmd/CSMD.mjs";
 
 const first_queue = new csmd.Queue({
 	id: 'first_queue',

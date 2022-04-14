@@ -1,4 +1,4 @@
-import * as csmd from "../csmd.mjs";
+import * as csmd from "../csmd/CSMD.mjs";
 
 const matrix_intro = new csmd.Matrix({
 	id: "matrix_intro",

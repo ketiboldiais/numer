@@ -1,4 +1,4 @@
-import * as csmd from "../csmd.mjs";
+import * as csmd from "../csmd/CSMD.mjs";
 
 const lang_map = new csmd.Digraph({
 	id: 'lang_map',

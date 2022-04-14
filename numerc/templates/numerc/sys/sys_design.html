@@ -3,7 +3,7 @@
 {% endblock %} {% block title %}
 <title>System Design</title>
 {% endblock %} {% block content %}
-<h1>Sofware Architecture</h1>
+<h1>System Design</h1>
 <section id="intro">
 	<p>
 		Having examined the low level details of computer organization, we'll
@@ -126,10 +126,6 @@
 			broadband.
 		</li>
 	</ol>
-	<section id="diagrams">
-		<h2>Component Diagrams</h2>
-		<p></p>
-	</section>
 </section>
 
 <section id="tiers">
@@ -413,7 +409,7 @@
 		<p>Adhering to SRP has several benefits:</p>
 		<ul>
 			<li>
-				<strong><b>Loose Coupling.</b></strong> A
+				<strong><b>loose coupling.</b></strong> A
 				<i>loosely-coupled component (LCC)</i> is a component that does not
 				depend on another component to perform its task. In contrast, a
 				<i>tightly-coupled component (TCC)</i> is a component whose task
@@ -435,11 +431,11 @@
 				</p>
 			</div>
 			<li>
-				<strong>Reduced Complexity.</strong> The most obvious advantage to
-				following SRP is reduced complexity. With every component having
-				one, and only one responsibility, it's much, much easier to think
-				about what the code is doing. Bugs are easier to spot because they
-				can be traced to a particular component.
+				<strong><b>reduced complexity.</b></strong> The most obvious
+				advantage to following SRP is reduced complexity. With every
+				component having one, and only one responsibility, it's much, much
+				easier to think about what the code is doing. Bugs are easier to
+				spot because they can be traced to a particular component.
 			</li>
 		</ul>
 	</section>
@@ -668,6 +664,222 @@
 			</p>
 		</section>
 	</section>
+</section>
+
+<section id="http_methods">
+	<h2>HTTP Mechanisms</h2>
+	<p>
+		In this section, we'll examine HTTP's <var><mark>pull</mark></var> and
+		<var><mark>push</mark></var> methods. As most web communication is done
+		over HTTP, knowing these methods at a greater level of detail is
+		invaluable to understanding web architectures.
+	</p>
+	<section id="http_pull">
+		<h3>HTTP Pull</h3>
+		<p>
+			Recall that the web communication sequence always follows the
+			sequence:
+		</p>
+		<ol>
+			<li>Client sends a <i>request</i>.</li>
+			<li>Server receives requestion.</li>
+			<li>Server sends a <i>response</i>.</li>
+			<li>Client receives response.</li>
+		</ol>
+		<p>
+			This is the default mode of HTTP communications, and it's implemented
+			through the HTTP <var><mark>pull</mark></var> method. The client
+			<i>pulls</i> data from the server <i>whenever they'd like</i>.
+			Because of this feature, there's a significant cost: Bandwidth
+			consumption is out of the developer's hands and in the client's.
+			Every request received by the server adds load to the server; the
+			greater the load the greater the bandwidth consumption; the greater
+			the bandwidth consumption, the more expensive it is to keep the
+			servers running.
+		</p>
+		<p>
+			But do clients really make that many requests? Depending on the
+			service, yes. Web services that provide the news, sports updates,
+			public health statistics, weather forecasts, and so on, might
+			experience many thousands of hits from various applications,
+			depending on the web service's quality. With the
+			<var>pull</var> method, the client sends requests however frequently
+			they'd like, even if there hasn't been any update to the data.
+		</p>
+	</section>
+
+	<section id="http_push">
+		<h3>HTTP Push</h3>
+		<p>
+			The HTTP <var><mark>push</mark></var> method provides an alternative
+			to address this cost. The mechanism:
+		</p>
+		<ol>
+			<li>Client sends the server one <i>request</i>.</li>
+			<li>Server receives the request.</li>
+			<li>Server sends a response.</li>
+			<li>Client receives the response.</li>
+			<li>
+				Server continues sending a response if new updates are available.
+			</li>
+			<li>
+				Client continues receiving responses unless they communicate to the
+				server to stop.
+			</li>
+		</ol>
+		<p>
+			With the <var>push</var> method, bandwidth control is back in the
+			developer's hands. The part of the process where the server receives
+			a request and responds only if there's an update is called a
+			<i>callback</i>.
+		</p>
+	</section>
+</section>
+
+<section id="http_pull">
+	<h2>HTTP PULL</h2>
+	<p>
+		Now that we a broad overview of the the <var>PUSH</var> and
+		<var>PULL</var> methods, we can examine some of the implementation
+		details. Several technologies play various roles in the implementation:
+	</p>
+
+	<ul>
+		<li>Ajax Long Polling</li>
+		<li>Web Sockets</li>
+		<li>HTML5 Event Source</li>
+		<li>Message Queues</li>
+		<li>Streaming over HTTP</li>
+	</ul>
+
+	<p>We examine each of these technologies in turn.</p>
+
+	<section id="getting_data_from_a_server">
+		<h3>Getting Data from a Server</h3>
+		<p>
+			The act of getting data from a server is also called
+			<b>pulling</b> or <b>fetching</b>. Clients have two ways to do so:
+		</p>
+		<ol>
+			<li>
+				Sending requests by calling the HTTP
+				<var><mark>GET</mark></var> method manually.
+			</li>
+			<li>
+				Sending requests automatically at set intervals through AJAX.
+			</li>
+		</ol>
+
+		<section id="get_method">
+			<h4>HTTP <var>GET</var> Method</h4>
+			<p>The <var>GET</var> method has the syntax:</p>
+
+			<pre class="language-bash"><code>
+				GET <i>⟨fileName.html⟩</i>
+			</code></pre>
+
+			<p>
+				Here's an example of what an HTTP <var>GET</var> request might look
+				like on Google Chrome:
+			</p>
+
+			<pre class="language-bash"><code>
+				GET / HTTP/1.1
+				Host: reqbin.com
+				Connection: keep-alive
+				User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36
+				Upgrade-Insecure-Requests: 1
+				Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+				Accept-Language: en-US,en;q=0.9
+				Accept-Encoding: gzip, deflate
+			</code></pre>
+		</section>
+
+		<section id="ajax">
+			<h4>AJAX</h4>
+			<p>
+				<b>Asynchronous JavaScript and XML (AJAX)</b> is how we can send
+				requests automatically at set intervals. To send the requests to
+				the server, AJAX uses an <b>XMLHttpRequest object</b>. This object
+				is built in browser, and uses JavaScript to update the HTML DOM.
+			</p>
+			<p>
+				The technique of automatically sending requests at set intervals is
+				called <b>polling</b>, or <b>AJAX polling</b>.
+			</p>
+		</section>
+
+		<section id="ttl">
+			<h4>Time to Live (TTL)</h4>
+			<p>
+				Under HTTP PULL, there's a specific time frame &mdash; determined
+				by the browswer &mdash; for when the client should receive a
+				response from the server after sending a request. This time frame
+				is called
+				<b>Time to Live (TTL)</b>. For example, if a browser has a TTL of
+				${30 \texttt{s.},}$ then: When the client sends a request to a
+				server, client must receive a response of ${30 \texttt{s.}}$ If a
+				response is not received within ${30 \texttt{s.,}}$ the browser
+				kills the connection, and the client must resend the request if
+				needed.
+			</p>
+			<p>
+				TTL is a means of reducing the number of connections to a server.
+				Connections require memory; the more connections a server must
+				maintain and track, the more memory the server must use. And with
+				enough connections, the server will eventually run out of memory.
+			</p>
+			<p>
+				The problem with TTL is when we know that it will always take
+				longer than the browser's TTL to receive a response. For example,
+				we might know that sending a request to a particular server always
+				takes ${40 \texttt{s.}}$ to receive a response from, but the
+				browser has a TTL of ${30 \texttt{s.}}$ Is there a way around this
+				hurdlle? Yes &mdash; a
+				<b>persistent connection</b>.
+			</p>
+		</section>
+	</section>
+</section>
+
+<section id="http_push">
+	<h2>HTTP PUSH</h2>
+	<p>
+		With HTTP PULL, every request has a TTL of anywhere from ${30
+		\textsf{s}}$ to ${60 \textsf{s.}}$ The TTL is imposed because
+		otherwise, the browser would keep an open connection to the server.
+		With enough open connections, the server will run out of memory and
+		crash.
+	</p>
+	<section id="persistent_connection">
+		<h3>Persistent Connection</h3>
+		<p>
+			A <b>persistent connection</b> is a network connection between the
+			client and the server that remains open after the initial
+			communication, regardless of whether a response is received within or
+			outside the browser's TTL. Because the connection remains open for
+			future requests, the client can send HTTP PUSH requests.
+		</p>
+		<p>
+			This connection remains open through <b>heartbeats</b> &mdash;
+			essentially blank requests and responses between the client and
+			server. As long as these heartbeats keep getting sent back and forth,
+			the connection remains open.
+		</p>
+		<p>
+			Persistent connections are resource intensive. An open connection is
+			an open connection, and the server must still use memory to maintain
+			that connection. Persistent connections, however, are necessary for
+			cetain web applications &mdash; browser-based multiplayer games,
+			video-chatting, and other applications that require data to be
+			constantly sent, updates or not. Fortunately, there are other HTTP
+			PUSH methods and technologies.
+		</p>
+	</section>
+
+	<!-- <section id="web_sockets">
+		<h3>Web Sockets</h3>
+	</section> -->
 </section>
 
 {% endblock %}

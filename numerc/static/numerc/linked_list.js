@@ -1,3 +1,5 @@
+import * as csmd from "../csmd/csmd.mjs";
+
 const linkedList1 = {
 	id: "linkedList1",
 	type: "single",

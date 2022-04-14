@@ -1,0 +1,2644 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on Node.js" />
+{% endblock %} {% block title %}
+<title>Node.js</title>
+{% endblock %} {% block content %}
+<h1>Node.js</h1>
+<section id="intro">
+	<section class="outline">
+		{% include './js_outlines/js_node_outline.html' %}
+		<ul class="references">
+			<li>
+				<a href="https://nodejs.org/api/" target="_href"
+					>Node Documentation</a
+				>
+			</li>
+			<li>
+				<a href="https://github.com/nodejs/node" target="_href"
+					>Node Github</a
+				>
+			</li>
+			<li>
+				<a href="http://docs.libuv.org/en/v1.x/" target="_blank"
+					>libuv Documentation</a
+				>
+			</li>
+			<li>
+				<a href="https://github.com/libuv/libuv" target="_blank"
+					>libuv Github</a
+				>
+			</li>
+		</ul>
+	</section>
+	<p>
+		<u>I</u>n this section, we examine Node.js. As we know, JavaScript is
+		predominantly run on a browser, through some JavaScript engine, e.g.,
+		Google's V8 engine or SpiderMonkey on Firefox. Below is a brief
+		timeline of some of the major developments that have occurred in
+		JavaScript's history.
+	</p>
+	<div id="node_timeline"></div>
+	<p>
+		Node.js is a JavaScript <i>runtime</i>, or <i>environment</i>. It's not
+		a programming language, and it's not a framework. Node.js is just one
+		of several environments that JavaScript can run in. The other, as we
+		know, is the browser. When we load a JavaScript file in a browser, the
+		source code is sent to the relevant JavaScript engine, for example, V8.
+	</p>
+	<p>
+		Once inside V8, the source code is parsed and eventually executed. If
+		V8 encounters something that doesn't look like JavaScript &mdash; e.g.,
+		a local system file, DNS, network, child processes, pipes, and so on
+		&mdash; it communicates with a software library called <b>libuv</b> (<q
+			>lib you vee</q
+		>). The libuv library is a C library that provides asynchronous input
+		and output, based on event loops. This is where Node.js comes in
+		&mdash; it provides a way for the V8 engine to communciate between with
+		the libuv library and vice versa.
+	</p>
+	<p>
+		Node.js's creator, Ryan Dahl, effectively created bindings that allow
+		the V8 engine to communicate with the libuv libary. With these
+		bindings, the V8 engine can perform OS operations, something that,
+		before Node.js, wasn't possible.
+	</p>
+</section>
+
+<section id="node_repl">
+	<h2>Node.js REPL</h2>
+	<p>
+		Node.js provides a REPL &mdash; a local environment to read and execute
+		JavaScript. For example, entering the
+		<var><mark>node</mark></var> command and writing the following:
+	</p>
+	<pre class="language-bash command-line" data-output="2-3"><code>
+		node
+		> "hello" + " world"
+		'hello world'
+	</code></pre>
+	<p>
+		REPL stands for <q>read-evaluate-print-loop</q>, and it's exactly what
+		it sounds like. The runtime will continue until we enter
+		<var>CMD-C</var> or <var>CMD-Z</var> (or whatever command we've
+		designated) to terminate the loop. We won't use the REPL very often,
+		but it comes in handy when we need a quick test.
+	</p>
+</section>
+
+<section id="executing_node">
+	<h2>Executing with Node.js</h2>
+	<p>
+		Executing JavaScript code with Node.js is straightforward. Consider the
+		following JavaScript code, contained in a file called
+		<var>lab1.js</var>:
+	</p>
+	<pre class="language-javascript"><code>
+		console.log("Hello world!")
+	</code></pre>
+	<p>To execute the code above in Node, we enter in the command-line:</p>
+	<pre class="language-bash command-line" data-output="2"><code>
+		node lab1.js
+		Hello world!
+	</code></pre>
+	<p>
+		We can also load files into the REPL. For example, suppose
+		<var>lab1.js</var> now contains the following:
+	</p>
+	<pre class="language-javascript"><code>
+		const parity = (num) => {
+			if (num % 2 === 0) {
+				console.log(`${num} is even.`);
+			} else {
+				console.log(`${num} is odd.`);
+			}
+		}
+	</code></pre>
+	<p>
+		Back in the command-line, we can load this file in the REPL with the
+		<var><mark>.load</mark></var> command:
+	</p>
+	<pre class="language-bash command-line" data-output="2-6"><code>
+		node
+		> .load lab1.js
+		> parity(8)
+		8 is even 
+		> parity(337)
+		337 is odd
+	</code></pre>
+
+	<section id="global_object">
+		<h3>Node API</h3>
+		<p>
+			Just as the browser provides a global <var>Window</var> object,
+			Node.js also has several global environment objects as part of its
+			API.<sup></sup> The chart below presents a comparison between the
+			browser's API and the Node API:
+		</p>
+		<div class="note">
+			<p>
+				<q>Application Programming Interface.</q> A set of features &mdash;
+				e.g., constants, variables, and functions &mdash; provided by an
+				application for the user to use.
+			</p>
+		</div>
+		<table class="alg">
+			<thead>
+				<th>Browser</th>
+				<th>Node</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>window</td>
+					<td>global</td>
+				</tr>
+				<tr>
+					<td>document</td>
+					<td>process</td>
+				</tr>
+				<tr>
+					<td>history</td>
+					<td>module</td>
+				</tr>
+				<tr>
+					<td>location</td>
+					<td>__filename</td>
+				</tr>
+				<tr>
+					<td>navigator</td>
+					<td>require()</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			We'll examine several Node objects and methods as we continue. The
+			first object we'll consider is <var><mark>process</mark></var
+			>, which provides details and methods of controlling Node's execution
+			of the current program. We can see all these properties and methods
+			by running the REPL and entering <var>process</var>. Towards the
+			bottom of this long list, we see a property called
+			<var><mark>argv</mark></var
+			>:
+		</p>
+		<pre class="language-bash"><code>
+			argv: [ '/usr/local/bin/node' ],
+		</code></pre>
+		<p>
+			If we go to
+			<a
+				href="https://nodejs.org/docs/latest/api/process.html#processargv"
+				target="_blank"
+				>Node's <var>argv</var> documentation</a
+			>
+			we see that <var>argv</var> is an array of command-line arguments. In
+			our <var>lab1.js</var> file, let's write:
+		</p>
+		<pre class="language-javascript"><code>
+			const userName = process.argv[2];
+			console.log(`Hello ${userName}`);
+		</code></pre>
+		<p>In the command-line:</p>
+		<pre class="language-bash command-line" data-output="2"><code>
+			node lab1.js Bill
+			Hello Bill
+		</code></pre>
+		<p>
+			This illustrates that Node can take command-line arguments, following
+			<var>argv</var>'s syntax:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>process.argv[${i}$]</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						Where ${i}$ is some natural number. If ${i = 0,}$ the path to
+						Node is returned. If ${i = 1,}$ the path to the current source
+						code file is returned. For ${i > 1,}$ the string passed after
+						the source code file name is returned.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Through libuv library, Node can read and write system files. This
+			effectively opens a whole new world for JavaScript. We have access to
+			local system file paths, as well as more complicated features like
+			encrypting data.
+		</p>
+		<p>
+			Node also provides methods for sending HTTP requests through our
+			local system. This effectively transfers the task of making HTTP
+			requests from V8 to the operating system. Given JavaScript's emphasis
+			on asynchronous programming, this feature allows us to run our
+			JavaScript code through V8 without having to wait for HTTP responses,
+			since the local system is handling that for us. This is called
+			<b>asynchronous I/O</b>, and it's what Node is best at.
+		</p>
+		<p>
+			To get a taste for how all of this works, let's take a look at some
+			of the code beneath the hood. We'll use the
+			<var>fs.open()</var> method, which allows us to open local files with
+			node. This method has the following syntax:
+		</p>
+		<ul class="syntax">
+			<li>
+				fs.open(<i>path</i> [<i>flags</i>, [<i>mode</i>]], <i>callback</i>)
+			</li>
+		</ul>
+		<p>
+			This method is implemented in the
+			<a
+				href="https://github.com/nodejs/node/blob/master/lib/fs.js"
+				target="_blank"
+				>fs.js</a
+			>
+			file in Node's implementation. Searching for the
+			<var>open()</var> function, we see the following code:
+		</p>
+		<pre class="language-javascript"><code>
+			function open(path, flags, mode, callback) {
+				path = getValidatedPath(path);
+				if (arguments.length &lt; 3) {
+					callback = flags;
+					flags = 'r';
+					mode = 0o666;
+				} else if (typeof mode === 'function') {
+					callback = mode;
+					mode = 0o666;
+				} else {
+					mode = parseFileMode(mode, 'mode', 0o666);
+				}
+				const flagsNumber = stringToFlags(flags);
+				callback = makeCallback(callback);
+			
+				const req = new FSReqCallback();
+				req.oncomplete = callback;
+			
+				binding.open(pathModule.toNamespacedPath(path),
+										 flagsNumber,
+										 mode,
+										 req);
+			}
+		</code></pre>
+		<p>
+			This is standard JavaScript code. We see the parameters provided by
+			the API, followed by several branches and guard clauses. At the very
+			end of this code, however, we see the call <var>binding.open()</var>.
+			Towards the top of <var>fs.js</var>, we see that
+			<var>binding</var> is some constant, bound to the result of calling
+			<var>internalBinding('fs')</var>.
+		</p>
+		<pre class="language-javascript"><code>
+			const binding = internalBinding('fs');
+		</code></pre>
+		<p>
+			This is where we see those internal bindings mentioned earlier. When
+			we make the call <var>fs.open()</var>, we implicitly make the call
+			<var>binding.open()</var>, which then makes a call to Node's internal
+			bindings. The internal bindings are found in the Node repository's
+			<a
+				href="https://github.com/nodejs/node/tree/54819f08e0c469528901d81a9cee546ea518a5c3/src"
+				target="_blank"
+				><var>src</var> directory</a
+			>, and for <var>binding.open()</var>, the
+			<a
+				href="https://github.com/nodejs/node/blob/54819f08e0c469528901d81a9cee546ea518a5c3/src/node_file.cc"
+				target="_blank"
+				><var>node_file.cc</var></a
+			>
+			source code file specifically. From the extension, we can see that
+			this is a ${\textsf{C++}}$ file. Towards the bottom of this file, we
+			see the following ${\textsf{C++}}$ code:
+		</p>
+		<pre class="language-cpp"><code>
+			void Initialize(Local&lt;Object&gt; target,
+				Local&lt;Value&gt; unused,
+				Local&lt;Context&gt; context,
+				void* priv) {
+			Environment* env = Environment::GetCurrent(context);
+			Isolate* isolate = env->isolate();
+			BindingData* const binding_data =
+			env->AddBindingData&lt;BindingData&gt;(context, target);
+			if (binding_data == nullptr) return;
+
+			env->SetMethod(target, "access", Access);
+			env->SetMethod(target, "close", Close);
+			env->SetMethod(target, "open", Open);
+			env->SetMethod(target, "openFileHandle", OpenFileHandle);
+			env->SetMethod(target, "read", Read);
+			env->SetMethod(target, "readBuffers", ReadBuffers);
+			&vellip;
+		</code></pre>
+		<p>
+			The lines starting with <var>env->SetMethod()</var> are
+			<i>pointer dereferences</i>. There's some pointer called
+			<var>env</var> that points to another dereferenced pointer
+			<var>binding_data->env()</var>. These pointers, working together, tie
+			JavaScript syntax with ${\textsf{C++}}$ code to form mappings. And it
+			is these mappings that make up Node's internal bindings interface.
+			Above, we see that one of these mappings is
+			<var>env->SetMethod(target, "open", Open);</var>. This tells us that
+			the JavaScript <var>"open"</var> is tied to some function
+			<var>Open</var>. And if we look for this function in
+			<var>node_file.cc</var>, we see the following:
+		</p>
+		<pre class="language-cpp"><code>
+			static void Open(const FunctionCallbackInfo&lt;Value&gt;& args) {
+				Environment* env = Environment::GetCurrent(args);
+			
+				const int argc = args.Length();
+				CHECK_GE(argc, 3);
+			
+				BufferValue path(env->isolate(), args[0]);
+				CHECK_NOT_NULL(*path);
+			
+				CHECK(args[1]->IsInt32());
+				const int flags = args[1].As&lt;Int32&gt;()->Value();
+			
+				CHECK(args[2]->IsInt32());
+				const int mode = args[2].As&lt;Int32&gt;()->Value();
+			
+				FSReqBase* req_wrap_async = GetReqWrap(args, 3);
+				if (req_wrap_async != nullptr) {  // open(path, flags, mode, req)
+					req_wrap_async->set_is_plain_open(true);
+					AsyncCall(env, req_wrap_async, args, "open", UTF8, AfterInteger,
+										uv_fs_open, *path, flags, mode);
+				} else {  // open(path, flags, mode, undefined, ctx)
+					CHECK_EQ(argc, 5);
+					FSReqWrapSync req_wrap_sync;
+					FS_SYNC_TRACE_BEGIN(open);
+					int result = SyncCall(env, args[4], &req_wrap_sync, "open",
+																uv_fs_open, *path, flags, mode);
+					FS_SYNC_TRACE_END(open);
+					if (result >= 0) env->AddUnmanagedFd(result);
+					args.GetReturnValue().Set(result);
+				}
+			}
+		</code></pre>
+		<p>
+			Looking at this code, we see that the <var>Open()</var> function
+			first creates a pointer to the arguments passed into the function. We
+			then have some guard clauses, followed by variable initializations
+			for the <var>flags</var> and <var>mode</var>. More importantly,
+			however, are the two function calls towards the end:
+			<var>AsyncCall()</var> and <var>SyncCall()</var>. Both of these
+			functions contain two arguments, <var>uv_fs_open</var>.<sup
+			></sup> These are, in fact, libuv functions. This illustrates that
+			the call to <var>uv_fs_open</var> can be synchronous or asynchronous.
+		</p>
+		<div class="note">
+			<p>
+				Studying Node.js's implementation, it turns out that wherever we
+				see <var>uv_</var>, it's more than likely a call to something in
+				the libuv library.
+			</p>
+		</div>
+		<p>
+			So what does <var>uv_fs_open</var> look like? Well, we can go to the
+			<a
+				href="https://github.com/libuv/libuv/tree/v1.x/src"
+				target="_blank"
+				>libuv Repository's <var>src</var> directory</a
+			>
+			for more information. Inside the <var>src</var> directory, we see two
+			subdirectories, <var>unix</var> and <var>win</var>. These directories
+			contain code for particular operating systems (in this case, Unix and
+			Windows). We see this distinction because Windows and Unix operating
+			sytems take different approaches for organizing and presenting system
+			files. Let's look inside the Unix directory. There, we see a file
+			called <var>fs.c</var>. This is the other end of Node's internal
+			bindings. Inside this file, we see some standard C code.
+		</p>
+		<p>
+			If we look for <var>uv_fs_open</var>, we see the following function
+			definition:
+		</p>
+		<pre class="language-c"><code>
+			int uv_fs_open(uv_loop_t* loop,
+										 uv_fs_t* req,
+										 const char* path,
+										 int flags,
+										 int mode,
+										 uv_fs_cb cb) {
+				INIT(OPEN);
+				PATH;
+				req->flags = flags;
+				req->mode = mode;
+				POST;
+			}
+		</code></pre>
+		<p>
+			From this code, we can determine that <var>uv_fs_open()</var> returns
+			an <var>int</var> value, and takes some pointer and literal values as
+			arguments. The very last line, <var>POST</var>, is a macro function,
+			and we can see its definition is:
+		</p>
+		<pre class="language-c"><code>
+			#define POST                                                                  \
+				do {                                                                        \
+					if (cb != NULL) {                                                         \
+						uv__req_register(loop, req);                                            \
+						uv__work_submit(loop,                                                   \
+														&req->work_req,                                         \
+														UV__WORK_FAST_IO,                                       \
+														uv__fs_work,                                            \
+														uv__fs_done);                                           \
+						return 0;                                                               \
+					}                                                                         \
+					else {                                                                    \
+						uv__fs_work(&req->work_req);                                            \
+						return req->result;                                                     \
+					}                                                                         \
+				}                                                                           \
+				while(0)
+		</code></pre>
+		<p>
+			Examining this code, we see a guard clause, checking if some pointer
+			<var>cb</var> is null pointer. If it isn't, then we register the
+			call, followed by a call to <var>uv__work_submit()</var>. This is
+			where the brunt of the work is performed. One of the arguments passed
+			is <var>uv__fs_work</var>, a static function defined as follows:
+		</p>
+		<pre class="language-c"><code>
+			static void uv__fs_work(struct uv__work* w) {
+				int retry_on_eintr;
+				uv_fs_t* req;
+				ssize_t r;
+			
+				req = container_of(w, uv_fs_t, work_req);
+				retry_on_eintr = !(req->fs_type == UV_FS_CLOSE ||
+													 req->fs_type == UV_FS_READ);
+			
+				do {
+					errno = 0;
+			
+			#define X(type, action)                                                       \
+				case UV_FS_ ## type:                                                        \
+					r = action;                                                               \
+					break;
+			
+					switch (req->fs_type) {
+					X(ACCESS, access(req->path, req->flags));
+					X(CHMOD, chmod(req->path, req->mode));
+					X(CHOWN, chown(req->path, req->uid, req->gid));
+					X(CLOSE, uv__fs_close(req->file));
+					X(COPYFILE, uv__fs_copyfile(req));
+					X(FCHMOD, fchmod(req->file, req->mode));
+					X(FCHOWN, fchown(req->file, req->uid, req->gid));
+					X(LCHOWN, lchown(req->path, req->uid, req->gid));
+					X(FDATASYNC, uv__fs_fdatasync(req));
+					X(FSTAT, uv__fs_fstat(req->file, &req->statbuf));
+					X(FSYNC, uv__fs_fsync(req));
+					X(FTRUNCATE, ftruncate(req->file, req->off));
+					X(FUTIME, uv__fs_futime(req));
+					X(LUTIME, uv__fs_lutime(req));
+					X(LSTAT, uv__fs_lstat(req->path, &req->statbuf));
+					X(LINK, link(req->path, req->new_path));
+					X(MKDIR, mkdir(req->path, req->mode));
+					X(MKDTEMP, uv__fs_mkdtemp(req));
+					X(MKSTEMP, uv__fs_mkstemp(req));
+					X(OPEN, uv__fs_open(req));
+					X(READ, uv__fs_read(req));
+					X(SCANDIR, uv__fs_scandir(req));
+					X(OPENDIR, uv__fs_opendir(req));
+					X(READDIR, uv__fs_readdir(req));
+					X(CLOSEDIR, uv__fs_closedir(req));
+					X(READLINK, uv__fs_readlink(req));
+					X(REALPATH, uv__fs_realpath(req));
+					X(RENAME, rename(req->path, req->new_path));
+					X(RMDIR, rmdir(req->path));
+					X(SENDFILE, uv__fs_sendfile(req));
+					X(STAT, uv__fs_stat(req->path, &req->statbuf));
+					X(STATFS, uv__fs_statfs(req));
+					X(SYMLINK, symlink(req->path, req->new_path));
+					X(UNLINK, unlink(req->path));
+					X(UTIME, uv__fs_utime(req));
+					X(WRITE, uv__fs_write_all(req));
+					default: abort();
+					}
+			#undef X
+				} while (r == -1 && errno == EINTR && retry_on_eintr);
+			
+				if (r == -1)
+					req->result = UV__ERR(errno);
+				else
+					req->result = r;
+			
+				if (r == 0 && (req->fs_type == UV_FS_STAT ||
+											 req->fs_type == UV_FS_FSTAT ||
+											 req->fs_type == UV_FS_LSTAT)) {
+					req->ptr = &req->statbuf;
+				}
+			}
+		</code></pre>
+		<p>
+			Notice the switch statement, and all of the cases following it. The
+			cases are all particular system calls. One of which, is
+			<var>X(OPEN, uv__fs_open(req))</var>. And if we look at the
+			implementation of that function, we see the following:
+		</p>
+		<pre class="language-c"><code>
+			static ssize_t uv__fs_open(uv_fs_t* req) {
+			#ifdef O_CLOEXEC
+				return open(req->path, req->flags | O_CLOEXEC, req->mode);
+			#else  /* O_CLOEXEC */
+				int r;
+			
+				if (req->cb != NULL)
+					uv_rwlock_rdlock(&req->loop->cloexec_lock);
+			
+				r = open(req->path, req->flags, req->mode);
+			
+				/* In case of failure `uv__cloexec` will leave error in `errno`,
+					* so it is enough to just set `r` to `-1`.
+					*/
+				if (r >= 0 && uv__cloexec(r, 1) != 0) {
+					r = uv__close(r);
+					if (r != 0)
+						abort();
+					r = -1;
+				}
+			
+				if (req->cb != NULL)
+					uv_rwlock_rdunlock(&req->loop->cloexec_lock);
+			
+				return r;
+			#endif  /* O_CLOEXEC */
+			}
+		</code></pre>
+		<p>
+			This is the actual function that opens the file. As we can see,
+			implementing Node is a massive undertaking, and we owe immense
+			gratitude to Node's contributing developers. All of this code is
+			abstracted away as Node's API, and we don't have to think about any
+			of these implementation details.
+		</p>
+	</section>
+</section>
+
+<section id="backend_v_frontend">
+	<h2>Backend v. Frontend</h2>
+	<p>
+		In web development, Node.js is categorized as a backend technology.
+		This is in contrast to a frontend technologies like React or Vue.js.
+		The distinction between backend and frontend stems from the
+		<b>client-server model</b>.
+	</p>
+	<p>
+		Under the client-server model, software systems &mdash; e.g., some web
+		application like Netflix, Twitter, Facebook, and so on &mdash; consists
+		of two primary components: a <b>client</b> and a <b>server</b>. A
+		client is some system that consumes the web application's services. For
+		example, the browser on our desktop or mobile phone. The server is some
+		system that delivers those services to the client. It might be a server
+		somewhere far from where we currently are, or it might be nearby.
+	</p>
+	<p>
+		To illustrate, consider online banking through some bank's website.
+		Let's call the bank <i>Kaching</i>. Our friend Yumiko is a Kaching
+		user, and she wants to transfer some money from her savings to her
+		checking account. Rather than go to the bank, Yumiko can do it all
+		online through Kaching's website. So Yumiko gets on Chrome, and enters
+		Kaching's URL. When she hits enter, the browser sends a
+		<i>request</i> to some server that stores all of the data that make up
+		Kaching's website.
+	</p>
+	<p>
+		After receiving this request, the server sends a <i>response</i> to
+		Yumiko's Chrome browser. That data might include
+		<i>static files</i> &mdash; JavaScript files for animations and form
+		controls, HTML files for the actual structure, CSS files for styling
+		banners, buttons, and headers, and so on. The technologies used to
+		design and implement these files &mdash; the components that are
+		actually shown to the user &mdash; are frontend technologies. In
+		contrast, backend technologies are the technologies used to control how
+		and when the frontend components. These technologies include Node,
+		Django, Go, Ruby, and many others.
+	</p>
+	<p>
+		Why not just keep all of these technologies in the same place? Well,
+		for starters, backend technologies perform operations that we simply
+		can't perform on the client side. For example, validating whether a
+		user entered a unique username when they first sign up for a service
+		requires the software system to determine if the username is taken. We
+		can't give everyone a copy of the database of all usernames.
+	</p>
+</section>
+
+<section id="async_review">
+	<h2>Review of Asynchronous Code</h2>
+	<p>
+		Because Node is an asynchronous JavaScript environment, it's worth
+		quickly reviewing the concept of asynchronous programming. Consider the
+		following code:
+	</p>
+	<pre class="language-javascript"><code>
+		function timeStamp() {
+			const time = Date.now();
+			const a = (time / 1000);
+			const b = Math.trunc(a);
+			return (a - b).toFixed(3); 
+		}
+		function f() {
+			const time = timeStamp();
+			console.log(`${time}: f() executed`)
+		}
+		
+		function g() {
+			const time = timeStamp();
+			console.log(`${time}: g() executed`)
+		}
+		
+		console.log(timeStamp());
+
+		f();
+
+		console.log(timeStamp());
+
+		g();
+
+		console.log(timeStamp());
+	</code></pre>
+	<pre class="language-bash"><code>
+		0.094
+		0.125: f() executed
+		0.126
+		0.126: g() executed
+		0.126
+	</code></pre>
+	<p>
+		Examining the output, we can see that <var>f()</var> executes first,
+		followed by <var>g()</var>. This is apparent given the timestamps.
+		<var>f()</var> executes at point <var>0.172</var>, and
+		<var>g()</var> executes at point <var>0.206</var>. This follows
+		JavaScript's default <i>synchronous</i> execution sequence. The
+		function <var>f()</var> is called a <b>blocking function</b> &mdash; it
+		prevents <var>g()</var> from executing.
+	</p>
+	<p>Now consider this output:</p>
+	<pre class="language-javascript"><code>
+		function timeStamp() {
+			const time = Date.now();
+			const a = (time / 1000);
+			const b = Math.trunc(a);
+			return (a - b).toFixed(3); 
+		}
+		function f() {
+			const time = timeStamp();
+			console.log(`${time}: f() executed`)
+		}
+		function g() {
+			const time = timeStamp();
+			console.log(`${time}: g() executed`)
+		}
+		
+		console.log(timeStamp());
+
+		setTimeout(() => {
+			f();
+		}, 1000);
+
+		console.log(timeStamp());
+
+		g();
+
+		console.log(timeStamp());
+	</code></pre>
+	<pre class="language-bash"><code>
+		0.975
+		0.985
+		0.986: g() executed
+		0.986
+		0.989: f() executed
+	</code></pre>
+	<p>
+		Now we see that <var>f()</var> executes after <var>g()</var>, even
+		though <var>f()</var> came first. When we call <var>setTimeout()</var>,
+		JavaScript doesn't wait for the time to finish. It proceeds to
+		<var>g()</var>. Once the timer finishes, control goes back to
+		<var>f()</var>. Because of this phenomenon, we say that
+		<var>f()</var> is now a <b>non-blocking function</b> &mdash; it does
+		not prevent <var>g()</var> from executing.
+	</p>
+	<p>
+		Asynchronous processes are not unique to JavaScript &mdash; our
+		computer's CPU itself relies on them. When we send an HTTP request for
+		a website or play a video game on our computer, the CPU isn't
+		necessarily doing all of this work. Instead, it delegates the necessary
+		responsibilities to other components in our computer system &mdash; the
+		graphics card, the network card, the sound card, and so on. In short,
+		the CPU doesn't perform these responsibilities one after another. If
+		that were the case, we wouldn't see students browsing Reddit with One
+		Note open to the side during lecture. Importantly, the delegated
+		responsibilities are handled by <i>asynchronous processes</i>. That is,
+		when the network card is working on something, it doesn't prevent the
+		graphics card from doing its work.
+	</p>
+	<p>
+		The same idea extends to asynchronous JavaScript. Many processes take
+		time to complete. For example, calling some function <var>f()</var> to
+		send an HTTP request and retrieve a large amount of data can take a
+		very long time. Chances are, we have more functions after
+		<var>f()</var> that do not need to wait for <var>f()</var> to finish.
+		Because of this fact, we do not want <var>f()</var> to be a blocking
+		function. Waiting when we don't have can lead to poor software,
+		security issues, and bugs.
+	</p>
+	<p>
+		That said, how does Node execute asynchronous code? To answer this
+		question, let's think about <i>processes</i> more generally. Suppose we
+		wrote a synchronous program called <var>main.js</var>, to be executed
+		in Node. It consists of just two functions, <var>f()</var> and
+		<var>g()</var>. When we tell the computer to run <var>main.js</var>,
+		the instructions make their way to the CPU, and the CPU begins
+		performing the computations. The instructions could be a loop,
+		addition, division, indexing into an array, all of the usual things we
+		have the computer perform. The CPU's execution of these computations
+		begins a <b>process</b>. This is effectively a container of all the
+		resources used for the computation &mdash; memory pages (the current
+		view of memory), file descriptors (e.g., what sockets are open),
+		security credentials (e.g., permissions to execute a particular
+		instruction), and so on:
+	</p>
+	<div id="process_demo"></div>
+	<p>
+		Now, the computations the CPU must perform involve instructions and
+		data, comprised of bits. For the CPU to operate on the instructions and
+		data, it must store these bits in its processor registers at various
+		points in time. A <b>thread</b> is the set of all these bits &mdash; in
+		our case, dedicated to <var>main.js</var> &mdash; that occupy these
+		registers. Thus, for the synchronous <var>main.js</var>, execution
+		results in creating a single thread:
+	</p>
+	<div id="process_demo1"></div>
+	<p>
+		As we said earlier, <var>thread1</var> is the set of all the bits the
+		CPU needs to execute <var>main.js</var>. This set changes as the CPU
+		executes each instruction. Some bits are moved from one register to
+		another, others are saved where they are, and yet others are destroyed.
+		To keep track of all this activity, each thread uses a special CPU
+		register called the <b>program counter</b> (which keeps track of what
+		instructions to execute next) and a <b>stack pointer</b> (which keeps
+		track of where in memory <var>main.js</var>'s instructions are kept).
+	</p>
+	<p>
+		Next, each of <var>main.js</var>'s instructions are stored in
+		designated areas of memory. To manage that memory, the computer system
+		uses a stack data structure called a <b>call stack</b>. The call stack
+		is comprised of frames, and each function in <var>main.js</var> gets
+		its own stack frame. Thus, because <var>main.js</var> consists of two
+		functions <var>f()</var> and <var>g()</var>, <var>main.js</var>'s
+		allocated region of instruction memory wil result in a call stack of
+		two stack frames. When <var>f()</var> finishes executing, its
+		instructions are popped off the stack. When <var>g()</var> is called, a
+		new stack frame is loaded, and when that finishes, <var>g()</var> is
+		popped off the stack.
+	</p>
+	<p>
+		From this discussion, it follows that each thread has an accompanying
+		call stack:
+	</p>
+	<div id="process_demo2"></div>
+	<p>
+		What if <var>f()</var> and <var>g()</var> were asynchronous HTTP
+		requests? Well, this is where the libuv library comes in. The libuv
+		library has instructions for setting up a <b>thread pool</b> of four
+		threads. A thread pool is a group of threads &mdash; a collection of
+		bits &mdash; available for usage. These bits comprise OS- and
+		network-related instructions. When we make those asynchronous calls,
+		libuv sends those instructions to the CPU, effectively allowing us to
+		have more than one thread: <var>f()</var> gets a thread with its own
+		call stack, and <var>g()</var> gets a thread with its own call stack.
+	</p>
+	<div id="process_demo3"></div>
+	<p>
+		We have to be very careful about what we're implying here. First, the
+		fact that we can use a pool of threads does not imply that Node somehow
+		transforms JavaScript into a language that supports full-fledged
+		multithreading. JavaScript is a synchronous language, built under the
+		assumption of single-threaded programs. Indeed, when we execute
+		programs in Node, there's one, and only one thread, used for the
+		JavaScript engine. Hence, any blocking functions we write in JavaScript
+		will block.
+	</p>
+	<p>
+		The asynchronous code we write in Node is handled by libuv's
+		<b>event loop</b>. When we make an asynchronous call, Node makes a call
+		to libuv:
+		<q>I've got a callback here. Call me when it's ready.</q> libuv takes
+		the call, and executes the instructions. Once those instructions are
+		executed, it sends the results back to Node. In sum, all of our
+		JavaScript code runs on the main thread, and any asynchronous I/O, such
+		as file systems and networking operations, are placed on the event
+		loop.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			Another caveat: Not all asynchronous functions are handled by the
+			thread pools. For Node, the threads in the thread pool are used
+			exclusively for asynchronous I/O operations.
+		</p>
+	</div>
+
+	<section id="event_loop">
+		<h3>Event Loop</h3>
+		<p>
+			As stated earlier, the event loop is what handles all of the callback
+			functions in our node program. When we execute JavaScript in Node, a
+			loop is implicitly executed inside libuv. The loop looks something
+			like:
+		</p>
+		<figure>
+			<pre class="language-pseudo"><code>
+				while (!exitProcess) {
+					processEvents();
+				}
+			</code></pre>
+			<figcaption>
+				A rough sketch of what the event loop looks like.
+			</figcaption>
+		</figure>
+		<p>
+			This loop is the event loop. As long as libuv hasn't been told to
+			exit the current process, libuv will continue processing events. What
+			does the <var>processEvents()</var> function look like? It's
+			essentially a function that processes a queue of callback functions.
+			For example, suppose we wrote the following code:
+		</p>
+		<pre class="language-javascript"><code>
+			function a() {console.log('a()')};
+			function b() {console.log('b()')};
+			function c() {console.log('c()')};
+			function d() {console.log('d()')};
+			function e() {console.log('e()')};
+
+			setTimeout(() => {a()}, 1000);
+			b();
+			setTimeout(() => {c()}, 1000);
+			d();
+			setTimeout(() => {e()}, 500);
+		</code></pre>
+		<pre class="language-bash"><code>
+			b()
+			d()
+			e()
+			a()
+			c()
+		</code></pre>
+		<p>
+			Above, we have five functions, three of which are callback functions.
+			Functions <var>a()</var> and <var>b()</var> are called only after
+			${1}$ second has passed, and function <var>e()</var> is called only
+			after half a second has passed. This is why we see the output above:
+			In JavaScript, functions are executed in
+			<i>the order they're called</i>, <em>not</em> in the order they're
+			defined.
+		</p>
+		<p>
+			Let's review how this works in the browser. JavaScript encounters the
+			first <var>setTimeOut()</var>, and it provides a function to be
+			called back after ${1}$ second. JavaScript sends this to a table data
+			structure in the browser called the <b>event table</b>:
+		</p>
+		<div id="et1"></div>
+		<p>
+			The browser will continue to monitor this table, watching the timers.
+			Next, JavaScript encounters the second function, <var>b()</var>. This
+			function is placed on the call stack:
+		</p>
+		<div class="split">
+			<div id="st1"></div>
+			<div id="et2"></div>
+		</div>
+		<p>
+			Once the function finishes executing, it is popped off the stack.
+			Then, JavaScript encounters the second <var>setTimeout()</var>. This
+			is sent to the event table.
+		</p>
+		<div class="split">
+			<div id="st2"></div>
+			<div id="et3"></div>
+		</div>
+		<p>
+			The next function encountered is <var>d()</var>, and this is pushed
+			to the call stack:
+		</p>
+		<div class="split">
+			<div id="st3"></div>
+			<div id="et4"></div>
+		</div>
+		<p>
+			Once <var>d()</var> finishes executing, it's popped off the call
+			stack. Then JavaScript encounters the last <var>setTimeout()</var>,
+			and again sends this to the event table.
+		</p>
+		<div class="split">
+			<div id="st4"></div>
+			<div id="et5"></div>
+		</div>
+		<p>
+			At this point, the stack is empty. The browser, however, has been
+			keeping an eye on the timers in the event table. The first timer to
+			expire is
+			<var>setTimeout3</var>, so the function associated with that timer,
+			<var>e()</var> is sent to a data structure called the
+			<b>callback queue</b>:
+		</p>
+		<div id="cbqueue1"></div>
+		<p>
+			Then when the next <var>setTimeout()</var> expires, that function is
+			added to the callback queue. In this case, the next timer to expire
+			is <var>a()</var>, since <var>a()</var> went into the event table
+			before <var>c()</var>. Once <var>c()</var>'s timer expires, it too is
+			sent to the callback queue:
+		</p>
+		<div id="cbqueue2"></div>
+		<p>
+			The functions are then executed in the order they're dequeued &mdash;
+			first in, first out:
+		</p>
+		<div id="stackfinal"></div>
+		<p>
+			So that's the browser's event loop. What about NodeJS's? The process
+			is similar, with a few modifications. First, NodeJS's event loop has
+			four phases:
+		</p>
+		<div id="eventLoopGraph"></div>
+		<p>
+			The first phase is to enqueue timers. There are timers in NodeJS:
+		</p>
+		<ol>
+			<li>
+				<var>setTimeout(() => { ${f}$ }, ${t}$)</var> which executes the
+				function ${f}$ after a time period ${t.}$
+			</li>
+			<li>
+				<var>setInterval(() => { ${f}$ }, ${t}$)</var> which executes the
+				function ${f}$ after every time period ${t.}$
+			</li>
+			<li>
+				<var>setImmediate(() => { ${f}$ })</var> which executes ${f}$ at
+				the next iteration of the event loop.
+			</li>
+		</ol>
+		<p>
+			The event loop begins by checking the timers. If it sees that a
+			<var>setTimeout()</var> or <var>setInterval()</var> has expired, it
+			enqueues the associated callback function to the callback queue. It
+			does not enqueue any function associated with
+			<var>setImmediate()</var> at this phase.
+		</p>
+		<p>
+			The event lopp then goes to the <i>I/O callback phase</i>, and checks
+			if there are any callback functions to execute.
+		</p>
+		<p>
+			The next phase is where the event loop checks the
+			<var>setImmediate()</var> timers. All functions associated with
+			<var>setImmediate()</var> are enqueued to the callback queue.
+		</p>
+		<p>
+			Once the <var>setImmediate()</var> phase is done, the event loop goes
+			to the <i>close callbacks phase</i>. This is where the event loop
+			checks if there are any functions that need to be called back after a
+			file or network connection is closed.
+		</p>
+		<p>
+			After the event loop finishes this first tick, it goes back to the
+			timers phase. It checks if there are any timers and enqueues
+			accordingly. It then goes to the I/O callbacks phase, and checks if
+			there are any functions in the I/O callback to execute. Then to the
+			<var>setImmediate()</var> phase and enqueues accordingly. And finally
+			to the close callbacks phase. This loop continues over and over
+			again.
+		</p>
+		<p>
+			Node's event loop approach has changed the way HTTP requests are
+			handled. Before Node, HTTP requests were always blocking functions.
+			This meant that if a user sent ${3}$ requests &mdash; ${r_1,}$
+			${r_2,}$ and ${r_3}$ &mdash; the server ${r_1}$ blocked the
+			processing of ${r_2,}$ and ${r_2}$ blocked the processing of ${r_3.}$
+			To get around this problem, servers would generate new threads for
+			each request. Although this model worked, it was
+			<i>very</i> expensive. Any web service that entailed thousands or
+			millions of requests &mdash; think Facebook, Twitter, news websites,
+			etc. &mdash; would need a substantial amount of money for server
+			costs.
+		</p>
+	</section>
+</section>
+
+<section id="node_modules">
+	<h2>Modules</h2>
+	<p>
+		Node &mdash; and JavaScript in general &mdash; has a vibrant variety of
+		<b>modules</b>. In Node, we can use modules with the
+		<var><mark>require</mark></var> keyword.<sup></sup> To illustrate,
+		we'll use Node's HTTP module. Before we delve into the HTTP module, we
+		must detour briefly into design patterns.
+	</p>
+	<div class="note">
+		<p>
+			Note that the <var>require</var> keyword is Node-specific. It's not
+			part of the JavaScript language.
+		</p>
+	</div>
+
+	<section id="observer_pattern">
+		<h3>Observer Pattern</h3>
+		<p>Consider the following code:</p>
+		<pre class="language-javascript"><code>
+			function Subject() {
+				this.F = [];
+			}
+			
+			Subject.prototype = {
+				subscribe: function (f) { this.F.push(f) },
+				unsubscribe: function (f) {
+					this.F = this.F.filter(g => {
+						if (g != f) { return g }
+				})},
+				notify: function () { this.F.forEach(f => {f.call()})}
+			}
+			
+			const subject = new Subject();
+			const a = () => { console.log('a() fired.') };
+			const b = () => { console.log('b() fired.')}
+			const c = () => { console.log('c() fired.')}
+			
+			subject.subscribe(a);
+			subject.subscribe(b);
+			subject.subscribe(c);
+			
+			subject.notify();
+			
+			subject.unsubscribe(b);
+			
+			console.log('b() unsubscribed.');
+			
+			subject.notify();
+		</code></pre>
+		<pre class="language-bash"><code>
+			a() fired.
+			b() fired.
+			c() fired.
+			b() unsubscribed.
+			a() fired.
+			c() fired.
+		</code></pre>
+		<p>
+			Let's walk through this code carefully. First, we have a function
+			called <var>Subject()</var>. When we later write
+			<var>new Subject()</var>, JavaScript will create a new object
+			containing an array called <var>F</var>.
+		</p>
+		<p>
+			Next, we assign an object to <var>Subject()</var>'s prototype. Recall
+			that every object in JavaScript &mdash; and functions are objects
+			&mdash; has a built-in property called <i>prototype</i>. This itself
+			is an object, and we can assign it properties and methods. Thus, in
+			the next block of code starting with <var>Subject.prototype</var>, we
+			assign a few methods:
+		</p>
+		<pre class="language-bash"><code>
+			{
+				subscribe: [Function: subscribe],
+				unsubscribe: [Function: unsubscribe],
+				notify: [Function: notify]
+			}
+		</code></pre>
+		<p>
+			The <var>subscribe()</var> method takes a function <var>f</var> and
+			adds it to the <var>Subject()</var>'s <var>F[]</var> array. The
+			<var>unsubscribe()</var> method takes a function <var>f</var> and
+			removes it from the <var>Subject()</var>'s <var>F[]</var> array. The
+			<var>notify()</var> method executes all of the functions inside the
+			<var>F[]</var> array.
+		</p>
+		<p>
+			This pattern is called the <b>observer pattern</b>. The name comes
+			from the fact that there's a single <i>subject</i> (in the case
+			above, the constant <var>subject</var>) being listened to, or
+			watched, by <i>observers</i> (each of <var>a</var>, <var>b</var>, and
+			initially, <var>c</var>).
+		</p>
+		<p>
+			The observer pattern is essentially an encapsulation of a common
+			idiom in functional programming &mdash; a function that executes each
+			function in an array of functions:
+		</p>
+		<pre class="language-javascript"><code>
+			function callAll() {
+				for (let i = 0; i &lt; arguments.length; i++) {
+					arguments[i].call();
+				}
+			}
+			
+			const a = () => { console.log('a() fired') };
+			const b = () => { console.log('b() fired') };
+			const c = () => { console.log('c() fired') };
+			
+			callAll(a, b, c);
+		</code></pre>
+		<pre class="language-bash"><code>
+			a() fired
+			b() fired
+			c() fired
+		</code></pre>
+		<p>
+			Now that we know how the observer pattern works, let's get back to
+			HTTP requests.
+		</p>
+	</section>
+
+	<section id="http_requests">
+		<h3>HTTP Requests</h3>
+		<p>
+			To make an HTTP request in Node, we must use the
+			<var>require</var> keyword, and Node's <var>HTTP</var> module:
+		</p>
+		<pre class="language-javascript"><code>
+			const http = require('http');
+
+			const req = http.request('http://www.google.com', (res) => {
+				res.on('data', (chunk) => {
+					console.log(`Data chunk: ${chunk}`);
+				})
+				res.on('end', () => {
+					console.log('No more data');
+				});
+			})
+
+			req.end();
+		</code></pre>
+		<p>Let's walk through the code. First, we wrote the following line:</p>
+		<pre class="language-javascript"><code>
+			const http = require('http');
+		</code></pre>
+		<p>
+			The <var>require()</var> method in Node has the following syntax:
+		</p>
+		<figure class="block">
+			<ul class="syntax">
+				<li>require('<i>module</i>')</li>
+			</ul>
+		</figure>
+		<p>Where <var>module</var> is a string value of either:</p>
+		<ol>
+			<li>A path to a JavaScript file. E.g.,</li>
+			<pre class="language-javascript"><code>
+				require('./file.js')
+			</code></pre>
+			<li>a core module provided by Node. E.g.,</li>
+			<pre class="language-javascript"><code>
+				require('http')
+			</code></pre>
+			<li>
+				Or a dependency in the local <var>node_modules</var> folder. E.g.,
+			</li>
+			<pre class="language-javascript"><code>
+				require('D3')
+			</code></pre>
+		</ol>
+		<p>
+			When we call <var>require('x')</var>, Node executes <var>x</var>, or
+			the contents of <var>x</var>, and returns an object called
+			<var>exports</var> containing whatever we've specified in
+			<var>x</var> as an export.
+		</p>
+		<p>
+			Thus, when we write <var>const http = require('http')</var>, we're
+			communicating to JavaScript:
+			<q
+				>From now on, the exports object returned from calling
+				<var>require('http')</var> is identified as <var>http</var>.</q
+			>
+		</p>
+		<p>
+			Inside the <var>http</var> object, we have a variety of methods and
+			properties. One of those methods is <var>request()</var>. The
+			<var>request()</var> method has the following syntax:
+		</p>
+		<ul class="syntax">
+			<li>request(<i>url</i>, <i>options</i>, <i>callback</i>)</li>
+		</ul>
+		<p>
+			The <var>url</var> parameter is a string value, the address of some
+			web resource.<sup></sup> This parameter is followed by
+			<var>options</var> and a <var>callback</var>. For now, we'll just
+			focus on the <var>callback</var>.
+		</p>
+		<div class="note">
+			<p>
+				<q>URL</q> is an acronym of <i>Uniform Resource Locator</i>.
+				Essentially, a web address.
+			</p>
+		</div>
+		<p>Using the <var>http</var> object, we make the call:</p>
+		<pre class="language-javascript"><code>
+			const req = http.request('http://www.google.com', (res) => {
+				res.on('data', (chunk) => {
+					console.log(`Data chunk: ${chunk}`);
+				})
+				res.on('end', () => {
+					console.log('No more data');
+				});
+			})
+
+			req.end();
+		</code></pre>
+		<p>
+			The code's structure should ook familiar &mdash; it's the observer
+			patterns. In this case, the subject is the result of calling
+			<var>http.request()</var>. This result is the
+			<i>HTTP response</i> &mdash; what the server sends to use when we
+			send our <i>HTTP request</i> with <var>http.request()</var>. We then
+			have two observers:
+		</p>
+		<pre class="language-javascript"><code>
+			(chunk) => { console.log(`Data chunk: ${chunk}`) };
+			() => { console.log('No more data') }
+		</code></pre>
+		<p>
+			These two observers are subscribed to particular events that the
+			subject &mdash; the HTTP response &mdash; communicates. If the
+			response emits <var>'data'</var>, the first observer is triggered. If
+			the response no longer emits <var>'data'</var> the second observer is
+			triggered.
+		</p>
+		<p>The very last line:</p>
+		<pre class="language-javascript"><code>
+			req.end();
+		</code></pre>
+		<p>
+			is necessary to ensure that the request is sent. Otherwise, Node will
+			think that we're still writing our request. If we run the code above,
+			we get a massive amount of output (below is a small snippet):
+		</p>
+		<pre class="language-bash"><code>
+			&lt;!doctype html&gt;&lt;html itemscope=&quot;&quot;
+			itemtype=&quot;http://schema.org/WebPage&quot;
+			lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta content=&quot;
+			Search the world&apos;s information, including webpages,
+			images, videos and more. Google has many special features 
+			to help you find exactly what you&apos;re looking for.&quot;
+			name=&quot;description&quot;&gt;&lt;meta content=&quot;noodp&quot;
+			name=&quot;robots&quot;&gt;
+		</code></pre>
+		<p>
+			This output is in fact the data that comprises the Google homepage,
+			and it's what the browser uses to construct the Google homepage
+			whenever we visit the URL. Running the code above in Node, we get the
+			unrendered code constructing Google's homepage.
+		</p>
+	</section>
+	<section id="https">
+		<h3>HTTPS Requests</h3>
+		<p>
+			Although Node's HTTP module works fine, for most projects, we want to
+			use Node's HTTPS module. This allows us to send
+			<i>HTTPS requests</i>; requests made under the more secure HTTPS
+			protocol.
+		</p>
+		<pre class="language-javascript"><code>
+			const { request } = require('https');
+
+			const req = request('https://www.google.com', (res) => {
+				res.on('data', (chunk) => {
+					console.log(`Data chunk: ${chunk}`);
+				})
+				res.on('end', () => {
+					console.log('No more data');
+				});
+			})
+
+			req.end();
+		</code></pre>
+		<p>
+			Note some of the modifications we've made. First, we changed
+			<var>require('http')</var> to <var>require('https')</var>, to tell
+			Node we want the <var>https</var> module. Second, we've assigned the
+			result of calling <var>require()</var> to <var>{ request }</var>.
+			This destructures the result of <var>require()</var>, and tells Node
+			that we only want the <var>request</var> object. By using this
+			destructuring syntax, we can now call <var>request()</var> as needed
+			without using dot notation. This also serves as indirect
+			documentation &mdash; it communicates directly what methods and
+			properties we're using from a particular module.
+		</p>
+		<p>
+			With destructuring, we can also specify that we only want the
+			<var>get</var> method. The <var>get</var> method's only task is to
+			retrieve data from a server. By specifying that method, we can omit
+			the <var>req.end()</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			const { get } = require('https');
+
+			const req = get('https://www.google.com', (res) => {
+				res.on('data', (chunk) => {
+					console.log(`Data chunk: ${chunk}`);
+				})
+				res.on('end', () => {
+					console.log('No more data');
+				});
+			})
+		</code></pre>
+	</section>
+</section>
+
+<section id="writing_modules">
+	<h2>Writing Modules</h2>
+	<p>
+		Writing our modules is as much an art as it is a technical skill.
+		Well-organized modules can be a godsend, but a poorly-written or
+		disorganized module can fly like a bat out of hell, wreaking havoc on a
+		project. That said, let's take a look at how modules work.
+	</p>
+	<p>
+		There are two ways to write modules in Node. One way is through the
+		CommonJS approach, and the other is through the ES6 approach. Let's
+		look at the CommonJS approach first.
+	</p>
+
+	<section id="common_js">
+		<h3>CommonJS Modules</h3>
+		<p>
+			First, let's say we have the following code, written in a file called
+			<var>main.js</var>.
+		</p>
+		<pre class="language-javascript"><code>
+			function sum(arrayOfData) {
+				let sum = 0;
+				for (let i = 0; i &lt; arrayOfData.length; i++) {
+					sum += arrayOfData[i];
+				}
+				return sum;
+			}
+			
+			function average(arrayOfData) {
+				return sum(arrayOfData) / arrayOfData.length;
+			}
+			
+			const dataSet = {
+				set1: [1,8,0,3,5,7,8],
+				set2: [2,0,9,1,8,6,8],
+			}
+			
+			const averageSet1 = average(dataSet.set1);
+			console.log(averageSet1);
+		</code></pre>
+		<pre class="language-bash command-line" data-output="2"><code>
+			node main.js
+			4.571428571428571
+		</code></pre>
+		<p>
+			Nothing terribly complicated here. We have a function that sums all
+			the elements of an array, and a function that computes the average of
+			an array of elements. Following that, we have a dataset, and some
+			test code.
+		</p>
+		<p>
+			A more modular approach is to separate the code above into modules.
+			For example, we might want the <var>sum()</var> and
+			<var>average()</var> functions ought to be separated into different
+			files if the <var>main.js</var> file's ultimate task is to use
+			<var>average()</var> and <var>sum()</var> as auxiliary functions.
+			Let's make that separation:
+		</p>
+		<ol>
+			<li><var>main.js</var> &mdash; our main driver.</li>
+			<li>
+				<var>average.js</var> &mdash; a file containing our
+				<var>average()</var> function.
+			</li>
+			<li>
+				<var>sum.js</var> &mdash; a file containing our
+				<var>sum()</var> function.
+			</li>
+			<li><var>data.js</var> &mdash; the file containing our data.</li>
+		</ol>
+		<p>Moreover, let's organize these files into separate directories:</p>
+
+		<figure>
+			<pre class="language-pseudo"><code>
+				.
+				└── main
+						├── main.js
+						├── stats
+						│   ├── sum.js
+						│   └── average.js
+						└── data
+								└── data.js
+			</code></pre>
+		</figure>
+
+		<p>
+			Our project is now much more modular, but we want to be able to use
+			these functions in <var>main.js</var>. To do so, we have to link all
+			of these files together. This is because code contained in a file is,
+			by default, private. Thus, code we've written in one file cannot see
+			or read code in another file. To get around this block, we have to
+			<i>export</i> and <i>import</i> code.
+		</p>
+		<p>
+			First, because the <var>average()</var> function uses the
+			<var>sum()</var> function, we want to import <var>sum()</var> in
+			<var>sum.js</var> into <var>average.js</var>. So, we go to
+			<var>sum.js</var>, and write the following:
+		</p>
+		<pre class="language-javascript"><code>
+			function sum(arrayOfData) {
+				let sum = 0;
+				for (let i = 0; i &lt; arrayOfData.length; i++) {
+					sum += arrayOfData[i];
+				}
+				return sum;
+			}
+			
+			module.exports = {
+				sum: sum,
+			}
+		</code></pre>
+		<p>
+			Notice the last line. In Node, every JavaScript file has a
+			<var>module</var>, which is essentially an object containing various
+			information about the code written in the file. One property
+			contained in <var>module</var> is <var>exports</var>, which is by
+			default an empty object. We can assign key-value pairs to this
+			object, and import this object into other files.
+		</p>
+		<p>
+			As an aside, there's one small improvement we can make the code
+			above. Notice that the key <var>sum</var> has the same name as the
+			function we want to export, <var>sum</var>. Because they're the same,
+			we can simply write <var>sum</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			function sum(arrayOfData) {
+				let sum = 0;
+				for (let i = 0; i &lt; arrayOfData.length; i++) {
+					sum += arrayOfData[i];
+				}
+				return sum;
+			}
+			
+			module.exports = { sum }
+		</code></pre>
+		<p>
+			With the export set up, we can go to <var>average.js</var>, and write
+			the following:
+		</p>
+		<pre class="language-javascript"><code>
+			const { sum } = require('./sum.js')
+	
+			function average(arrayOfData) {
+				return sum(arrayOfData) / arrayOfData.length;
+			}
+	
+			module.exports = { average };
+		</code></pre>
+		<p>
+			This is the same process we saw with <var>sum.js</var>. The only
+			difference is we're now including an <var>require()</var> call.
+			Notice further that we're using the destructing syntax to avoid
+			having to write <var>sum.sum()</var>. Moreover, there's a small
+			improvement we can make to the code above:
+		</p>
+		<pre class="language-javascript"><code>
+			const { sum } = require('./sum')
+	
+			function average(arrayOfData) {
+				return sum(arrayOfData) / arrayOfData.length;
+			}
+	
+			module.exports = { average };
+		</code></pre>
+		<p>
+			We can omit the <var>.js</var> extension in the filepath string
+			value. This is because by default, Node will look for files with the
+			following extensions in order: (1) <var>.js</var>, (2)
+			<var>.json</var>, and (3) <var>.node</var>. Next, let's go to our
+			<var>data.js</var> and perform the same export process:
+		</p>
+		<pre class="language-javascript"><code>
+			const dataSet = {
+				set1: [1,8,0,3,5,7,8],
+				set2: [2,0,9,1,8,6,8],
+			}
+			
+			module.exports = { dataSet }; 
+		</code></pre>
+		<p>
+			With all of this set up, we can now import our
+			<var>average()</var> function and <var>dataSet</var> into
+			<var>main.js</var>. Going into the <var>main.js</var> file, we write:
+		</p>
+		<pre class="language-javascript"><code>
+			const { dataSet } = require("./data/data");
+			const { average } = require("./stats/average");
+	
+	
+			const averageSet1 = average(dataSet.set1);
+			console.log(averageSet1);
+		</code></pre>
+		<pre class="language-bash command-line" data-output="2"><code>
+			node main.js
+			4.571428571428571
+		</code></pre>
+	</section>
+
+	<section id="es6_modules">
+		<h3>ES6 Modules</h3>
+		<p>
+			The code we presented above is the CommonJS approach to writing
+			modules. The ES6 approach follows the same process, but with a few
+			differences in syntax. Why are there two approaches? Because before
+			ES6, JavaScript didn't have specific syntax for importing and
+			exporting modules. CommonJS fulfilled that need with the
+			<var>require()</var> keyword and the other mechanisms we saw above.
+			However, the latest specification of JavaScript &mdash; ES6 &mdash;
+			now provides a native way of importing and exporting modules.
+		</p>
+		<p>
+			Fortunately, writing ES6 modules just requires a few changes to
+			syntax: First, <var>module.exports</var> is replaced with
+			<i>export statements</i>, and <var>require()</var> is replaced with
+			<i>import statements</i>. So, in <var>sum.js</var>, we write:
+		</p>
+		<pre class="language-javascript"><code>
+			function sum(arrayOfData) {
+				let sum = 0;
+				for (let i = 0; i &lt; arrayOfData.length; i++) {
+					sum += arrayOfData[i];
+				}
+				return sum;
+			}
+			
+			export { sum };
+		</code></pre>
+		<p>
+			Notice how we've replaced the previous
+			<var>module.exports</var> assignment to simply <var>export</var>. We
+			make the same change to <var>average.js</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			import { sum } from './sum.mjs'
+
+			function average(arrayOfData) {
+				return sum(arrayOfData) / arrayOfData.length;
+			}
+
+			export { average };
+		</code></pre>
+		<p>and the same change to <var>data.js</var>:</p>
+		<pre class="language-javascript"><code>
+			const dataSet = {
+				set1: [1,8,0,3,5,7,8],
+				set2: [2,0,9,1,8,6,8],
+			}
+			
+			export { dataSet };
+		</code></pre>
+		<p>Finally, we go into <var>main.js</var> and write:</p>
+		<pre class="language-javascript"><code>
+			import { dataSet } from "./data/data";
+			import { average } from "./stats/average";
+
+
+			const averageSet1 = average(dataSet.set1);
+			console.log(averageSet1);
+		</code></pre>
+		<p>
+			Notice the change here: We write <var>import</var>, the object we
+			want imported, the <var>from</var> keyword, and the file path.
+			Running the code above, we get the following error:
+		</p>
+		<pre class="language-bash command-line" data-output="2-4"><code>
+			node main.js
+			Warning: To load an ES module, set 
+			"type": "module" in the package.json 
+			or use the .mjs extension.
+		</code></pre>
+		<p>
+			We're getting this error because by default, Node treats modules as
+			CommonJS modules. Node maintains this treatment for backwards
+			compatibility &mdash; ES6 modules are fairly recent; if we looked at
+			the vast majority of Node applications, CommonJS is undoubtedly still
+			common. Helpfully, Node gives us some tips. Either we make some
+			changes to <var>package.json</var>, or we change our file extensions
+			to <var>.mjs</var>. We'll revisit the first approach in a later
+			section, but for now, let's use the second. After renaming all of our
+			files to end with the <var>.mjs</var> extension, we change the import
+			statements' filepaths to include the extension:
+		</p>
+		<pre class="language-javascript"><code>
+			import { dataSet } from "./data/data.mjs";
+			import { average } from "./stats/average.mjs";
+
+
+			const averageSet1 = average(dataSet.set1);
+			console.log(averageSet1);
+		</code></pre>
+		<pre class="language-bash command-line" data-output="2"><code>
+			node main.mjs
+			4.571428571428571
+		</code></pre>
+		<p>
+			Now our code works. And important point to keep in mind with these
+			two module approaches: We cannot mix and match CommonJS modules with
+			ES6 modules. As such, whenever we're working with others, we should
+			always be clear about what approach is used.
+		</p>
+	</section>
+</section>
+
+<section id="node_package_manager">
+	<h2>The Node Package Manager</h2>
+	<p>
+		A <b>Node package</b> is a bundle of reusable code; essentially, a
+		collection of modules. We can find many packages on
+		<a href="https://www.npmjs.com/" target="_blank">npmjs</a>. To install
+		these packages, we run the command indicated on the package's page. For
+		example, a popular package for HTTPS requests is
+		<a href="https://www.npmjs.com/package/axios" target="_blank">axios</a
+		>. To install axios, we run the command:
+	</p>
+	<pre class="language-bash command-line"><code>
+		npm i axios
+	</code></pre>
+	<p>
+		The <var>i</var> is called a <i>flag</i>, and it stands for
+		<i>install</i>. Let's try this command. First, we'll create a new empty
+		directory, called it <var>lab2</var>. Inside <var>lab2</var>, we have
+		the same <var>main.js</var>, <var>average.js</var>, <var>sum.js</var>,
+		and <var>data.js</var> files from the previous section. (Note the
+		extensions; we'll be using the CommonJS import approach for the
+		following illustrations). In the terminal, we'll <var>CD</var> into
+		<var>lab2</var> and run the following command:
+	</p>
+	<pre class="language-bash command-line"><code>
+		npm init
+	</code></pre>
+	<p>
+		This will prompt us to answer several questions. Because we don't need
+		to specify anything at this point, we can hit
+		<var>enter</var> repeatedly.<sup></sup> After we've answered all the
+		questions, we see a file called <var>package.json</var> inside our
+		<var>lab2</var> directory, with the following content:
+	</p>
+	<div class="note">
+		<p>
+			Alternatively, we could instead run the command
+			<var>npm init -y</var> to answer <q>yes</q> for all the question.
+		</p>
+	</div>
+	<pre class="language-javascript"><code>
+		{
+			"name": "lab2",
+			"version": "1.0.0",
+			"description": "",
+			"main": "main.js",
+			"scripts": {
+				"test": "echo \"Error: no test specified\" && exit 1"
+			},
+			"keywords": [],
+			"author": "",
+			"license": "ISC"
+		}
+	</code></pre>
+	<p>
+		Running <var>npm init</var>, we've now <i>packaged</i> our project. The
+		<var>package.json</var> file contains information about our project.
+		Let's go over some of the fields contained in the
+		<var>package.json</var>.
+	</p>
+
+	<p>
+		<small>name field.</small>
+		The name field in <var>package.json</var> is the name of our packaged
+		project. If we plan on publishing our project &mdash; which is highly
+		encouraged in the Node community &mdash; our project's name is the
+		single most important field. We want to give our projects meaningful
+		and unique names, alongside complying with a few rules:
+	</p>
+	<ul>
+		<li>Names must be less than or equal to ${24}$ characters.</li>
+		<li>No uppercase letters.</li>
+		<li>No non-URL-safe characters.</li>
+	</ul>
+	<p>and some guidances:</p>
+	<ul>
+		<li>Do not use a name already given to a core Node module.</li>
+		<li>
+			Don't put <var>js</var> or <var>node</var> &mdash; it's redundant.
+		</li>
+		<li>
+			Keep the name short, because it will be passed to the
+			<var>require()</var> function.
+		</li>
+		<li>
+			Check the <var>npmjs</var> to check if the name's already taken;
+			it'll save a lot of heartache.
+		</li>
+	</ul>
+
+	<section id="version">
+		<h4>Version</h4>
+		<p>
+			The <var>name</var> and <var>version</var> values are used to create
+			a unique identifier of our project. If we make changes to our
+			package, we should make changes to the version number, following
+			<i>semantic versioning</i>.
+		</p>
+		<section id="semantic_versioning">
+			<h5>Semantic Versioning</h5>
+			<p>
+				Software packages and applications have version numbers that follow
+				the format:
+			</p>
+			<ul class="syntax">
+				<li><i>major</i>.<i>minor</i>.<i>patch</i><b>-label</b></li>
+			</ul>
+			<p>
+				These <var>major</var>, <var>mintor</var>, and <var>patch</var> are
+				nonnegative integers. The <var>label</var> is optional; some
+				additional semantically meaningful information. Each of the pieces
+				have specific meanings:
+			</p>
+			<table class="alg">
+				<thead>
+					<th>Component</th>
+					<th>Meaning</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td><var>MAJOR</var></td>
+						<td>
+							Changes were made, and users of previous versions are
+							<em>affected</em>. An increment of the
+							<var>MAJOR</var> version number signals to users that the
+							changes made are breaking, and should migrate to the newer
+							version. This is akin to making an entirely new package.
+						</td>
+					</tr>
+					<tr>
+						<td><var>MINOR</var></td>
+						<td>
+							Changes were made, and users of previous versions are
+							unaffected. An increment in the <var>MINOR</var> version
+							number signals to users that the changes do not affect the
+							versions they're already using, and it's at their discretion
+							whether to migrate.
+						</td>
+					</tr>
+					<tr>
+						<td><var>PATCH</var></td>
+						<td>
+							Bug fixes; no impact on users using previous versions. An
+							increment in the <var>PATCH</var> number signals to users
+							that changes were made, but they're small enough to ignore.
+						</td>
+					</tr>
+					<tr>
+						<td><var>LABEL</var></td>
+						<td>
+							Semantically meaningful indicators like <var>pre</var>,
+							<var>alpha</var>, <var>beta</var>, etc., providing
+							pre-release information and other build metadata.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</section>
+
+	<p>
+		<small>description.</small> The description is what will appear in
+		<var>npm search</var> when others look for our package.
+	</p>
+
+	<p>
+		<small>keywords.</small> Keywords are used by npmjs to ensure our
+		package appears in search results.
+	</p>
+
+	<p>
+		<small>licenses.</small> If we have a particular license, we can
+		include the license information in the <var>package.json</var>. With
+		Node, the license should ideally be an
+		<a href="https://opensource.org/licenses">OSI license.</a>
+	</p>
+	<p>
+		<small>scripts.</small> The <var>scripts</var> property contains script
+		commands we can run during run time. For example, to run our
+		application, we must run the command
+		<var><mark>node main.js</mark></var
+		>. Instead of having to write this command over and over again, we use
+		include the command in the <var>script</var> property:
+	</p>
+	<pre class="language-javascript"><code>
+		"scripts": {
+			"start": "node main.js"
+			"test": "echo \"Error: no test specified\" && exit 1"
+		},
+	</code></pre>
+	<p>
+		<small>config.</small> The <var>config</var> object is used to set
+		configuration parameters. For example, when we run our project, the
+		local port, by default, is <var>3000</var>. We can change that by
+		writing:
+	</p>
+	<pre class="language-javascript"><code>
+		{
+			"config": {
+				"port": "8080"
+			}
+		}
+	</code></pre>
+	<p>
+		With our <var>package.json</var> set up, we can now install the package
+		axios:
+	</p>
+	<pre class="language-bash command-line" data-output="2-8"><code>
+		lab2$ npm i axios
+
+		added 2 packages, and audited 3 packages in 2s
+
+		1 package is looking for funding
+			run `npm fund` for details
+
+		found 0 vulnerabilities
+	</code></pre>
+	<p>
+		<small>dependencies.</small> If we look inside our
+		<var>package.json</var> again, we see a new property:
+	</p>
+	<pre class="language-javascript"><code>
+		"dependencies": {
+			"axios": "^0.26.1"
+		}
+	</code></pre>
+	<p>
+		Dependencies are external Node packages that our project uses. Whenever
+		we install a new package, Node will update the
+		<var>dependencies</var> property accordingly.
+	</p>
+
+	<section id="using_modules">
+		<h3>Using Third Party Modules: Axios</h3>
+		<p>
+			Let's explore the Node module system a bit more. First, we'll create
+			a new empty folder, called <var>lab3</var>. Inside <var>lab3</var>,
+			we'll run <var>npm init -y</var>. Then, we'll install the
+			<strong>axios</strong>
+			library by running <var>npm i axios</var>. <strong>axios</strong> is
+			a third party moduel that allows us to make HTTP requests through
+			NodeJS. One of its most useful features is automatically transforming
+			response data to JSON format.
+		</p>
+		<p>
+			Using <strong>axios</strong>, we'll create a new file called
+			<var>main.js</var>. We'll update our <var>package.json</var>,
+			replacing <var>index.js</var> with <var>main.js</var>, and including
+			a new script. We'll also get rid of the <var>test</var> script
+			because we won't need it:
+		</p>
+		<pre class="language-javascript"><code>
+			"main": "main.js",
+			"scripts": {
+				"start": "node main.js"
+			},
+		</code></pre>
+		<p>Inside <var>main.js</var>, we have:</p>
+		<pre class="language-javascript"><code>
+			const axios = require('axios');
+
+			axios.get('https://www.google.com')
+				.then((response) => {
+					console.log(response);
+				});
+		</code></pre>
+		<p>Running our project:</p>
+		<pre class="language-bash command-line" data-output="2-10"><code>
+			npm start
+			> lab3@1.0.0 start
+			> node main.js
+			{
+				status: 200,
+				statusText: 'OK',
+				headers: {
+					date: 'Sat, 09 Apr 2022 15:51:36 GMT',
+					expires: '-1',
+			&vellip;
+		</code></pre>
+		<p>
+			We're getting the data as expected, but with a bit more
+			functionality. One thing we always want to do when we request data is
+			to always have <i>failure branches</i> &mdash; blocks of code to
+			execute if the expected output doesn't occur. For HTTPS requests, the
+			<i>failure branch</i> is when we don't get a response back. With the
+			<strong>axios</strong> library, we can implement a
+			<i>failure branch</i> using the <var>.catch()</var> method:
+		</p>
+		<pre class="language-javascript"><code>
+			const axios = require('axios');
+
+			axios.get('https://wwww.google.com')
+				.then((response) => {
+					console.log(response);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		</code></pre>
+		<p>
+			In the code above, we included an extra <var>w</var> in the URL.
+			We've also chained a call to <var>.catch()</var>. The
+			<var>.catch()</var> method has the syntax:
+		</p>
+		<ul class="syntax">
+			<li><i>axios instance</i>.catch((<i>error object</i>) => {</li>
+			<ul>
+				<li><i>code block</i></li>
+			</ul>
+			<li>})</li>
+		</ul>
+		<p>Running our program:</p>
+		<pre class="language-bash"><code>
+			npm start
+			> lab3@1.0.0 start
+			> node main.js
+
+			Error: getaddrinfo ENOTFOUND wwww.google.com
+					at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:71:26) {
+				errno: -3008,
+				code: 'ENOTFOUND',
+				syscall: 'getaddrinfo',
+				hostname: 'wwww.google.com',
+			&vellip;
+		</code></pre>
+		<p>
+			Using the <var>.catch()</var> method, we get a clear and
+			user-friendly error message. Importantly, because the
+			<var>.then()</var> and <var>.catch()</var> methods return promises,
+			we can chain them:
+		</p>
+		<figure>
+			<pre class="language-pseudo"><code>
+				x.get()    
+				 .then()    <span class="greyText">// m1</span>
+				 .catch()   <span class="greyText">// m2</span>
+				 .then()    <span class="greyText">// m3</span>
+				 .catch()   <span class="greyText">// m4</span>
+				 .then()    <span class="greyText">// m5</span>
+				 .catch()   <span class="greyText">// m6</span>
+				 &vellip;
+			</code></pre>
+			<figcaption>
+				Chaining the <i>then</i> and <i>catch</i> methods.
+			</figcaption>
+		</figure>
+		<p>
+			In the illustration above, if the <var>get()</var> method executes
+			successfully, then we execute <var>m1</var>. Otherwise, we execute
+			<var>m2</var>. After we execute <var>m1</var> and <var>m2</var>, we
+			execute <var>m3</var>. If <var>m3</var> for some reason fails, we
+			execute <var>m4</var>. After we've executed <var>m4</var>, we execute
+			<var>m5</var>. If for some reason <var>m5</var> fails, we execute
+			<var>m6</var>, and so on. We can visualize this control flow as
+			follows:
+		</p>
+		<figure class="block">
+			<div id="then_catch_trace"></div>
+			<figcaption>
+				A call trace of the <i>then</i> and <i>catch</i> methods chain
+			</figcaption>
+		</figure>
+	</section>
+
+	<section id="node_modules_folder">
+		<h3>The node_modules Folder</h3>
+		<p>
+			When we run <var>npm init</var>, we see a new folder called
+			<var>node_modules</var>. This is the folder that contains all of the
+			packages we've installed and their accompanying modules. When we
+			refer to modules with <var>require()</var>, Node goes to our
+			<var>package.json</var> and looks at the
+			<var>dependencies</var> property. If it sees the dependency listed,
+			Node then goes to the <var>node_modules</var> folder and looks up the
+			dependency.
+		</p>
+		<p>
+			Using our installation of <strong>axios</strong> from the previous
+			section, we see the following file hierarchy:
+		</p>
+		<figure>
+			<pre class="language-pseudo"><code>
+				.
+				├── node_modules
+				│   ├── axios
+				│   └── follow-redirect
+				├── package-lock.json
+				├── package.json
+				└── main.js
+			</code></pre>
+			<figcaption>The file hierarchy</figcaption>
+		</figure>
+		<p>
+			The <strong>axios</strong> package's modules are contained in the
+			<var>axios</var> folder. Thus, inside the <var>axios</var> folder, we
+			see all of the package's necessary files and source code:
+		</p>
+		<figure>
+			<pre class="language-pseudo"><code>
+				.
+				└── axios
+						├── dist
+						├── lib
+						├── CHANGELOG.md
+						├── index.d.ts
+						├── index.js
+						├── license
+						├── package.json
+						├── README.md
+						├── UPGRADE_GUIDE.md
+						└── SECURITY.md
+			</code></pre>
+			<figcaption>The <var>axios</var> directory hierarchy</figcaption>
+		</figure>
+		<p>
+			But what's that <var>follow-redirects</var> folder? This folder is
+			used by the packages we've installed. If we look inside the
+			<var>axios</var> folder, we see that <strong>axios</strong> also uses
+			a <var>package.json</var>. Inside that <var>package.json</var>, we
+			see the following code:
+		</p>
+		<pre class="language-javascript"><code>
+			"dependencies": {
+				"follow-redirects": "^1.14.8"
+			},
+		</code></pre>
+		<p>
+			This property indicates that <strong>axios</strong> uses the
+			<strong>follow-redirects</strong> library. This is an HTTP and HTTPS
+			library for following <i>redirections</i> &mdash; URLs that redirect
+			visitors to another URL (for example, URL shortening services like
+			<strong>bitly</strong> and <strong>tinyurl</strong>). Thus, the
+			<var>node_modules</var> folder doesn't just contain our dependencies.
+			It also contains the dependencies used by our dependencies, the
+			dependencies used by our depedencies used by our dependencies, and so
+			on. All these dependencies, however, are thrown into the
+			<var>node_modules</var> folder in a flat structure. This ensures that
+			we do not have duplicated packages.<sup></sup>
+		</p>
+		<div class="note">
+			<p>
+				In the earliest days of Node, dependencies were saved with a nested
+				approach, leading to duplicated packages. This led to a common quip
+				and accompanying memetic that the <var>node_modules</var> folder
+				was heavier than a black hole.
+			</p>
+		</div>
+		<p>
+			Importantly, if we push our work to Github, it's important that we
+			include the <var>node_modules</var> folder in our
+			<var>.gitignore</var> file to ensure it isn't tracked and pushed.
+		</p>
+	</section>
+
+	<section id="package_lock_json">
+		<h3>The Package-lock JSON File</h3>
+		<p>
+			Another Node-generated file of interest is the
+			<var>package-lock.json</var> file. Inside that file, we see several
+			properties: <var>name</var>, <var>version</var>,
+			<var>lockfileVersion</var>, and many others. The
+			<var>package-lock.json</var> file helps coordinate labor within a
+			project team. We can think of it as a more detailed version of the
+			<var>package.json</var> file. For example, it includes our
+			dependencies, as well as the exact origin of those dependencies. It
+			also includes the tree-structure for our dependencies.
+		</p>
+		<p>
+			If we look at the dependencies properties, we see a caret symbol
+			prepended to the version numbers. For example, for the
+			<strong>axios</strong> package, we see:
+		</p>
+		<pre class="language-javascript"><code>
+			"packages": {
+				"": {
+					"name": "lab3",
+					"version": "1.0.0",
+					"license": "ISC",
+					"dependencies": {
+						"axios": "^0.26.1"
+					}
+				},
+		</code></pre>
+		<p>
+			The caret symbol tells Node that it's authorized to install all
+			updated versions of <strong>axios</strong>, so long as it isn't a
+			major version update. If the major version is less than ${1,}$ the
+			minor version number is used as the major version number. This is
+			because pre-${1.0}$ versions are essentially pre-releases, and are
+			likely changing very often.
+		</p>
+		<p>
+			With the <var>package-lock.json</var> file, new project team member
+			can quickly join the labor force. For example, suppose ${E}$ is an
+			existing team member and ${N}$ is a new team member.
+		</p>
+		<ol>
+			<li>
+				${E}$ gives ${N}$ the project's
+				<var>package-lock.json</var>.
+			</li>
+			<li>
+				${N}$ places the <var>package-lock.json</var> in their workspace
+				folder ${f.}$
+			</li>
+			<li>${N}$ <var>CD</var>s into ${f}$.</li>
+			<li>${N}$ runs the command <var>npm init</var>.</li>
+			<li>
+				The project and all its source code is now inside their workspace
+				folder.
+			</li>
+		</ol>
+	</section>
+
+	<section id="npm_v_yarn">
+		<h3>NPM, NPX, & Yarn</h3>
+		<p>
+			As an aside, we may have seen some developers use thecommands
+			<var>yarn</var> and <var>npx</var> to install packages. These
+			commands all share the characteristic of handling packages, but have
+			a few differences.
+		</p>
+		<section id="npx">
+			<h4>NPX</h4>
+			<p>
+				NPX stands for <i>Node Package Execute</i>, and it comes with NPM
+				${5.2.0}$ and above. NPX allows us to execute packages from
+				<strong>npmjs</strong> without installing the packages. NPX exists
+				because NPM itself doesn't actually run packages; all it does is
+				manage packages &mdash; setting up and updating the
+				<var>package.json</var>, searching for packages in the
+				<var>package.json</var>, and removing packages from
+				<var>package.json</var> when we run <var>npm uninstall</var>.
+			</p>
+		</section>
+
+		<section id="yarn">
+			<h4>Yarn</h4>
+			<p>
+				Yarn is a NodeJS package manager built by Facebook. It's a direct
+				competitor of NPM &mdash; Yarn is faster and has more features than
+				NPM (e.g., a license checker). Because Yarn is a NodeJS package
+				manager, much of its API has equivalents to NPM:
+			</p>
+			<table class="alg">
+				<thead>
+					<th>NPM</th>
+					<th>Yarn</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td><var>npm install</var></td>
+						<td><var>yarn</var></td>
+					</tr>
+					<tr>
+						<td><var>npm install ⟨package⟩</var></td>
+						<td><var>yarn ⟨package⟩</var></td>
+					</tr>
+					<tr>
+						<td><var>npm install ⟨package⟩ --save-dev</var></td>
+						<td><var>yarn add ⟨package⟩ --dev</var></td>
+					</tr>
+					<tr>
+						<td><var>npm uninstall ⟨package⟩ --save</var></td>
+						<td><var>yarn remove package</var></td>
+					</tr>
+					<tr>
+						<td><var>npm update --save</var></td>
+						<td><var>yarn upgrade</var></td>
+					</tr>
+					<tr>
+						<td><var>npm install package -g</var></td>
+						<td><var>yarn global add package</var></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</section>
+</section>
+
+<section id="web_servers">
+	<h2>Web Servers</h2>
+	<p>
+		When we type <var>facebook.com</var> and hit enter, the browser makes a
+		call to a <b>DNS server</b>. The DNS server receiving the call takes
+		the name &mdash; <var>https://www.facebook.com</var> &mdash; and looks
+		up its matching <i>IP address</i>. We can think of the IP address as
+		<var>facebook.com</var>'s actual address. Just as Sherlock Holmes lives
+		on 221B Baker Street, <var>facebook.com</var> lives at, say,
+		<var>157.240.17.35</var> (in fact, you can visit Facebook by typing
+		these numbers into a browser's address bar directly). This address is
+		what the browser uses to send requests to the server hosting Facebook.
+	</p>
+	<p>
+		Once the browser has the matching IP address, it sends either an HTTP
+		or HTTPS request to the Facebook server. The server then responds with
+		data. It could be JSON, XML, TXT, HTML, CSS, JS, or any other data the
+		server should respond with. The key word being <i>should.</i>
+	</p>
+
+	<section id="http_requests">
+		<h3>HTTP Requests</h3>
+		<p>
+			How a server should respond to an HTTP/HTTPS request depends on the
+			server's API. The server's API determines the server's operations and
+			how those operaitons should be used. For example, with Twitter, we
+			might want to see a list of all our tweets. That's data that must be
+			requested, and Twitter's servers have operations for receiving and
+			responding to requests for that data.
+		</p>
+		<p>
+			Node, Django, Ruby on Rails, these are all frameworks for
+			implementing those operations. Each of these frameworks differ in
+			language &mdash; Node in JavaScript, Django in Python, and Ruby on
+			Rails in Ruby. All of them, however, communicate with the client in
+			HTTP. HTTP is a protocol with special methods:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Method</th>
+				<th>Operation</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>GET</var></td>
+					<td>Requests data from the server</td>
+				</tr>
+				<tr>
+					<td><var>HEAD</var></td>
+					<td>
+						Same <var>GET</var>, but only requests the status line and
+						header section of the data requested.
+					</td>
+				</tr>
+				<tr>
+					<td><var>POST</var></td>
+					<td>
+						Sends data to the server (e.g., customer information or a file
+						upload using the HTML <var>form</var> element).
+					</td>
+				</tr>
+				<tr>
+					<td><var>PUT</var></td>
+					<td>
+						Replaces all current representations of the target resource
+						with the uploaded content.
+					</td>
+				</tr>
+				<tr>
+					<td><var>DELETE</var></td>
+					<td>
+						Removes all current representations of the target resource.
+					</td>
+				</tr>
+				<tr>
+					<td><var>OPTIONS</var></td>
+					<td>
+						Describes the communication options for the target resource.
+					</td>
+				</tr>
+				<tr>
+					<td><var>CONNECT</var></td>
+					<td>Establishes a tunnel to the server.</td>
+				</tr>
+				<tr>
+					<td><var>TRACE</var></td>
+					<td>
+						Performs a message loop-back test along the connection to the
+						target resource.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			All of these methods are <i>types of requests</i>. For example, if we
+			want to <i>retrieve</i> data from a particular server, we send a
+			<var>GET</var> request. If we want to <i>send</i> data to a
+			particular serve &mdash; for example, saving a new user's
+			registration information &mdash; we would send a
+			<var>POST</var> request.
+		</p>
+		<p>
+			Server APIs are built with these methods. The server API specifies
+			what the server should do when it receives a particular HTTP request.
+			For example, consider a social networking website. When the user
+			clicks the
+			<var>Followers</var> button on their profile, their browser might
+			send the request:
+		</p>
+		<pre class="language-pseudo"><code>
+			GET /followers
+		</code></pre>
+		<p>
+			If the user clicks on, say, the fifth follower, the browser sends
+			another request:
+		</p>
+		<pre class="language-pseudo"><code>
+			GET /friends/5
+		</code></pre>
+		<p>
+			When the user likes a post, the browser might send another request:
+		</p>
+		<pre class="language-pseudo"><code>
+			POST /liked_posts {postId: 'a3dcgr83a'}
+		</code></pre>
+		<p>
+			When the user unfollows the fourth account in their array of accounts
+			followed, the request might look like:
+		</p>
+		<pre class="language-pseudo"><code>
+			DELETE /following/4
+		</code></pre>
+		<p>
+			And if the user decides to change their profile picture, the request
+			could be:
+		</p>
+		<pre class="language-pseudo"><code>
+			PUT /profile/picture {photo: "new_pic.jpeg"}
+		</code></pre>
+		<p>
+			The server's API is what specifies what the server should do when it
+			receives the requests above.
+		</p>
+		<p>All HTTP requests have four main parts:</p>
+		<ol>
+			<li>A <b>method</b>, which specifies the kind of request made.</li>
+			<li>A <b>path</b>, which specifies the targeted resource.</li>
+			<li>
+				If the request is to send data to the server, a <b>body</b>,
+				containing the actual data. This could be plain text, or more
+				commonly, JSON.
+			</li>
+			<li><b>Headers</b>. This is a list of the folowing properties:</li>
+			<ul>
+				<li>
+					Optional <b>metadata</b>. For example, the size of our request or
+					authentication information.
+				</li>
+				<li>
+					Mandatory <b>host header</b>. This header specifies which server
+					the request should be sent to.
+				</li>
+			</ul>
+		</ol>
+	</section>
+
+	<section id="http_responses">
+		<h3>HTTP Responses</h3>
+		<p>
+			Just as HTTP requests have discrete parts, so, too, do HTTP
+			responses:
+		</p>
+		<ol>
+			<li>
+				<b>Headers</b>. Like the HTTP request, this is a list of
+				properties. It contains:
+			</li>
+			<ul>
+				<li>
+					<b>Content-type.</b> This tells the browser what kind of data is
+					being sent in the response's body.
+				</li>
+			</ul>
+			<li>
+				<b>Body.</b> The <var>body</var> property contains the actual data
+				we requested.
+			</li>
+			<li>
+				<b>Status code.</b> The status code informs the client about what
+				happened to their request. Did it succeed? Fail? Why?
+			</li>
+		</ol>
+
+		<section id="http_status_codes">
+			<h4>HTTP Status Codes</h4>
+			<p>
+				One of the rules under HTTP is that its compliants must acknowledge
+				situations where they fail. For example, if we send a
+				<var>GET</var> request and the server doesn't respond. Because of
+				this rule, we have <b>HTTP status codes</b>.
+			</p>
+			<p>
+				There are numerous HTTP status codes, but they fortunately follow a
+				pattern:
+			</p>
+			<table class="alg">
+				<thead>
+					<th>Pattern/Code</th>
+					<th>Meaning</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td><var>2--</var></td>
+						<td>Successful response</td>
+					</tr>
+					<tr>
+						<td><var>3--</var></td>
+						<td>Request was redirected</td>
+					</tr>
+					<tr>
+						<td><var>4--</var></td>
+						<td>
+							Request unsuccessful, something wrong happened on the client
+							side.
+						</td>
+					</tr>
+					<tr>
+						<td><var>5--</var></td>
+						<td>
+							Request unsuccessful, something wrong happened on the server
+							side.
+						</td>
+					</tr>
+					<tr>
+						<td><var>400</var></td>
+						<td>
+							Bad request. Possible reasons: Wrong syntax, invalid request
+							message framing, deceptive request routing.
+						</td>
+					</tr>
+					<tr>
+						<td><var>401</var></td>
+						<td>
+							Unauthenticated request. Server likely requires the client to
+							complete some authentication procedure before sending the
+							request.
+						</td>
+					</tr>
+					<tr>
+						<td><var>403</var></td>
+						<td>Client does not have access rights to the content.</td>
+					</tr>
+					<tr>
+						<td><var>404</var></td>
+						<td>
+							The server cannot find the requested resource. In a browser,
+							this usually means the URL is not recognized, or that the
+							resource simply doesn't exist.
+						</td>
+					</tr>
+					<tr>
+						<td><var>405</var></td>
+						<td>The request method is not allowed for the server.</td>
+					</tr>
+					<tr>
+						<td><var>408</var></td>
+						<td>
+							The <var>request timeout</var> error. We get this message
+							when we send a request to a server on an idle connection.
+						</td>
+					</tr>
+					<tr>
+						<td><var>500</var></td>
+						<td>
+							Server has encountered a situation it doesn't know how to
+							handle.
+						</td>
+					</tr>
+					<tr>
+						<td><var>507</var></td>
+						<td>Server has insufficient memory to process the request.</td>
+					</tr>
+					<tr>
+						<td><var>511</var></td>
+						<td>Client must authenticate to gain network access.</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</section>
+
+	<section id="sample_web_server">
+		<h3>Sample Web Server</h3>
+		<p>
+			Now that we have a broad understanding of how web servers work, let's
+			take a look at how we might write a web server. First, we'll be
+			working in a new directory called <var>lab4-servers</var>. Inside
+			that directory, we'll create a file called <var>index.js</var>. And
+			inside <var>index.js</var>, we'll implement our server:
+		</p>
+		<pre class="language-javascript"><code>
+			const http = require('http');
+
+			const PORT = 3000;
+
+			const server = http.createServer((req, res) => {
+				res.writeHead(200, {
+					'Content-Type': 'text/plain',
+				})
+				res.end('Hello!');
+			});
+
+			server.listen(PORT, () => {
+				console.log(`Listening on port ${PORT}.`)
+			});
+		</code></pre>
+		<p>
+			Let's step through this code. First, we created an instance of the
+			<var>http</var> Node module. Skipping the next line for now, we then
+			created a new server called <var>server</var>. This is done through
+			the <var>http</var> module's <var>createServer()</var> method:
+		</p>
+		<ul class="syntax">
+			<li>
+				<i>http_instance</i>.createServer((req, res) => {
+				<i>code block</i> })
+			</li>
+		</ul>
+		<p>
+			The <var>createServer()</var> method takes a function as its
+			argument. Inside that function, there are two parameters,
+			<var>req</var> (short for <var>request</var>) and
+			<var>res</var> (short for <var>response</var>). Both of these
+			parameters are objects.<sup></sup> The <var>req</var> object is the
+			client's HTTP request, and the <var>res</var> object is our server's
+			HTTP response. We can use the <var>req</var> object to
+			<i>read</i> information about the client's request, and the
+			<var>res</var> object to <i>write</i> our response. For now, let's
+			focus on the response.
+		</p>
+		<div class="note">
+			<p>More specifically, <i>readable streams</i> of data.</p>
+		</div>
+		<p>Within the callback function's body, we have two calls:</p>
+		<ol>
+			<li><var>res.writeHead()</var></li>
+			<li><var>res.end()</var></li>
+		</ol>
+		<p>
+			The <var>res.writeHead()</var> method is what we use to write our
+			response's headers. Before we get to the header, however, we pass the
+			literal <var>200</var>. This is the HTML status code we want sent.
+			Then we have the header, which consists of just a single property:
+		</p>
+		<pre class="language-pseudo"><code>
+			'Content-Type': 'text/plain'
+		</code></pre>
+		<p>
+			This tells the browser that the data it will receive is plain text.
+			The next call, <var>res.end()</var>, must be made on each request
+			that comes into the server. This is call is what tells Node that
+			we've finished writing our response.
+		</p>
+		<p>
+			This essentially completes our simple implementation. All that's left
+			to do is have the server listen to requests:
+		</p>
+		<pre class="language-javascript"><code>
+			const PORT = 3000;
+
+
+			server.listen(PORT, () => {
+				console.log(`Listening on port ${PORT}.`)
+			})
+		</code></pre>
+		<p>
+			The <var>http</var> module's <var>listen()</var> method tells our
+			server to listen for requests. But what are those arguments? In the
+			real world, servers have specific domain names &mdash;
+			<var>https://www.google.com</var>, <var>https://www.amazon.com</var>,
+			and so on. These names would be passed to the
+			<var>listen()</var> method as arguments. Our simple server, however,
+			is just running locally on our machine. Accordingly, we don't have a
+			domain name.
+		</p>
+		<p>
+			We do, however, have an IP address &mdash; some string of numbers of
+			the form <var>127.0.0.1</var>. This number, however, changes
+			depending on the network we're connected on, and it's fairly tedious
+			to remember. Fortunately, a computer system's IP address can be
+			referred to with the keyword <var>localhost</var>.
+		</p>
+		<p>
+			The <var>localhost</var> itself has ports, which we can think of as
+			specific holes for data to flow through. In our simple server, we
+			told the server to listen for requests entering hole number
+			<var>3000</var>.
+		</p>
+	</section>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/js_node.js"
+></script>
+{% endblock %}

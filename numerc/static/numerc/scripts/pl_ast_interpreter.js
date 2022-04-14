@@ -1,4 +1,4 @@
-import * as csmd from "../csmd.mjs";
+import * as csmd from "../csmd/csmd.mjs";
 
 const ast_graph = new csmd.Digraph({
 	id: "ast_graph",
@@ -27,16 +27,16 @@ const ast_graph = new csmd.Digraph({
 const sample_ast = new csmd.Tree({
 	id: "sample_ast",
 	width: 250,
-	height: 320,
+	height: 325,
 	edgeLength: 280,
 	container_width: 40,
-	container_height: 50,
+	container_height: 55,
 	data: [
-		{ child: "program", parent: "" },
-		{ child: "=", parent: "program" },
+		{ child: "p", parent: ""},
+		{ child: "=", parent: "p" },
 		{ child: "x", parent: "=" },
 		{ child: "15", parent: "=" },
-		{ child: "= ", parent: "program" },
+		{ child: "= ", parent: "p" },
 		{ child: "y", parent: "= " },
 		{ child: "-", parent: "= " },
 		{ child: "+", parent: "-" },
@@ -136,7 +136,7 @@ const stack_instruction = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 170,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: 'push $15', pointer: 'ip'},
 		{val: 'set %0'},
 		{val: 'push %0'},
@@ -158,7 +158,7 @@ const result_instruction = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 50,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '15', pointer: 'sp'},
 	]
 }).render();
@@ -170,7 +170,7 @@ const stack_instruction1 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 170,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: 'push $15'},
 		{val: 'set %0', pointer: 'ip'},
 		{val: 'push %0'},
@@ -191,7 +191,7 @@ const result_instruction1 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 50,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '15', pointer: 'sp'},
 	]
 }).render();
@@ -206,7 +206,7 @@ const var_instruction1 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 50,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '%0 = 15'},
 	]
 }).render();
@@ -218,7 +218,7 @@ const stack_instruction2 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 170,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: 'push $15'},
 		{val: 'set %0'},
 		{val: 'push %0', pointer: 'ip'},
@@ -239,7 +239,7 @@ const result_instruction2 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 60,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '%0 = 15', pointer: 'sp'},
 	]
 }).render();
@@ -254,7 +254,7 @@ const var_instruction2 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 50,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '%0 = 15'},
 	]
 }).render();
@@ -266,7 +266,7 @@ const stack_instruction3 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 170,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: 'push $15'},
 		{val: 'set %0'},
 		{val: 'push %0'},
@@ -287,7 +287,7 @@ const result_instruction3 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 80,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '10', pointer: 'sp'},
 		{val: '%0 = 15'},
 	]
@@ -303,7 +303,7 @@ const var_instruction3 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 50,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '%0 = 15'},
 	]
 }).render();
@@ -315,7 +315,7 @@ const stack_instruction4 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 170,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: 'push $15'},
 		{val: 'set %0'},
 		{val: 'push %0'},
@@ -336,7 +336,7 @@ const result_instruction4 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 100,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '25', pointer: 'sp'},
 	]
 }).render();
@@ -351,7 +351,7 @@ const var_instruction4 = new csmd.Stack({
 	svg_width: 200,
 	svg_height: 50,
 	frameWidth: 80,
-	frames: [
+	data: [
 		{val: '%0 = 15'},
 	]
 }).render();
@@ -397,6 +397,44 @@ const compiler_map = new csmd.Digraph({
 			{ source: 4, target: 3, label: "high-level language" },
 			{ source: 4, target: 5, label: "IR" },
 			{ source: 5, target: 3, label: "bytecode/machine code" },
+		],
+	},
+}).render();
+
+const environment_graph = new csmd.Digraph({
+	id: "environment_graph",
+	width: 100,
+	collide: 50,
+	height: 70,
+	svg_width: 580,
+	svg_height: 360,
+	strength: -200,
+	distance: 30,
+	data: {
+		nodes: [
+			{ name: "EV1", radial: 20}, // 0
+			{ name: "x = 5" }, // 1
+			{ name: "y = 7" }, // 2
+			{ name: "environment_record", fill: ['lightgrey', 'grey']}, // 3
+			{ name: "parent_ref", fill: ['lightgrey', 'grey']}, // 4
+			{ name: "EV2", radial: 15}, // 5
+			{ name: "a = 1" }, // 6
+			{ name: "x = a + y" }, // 7
+			{ name: "environment_record", fill: ['lightgrey', 'grey']}, // 8
+			{ name: "parent_ref", fill: ['lightgrey', 'grey']}, // 9
+			{ name: "EV_GLOBAL", fill: ['salmon', 'red'], radial: 30}, // 10
+		],
+		edges: [
+			{source: 0, target: 3},
+			{source: 0, target: 4},
+			{source: 3, target: 1},
+			{source: 3, target: 2},
+			{source: 4, target: 10},
+			{source: 5, target: 8},
+			{source: 8, target: 6},
+			{source: 8, target: 7},
+			{source: 5, target: 9},
+			{source: 9, target: 0},
 		],
 	},
 }).render();

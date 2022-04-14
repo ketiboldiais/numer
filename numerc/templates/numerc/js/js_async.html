@@ -1,0 +1,1226 @@
+{% extends '../layout.html' %} {% load static %} {% block description %}
+<meta
+	name="description"
+	content="Notes on asynchronous JavaScript: promises, callbacks, Axios, HTTP requests"
+/>
+{% endblock %} {% block title %}
+<title>Asynchronous JavaScript</title>
+{% endblock %} {% block content %}
+<h1>Asynchronous JavaScript</h1>
+<section id="async_js">
+	<p>
+		When we execute JavaScript code, the JavaScript interpreter uses a
+		<b>call stack</b> to keep track of its place during execution. The call
+		stack is <i>stack</i> data structure. This is a very simple data
+		structure that looks, and behaves, exactly as it sounds: The last thing
+		we place on the stack is the first thing we get from the stack, and the
+		first thing we place in the stack is the last thing we get from the
+		stack. For example, a stack of dishes to be washed. The dish from
+		yesterday is beneath the dish from today, and the dish from
+		ereyesterday is beneath the dish from yesterday. When we wash them, we
+		wash the dish from today, then the dish from yesterday, then the dish
+		from ereyesterday.
+	</p>
+	<p>
+		In JavaScript, the call stack operates like the dish washing example.
+		Suppose the following functions are called sequentially:
+	</p>
+	<figure>$$ \texttt{f(x), g(x), h(x)} $$</figure>
+	<p>
+		When JavaScript executes the first function, ${\texttt{f(x)}}$ it
+		generates a
+		<i>stack frame</i> for ${\texttt{f(x)}}$ and pushes that frame
+		<i>pushes</i> ${\texttt{f(x)}}$ to the call stack:
+	</p>
+	<div id="stack1"></div>
+	<p>
+		When it encounters ${\texttt{g(x)}}$ it generates another stack frame
+		for ${\texttt{g(x)}}$ pushes that to the call stack:
+	</p>
+	<div id="stack2"></div>
+	<p>And when it counters ${\texttt{h(x)},}$ the same process occurs:</p>
+	<div id="stack3"></div>
+	<p>
+		Once ${\texttt{h(x)}}$ finishes executing, its stack frame is
+		<i>popped off</i> the stack:
+	</p>
+	<div id="stack4"></div>
+	<p>
+		When ${\texttt{g(x)}}$ finishes executing, it too is popped off the
+		stack:
+	</p>
+	<div id="stack5"></div>
+	<p>
+		This leaves ${\texttt{f(x)}}$ and once ${\texttt{f(x)}}$ finishes
+		executing, it's popped off the stack. This control flow applies whether
+		${\texttt{g(x)}}$ and ${\texttt{h(x)}}$ are inside ${\texttt{f(x)},}$
+		or whether they are all separate functions in the program. Nesting,
+		however, impacts the order the call stacks are generated, pushed, and
+		popped. In general, when want to determine the order a function's stack
+		frames are generated, pushed, and popped, we want to read the program
+		top to bottom, right to left.
+	</p>
+	<p>
+		This phenomenon of pushing and popping stack frames stems from a
+		fundamental trait of JavaScript: JavaScript is a
+		<b>single-threaded language</b>. A single-threaded language is a
+		language with a single call stack and a single memory heap. In effect,
+		this means that within the language, we can only run one statement at a
+		time. Because of this trait, JavaScript programs live in a
+		<b>synchronous environment</b> &mdash; an environment where functions
+		return (i.e., are popped off) only after they have finished executing.
+		Think carefully about what this means. Necessarily, when we call a
+		function ${f,}$ nothing else in the program can run. All other
+		functions must wait until ${f}$ finishes. This is the defining
+		characteristic of the <b>synchronous programming</b>. Tasks are done
+		one at a time; there's no such thing as &#8220;multitasking.&#8221;
+	</p>
+	<p>
+		The opposite of a single-threaded language is a
+		<b>multithreaded language</b>. With a multithreaded language, we can
+		perform simultaneous executions of two or more parts of the program
+		(e.g., functions). Multithreading is a defining characteristic of
+		<b>parallel programming</b> &mdash; programming where functions need
+		not wait for another function to return before executing. Not very many
+		languages have built-in support for multithreading. Languages like C++
+		and Java provide multithreading only if the operating system permits
+		it. We will see in a moment why multithreading is a relatively rare
+		feature.
+	</p>
+	<p>
+		The opposite of the synchronous environment is an
+		<b>asynchronous environment</b> &mdash; an environment where multiple
+		functions run and return at various points in time. With an
+		asynchronous environment, we can perform
+		<b>asynchronous programming</b>: When we call a function ${f,}$ the
+		program continues to run, calling other functions like ${g}$ and ${h.}$
+		When ${f}$ finishes, great, we can use ${f}$'s return value. If not, we
+		can continue working on other things.
+	</p>
+	<p>
+		We can compare asynchronous programming and synchronous programming
+		with the following analogy: We have to make a caramel glaze and bake a
+		cake. Under the synchronous programming model, we must do one or the
+		other, not both, before proceeding to the next. In other words, we have
+		to finish making the glaze before baking the cake, or we have to finish
+		baking the cake before making the glaze. In the asynchronous
+		programming model, we can start baking the pie, then while it's in the
+		oven, we move on to the glaze, waiting for the pie to finish.
+	</p>
+	<p>
+		We might be thinking, why don't all languages just default to
+		multithreaded implementations? If they did so, we would be able to
+		perform asynchronous programming as needed. It is, after all, much more
+		efficient to work on the glaze while the cake bakes. The answer lies in
+		thinking a little more carefully on the analogy. Preparing a glaze
+		alongside baking a cake is actually much more complex than it seems. If
+		we start the glaze too early, it can harden, decreasing its viscosity.
+		Start too late, and we can burn the cake.
+	</p>
+	<p>
+		This same difficulty extends to multithreaded programs. It can be much
+		more difficult to reason about what a multithreaded program does at any
+		given point in time. We have to keep track of different functions
+		executing at once. Moreover, if we reflect a little more deeply, we'd
+		realize that we aren't very good at multitasking ourselves. Sure, we
+		can tie our shoelaces while talking to someone, but if the conversation
+		was on the mechanics of the proof for &#8220;This statement is a
+		theorem,&#8221; no doubt we would pause. In fact, some tasks are so
+		involved that we have laws ensuring we don't multitask: &#8220;No
+		person may drive ... any motor vehicle while composing or sending an
+		electronic text message or an electronic mail message.&#8221; Wis.
+		Stat. §346.89(3)(a).
+	</p>
+	<p>
+		Nevertheless, there are some tasks that we can reason about easily. And
+		there are some tasks that we <i>want</i> to perform while performing
+		another. The fact that these tasks exist is partly why we have
+		Bluetooth headsets and speech-to-text software. This extends to
+		JavaScript programs. In fact, many websites rely on asynchronous
+		programming. When we click the &#8220;Watch&#8221; button on Netflix, a
+		request is sent to a server to retrieve the relevant video file. This
+		is done with a function, and that function can take time. The page,
+		however, doesn't just freeze while the program waits for the function
+		to finish. Instead, we're greeted with some animations indicating some
+		loading is going on in the background. These animations are performed
+		with functions. How does JavaScript achieve something like this?
+	</p>
+</section>
+
+<section id="asynchronous_callbacks">
+	<h2>Asychronous Callbacks</h2>
+	<p>
+		The more general question is, how do we implement asynchronous programs
+		in a synchronous environment? The answer is through
+		<b>asynchronous callbacks</b> (also called
+		<i>call-after functions</i>). The callback functions we saw in the
+		previous examples are instances of <b>synchronous callbacks</b> &mdash;
+		callbacks that execute immediately. With asynchronous callbacks, the
+		callback is executed only after some delay; i.e., at a later point in
+		time. These asynchronous callbacks are done one of two methods: a
+		<b>one-shot timer</b> implemented with the
+		<var>setTimeOut()</var> method, or an <b>interval timer</b>,
+		implemented with the <var>setInterval()</var> method.
+	</p>
+	<p>The template for the <var>setTime()</var> method:</p>
+	<ul class="syntax">
+		<li>setTimeOut(f, t)</li>
+	</ul>
+	<p>
+		In the template above, ${f}$ is some function, and ${t}$ is an integer
+		value of time, measured in milliseconds. And the template for the
+		<var>setInterval()</var> method:
+	</p>
+	<figure class="math-display">
+		<ul class="syntax">
+			<li>setInterval(${f}$, ${I}$)</li>
+		</ul>
+	</figure>
+	<p>
+		Here, ${f}$ is some function, and ${I}$ is an integer value of time,
+		measured in milliseconds. With
+		<var>setInterval()</var>, the function ${f}$ is called every ${I}$
+		milliseconds (hence an <i>interval time</i>). Furthermore,
+		<var>setInterval()</var> returns a numeric value ${v}$ that can be used
+		to stop the timer. This is done by calling the method
+		<var>clearTimeout()</var>, passing ${v}$ as an argument &mdash;
+		<var>clearTimeout(${v}$)</var>.
+	</p>
+	<p>For example, consider the following code:</p>
+	<pre class="language-javascript"><code>
+		function f1() {
+			console.log("f1 started.");
+			alert("Proceed?");
+			console.log("f1 finished.")
+		 }
+		function f2() {
+			console.log("f2 started.");
+			console.log("f1 finished.");
+		}
+		f1();
+		f2();
+	</code></pre>
+	<p>The output:</p>
+	<pre class="language-bash"><code>
+		f1 started.
+		f1 finished.
+		// ALERT
+		f2 started.
+		f2 finished.
+	</code></pre>
+	<p>
+		Executing the code above, we see JavaScript's typical synchronous
+		behavior. The function <var>f1()</var> executes first. When it reaches
+		the <var>alert()</var> call, it stops and waits for us to click the
+		<var>OK</var> button. The function <var>f2()</var> does not execute
+		until we respond with the necessary feedback.<sup></sup>
+	</p>
+	<div class="note">
+		<p>
+			This behavior &mdash; an evaluation being performed only if the
+			previous evaluation has finished &mdash; is called <b>blocking</b>.
+			Blocking can lead to many undesirable consequences. For example, if a
+			particular evaluation takes a long time to process, our program is
+			effectively stuck. It would be far more time-efficient to perform
+			other evaluations while the longer evaluation processes.
+		</p>
+	</div>
+	<p>
+		The simplest way to make the code above asynchronous is to use a
+		<var>setTimeOut()</var> function. The <var>setTimeOut()</var> function
+		takes a function as an argument, and executes it after a given amount
+		of time:
+	</p>
+	<pre class="language-javascript"><code>
+		function f1() {
+			setTimeout(function () {
+				console.log("f1 started.");
+				alert("Proceed?");
+				console.log("f1 finished.");
+			}, 1000);
+		}
+		function f2() {
+			console.log("f2 started.");
+			console.log("f2 finished.");
+		}
+		f1();
+		f2();
+	</code></pre>
+	<pre class="language-bash"><code>
+		f2 started.
+		f2 finished.
+		// Alert
+		f1 started.
+		f1 finished.
+	</code></pre>
+	<p>
+		Notice that the call order has changed. This is because we've set a
+		time out on the <var>f1()</var> function. <var>f1()</var> is called,
+		and after 1 second, <var>f2()</var> is called. In other words, other
+		functions are called while <var>f1()</var> waits &mdash;
+		<var>f1()</var> is an <b>asynchronous function</b>. The function inside
+		<var>setTimeOut</var> is a <b>callback function</b>.
+	</p>
+	<div class="mainIdea">
+		<p>
+			The <var>setTimeOut()</var> function is really an event. When we
+			place the callback function inside a
+			<var>setTimeOut()</var> function, we're essentially making the
+			function <var>f1()</var> say,
+			<q>Go on ahead without me, I'll catch up when I'm ready.</q> When is
+			<var>f1()</var> ready? When the event &mdash;
+			<i>the time expiring upon our clicking <var>OK</var></i> &mdash; has
+			occurred.
+		</p>
+	</div>
+	<p>
+		Question: But isn't JavaScript itself executing these functions? In
+		other words, itsn't JavaScript running another process (keeping track
+		of time) while it continues executing the next function? This is an
+		astute observation, but the answer is no. These methods are called by
+		JavaScript, but executed by the <i>browser</i>. This is JavaScript's
+		secret to asynchrony (well, not quite; it's public knowledge, just not
+		widely-known). Because JavaScript only has one thread to rely on, it
+		sends the tasks of keeping tracking of the delay's time and reminding
+		to execute to another program's thread &mdash; the browser's.
+	</p>
+	<p>
+		So now the question is how does this work? Recall that JavaScript lives
+		only in a hosted environment. One of these environments is the browser,
+		a program more than likely written in C++. Browsers provide numerous
+		interfaces, one of which provides methods like
+		<var>setTimeout()</var> and <var>setInterval()</var>. When the
+		JavaScript engine encounters a call like <var>setTimeout()</var>, it
+		generates a stack frame for the function, and pushes it onto the call
+		stack as it would any other. Once at the call stack, however, the call
+		stack itself recognizes <var>setTimeout()</var> as one of the browser's
+		web API functions and hands them over to the browser. The browser then
+		starts a timer, per our argument. Once the time passes, the browser
+		inserts a <b>timeout event</b> to a data structure called the
+		<b>event queue</b>.
+	</p>
+	<p>
+		The event queue is exactly what it sounds like: A line of entities in
+		waiting. The queue exhibits a behavior we're all familiar with &mdash;
+		if you're the first in line, you're the first one out (assuming an
+		orderly society). In this case, the timeout event inserted into the
+		queue includes the function we want executed after the delay. Once the
+		timer is over, the JavaScript engine processes the call as usual.
+	</p>
+	<p>
+		With callbacks, we can <i>simulate</i> what looks like multithreaded
+		programming, but is not. To understand this simulation, we have to be
+		clear about the distinction between single-threaded programs,
+		multi-threaded programs, synchronous programs, and asynchronous
+		programs.
+	</p>
+	<p>
+		In a <b>single-threaded program</b>, only one command is executed in a
+		single process. As we know, JavaScript is a single-threaded language.
+		All JavaScript programs are single-threaded. In a
+		<b>multi-threaded program</b>, multiple commands are executed within a
+		single process. Multi-threaded programs are possible only if the
+		operating system supports it. For example, on a Windows system with the
+		ThreadFiber package, we can write multi-threaded C programs. In a
+		<b>synchronous program</b>, commands are executed one by one,
+		immediately after one another. Before we encountered the asynchronous
+		callback functions we saw above, our JavaScript programs have been
+		synchronous. In an <b>asynchronous program</b>, commands are executed
+		one by one, but some commands are delayed (i.e., executed later). We
+		can compare these different approaches via diagram.
+	</p>
+	<p>
+		In the graph below, the red plot corresponds to the usual
+		<i>synchronous</i> program, a single thread running linearly. The white
+		circles indicate points of delay (in this case, there's a delay of
+		${0.5}$). The blue plot corresponds to a <i>multithreaded</i> program,
+		two threads running linearly and simultaneously. The green plot
+		corresponds to an <i>asynchronous</i> program &mdash; a single thread
+		running linearly, but calls are made to other functions in the event of
+		a delay. When a delay of the first function call occurs, the second
+		function is executed. If the delay finishes during the second
+		function's execution (as indicated below), the second function's
+		execution is interrupted and the first function finishes executing.
+		Once the first function finishes, the second function continues:
+	</p>
+	<figure class="block">
+		<div id="thread_compare"></div>
+		<figcaption>
+			Synchronous (red plot), asynchronous (green plot), and multithreaded
+			(blue plot),
+		</figcaption>
+	</figure>
+	<p>
+		Comparing these three approaches, we can see that the multithreaded
+		approach takes the least amount of time, and the synchronous approach
+		takes the longest. The asynchronous approach straddles the middle
+		ground &mdash; not as fast as a multithreaded program, but not as slow
+		as a synchronous program. Once again, with asynchronous callbacks,
+		JavaScript is not setting a timer and keeping track of it. It hands
+		that work to the browser for handling. Once the timer has finished, the
+		function we delayed is placed on the callstack.
+	</p>
+
+	<section id="advantages_and_disadvantages_of_asynchrony">
+		<h3>Tradeoffs: Asynchronous Programming</h3>
+		<p>
+			There are costs and benefits to asynchronous programming. Synchronous
+			code is far easier to write and reason about. As we've seen, however,
+			it can lead to blocking. And because of blocking, there are
+			situations where synchronous code is less perfomant. Time is the most
+			valuable resource in programming, and it's wasted waiting.
+		</p>
+		<p>
+			With asynchronous programming, our code is more performant. The cost:
+			Code is harder to read and reason about. Asynchronous code is also
+			just harder to write well in general.
+		</p>
+	</section>
+</section>
+
+<section id="promises">
+	<h2>Promises</h2>
+	<p>
+		A <b>promise</b> is a JavaScript object that represents the eventual
+		successful or failed completion of some asynchronous operation. The
+		name is indicative of what it represents &mdash; it's a promise that
+		some value will be returned, whether or not the operation succeeds.
+		Let's take a closer look at this object.
+	</p>
+	<pre class="language-javascript"><code>
+		const func = new Promise((resolve, reject) => {})
+		console.log(func);
+	</code></pre>
+	<pre class="language-bash"><code>
+		[[Prototype]]: Promise
+		[[PromiseState]]: "pending"
+		[[PromiseResult]]: undefined
+	</code></pre>
+	<p>
+		We see that the <var>func</var> is a <var>Promise</var> object, with
+		two properties; <var>PromiseState</var>, which is initially set to
+		<var>pending</var>, and <var>PromiseResult</var>, which is set to
+		<var>undefined</var>. Notice that the <var>Promise</var> object takes a
+		function in its constructor. That function has two parameters,
+		traditionally called <var>resolve</var> and <var>reject</var>, both of
+		which are functions. The idea is as follows:
+	</p>
+	<ol>
+		<li>
+			If our promise is fulfilled, the <var>resolve()</var> function
+			executes, and the <var>PromiseState</var> is set to
+			<var>resolved</var>.
+		</li>
+		<li>
+			If our promise is not fulfilled, the <var>reject()</var> function
+			executes, and the <var>PromiseState</var> is set to
+			<var>rejected</var>.
+		</li>
+	</ol>
+	<p>
+		For example, consider the following <var>Promise</var>, which is
+		randomly resolved or rejected:
+	</p>
+	<pre class="language-javascript"><code>
+		const p = new Promise((resolve, reject) => {
+			if (Math.random() &lt; 0.5) {
+				reject();
+			} else {
+				resolve();
+			}
+		})
+	</code></pre>
+	<p>
+		Each time we execute the code above, the promise is randomly rejected
+		or resolved. Now, if the promise is resolved, then we can call the
+		<var><mark>.then()</mark></var> method:
+	</p>
+	<pre class="language-javascript"><code>
+		const p = new Promise((resolve, reject) => {});
+		p.then(() => {});
+	</code></pre>
+	<p>
+		The <var>.then()</var> method takes a callback function as an argument.
+		If the promise <var>p</var> is resolved, then the callback function
+		inside <var>.then()</var> is called. For example, in the code below,
+		the callback function inside the <var>p.then()</var> is called only if
+		<var>x &lt; 2</var> In this case, it is, so we see the console output
+		<var>Promise resolved.</var> Had we changed <var>x</var> to
+		<var>1</var>, we would see no output.
+	</p>
+	<pre class="language-javascript"><code>
+		let x = 1;
+		const p = new Promise((resolve, reject) => {
+			if (x &lt; 2) {
+				resolve();
+			} else { 
+				reject();
+			}
+		})
+
+		p.then(() => {
+			console.log("Promise resolved.");
+		})
+	</code></pre>
+	<pre class="language-bash"><code>
+		Promise resolved.
+	</code></pre>
+	<p>
+		So, we have <var>.then()</var> for the case when
+		<var>resolve()</var> occurs, do we have anything for
+		<var>reject()</var>? Yes. For the case when the promise is rejected
+		&mdash; the result of executing <var>reject()</var> &mdash; we can pass
+		a callback function into the promise's
+		<var><mark>.catch()</mark></var> method:
+	</p>
+	<pre class="language-javascript"><code>
+		let x = 2;
+		const p = new Promise((resolve, reject) => {
+			if (x &lt; 2) {
+				resolve();
+			} else { 
+				reject();
+			}
+		})
+
+		p.then(() => {
+			console.log("Promise resolved.");
+		}).catch(() => {
+			console.log("Promise rejected.")
+		})
+	</code></pre>
+	<pre class="language-bash"><code>
+		Promise rejected.
+	</code></pre>
+	<p>
+		This might seem like a lot of work for something that just looks like
+		conditional branching, but there is a subtle value behind all of this:
+		The identifier <var>p</var> always has a value &mdash; a
+		<var>Promise</var>, which always has its
+		<var>PromiseState</var> initialized: It's either <var>pending</var>,
+		<var>rejected</var>, or <var>resolved</var>.
+	</p>
+
+	<section id="returning_promises_from_functions">
+		<h3>Returning Promises</h3>
+		<p>
+			A common idiom in asynchronous JavaScript is returning a promise from
+			a given function. For example, consider the following function:
+		</p>
+		<pre class="language-javascript"><code>
+			const readline = require('readline').createInterface({
+				input: process.stdin,
+				output: process.stdout
+			})
+
+			let x;
+
+			readline.question('Provide your number: ', i => {x = i});
+
+			const p = new Promise((resolve, reject) => {
+				setTimeout(() => {
+					if (x &lt; 2) { resolve(); }
+					else { reject(); }
+				}, 5000)
+			})
+
+			p.then(() => {
+				console.log("Promise resolved.");
+			}).catch(() => {
+				console.log("Promise rejected.")
+			})
+		</code></pre>
+		<p>
+			In the program above, the user is prompted to enter some number. If
+			the user does not enter a number within ${5}$ seconds, the promise is
+			rejected. If the user enters a number and it's not less than ${2,}$
+			the promise is rejected. If the user enters a number within ${5}$
+			seconds <em>and</em> it's less than ${2,}$ the promise is resolved.
+		</p>
+		<p>
+			We can also return the promise from a function. This allows us to
+			condition whether to return a promise or not:
+		</p>
+		<pre class="language-javascript"><code>
+			const readline = require('readline').createInterface({
+				input: process.stdin,
+				output: process.stdout
+			})
+			let x;
+			readline.question('Provide your number: ', i => {x = i});
+			const p = () => {
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						if (x &lt; 2) { resolve(); }
+						else { reject(); }
+					}, 5000)
+				})
+			}
+			
+			p().then(() => { console.log("Promise resolved.") })
+				 .catch(() => { console.log("Promise rejected.") })
+		</code></pre>
+	</section>
+
+	<section id="valued_rejections_resolves">
+		<h3>Valued Rejections &amp; Resolutions</h3>
+		<p>
+			There's another thing we can do with promises: We can have the
+			<var>resolve()</var> and <var>reject()</var> functions return values:
+		</p>
+		<pre class="language-javascript"><code>
+			const readline = require('readline').createInterface({
+				input: process.stdin,
+				output: process.stdout
+			})
+			let x;
+			readline.question('Provide your number: ', i => {x = i});
+			
+			const p = () => {
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						if (x < 2) { resolve({val: 'Resolved.'}); }
+						else { reject({val: 'Rejected.'}); }
+					}, 5000)
+				})
+			}
+			
+			p().then((result) => { console.log(result.val) })
+				 .catch((result) => { console.log(result.val) })
+		</code></pre>
+		<pre class="language-bash command-line" data-output="2-4, 6-7"><code>
+			node lab1.js
+			> Provide your number: 10
+			Rejected
+
+			node lab1.js
+			> Provide your number: 1
+			Resolved
+		</code></pre>
+	</section>
+</section>
+
+<section id="http_requests">
+	<h2>HTTP Requests</h2>
+	<p>
+		Promises may not appear all that useful until we consider HTTP
+		requests. To get data from a server, our web application must send a
+		request under the HTTP (or these days, HTTPS) request. In JavaScript,
+		those requests are made with
+		<b>AJAX (Asynchronous JavaScript and XML)</b>. As explained later, XML
+		has been largely replaced with JSON in modern web development.
+		Accordingly, the more accurate acronym would be <i>AJAJ</i>, but
+		changing well-established acronyms in the software industry is akin to
+		unscrambling eggs.
+	</p>
+	<p>
+		XML and JSON are <i>data formats</i> &mdash; a set of rules for how
+		data should be organized. By having a common set of rules, different
+		software systems can share data with one another. For example, suppose
+		we had the following data in a spreadsheet:
+	</p>
+	<table class="csv">
+		<thead>
+			<th>item</th>
+			<th>quantity</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>banana</td>
+				<td>4413</td>
+			</tr>
+			<tr>
+				<td>coconut</td>
+				<td>1531</td>
+			</tr>
+			<tr>
+				<td>mango</td>
+				<td>1283</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>In XML, the table above might look something like:</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			&lt;data&gt;
+			&#x9;&lt;record&gt;
+			&#x9;&#x9;&lt;item&gt;banana&lt;/item&gt;
+			&#x9;&#x9;&lt;quantity&gt;1531&lt;/quantity&gt;
+			&#x9;&lt;/record&gt;
+			&#x9;&lt;record&gt;
+			&#x9;&#x9;&lt;item&gt;coconut&lt;/item&gt;
+			&#x9;&#x9;&lt;quantity&gt;1531&lt;/quantity&gt;
+			&#x9;&lt;/record&gt;
+			&#x9;&lt;record&gt;
+			&#x9;&#x9;&lt;item&gt;mango&lt;/item&gt;
+			&#x9;&#x9;&lt;quantity&gt;1283&lt;/quantity&gt;
+			&#x9;&lt;/record&gt;
+			&lt;/data&gt;
+		</code></pre>
+		<figcaption>An XML file</figcaption>
+	</figure>
+	<p>In JSON, the same data would be formatted as:</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			{
+				"item": "banana",
+				"quantity": 4413
+			},
+			{
+				"item": "coconut",
+				"quantity": 1531
+			},
+			{
+				"item": "mango",
+				"quantity": 1283
+			}
+		</code></pre>
+		<figcaption>A JSON file</figcaption>
+	</figure>
+
+	<section id="xml_requests">
+		<h3>XML HTTP Requests</h3>
+		<p>
+			To make an XML HTTP request, we first begin by making a new XML HTTP
+			request object, using the
+			<var><mark>XMLHttpRequest()</mark></var> method. This method is
+			provided by the browser:
+		</p>
+		<pre class="language-javascript"><code>
+			const req = new XMLHttpRequest();
+		</code></pre>
+		<p>
+			Then, we use the <var><mark>.open()</mark></var> method to initialize
+			the new request, followed by call to <var><mark>.send()</mark></var
+			>, to actually send the request. Notice that the
+			<var>.open()</var> method takes the argument <var>'GET'</var>.
+		</p>
+		<pre class="language-javascript"><code>
+			const req = new XMLHttpRequest();
+			req.open('GET', 'https://some_url.com/some_API/some_data/');
+			req.send();
+		</code></pre>
+		<p>
+			There is, however, something we forget to include: Code to execute in
+			the event the request fails. Remember, when making HTTP requests, we
+			must always have some behavior in the event we don't get a respone
+			back from the server. We never write code under the assumption that
+			we will always get back an HTTP request. In this case, we can use
+			event listeners to address the two cases: Either we get a response
+			(the <var>'load'</var> case), or we don't (the
+			<var>'error'</var> case):
+		</p>
+		<pre class="language-javascript"><code>
+			const req = new XMLHttpRequest();
+
+			req.addEventListener('load', () => {
+				console.log('response received');
+			});
+
+			req.addEventListener('error', () => {
+				console.log('error');
+			})
+
+			req.open('GET', 'https://some_url.com/some_API/some_data/');
+			req.send();
+		</code></pre>
+		<p>
+			The code above will return an error because of the bogus URL, but
+			suppose we did get a response back. How do we read the data returned?
+			Well, let's just look at the <var>req</var> object. Executing
+			<var>console.log(req)</var>, we get:
+		</p>
+		<pre class="language-bash"><code>
+			onabort: null
+			onerror: null
+			onload: null
+			onloadend: null
+			onloadstart: null
+			onprogress: null
+			onreadystatechange: null
+			ontimeout: null
+			readyState: 0
+			response: ""
+			<mark>responseText: ""</mark>
+			responseType: ""
+			responseURL: ""
+			responseXML: null
+			status: 0
+			statusText: ""
+			timeout: 0
+			upload: XMLHttpRequestUpload {onloadstart: null, onprogress: null, onabort: null, onerror: null, onload: null, …}
+			withCredentials: false
+			[[Prototype]]: XMLHttpRequest
+		</code></pre>
+		<p>
+			The data we get back is contained in the property
+			<var><mark>responseText</mark></var
+			>. This property contains the JSON format of the data sent as a
+			<i>string</i>. Because this is a string value, we must parse it into
+			an actual JavaScript object using the browser's
+			<var><mark>JSON.parse()</mark></var> method, and bind the return to a
+			variable:
+		</p>
+		<pre class="language-javascript"><code>
+			const req = new XMLHttpRequest();
+
+			req.addEventListener('load', () => {
+				console.log('response received');
+
+				<mark>const data = JSON.parse(req.responseText);</mark>
+
+			});
+
+			req.addEventListener('error', () => {
+				console.log('error');
+			})
+
+			req.open('GET', 'https://some_url.com/some_API/some_data/');
+			req.send();
+		</code></pre>
+	</section>
+
+	<section id="fetch">
+		<h3>The <var>fetch()</var> Method</h3>
+		<p>
+			Examining the <var>XMLHttpRequest()</var> method, we can see how
+			clunky it is in terms of syntax. Fortunately, browsers provide an
+			alternative method for sending requests: the
+			<var><mark>fetch()</mark></var> method.
+		</p>
+		<pre class="language-javascript"><code>
+			const p = fetch('https://swapi.dev/api/planets');
+		</code></pre>
+		<p>
+			Notice that for the <var>fetch()</var> method, we pass a single
+			argument, the URL to the API. (The URL above is an actual API). If we
+			run <var>console.log(p)</var>, we see the following:
+		</p>
+		<pre class="language-bash"><code>
+			Promise {&lt;fulfilled&gt;: Response}
+				[[Prototype]]: Promise
+				[[PromiseState]]: "fulfilled"
+				[[PromiseResult]]: Response
+				body: (...)
+				bodyUsed: false
+				headers: Headers {}
+				ok: true
+				redirected: true
+				status: 200
+				statusText: ""
+				type: "cors"
+				url: "https://pipedream.com/apps/swapi"
+				[[Prototype]]: Response
+		</code></pre>
+		<p>
+			The <var>fetch()</var> method returns a promise. If we get back a
+			response, the promise state is set to <var>fulfilled</var>, and we
+			have access to a property called <var>body</var>. This is a
+			<i>bytestream</i> of the data we requested. The name is descriptive
+			&mdash; it's a continuous stream of data that we can read from as
+			needed.<sup></sup> How do we read data from this stream? Well, we got
+			back a promise, so we can use the <var>.then()</var> method, along
+			with the <var><mark>.json()</mark></var> method to parse the
+			bytestream as as JSON:
+		</p>
+		<div class="note">
+			<p>
+				The <var>fetch()</var> method returns a bytestream because response
+				objects could potentially be massive collections of data. E.g.,
+				data about flight movements around the world would be a gargantuan
+				amount of data that doesn't need to be sent all at once, as users
+				might only need a subset of that data.
+			</p>
+		</div>
+		<pre class="language-javascript"><code>
+			const p = fetch('https://swapi.dev/api/planets').then((response) => {
+				console.log(response.json().then((data) => {
+					console.log(data);
+				}));
+			})
+		</code></pre>
+		<pre class="language-bash"><code>
+			{count: 60, next: 'https://swapi.dev/api/planets/?page=2', previous: null, results: Array(10)}
+			count: 60
+			next: "https://swapi.dev/api/planets/?page=2"
+			previous: null
+			results: (10) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+			[[Prototype]]: Object
+		</code></pre>
+		<p>
+			Notice how we had to chain two <var>.then()</var> methods. This is
+			because the <var>.json()</var> method returns another promise. The
+			data we want parsed into JSON could potentially be massive, taking a
+			significant amount of time.
+		</p>
+	</section>
+
+	<section id="axios">
+		<h3>Axios</h3>
+		<p>
+			One mild annoyance with the <var>fetch()</var> method is that we
+			potentially have to chain many <var>.then()</var> calls to get the
+			data we want:
+		</p>
+		<pre class="language-pseudo"><code>
+			fetch('some_url')
+				.then(check_status_and_parse)
+				.then(get_data)
+				.then(get_data_inside_data)
+				.then(check_status_and_parse)
+				.then(get_data)
+				.then(get_data_inside_data)
+		</code></pre>
+		<p>
+			This isn't necessarily a problem, but there are JavaScript libraries
+			that make implementing requests easier. The most popular, currently,
+			is <a href="https://github.com/axios/axios">Axios</a>. Axios doesn't
+			do anything we can't already do &mdash; the library uses
+			<var>fetch()</var> behind the scenes &mdash; but it provides some
+			syntax that greatly reduces the amount of code we have to write.
+		</p>
+		<p>
+			The simplest way to use Axios is through a CDN link. In our HTML
+			document, we include the script tag before our
+			<var>app.js</var> file (the main driver for our simple website):
+		</p>
+		<pre class="language-html"><code>
+			&lt;script 
+				src=&quot;https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js&quot;
+			&gt;
+			&lt;/script&gt;
+		</code></pre>
+		<p>Once included, getting data is straightforward:</p>
+		<pre class="language-javascript"><code>
+			axios.get('https://swapi.dev/api/planets/?page=2')
+		</code></pre>
+		<p>To get the data, we just use the <var>.then()</var> method:</p>
+		<pre class="language-javascript"><code>
+			axios.get('https://swapi.dev/api/planets/?page=2')
+				.then((resp) => {
+					console.log(resp.data);
+				})
+		</code></pre>
+		<p>
+			Notice that we don't have to parse the bytestream ourselves. Axios
+			handles that for us. We just have to read the response's
+			<var>.data</var> property.
+		</p>
+	</section>
+</section>
+
+<section id="async_functions">
+	<h2>Asynchronous Functions</h2>
+	<p>
+		The <var><mark>async</mark></var> keyword in JavaScript allows us to
+		write asynchronous functions quickly. For example, here's a standard
+		function in JavaScript:
+	</p>
+	<pre class="language-javascript"><code>
+		function f() {
+			return 'a string'
+		}
+		console.log(f());
+	</code></pre>
+	<pre class="language-bash"><code>
+		a string
+	</code></pre>
+	<p>
+		Now examine the return value for <var>f()</var> when we use the
+		<var>async</var> keyword:
+	</p>
+	<pre class="language-javascript"><code>
+		async function f() {
+			return 'a string';
+		}
+		console.log(f());
+	</code></pre>
+	<pre class="language-bash"><code>
+		Promise {&lt;fulfilled&gt;: 'success'}
+			[[Prototype]]: Promise
+			[[PromiseState]]: "fulfilled"
+			[[PromiseResult]]: "a string"
+	</code></pre>
+	<p>We get back a promise. This allows us to write:</p>
+	<pre class="language-javascript"><code>
+		async function f() {
+			return 'a string';
+		}
+
+		f().then((val) => {
+			console.log(`Fulfilled with ${val}`)
+		})
+	</code></pre>
+	<pre class="language-bash"><code>
+		Fulfilled with a string.
+	</code></pre>
+	<p>
+		So, with the <var>async</var> keyword, we can obtain values in the
+		event the promise is fulfilled. What if the promise is rejected? We can
+		do so by throwing a result, using the
+		<var><mark>throw</mark></var> keyword. For example, suppose we wrote an
+		async function where the argument passed must be a multiple of three:
+	</p>
+	<pre class="language-javascript"><code>
+		async function f(arg) {
+			if (arg % 3 != 0) {
+				throw 'Not a multiple of three.';
+			}
+			return 'Multiple of three.';
+		}
+		f(3)
+			.then((val) => {console.log(`Promise fulfilled with: ${val}`)})
+			.catch((val) => {console.log(`Promise rejected with: ${val}`)});
+		f(5)
+			.then((val) => {console.log(`Promise fulfilled with: ${val}`)})
+			.catch((val) => {console.log(`Promise rejected with: ${val}`)});
+	</code></pre>
+	<pre class="language-bash"><code>
+		Promise fulfilled with: Multiple of three.
+		Promised rejected with: Not a multiple of three.
+	</code></pre>
+
+	<section id="await">
+		<h3>The <var>await</var> Keyword</h3>
+		<p>
+			Where async functions get very interesting is when we use them
+			alongside the <var><mark>await</mark></var> keyword. When the
+			<var>await</var> keyword is used inside an <var>async</var> function,
+			the JavaScript engine will pause the execution of the function and
+			continue only if the promise is resolved.
+		</p>
+		<p>To illustrate, recall how we would usually fetch data:</p>
+		<pre class="language-javascript"><code>
+			const resp = fetch('https://swapi.dev/api/planets').then((response) => {
+				response.json().then((data) => {
+					console.log(data);
+				});
+			})
+		</code></pre>
+		<pre class="language-bash"><code>
+			{count: 60, next: 'https://swapi.dev/api/planets/?page=2', previous: null, results: Array(10)}
+			count: 60
+			next: "https://swapi.dev/api/planets/?page=2"
+			previous: null
+			results: (10) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+			[[Prototype]]: Object
+		</code></pre>
+		<p>Or, alternatively, with the Axios library:</p>
+		<pre class="language-javascript"><code>
+			function getData() {
+				return axios.get('https://swapi.dev/api/planets');
+			}
+			getData().then((resp) => {console.log(resp.data)});
+		</code></pre>
+		<p>The same behavior can be written as:</p>
+		<pre class="language-javascript"><code>
+			async function getData() {
+				const resp = await axios.get('https://swapi.dev/api/planets');
+				console.log(resp.data);
+			}
+		</code></pre>
+		<p>
+			As always, we want to address the situation where the request fails.
+			One way to do so is by calling <var>.catch()</var>:
+		</p>
+		<pre class="language-javascript"><code>
+			async function getData() {
+				const data = await axios.get('https://swapi.dev/api/planets');
+				console.log(resp.data)
+			}
+			getData().catch((err) => {
+				console.log(`Error: ${err}`);
+			})
+		</code></pre>
+		<p>
+			Alternatively, we can write a <i>try-catch block</i> within the async
+			function:
+		</p>
+		<pre class="language-javascript"><code>
+			async function getData() {
+				try {
+					const resp = await axios.get('https://swapi.dev/api/planets');
+					console.log(resp.data);
+				} catch (err) {
+					console.log(`Error: ${err}`)
+				}
+			}
+		</code></pre>
+		<p>The <var>await</var> keyword allows us to obtain data easily:</p>
+		<pre class="language-javascript"><code>
+			async function getData(url) {
+				const response = await fetch(url);
+				return response.json();
+			}
+
+			const data = await getData('https://swapi.dev/api/planets');
+
+			console.log({ data });
+		</code></pre>
+		<pre class="language-bash"><code>
+			{data: {…}}
+				data:
+				count: 60
+				next: "https://swapi.dev/api/planets/?page=2"
+				previous: null
+				results: Array(10)
+					0: {name: 'Tatooine', rotation_period: '23', orbital_period: '304', diameter: '10465', climate: 'arid', …}
+					1: {name: 'Alderaan', rotation_period: '24', orbital_period: '364', diameter: '12500', climate: 'temperate', …}
+					2: {name: 'Yavin IV', rotation_period: '24', orbital_period: '4818', diameter: '10200', climate: 'temperate, tropical', …}
+					3: {name: 'Hoth', rotation_period: '23', orbital_period: '549', diameter: '7200', climate: 'frozen', …}
+					4: {name: 'Dagobah', rotation_period: '23', orbital_period: '341', diameter: '8900', climate: 'murky', …}
+					5: {name: 'Bespin', rotation_period: '12', orbital_period: '5110', diameter: '118000', climate: 'temperate', …}
+					6: {name: 'Endor', rotation_period: '18', orbital_period: '402', diameter: '4900', climate: 'temperate', …}
+					7: {name: 'Naboo', rotation_period: '26', orbital_period: '312', diameter: '12120', climate: 'temperate', …}
+					8: {name: 'Coruscant', rotation_period: '24', orbital_period: '368', diameter: '12240', climate: 'temperate', …}
+					9: {name: 'Kamino', rotation_period: '27', orbital_period: '463', diameter: '19720', climate: 'temperate', …}
+					length: 10
+				[[Prototype]]: Array(0)
+				[[Prototype]]: Object
+				[[Prototype]]: Object
+		</code></pre>
+	</section>
+	<section id="parallel_v_sequential">
+		<h3>Parallel vs. Sequential Awaits</h3>
+		<p>
+			As stated earlier, the <var>await</var> keyword tells JavaScript to
+			pause executing the awaited function, continuing only if the promise
+			is resolved. This leads to a distinction between
+			<i>parallel awaits</i> and <i>sequential awaits</i>. For example,
+			consider the following code:
+		</p>
+		<pre class="language-javascript"><code>
+			function greet(greeting, delay) {
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						console.log(greeting);
+						resolve();
+					}, delay);
+				});
+			}
+
+			async function f() {
+				await greet('hi', 1000);
+				await greet('yikes', 1000);
+				await greet('bye', 1000);
+			};
+
+			f();
+		</code></pre>
+		<pre class="language-bash"><code>
+			hi
+			yikes
+			bye
+		</code></pre>
+		<p>
+			If we ran the code above, we would see the outputs <var>'hi'</var>,
+			<var>'yikes'</var>, and <var>'bye'</var> one after another, ${1}$
+			second apart. This is because each <var>greet()</var> executes only
+			after the previous <var>greet()</var> has executed. Again, remember
+			that JavaScript is synchronous. We don't get to the next function
+			until the current function completes. In this case, the first
+			<var>greet()</var> doesn't complete until its promise is resolved
+			(per the <var>await</var> keyword), so the second
+			<var>greet()</var> must wait. The same goes for the third
+			<var>greet()</var>.
+		</p>
+		<p>Now, if we instead wrote:</p>
+		<pre class="language-javascript"><code>
+			function greet(greeting, delay) {
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						console.log(greeting);
+						resolve();
+					}, delay);
+				});
+			}
+
+			async function f() {
+				const x = greet('hi', 1000);
+				const y = greet('yikes', 1000);
+				const z = greet('bye', 1000);
+
+				await x;
+				await y;
+				await z;
+			};
+
+			f();
+		</code></pre>
+		<pre class="language-bash"><code>
+			hi
+			yikes
+			bye
+		</code></pre>
+		<p>
+			we get the same result, but the outputs occur <em>all at once</em>.
+			This is because each of <var>x</var>, <var>y</var>, and <var>z</var>
+			<i>wait in parallel</i>. This is a particularly important point to
+			keep in mind when we use <var>await</var> for HTTP requests. If we're
+			making requests to different APIs, or to different data sets within
+			the API that don't require waiting for an earlier response, having
+			sequential awaits leads to unnecessary delays.
+		</p>
+		<section id="all_keyword">
+			<h4><var>Promise.all()</var></h4>
+			<p>In the earlier code example, we wrote:</p>
+			<pre class="language-javascript"><code>
+				function greet(greeting, delay) {
+					return new Promise((resolve, reject) => {
+						setTimeout(() => {
+							console.log(greeting);
+							resolve();
+						}, delay);
+					});
+				}
+	
+				async function f() {
+					const x = greet('hi', 1000);
+					const y = greet('yikes', 1000);
+					const z = greet('bye', 1000);
+	
+					await x;
+					await y;
+					await z;
+				};
+	
+				f();
+			</code></pre>
+			<p>
+				Because of how common this pattern is &mdash; parallel awaits
+				&mdash; JavaScript provides
+				<var><mark>Promise.all()</mark></var> to express the same
+				instruction in much shorter syntax. The
+				<var>Promise.all()</var> method takes an array of promises. Since <var>x</var>, <var>y</var>, and <var>z</var> are all promises, we can pass them as arguments:
+			</p>
+			<pre class="language-javascript"><code>
+				function greet(greeting, delay) {
+					return new Promise((resolve, reject) => {
+						setTimeout(() => {
+							console.log(greeting);
+							resolve();
+						}, delay);
+					});
+				}
+	
+				async function f() {
+					const x = greet('hi', 1000);
+					const y = greet('yikes', 1000);
+					const z = greet('bye', 1000);
+
+					const results = await Promise.all([x, y, z]);
+				};
+	
+				f();
+			</code></pre>
+		</section>
+	</section>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/js_async.js"
+></script>
+{% endblock %}

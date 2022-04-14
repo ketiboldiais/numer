@@ -63,19 +63,7 @@
 	<p>
 		The <b>build pattern</b> is used to build objects. An object could be
 		simple, but it could also be complex, consisting of numerous component
-		objects.
-	</p>
-	<figure>
-		<img
-			src="{% static 'images/complex-object_v_simple-object.svg' %}"
-			alt="A complex object versus a simple object"
-			loading="lazy"
-			style="width: 200px"
-		/>
-		<figcaption>A complex object versus a simple object.</figcaption>
-	</figure>
-	<p>
-		As we know, instances of a class are generally created with a
+		objects. As we know, instances of a class are generally created with a
 		constructor. E.g., for some class called <var>Sphere</var>, we might
 		have a constructor <var>newSphere()</var> or <var>initSphere()</var>.
 		We can think of a <b>builder</b> as a much more sophisticated
@@ -90,18 +78,78 @@
 		process. The builder is itself contained in a class, and appears as
 		follows:
 	</p>
-	<figure>
-		<img
-			src="{% static 'images/builder_pattern.svg' %}"
-			alt="The builder pattern"
-			loading="lazy"
-			style="width:400px"
-		/>
-	</figure>
+	<div id="builder_flow_chart"></div>
+	<p>The builder pattern is useful when:</p>
+	<ol class="checklist">
+		<li>We have an object with different versions.</li>
+		<li>
+			All the different versions are made through the same process, but
+			with different inputs.
+		</li>
+	</ol>
+	<p>
+		The builder pattern addresses a few problems. Suppose we're writing a
+		piece of software that models different aircrafts. We start with some
+		class aircraft:
+	</p>
+	<pre class="language-dir"><code>
+		class Aircraft
+	</code></pre>
+	<p>
+		From this class aircraft, we use inheritance to create several
+		subclasses:
+	</p>
+	<pre class="language-dir"><code>
+		.
+		└── class Aircraft
+				├── class F16
+				└── class Boeing747
+	</code></pre>
+	<p>
+		The problem with this approach, however, is that any significant
+		variation in aircrafts will push us to create a new subclass. This
+		eventually leads to an inordinate amount of subclasses:
+	</p>
+	<pre class="language-dir"><code>
+		.
+		└── class Aircraft
+				├── class F16
+				├── class Boeing747
+				├── class Stratolaunch
+				├── class Boeing777_9
+				├── class BoeingB52
+				└── class R100
+	</code></pre>
+	<p>
+		We could avoid this problem by just creating a very large
+		<var>Aircraft</var> class. But if we took that approach, we'd have an
+		extremely large constructor:
+	</p>
+	<pre class="language-dir"><code>
+		.
+		└── class Aircraft
+				└── constructor(id:string, color:string, wingCount: int, ...)
+	</code></pre>
+	<p>
+		The problem with this approach is that many of the parameters go
+		unusued. The <i>builder pattern</i> suggests that we create a separate
+		class to store all of the different constructors.
+	</p>
+</section>
+
+<section id="singleton_pattern">
+	<h2>Singleton Pattern</h2>
+	<p>
+		The <i>singleton pattern</i> isn't used all that often, at least in
+		comparison to the other design patterns.
+	</p>
 </section>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-<script type="module" src="../../../static/numerc/csmd.mjs"></script>
+<script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
+<script
+	type="module"
+	src="../../../static/numerc/scripts/java_designPatterns.js"
+></script>
 
 {% endblock %}
