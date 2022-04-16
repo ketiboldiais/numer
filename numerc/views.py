@@ -401,6 +401,9 @@ def cpp_search(request):
 def cpp_recursion(request):
 	return render(request, "numerc/cpp/cpp_recursion/cpp_recursion.html")
 
+def cpp_cryptography(request):
+	return render(request, "numerc/cpp/cpp_cryptography/cpp_cryptography.html")
+
 
 
 

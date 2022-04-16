@@ -3502,14 +3502,14 @@ export class Sequence extends D3Base {
 		this.MARGIN = {
 			top: 20,
 			bottom: 20,
-			left: 10,
+			left: 20,
 			right: 20,
 		};
 
 		// Set the SVG's dimensions
 		this.DIMENSIONS = {
 			width: this.SVG_WIDTH - this.MARGIN.left - this.MARGIN.right,
-			height: this.SVG_HEIGHT - this.MARGIN.top - this.MARGIN.left,
+			height: this.SVG_HEIGHT - this.MARGIN.top - this.MARGIN.bottom,
 		};
 
 		// The SVG container is <div> that wraps the SVG. This allows for resizing.
@@ -3552,7 +3552,7 @@ export class Sequence extends D3Base {
 			.scaleBand()
 			.domain(this.DATA)
 			.range([0, this.DIMENSIONS.width])
-			.paddingInner(0.5);
+			.paddingInner(0.7);
 
 		this.COLORS = {
 			frameColor: this.OBJ.palette
@@ -3594,9 +3594,10 @@ export class Sequence extends D3Base {
 			frameGroup
 				.append("text")
 				.attr("text-anchor", "middle")
-				.attr("x", this.scaleX.bandwidth())
+				// .attr("x", 0)
+				.attr("x", this.scaleY.bandwidth() / 2)
 				.attr("y", this.scaleY.bandwidth() + this.scaleY.bandwidth() / 4)
-				.attr("dy", 5)
+				.attr("dy", '0.5em')
 				.text((d, i) => i)
 				.style("font-family", "CMU")
 				.style("font-size", "0.75rem")
@@ -3642,34 +3643,11 @@ export class Sequence extends D3Base {
 			.style("font-size", `0.7rem`)
 			.attr("fill", this.COLORS.textColor);
 
-		// const pointer = frameGroup
-		// 	.append("line")
-		// 	.filter((d) => d.pointer)
-		// 	.attr("stroke", this.COLORS.frameStrokeColor)
-		// 	.attr("x1", -this.FRAME_DIMENSIONS.width)
-		// 	.attr("y1", this.FRAME_DIMENSIONS.height / 2)
-		// 	.attr("x2", -this.FRAME_DIMENSIONS.width / 2)
-		// 	.attr("y2", this.FRAME_DIMENSIONS.height / 2)
-		// 	.attr("marker-end", "url(#arrow)");
-
-		// const pointerText = frameGroup
-		// 	.append("text")
-		// 	.filter((d) => d.pointer)
-		// 	.attr("fill", "black")
-		// 	.attr("x", -this.FRAME_DIMENSIONS.width)
-		// 	.attr("dx", "-0.3em")
-		// 	.attr("y", this.FRAME_DIMENSIONS.height / 1.5)
-		// 	.attr("text-anchor", "end")
-		// 	.style("font-family", "Monospace")
-		// 	.style("font-size", "0.9em")
-		// 	.text((d) => d.pointer);
-
 		const dataLabel = frameGroup
 			.append("text")
 			.attr("text-anchor", "middle")
-			.attr("x", this.scaleX.bandwidth())
+			.attr("x", this.scaleY.bandwidth() / 2)
 			.attr("y", this.scaleY.bandwidth() / 2)
-			.attr("dx", -1)
 			.attr("dy", 5)
 			.text((d) => `${d.val}`)
 			.style("font-family", "Fira")
@@ -4281,14 +4259,12 @@ export class HeatMap extends D3Base {
 		// Set the SVG's height
 		this.SVG_HEIGHT = this.OBJ.svg_height ? this.OBJ.svg_height : 250;
 
-		this.MARGIN = this.OBJ.margin
-			? this.OBJ.margin
-			: {
-					top: 10,
-					bottom: 10,
-					left: 10,
-					right: 10,
-			  };
+		this.MARGIN = {
+			top: this.OBJ.margin ? this.OBJ.margin[0] : 10,
+			right: this.OBJ.margin ? this.OBJ.margin[1] : 10,
+			bottom: this.OBJ.margin ? this.OBJ.margin[2] : 10,
+			left: this.OBJ.margin ? this.OBJ.margin[3] : 10,
+		};
 
 		// Set the SVG's dimensions
 		this.DIMENSIONS = {
@@ -4380,6 +4356,7 @@ export class HeatMap extends D3Base {
 		this.COLOR = d3
 			// .interpolateWarm()
 			.quantize(d3.interpolateHcl("#C2F784", "#FD5D5D"), 8);
+			// .quantize(d3.interpolateHcl("#BBEAA6", "#FF7878"), 8);
 		// .scaleSequential()
 		// .interpolator(d3.interpolatePlasma)
 		// .domain([1, 14]);
@@ -4429,19 +4406,19 @@ export class HeatMap extends D3Base {
 				}
 			});
 
-		const foreignbject = g
-			.append("foreignObject")
-			.attr("width", this.X_SCALE.bandwidth())
-			.attr("height", this.Y_SCALE.bandwidth());
+		// const foreignbject = g
+		// 	.append("foreignObject")
+		// 	.attr("width", this.X_SCALE.bandwidth())
+		// 	.attr("height", this.Y_SCALE.bandwidth());
 
-		const span = foreignbject
-			.append("xhtml:span")
-			.html((d) => this.KEYS[d.l])
-			.style("display", "flex")
-			.style("justify-content", "center")
-			.style("text-align", "center")
-			.style("font-size", "0.5rem")
-			.style("color", "black");
+		// const span = foreignbject
+		// 	.append("xhtml:span")
+		// 	.html((d) => this.KEYS[d.l])
+		// 	.style("display", "flex")
+		// 	.style("justify-content", "center")
+		// 	.style("text-align", "center")
+		// 	.style("font-size", "0.5rem")
+		// 	.style("color", "black");
 	}
 }
 

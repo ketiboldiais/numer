@@ -55,11 +55,854 @@
 	</p>
 </section>
 
+<section id="elementary_algorithms">
+	<h2>Elementary Sorting Algorithms</h2>
+	<p>
+		In the following sections, we examine the elementary sorting
+		algorithms: <i>bubble sort</i>, <i>selection sort</i>, and
+		<i>insertion sort</i>.
+	</p>
+	<section id="bubble_sort">
+		<h3>Bubble Sort</h3>
+		<p>
+			The first sorting algorithm we examine is <b>bubble sort</b>. The
+			algorithm's name is derived from the fact that elements appear to
+			bubble to the top as they're sorted. To illustrate, suppose we have
+			the following unsorted collection, an array <var>A</var>, and we want
+			to sort them in ascending order:
+		</p>
+		<figure class="block">
+			<div id="bubble_sort_0"></div>
+			<figcaption>The array <var>A</var></figcaption>
+		</figure>
+		<p>
+			The algorithm works as follows. We start by comparing the first
+			element and the element immediately after it (the second element). If
+			the first element is greater than the second element, we swap. If the
+			first element is less or equal to the second element, we leave the
+			elements in place (no swapping). So, starting at the first and second
+			elements:
+		</p>
+		<div id="bubble_sort_1"></div>
+		<p>
+			Here, we see that the first element is less than the second element,
+			so we leave them as is. We move on to compare the second and third
+			elements:
+		</p>
+		<div id="bubble_sort_2"></div>
+		<p>
+			The second element is greater than the third element, so we swap:
+		</p>
+		<div id="bubble_sort_3"></div>
+		<p>
+			Next, we compare the third and fourth elements. The third element is
+			greater than the fourth element, so we swap:
+		</p>
+		<div id="bubble_sort_4"></div>
+		<p>
+			We've now gone through the entire array. This is our first pass.
+			Notice that the largest element, <var>4</var>, <i>bubbled</i> to the
+			top. Because the largest element is now at the end of the array, we
+			do not have to perform a comparison against it. Now we go through a
+			second pass:
+		</p>
+		<div id="bubble_sort_5"></div>
+		<p>
+			The first element is greater than the second element, so we swap:
+		</p>
+		<div id="bubble_sort_6"></div>
+		<p>Then we compare the second and third elements:</p>
+		<div id="bubble_sort_7"></div>
+		<p>
+			The second element is less than the third element, so no swap is
+			performed. Because the fourth element is the largest element, we do
+			not perform a comparison check. We also conclude that the next
+			largest element, <var>3</var>, is in the correct position, so we do
+			not perform a comparison against this element. Go through a third
+			pass:
+		</p>
+		<div id="bubble_sort_8"></div>
+		<p>
+			We see that the the first element is less than the second element, so
+			we do not perform a swap. This means that the next largest element,
+			<var>2</var>, is in the correct position, and so too is <var>1</var>.
+			This concludes our sort:
+		</p>
+		<div id="bubble_sort_9"></div>
+		<div class="tabs">
+			<ul>
+				<li>Pseudocode</li>
+				<li>JavaScript</li>
+			</ul>
+			<div class="pseudo">
+				<p>
+					Here, the <var>bubble_sort()</var> function has two parameters:
+					An <var>array</var> of generic type, and a function labeled
+					<var>order()</var> that returns a boolean. If the user does not
+					supply the <var>order()</var> argument, we default to ascending
+					order:
+				</p>
+				<ol class="alg">
+					<li>bubble_sort(TYPE[] array, bool order()) -> TYPE[]:</li>
+					<ol>
+						<li>default order() = (a,b) => {return a &lt; b}</li>
+						<li>var TYPE sortedArray = array</li>
+						<li>var int i</li>
+						<li>var int j</li>
+						<li>for (i = length(sortedArray); i > 0; i--):</li>
+						<ol>
+							<li>for (j = 0; j &lt; i - 1; j++):</li>
+							<ol>
+								<li>
+									if (!order(array[j], array[j + 1])) => swap(array, j)
+								</li>
+							</ol>
+						</ol>
+						<li>return sortedArray</li>
+					</ol>
+				</ol>
+				<p>
+					The code above has room for optimization. As it stands, our
+					algorithm continues sorting to the end of the array. But that's
+					not a requirement. The array could very well be sorted after the
+					first pass &mdash; perhaps only two of the elements had to be
+					swapped. Accordingly, we can make the following optimization:
+				</p>
+				<ol class="alg">
+					<li>bubble_sort(TYPE[] array, bool order()) -> TYPE[]:</li>
+					<ol>
+						<li>default order() = (a,b) => {return a &lt; b}</li>
+						<li>var TYPE sortedArray = array</li>
+						<li>var int i</li>
+						<li>var int j</li>
+						<li>var bool noSwapsOccurred</li>
+						<li>for (i = length(array); i > 0; i--):</li>
+						<ol>
+							<li>noSwapsOccurred = true</li>
+							<li>for (j = 0; j &lt; i - 1; j++):</li>
+							<ol>
+								<li>if (!order(array[j], array[j + 1])):</li>
+								<ol>
+									<li>swap(array, j)</li>
+									<li>noSwapsOccurred = false</li>
+								</ol>
+							</ol>
+							<li>if (noSwapsOccurred) => break</li>
+						</ol>
+						<li>return sortedArray</li>
+					</ol>
+				</ol>
+			</div>
+			<div class="js">
+				<p>Here's an implementation in JavaScript:</p>
+				<pre class="language-javascript"><code>
+					const bubbleSort = (arr) => {
+						let sortedArray = deepCopy(arr);
+						let end = sortedArray.length;
+						let noSwapsOccurred;
+						for (let i = end; i > 0; i--) {
+							noSwapsOccurred = true;
+							for (let j = 0; j &lt; i - 1; j++) {
+								if (sortedArray[j] > sortedArray[j + 1]) {
+									swap(sortedArray, j);
+									noSwapsOccurred = false;
+								}
+							}
+							if (noSwapsOccurred) break;
+						}
+						return sortedArray;
+					};
+				</code></pre>
+				<p>
+					Note that two auxiliary functions are used in the code above. The
+					<var>deepCopy()</var> function generates a deep copy of the array
+					object, and the <var>swap()</var> function performs the swapping:
+				</p>
+				<pre class="language-javascript"><code>
+					// deepCopy() function
+					const deepCopy = (inputObject) => {
+						if (typeof inputObject !== "object" || inputObject === null) {
+							return inputObject;
+						}
+						const outputObject = Array.isArray(inputObject) ? [] : {};
+						for (let key in inputObject) {
+							const value = inputObject[key];
+							outputObject[key] = deepCopy(value);
+						}
+						return outputObject;
+					};
+					
+					// swap() function
+					const swap = (arr, j) => {
+						let temp = arr[j];
+						arr[j] = arr[j + 1];
+						arr[j + 1] = temp;
+					};
+				</code></pre>
+				<p>Testing:</p>
+				<pre class="language-javascript"><code>
+					const arr1 = [1, 3, 4, 2, 5];
+					const arr2 = [2, 3, 5, 1, 4];
+					const expected = [1, 2, 3, 4, 5];
+	
+					const test1 = new Test(bubbleSort(arr1), expected, "first test");
+					const test2 = new Test(bubbleSort(arr2), expected, "second test");
+					test1.run();
+					test2.run();
+				</code></pre>
+				<pre class="language-bash"><code>
+					first test passed 
+						result: 1,2,3,4,5 
+						expected: 1,2,3,4,5
+					second test passed 
+						result: 1,2,3,4,5 
+						expected: 1,2,3,4,5
+				</code></pre>
+				<p>
+					We can make our bubble sort more generic by having the user pass
+					a function to specify the order they want the elements sorted. If
+					an order isn't specified, we default to ascending order:
+				</p>
+				<pre class="language-javascript"><code>
+					const bubbleSort = (arr, order = (a, b) => {return a &lt; b}) => {
+						let sortedArray = deepCopy(arr);
+						let end = sortedArray.length;
+						let noSwapsOccurred;
+						for (let i = end; i > 0; i--) {
+							noSwapsOccurred = true;
+							for (let j = 0; j &lt; i - 1; j++) {
+								if (!order(sortedArray[j], sortedArray[j+1])) {
+									swap(sortedArray, j);
+									noSwapsOccurred = false;
+								}
+							}
+							if (noSwapsOccurred) break;
+						}
+						return sortedArray;
+					};
+				</code></pre>
+				<p>Testing:</p>
+				<pre class="language-javascript"><code>
+					const arr1 = [1,3,4,2,5];
+					const arr1Sorted = bubbleSort(arr1)
+					const expectedArr1 = [1,2,3,4,5];
+					const arr2 = [2,3,5,1,4];
+					const arr2Sorted = bubbleSort(arr2, (a, b) => {return a > b})
+					const expectedArr2 = [5,4,3,2,1];
+					
+					const test1 = new Test(arr1Sorted, expectedArr1, "first test");
+					const test2 = new Test(arr2Sorted, expectedArr2, "second test");
+					test1.run();
+					test2.run();
+				</code></pre>
+				<pre class="language-bash"><code>
+					first test passed 
+						result: 5,4,3,2,1 
+						expected: 5,4,3,2,1
+					second test passed 
+						result: 1,2,3,4,5 
+						expected: 1,2,3,4,5
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="selection_sort">
+		<h3>Selection Sort</h3>
+		<p>
+			With bubble sort, we saw that in the worst-case scenario, the
+			algorithm takes ${O(n^2)}$ time. This is not ideal. Let's consider
+			another algorithm, <b>selection sort</b>. Once again, we'll
+			illustrate with a simple example. Suppose we have the following
+			unordered collection, an array called <var>A</var>:
+		</p>
+		<figure class="block">
+			<div id="selection_sort_0"></div>
+			<figcaption>The array <var>A</var></figcaption>
+		</figure>
+		<p>
+			Selection sort works as follows. First, we go iterate over the
+			collection, looking for the smallest value. To do so, we create a
+			variable called <var>min</var>, and set it initially as
+			<var>A[0]</var>:
+		</p>
+		<div id="selection_sort_1"></div>
+		<p>
+			Then, we compare the next element against the current <var>min</var>.
+			If the next element is less than the current <var>min</var>, we set
+			that element as the new <var>min</var>. In this case, comparing
+			<var>A[1] &lt; min</var>, we get <var>true</var>, since
+			<var>1 &lt; 4</var>. <var>1</var> is now our new <var>min</var>:
+		</p>
+		<div id="selection_sort_2"></div>
+		<p>Now we compare <var>min</var> against <var>A[2]</var>:</p>
+		<div id="selection_sort_2_1"></div>
+		<p>
+			Here, we get <var>false</var>, since <var>3 &nlt; 1</var>. So, we
+			leave <var>A[2]</var> as is. Next, we compare <var>min</var> against
+			<var>A[3]</var>:
+		</p>
+		<div id="selection_sort_2_2"></div>
+		<p>
+			Again we get <var>false</var>, so we leave <var>A[3]</var> as is.
+			Compare <var>A[4]</var> against <var>min</var>:
+		</p>
+		<div id="selection_sort_2_3"></div>
+		<p>
+			False again, leave <var>A[4]</var> as is. Once we get to the last
+			element in the collection, we've gone through one pass. Having done
+			so, we swap <var>min</var> and the starting point of our first pass,
+			the first element:
+		</p>
+		<div id="selection_sort_3"></div>
+		<p>
+			Making this swap, the smallest element is now in the correct place.
+			So, we proceed to our second pass, starting at the second element. We
+			set that element as <var>min</var>:
+		</p>
+		<div id="selection_sort_4"></div>
+		<p>
+			Compare <var>min</var> against the next element, <var>A[2]</var>.
+		</p>
+		<div id="selection_sort_4_1"></div>
+		<p>
+			We get <var>true</var> &mdash; <var>3 &lt; 4</var>. Set
+			<var>A[2]</var> as the new <var>min</var>:
+		</p>
+		<div id="selection_sort_5"></div>
+		<p>Compare <var>min</var> against the next element:</p>
+		<div id="selection_sort_5_1"></div>
+		<p>
+			False: <var>5 &nlt; 3</var>. Leave <var>A[3]</var> as is. Compare
+			<var>min</var> against the next element:
+		</p>
+		<div id="selection_sort_5_2"></div>
+		<p>
+			True: <var>2 &lt; 3</var>. <var>A[4]</var> is now the new
+			<var>min</var>. We've reached the end of the collection. So, we swap
+			the <var>min</var> with the starting element of our pass:
+		</p>
+
+		<div id="selection_sort_6"></div>
+		<p>
+			Enter another pass, starting at <var>A[2]</var>, and set that as the
+			new <var>min</var>:
+		</p>
+		<div id="selection_sort_7"></div>
+		<p>
+			Compare <var>min</var> against the next element, <var>A[3]</var>:
+		</p>
+		<div id="selection_sort_7_1"></div>
+		<p>
+			We get false. <var>5 &nlt; 3</var>. Compare <var>min</var> against
+			the next element, <var>A[4]</var>:
+		</p>
+		<div id="selection_sort_7_2"></div>
+		<p>
+			Again false. So, <var>A[2]</var> is in the correction position. We
+			enter our next pass, starting at <var>A[3]</var>, setting
+			<var>A[3]</var> as the new <var>min</var>:
+		</p>
+		<div id="selection_sort_7_3"></div>
+		<p>
+			Comparing <var>min</var> against the next element, <var>A[4]</var>:
+		</p>
+		<div id="selection_sort_7_4"></div>
+		<p>
+			We get <var>true</var>: <var>4 &lt; 5</var>. So, we set
+			<var>A[4]</var> as the new <var>min</var>:
+		</p>
+		<div id="selection_sort_7_5"></div>
+		<p>
+			We've reached the end of our collection, so we swap. Doing so, our
+			collection is now sorted:
+		</p>
+		<div id="selection_sort_7_6"></div>
+		<div class="tabs">
+			<ul>
+				<li>Pseudocode</li>
+				<li>JavaScript</li>
+			</ul>
+			<div class="pseudo">
+				<ol class="alg">
+					<li>selection_sort(TYPE[] array, bool order()) -> TYPE[]:</li>
+					<ol>
+						<li>default order() = (a,b) => {return a &lt; b}</li>
+						<li>var TYPE sorted_array := array</li>
+						<li>uint length := length(sorted_array)</li>
+						<li>var uint i</li>
+						<li>var uint j</li>
+						<li>for (i := 0; i &lt; length; i++):</li>
+						<ol>
+							<li>let uint min := i</li>
+							<li>for (j := 0; j &lt; length; j++):</li>
+							<ol>
+								<li>
+									if (order(sorted_array[j], sorted_array[min])) => min :=
+									j
+								</li>
+							</ol>
+							<li>swap(sorted_array[i], sorted_array[min])</li>
+						</ol>
+						<li>return sorted_array</li>
+					</ol>
+				</ol>
+			</div>
+			<div class="javascript">
+				<p>In JavaScript:</p>
+				<pre class="language-javascript"><code>
+					const selectionSort = (array, order = (a,b) => {return a &lt; b}) => {
+						const sortedArray = Utils.deepCopy(array);
+						const length = sortedArray.length;
+						for (let i = 0; i &lt; length; i++) {
+							let min = i;
+							for (let j = i + 1; j &lt; length; j++) {
+								if (order(sortedArray[j], sortedArray[min])) {
+									min = j;
+								}
+							}
+							Utils.swap(sortedArray, i, min)
+						}
+						return sortedArray;
+					};
+				</code></pre>
+				<p>
+					The code above uses two utility functions,
+					<var>deepCopy()</var> and <var>swap()</var>, contained in a
+					module called <var>Utils.mjs</var>:
+				</p>
+				<pre class="language-javascript"><code>
+					class Utils {
+						static deepCopy(inputObject) {
+							if (typeof inputObject !== "object" || inputObject === null) {
+								return inputObject;
+							}
+							const outputObject = Array.isArray(inputObject) ? [] : {};
+							for (let key in inputObject) {
+								const value = inputObject[key];
+								outputObject[key] = this.deepCopy(value);
+							}
+							return outputObject;
+						}
+					
+						static swap = (arr = null, a, b) => {
+							if (arr !== null) {
+								let temp = arr[a];
+								arr[a] = arr[b];
+								arr[b] = temp;
+							} else {
+								let temp = a;
+								a = b;
+								b = temp;
+							}
+						};
+					}
+					
+					export default Utils;
+				</code></pre>
+				<p>Testing:</p>
+				<pre class="language-javascript"><code>
+					import Test from "../test/test.mjs";
+	
+					const arr1 = [3, 2, 1, 4, 5];
+					const sortedArr1 = selectionSort(arr1);
+					const expected1 = [1, 2, 3, 4, 5];
+					const sortedArr2 = selectionSort(arr1, (a, b) => {return a > b});
+					const expected2 = [5, 4, 3, 2, 1];
+	
+					const test1 = new Test(sortedArr1, expected1, "First test");
+					const test2 = new Test(sortedArr2, expected2, "Second test");
+					test1.run();
+					test2.run();
+				</code></pre>
+				<pre class="language-bash"><code>
+					First test passed
+						result: 1,2,3,4,5
+						expected: 1,2,3,4,5
+					
+					
+					Second test passed
+						result: 5,4,3,2,1
+						expected: 5,4,3,2,1
+				</code></pre>
+			</div>
+		</div>
+	</section>
+
+	<section id="insertion_sort">
+		<h3>Insertion Sort</h3>
+		<p>
+			The third elementary sorting algorithm is <b>insertion sort</b>. With
+			insertion sort, the unsorted collection consists of two portions: A
+			sorted portion, and an unsorted portion. The idea: Gradually build
+			the sorted portion by comparing each element against the last element
+			placed in the sorted portion. Let's illustrate with an example.
+		</p>
+		<p>
+			Suppose we have the following unordered collection, an array
+			<var>A</var>, and we want to sort in ascending order:
+		</p>
+		<figure class="block">
+			<div id="insort_0"></div>
+			<figcaption>The array <var>A</var></figcaption>
+		</figure>
+		<p>
+			We start by assuming the first element, <var>A[0] = 2</var>, is
+			sorted.
+		</p>
+		<figure class="block">
+			<div id="insort_1"></div>
+			<figcaption>Assume <var>A[0]</var> is sorted.</figcaption>
+		</figure>
+		<p>
+			We then compare the next element, <var>A[1] = 5</var> against the
+			last sorted element (in this case, <var>A[0]</var>). The comparison
+			is whether <var>A[0]</var> is greater than <var>A[1]</var>. If it is,
+			then swap and continue comparing until we find a smaller element.
+		</p>
+		<figure class="block">
+			<div id="insort_2"></div>
+			<figcaption>Compare <var>A[1]</var> and <var>A[0]</var></figcaption>
+		</figure>
+		<p>
+			Here, <var>A[1]</var> is in the correct position, since
+			<var>5 &gt; 2</var>. So, we leave it as is, and assume it's sorted.
+		</p>
+		<figure class="block">
+			<div id="insort_3"></div>
+			<figcaption>
+				<var>A[1]</var> is now in the sorted partition.
+			</figcaption>
+		</figure>
+		<p>
+			Then we move to the next element, <var>A[2]</var>. Again we compare:
+		</p>
+		<figure class="block">
+			<div id="insort_4"></div>
+			<figcaption><var>A[2] &gt; A[1]</var>?</figcaption>
+		</figure>
+		<p>
+			Here, we get false. <var>3 &ngt; 5</var>. So, we swap
+			<var>A[2]</var> and <var>A[1]</var>, followed by comparing
+			<var>A[1]</var> against <var>A[0]</var>:
+		</p>
+		<figure class="block">
+			<div id="insort_5"></div>
+			<figcaption><var>A[2] &gt; A[0]</var>?</figcaption>
+		</figure>
+		<p>We get true, so we stop. Now we have three elements sorted:</p>
+		<figure class="block">
+			<div id="insort_6"></div>
+			<figcaption>Swap <var>A[2]</var> and <var>A[0+1]</var></figcaption>
+		</figure>
+		<p>
+			Go to the next element, <var>A[3]</var>, and compare it against the
+			last element in the sorted partition:
+		</p>
+		<figure class="block">
+			<div id="insort_7"></div>
+			<figcaption><var>A[3] &gt; A[2]</var>?</figcaption>
+		</figure>
+		<p>False. Swap and compare it against the next element:</p>
+		<figure class="block">
+			<div id="insort_8"></div>
+			<figcaption><var>A[3] &gt; A[1]</var>?</figcaption>
+		</figure>
+		<p>True. Leave the element there. Now we have four elements sorted:</p>
+		<figure class="block">
+			<div id="insort_9"></div>
+			<figcaption><var>A[3] &gt; A[1]</var>?</figcaption>
+		</figure>
+		<p>
+			Move to the next element, <var>A[4]</var>, and compare it against the
+			last element in the sorted partition:
+		</p>
+		<figure class="block">
+			<div id="insort_10"></div>
+			<figcaption><var>A[4] &gt; A[3]</var>?</figcaption>
+		</figure>
+		<p>False. Swap and compare it against the next element:</p>
+		<figure class="block">
+			<div id="insort_11"></div>
+			<figcaption><var>A[3] &gt; A[2]</var>?</figcaption>
+		</figure>
+		<p>False. Swap and compare it against the next element:</p>
+		<figure class="block">
+			<div id="insort_12"></div>
+			<figcaption><var>A[2] &gt; A[1]</var>?</figcaption>
+		</figure>
+		<p>False again. Swap and compare it against the last element:</p>
+		<figure class="block">
+			<div id="insort_13"></div>
+			<figcaption><var>A[1] &gt; A[0]</var>?</figcaption>
+		</figure>
+		<p>
+			False again. So swap. At this point we've gone through all of the
+			elements, so our sorting concludes:
+		</p>
+		<figure class="block">
+			<div id="insort_14"></div>
+			<figcaption>Sorted</figcaption>
+		</figure>
+
+		<section id="implementation">
+			<h4>Implementation</h4>
+			<div class="tabs">
+				<ul>
+					<li>Pseudocode</li>
+					<li>JavaScript</li>
+				</ul>
+				<div class="pseudo">
+					<ol class="alg">
+						<li>
+							insertion_sort(TYPE array, bool order()) -> TYPE array:
+						</li>
+						<ol>
+							<li>var TYPE sorted_list = clone(list)</li>
+							<li>const end = length(sorted_list)</li>
+							<li>for (int i = 0; i &lt; end; i++):</li>
+							<ol>
+								<li>TYPE currentElement = sorted_list[i]</li>
+								<li>var int j = i - 1</li>
+								<li>
+									while ( (j > 1) && (currentElement &lt; sorted_list[j])
+									):
+								</li>
+								<ol>
+									<li>sorted_list[j+1] = sorted_list[j]</li>
+									<li>j--</li>
+								</ol>
+								<li>sorted_list[j+1] = currentElement</li>
+							</ol>
+							<li>return sorted_list</li>
+						</ol>
+					</ol>
+				</div>
+				<div class="js">
+					<p>Here's an implementation in JavaScript:</p>
+					<pre class="language-javascript"><code>
+						import Utils from "../utilities/utils.js";
+	
+						const insertionSort = (list, order = (a, b) => { return a < b }) => {
+							let sortedList = Utils.clone(list); // make a deep copy of the list
+							const sortedListLength = sortedList.length;
+							for (let i = 1; i &lt; sortedListLength; i++) {
+								let currentElement = sortedList[i];
+								let j = i - 1;
+								while ((j > -1) && (order(currentElement, sortedList[j]))) {
+									sortedList[j + 1] = sortedList[j];
+									j--;
+								}
+								sortedList[j + 1] = currentElement;
+							}
+							return sortedList;
+						}
+					</code></pre>
+				</div>
+			</div>
+		</section>
+
+		<section id="time_complexity">
+			<h4>Time Complexity</h4>
+			<p>
+				Like the bubble sort and selection sort, insertion sort requires
+				iterating over the entire collection, and at each iteration, an
+				iteration. Thus, selection sort has a time complexity, in the
+				worst-case scenario, of ${O(n^2).}$ Indeed, the worst case scenario
+				is if our collection's elements are completely reversed:
+			</p>
+			<figure>$$ \lang 5, 4, 3, 2, 1, 0 \rang $$</figure>
+			<p>
+				Insertion sort, however, performs well if the elements are nearly
+				sorted. For example, if we have just one element out of place:
+			</p>
+			<figure>$$ \lang 1, 2, 3, 4, 5, 0 \rang $$</figure>
+			<p>
+				then we would only have to iterate over the collection once.
+				Insertion sort also performs well if we have data coming in one at
+				a time. For example, if we're steadily fed the numbers above,
+				insertion sort can perform its comparisons as the data comes in.
+			</p>
+		</section>
+	</section>
+
+	<section id="summary">
+		<h3>Summary</h3>
+		<p>
+			In sum, the elementary sorting algorithms all have a worst-case
+			scenario time complexity of ${O(n^2).}$ Comparing each of these
+			algorithms, we can see that selection sort fares the worst:
+		</p>
+		<figure class="block">
+			<div id="elementary_sort_compare"></div>
+			<figcaption>
+				Red for ${O(n^2),}$ orange for ${O(n),}$ and green for ${O(1).}$
+			</figcaption>
+		</figure>
+		<p>
+			That said, the elementary algorithms work well in terms of space
+			complexity. We do not need auxiliary data structures to perform the
+			sort. Moreover, both insertion sort and bubble sort work best given
+			small collections or nearly-sorted collections.
+		</p>
+	</section>
+</section>
+
+<section id="faster_algorithms">
+	<h2>Faster Sorting Algorithms</h2>
+	<p>
+		Now that we have an understanding of the elementary sorting algorithms,
+		we can now proceed to their more sophisticated and faster cousins.
+	</p>
+
+	<section id="merge_sort">
+		<h3>Merge Sort</h3>
+		<p>
+			Invented in 1948 by one of the forebears of computer science &mdash;
+			John von Neumann &mdash; merge sort is a fairly fast algorithm. The
+			algorithm consists of two fundamental operations: (1) splitting, (2)
+			merging, and (3) sorting. The algorithm relies on a basic assumption:
+			an empty collection, or a collection of ${1,}$ is already sorted.
+		</p>
+		<p>Let's illustrate with the unsorted array <var>A</var>:</p>
+		<figure class="block">
+			<div id="msort_0"></div>
+			<figcaption>The unsorted array <var>A</var></figcaption>
+		</figure>
+		<p>Merge sort begins by splitting the array <var>A</var> in half:</p>
+		<div class="split">
+			<figure class="block">
+				<div id="msort_1"></div>
+				<figcaption>Split the first partition</figcaption>
+			</figure>
+			<figure class="block">
+				<div id="msort_2"></div>
+				<figcaption>Split the second partition</figcaption>
+			</figure>
+		</div>
+		<p>Then we split the resulting partitions in half:</p>
+		<div class="split">
+			<figure class="block">
+				<div class="split">
+					<div id="msort_3"></div>
+					<div id="msort_4"></div>
+				</div>
+				<figcaption>Partition 1</figcaption>
+			</figure>
+			<figure class="block">
+				<div class="split">
+					<div id="msort_5"></div>
+					<div id="msort_6"></div>
+				</div>
+				<figcaption>Partition 2</figcaption>
+			</figure>
+		</div>
+		<p>And then again:</p>
+		<div class="split">
+			<div class="split">
+				<div id="msort_7"></div>
+				<div id="msort_8"></div>
+				<div id="msort_9"></div>
+				<div id="msort_10"></div>
+			</div>
+			<div class="split">
+				<div id="msort_11"></div>
+				<div id="msort_12"></div>
+				<div id="msort_13"></div>
+				<div id="msort_14"></div>
+			</div>
+		</div>
+		<figcaption>Split into singletons</figcaption>
+		<p>
+			Once we've partitioned the entire collection into the individual
+			elements, we begin the process of merging and sorting. Starting from
+			left to right, we compare the number to the left with the number to
+			the right and merge, with the smaller number coming first. Thus, for
+			<var>[6]</var> and <var>[2]</var>, we get <var>[2, 6]</var>, for
+			<var>[5] </var> and <var>[8]</var> we get <var>[5,8]</var> and so on:
+		</p>
+		<figure class="iblock">
+			<div>
+				<figure class="iblock">
+					<div id="msort_15"></div>
+					<div id="msort_16"></div>
+				</figure>
+				<div id="msort_17"></div>
+			</div>
+			<div>
+				<figure class="iblock">
+					<div id="msort_18"></div>
+					<div id="msort_19"></div>
+				</figure>
+				<div id="msort_20"></div>
+			</div>
+			<div>
+				<figure class="iblock">
+					<div id="msort_21"></div>
+					<div id="msort_22"></div>
+				</figure>
+				<div id="msort_23"></div>
+			</div>
+			<div>
+				<figure class="iblock">
+					<div id="msort_24"></div>
+					<div id="msort_25"></div>
+				</figure>
+				<div id="msort_26"></div>
+			</div>
+		</figure>
+		<figcaption>Merging two singletons into one</figcaption>
+		<p>
+			Notice how we now have four sorted arrays. We repeat the same
+			process. Looking at the array <var>[2,6]</var> and the array
+			<var>[5,8]</var>, we compare <var>2</var> against <var>5</var>.
+			<var>2</var> is smaller, so that goes first. Then we compare
+			<var>6</var> against <var>5</var>. <var>5</var> is smaller so that
+			goes second. Then compare <var>6</var> against <var>8</var>.
+			<var>6</var> is smaller, so that goes third, and <var>8</var> goes
+			last.
+		</p>
+		<p>
+			Performing this comparison on all four arrays, we get two sorted
+			arrays:
+		</p>
+		<div class="split">
+			<figure class="block">
+				<div id="msort_27"></div>
+				<figcaption>Sorted array 1</figcaption>
+			</figure>
+			<figure class="block">
+				<div id="msort_28"></div>
+				<figcaption>Sorted array 2</figcaption>
+			</figure>
+		</div>
+		<p>
+			The process repeats. Compare <var>2</var> against <var>1</var>.
+			<var>1</var> is smaller so that goes first. Compare
+			<var>2</var> against <var>3</var>. <var>2</var> is smaller, so that
+			goes second. Compare <var>5</var> against <var>3</var>.
+			<var>3</var> is smaller so that goes third. Compare
+			<var>5</var> against <var>4</var>. <var>4</var> is smaller so that
+			goes fourth. Performing all the comparisons, we end up with a sorted
+			array:
+		</p>
+		<figure class="block">
+			<div id="msort_29"></div>
+			<figcaption>The sorted array <var>A</var></figcaption>
+		</figure>
+
+		<section id="implementation">
+			<h4>Implementation</h4>
+			<p>Below are a few implementations.</p>
+		</section>
+	</section>
+</section>
+
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script type="module" src="../../../static/numerc/csmd/csmd.mjs"></script>
 <script
 	type="module"
-	src="../../../../numerc/static/numerc/scripts/cpp_sorting.js"
+	src="../../../static/numerc/scripts/cpp_sorting.js"
 ></script>
 
 {% endblock %}

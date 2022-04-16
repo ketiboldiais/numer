@@ -230,6 +230,8 @@ urlpatterns = [
 
 	path("cpp_recursion", views.cpp_recursion, name="cpp_recursion"),
 
+	path("cpp_cryptography", views.cpp_cryptography, name="cpp_cryptography"),
+
 
 
 	# C# paths
