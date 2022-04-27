@@ -1,0 +1,302 @@
+{% load static %}
+<h2>Concatenating Lists</h2>
+<p>Say we had the following lists:</p>
+<div class="compare">
+	<ul class="linkedlist">
+		<ul class="head">
+			<li>
+				<div>list1</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>1</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>2</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+	</ul>
+	<ul class="linkedlist">
+		<ul class="head">
+			<li>
+				<div>list2</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>6</div>
+				<div>&ThickSpace;</div>
+				<div></div>
+			</li>
+		</ul>
+	</ul>
+</div>
+<p>
+	We want to take these one of these two lists, and <i>concatenate</i> it
+	with the other. Suppose the function is called <var>concat()</var>. If
+	we call <var>concat(list1, list2)</var>, we get:
+</p>
+<ul class="linkedlist">
+	<ul class="head">
+		<li>
+			<div>list1</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>1</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>2</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>3</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>4</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>5</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>6</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+</ul>
+<p>And if we call <var>concat(list2, list1)</var>, we get:</p>
+<ul class="linkedlist">
+	<ul class="head">
+		<li>
+			<div>list2</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>4</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>5</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>6</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>1</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>2</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>3</div>
+			<div>&ThickSpace;</div>
+			<div></div>
+		</li>
+	</ul>
+</ul>
+<p>
+	The procedure here is straightforward. If we call
+	<var>concat(list1, list2)</var> the <var>next</var> pointer for
+	<var>list1</var>'s foot should point to <var>list2</var>'s head. Hence,
+	all that's required is to have a pointer on the first list argument's
+	foot. One way to do so is to initialize a pointer
+	<var>p</var> initially at <var>list1</var>'s head, then traverse the
+	list to the foot. Once there, we have <var>p</var>'s pointee point to
+	<var>list2</var>'s head:
+</p>
+<ol class="alg">
+	<li>fn concat(*Node list1, Node* list2) -> void:</li>
+	<ol>
+		<li>Node* p = list1;</li>
+		<li>while (p -> next != NULL):</li>
+		<ol>
+			<li>p = p->next;</li>
+		</ol>
+		<li>p->next = list2;</li>
+	</ol>
+</ol>
+<p>
+	Because we must traverse the list to find the first argument's foot,
+	the procedure above has a time complexity of ${O(n).}$ We can, of
+	course, reduce this to ${O(1)}$ if we ensure that every list we create
+	contains pointers to the foot and pointers to the head. In that case,
+	all that's required is to have the first list's foot's pointee's
+	<var>next</var> field point to the second list's head.
+</p>
+<div class="demo">
+	<button>C</button>
+	<div class="implementation">
+		<p>Here's an implementation in C:</p>
+		<pre class="language-c"><code>
+			struct Node *concat(struct Node *list1, struct Node *list2) {
+				struct Node *ptr;
+				if (list1 == NULL) {
+					list1 = list2;
+					return list1;
+				}
+				if (list2 == NULL) {
+					return list1;
+				}
+				ptr = list1;
+				while ((*ptr).next != NULL) {
+					ptr = (*ptr).next;
+				}
+				(*ptr).next = list2;
+				return list1;
+			}
+		</code></pre>
+		<p>Testing the implementation above:</p>
+		<pre class="language-c"><code>
+			#include &lt;stdlib.h&gt;
+			#include &lt;stdio.h&gt;
+
+			struct Node {
+				int data;
+				struct Node *next;
+			};
+
+			struct Node *newNode(int newData) {
+				struct Node* freshNode = malloc(sizeof(struct Node));
+				(*freshNode).data = newData;
+				(*freshNode).next = NULL;
+				return freshNode;
+			}
+
+			struct Node *List(int arr[], int size) {
+				struct Node *head = newNode(arr[0]);
+				struct Node *foot = head; 
+				for (int i = 1; i < size; i++) {
+					struct Node *freshNode = newNode(arr[i]);
+					(*foot).next = freshNode;
+					foot = freshNode;
+				}
+				return head;
+			} 
+
+			void print(struct Node *p) {
+				printf("( ");
+				if (p != NULL) {
+					while (p != NULL) {
+						printf("%d ", (*p).data);
+						p = (*p).next;
+					}
+				} else {
+					printf("empty ");
+				}
+				printf(")\n");
+			}
+
+			struct Node *concat(struct Node *list1, struct Node *list2) {
+				struct Node *ptr;
+				if (list1 == NULL) {
+					list1 = list2;
+					return list1;
+				}
+				if (list2 == NULL) {
+					return list1;
+				}
+				ptr = list1;
+				while ((*ptr).next != NULL) {
+					ptr = (*ptr).next;
+				}
+				(*ptr).next = list2;
+				return list1;
+			}
+
+			int main() {
+				int arr1[] = {1,2,3};
+				int arr2[] = {6,7,8};
+				int arrSize = 3;
+				struct Node* aList = List(arr1, arrSize);
+				print(aList);
+				struct Node* bList = List(arr2, arrSize);
+				print(bList);
+				struct Node* cList = concat(aList, bList);
+				print(aList);
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			( 1 2 3 )
+			( 6 7 8 )
+			( 1 2 3 6 7 8 )
+		</code></pre>
+	</div>
+</div>

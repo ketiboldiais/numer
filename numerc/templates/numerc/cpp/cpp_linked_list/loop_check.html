@@ -1,0 +1,432 @@
+{% load static %}
+<h2>Loop Detection</h2>
+<p>Consider the following linked list:</p>
+<div id="ptrDemo1"></div>
+<p>
+	Unlike the other linked lists we've seen, this linked list employs a
+	loop. If we follow the arrows, we see that ${(n \mid 8)}$ is connected
+	to ${(n \mid 5),}$ which is connected to ${(n \mid 4),}$ which is
+	connected to ${(n \mid 7),}$ then ${(n \mid 3),}$ then the foot, ${(n
+	\mid 9.)}$ The foot, however, has a nonnull next pointer &mdash; it
+	points to ${(n \mid 4).}$
+</p>
+<p>
+	In graph theory, we say that this linked list contains a <b>loop</b>.
+	With linked lists, a loop occurs when the last node in the linked list
+	&mdash; the foot &mdash; points to a node in the linked list. When a
+	linked list contains a loop, we say that the linked list is
+	<b>non-linear</b>. Otherwise, the linked list is <b>linear</b>. For
+	example, if the linked list above was linear, we would have:
+</p>
+<div id="ptrDemo2"></div>
+<p>
+	Many algorithms depend on the assumption that the linked list it
+	operates on is linear or non-linear. Accordingly, it's helpful to have
+	a
+	<b>loop detector</b> &mdash; an algorithm that determines whether or
+	not a linked list contains a loop.
+</p>
+<p>
+	Determining whether a given list is linear is simple. We just have to
+	check whether the foot's <var>next</var> field is the null pointer.
+	This approach, however, does not allow us to immediately conclude if
+	the list is non-linear. Why? Because we would need to use a loop to
+	traverse the array. So far, we've been terminating those loops by
+	relying on the assumption that the foot's <var>next</var> pointer is
+	the null pointer. We do not have that benefit here. If the foot's
+	<var>next</var> pointer points to some node in the list, we enter an
+	infinite loop. As such, we must think of another approach to loop
+	detection.
+</p>
+<p>
+	One approach is to use two pointers, <var>d</var> and <var>t</var>,
+	both initially at the list's head:
+</p>
+<div class="compare">
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x20</div>
+				<div>
+					0x10 <span class="redText">&uparrow;t</span>
+					<span class="blueText">&uparrow;d</span>
+				</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>0x30</div>
+				<div>0x20</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x40</div>
+				<div>0x30</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>7</div>
+				<div>0x50</div>
+				<div>0x40</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>0x60</div>
+				<div>0x50</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>9</div>
+				<div>0x30</div>
+				<div>0x60</div>
+			</li>
+		</ul>
+	</ul>
+</div>
+<p>
+	With the pointers set, we enter a while loop: At each iteration, we
+	move
+	<var>t</var> by one node, and <var>d</var> by two nodes:
+</p>
+<div class="compare">
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x20</div>
+				<div>0x10</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>0x30</div>
+				<div>0x20 <span class="redText">&uparrow;t</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x40</div>
+				<div>0x30 <span class="blueText">&uparrow;d</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>7</div>
+				<div>0x50</div>
+				<div>0x40</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>0x60</div>
+				<div>0x50</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>9</div>
+				<div>0x30</div>
+				<div>0x60</div>
+			</li>
+		</ul>
+	</ul>
+</div>
+<p>
+	So long as <var>d</var> and <var>t</var> are not pointing at the same
+	node, we continue the movement:
+</p>
+<div class="compare">
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x20</div>
+				<div>0x10</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>0x30</div>
+				<div>0x20</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x40</div>
+				<div>0x30 <span class="redText">&uparrow;t</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>7</div>
+				<div>0x50</div>
+				<div>0x40</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>0x60</div>
+				<div>0x50 <span class="blueText">&uparrow;d</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>9</div>
+				<div>0x30</div>
+				<div>0x60</div>
+			</li>
+		</ul>
+	</ul>
+</div>
+<p>
+	We move again, <var>t</var> by one, <var>d</var> by two. This brings
+	<var>d</var> to ${(n \mid 4),}$ the node the foot points to:
+</p>
+<div class="compare">
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x20</div>
+				<div>0x10</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>0x30</div>
+				<div>0x20</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x40</div>
+				<div>0x30 <span class="blueText">&uparrow;d</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>7</div>
+				<div>0x50</div>
+				<div>0x40 <span class="redText">&uparrow;t</span></div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>0x60</div>
+				<div>0x50</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>9</div>
+				<div>0x30</div>
+				<div>0x60</div>
+			</li>
+		</ul>
+	</ul>
+</div>
+<p>We move once more:</p>
+<div class="compare">
+	<ul class="linkedlist">
+		<ul>
+			<li>
+				<div>8</div>
+				<div>0x20</div>
+				<div>0x10</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>5</div>
+				<div>0x30</div>
+				<div>0x20</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>4</div>
+				<div>0x40</div>
+				<div>0x30</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>7</div>
+				<div>0x50</div>
+				<div>0x40</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>3</div>
+				<div>0x60</div>
+				<div>
+					0x50 <span class="redText">&uparrow;t</span>
+					<span class="blueText">&uparrow;d</span>
+				</div>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<div>9</div>
+				<div>0x30</div>
+				<div>0x60</div>
+			</li>
+		</ul>
+	</ul>
+</div>
+<p>
+	With this last movement, we've reached a point where both
+	<var>d</var> and <var>t</var> point to the same node. And if that
+	occurs, we know we're dealing with a non-linear list &mdash; there's a
+	loop.
+</p>
+<p>The procedure:</p>
+<ol class="alg">
+	<li>fn isLinear(Node* list) -> bool :</li>
+	<ol>
+		<li>Node* d;</li>
+		<li>Node* t;</li>
+		<li>d = t = list;</li>
+		<li>do:</li>
+		<ol>
+			<li>t = t->next;</li>
+			<li>d = d->next;</li>
+			<li>t = t ? (*t).next : t;</li>
+			<li>else:</li>
+			<ol>
+				<li>d = NULL;</li>
+			</ol>
+			<li>while (p && q && p != q);</li>
+		</ol>
+		<li>if (p == q):</li>
+		<ol>
+			<li>return false;</li>
+		</ol>
+		<li>else:</li>
+		<ol>
+			<li>return true;</li>
+		</ol>
+	</ol>
+</ol>
+<p>
+	Examining this approach, we can see that the procedure has a time
+	complexity of ${O(n).}$ We must traverse ${n}$ nodes to determine
+	whether the given linked list is linear or non-linear.<sup></sup>
+</p>
+<div class="note">
+	<p>
+		As usual, we can perform a loop detection in ${O(1)}$ time if we
+		maintain a pointer to the foot of every list we create. In that
+		situation, all we must do is check if that pointer is equal to
+		<var>NULL</var>. The tradeoff, however, is in memory consumption.
+	</p>
+</div>
+<div class="demo">
+	<button>C</button>
+	<div class="implementation">
+		<p>Here's an implementation in C:</p>
+		<pre class="language-c"><code>
+			int isLinear(struct Node* list) {
+				struct Node* d;
+				struct Node* t;
+				d = t = list;
+				do {
+					t = (*t).next;
+					d = (*d).next;
+					t = t ? (*t).next : t;
+				} while (d && t && d != t);
+				if (d == t) {
+					return 0; // false
+				} else {
+					return 1; // true
+				}
+			}
+		</code></pre>
+		<p>Testing this program:</p>
+		<pre class="language-c"><code>
+			#include &lt;stdlib.h&gt;
+			#include &lt;stdio.h&gt;
+			
+			struct Node {
+				int data;
+				struct Node* next;
+			};
+			
+			struct Node* newNode(int val) {
+				struct Node* node = malloc(sizeof(struct Node));
+				(*node).data = val;
+				(*node).next = NULL;
+				return node;
+			}
+			
+			void print(struct Node* p) {
+				printf("( ");
+				while (p != NULL) {
+					printf("%d ", (*p).data);
+					p = (*p).next;
+				}
+				printf(")\n");
+			}
+			
+			int isLinear(struct Node* list) {
+				struct Node* d;
+				struct Node* t;
+				d = t = list;
+				do {
+					t = (*t).next;
+					d = (*d).next;
+					t = t ? (*t).next : t;
+				} while (d && t && d != t);
+				if (d == t) {
+					return 0; // false
+				} else {
+					return 1; // true
+				}
+			}
+			
+			int main() {
+				struct Node* list1 = newNode(8);
+				struct Node* n1 = newNode(5);
+				struct Node* n2 = newNode(4);
+				struct Node* n3 = newNode(7);
+				struct Node* n4 = newNode(3);
+				struct Node* n5 = newNode(9);
+				(*list1).next = n1;
+				(*n1).next = n2;
+				(*n2).next = n3;
+				(*n3).next = n4;
+				(*n4).next = n5;
+				(*n5).next = n2;
+				int list1Linear = isLinear(list1);
+				printf("%d\n", list1Linear);
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			0
+		</code></pre>
+		<p>
+			If we comment out the last link, <var>(*n5).next = n5</var>, we
+			will see <var>1</var> as the output &mdash; <var>list1</var> is
+			linear.
+		</p>
+	</div>
+</div>

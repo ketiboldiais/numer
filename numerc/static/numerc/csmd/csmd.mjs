@@ -1517,6 +1517,12 @@ export class Set extends D3Base {
 			: this.containerHeightDefault;
 		this.SVG_WIDTH = this.OBJ.svg_width ? this.OBJ.svg_width : 300;
 		this.SVG_HEIGHT = this.OBJ.svg_height ? this.OBJ.svg_height : 250;
+		this.MARGIN = {
+			top: 10,
+			right: 10,
+			bottom: 10,
+			left: 10,
+		};
 		this.DIMENSIONS = {
 			width: this.SVG_WIDTH - this.MARGIN.left - this.MARGIN.right,
 			height: this.SVG_HEIGHT - this.MARGIN.top - this.MARGIN.left,
@@ -1554,16 +1560,6 @@ export class Set extends D3Base {
 		this.FORCE_STRENGTH = this.OBJ.strength ? this.OBJ.strength : 1;
 		this.FORCE_DISTANCE = this.OBJ.distance ? this.OBJ.distance : 1;
 		this.NODE_COUNT = this.NODES.length;
-		this.MARGIN = {
-			top: 10,
-			right: 10,
-			bottom: 10,
-			left: 10,
-		};
-		this.DIMENSIONS = {
-			width: this.SVG_WIDTH - this.MARGIN.left - this.MARGIN.right,
-			height: this.SVG_HEIGHT - this.MARGIN.top - this.MARGIN.bottom,
-		};
 		this.COLORS = {
 			nodeColor: "rgba(255, 253, 222, 0.1)",
 			nodeOutlineColor: "#DAB88B",
@@ -1698,6 +1694,7 @@ export class BarGraph extends D3Base {
 	constructor(obj) {
 		super(obj);
 		this.userData = this.OBJ.data;
+		this.xTickRotate = obj.xTickRotate;
 
 		this.containerWidthDefault = "60%";
 
@@ -1718,10 +1715,10 @@ export class BarGraph extends D3Base {
 		this.SVG_HEIGHT = this.OBJ.svg_height ? this.OBJ.svg_height : 250;
 
 		this.MARGIN = {
-			top: 15,
-			right: 10,
-			bottom: 20,
-			left: 30,
+			top: this.OBJ.margin ? this.OBJ.margin[0] : 20,
+			right: this.OBJ.margin ? this.OBJ.margin[1] : 20,
+			bottom: this.OBJ.margin ? this.OBJ.margin[2] : 20,
+			left: this.OBJ.margin ? this.OBJ.margin[3] : 20,
 		};
 
 		// Set the SVG's dimensions
@@ -1776,21 +1773,40 @@ export class BarGraph extends D3Base {
 				return d.y;
 			}),
 		]);
+		this.COLOR = d3
+			.scaleLinear()
+			.domain([0, 0.7])
+			.range(["#FFE194", "#FF616D"]);
 	}
 	render() {
-		const xAxis = this.SVG.append("g")
-			.attr("transform", `translate(0, ${this.DIMENSIONS.height})`)
-			.call(this.AXIS.x)
-			.selectAll("text")
-			.style("text-anchor", "end");
+		const xAxis = this.SVG.append("g").attr(
+			"transform",
+			`translate(0, ${this.DIMENSIONS.height})`,
+		);
+		xAxis.call(this.AXIS.x).selectAll("text").attr("text-anchor", "end");
+		if (this.xTickRotate) {
+			xAxis
+				.selectAll(".tick")
+				.select("text")
+				.attr("text-anchor", "start")
+				.attr("transform", `rotate(45)`)
+				.attr("dx", "0.6em");
+		}
 		const yAxis = this.SVG.append("g")
 			.call(this.AXIS.y)
 			.style("text-anchor", "end");
+
 		const bars = this.SVG.selectAll("bar")
 			.data(this.userData)
 			.enter()
 			.append("rect")
-			.attr("fill", "red")
+			.attr("fill", (d) => {
+				if (this.OBJ.colorWeight) {
+					return this.COLOR(d.y);
+				} else {
+					return "red";
+				}
+			})
 			.attr("x", (d) => this.DATA.x(d.x))
 			.attr("y", (d) => this.DATA.y(d.y))
 			.attr("height", (d) => this.DIMENSIONS.height - this.DATA.y(d.y))
@@ -1800,12 +1816,25 @@ export class BarGraph extends D3Base {
 			.enter()
 			.append("text")
 			.attr("fill", "black")
+			.attr("text-anchor", "start")
 			.attr("x", (d) => this.DATA.x(d.x))
 			.attr("y", (d) => this.DATA.y(d.y))
 			.attr("dx", (d) => this.DATA.x.bandwidth() / 2)
 			.attr("dy", -2)
-			.attr("text-anchor", "middle")
 			.text((d) => d.label);
+
+		if (this.OBJ.yLabel) {
+			const labelYPosition = -this.DIMENSIONS.height - this.MARGIN.top/2
+			const labelXPosition = 0
+			const yAxisLabel = yAxis
+				.select("g")
+				.append("g")
+				.attr("transform", `translate(${labelXPosition}, ${labelYPosition})`);
+			yAxisLabel
+				.append("text")
+				.attr("fill", "black")
+				.text(this.OBJ.yLabel);
+		}
 	}
 }
 
@@ -2206,10 +2235,10 @@ export class Tree {
 		this.demoContainer = this.BODY.selectAll(`#${this.ID}`);
 		this.container_width = obj.container_width
 			? `${obj.container_width}%`
-			: "80%";
+			: "30%";
 		this.container_height = obj.container_height
 			? `${obj.container_height}%`
-			: "40%";
+			: "16%";
 		this.user_width = obj.width ? obj.width : 400;
 		this.user_height = obj.height ? obj.height : 400;
 		this.edgeLength = obj.edgeLength ? obj.edgeLength : 40;
@@ -2318,7 +2347,7 @@ export class Tree {
 				}
 			};
 			childCount(0, this.root);
-			const newHeight = d3.max(levelWidth) * 30; // 50 pixels per line
+			const newHeight = d3.max(levelWidth) * 25; // 50 pixels per line
 			return newHeight;
 		};
 		this.edgeLength = obj.edgeLength
@@ -2558,7 +2587,9 @@ export class Tree {
 			.style("fill", (d) => {
 				if (this.displayNodes) {
 					return "white";
-				} else if (d.data.focus) {
+				} else if (d.data.focus && typeof d.data.focus === "string") {
+					return d.data.focus;
+				} else if (d.data.focus && typeof d.data.focus === "object") {
 					return `${d.data.focus.fill}`;
 				} else {
 					return d.height == 0
@@ -3473,10 +3504,161 @@ export class Stack extends D3Base {
 	}
 }
 
+export class Multistack extends D3Base {
+	constructor(obj) {
+		super(obj);
+		this.containerWidthDefault = "40%";
+
+		this.containerHeightDefault = `8%`;
+
+		this.D3_CONTAINER_WIDTH = this.OBJ.width
+			? `${this.OBJ.width}%`
+			: this.containerWidthDefault;
+
+		this.D3_CONTAINER_HEIGHT = this.OBJ.height
+			? `${this.OBJ.height}%`
+			: this.containerHeightDefault;
+
+		this.MARGIN = {
+			top: this.OBJ.margin ? this.OBJ.margin[0] : 20,
+			right: this.OBJ.margin ? this.OBJ.margin[1] : 20,
+			bottom: this.OBJ.margin ? this.OBJ.margin[2] : 20,
+			left: this.OBJ.margin ? this.OBJ.margin[3] : 20,
+		};
+
+		this.SVG_WIDTH = this.OBJ.svg_width ? this.OBJ.svg_width : 250;
+		this.SVG_HEIGHT = this.OBJ.svg_height ? this.OBJ.svg_height : 240;
+		this.DIMENSIONS = {
+			width: this.SVG_WIDTH - this.MARGIN.left - this.MARGIN.right,
+			height: this.SVG_HEIGHT - this.MARGIN.top - this.MARGIN.left,
+		};
+		this.SVG_CONTAINER = this.D3_CONTAINER.append("div")
+			.style("display", "inline-block")
+			.style("position", "relative")
+			.style("width", this.D3_CONTAINER_WIDTH)
+			.style("padding-bottom", this.D3_CONTAINER_HEIGHT)
+			.style("overflow", "hidden");
+
+		this.SVG = this.SVG_CONTAINER.append("svg")
+			.attr("preserveAspectRatio", "xMinYMin meet")
+			.attr(
+				"viewBox",
+				`0 0 ${
+					this.DIMENSIONS.width + this.MARGIN.left + this.MARGIN.right
+				} ${
+					this.DIMENSIONS.height + this.MARGIN.top + this.MARGIN.bottom
+				}`,
+			)
+			.classed("svg-content-responsive", true)
+			.append("g")
+			.attr(
+				"transform",
+				`translate(${this.MARGIN.left}, ${this.MARGIN.top})`,
+			);
+		this.DATA = this.OBJ.data;
+		this.FRAME_DIMENSIONS = {
+			width: this.OBJ.frameWidth ? this.OBJ.frameWidth : 60,
+			height: this.OBJ.frameHeight ? this.OBJ.frameHeight : 20,
+		};
+		this.COLORS = {
+			frameColor: this.OBJ.palette
+				? this.palette(this.OBJ.palette).fill
+				: this.palette("darkRedScheme").fill,
+			frameStrokeColor: this.OBJ.palette
+				? this.palette(this.OBJ.palette).stroke
+				: this.palette("darkRedScheme").stroke,
+			textColor: this.OBJ.palette
+				? this.palette(this.OBJ.palette).text
+				: this.palette("darkRedScheme").text,
+		};
+		this.stack_count = this.OBJ.data.length;
+		this.ATTRIBUTES = {
+			edgeStroke: 1,
+			strokeWidth: 1,
+			radius: "0.65rem",
+			fontSize: "0.6rem",
+			annotationFontSize: "0.7rem",
+			edgeLabelFontSize: "0.65rem",
+			levelFontSize: "0.85rem",
+			callRectangleHeight: 20,
+			callRectangleWidth: 40,
+		};
+		this.xScale = d3
+			.scaleBand()
+			.domain(d3.range(this.stack_count))
+			.range([0, this.DIMENSIONS.width])
+			.paddingInner(0.05);
+		this.yScale = d3
+			.scaleLinear()
+			.domain([0, 10])
+			.range([0, this.DIMENSIONS.height]);
+		this.xAxis = d3.axisBottom().scale(this.xScale);
+	}
+
+	render() {
+		const call = this.SVG.selectAll(".call")
+			.data(this.DATA)
+			.enter()
+			.append("g")
+			.attr("transform", (d, i) => `translate(${this.xScale(i)}, 0)`);
+		const frame = call
+			.selectAll(".frame")
+			.data((d, i) => this.DATA[i])
+			.enter()
+			.append("g");
+		const rectFrame = frame
+			.append("rect")
+			.attr(
+				"y",
+				(d, i) => this.ATTRIBUTES.callRectangleHeight - this.yScale(i),
+			)
+			.attr("width", this.ATTRIBUTES.callRectangleWidth)
+			.attr("height", this.ATTRIBUTES.callRectangleHeight)
+			.attr("fill", this.COLORS.frameColor)
+			.attr("stroke", this.COLORS.frameStrokeColor)
+			.attr("stroke-width", 2);
+		const frameText = call
+			.selectAll("text")
+			.data((d, i) => {
+				return this.DATA[i];
+			})
+			.enter()
+			.append("text")
+			.attr(
+				"y",
+				(d, i) => this.ATTRIBUTES.callRectangleHeight - this.yScale(i),
+			)
+			.attr("dy", "1.1em")
+			.attr("x", this.ATTRIBUTES.callRectangleWidth / 2)
+			.attr("text-anchor", "middle")
+			.attr("font-family", "Fira")
+			.attr("font-size", "0.65rem")
+			.attr("fill", this.COLORS.textColor)
+			.text((d) => {
+				if (typeof d === "object" && typeof d !== null) {
+					return d.val;
+				} else {
+					return d;
+				}
+			});
+		const Axis_X = this.SVG.append("g")
+			.call(this.xAxis)
+			.attr(
+				"transform",
+				`translate(0, ${
+					this.ATTRIBUTES.callRectangleHeight +
+					this.ATTRIBUTES.callRectangleWidth / 1.5
+				})`,
+			);
+	}
+}
+
 export class Sequence extends D3Base {
 	constructor(obj) {
 		super(obj);
 		this.FRAME_COUNT = this.OBJ.data.length;
+		this.SEQUENCE_NAME = this.OBJ.name;
+		this.userMargin = this.OBJ.margin ? this.OBJ.margin : false;
 
 		this.containerWidthDefault = "30%";
 		this.containerHeightDefault = "12%";
@@ -3500,10 +3682,10 @@ export class Sequence extends D3Base {
 			: this.FRAME_COUNT * 30;
 
 		this.MARGIN = {
-			top: 20,
-			bottom: 20,
-			left: 20,
-			right: 20,
+			top: this.userMargin[0] ? this.userMargin[0] : 20,
+			left: this.userMargin[1] ? this.userMargin[1] : 20,
+			bottom: this.userMargin[2] ? this.userMargin[2] : 20,
+			right: this.userMargin[3] ? this.userMargin[3] : 20,
 		};
 
 		// Set the SVG's dimensions
@@ -3557,13 +3739,13 @@ export class Sequence extends D3Base {
 		this.COLORS = {
 			frameColor: this.OBJ.palette
 				? this.palette(this.OBJ.palette).fill
-				: this.palette("blueScheme").fill,
+				: this.palette("plainScheme").fill,
 			frameStrokeColor: this.OBJ.palette
 				? this.palette(this.OBJ.palette).stroke
-				: this.palette("blueScheme").stroke,
+				: this.palette("plainScheme").stroke,
 			textColor: this.OBJ.palette
 				? this.palette(this.OBJ.palette).text
-				: this.palette("blueScheme").text,
+				: this.palette("plainScheme").text,
 		};
 	}
 
@@ -3588,7 +3770,27 @@ export class Sequence extends D3Base {
 			.data(this.DATA)
 			.enter()
 			.append("g")
+			.attr("class", "sequence-element")
 			.attr("transform", (d) => `translate(${this.scaleX(d)}, 0)`);
+
+		if (this.SEQUENCE_NAME) {
+			const sequenceName = this.SVG.select("g")
+				.append("text")
+				.attr("text-anchor", "middle")
+				.attr("x", this.DIMENSIONS.width / 2)
+				.attr("y", -this.scaleY.bandwidth() / 1.5)
+				.attr("dy", 5)
+				.text(this.SEQUENCE_NAME)
+				.style("font-family", "Fira")
+				.style("font-size", `0.8rem`)
+				.attr("fill", (d) => {
+					if (d.colors && d.colors?.text) {
+						return d.colors.text;
+					} else {
+						return this.COLORS.textColor;
+					}
+				});
+		}
 
 		if (this.indexed) {
 			frameGroup
@@ -3597,7 +3799,7 @@ export class Sequence extends D3Base {
 				// .attr("x", 0)
 				.attr("x", this.scaleY.bandwidth() / 2)
 				.attr("y", this.scaleY.bandwidth() + this.scaleY.bandwidth() / 4)
-				.attr("dy", '0.5em')
+				.attr("dy", "0.5em")
 				.text((d, i) => i)
 				.style("font-family", "CMU")
 				.style("font-size", "0.75rem")
@@ -3636,8 +3838,8 @@ export class Sequence extends D3Base {
 			.filter((d) => d.ant)
 			.append("text")
 			.attr("text-anchor", "middle")
-			.attr("x", this.scaleX.bandwidth())
-			.attr("y", -this.scaleY.bandwidth() / 4)
+			.attr("x", this.scaleY.bandwidth() / 2)
+			.attr("y", -this.scaleY.bandwidth() / 2)
 			.text((d) => `${d.ant}`)
 			.style("font-family", "Fira")
 			.style("font-size", `0.7rem`)
@@ -3830,9 +4032,11 @@ export class Memgram extends D3Base {
 export class LinkedList extends D3Base {
 	constructor(obj) {
 		super(obj);
-		this.containerWidthDefault = "60%";
+		this.userMargin = this.OBJ.margin ? this.OBJ.margin : false;
 
-		this.containerHeightDefault = "50%";
+		this.containerWidthDefault = "75%";
+
+		this.containerHeightDefault = "10%";
 
 		this.D3_CONTAINER_WIDTH = this.OBJ.width
 			? `${this.OBJ.width}%`
@@ -3843,16 +4047,10 @@ export class LinkedList extends D3Base {
 			: this.containerHeightDefault;
 
 		// Set the SVG's width
-		this.SVG_WIDTH = this.OBJ.svg_width ? this.OBJ.svg_width : 300;
+		this.SVG_WIDTH = this.OBJ.svg_width ? this.OBJ.svg_width : 240;
 
 		// Set the SVG's height
-		this.SVG_HEIGHT = this.OBJ.svg_height ? this.OBJ.svg_height : 250;
-
-		// Set the SVG's dimensions
-		this.DIMENSIONS = {
-			width: this.SVG_WIDTH - this.MARGIN.left - this.MARGIN.right,
-			height: this.SVG_HEIGHT - this.MARGIN.top - this.MARGIN.left,
-		};
+		this.SVG_HEIGHT = this.OBJ.svg_height ? this.OBJ.svg_height : 245;
 
 		// The SVG container is <div> that wraps the SVG. This allows for resizing.
 		this.SVG_CONTAINER = this.D3_CONTAINER.append("div")
@@ -3897,10 +4095,10 @@ export class LinkedList extends D3Base {
 		this.isIndexed = this.OBJ.indexed ? this.OBJ.indexed : false;
 		this.NODE_COUNT = this.OBJ.nodes.length;
 		this.MARGIN = {
-			top: 10,
-			right: 30,
-			bottom: 10,
-			left: 30,
+			top: this.OBJ.margin ? this.OBJ.margin[0] : 20,
+			right: this.OBJ.margin ? this.OBJ.margin[1] : 20,
+			bottom: this.OBJ.margin ? this.OBJ.margin[2] : 20,
+			left: this.OBJ.margin ? this.OBJ.margin[3] : 20,
 		};
 		this.DIMENSIONS = {
 			width: this.SVG_WIDTH - this.MARGIN.left - this.MARGIN.right,
@@ -3915,16 +4113,18 @@ export class LinkedList extends D3Base {
 
 		this.NODE = {
 			width: this.SCALE.bandwidth(),
-			height: 10,
+			height: this.SCALE.bandwidth() / 2,
 		};
 		this.COLORS = {
-			arrowColor: "#FF7878",
+			arrowColor: "#FF4C29",
 			dataFieldColor: "#FFF",
-			dataFieldStrokeColor: "#79B4B7",
-			nextFieldColor: "#C1FFD7",
-			nextFieldStrokeColor: "#79B4B7",
-			indexColor: "#8CA1A5",
+			dataFieldStrokeColor: "#2B2B2B",
+			nextFieldColor: "#DDDDDD",
+			nextFieldStrokeColor: "#2B2B2B",
+			indexColor: "grey",
+			antColor: "#03506F",
 		};
+		this.vars = this.OBJ.vars ? this.OBJ.vars : false;
 	}
 	render() {
 		const nodeGroup = this.SVG.selectAll("g")
@@ -3935,6 +4135,23 @@ export class LinkedList extends D3Base {
 				return `translate(${this.SCALE(i)}, 0)`;
 			})
 			.attr("y", 0);
+
+		if (this.vars) {
+			const varGroup = this.SVG.selectAll("g.vars")
+				.data(this.vars)
+				.enter()
+				.append("g")
+				.attr("transform", (d, i) => {
+					return `translate(${this.SCALE(i) / 3}, -5)`;
+				});
+			varGroup
+				.append("text")
+				.attr("text-anchor", "middle")
+				.attr("font-size", "7px")
+				.style("font-family", "Fira")
+				.attr("fill", this.COLORS.nextFieldStrokeColor)
+				.text((d) => d);
+		}
 
 		const arrows = this.SVG.append("svg:defs")
 			.selectAll("marker")
@@ -3961,12 +4178,20 @@ export class LinkedList extends D3Base {
 			.append("rect")
 			.attr("width", this.NODE.width)
 			.attr("stroke", this.COLORS.dataFieldStrokeColor)
-			.attr("fill", this.COLORS.dataFieldColor)
+			.attr("fill", (d) => {
+				return d?.colors?.fill
+					? d.colors.fill
+					: this.COLORS.dataFieldColor;
+			})
 			.attr("height", this.NODE.height);
 
 		const dataFieldLabel = dataField
 			.append("text")
-			.attr("fill", this.COLORS.dataFieldStrokeColor)
+			.attr("fill", (d) => {
+				return d?.colors?.text
+					? d.colors.text
+					: this.COLORS.dataFieldStrokeColor;
+			})
 			.attr("text-anchor", "middle")
 			.style("font-size", "7px")
 			.style("font-family", "Fira")
@@ -4021,23 +4246,549 @@ export class LinkedList extends D3Base {
 			.attr("cy", this.NODE.height / 2);
 
 		const annotation = nextField
-			.filter((d) => d.annotate)
+			.filter((d) => d.ant)
 			.append("text")
 			.attr("text-anchor", "middle")
-			.style("font-size", "9px")
+			.style("font-size", "8px")
 			.style("font-family", "Fira")
 			.attr("x", -this.SCALE.bandwidth() / 4)
 			.attr("y", -4)
-			.text((d, i) => d.annotate)
-			.style("fill", "let(--darkRed)");
+			.text((d) => d.ant)
+			.style("fill", this.COLORS.antColor);
+	}
+}
+
+export class DLinkedList extends D3Base {
+	constructor(obj) {
+		super(obj);
+		this.listName = this.OBJ.name ? this.OBJ.name : "root";
+		this.userMargin = this.OBJ.margin ? this.OBJ.margin : false;
+
+		this.containerWidthDefault = "75%";
+
+		this.containerHeightDefault = "12%";
+
+		this.D3_CONTAINER_WIDTH = this.OBJ.width
+			? `${this.OBJ.width}%`
+			: this.containerWidthDefault;
+
+		this.D3_CONTAINER_HEIGHT = this.OBJ.height
+			? `${this.OBJ.height}%`
+			: this.containerHeightDefault;
+
+		// Set the SVG's width
+		this.SVG_WIDTH = this.OBJ.svg_width ? this.OBJ.svg_width : 240;
+
+		// Set the SVG's height
+		this.SVG_HEIGHT = this.OBJ.svg_height ? this.OBJ.svg_height : 240;
+
+		this.MARGIN = {
+			top: this.userMargin[0] ? this.userMargin[0] : 15,
+			left: this.userMargin[1] ? this.userMargin[1] : 25,
+			bottom: this.userMargin[2] ? this.userMargin[2] : 30,
+			right: this.userMargin[3] ? this.userMargin[3] : 40,
+		};
+
+		// Set the SVG's dimensions
+		this.DIMENSIONS = {
+			width: this.SVG_WIDTH - this.MARGIN.left - this.MARGIN.right,
+			height: this.SVG_HEIGHT - this.MARGIN.top - this.MARGIN.bottom,
+		};
+
+		// The SVG container is <div> that wraps the SVG. This allows for resizing.
+		this.SVG_CONTAINER = this.D3_CONTAINER.append("div")
+			.style("display", "inline-block")
+			.style("position", "relative")
+			.style("width", this.D3_CONTAINER_WIDTH)
+			.style("padding-bottom", this.D3_CONTAINER_HEIGHT)
+			.style("overflow", "hidden");
+
+		this.SVG = this.SVG_CONTAINER.append("svg")
+			.attr("preserveAspectRatio", "xMinYMin meet")
+			.attr(
+				"viewBox",
+				`0 0 ${
+					this.DIMENSIONS.width + this.MARGIN.left + this.MARGIN.right
+				} ${
+					this.DIMENSIONS.height + this.MARGIN.top + this.MARGIN.bottom
+				}`,
+			)
+			.classed("svg-content-responsive", true)
+			.append("g")
+			.attr(
+				"transform",
+				`translate(${this.MARGIN.left}, ${this.MARGIN.top})`,
+			);
+
+		// Arrow Definitions
+		this.SVG_DEFINITIONS = this.SVG.append("svg:defs")
+			.attr("id", "arrow")
+			.append("svg:marker")
+			.attr("viewBox", "0 0 10 10")
+			.attr("refX", 5)
+			.attr("refY", 5)
+			.attr("markerWidth", 6)
+			.attr("markerHeight", 6)
+			.attr("orient", "auto")
+			.append("svg:path")
+			.attr("d", "M 0 0 L 10 5 L 0 10 z")
+			.attr("stroke", "#000")
+			.attr("stroke-width", 2);
+		this.NODES = this.OBJ.nodes;
+		this.isIndexed = this.OBJ.indexed ? this.OBJ.indexed : false;
+		this.NODE_COUNT = this.OBJ.nodes.length;
+
+		this.SCALE = d3
+			.scaleBand()
+			.domain(d3.range(this.NODE_COUNT))
+			.rangeRound([0, this.DIMENSIONS.width])
+			.paddingInner(0.5);
+
+		this.NODE = {
+			width: this.SCALE.bandwidth(),
+			height: this.SCALE.bandwidth() / 2,
+		};
+		this.COLORS = {
+			arrowColor: "#BB6464",
+			dataFieldColor: "#FFF",
+			dataFieldStrokeColor: "#2B2B2B",
+			nextFieldColor: "#F0ECE3",
+			nextFieldStrokeColor: "#2B2B2B",
+			indexColor: "grey",
+			antColor: "#03506F",
+		};
+		this.vars = this.OBJ.vars ? this.OBJ.vars : false;
+	}
+	render() {
+		const nodeGroup = this.SVG.selectAll("g")
+			.data(this.NODES)
+			.enter()
+			.append("g")
+			.attr("transform", (d, i) => {
+				return `translate(${this.SCALE(i)}, 0)`;
+			})
+			.attr("y", 0);
+
+		if (this.vars) {
+			const varGroup = this.SVG.selectAll("g.vars")
+				.data(this.vars)
+				.enter()
+				.append("g")
+				.attr("transform", (d, i) => {
+					return `translate(${this.SCALE(i) / 3}, -5)`;
+				});
+			varGroup
+				.append("text")
+				.attr("text-anchor", "middle")
+				.attr("font-size", "7px")
+				.style("font-family", "Fira")
+				.attr("fill", this.COLORS.nextFieldStrokeColor)
+				.text((d) => d);
+		}
+
+		const arrows = this.SVG.append("svg:defs")
+			.selectAll("marker")
+			.data(["end"])
+			.enter()
+			.append("svg:marker")
+			.attr("id", String)
+			.attr("viewBox", "0 -5 10 10")
+			.attr("refX", 8)
+			.attr("refY", 0)
+			.attr("markerWidth", 5)
+			.attr("markerHeight", 5)
+			.attr("orient", "auto")
+			.attr("fill", this.COLORS.arrowColor)
+			.append("svg:path")
+			.attr("d", "M0,-5L10,0L0,5");
+
+		// Data Field
+		const dataField = nodeGroup
+			.append("g")
+			.attr("transform", `translate(${this.SCALE.bandwidth() / 3}, 0)`);
+
+		// Deleted Node
+
+		const dataFieldRectangle = dataField
+			.append("rect")
+			.attr("width", this.NODE.width)
+			.attr("stroke", this.COLORS.dataFieldStrokeColor)
+			.attr("fill", (d) => {
+				return d?.colors?.fill
+					? d.colors.fill
+					: this.COLORS.dataFieldColor;
+			})
+			.attr("height", this.NODE.height);
+
+		const dataFieldLabel = dataField
+			.append("text")
+			.attr("fill", (d) => {
+				return d?.colors?.text
+					? d.colors.text
+					: this.COLORS.dataFieldStrokeColor;
+			})
+			.attr("text-anchor", "middle")
+			.style("font-size", "7px")
+			.style("font-family", "Fira")
+			.attr("x", this.NODE.width / 3)
+			.attr("y", this.NODE.height / 2)
+			.attr("dy", "0.3em")
+			.text((d) => d.data);
+
+		// Indexing
+		if (this.isIndexed) {
+			const index = dataField
+				.append("text")
+				.attr("text-anchor", "middle")
+				.attr("fill", this.COLORS.indexColor)
+				.style("font-size", "8px")
+				.style("font-family", "CMU")
+				.attr("x", this.NODE.width / 3)
+				.attr("y", this.NODE.height + 10)
+				.text((d, i) => i + 1);
+		}
+
+		// Next Field
+		const nextField = nodeGroup
+			.append("g")
+			.classed("next-field", true)
+			.attr("transform", `translate(${this.SCALE.bandwidth()}, 0)`);
+
+		const nextFieldRectangle = nextField
+			.append("rect")
+			.attr("stroke", this.COLORS.nextFieldStrokeColor)
+			.attr("fill", this.COLORS.nextFieldColor)
+			.attr("width", this.NODE.width / 3)
+			.attr("height", this.NODE.height);
+
+		// Next Field
+		const prevField = nodeGroup.append("g");
+
+		const prevFieldRectangle = prevField
+			.append("rect")
+			.attr("stroke", this.COLORS.nextFieldStrokeColor)
+			.attr("fill", this.COLORS.nextFieldColor)
+			.attr("width", this.NODE.width / 3)
+			.attr("height", this.NODE.height);
+
+		// arrow
+		const nextLink = nodeGroup
+			.filter((d) => !d.alone)
+			.append("line")
+			.attr("stroke", this.COLORS.arrowColor)
+			.attr("x1", this.NODE.width + this.NODE.width / 8)
+			.attr("y1", this.NODE.height / 4)
+			.attr("x2", this.NODE.width + this.SCALE.bandwidth())
+			.attr("y2", this.NODE.height / 4)
+			.attr("marker-end", "url(#end)");
+
+		const prevLink = nodeGroup
+			.filter((d) => !d.alone)
+			.append("line")
+			.attr("stroke", this.COLORS.arrowColor)
+			.attr(
+				"x1",
+				-this.NODE.width +
+					(this.SCALE.bandwidth() + this.SCALE.bandwidth() / 5),
+			)
+			.attr("y1", this.NODE.height / 1.5)
+			.attr("x2", -this.NODE.width + this.NODE.width / 3)
+			.attr("y2", this.NODE.height / 1.5)
+			.attr("marker-end", "url(#end)");
+
+		const nextLinkStarter = nodeGroup
+			.filter((d) => !d.alone)
+			.append("circle")
+			.attr("fill", this.COLORS.arrowColor)
+			.attr("r", 1.5)
+			.attr("cx", this.NODE.width + this.NODE.width / 6)
+			.attr("cy", this.NODE.height / 4);
+
+		const prevLinkStarter = nodeGroup
+			.filter((d) => !d.alone)
+			.append("circle")
+			.attr("fill", this.COLORS.arrowColor)
+			.attr("r", 1.5)
+			.attr(
+				"cx",
+				-this.NODE.width +
+					(this.SCALE.bandwidth() + this.SCALE.bandwidth() / 6),
+			)
+			.attr("cy", this.NODE.height / 1.5);
+
+		const annotation = nextField
+			.filter((d) => d.ant)
+			.append("text")
+			.attr("text-anchor", "middle")
+			.style("font-size", "8px")
+			.style("font-family", "Fira")
+			.attr("x", -this.SCALE.bandwidth() / 8)
+			.attr("y", -4)
+			.text((d) => d.ant)
+			.style("fill", this.COLORS.antColor);
+		const rootPointer = this.SVG.append("g").attr(
+			"transform",
+			`translate(${-this.SCALE.bandwidth() / 2}, ${
+				-this.SCALE.bandwidth() / 4
+			})`,
+		);
+
+		rootPointer
+			.append("text")
+			.attr("font-family", "Fira")
+			.attr("font-size", "7px")
+			.attr("text-anchor", "middle")
+			.text(this.listName);
+		rootPointer
+			.append("path")
+			.attr("fill", "none")
+			.attr("stroke", this.COLORS.arrowColor)
+			.attr("d", () => {
+				let m1 = 0;
+				let m2 = 2;
+
+				let L1 = 0;
+				let L2 = this.SCALE.bandwidth() / 3;
+
+				let l1 = this.SCALE.bandwidth() / 2;
+				let l2 = 0;
+				return `M ${m1},${m2} L ${L1},${L2} l ${l1},${l2}`;
+			})
+			.attr("marker-end", "url(#end)");
+	}
+}
+
+export class List extends D3Base {
+	constructor(obj) {
+		super(obj);
+		this.containerWidthDefault = "70%";
+		this.containerHeightDefault = "35%";
+		this.NODE_COUNT = this.OBJ.data.length;
+		this.svg_width = this.OBJ.svg_width ? this.OBJ.svg_width : 300;
+		this.svg_height = this.OBJ.svg_height ? this.OBJ.svg_height : 150;
+		this.D3_CONTAINER_WIDTH = this.OBJ.width
+			? `${this.OBJ.width}%`
+			: this.containerWidthDefault;
+
+		this.D3_CONTAINER_HEIGHT = this.OBJ.height
+			? `${this.OBJ.height}%`
+			: this.containerHeightDefault;
+
+		this.MARGIN = {
+			top: this.OBJ.margin ? this.OBJ.margin[0] : 20,
+			right: this.OBJ.margin ? this.OBJ.margin[1] : 20,
+			bottom: this.OBJ.margin ? this.OBJ.margin[2] : 20,
+			left: this.OBJ.margin ? this.OBJ.margin[3] : 20,
+		};
+		this.DIMENSIONS = {
+			width: this.svg_width - this.MARGIN.left - this.MARGIN.right,
+			height: this.svg_height - this.MARGIN.top - this.MARGIN.bottom,
+			edgeStroke: 1,
+			strokeWidth: 1,
+			radius: 10,
+			fontSize: "0.6rem",
+			annotationFontSize: "0.7rem",
+			edgeLabelFontSize: "0.65rem",
+			levelFontSize: "0.85rem",
+		};
+		this.SVG_CONTAINER = this.D3_CONTAINER.append("div")
+			.style("display", "inline-block")
+			.style("position", "relative")
+			.style("width", this.D3_CONTAINER_WIDTH)
+			.style("padding-bottom", this.D3_CONTAINER_HEIGHT)
+			.style("overflow", "hidden");
+
+		this.SVG = this.SVG_CONTAINER.append("svg")
+			.attr("preserveAspectRatio", "xMinYMin meet")
+			.attr(
+				"viewBox",
+				`0 0 ${
+					this.DIMENSIONS.width + this.MARGIN.left + this.MARGIN.right
+				} ${
+					this.DIMENSIONS.height + this.MARGIN.top + this.MARGIN.bottom
+				}`,
+			)
+			.classed("svg-content-responsive", true)
+			.append("g")
+			.attr(
+				"transform",
+				`translate(${this.MARGIN.left}, ${this.MARGIN.top})`,
+			);
+
+		this.ROOT = d3
+			.stratify()
+			.id((d) => d.child)
+			.parentId((d) => d.parent)(this.OBJ.data);
+
+		this.sibSpace = this.OBJ.sibSpace ? this.OBJ.sibSpace : 1;
+		this.nsibSpace = this.OBJ.nsibSpace ? this.OBJ.nsibSpace : 2;
+		this.isIndexed = this.OBJ.indexed ? this.OBJ.indexed : false;
+		this.treeStructure = d3
+			.tree()
+			.size([this.DIMENSIONS.height, this.DIMENSIONS.width])
+			.separation((a, b) =>
+				a.parent == b.parent ? this.sibSpace : this.nsibSpace,
+			);
+
+		this.ROOT = this.treeStructure(this.ROOT);
+		this.COLORS = {
+			arrowColor: "#FF4C29",
+			dataFieldColor: "#FFF",
+			dataFieldStrokeColor: "#2B2B2B",
+			nextFieldColor: "#DDDDDD",
+			nextFieldStrokeColor: "#2B2B2B",
+			indexColor: "grey",
+			antColor: "#03506F",
+		};
+		this.NODES = this.ROOT.descendants();
+		this.LINKS = this.ROOT.links();
+		this.SCALE = d3
+			.scaleBand()
+			.domain(d3.range(this.NODE_COUNT))
+			.rangeRound([0, this.DIMENSIONS.width])
+			.paddingInner(0.5);
+		this.NODE = {
+			width: this.SCALE.bandwidth(),
+			height: this.SCALE.bandwidth() / 2,
+		};
+		this.diagonal = (from, to) => {
+			const midX = (from.y + to.y) / 2;
+			const fromY = from.y + this.NODE.width + this.NODE.width / 4;
+			return `M ${fromY},${from.x} C ${midX},${from.x} ${midX},${to.x} ${to.y},${to.x}`;
+		};
+	}
+
+	render() {
+		const colors = {
+			stroke: "#316B83",
+			nodeStroke: "#316B83",
+			nodeFill: "#C1FFD7",
+			leafFill: "#FF0000",
+			leafStroke: "#3D0000",
+			fill: "white",
+			text: "black",
+		};
+
+		const arrow = this.SVG.append("svg:defs")
+			.selectAll("marker")
+			.data(["end"])
+			.enter()
+			.append("svg:marker")
+			.attr("id", "ctend")
+			.attr("viewBox", "0 -5 10 10")
+			.attr("refX", 10)
+			.attr("refY", 0)
+			.attr("fill", this.COLORS.arrowColor)
+			.attr("markerWidth", 6)
+			.attr("markerHeight", 8)
+			.attr("orient", "auto")
+			.append("svg:path")
+			.attr("d", "M0,-5L10,0L0,5");
+		const g = this.SVG.append("g");
+
+		const node = g
+			.selectAll(".node")
+			.data(this.NODES)
+			.enter()
+			.filter((d) => !(d.data.display === "none"))
+			.append("g")
+			.attr("class", function (d) {
+				return "node" + (d.children ? " node--internal" : " node--leaf");
+			})
+			.attr("transform", function (d) {
+				return "translate(" + d.y + "," + d.x + ")";
+			});
+
+		// Data Field
+		const dataField = node
+			.append("g")
+			.attr("transform", `translate(0, ${-this.SCALE.bandwidth() / 4})`);
+
+		// Deleted Node
+
+		const dataFieldRectangle = dataField
+			.append("rect")
+			.attr("width", this.NODE.width)
+			.attr("stroke", this.COLORS.dataFieldStrokeColor)
+			.attr("fill", this.COLORS.dataFieldColor)
+			.attr("height", this.NODE.height);
+
+		const dataFieldLabel = dataField
+			.append("text")
+			.attr("fill", this.COLORS.dataFieldStrokeColor)
+			.attr("text-anchor", "middle")
+			.style("font-size", "7px")
+			.style("font-family", "Fira")
+			.attr("x", this.NODE.width / 2)
+			.attr("y", this.NODE.height / 2)
+			.attr("dy", "0.3em")
+			.text((d) => d.id);
+
+		// Next Field
+		const nextField = node
+			.append("g")
+			.classed("next-field", true)
+			.attr(
+				"transform",
+				`translate(${this.SCALE.bandwidth()}, ${
+					-this.SCALE.bandwidth() / 4
+				})`,
+			);
+
+		const nextFieldRectangle = nextField
+			.append("rect")
+			.attr("stroke", this.COLORS.nextFieldStrokeColor)
+			.attr("fill", this.COLORS.nextFieldColor)
+			.attr("width", this.NODE.width / 2)
+			.attr("height", this.NODE.height);
+		const pointer = node
+			.filter((d) => d.data.ant)
+			.append("text")
+			.attr("font-family", "Fira")
+			.attr("text-anchor", "middle")
+			.attr("x", this.SCALE.bandwidth() / 2)
+			.attr("y", -this.NODE.height)
+			.attr("font-size", "8px")
+			.text((d) => d.data.ant);
+		const link = g
+			.selectAll(".link")
+			.data(this.LINKS)
+			.enter()
+			.filter((d) => !(d.source.data.display || d.target.data.display))
+			.append("path")
+			.attr("fill", "none")
+			.attr("d", (d) => this.diagonal(d.source, d.target))
+			.attr("stroke", this.COLORS.arrowColor)
+			.attr("marker-end", "url(#ctend)");
+
+		const linkStarter = node
+			.filter((d) => !d.alone)
+			.append("circle")
+			.attr("fill", this.COLORS.arrowColor)
+			.attr("r", 1.5)
+			.attr("cx", this.NODE.width + this.NODE.width / 4)
+			.attr("cy", 0);
+
+		// Indexing
+		if (this.isIndexed) {
+			const index = dataField
+				.append("text")
+				.attr("text-anchor", "middle")
+				.attr("fill", this.COLORS.indexColor)
+				.style("font-size", "8px")
+				.style("font-family", "CMU")
+				.attr("x", this.NODE.width / 1.5)
+				.attr("y", this.NODE.height + 10)
+				.text((d) => d.depth);
+		}
 	}
 }
 
 export class CallTrace extends D3Base {
 	constructor(obj) {
 		super(obj);
-		this.containerWidthDefault = "70%";
-		this.containerHeightDefault = "35%";
+		this.containerWidthDefault = "50%";
+		this.containerHeightDefault = "25%";
 		this.NODE_COUNT = this.OBJ.data.length;
 		this.svg_width = this.OBJ.svg_width ? this.OBJ.svg_width : 300;
 		this.svg_height = this.OBJ.svg_height ? this.OBJ.svg_height : 150;
@@ -4324,6 +5075,10 @@ export class HeatMap extends D3Base {
 			return d.v;
 		});
 
+		this.ANNOTATIONS = d3.map(obj.data, (d) => {
+			return d.a;
+		});
+
 		this.X_SCALE = d3
 			.scaleBand()
 			.range([0, this.DIMENSIONS.width])
@@ -4335,15 +5090,23 @@ export class HeatMap extends D3Base {
 			.style("font-family", "system-ui")
 			.attr("transform", `translate(0, ${this.DIMENSIONS.height})`)
 			.call(d3.axisBottom(this.X_SCALE).tickSize(0));
+
 		this.X_AXIS.selectAll("text")
 			.attr("transform", "rotate(45)")
 			.style("text-anchor", "start");
+
 		this.X_AXIS.selectAll(".domain").remove();
 
 		this.Y_SCALE = d3
 			.scaleBand()
 			.range([this.DIMENSIONS.height, 0])
 			.domain(this.VARS)
+			.padding(0.05);
+
+		this.Y_SCALE2 = d3
+			.scaleBand()
+			.range([0, this.DIMENSIONS.width])
+			.domain(this.ANNOTATIONS)
 			.padding(0.05);
 
 		this.Y_AXIS = this.SVG.append("g")
@@ -4353,29 +5116,15 @@ export class HeatMap extends D3Base {
 			.select(".domain")
 			.remove();
 
-		this.COLOR = d3
-			// .interpolateWarm()
-			.quantize(d3.interpolateHcl("#C2F784", "#FD5D5D"), 8);
-			// .quantize(d3.interpolateHcl("#BBEAA6", "#FF7878"), 8);
-		// .scaleSequential()
-		// .interpolator(d3.interpolatePlasma)
-		// .domain([1, 14]);
+		this.Y_AXIS2 = this.SVG.append("g")
+			.style("font-size", 8)
+			.style("font-family", "system-ui")
+			.attr("transform", `translate(${this.DIMENSIONS.width}, 0)`)
+			.call(d3.axisRight(this.Y_SCALE2).tickSize(0))
+			.select(".domain")
+			.remove();
 
-		// this.MOUSEOVER = (d) => {
-		// 	this.TOOLTIP.style("opacity", 1);
-		// 	d3.select(this).style("stroke", "black").style("opacity", 1);
-		// };
-
-		// this.MOUSEMOVE = (d) => {
-		// 	this.TOOLTIP.html("test")
-		// 		.style("left", d3.mouse(this)[0] + 70 + "px")
-		// 		.style("top", d3.mouse(this)[1] + "px");
-		// };
-
-		// this.MOUSELEAVE = (d) => {
-		// 	this.TOOLTIP.style("opacity", 0);
-		// 	d3.select(this).style("stroke", "none").style("opacity", 0.8);
-		// };
+		this.COLOR = d3.quantize(d3.interpolateHcl("#C2F784", "#FD5D5D"), 8);
 	}
 	render() {
 		const g = this.SVG.selectAll()
@@ -4399,26 +5148,16 @@ export class HeatMap extends D3Base {
 			.style("stroke", "none")
 			.style("opacity", 0.8)
 			.style("fill", (d) => {
-				if (d.l === 0) {
+				if (typeof d.l === "string") {
+					return d.l;
+				} else if (d.l === -1) {
+					return "#94DAFF";
+				} else if (d.l === -2) {
 					return "#EEEEEE";
 				} else {
 					return this.COLOR[d.l];
 				}
 			});
-
-		// const foreignbject = g
-		// 	.append("foreignObject")
-		// 	.attr("width", this.X_SCALE.bandwidth())
-		// 	.attr("height", this.Y_SCALE.bandwidth());
-
-		// const span = foreignbject
-		// 	.append("xhtml:span")
-		// 	.html((d) => this.KEYS[d.l])
-		// 	.style("display", "flex")
-		// 	.style("justify-content", "center")
-		// 	.style("text-align", "center")
-		// 	.style("font-size", "0.5rem")
-		// 	.style("color", "black");
 	}
 }
 

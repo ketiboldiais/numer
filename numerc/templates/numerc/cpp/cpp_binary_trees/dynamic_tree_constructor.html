@@ -1,0 +1,938 @@
+{% load static %}
+<p>
+	Once we have the node record, we want to think about how to
+	<i>generate</i>, or create, the binary tree. In this section, we focus on
+	a <b>dynamic tree constructor</b> &mdash; a tree constructor that
+	generates a tree at runtime. The ideal starting point is the tree's root.
+	Once we have a root, we create the root's left-child and right-child.
+	That said, we have to keep in mind that there are four possiblities for a
+	given node ${n}$'s lineage:
+</p>
+<ol>
+	<li>${n}$ is leaf &mdash; it has ${0}$ children.</li>
+	<li>${n}$ is left-uniparous &mdash; it has exactly ${1}$ left-child.</li>
+	<li>
+		${n}$ is right-uniparous &mdash; it has exactly ${1}$ right-child.
+	</li>
+	<li>${n}$ is full &mdash; it has exactly ${2}$ children.</li>
+</ol>
+<p>
+	These conditions boil down to two questions: (1) Does a left-child exist?
+	(2) Does a right-child exist?
+</p>
+<figure>
+	<table class="alg">
+		<thead>
+			<th>${\exists (\texttt{left-child})}$</th>
+			<th>${\exists (\texttt{right-child})}$</th>
+			<th><var>node is</var></th>
+		</thead>
+		<tbody>
+			<tr>
+				<td><var>true</var></td>
+				<td><var>true</var></td>
+				<td><var>full</var></td>
+			</tr>
+			<tr>
+				<td><var>true</var></td>
+				<td><var>false</var></td>
+				<td><var>left-uniparous</var></td>
+			</tr>
+			<tr>
+				<td><var>false</var></td>
+				<td><var>true</var></td>
+				<td><var>right-uniparous</var></td>
+			</tr>
+			<tr>
+				<td><var>false</var></td>
+				<td><var>false</var></td>
+				<td><var>leaf</var></td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+<p>
+	To illustrate, we'll use the following binary tree, called
+	<var>B1</var>:
+</p>
+<div id="tree_b1"></div>
+<p>
+	To implement the tree above, we will generate the binary tree generation
+	by generation, from left to right. More specifically, we generate the
+	tree using a <i>queue</i>.
+</p>
+<ol class="alg">
+	<li>Queue queue = newQueue();</li>
+</ol>
+<div id="tree_b1_queue"></div>
+<p>With the queue, we use the following procedure:</p>
+<ol class="proc">
+	<li>Create a root node.</li>
+	<li>Enqueue the address of the root node into <var>queue</var>.</li>
+	<li>
+		Dequeue the address of the new node, name that address the pointer
+		<var>p</var>.<sup></sup>
+	</li>
+	<li>Using <var>p</var>, ask: Does <var>p</var> have a left child?</li>
+	<ol>
+		<li>Yes ${\implies}$ go to step 4.</li>
+		<li>No ${\implies}$ go to step 5.</li>
+	</ol>
+	<li>Create a pointer <var>t</var>.</li>
+	<li>Create a new node and assign it to <var>t</var>.</li>
+	<li>
+		Initialize <var>p</var>'s <var>left_child</var> pointer as
+		<var>t</var>.
+	</li>
+	<li>
+		Initialize <var>p</var>'s <var>right_child</var> pointer as
+		<var>t</var>.
+	</li>
+	<li>Using <var>p</var>, ask: Does <var>p</var> have a right child?</li>
+	<ol>
+		<li>Yes ${\implies}$ go to step 4.</li>
+		<li>No ${\implies}$ go to step 5.</li>
+	</ol>
+	<li>Enqueue the address of <var>t</var> into <var>queue.</var></li>
+	<li>Return to step 3.</li>
+</ol>
+<div class="note">
+	<p>
+		The operation <var>dequeue()</var> returns the address of the dequeued
+		queuer.
+	</p>
+</div>
+<p>
+	Applying this procedure, the first step is to create the root node. For
+	our tree <var>B1</var>, this is the node ${n_5.}$
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5); <var>address: F0</var></li>
+	<li>Queue queue = newQueue();</li>
+</ol>
+<p>
+	Let's say the address of <var>root</var> is some address <var>F0</var>.
+	We take that address, and insert it into the queue:
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+</ol>
+<p>With these steps performed, we now have the first node in our tree:</p>
+
+<div id="tree_b1_queue_with_root"></div>
+<div id="tree_b1_1"></div>
+
+<p>
+	We then dequeue the address <var>F0</var>, and have a pointer
+	<var>p</var> point to the address <var>F0</var>.
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+</ol>
+
+<div id="tree_b1_queue_with_root_dequeue"></div>
+<div id="tree_b1_1_p"></div>
+
+<p>
+	With <var>p</var> pointed to <var>F0</var>, we ask:
+	<q>Does the node <var>p</var> have a left-child?</q> Examining the tree
+	<var>B1</var>, the answer is yes, the node <var>p</var> has a left child.
+	So, we use a temporary pointer <var>t</var> to create a new node, and
+	have <var>p</var>'s pointee's <var>left_child</var> pointer point to the
+	new node:
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8); <var>address: F1</var></li>
+	<li>(*p).left_child = t;</li>
+</ol>
+<p>
+	Suppose the address of the new node is <var>F1</var>. We enqueue this
+	address to our queue:
+</p>
+
+<div id="tree_b1_2_p"></div>
+<div id="tree_b1_queue_with_2"></div>
+
+<p>
+	With the left-child linked, we then ask the second question:
+	<q>Does the node <var>p</var> have a right-child?</q> Again, the answer
+	is yes. We use the temporary pointer <var>t</var> to create a new node,
+	and have <var>p</var>'s pointee's <var>right_child</var> pointer point to
+	the new node:
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(6); <var>address: F2</var></li>
+	<li>(*p).right_child = t;</li>
+</ol>
+<p>
+	Let's say the address of the new node <var>F2</var>. We enqueue this
+	address to our queue:
+</p>
+
+<div id="tree_b1_3_p"></div>
+<div id="tree_b1_queue_with_3"></div>
+
+<p>
+	We now have the first generation taken care of. So we go to the next
+	generation, working from left to right.
+</p>
+<div id="tree_b1_1_gen2"></div>
+<p>
+	We dequeue the address <var>F1</var>, and have the pointer
+	<var>p</var> point to this address.
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(6);</li>
+	<li>(*p).right_child = t;</li>
+	<li>Node* p = queue.dequeue();</li>
+</ol>
+
+<div id="tree_b1_queue_with_4"></div>
+<div id="tree_b1_4_p"></div>
+
+<p>
+	Using <var>p</var> set, we ask,
+	<q>Does the node <var>p</var> have a left-child?</q> In this case, it
+	does not. So we immediately ask the next question:
+	<q>Does the node <var>p</var> have a right child?</q> Yes. So we use the
+	temporary pointer <var>t</var> to create a new node, enqueue
+	<var>t</var>, and have <var>p</var>'s right-child pointer point to
+	<var>t</var>:
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(6);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(9);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).right_child = t;</li>
+</ol>
+<p>Now we have:</p>
+
+<div id="tree_b1_queue_4"></div>
+<div id="tree_b1_4"></div>
+
+<p>
+	This takes care of the left node in the second generation, so now we
+	consider the right node. We dequeue our <var>queue</var>, assigning the
+	dequeued address to <var>p</var>:
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(6);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(9);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+</ol>
+<p>
+	Using <var>p</var>, again we ask, does <var>p</var> have a left child?
+	Yes, it does. We create a new node using <var>t</var>, enqueue
+	<var>t</var>, and have <var>p</var>'s left-child pointer point to
+	<var>t</var>:
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(6);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(9);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(3);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).left_child = t;</li>
+</ol>
+
+<div id="tree_b1_queue_5"></div>
+<div id="tree_b1_5"></div>
+
+<p>
+	We then ask, does <var>p</var> have a right-child? No, it does not. So we
+	go to the next generation:
+</p>
+<div id="tree_b1_1_gen3"></div>
+<p>
+	We <var>dequeue</var> our <var>queue</var>, and assign the returned
+	address to <var>p</var>.
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(6);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(9);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(3);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).left_child = t;</li>
+	<li>p = queue.dequeue(); <var>address in p: F3</var></li>
+</ol>
+
+<div id="tree_b1_queue_6"></div>
+<div id="tree_b1_6"></div>
+
+<p>
+	We ask: Does the node <var>p</var> have a left child? Yes, it does. We
+	create a new node using <var>t</var>, queue <var>t</var>, and assign
+	<var>t</var> to the <var>left_child</var> pointer of <var>p</var>:
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(6);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(9);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(3);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).left_child = t;</li>
+	<li>p = queue.dequeue(); <var>address in p: F3</var></li>
+	<li>t = newNode(4); <var>address: F5</var></li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).left_child = t;</li>
+</ol>
+
+<div id="tree_b1_queue_7"></div>
+<div id="tree_b1_7"></div>
+
+<p>
+	Then we ask: Does the node <var>p</var> have a right child? Yes. Again we
+	create a new node using <var>t</var>, queue <var>t</var>, and assign
+	<var>t</var> to the <var>right_child</var> pointer of <var>p</var>:
+</p>
+<ol class="alg">
+	<li>Node root = newNode(5);</li>
+	<li>Queue queue = newQueue();</li>
+	<li>queue.enqueue(root);</li>
+	<li>Node* p = queue.dequeue();</li>
+	<li>Node* t = newNode(8);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(6);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(9);</li>
+	<li>(*p).right_child = t;</li>
+	<li>p = queue.dequeue();</li>
+	<li>t = newNode(3);</li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).left_child = t;</li>
+	<li>p = queue.dequeue(); <var>address in p: F3</var></li>
+	<li>t = newNode(4); <var>address: F5</var></li>
+	<li>queue.enqueue(t);</li>
+	<li>(*p).left_child = t;</li>
+	<li>t = newNode(2); <var>address: F6</var></li>
+	<li>(*p).right_child = t;</li>
+</ol>
+
+<div id="tree_b1_queue_8"></div>
+<div id="tree_b1_8"></div>
+
+<p>
+	At this point, we see that we've generated our tree. The algorithm
+	continues by dequeuing the remaining queuers, testing for the two
+	conditions of left- and right-child existence. Once the last queuer is
+	dequeued, the algorithm terminates.
+</p>
+<div class="demo">
+	<button>C</button>
+	<div class="implementation">
+		<h4>C Implementation</h4>
+		<p>
+			Below is an implementation in C. This is somewhat of a lengthy
+			implementation because we need an auxiliary data structure, the
+			circular queue.
+		</p>
+		<p>
+			First, we start with a diagram of the tree we want to construct. In
+			this case, we'll use the following tree for illustration:
+		</p>
+		<div id="create_tree_sample"></div>
+		<p>
+			Next, the program we'll run is written in a file called
+			<var>Main.c</var>. Its source code and output appear as such:
+		</p>
+		<pre class="language-c"><code>
+			#include "Tree.h"
+			
+			int main() {
+				struct Tree* tree = newTree();
+				printTree(tree);
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			$ make Main
+			cc     Main.c   -o Main
+			$ ./Main
+			Enter root value: 3
+			Enter left child of 3: 1
+			Enter right child of 3: 2
+			Enter left child of 1: 8
+			Enter right child of 1: 7
+			Enter left child of 2: -1
+			Enter right child of 2: 4
+			Enter left child of 8: -1
+			Enter right child of 8: -1
+			Enter left child of 3: -1
+			Enter right child of 3: -1
+			3
+			|---2
+			|   |---4
+			|---1
+			|   |---8
+			|   |---7
+		</code></pre>
+		<p>
+			In the code above, we use a function called
+			<var>newTree()</var>, which takes no parameters. When
+			<var>Main.c</var> is run, the user is prompted to enter the different
+			values to be placed in each node. To keep the code simple, we'll use
+			the value <var>-1</var> to indicate that a particular node does not
+			exist. Entering <var>-1</var> for all leaves in the tree terminates
+			the tree construction, which brings us to the next line,
+			<var>printTree(tree)</var>. This function prints the newly
+			constructed tree.
+		</p>
+		<p>
+			Now that we know how the overall program works, let's examine the
+			implementation details. First, we have an include:
+			<var>#include "Tree.h"</var>. Let's look inside this header file.
+		</p>
+		<h4>Tree.h</h4>
+		<p>
+			Inside the <var>Tree.h</var> header file, we have the following code:
+		</p>
+		<pre class="language-c"><code>
+			#include "Queue.h"
+		
+			struct Node {
+				int data;
+				struct Node* left_child;
+				struct Node* right_child;
+			};
+
+			struct Node* newNode(int datum) {
+				struct Node* node = (struct Node*) malloc(sizeof(struct Node));
+				(*node).data = datum;
+				(*node).left_child = NULL;
+				(*node).right_child = NULL;
+				return node;
+			}
+
+			struct Tree {
+				struct Node* root;
+			};
+
+			struct Tree* newTree() {
+				struct Tree* tree = (struct Tree*) malloc(sizeof(struct Tree));
+				(*tree).root = NULL;
+				struct Node *p, *t;
+				int user_input_data;
+				struct Queue* pointerQueue = newQueue(10);
+				printf("Enter root value: ");
+				scanf("%d", &user_input_data);
+				(*tree).root = newNode(user_input_data);
+				enqueue(pointerQueue, (*tree).root);
+
+				while(!isEmpty(pointerQueue)) {
+					p = dequeue(pointerQueue);
+					printf("Enter left child of %d: ", (*p).data);
+					scanf("%d", &user_input_data);
+					if (user_input_data != -1) {
+						t = newNode(user_input_data);
+						(*p).left_child = t;
+						enqueue(pointerQueue, t);
+					}
+					printf("Enter right child of %d: ", (*p).data);
+					scanf("%d", &user_input_data);
+					if (user_input_data != -1) {
+						t = newNode(user_input_data);
+						(*p).right_child = t;
+						enqueue(pointerQueue, t);
+					}
+				}
+				return tree;
+			}
+
+			void print(struct Node* tree, int level) {
+				if (tree != NULL) {
+					for (int i = 0; i < level; i++) {
+						printf(i == level - 1 ? "|---" : "|   ");
+					}
+					printf("%d\n", (*tree).data);
+					print((*tree).right_child, level + 1);
+					print((*tree).left_child, level + 1);
+				}
+			}
+
+			void printTree(struct Tree* tree) {
+				print((*tree).root, 0);
+			}
+		</code></pre>
+		<p>The <var>queue.h</var> file contains the following code:</p>
+		<pre class="language-c"><code>
+			#pragma once
+			#include &lt;stdbool.h&gt;
+			#include &lt;stdio.h&gt;
+			#include &lt;stdlib.h&gt;
+
+			struct Queue {
+				int capacity;
+				int length;
+				int front;
+				int rear;
+				struct Node** Q; 
+			};
+
+			struct Queue* newQueue(int maxSize) {
+				struct Queue* queue = (struct Queue*) malloc(sizeof(struct Queue));
+				(*queue).capacity = maxSize;
+				(*queue).length = 0;
+				(*queue).front = -1;
+				(*queue).rear = -1;
+				(*queue).Q = (struct Node**) malloc(sizeof(int) * maxSize);
+				return queue;
+			}
+
+			bool isFull(struct Queue* queue) {
+				int rear = (*queue).rear + 1;
+				int front = (*queue).front;
+				int max = (*queue).capacity;
+				return rear % max == front;
+			}
+
+			bool isEmpty(struct Queue* queue) {
+				return (*queue).front == (*queue).rear;
+			}
+
+			void enqueue(struct Queue* queue, struct Node* data) {
+				if (isFull(queue)) {
+					printf("Queue is full; enqueue prohibited.\n");
+				} else {
+					(*queue).rear = ((*queue).rear + 1) % (*queue).capacity;
+					(*queue).Q[(*queue).rear] = data;
+				}
+			}
+
+			struct Node* dequeue(struct Queue* queue) {
+				struct Node* t = NULL;
+				if (isEmpty(queue)) {
+					printf("Queue is empty, dequeue prohibited. Returning null pointer.\n");
+				} else {
+					(*queue).front = ((*queue).front + 1) % ((*queue).capacity);
+					t = (*queue).Q[(*queue).front];
+				}
+				return t;
+			}
+
+			void printQueue(struct Queue* queue) {
+				for (int i = 0; i < (*queue).capacity; i++) {
+					printf("%p ", (*queue).Q[i]);
+					printf("\n");
+				}
+			}
+		</code></pre>
+		<p>
+			Let's go over this code carefully, focusing on
+			<var>Tree.h</var>. First, we have the definition for a
+			<var>Node</var> struct:
+		</p>
+		<pre class="language-c"><code>
+			struct Node {
+				int data;
+				struct Node* left_child;
+				struct Node* right_child;
+			};
+		</code></pre>
+		<p>
+			This is a tree node. It has a data field, <var>data</var>, which is
+			bound to the value the node stores. The node also has a
+			<var>left_child</var> pointer, which points to the node's left child,
+			itself a node, and a <var>right_child</var> pointer, which points to
+			the node's right child.
+		</p>
+		<p>
+			Next, we have a <i>node constructor</i>. This is similar to the
+			singly-linked list's node constructor &mdash; a function that creates
+			a new instance of a node.
+		</p>
+		<pre class="language-c"><code>
+			struct Node* newNode(int datum) {
+				struct Node* node = (struct Node*) malloc(sizeof(struct Node));
+				(*node).data = datum;
+				(*node).left_child = NULL;
+				(*node).right_child = NULL;
+				return node;
+			}
+		</code></pre>
+		<p>
+			The node constructor <var>newNode()</var> has the parameter
+			<var>int datum</var>. We pass the data we want stored in the
+			resulting tree node into <var>newNode()</var> as an argument, which
+			is bound to <var>int datum</var>. Inside <var>newNode()</var>, we
+			allocate enough space for a <var>Node</var> struct, followed by an
+			instantiation of the new node's fields. In this case,
+			<var>datum</var> is bound to the new node's <var>data</var> field,
+			and the <var>left_child</var> and <var>right_child</var> pointers are
+			initialized to <var>NULL</var>. Once initialized, we return the newly
+			instantiated node.
+		</p>
+		<p>Next, we have the definition for a <var>Tree</var> struct.</p>
+		<pre class="language-c"><code>
+			struct Tree {
+				struct Node* root;
+			};
+		</code></pre>
+		<p>
+			For now, this structure only has a single field, the
+			<var>root</var>. This is a <var>Node</var> pointer, which serves as
+			our access point for the rest of the tree. In later sections, we will
+			add further properties to the <var>Tree</var> structure (e.g., depth,
+			height, levels, etc.), as well as more elaborate methods that utilize
+			these additional properties.
+		</p>
+		<p>
+			Following the tree structure, we have the
+			<i>tree constructor</i>:
+		</p>
+		<pre class="language-c"><code>
+			struct Tree* newTree() {
+				struct Tree* tree = (struct Tree*) malloc(sizeof(struct Tree));
+				(*tree).root = NULL;
+				struct Node *p, *t;
+				int user_input_data;
+				struct Queue* pointerQueue = newQueue(10);
+				printf("Enter root value: ");
+				scanf("%d", &user_input_data);
+				(*tree).root = newNode(user_input_data);
+				enqueue(pointerQueue, (*tree).root);
+			
+				while(!isEmpty(pointerQueue)) {
+					p = dequeue(pointerQueue);
+
+					printf("Enter left child of %d: ", (*p).data);
+					scanf("%d", &user_input_data);
+					if (user_input_data != -1) {
+						t = newNode(user_input_data);
+						(*p).left_child = t;
+						enqueue(pointerQueue, t);
+					}
+
+					printf("Enter right child of %d: ", (*p).data);
+					scanf("%d", &user_input_data);
+					if (user_input_data != -1) {
+						t = newNode(user_input_data);
+						(*p).right_child = t;
+						enqueue(pointerQueue, t);
+					}
+				}
+				return tree;
+			}
+		</code></pre>
+		<p>
+			This is a fairly large function, so we'll take it a piece at a time.
+			First, we create a new instace of a tree, with its
+			<var>root</var> pointer initially <var>NULL</var>:
+		</p>
+		<pre class="language-c"><code>
+			struct Tree* tree = (struct Tree*) malloc(sizeof(struct Tree));
+			(*tree).root = NULL;
+		</code></pre>
+		<p>
+			Next, we create two <var>Node</var> pointers, <var>p</var> and
+			<var>t</var>.
+		</p>
+		<pre class="language-c"><code>
+			struct Node *p, *t;
+		</code></pre>
+		<p>
+			The pointer <var>p</var> is used to point to the current node we want
+			to test for child existence. The pointer <var>t</var> is then used to
+			create new node instances.
+		</p>
+		<p>After these two pointers, we have the <i>pointer queue</i>:</p>
+		<pre class="language-c"><code>
+			struct Queue* pointerQueue = newQueue(10);
+		</code></pre>
+		<p>This is a circular queue with a circumference of ${10:}$</p>
+		<div id="circular_queue_tree"></div>
+		<p>
+			We use this queue to keep track of the values of
+			<var>p</var> and <var>t</var>. The auxiliary circular queue's
+			implementation will be discussed shortly in the
+			<cite>Queue.h</cite> section.
+		</p>
+		<p>
+			Following these pointers, we have a variable
+			<var>user_input_data</var>, followed by a prompt for user input:
+		</p>
+		<pre class="language-c"><code>
+			int user_input_data;
+			printf("Enter root value: ");
+		</code></pre>
+		<p>
+			The variable <var>user_input_data</var> stores the user's input
+			passed to the <var>scanf</var> call:
+		</p>
+		<pre class="language-c"><code>
+			scanf("%d", &user_input_data);
+		</code></pre>
+		<p>
+			When the user inputs a value, that value is bound to
+			<var>user_input_data</var>. With
+			<var>user_input_data</var> initialized, it is then passed as an
+			argument to <var>newNode()</var>:
+		</p>
+		<pre class="language-c"><code>
+			(*tree).root = <mark>newNode(user_input_data)</mark>;
+		</code></pre>
+		<p>
+			This results in a new tree node, following the
+			<var>newNode()</var> constructor's implementation.
+		</p>
+		<pre class="language-pseudo"><code>
+			*node = {
+				data = user_input_data;
+				left_child = NULL;
+				right_child = NULL;
+			}
+		</code></pre>
+		<p>
+			The <var>tree</var> we initialized earlier, whose pointer
+			<var>root</var> was initially <var>NULL</var>, now points to the
+			address of this new node:
+		</p>
+		<pre class="language-pseudo"><code>
+			(*tree).root = {
+				data = user_input_data;
+				left_child = NULL;
+				right_child = NULL;
+			}
+		</code></pre>
+		<p>
+			Suppose the address of <var>root</var> is <var>0x1</var>. We enqueue
+			this address into our circular queue, <var>pointerQueue</var>:
+		</p>
+		<div>
+			<pre class="language-c"><code>
+				enqueue(pointerQueue, (*tree).root);
+			</code></pre>
+			<div id="root_queued"></div>
+		</div>
+		<p>
+			All of this code establishes the tree's <var>root</var>. Once the
+			root's established, we can begin inserting the root's descendants. To
+			do so, we use a while-loop. The guard clause for the while loop: As
+			long as the the pointer queue isn't empty.
+		</p>
+		<pre class="language-c"><code>
+			<mark>while(!isEmpty(pointerQueue))</mark> {
+				p = dequeue(pointerQueue);
+
+				printf("Enter left child of %d: ", (*p).data);
+				scanf("%d", &user_input_data);
+				if (user_input_data != -1) {
+					t = newNode(user_input_data);
+					(*p).left_child = t;
+					enqueue(pointerQueue, t);
+				}
+
+				printf("Enter right child of %d: ", (*p).data);
+				scanf("%d", &user_input_data);
+				if (user_input_data != -1) {
+					t = newNode(user_input_data);
+					(*p).right_child = t;
+					enqueue(pointerQueue, t);
+				}
+			}
+		</code></pre>
+		<p>
+			If the pointer queue is not empty, we enter the while-loop. Inside,
+			we first assign to <var>p</var> the return value of dequeuing
+			<var>pointerQueue</var>.
+		</p>
+		<pre class="language-c"><code>
+			p = dequeue(pointerQueue);
+		</code></pre>
+		<p>
+			The <var>dequeue()</var> function, found in <var>queue.h</var>,
+			accesses the current front queuer of a queue, dequeues and returns
+			that queuer as an output value. That output value, a node pointer, is
+			then bound to <var>p</var>.
+		</p>
+		<p>Once dequeued, we proceed to the while-loop's two prongs:</p>
+		<div>
+			<pre class="language-c"><code>
+				printf("Enter left child of %d: ", (*p).data);
+				scanf("%d", &user_input_data);
+				if (user_input_data != -1) {
+					t = newNode(user_input_data);
+					(*p).left_child = t;
+					enqueue(pointerQueue, t);
+				}
+			</code></pre>
+			<pre class="language-c"><code>
+				printf("Enter right child of %d: ", (*p).data);
+				scanf("%d", &user_input_data);
+				if (user_input_data != -1) {
+					t = newNode(user_input_data);
+					(*p).right_child = t;
+					enqueue(pointerQueue, t);
+				}
+			</code></pre>
+		</div>
+		<p>
+			For both of these prongs, we prompt the user to enter the left- and
+			right-child values for <var>p</var> respectively. The
+			<var>(*p).data</var> is used to inform the user which node the user
+			is entering data for. When the user enters the data, she has the
+			choice to enter either <var>-1</var> or any other
+			<var>int</var> value. If the user enters <var>-1</var>, we enter the
+			relevant if-block and create a new node. For example, suppose the
+			user enters <var>2</var> for the <var>root</var>'s left-child. The
+			code block to execute:
+		</p>
+		<pre class="language-c"><code>
+			t = newNode(user_input_data);
+			(*p).left_child = t;
+			enqueue(pointerQueue, t);
+		</code></pre>
+		<p>In the first line, we create a new node:</p>
+		<div>
+			<pre class="language-c"><code>
+				t = newNode(user_input_data);
+			</code></pre>
+			<pre class="language-pseudo"><code>
+				*t = {
+					data = 2;
+					left_child = NULL;
+					right_child = NULL;
+				}
+			</code></pre>
+		</div>
+
+		<p>
+			Let's say the address of this new node is <var>0x2</var>. Once the
+			new node is created, we make the left-child of <var>p</var>,
+			currently the <var>root</var>, point to this new node:
+		</p>
+		<pre class="language-pseudo"><code>
+			*p = {
+				data = 3;
+				left_child = t;
+				right_child = NULL;
+			}
+		</code></pre>
+		<p>Then we enqueue this address to the <var>pointerQueue</var>:</p>
+		<div>
+			<pre class="language-c"><code>
+				enqueue(pointerQueue, t);
+			</code></pre>
+			<div id="root_left_child_queued"></div>
+		</div>
+		<p>
+			Next, we prompt the user to enter the right-child of
+			<var>p</var> (still currently the root). The user enters
+			<var>1</var>. Using <var>t</var>, we create a new node with, say, an
+			address of <var>0x3</var>.
+		</p>
+		<pre class="language-pseudo"><code>
+			0x2 = {
+				data = 1;
+				left_child = NULL;
+				right_child = NULL;
+			}
+			*t = {
+				data = 1;
+				left_child = NULL;
+				right_child = NULL;
+			}
+			*p = {
+				data = 3;
+				left_child = 0x2;
+				right_child = t;
+			}
+		</code></pre>
+		<p>
+			We again enqueue the current address <var>t</var> points to into
+			<var>pointerQueue</var>:
+		</p>
+		<div>
+			<pre class="language-c"><code>
+				enqueue(pointerQueue, t);
+			</code></pre>
+			<div id="root_right_child_queued"></div>
+		</div>
+		<p>
+			Once the left- and right-children of the current
+			<var>p</var> are taken care of, we move back to the top of the
+			while-loop:
+		</p>
+		<pre class="language-c"><code>
+			p = dequeue(pointerQueue);
+		</code></pre>
+		<p>
+			Dequeuing <var>pointerQueue</var>, <var>p</var> now becomes the new
+			front queuer:
+		</p>
+		<div id="new_front1"></div>
+		<p>This process continues until the queue is completely empty.</p>
+	</div>
+</div>

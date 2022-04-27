@@ -893,9 +893,390 @@
 
 		<section id="implementation">
 			<h4>Implementation</h4>
-			<p>Below are a few implementations.</p>
+			<div class="tabs">
+				<ul>
+					<li>Pseudocode</li>
+					<li>JavaScript</li>
+				</ul>
+				<div class="pseudo">
+					<p>
+						To implement the <var>merge_sort()</var> function, we first
+						need an auxiliary function <var>merge()</var> to handle the
+						merging:
+					</p>
+					<section class="pseuds">
+						<ol class="alg">
+							<li>
+								merge(TYPE[] left_array, TYPE[] right_array, bool
+								in_order()) -> TYPE[]:
+							</li>
+							<ol>
+								<li>
+									default in_order() := (a, b) -> { return a &lt; b }
+								</li>
+								<li>TYPE var result := []</li>
+								<li>int var left_index := 0</li>
+								<li>int var right_index := 0</li>
+								<li>
+									while (left_index &lt; length(left_array) && right_index
+									&lt; length(right_array)):
+								</li>
+								<ol>
+									<li>
+										if (in_order(left_array(left_index),
+										right_array(right_index))):
+									</li>
+									<ol>
+										<li>append_to(result, left_array[left_index])</li>
+										<li>left_index++</li>
+									</ol>
+									<li>else:</li>
+									<ol>
+										<li>append_to(result, right_array[right_index])</li>
+										<li>right_index++</li>
+									</ol>
+								</ol>
+								<li>while (left_index &lt; length(left_array)):</li>
+								<ol>
+									<li>append_to(result, left_array[left_index])</li>
+									<li>left_index++</li>
+								</ol>
+								<li>while (right_index &lt; length(right_array)):</li>
+								<ol>
+									<li>append_to(result, right_array(right_index))</li>
+									<li>right_index++</li>
+								</ol>
+								<li>return result</li>
+							</ol>
+						</ol>
+						<ol class="algc">
+							<li>
+								Function signature. The function <var>merge()</var>
+								takes three inputs: two arrays of generic
+								<var>TYPE</var> and a boolean-output function, and returns
+								one output: an array of generic <var>TYPE</var>.
+							</li>
+							<li>
+								If the user doesn't supply the function argument, default
+								to this function definition.
+							</li>
+							<li>
+								Result is initially an empty array. The newly merged arrays
+								are placed here.
+							</li>
+							<li>
+								Since we're splitting the array in half, we need two
+								indices to iterate through both halves.
+								<var>left_index</var> keeps track of the left half.
+							</li>
+							<li>
+								<var>right_index</var> keeps track of the right half.
+							</li>
+							<li>
+								Iterate through both halves as long as there are elements
+								in both. That is, as long as the left index is less than
+								the left half's length, and the right index is less than
+								the right half's length.
+							</li>
+							<li>
+								Check: Is the current element in the left half is in the
+								correct position relative to the current element in the
+								right half? Here, <i>correct position</i> is defined
+								according to the <var>in_order()</var> function, which
+								defaults to ascending order if the user does not supply an
+								order. Hence, in the default case, if the left half element
+								is less than right half element, the left half element is
+								in the correct position. In sum: If
+								<var>in_order()</var> returns true, go to line 7.
+								Otherwise, go to line 9.
+							</li>
+							<li>
+								Append the left half element to the
+								<var>result</var> array.
+							</li>
+							<li>Increment the left index.</li>
+							<li>Go to line 10.</li>
+							<li>
+								Append the right half's element to the
+								<var>result</var> array.
+							</li>
+							<li>
+								Increment the right half's index and return to line 5
+							</li>
+							<li>
+								After going through the array, there may be elements left
+								over in the left half. If there are (the left index is
+								still less than the left half's length), go to line 12.
+								Otherwise, go to line 15.
+							</li>
+							<li>
+								Append the current left half element to the
+								<var>result</var> array.
+							</li>
+							<li>Increment the left half index and return to line 11.</li>
+							<li>
+								There may be elements left over in the right half. If there
+								are (the right index is still less than the right half's
+								length), go to line 16. Otherwise, go to line 17.
+							</li>
+							<li>
+								Append the current right half element to the
+								<var>result</var> array.
+							</li>
+							<li>Increment the left half index and return to line 15.</li>
+							<li>Return the <var>result</var> array. END.</li>
+						</ol>
+					</section>
+					<p>
+						Once we have the <var>merge()</var> function, implementing
+						<var>merge_sort()</var> comes down to recursion:
+					</p>
+					<ol class="alg">
+						<li>
+							merge_sort(TYPE[] array, bool in_order()) -> TYPE array:
+						</li>
+						<ol>
+							<li>if (length(array) <= 1):</li>
+							<ol>
+								<li>return array;</li>
+							</ol>
+							<li>var uint start = 0</li>
+							<li>var uint middle = floor(length(array) / 2)</li>
+							<li>var uint end = length(array)</li>
+							<li>
+								TYPE left_array = merge_sort(clone(array, from:start,
+								to:middle), in_order())
+							</li>
+							<li>
+								TYPE right_array = merge_sort(clone(array, from:middle,
+								to:end), in_order())
+							</li>
+							<li>return merge(left_array, right_array, in_order())</li>
+						</ol>
+					</ol>
+				</div>
+				<div class="js">
+					<p>
+						Here's an implementation in JavaScript. Note that there are
+						several auxiliary functions used, namely the functions
+						<var>arrayClone()</var>, <var>floor()</var>, and
+						<var>merge()</var>.
+					</p>
+					<pre class="language-javascript"><code>
+						import append from "../utilities/append.js";
+						import arrayClone from "../utilities/arrayClone.js";
+						import floor from "../utilities/floor.js";
+						
+						const merge = (leftArray, rightArray, order = (a, b) => {return a < b}) => {
+							const result = [];
+							let iL = 0;
+							let iR = 0;
+							while (iL < leftArray.length && iR < rightArray.length) {
+								if (order(leftArray[iL],rightArray[iR])) {
+									append(result, leftArray[iL]);
+									iL++;
+								} else {
+									append(result, rightArray[iR]);
+									iR++;
+								}
+							}
+							while (iL < leftArray.length) {
+								append(result, leftArray[iL]);
+								iL++;
+							}
+							while (iR < rightArray.length) {
+								append(result, rightArray[iR]);
+								iR++;
+							}
+							return result;
+						}
+						
+						
+						const mergeSort = (list, order) => {
+							if (list.length <= 1) {
+								return list;
+							}
+							let mid   = floor(list.length / 2);
+							let left  = mergeSort(arrayClone(list, 0, mid), order);
+							let right = mergeSort(arrayClone(list, mid), order);
+							return merge(left, right, order);
+						};
+						
+						export default mergeSort;						
+					</code></pre>
+				</div>
+			</div>
 		</section>
 	</section>
+
+	<section id="quicksort">
+		<h3>Quick Sort</h3>
+		<p>Suppose we had the following unsorted array <var>A</var>:</p>
+		<figure class="block">
+			<div id="qsort0"></div>
+			<figcaption>The unsorted array <var>A</var></figcaption>
+		</figure>
+		<p>
+			First, we pick a random element in <var>A</var>. This is called the
+			<var>pivot</var>. To keep things simple, let's just say we pick the
+			first element, <var>5</var>. Mentally, we separate
+			<var>pivot</var> from the other elements. All the other elements are
+			in an array called <var>remains</var>.
+		</p>
+		<figure class="iblock">
+			<div id="qsort1"></div>
+			<div id="qsort2"></div>
+		</figure>
+		<figcaption>The unsorted array <var>A</var></figcaption>
+		<p>
+			Now we iterate over <var>remains</var>, comparing each element to the
+			pivot. If the current element is less than the pivot, we place it an
+			array called <var>left_of_pivot</var>, and if it's greater than the
+			pivot, we place the element in an array called
+			<var>right_of_pivot</var>. Making all of the comparisons, we end up
+			with the following:
+		</p>
+		<figure class="iblock">
+			<div id="qsort3"></div>
+			<div id="qsort4"></div>
+			<div id="qsort5"></div>
+		</figure>
+		<p>
+			Notice that all of the elements are in place with respect to the
+			pivot. This is how quicksort works. We pick a pivot, separate the
+			elements, go to the resulting sets, pick a pivot, separate the
+			elements, etc. So, we go the <var>left</var> set. We pick the first
+			element as the pivot again, and separate. This gives us:
+		</p>
+		<figure class="iblock">
+			<div id="qsort6"></div>
+			<div id="qsort7"></div>
+		</figure>
+		<p>
+			Comparing the pivot against each element in <var>remains</var>, we
+			get:
+		</p>
+		<figure class="iblock">
+			<div id="qsort8"></div>
+			<div id="qsort9"></div>
+			<div id="qsort10"></div>
+		</figure>
+		<p>
+			At this point, we're reached three singletons. And what do we know
+			about singletons? They're already sorted. Because these singletons
+			are already sorted, we merge them into a single collection:
+		</p>
+		<div id="qsort11"></div>
+		<p>
+			Now we set <var>pivot</var> back to our very first pivot,
+			<var>5</var>. This time, we have a sorted <var>left</var> and an
+			unsorted <var>right</var>:
+		</p>
+		<figure class="iblock">
+			<div id="qsort12"></div>
+			<div id="qsort13"></div>
+			<div id="qsort14"></div>
+		</figure>
+		<p>
+			So, we focus on the <var>right</var>. We pick the first element as
+			the pivot, and make the comparisons:
+		</p>
+		<figure class="iblock">
+			<div id="qsort15"></div>
+			<div id="qsort16"></div>
+			<div id="qsort17"></div>
+		</figure>
+		<p>Each singleton is sorted, so we merge:</p>
+		<div id="qsort18"></div>
+		<p>Going back to our very first pivot, we now have:</p>
+		<figure class="iblock">
+			<div id="qsort19"></div>
+			<div id="qsort20"></div>
+			<div id="qsort21"></div>
+		</figure>
+		<p>Merging all of the sets together, we get:</p>
+		<figure class="block">
+			<div id="qsort22"></div>
+			<figcaption>The sorted array <var>A</var></figcaption>
+		</figure>
+		<section id="implementation">
+			<h4>Implementation</h4>
+
+			<div class="tabs">
+				<ul>
+					<li>Pseudocode</li>
+					<li>JavaScript</li>
+				</ul>
+
+				<div class="ps">
+					<p>
+						To implement quicksort, we first need a
+						<var>partition()</var> function. This is the function we'll use
+						to select a pivot and separate smaller elements to the pivot's
+						left and larger elements to the pivot's right.
+					</p>
+					<ol class="alg">
+						<li>
+							pivot(TYPE[] array, uint start=0, uint end=array.length+1) ->
+							array[]:
+						</li>
+						<ol>
+							<li>TYPE let pivot = array[start]</li>
+							<li>uint let swapIndex = start;</li>
+							<li>for (let i = start + 1; i &lt; length(array); i++):</li>
+							<ol>
+								<li>if (pivot &gt; array[i]):</li>
+								<ol>
+									<li>swapIndex++</li>
+									<li>swap(array[swapIndex], array[i])</li>
+								</ol>
+							</ol>
+							<li>swap(array[start], array[swapIndex])</li>
+							<li>return array</li>
+						</ol>
+					</ol>
+					<p>
+						To help clarify the code above, consider the following trace
+						table:
+					</p>
+					<pre class="language-pseudo"><code>
+						+----------------------------------------+
+						| i = 1  | swapIndex = 0 | [5,9,4,3,1,7] |
+						|        | 5 > 9?        | => false      |
+						| i = 2  | swapIndex = 0 | [5,9,4,3,1,7] |
+						|        | 5 > 4?        | => true       |
+						| i = 2  | swapIndex = 1 | [5,9,4,3,1,7] | Swap: 9, 4
+						| i = 3  | swapIndex = 1 | [5,4,9,3,1,7] |
+						|        | 5 > 3?        | => true       |
+						| i = 3  | swapIndex = 2 | [5,4,9,3,1,7] | Swap: 9, 3
+						| i = 4  | swapIndex = 2 | [5,4,3,9,1,7] |
+						|        | 5 > 1?        | => true       |
+						| i = 4  | swapIndex = 3 | [5,4,3,9,1,7] | Swap: 9, 1
+						| i = 5  | swapIndex = 3 | [5,4,3,1,9,7] |
+						|        | 5 > 7?        | => false      |
+						+----------------------------------------+
+						|  breaking out of loop                  |
+						+----------------------------------------+
+						| start=0 | swapIndex = 3 |  Swap: 5, 1  |
+						------------------------------------------
+						|  Final  |         [1,4,3,5,9,7]        |
+						+----------------------------------------+
+					</code></pre>
+				</div>
+				<div class="js"></div>
+			</div>
+		</section>
+	</section>
+</section>
+
+<section id="non_comparison_sorts">
+	<h2>Non-Comparison Sorts</h2>
+	<p>
+		All of the algorithms we saw previously are examples of
+		<i>comparison sorts</i> &mdash; sorting algorithms were compare one
+		element against another.
+	</p>
+	<div id="radix0"></div>
 </section>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>

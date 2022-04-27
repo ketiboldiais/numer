@@ -360,7 +360,7 @@ def cpp_stringAlgorithms(request):
 	return render(request, "numerc/cpp/cpp_stringAlgorithms.html")
 
 def cpp_linked_list(request):
-	return render(request, "numerc/cpp/cpp_linked_list.html")
+	return render(request, "numerc/cpp/cpp_linked_list/cpp_linked_list.html")
 
 def cpp_circular_linked_lists(request):
 	return render(request, "numerc/cpp/cpp_circularLinkedLists.html")
@@ -378,7 +378,7 @@ def cpp_tree_theory(request):
 	return render(request, "numerc/cpp/cpp_tree_theory.html")
 
 def cpp_binary_trees(request):
-	return render(request, "numerc/cpp/cpp_binary_trees.html")
+	return render(request, "numerc/cpp/cpp_binary_trees/cpp_binary_trees.html")
 
 def cpp_hashTables(request):
 	return render(request, "numerc/cpp/cpp_hashTables.html")
@@ -431,9 +431,12 @@ def haskell_gettingStarted(request):
 def haskell_variables(request):
 	return render(request, "numerc/haskell/haskell_variables.html")
 
-#! Ruby Views (haskellv)
+#! Ruby Views (rubv)
 def ruby_intro(request):
 	return render(request, "numerc/ruby/ruby_preface.html")
+
+def ruby_basic_data(request):
+	return render(request, "numerc/ruby/basic_data/ruby_basic_data.html")
 
 #! Compiler Views (cmpv)
 def cmp_index(request):
@@ -470,6 +473,9 @@ def sys_devOps(request):
 #! Software Design Views (desv)
 def des_index(request):
 	return render(request, "numerc/des/des_index.html")
+
+def des_design(request):
+	return render(request, "numerc/des/design/design.html")
 
 def des_naming(request):
 	return render(request, "numerc/des/des_naming.html")

@@ -1,0 +1,97 @@
+{% load static %}
+
+<h2>Length of a Linked List</h2>
+<p>
+	One particularly useful operation is to count the number of nodes in a
+	linked list. This will return the <b>length</b> of a linked list. Say we
+	had the following linked list:
+</p>
+<div id="ll_length"></div>
+<p>Implementing the linked list above:</p>
+<pre class="language-cpp"><code>
+		#include &lt;iostream&gt;
+
+		struct Node {
+			int data;
+			Node* next;
+		};
+		
+		Node* newNode(int data) {
+			Node* node       = new Node;
+			      node->data = data;
+			      node->next = 0;
+			return node;
+		}
+		
+		int main() {
+			Node* root = 0;            // create root
+			Node* n1   = newNode(8);   // create nodes
+			Node* n2   = newNode(3);
+			Node* n3   = newNode(7);
+			Node* n4   = newNode(12);
+			Node* n5   = newNode(9);
+		
+			root     = n1;  // link nodes
+			n1->next = n2;
+			n2->next = n3;
+			n3->next = n4;
+			n4->next = n5;
+			n5->next = 0;
+		}
+	</code></pre>
+<p>
+	There are five nodees in the linked list. Thus, we should expect our
+	count to return 5.
+</p>
+<p>
+	Counting the number of nodes in a linked list is similar to counting the
+	number of elements in an array. We can do so iteratively with a
+	<b>count</b> variable:
+</p>
+<pre class="language-cpp"><code>
+		int length(Node* p) {
+			int count = 0;
+			while(p != 0) {
+				count++;
+				p = p->next;
+			}
+			return count;
+		}
+	</code></pre>
+<p>
+	The time complexity for this procedure is straightforward. We're
+	traversing through ${n}$ nodes, incrementing <var>count</var>. Hence, we
+	have a time complexity of ${O(n).}$
+</p>
+<p>
+	And the space complexity? Constant. This is a single function call, and
+	each of the variables used take a fixed amount of memory. Accordingly,
+	this approach has a space complexity of ${O(1).}$
+</p>
+<p>
+	<span class="topic">Recursive Implementation.</span> As always, we can
+	implement the same function recursively:
+</p>
+<pre class="language-cpp"><code>
+		int length(Node* p) {
+			if (p == 0) {
+				return 0;
+			} else {
+				return length(p->next) + 1;
+			}
+		}
+	</code></pre>
+<p>
+	As with all recursive functions, we start with a base case. The base case
+	is a list of length ${0}$ &mdash; ${P(0),}$ the empty list. If the list
+	contains one element, then it is a list of length ${1}$ &mdash; ${P(1) =
+	P(0) + 1.}$ And if the list contains two elements, then it is a list of
+	length ${2}$ &mdash; ${P(2) = P(1) + 1 = (P(0) + 1) + 1.}$
+</p>
+<p>
+	The function above captures this induction. If the
+	<var>next</var> field is ${0,}$ then we've reached the end of a list; the
+	list of length ${0.}$ However, if the <var>next</var> field is not ${0,}$
+	then the list is not empty. In which case we must continue until we reach
+	the end of the list.
+</p>

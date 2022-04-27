@@ -6,40 +6,14 @@
 <h1>Doubly Linked Lists</h1>
 <section id="doubly_linked_lists">
 	<p>
-		All of the linked lists we've seen have been
+		In the previous section, we saw
 		<b>singly-linked lists</b> &mdash; linked lists whose nodes are linked
-		with a single link. We now examine <b>doubly-linked lists</b>. These
-		are lists whose nodes are linked with <em>two</em> links.
+		with just one link, implemented with a <var>next</var> pointer. We now
+		examine <b>doubly-linked lists</b>. These are lists whose nodes are
+		linked with <em>two</em> links, implemented with a <var>next</var> and
+		<var>prev</var> pointer:
 	</p>
-	<figure>
-		<div class="dbLL">
-			<ul>
-				<li>0</li>
-				<li>6</li>
-				<li>0x2</li>
-			</ul>
-			<ul>
-				<li>0x1</li>
-				<li>3</li>
-				<li>0x3</li>
-			</ul>
-			<ul>
-				<li>0x2</li>
-				<li>9</li>
-				<li>0x4</li>
-			</ul>
-			<ul>
-				<li>0x3</li>
-				<li>7</li>
-				<li>0x5</li>
-			</ul>
-			<ul>
-				<li>0x4</li>
-				<li>5</li>
-				<li>0</li>
-			</ul>
-		</div>
-	</figure>
+	<div id="dbl0"></div>
 	<p>
 		In a singly-linked list, every node has a pointer to the next node.
 		With double linked lists, each node has a pointer to the next node, as
@@ -50,13 +24,13 @@
 	<ol>
 		<li>
 			Implementing navigation systems where a forward and back feature is
-			desired. For example, on the browser, we can move forward and back in
+			desired. For example, on a browser, we can move forward and back in
 			our history.
 		</li>
 		<li>
 			Executing past and future procedures. Most interactive programs like
-			text editors have an <i>undo</i> and <i>redo</i> function. That
-			function requires going forward and back on the timeline of changes.
+			text editors have <i>undo</i> and <i>redo</i> functions. These
+			functions require going forward and back on the timeline of changes.
 		</li>
 		<li>
 			Recording data associated with time. For example, manipulating cache
@@ -77,35 +51,62 @@
 		the doubly-linked list node is comprised of a record with three fields:
 		<var>prev</var> (a pointer to the previous node), <var>data</var> (the
 		data stored in the node), and <var>next</var> (a pointer to the next
-		node):
+		node). Accordingly, the record would look like:
 	</p>
-	<figure>
-		<div class="dbLL">
-			<ul>
-				<li>prev</li>
-				<li>data</li>
-				<li>next</li>
-			</ul>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+		</ul>
+		<div class="pseudo">
+			<pre class="language-pseudo"><code>
+				class Node:
+					Node* prev
+					TYPE data
+					Node* next
+			</code></pre>
 		</div>
-	</figure>
-	<p>Accordingly, in C, the record would look like:</p>
-	<pre class="language-c"><code>
-		struct Node {
-			struct Node* prev;
-			int data;
-			struct Node* next;
-		};
-	</code></pre>
+		<div class="c">
+			<pre class="language-c"><code>
+				struct Node {
+					struct Node* prev;
+					int data;
+					struct Node* next;
+				};
+			</code></pre>
+		</div>
+	</div>
 	<p>We can then write a function for instantiating new nodes:</p>
-	<pre class="language-c"><code>
-		struct Node* newNode(int newData) {
-			struct Node* node = malloc(sizeof(struct Node));
-			(*node).prev = NULL;
-			(*node).data = newData;
-			(*node).next = NULL;
-			return node;
-		} 
-	</code></pre>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+		</ul>
+		<div class="pseudo">
+			<pre class="language-pseudo"><code>
+				class Node:
+					Node* prev
+					TYPE  data
+					Node* next
+
+					Node(val):
+						prev = null
+						data = val
+						next = null
+			</code></pre>
+		</div>
+		<div class="c">
+			<pre class="language-c"><code>
+				struct Node* newNode(int newData) {
+					struct Node* node = malloc(sizeof(struct Node));
+					(*node).prev = NULL;
+					(*node).data = newData;
+					(*node).next = NULL;
+					return node;
+				} 
+			</code></pre>
+		</div>
+	</div>
 	<p>
 		With the function above, we can begin creating new nodes. The next step
 		is to link them. Suppose we want to implement the doubly-linked list
@@ -134,31 +135,69 @@
 			n_i)_d^{\circ} $$
 		</figure>
 	</div>
-	<pre class="language-c"><code>
-		int main() {
-			struct Node* root = NULL;
-			struct Node* n1 = newNode(1);
-			struct Node* n2 = newNode(2);
-			struct Node* tailend = newNode(3);
-			return 0;
-		}
-	</code></pre>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+		</ul>
+		<div class="pseudo">
+			<pre class="language-pseudo"><code>
+				Node* root = null
+				Node* node1 = new Node(1)
+				Node* node2 = new Node(2)
+				Node* tail  = new Node(3)
+			</code></pre>
+		</div>
+		<div class="c">
+			<pre class="language-c"><code>
+				int main() {
+					struct Node* root = NULL;
+					struct Node* n1 = newNode(1);
+					struct Node* n2 = newNode(2);
+					struct Node* tailend = newNode(3);
+					return 0;
+				}
+			</code></pre>
+		</div>
+	</div>
 	<p>Then, we link the nodes:</p>
-	<pre class="language-c"><code>
-		int main() {
-			struct Node* root = NULL;
-			struct Node* n1 = newNode(1);
-			struct Node* n2 = newNode(2);
-			struct Node* tailend = newNode(3);
-		
-			// linking
-			root = n1;
-			(*n1).next = n2;
-			(*n2).prev = n1;
-			(*n2).next = tailend;
-			(*tailend).prev = n2; 
-		}
-	</code></pre>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+		</ul>
+		<div class="pseudo">
+			<pre class="language-pseudo"><code>
+				Node* root  = null
+				Node* node1 = new Node(1)
+				Node* node2 = new Node(2)
+				Node* tail  = new Node(3)
+
+				root       = n1
+				n1->next   = n1
+				n2->prev   = n1
+				n2->next   = tail
+				tail->prev = n2
+			</code></pre>
+		</div>
+		<div class="c">
+			<pre class="language-c"><code>
+				int main() {
+					struct Node* root = NULL;
+					struct Node* n1 = newNode(1);
+					struct Node* n2 = newNode(2);
+					struct Node* tailend = newNode(3);
+				
+					// linking
+					root = n1;
+					(*n1).next = n2;
+					(*n2).prev = n1;
+					(*n2).next = tailend;
+					(*tailend).prev = n2; 
+				}
+			</code></pre>
+		</div>
+	</div>
 	<p>
 		To test whether this works, let's write two functions,
 		<var>printForward()</var> and <var>printBackward()</var>:
@@ -883,6 +922,12 @@
 </section>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="../../../static/numerc/dbLinkedList.js"></script>
-<script src="../../../static/numerc/networkGraph.js"></script>
+<script
+	type="module"
+	src="../../../../static/numerc/csmd/csmd.mjs"
+></script>
+<script
+	type="module"
+	src="../../../../static/numerc/scripts/cpp_doubly_linked_list.js"
+></script>
 {% endblock %}

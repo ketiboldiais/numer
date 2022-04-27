@@ -1,0 +1,202 @@
+{% load static %}
+
+
+<h2>Cons, Car, Cdr, &amp; Rac</h2>
+<p>
+	Readers with a background in some Lisp descendant &mdash; Common Lisp,
+	Scheme, Racket, etc. &mdash; are likely familiar with the operations
+	<var>cons</var>, <var>car</var>, and <var>cdr</var>. In this section,
+	we'll examine some implementations of this function, alongside a few
+	extras, namely <var>rac</var> and <var>snoc</var>.
+</p>
+
+<section id="cons">
+	<h3>Cons</h3>
+	<p>
+		The <var>cons</var> operation is the same operation as
+		<var>append()</var>. Writing <var>cons(${n}$)</var> inserts ${n}$ to
+		the tail of the list.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>list.cons(TYPE element):</li>
+				<ol>
+					<li>Node newNode = new Node(element);</li>
+					<li>if (list->head = null):</li>
+					<ol>
+						<li>list->head = newNode;</li>
+						<li>list->tail = list->head;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>list->tail->next = newNode;</li>
+						<li>list->tail = newNode;</li>
+					</ol>
+					<li>list->length++;</li>
+					<li>return list;</li>
+				</ol>
+			</ol>
+		</div>
+		<div class="js">
+			<p>Here's an implementation in JavaScript:</p>
+			<pre class="language-javascript"><code>
+				cons(data) {
+					const newNode = new Node(data);
+					if (!this.#head) {
+						this.#head = newNode;
+						this.#tail = this.#head;
+					} else {
+						this.#tail.next = newNode;
+						this.#tail = newNode;
+					}
+					this.#length++;
+					return this;
+				}
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="snoc">
+	<h3>Snoc</h3>
+	<p>
+		The <var>snoc</var> operation is the same as the
+		<var>prepend()</var> operation. When we write <var>snoc(${n}$)</var>,
+		we insert the element ${n}$ to the head of the list.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>list.snoc(TYPE element):</li>
+				<ol>
+					<li>Node newNode := new Node(element)</li>
+					<li>if (list->head = null):</li>
+					<ol>
+						<li>list->head := newNode</li>
+						<li>list->tail := list->head</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>newNode->next = list->head</li>
+						<li>list->head = newNode</li>
+					</ol>
+					<li>return list</li>
+				</ol>
+			</ol>
+		</div>
+		<div class="js">
+			<pre class="language-javascript"><code>
+				snoc(data) {
+					const newNode = new Node(data);
+					if (!this.#head) {
+						this.#head = newNode;
+						this.#tail = this.#head;
+					} else {
+						newNode.next = this.#head;
+						this.#head = newNode;
+					}
+					this.#length++;
+					return this;
+				}					
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="cdr">
+	<h3>Cdr</h3>
+	<p>
+		The <var>cdr</var> operation &mdash; pronounced
+		<q>coo-duhr</q> &mdash; removes returns the first element in the
+		list.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo"></div>
+		<div class="js">
+			<pre class="language-javascript"><code>
+				cdr() {
+					if (this.length === 0) {
+						return null;
+					} else {
+						this.#head = this.#head.next;
+						this.#length--;
+					}
+					if (this.#length === 0) {
+						this.#tail = null;
+					}
+					return this;
+				}
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="rdc">
+	<h3>Rdc</h3>
+	<p>
+		The <var>rdc</var> operation (pronounced <q>ruh-dook</q>), removes
+		the last element of the list.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>list.cons(TYPE element):</li>
+				<ol>
+					<li>if (list->head = null):</li>
+					<ol>
+						<li>return null;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>let d := list->head</li>
+						<li>let t := d</li>
+						<li>while (d->next):</li>
+						<ol>
+							<li>t := d</li>
+							<li>d := d->next</li>
+						</ol>
+						<li>list->tail := t</li>
+						<li>list->tail->next = null</li>
+						<li>return list</li>
+					</ol>
+				</ol>
+			</ol>
+		</div>
+		<div class="js">
+			<p>Here's an implementation in JavaScript:</p>
+			<pre class="language-javascript"><code>
+				rdc() {
+					if (!this.#head) {
+						return null;
+					}
+					let d = this.#head; 
+					let t = d;
+					while (d.next) {
+						t = d;
+						d = d.next;
+					}
+					this.#tail = t;
+					this.#tail.next = null;
+					return this;
+				}		
+			</code></pre>
+		</div>
+	</div>
+</section>

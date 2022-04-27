@@ -1,0 +1,111 @@
+{% load static %}
+<p>We're given the following tree:</p>
+<div id="tree_insert_1"></div>
+<p>The challenge:</p>
+<p class="bq">
+	Insert a node containing the value <var>38</var> if, and only if, the
+	tree does not contain the value <var>38</var>.
+</p>
+<p>
+	Now that we know how to search a binary tree, this problem isn't that
+	complicated. All we have to do is search the binary tree for the value
+	<var>38</var>. If the value <var>38</var> doesn't exist, we insert the
+	node at the position that resulted in <var>root = NULL</var>.
+</p>
+<p>
+	Searching for the value <var>38</var>, we end up at the
+	<var>node(40)</var>. The point where <var>root = NULL</var> is when we
+	assigned <var>root</var> the value <var>node(40).left_child</var>, which
+	does not exist. Thus, the value <var>38</var> must be inserited as the
+	left-child of <var>node(40)</var>.
+</p>
+<p>
+	To implement the algorithm, we can use a tail pointer, call it
+	<var>t</var>, and a driver pointer, <var>d</var>. As long as
+	<var>d</var> moves, <var>t</var> follows. When <var>d</var> reaches the
+	leaf <var>node(40)</var>, <var>t</var> is at <var>node(50)</var>. Because
+	<var>38 ≠ 40</var>, <var>t</var> moves to the left-child of
+	<var>40</var>, which is <var>NULL</var>. All that's left to do is refer
+	to <var>d</var>'s left-child &mdash; pointed at by <var>t</var> &mdash;
+	to create and insert the new node <var>node(38)</var>. The procedure:
+</p>
+<div class="tabs">
+	<ul>
+		<li>Pseudocode</li>
+		<li>JavaScript</li>
+	</ul>
+	<div class="pseudo">
+		<pre class="language-pseudo"><code>
+			Insert(BST tree, TYPE data):
+				let newNode = new Node(data)
+				if (tree->root is null):
+					tree->root = newNode
+				else
+					let d = tree->root
+					let t = null
+					while (d isnt null):
+						t = d
+						if (newNode->data === d->data):
+							return tree
+						else if (newNode->data &lt; d->data):
+							d = d->left
+						else:
+							d = d->right
+					if (newNode->data &lt; t->data):
+						t->left = newNode
+					else:
+						t->right = newNode
+				return tree
+		</code></pre>
+	</div>
+	<div class="js">
+		<pre class="language-javascript"><code>
+			insert(val) {
+				let newNode = new Node(val);
+				if (this.root === null) {
+					this.root = newNode;
+				} else {
+					let d = this.root;
+					let t = null;
+					while (d !== null) {
+						t = d;
+						if (val === d.data) {
+							return this;
+						} else if (val &lt; d.data) {
+							d = d.left;
+						} else {
+							d = d.right;
+						}
+					}
+					if (val &lt; t.data) {
+						t.left = newNode;
+					} else {
+						t.right = newNode;
+					}
+				}
+				return this;
+			}
+		</code></pre>
+	</div>
+</div>
+<p>We can also implement this recursively:</p>
+<ol class="alg">
+	<li>Node* insert(Node* p, int key):</li>
+	<ol>
+		<li>Node *t;</li>
+		<li>if (p == NULL):</li>
+		<ol>
+			<li>t = new Node(key);</li>
+			<li>return t;</li>
+		</ol>
+		<li>if (key &lt; (*p).data):</li>
+		<ol>
+			<li>(*p).left_child = insert((*p).left_child, key);</li>
+		</ol>
+		<li>else if (key &gt; (*p).data)</li>
+		<ol>
+			<li>(*p).right_child = insert((*p).right_child, key);</li>
+		</ol>
+		<li>return t;</li>
+	</ol>
+</ol>

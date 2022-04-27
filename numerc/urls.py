@@ -252,6 +252,7 @@ urlpatterns = [
 
 	# Ruby paths
 	path("ruby_intro", views.ruby_intro, name="ruby_intro"),
+	path("ruby_basic_data", views.ruby_basic_data, name="ruby_basic_data"),
 
 	# Compilers Paths
 	path("cmp_index", views.cmp_index, name="cmp_index"),
@@ -294,6 +295,7 @@ urlpatterns = [
 
 	path("des_licensing", views.des_licensing, name="des_licensing"),
 
+	path("des_design", views.des_design, name="des_design"),
 ]
 
 

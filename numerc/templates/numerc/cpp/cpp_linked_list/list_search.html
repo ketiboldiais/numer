@@ -1,0 +1,241 @@
+{% load static %}
+<h2>Searching a Linked List</h2>
+<p>
+	As we saw with arrays, we can search through a linked list. The catch,
+	however, is that we cannot employ binary search. This is because with
+	the linked list, we do not have indices. There are only pointers. The
+	only way for us to know when we've reached some element is by
+	traversing. And because we have no choice but to traverse, we cannot
+	access the
+	<q>middle node</q> in constant time. As such, binary search on a linked
+	list is no better than a linear search.
+</p>
+<p>That said, suppose we had the following linked list:</p>
+<div id="search_ll_1"></div>
+<p>
+	Now suppose our query is <var>2</var>. From the linked list above,
+	that's the fourth node. Searching for our query is similar to linear
+	searching through an array &mdash; we just have to pass the value we
+	want found, and a pointer to the linked list.
+</p>
+<pre class="language-cpp"><code>
+	Node* linearSearch(Node* p, int query) {
+		while(p != 0) {
+			if (p->data == query) {
+				return p;
+			}
+			p = p->next;
+		}
+		return 0;
+	}
+</code></pre>
+<p>
+	With the implementation above, we're returning a pointer to the query
+	if it's found. Otherwise, we return <var>0</var>, in which case the
+	pointer to the query is null. This, of course, is entirely arbitrary.
+	We could return <var>true</var>, <var>false</var>, <var>1</var>,
+	<var>0</var>, or print some output to the console.
+</p>
+<p>Testing with the diagram above:</p>
+<pre class="language-cpp"><code>
+	#include &lt;iostream&gt;
+
+	struct Node {
+		int data;
+		Node* next;
+	};
+	
+	Node* newNode(int data) {
+		Node* node = new Node;
+					node->data = data;
+					node->next = 0;
+		return node;
+	}
+	
+	Node* linearSearch(Node* p, int query) {
+		while(p != 0) {
+			if (p->data == query) {
+				return p;
+			}
+			p = p->next;
+		}
+		return 0;
+	}
+	
+	int main() {
+		Node* root        = 0;
+		Node* node1       = newNode(3);
+					root        = node1;
+		Node* node2       = newNode(9);
+					node1->next = node2;
+		Node* node3       = newNode(5);
+					node2->next = node3;
+		Node* node4       = newNode(2);
+					node3->next = node4;
+		Node* node5       = newNode(4);
+					node4->next = node5;
+		Node* list        = root;
+		Node* query       = linearSearch(list, 2);
+	
+		std::cout &lt;&lt; query->data &lt;&lt; std::endl;
+	
+		return 0;
+	}
+</code></pre>
+<pre class="language-bash"><code>
+	2
+</code></pre>
+<p>
+	As we saw with arrays, however, we can improve linear search through
+	<i>transposition</i> or <i>move-to-head</i>. Recall that with
+	transposition, whenever we search for a particular element, the element
+	moves closer to the beginning. And with move-to-head, the element
+	containing the key moves immediately to the head after a successful
+	search.
+</p>
+<p>
+	It turns out that transposition isn't a very good idea, but before we
+	address why, let's consider move-to-head, the preferred approach with
+	linked lists. To start, let's consider the following linked list,
+	supposing the key we're searching for is <var>7</var>:
+</p>
+<div id="search_ll_2"></div>
+<p>
+	This is the third node, and we want to make it the list's head. As we
+	saw with our implementation of linear search earlier, we used a
+	temporary pointer to traverse the linked list, so as to check for
+	equality to our key. Thus, conducting linear search on our linked list,
+	the temporary pointer, at some point, reaches the node storing
+	<var>7</var>. As such, once we reach the node storing <var>7</var>, we
+	want to bring the node to the head.
+</p>
+<p>
+	To do so, we must modify the second node, since the third node will
+	move. In this case, the second node &mdash; the node right before our
+	key &mdash; should point the third node &mdash; the node right after
+	our key. To do so, we must have a pointer on the node immediately
+	before our key as well.
+</p>
+<div id="search_ll_3"></div>
+<p>
+	How do we get a pointer on the previous node? By using a second
+	pointer. Thus, our linear search will use two pointers &mdash;
+	<var>p</var>, the <b>traverser</b>, and <var>q</var>, the
+	<b>tailer</b>, that follows immediately behind <var>p</var>. Then, the
+	two pointers work together as follows:
+</p>
+<ol>
+	<li>
+		<var>p</var> begins traversing, starting at the first node. If the
+		key is there, stop. Return the node's address. Otherwise, proceed to
+		the next step. In this case, it is not.
+	</li>
+	<li>
+		Since the first node is not the key, <var>p</var> moves to the second
+		node <em>and</em> <var>q</var> points to the first node.
+	</li>
+	<li>
+		Once again, we found no match, so <var>p</var> moves to the next node
+		&mdash; the third node &mdash; and <var>q</var> moves to the next
+		node, the second node. At this point we've found our key.
+	</li>
+</ol>
+<p>
+	Notice the end result. We have a pointer to the node just before the
+	node containing the key, and a pointer to the node containing the key.
+	This is exactly where we want to be. The implementation:
+</p>
+<pre class="language-cpp"><code>
+	Node* linearSearch(Node* root, int key) {
+		Node* current = root;
+		Node* previous = 0;
+		while (current != 0) {
+			if (current->data == key) {
+				previous->next = current->next;
+				current->next = root;
+				root = current;
+				return root;
+			}
+			previous = current;
+			current = current->next;
+		}
+		return 0;
+	}
+</code></pre>
+<p>Testing:</p>
+<pre class="language-cpp"><code>
+	#include &lt;iostream&gt;
+
+	struct Node {
+		int data;
+		Node* next;
+	};
+	
+	Node* newNode(int data) {
+		Node* node       = new Node;
+					node->data = data;
+					node->next = 0;
+		return node;
+	}
+	
+	void print(Node* p) {
+		while(p != 0) {
+			std::cout &lt;&lt; p->data &lt;&lt; " --> ";
+			p = p->next;
+		}
+		std::cout &lt;&lt; "\n";
+	}
+	
+	Node* linearSearch(Node* root, int key) {
+		Node* current  = root;
+		Node* previous = 0;
+		while (current != 0) {
+			if (current->data == key) {
+				previous->next = current->next;
+				current->next  = root;
+				root           = current;
+				return root;
+			}
+			previous = current;
+			current  = current->next;
+		}
+		return 0;
+	}
+	
+	int main() {
+		Node* root        = 0;
+		Node* node1       = newNode(3);
+					root        = node1;
+		Node* node2       = newNode(5);
+					node1->next = node2;
+		Node* node3       = newNode(7);
+					node2->next = node3;
+		Node* node4       = newNode(9);
+					node3->next = node4;
+		print(root);
+		Node* key = linearSearch(root, 7);
+		std::cout &lt;&lt; key->data &lt;&lt; std::endl;
+		print(key);
+		return 0;
+	}
+</code></pre>
+<pre class="language-bash"><code>
+	3 --> 5 --> 7 --> 9 --> 
+	7
+	7 --> 3 --> 5 --> 9 --> 
+</code></pre>
+<p>
+	<span class="topic">Recursive Implementation.</span> We could've also
+	implemented the linear search function recursively:
+</p>
+<pre class="language-cpp"><code>
+	Node* recursiveLinearSearch(Node* p, int query) {
+		if (p == 0) {
+			return 0;
+		} else if (query == p->data) {
+			return p;
+		} else {
+			return recursiveLinearSearch(p->next, query);
+		}
+	}
+</code></pre>

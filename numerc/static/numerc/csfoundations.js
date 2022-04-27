@@ -144,6 +144,28 @@ function pseudocode() {
 	}
 }
 
+function pseudocodeHightlightComments() {
+	const pseudosource_DIVS = document.querySelectorAll("section.pseuds");
+	for (let i = 0; i < pseudosource_DIVS.length; i++) {
+		let pseudosource_DIV = pseudosource_DIVS[i];
+		const pseudosources_olAlg_LI =
+			pseudosource_DIV.querySelectorAll("ol.alg li");
+		const pseudosources_olAlgC_LI =
+			pseudosource_DIV.querySelectorAll("ol.algc li");
+		for (let j = 0; j < pseudosources_olAlg_LI.length; j++) {
+			pseudosources_olAlg_LI[j].addEventListener("click", () => {
+				pseudosources_olAlgC_LI[j].classList.toggle("highlight_match");
+				pseudosources_olAlg_LI[j].classList.toggle("highlight_match");
+			});
+			pseudosources_olAlgC_LI[j].addEventListener("click", () => {
+				pseudosources_olAlg_LI[j].classList.toggle("highlight_match");
+				pseudosources_olAlgC_LI[j].classList.toggle("highlight_match");
+			});
+		}
+	}
+}
+
+
 // Main
 (function () {
 	showNav();
@@ -154,5 +176,6 @@ function pseudocode() {
 	referenceListHeader();
 	marginNote();
 	pseudocode();
+	pseudocodeHightlightComments();
 	tabSwitch();
 })();

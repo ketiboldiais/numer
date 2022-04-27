@@ -1,4 +1,3 @@
-import { cdemo } from "../CDemo.mjs";
 import * as csmd from "../csmd/csmd.mjs";
 
 const tree_intro = new csmd.Tree({
@@ -487,7 +486,7 @@ const abt1 = new csmd.Tree({
 	],
 }).render();
 
-const abt1_array = new csmd.StaticArray({
+const abt1_array = new csmd.Sequence({
 	id: "abt1_array",
 	indexed: true,
 	data: [
@@ -501,7 +500,7 @@ const abt1_array = new csmd.StaticArray({
 	],
 }).render();
 
-const abt1_array_level1 = new csmd.StaticArray({
+const abt1_array_level1 = new csmd.Sequence({
 	id: "abt1_array_level1",
 	indexed: true,
 	data: [
@@ -515,7 +514,7 @@ const abt1_array_level1 = new csmd.StaticArray({
 	],
 }).render();
 
-const abt1_array_level2 = new csmd.StaticArray({
+const abt1_array_level2 = new csmd.Sequence({
 	id: "abt1_array_level2",
 	indexed: true,
 	data: [
@@ -529,7 +528,7 @@ const abt1_array_level2 = new csmd.StaticArray({
 	],
 }).render();
 
-const abt1_array_level3 = new csmd.StaticArray({
+const abt1_array_level3 = new csmd.Sequence({
 	id: "abt1_array_level3",
 	indexed: true,
 	data: [
@@ -543,11 +542,13 @@ const abt1_array_level3 = new csmd.StaticArray({
 	],
 }).render();
 
-const lbt1 = {
+const lbt1 = new csmd.Tree({
 	id: "lbt1",
 	width: 350,
 	height: 200,
-	treeData: [
+	container_width: 50,
+	container_height: 25,
+	data: [
 		{ child: "A", parent: "" },
 		{ child: "B", parent: "A" },
 		{ child: "C", parent: "A" },
@@ -556,8 +557,7 @@ const lbt1 = {
 		{ child: "F", parent: "C" },
 		{ child: "G", parent: "C" },
 	],
-};
-cdemo.renderTree(lbt1);
+}).render();
 
 const perfect_abt1 = new csmd.Tree({
 	id: "perfect_abt1",
@@ -576,7 +576,7 @@ const perfect_abt1 = new csmd.Tree({
 	],
 }).render();
 
-const perfect_abt1_array = new csmd.StaticArray({
+const perfect_abt1_array = new csmd.Sequence({
 	id: "perfect_abt1_array",
 	indexed: true,
 	data: [
@@ -607,7 +607,7 @@ const complete_abt1 = new csmd.Tree({
 	],
 }).render();
 
-const complete_abt1_array = new csmd.StaticArray({
+const complete_abt1_array = new csmd.Sequence({
 	id: "complete_abt1_array",
 	indexed: true,
 	data: [
@@ -638,7 +638,7 @@ const incomplete_abt1 = new csmd.Tree({
 	],
 }).render();
 
-const incomplete_abt1_array = new csmd.StaticArray({
+const incomplete_abt1_array = new csmd.Sequence({
 	id: "incomplete_abt1_array",
 	indexed: true,
 	data: [
@@ -672,7 +672,7 @@ const _3node_preorder_visit = new csmd.Tree({
 	container_width: 30,
 	container_height: 16,
 	data: [
-		{ child: "a", parent: "", focus: "salmon", annotate: 1 },
+		{ child: "a", parent: "", focus: { fill: "salmon" }, annotate: 1 },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
 	],
@@ -686,7 +686,7 @@ const _3node_preorder_left_subtree = new csmd.Tree({
 	container_height: 16,
 	data: [
 		{ child: "a", parent: "", annotate: 1 },
-		{ child: "b", parent: "a", focus: "salmon", annotate: 2 },
+		{ child: "b", parent: "a", focus: { fill: "salmon" }, annotate: 2 },
 		{ child: "c", parent: "a" },
 	],
 }).render();
@@ -700,7 +700,7 @@ const _3node_preorder_right_subtree = new csmd.Tree({
 	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", annotate: 2 },
-		{ child: "c", parent: "a", focus: "salmon", annotate: 3 },
+		{ child: "c", parent: "a", focus: { fill: "salmon" }, annotate: 3 },
 	],
 }).render();
 
@@ -730,251 +730,233 @@ const _2noderight_preorder = new csmd.Tree({
 	],
 }).render();
 
-const _3node_inorder = {
+const _3node_inorder = new csmd.Tree({
 	id: "_3node_inorder",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(_3node_inorder);
+}).render();
 
-const _3node_inorder_visit = {
+const _3node_inorder_visit = new csmd.Tree({
 	id: "_3node_inorder_visit",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a", focus: "salmon", annotate: 1 },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(_3node_inorder_visit);
+}).render();
 
-const _3node_inorder_visit_root = {
+const _3node_inorder_visit_root = new csmd.Tree({
 	id: "_3node_inorder_visit_root",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", focus: "salmon", annotate: 2 },
 		{ child: "b", parent: "a", annotate: 1 },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(_3node_inorder_visit_root);
+}).render();
 
-const _3node_inorder_visit_right = {
+const _3node_inorder_visit_right = new csmd.Tree({
 	id: "_3node_inorder_visit_right",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 2 },
 		{ child: "b", parent: "a", annotate: 1 },
 		{ child: "c", parent: "a", focus: "salmon", annotate: 3 },
 	],
-};
-cdemo.renderTree(_3node_inorder_visit_right);
+}).render();
 
-const _2nodeleft_inorder = {
+const _2nodeleft_inorder = new csmd.Tree({
 	id: "_2nodeleft_inorder",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 2 },
 		{ child: "b", parent: "a", annotate: 1 },
 		{ child: "c", parent: "a", display: "none" },
 	],
-};
-cdemo.renderTree(_2nodeleft_inorder);
+}).render();
 
-const _2noderight_inorder = {
+const _2noderight_inorder = new csmd.Tree({
 	id: "_2noderight_inorder",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", display: "none" },
 		{ child: "c", parent: "a", annotate: 2 },
 	],
-};
-cdemo.renderTree(_2noderight_inorder);
+}).render();
 
-const _3node_post_order_tree = {
+const _3node_post_order_tree = new csmd.Tree({
 	id: "_3node_post_order_tree",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(_3node_post_order_tree);
+}).render();
 
-const _3node_post_order_tree_visit_left = {
+const _3node_post_order_tree_visit_left = new csmd.Tree({
 	id: "_3node_post_order_tree_visit_left",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a", focus: "salmon", annotate: 1 },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(_3node_post_order_tree_visit_left);
+}).render();
 
-const _3node_post_order_tree_visit_right = {
+const _3node_post_order_tree_visit_right = new csmd.Tree({
 	id: "_3node_post_order_tree_visit_right",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a", annotate: 1 },
 		{ child: "c", parent: "a", focus: "salmon", annotate: 2 },
 	],
-};
-cdemo.renderTree(_3node_post_order_tree_visit_right);
+}).render();
 
-const _3node_post_order_tree_visit_root = {
+const _3node_post_order_tree_visit_root = new csmd.Tree({
 	id: "_3node_post_order_tree_visit_root",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", focus: "salmon", annotate: 3 },
 		{ child: "b", parent: "a", annotate: 1 },
 		{ child: "c", parent: "a", annotate: 2 },
 	],
-};
-cdemo.renderTree(_3node_post_order_tree_visit_root);
+}).render();
 
-const left_skew_post_order = {
+const left_skew_post_order = new csmd.Tree({
 	id: "left_skew_post_order",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 2 },
 		{ child: "b", parent: "a", annotate: 1 },
 		{ child: "c", parent: "a", display: "none" },
 	],
-};
-cdemo.renderTree(left_skew_post_order);
+}).render();
 
-const right_skew_post_order = {
+const right_skew_post_order = new csmd.Tree({
 	id: "right_skew_post_order",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 2 },
 		{ child: "b", parent: "a", display: "none" },
 		{ child: "c", parent: "a", annotate: 1 },
 	],
-};
-cdemo.renderTree(right_skew_post_order);
+}).render();
 
-const genverse_gen1 = {
+const genverse_gen1 = new csmd.Tree({
 	id: "genverse_gen1",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", focus: "salmon", annotate: 1 },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(genverse_gen1);
+}).render();
 
-const genverse_gen2_left = {
+const genverse_gen2_left = new csmd.Tree({
 	id: "genverse_gen2_left",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", focus: "salmon", annotate: 2 },
 		{ child: "c", parent: "a" },
 	],
-};
-cdemo.renderTree(genverse_gen2_left);
+}).render();
 
-const genverse_gen2_right = {
+const genverse_gen2_right = new csmd.Tree({
 	id: "genverse_gen2_right",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", annotate: 2 },
 		{ child: "c", parent: "a", focus: "salmon", annotate: 3 },
 	],
-};
-cdemo.renderTree(genverse_gen2_right);
+}).render();
 
-const genverse_gen2_skew_left = {
+const genverse_gen2_skew_left = new csmd.Tree({
 	id: "genverse_gen2_skew_left",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", annotate: 2 },
 		{ child: "c", parent: "a", display: "none" },
 	],
-};
-cdemo.renderTree(genverse_gen2_skew_left);
+}).render();
 
-const genverse_gen2_skew_right = {
+const genverse_gen2_skew_right = new csmd.Tree({
 	id: "genverse_gen2_skew_right",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", display: "none" },
 		{ child: "c", parent: "a", annotate: 2 },
 	],
-};
-cdemo.renderTree(genverse_gen2_skew_right);
+}).render();
 
-const big_traverse = {
+const big_traverse = new csmd.Tree({
 	id: "big_traverse",
 	width: 200,
 	height: 200,
-	divWidth: "40%",
-	paddingBottom: "30%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a" },
 		{ child: "c", parent: "a" },
@@ -983,16 +965,14 @@ const big_traverse = {
 		{ child: "f", parent: "c" },
 		{ child: "g", parent: "c" },
 	],
-};
-cdemo.renderTree(big_traverse);
+}).render();
 
-const big_traverse_subtree = {
+const big_traverse_subtree = new csmd.Tree({
 	id: "big_traverse_subtree",
 	width: 200,
 	height: 200,
-	divWidth: "40%",
-	paddingBottom: "30%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "" },
 		{ child: "b", parent: "a", focus: "#D7E9F7" },
 		{ child: "c", parent: "a", focus: "#D9D7F1" },
@@ -1001,16 +981,14 @@ const big_traverse_subtree = {
 		{ child: "f", parent: "c", focus: "#D9D7F1" },
 		{ child: "g", parent: "c", focus: "#D9D7F1" },
 	],
-};
-cdemo.renderTree(big_traverse_subtree);
+}).render();
 
-const big_traverse_subtree_preorder = {
+const big_traverse_subtree_preorder = new csmd.Tree({
 	id: "big_traverse_subtree_preorder",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "60%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", focus: "#D7E9F7", annotate: 2 },
 		{ child: "c", parent: "a", focus: "#D9D7F1", annotate: 5 },
@@ -1019,16 +997,14 @@ const big_traverse_subtree_preorder = {
 		{ child: "f", parent: "c", focus: "#D9D7F1", annotate: 6 },
 		{ child: "g", parent: "c", focus: "#D9D7F1", annotate: 7 },
 	],
-};
-cdemo.renderTree(big_traverse_subtree_preorder);
+}).render();
 
-const big_traverse_subtree_inorder = {
+const big_traverse_subtree_inorder = new csmd.Tree({
 	id: "big_traverse_subtree_inorder",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "60%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "", annotate: 4 },
 		{ child: "b", parent: "a", focus: "#D7E9F7", annotate: 2 },
 		{ child: "c", parent: "a", focus: "#D9D7F1", annotate: 6 },
@@ -1037,16 +1013,14 @@ const big_traverse_subtree_inorder = {
 		{ child: "f", parent: "c", focus: "#D9D7F1", annotate: 5 },
 		{ child: "g", parent: "c", focus: "#D9D7F1", annotate: 7 },
 	],
-};
-cdemo.renderTree(big_traverse_subtree_inorder);
+}).render();
 
-const big_traverse_subtree_postorder = {
+const big_traverse_subtree_postorder = new csmd.Tree({
 	id: "big_traverse_subtree_postorder",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "60%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "", annotate: 7 },
 		{ child: "b", parent: "a", focus: "#D7E9F7", annotate: 3 },
 		{ child: "c", parent: "a", focus: "#D9D7F1", annotate: 6 },
@@ -1055,16 +1029,14 @@ const big_traverse_subtree_postorder = {
 		{ child: "f", parent: "c", focus: "#D9D7F1", annotate: 4 },
 		{ child: "g", parent: "c", focus: "#D9D7F1", annotate: 5 },
 	],
-};
-cdemo.renderTree(big_traverse_subtree_postorder);
+}).render();
 
-const big_traverse_subtree_generational = {
+const big_traverse_subtree_generational = new csmd.Tree({
 	id: "big_traverse_subtree_generational",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "60%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "a", parent: "", annotate: 1 },
 		{ child: "b", parent: "a", focus: "#D7E9F7", annotate: 2 },
 		{ child: "c", parent: "a", focus: "#D9D7F1", annotate: 3 },
@@ -1073,16 +1045,14 @@ const big_traverse_subtree_generational = {
 		{ child: "f", parent: "c", focus: "#D9D7F1", annotate: 6 },
 		{ child: "g", parent: "c", focus: "#D9D7F1", annotate: 7 },
 	],
-};
-cdemo.renderTree(big_traverse_subtree_generational);
+}).render();
 
-const tree_b1 = {
+const tree_b1 = new csmd.Tree({
 	id: "tree_b1",
 	width: 200,
 	height: 200,
-	divWidth: "40%",
-	paddingBottom: "40%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "5", parent: "" },
 		{ child: "8", parent: "5" },
 		{ child: "6", parent: "5" },
@@ -1093,13 +1063,10 @@ const tree_b1 = {
 		{ child: "4", parent: "9" },
 		{ child: "2", parent: "9" },
 	],
-};
-cdemo.renderTree(tree_b1);
+}).render();
 
-const tree_b1_queue = {
+const tree_b1_queue = new csmd.Queue({
 	id: "tree_b1_queue",
-	divWidth: 50,
-	paddingBottom: 25,
 	indexed: true,
 	data: [
 		{ val: "" },
@@ -1109,13 +1076,10 @@ const tree_b1_queue = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue);
+}).render();
 
-const tree_b1_queue_with_root = {
+const tree_b1_queue_with_root = new csmd.Queue({
 	id: "tree_b1_queue_with_root",
-	divWidth: 80,
-	paddingBottom: 40,
 	indexed: true,
 	data: [
 		{ val: "F0" },
@@ -1125,16 +1089,14 @@ const tree_b1_queue_with_root = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue_with_root);
+}).render();
 
-const tree_b1_1 = {
+const tree_b1_1 = new csmd.Tree({
 	id: "tree_b1_1",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "10%",
-	treeData: [
+	container_height: 15,
+	data: [
 		{ child: "5", parent: "", annotate: "F0" },
 		{ child: "8", parent: "5", display: "none" },
 		{ child: "6", parent: "5", display: "none" },
@@ -1145,16 +1107,14 @@ const tree_b1_1 = {
 		{ child: "4", parent: "9", display: "none" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_1);
+}).render();
 
-const tree_b1_1_p = {
+const tree_b1_1_p = new csmd.Tree({
 	id: "tree_b1_1_p",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "10%",
-	treeData: [
+	container_height: 15,
+	data: [
 		{ child: "5", parent: "", annotate: "F0 p" },
 		{ child: "8", parent: "5", display: "none" },
 		{ child: "6", parent: "5", display: "none" },
@@ -1165,14 +1125,12 @@ const tree_b1_1_p = {
 		{ child: "4", parent: "9", display: "none" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_1_p);
+}).render();
 
-const tree_b1_queue_with_root_dequeue = {
+const tree_b1_queue_with_root_dequeue = new csmd.Queue({
 	id: "tree_b1_queue_with_root_dequeue",
-	divWidth: 80,
-	paddingBottom: 40,
 	indexed: true,
+
 	data: [
 		{ val: "F0", emphasis: "red", annotate: "p" },
 		{ val: "" },
@@ -1181,16 +1139,15 @@ const tree_b1_queue_with_root_dequeue = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue_with_root_dequeue);
+}).render();
 
-const tree_b1_queue_with_2 = {
+const tree_b1_queue_with_2 = new csmd.Tree({
 	id: "tree_b1_queue_with_2",
 	width: 200,
 	height: 200,
 	divWidth: "80%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "5", parent: "", annotate: "F0 p" },
 		{ child: "8", parent: "5", annotate: "F1 t" },
 		{ child: "6", parent: "5", display: "none" },
@@ -1201,13 +1158,10 @@ const tree_b1_queue_with_2 = {
 		{ child: "4", parent: "9", display: "none" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_queue_with_2);
+}).render();
 
-const tree_b1_2_p = {
+const tree_b1_2_p = new csmd.Queue({
 	id: "tree_b1_2_p",
-	divWidth: 80,
-	paddingBottom: 40,
 	indexed: true,
 	data: [
 		{ val: "F0", emphasis: "red" },
@@ -1217,16 +1171,15 @@ const tree_b1_2_p = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_2_p);
+}).render();
 
-const tree_b1_queue_with_3 = {
+const tree_b1_queue_with_3 = new csmd.Tree({
 	id: "tree_b1_queue_with_3",
 	width: 200,
 	height: 200,
 	divWidth: "80%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "5", parent: "", annotate: "F0 p" },
 		{ child: "8", parent: "5", annotate: "F1" },
 		{ child: "6", parent: "5", annotate: "F2 t" },
@@ -1237,10 +1190,9 @@ const tree_b1_queue_with_3 = {
 		{ child: "4", parent: "9", display: "none" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_queue_with_3);
+}).render();
 
-const tree_b1_3_p = {
+const tree_b1_3_p = new csmd.Queue({
 	id: "tree_b1_3_p",
 	divWidth: 80,
 	paddingBottom: 40,
@@ -1253,16 +1205,15 @@ const tree_b1_3_p = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_3_p);
+}).render();
 
-const tree_b1_1_gen2 = {
+const tree_b1_1_gen2 = new csmd.Tree({
 	id: "tree_b1_1_gen2",
 	width: 250,
 	height: 200,
 	divWidth: "60%",
 	paddingBottom: "50%",
-	treeData: [
+	data: [
 		{ child: "5", parent: "", annotate: "F0 p", opacity: 0.2 },
 		{ child: "8", parent: "5", annotate: "F1 t", opacity: 0.2 },
 		{ child: "6", parent: "5", annotate: "F2", opacity: 0.2 },
@@ -1273,16 +1224,15 @@ const tree_b1_1_gen2 = {
 		{ child: "4", parent: "9", opacity: 0.2 },
 		{ child: "2", parent: "9", opacity: 0.2 },
 	],
-};
-cdemo.renderTree(tree_b1_1_gen2);
+}).render();
 
-const tree_b1_4_p = {
+const tree_b1_4_p = new csmd.Tree({
 	id: "tree_b1_4_p",
 	width: 200,
 	height: 200,
 	divWidth: "80%",
 	paddingBottom: "20%",
-	treeData: [
+	data: [
 		{ child: "5", parent: "", annotate: "F0" },
 		{ child: "8", parent: "5", annotate: "F1 p" },
 		{ child: "6", parent: "5", annotate: "F2 t" },
@@ -1293,10 +1243,9 @@ const tree_b1_4_p = {
 		{ child: "4", parent: "9", display: "none" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_4_p);
+}).render();
 
-const tree_b1_queue_with_4 = {
+const tree_b1_queue_with_4 = new csmd.Queue({
 	id: "tree_b1_queue_with_4",
 	divWidth: 80,
 	paddingBottom: 40,
@@ -1309,16 +1258,14 @@ const tree_b1_queue_with_4 = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue_with_4);
+}).render();
 
-const tree_b1_4 = {
+const tree_b1_4 = new csmd.Tree({
 	id: "tree_b1_4",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "60%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "5", parent: "", annotate: "F0" },
 		{ child: "8", parent: "5", annotate: "F1 p" },
 		{ child: "6", parent: "5", annotate: "F2" },
@@ -1329,10 +1276,9 @@ const tree_b1_4 = {
 		{ child: "4", parent: "9", display: "none" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_4);
+}).render();
 
-const tree_b1_queue_4 = {
+const tree_b1_queue_4 = new csmd.Queue({
 	id: "tree_b1_queue_4",
 	divWidth: 80,
 	paddingBottom: 40,
@@ -1345,16 +1291,14 @@ const tree_b1_queue_4 = {
 		{ val: "" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue_4);
+}).render();
 
-const tree_b1_5 = {
+const tree_b1_5 = new csmd.Tree({
 	id: "tree_b1_5",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "60%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "5", parent: "", annotate: "F0" },
 		{ child: "8", parent: "5", annotate: "F1" },
 		{ child: "6", parent: "5", annotate: "F2 p" },
@@ -1365,10 +1309,9 @@ const tree_b1_5 = {
 		{ child: "4", parent: "9", display: "none" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_5);
+}).render();
 
-const tree_b1_queue_5 = {
+const tree_b1_queue_5 = new csmd.Queue({
 	id: "tree_b1_queue_5",
 	divWidth: 80,
 	paddingBottom: 40,
@@ -1381,16 +1324,14 @@ const tree_b1_queue_5 = {
 		{ val: "F4", annotate: "t" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue_5);
+}).render();
 
-const tree_b1_1_gen3 = {
+const tree_b1_1_gen3 = new csmd.Tree({
 	id: "tree_b1_1_gen3",
-	width: 250,
+	width: 200,
 	height: 200,
-	divWidth: "60%",
-	paddingBottom: "50%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "5", parent: "", annotate: "F0", opacity: 0.2 },
 		{ child: "8", parent: "5", annotate: "F1", opacity: 0.2 },
 		{ child: "6", parent: "5", annotate: "F2 p", opacity: 0.2 },
@@ -1401,16 +1342,16 @@ const tree_b1_1_gen3 = {
 		{ child: "4", parent: "9" },
 		{ child: "2", parent: "9" },
 	],
-};
-cdemo.renderTree(tree_b1_1_gen3);
+}).render();
 
-const tree_b1_6 = {
+const tree_b1_6 = new csmd.Tree({
 	id: "tree_b1_6",
 	width: 200,
 	height: 200,
+	container_height: 20,
 	divWidth: "80%",
 	paddingBottom: "60%",
-	treeData: [
+	data: [
 		{ child: "5", parent: "", annotate: "F0" },
 		{ child: "8", parent: "5", annotate: "F1" },
 		{ child: "6", parent: "5", annotate: "F2" },
@@ -1421,10 +1362,9 @@ const tree_b1_6 = {
 		{ child: "4", parent: "9", display: "none" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_6);
+}).render();
 
-const tree_b1_queue_6 = {
+const tree_b1_queue_6 = new csmd.Queue({
 	id: "tree_b1_queue_6",
 	divWidth: 80,
 	paddingBottom: 40,
@@ -1437,16 +1377,16 @@ const tree_b1_queue_6 = {
 		{ val: "F4", annotate: "t" },
 		{ val: "" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue_6);
+}).render();
 
-const tree_b1_7 = {
+const tree_b1_7 = new csmd.Tree({
 	id: "tree_b1_7",
 	width: 200,
 	height: 200,
+	container_height: 25,
 	divWidth: "80%",
 	paddingBottom: "80%",
-	treeData: [
+	data: [
 		{ child: "5", parent: "", annotate: "F0" },
 		{ child: "8", parent: "5", annotate: "F1" },
 		{ child: "6", parent: "5", annotate: "F2" },
@@ -1457,10 +1397,9 @@ const tree_b1_7 = {
 		{ child: "4", parent: "9", annotate: "F5 t" },
 		{ child: "2", parent: "9", display: "none" },
 	],
-};
-cdemo.renderTree(tree_b1_7);
+}).render();
 
-const tree_b1_queue_7 = {
+const tree_b1_queue_7 = new csmd.Queue({
 	id: "tree_b1_queue_7",
 	divWidth: 80,
 	paddingBottom: 40,
@@ -1473,16 +1412,14 @@ const tree_b1_queue_7 = {
 		{ val: "F4" },
 		{ val: "F5", annotate: "t" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue_7);
+}).render();
 
-const tree_b1_8 = {
+const tree_b1_8 = new csmd.Tree({
 	id: "tree_b1_8",
 	width: 200,
 	height: 200,
-	divWidth: "80%",
-	paddingBottom: "80%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "5", parent: "", annotate: "F0" },
 		{ child: "8", parent: "5", annotate: "F1" },
 		{ child: "6", parent: "5", annotate: "F2" },
@@ -1493,10 +1430,9 @@ const tree_b1_8 = {
 		{ child: "4", parent: "9", annotate: "F5" },
 		{ child: "2", parent: "9", annotate: "F6 t" },
 	],
-};
-cdemo.renderTree(tree_b1_8);
+}).render();
 
-const tree_b1_queue_8 = {
+const tree_b1_queue_8 = new csmd.Queue({
 	id: "tree_b1_queue_8",
 	divWidth: 80,
 	paddingBottom: 40,
@@ -1510,16 +1446,15 @@ const tree_b1_queue_8 = {
 		{ val: "F5" },
 		{ val: "F6", annotate: "t" },
 	],
-};
-cdemo.renderQueue(tree_b1_queue_8);
+}).render();
 
-const create_tree_sample = {
+const create_tree_sample = new csmd.Tree({
 	id: "create_tree_sample",
 	width: 200,
 	height: 200,
 	divWidth: "40%",
 	paddingBottom: "30%",
-	treeData: [
+	data: [
 		{ child: "3", parent: "" },
 		{ child: "2", parent: "3" },
 		{ child: "1", parent: "3" },
@@ -1528,40 +1463,36 @@ const create_tree_sample = {
 		{ child: "8", parent: "1" },
 		{ child: "", parent: "1", display: "none" },
 	],
-};
-cdemo.renderTree(create_tree_sample);
+}).render();
 
-const circular_queue_tree = {
+const circular_queue_tree = new csmd.CircularQueue({
 	id: "circular_queue_tree",
 	divWidth: 50,
 	paddingBottom: 25,
 	data: ["", "", "", "", "", "", "", "", "", ""],
 	pointer: {},
 	indexed: true,
-};
-cdemo.renderCircularQueue(circular_queue_tree);
+}).render();
 
-const root_queued = {
+const root_queued = new csmd.CircularQueue({
 	id: "root_queued",
 	divWidth: 100,
 	paddingBottom: 50,
 	data: ["0x1", "", "", "", "", "", "", "", "", ""],
 	pointer: {},
 	indexed: true,
-};
-cdemo.renderCircularQueue(root_queued);
+}).render();
 
-const root_left_child_queued = {
+const root_left_child_queued = new csmd.CircularQueue({
 	id: "root_left_child_queued",
 	divWidth: 100,
 	paddingBottom: 50,
 	data: ["0x1", "0x2", "", "", "", "", "", "", "", ""],
 	pointer: {},
 	indexed: true,
-};
-cdemo.renderCircularQueue(root_left_child_queued);
+}).render();
 
-const root_right_child_queued = {
+const root_right_child_queued = new csmd.CircularQueue({
 	id: "root_right_child_queued",
 	divWidth: 100,
 	paddingBottom: 50,
@@ -1571,10 +1502,9 @@ const root_right_child_queued = {
 		0: "y",
 	},
 	indexed: true,
-};
-cdemo.renderCircularQueue(root_right_child_queued);
+}).render();
 
-const new_front1 = {
+const new_front1 = new csmd.CircularQueue({
 	id: "new_front1",
 	divWidth: 60,
 	paddingBottom: 30,
@@ -1584,17 +1514,15 @@ const new_front1 = {
 		1: "y",
 	},
 	indexed: true,
-};
-cdemo.renderCircularQueue(new_front1);
+}).render();
 
-const traversal_1 = {
+const traversal_1 = new csmd.Tree({
 	id: "traversal_1",
 	width: 200,
 	height: 200,
 	directed: true,
-	divWidth: "40%",
-	paddingBottom: "30%",
-	treeData: [
+	container_height: 25,
+	data: [
 		{ child: "8", parent: "", annotate: "root" },
 		{ child: "3", parent: "8", edgeLabel: "F1" },
 		{ child: "5", parent: "8", edgeLabel: "F2" },
@@ -1603,59 +1531,59 @@ const traversal_1 = {
 		{ child: "7", parent: "5", edgeLabel: "F5" },
 		{ child: "2", parent: "5", edgeLabel: "F6" },
 	],
-};
-cdemo.renderTree(traversal_1);
+}).render();
 
-const preorder_trace1 = {
+const preorder_trace1 = new csmd.CallTrace({
 	id: "preorder_trace1",
-	width: 250,
-	divWidth: "100%",
-	height: 50,
-	paddingBottom: "25%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "preorder(F0)", parent: "" },
 		{ child: "8", parent: "preorder(F0)" },
 	],
-};
-cdemo.renderCallTrace(preorder_trace1);
+}).render();
 
-const preorder_trace2 = {
+const preorder_trace2 = new csmd.CallTrace({
 	id: "preorder_trace2",
-	width: 250,
-	divWidth: "100%",
-	height: 50,
-	paddingBottom: "25%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "preorder(F0)", parent: "" },
 		{ child: "8", parent: "preorder(F0)" },
 		{ child: "preorder(F1)", parent: "preorder(F0)" },
 	],
-};
-cdemo.renderCallTrace(preorder_trace2);
+}).render();
 
-const preorder_trace3 = {
+const preorder_trace3 = new csmd.CallTrace({
 	id: "preorder_trace3",
-	width: 280,
-	divWidth: "100%",
-	height: 90,
-	paddingBottom: "25%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "preorder(F0)", parent: "" },
 		{ child: "8", parent: "preorder(F0)" },
 		{ child: "preorder(F1)", parent: "preorder(F0)" },
 		{ child: "3", parent: "preorder(F1)" },
 		{ child: "preorder(F3)", parent: "preorder(F1)" },
 	],
-};
-cdemo.renderCallTrace(preorder_trace3);
+}).render();
 
-const preorder_trace4 = {
+const preorder_trace4 = new csmd.CallTrace({
 	id: "preorder_trace4",
-	width: 280,
-	divWidth: "100%",
-	height: 90,
-	paddingBottom: "25%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "preorder(F0)", parent: "" },
 		{ child: "8", parent: "preorder(F0)" },
 		{ child: "preorder(F1)", parent: "preorder(F0)" },
@@ -1664,16 +1592,16 @@ const preorder_trace4 = {
 		{ child: "4", parent: "preorder(F3)" },
 		{ child: "preorder(0)", parent: "preorder(F3)", call: true },
 	],
-};
-cdemo.renderCallTrace(preorder_trace4);
+}).render();
 
-const preorder_trace5 = {
+const preorder_trace5 = new csmd.CallTrace({
 	id: "preorder_trace5",
-	width: 280,
-	divWidth: "100%",
-	height: 100,
-	paddingBottom: "35%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "preorder(F0)", parent: "" },
 		{ child: "8", parent: "preorder(F0)" },
 		{ child: "preorder(F1)", parent: "preorder(F0)" },
@@ -1683,16 +1611,16 @@ const preorder_trace5 = {
 		{ child: "preorder(0)", parent: "preorder(F3)", call: true },
 		{ child: "preorder(0)", parent: "preorder(F3)", call: true },
 	],
-};
-cdemo.renderCallTrace(preorder_trace5);
+}).render();
 
-const preorder_trace6 = {
+const preorder_trace6 = new csmd.CallTrace({
 	id: "preorder_trace6",
-	width: 400,
-	divWidth: "100%",
-	height: 320,
-	paddingBottom: "85%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "preorder(F0)", parent: "" },
 		{ child: "8", parent: "preorder(F0)" },
 		{ child: "preorder(F1)", parent: "preorder(F0)" },
@@ -1706,16 +1634,16 @@ const preorder_trace6 = {
 		{ child: "preorder(0)", parent: "preorder(F4)", call: true },
 		{ child: "preorder(0)", parent: "preorder(F4)", call: true },
 	],
-};
-cdemo.renderCallTrace(preorder_trace6);
+}).render();
 
-const preorder_trace_final = {
+const preorder_trace_final = new csmd.CallTrace({
 	id: "preorder_trace_final",
-	width: 460,
-	divWidth: "85%",
-	height: 340,
-	paddingBottom: "65%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "preorder(F0)", parent: "" },
 		{ child: "8", parent: "preorder(F0)" },
 		{ child: "preorder(F1)", parent: "preorder(F0)" },
@@ -1739,17 +1667,17 @@ const preorder_trace_final = {
 		{ child: "preorder(0)", parent: "preorder(F6)", call: true },
 		{ child: "preorder(0)", parent: "preorder(F6)", call: true },
 	],
-};
-cdemo.renderCallTrace(preorder_trace_final);
+}).render();
 
-const preorder_loop = {
+const preorder_loop = new csmd.Tree({
 	id: "preorder_loop",
 	width: 200,
 	height: 200,
+	container_height: 25,
 	directed: true,
 	divWidth: "70%",
 	paddingBottom: "30%",
-	treeData: [
+	data: [
 		{ child: "8", parent: "", annotate: "root" },
 		{ child: "3", parent: "8", edgeLabel: "F1" },
 		{ child: "5", parent: "8", edgeLabel: "F2" },
@@ -1758,17 +1686,15 @@ const preorder_loop = {
 		{ child: "7", parent: "5", edgeLabel: "F5" },
 		{ child: "2", parent: "5", edgeLabel: "F6" },
 	],
-};
-cdemo.renderTree(preorder_loop);
+}).render();
 
-const inorder_tree_demo = {
+const inorder_tree_demo = new csmd.Tree({
 	id: "inorder_tree_demo",
 	width: 200,
 	height: 200,
+	container_height: 25,
 	directed: true,
-	divWidth: "40%",
-	paddingBottom: "30%",
-	treeData: [
+	data: [
 		{ child: "3", parent: "", annotate: "root" },
 		{ child: "8", parent: "3", edgeLabel: "F1" },
 		{ child: "9", parent: "3", edgeLabel: "F2" },
@@ -1777,63 +1703,63 @@ const inorder_tree_demo = {
 		{ child: "1", parent: "9", edgeLabel: "F5" },
 		{ child: "5", parent: "9", edgeLabel: "F6" },
 	],
-};
-cdemo.renderTree(inorder_tree_demo);
+}).render();
 
-const inorder_trace_f1 = {
+const inorder_trace_f1 = new csmd.CallTrace({
 	id: "inorder_trace_f1",
-	width: 350,
-	height: 150,
 	directed: true,
-	divWidth: "60%",
-	paddingBottom: "30%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 	],
-};
-cdemo.renderCallTrace(inorder_trace_f1);
+}).render();
 
-const inorder_trace_f3 = {
+const inorder_trace_f3 = new csmd.CallTrace({
 	id: "inorder_trace_f3",
-	width: 450,
-	height: 150,
 	directed: true,
-	divWidth: "80%",
-	paddingBottom: "30%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 		{ child: "inorder(F3)", parent: "inorder(F1)" },
 	],
-};
-cdemo.renderCallTrace(inorder_trace_f3);
+}).render();
 
-const inorder_trace_f3_1 = {
+const inorder_trace_f3_1 = new csmd.CallTrace({
 	id: "inorder_trace_f3_1",
-	width: 450,
-	height: 150,
 	directed: true,
-	divWidth: "80%",
-	paddingBottom: "30%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 		{ child: "inorder(F3)", parent: "inorder(F1)" },
 		{ child: "inorder(0)", parent: "inorder(F3)", call: true },
 		{ child: "2", parent: "inorder(F3)" },
 	],
-};
-cdemo.renderCallTrace(inorder_trace_f3_1);
+}).render();
 
-const inorder_trace_f3_2 = {
+const inorder_trace_f3_2 = new csmd.CallTrace({
 	id: "inorder_trace_f3_2",
-	width: 450,
-	height: 150,
 	directed: true,
-	divWidth: "80%",
-	paddingBottom: "30%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 		{ child: "inorder(F3)", parent: "inorder(F1)" },
@@ -1841,17 +1767,17 @@ const inorder_trace_f3_2 = {
 		{ child: "2", parent: "inorder(F3)" },
 		{ child: "inorder(0)", parent: "inorder(F3)", call: true },
 	],
-};
-cdemo.renderCallTrace(inorder_trace_f3_2);
+}).render();
 
-const inorder_trace_f1_1 = {
+const inorder_trace_f1_1 = new csmd.CallTrace({
 	id: "inorder_trace_f1_1",
-	width: 450,
-	height: 150,
 	directed: true,
-	divWidth: "80%",
-	paddingBottom: "30%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 		{ child: "inorder(F3)", parent: "inorder(F1)" },
@@ -1860,17 +1786,17 @@ const inorder_trace_f1_1 = {
 		{ child: "inorder(0)", parent: "inorder(F3)", call: true },
 		{ child: "8", parent: "inorder(F1)" },
 	],
-};
-cdemo.renderCallTrace(inorder_trace_f1_1);
+}).render();
 
-const inorder_trace_f4 = {
+const inorder_trace_f4 = new csmd.CallTrace({
 	id: "inorder_trace_f4",
-	width: 450,
-	height: 150,
 	directed: true,
-	divWidth: "80%",
-	paddingBottom: "30%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 		{ child: "inorder(F3)", parent: "inorder(F1)" },
@@ -1881,17 +1807,17 @@ const inorder_trace_f4 = {
 		{ child: "inorder(F4)", parent: "inorder(F1)" },
 		{ child: "inorder(0)", parent: "inorder(F4)", call: true },
 	],
-};
-cdemo.renderCallTrace(inorder_trace_f4);
+}).render();
 
-const inorder_trace_f4_1 = {
+const inorder_trace_f4_1 = new csmd.CallTrace({
 	id: "inorder_trace_f4_1",
-	width: 450,
-	height: 150,
 	directed: true,
-	divWidth: "80%",
-	paddingBottom: "30%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 		{ child: "inorder(F3)", parent: "inorder(F1)" },
@@ -1904,17 +1830,17 @@ const inorder_trace_f4_1 = {
 		{ child: "6", parent: "inorder(F4)" },
 		{ child: "inorder(0)", parent: "inorder(F4)", call: true },
 	],
-};
-cdemo.renderCallTrace(inorder_trace_f4_1);
+}).render();
 
-const inorder_trace_final = {
+const inorder_trace_final = new csmd.CallTrace({
 	id: "inorder_trace_final",
-	width: 450,
-	height: 200,
 	directed: true,
-	divWidth: "80%",
-	paddingBottom: "50%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 		{ child: "inorder(F3)", parent: "inorder(F1)" },
@@ -1938,17 +1864,17 @@ const inorder_trace_final = {
 		{ child: "5", parent: "inorder(F6)" },
 		{ child: "inorder(0)", parent: "inorder(F6)", call: true },
 	],
-};
-cdemo.renderCallTrace(inorder_trace_final);
+}).render();
 
-const postorder_sample = {
+const postorder_sample = new csmd.Tree({
 	id: "postorder_sample",
 	width: 200,
 	height: 200,
 	directed: true,
+	container_height: 25,
 	divWidth: "40%",
 	paddingBottom: "30%",
-	treeData: [
+	data: [
 		{ child: "4", parent: "", annotate: "root" },
 		{ child: "9", parent: "4", edgeLabel: "F1" },
 		{ child: "7", parent: "4", edgeLabel: "F2" },
@@ -1957,17 +1883,17 @@ const postorder_sample = {
 		{ child: "0", parent: "7", edgeLabel: "F5" },
 		{ child: "1", parent: "7", edgeLabel: "F6" },
 	],
-};
-cdemo.renderTree(postorder_sample);
+}).render();
 
-const postorder_trace_final = {
+const postorder_trace_final = new csmd.CallTrace({
 	id: "postorder_trace_final",
-	width: 450,
-	height: 200,
 	directed: true,
-	divWidth: "80%",
-	paddingBottom: "50%",
-	treeData: [
+	margin: [20, 70, 20, 70],
+	width: 60,
+	height: 45,
+	svg_width: 400,
+	svg_height: 300,
+	data: [
 		{ child: "inorder(F0)", parent: "" },
 		{ child: "inorder(F1)", parent: "inorder(F0)" },
 		{ child: "inorder(F3)", parent: "inorder(F1)" },
@@ -1991,15 +1917,15 @@ const postorder_trace_final = {
 		{ child: "9", parent: "inorder(F2)" },
 		{ child: "4", parent: "inorder(F0)" },
 	],
-};
-cdemo.renderCallTrace(postorder_trace_final);
+}).render();
 
-const preorder_stack_growth = {
+const preorder_stack_growth = new csmd.Multistack({
 	id: "preorder_stack_growth",
-	divWidth: 90,
-	paddingBottom: 18,
-	width: 690,
-	height: 290,
+	margin: [50, 40, 50, 40],
+	width: 90,
+	height: 20,
+	svg_width: 750,
+	svg_height: 300,
 	data: [
 		[""],
 		["F0"],
@@ -2017,15 +1943,15 @@ const preorder_stack_growth = {
 		["F0"],
 		[""],
 	],
-};
-cdemo.renderStackGrowth(preorder_stack_growth);
+}).render();
 
-const inorder_stack_growth = {
+const inorder_stack_growth = new csmd.Multistack({
 	id: "inorder_stack_growth",
-	divWidth: 90,
-	paddingBottom: 18,
-	width: 690,
-	height: 290,
+	margin: [50, 40, 50, 40],
+	width: 90,
+	height: 20,
+	svg_width: 750,
+	svg_height: 300,
 	data: [
 		[""],
 		["F0"],
@@ -2043,15 +1969,14 @@ const inorder_stack_growth = {
 		["F0"],
 		[""],
 	],
-};
-cdemo.renderStackGrowth(inorder_stack_growth);
+}).render();
 
 const level_order_traversal_sample = new csmd.Tree({
 	id: "level_order_traversal_sample",
-	width: 500,
+	container_width: 50,
+	container_height: 25,
 	leveled: true,
 	directed: true,
-	height: 250,
 	data: [
 		{ child: "8", parent: "" },
 		{ child: "3", parent: "8", edgeLabel: "0x1" },
@@ -2067,8 +1992,10 @@ const level_order_traversal_sample = new csmd.Tree({
 	],
 }).render();
 
-const sample_data_traversal_generation = new csmd.StaticArray({
+const sample_data_traversal_generation = new csmd.Sequence({
 	id: "sample_data_traversal_generation",
+	width: 20,
+	height: 16,
 	data: [{ val: "A" }, { val: "B" }, { val: "C" }],
 }).render();
 
@@ -2145,7 +2072,7 @@ const tg5 = new csmd.Tree({
 	],
 }).render();
 
-const tg_pre_array = new csmd.StaticArray({
+const tg_pre_array = new csmd.Sequence({
 	id: "tg_pre_array",
 	data: [
 		{ val: "4" },
@@ -2160,7 +2087,7 @@ const tg_pre_array = new csmd.StaticArray({
 	],
 }).render();
 
-const tg_in_array = new csmd.StaticArray({
+const tg_in_array = new csmd.Sequence({
 	id: "tg_in_array",
 	data: [
 		{ val: "7" },
@@ -2277,7 +2204,7 @@ const bst_intro = new csmd.Tree({
 	],
 }).render();
 
-const bst_array_1 = new csmd.StaticArray({
+const bst_array_1 = new csmd.Sequence({
 	id: "bst_array_1",
 	data: [
 		{ val: "10" },
@@ -2360,7 +2287,11 @@ const bst_search_example3 = new csmd.Tree({
 
 const binary_search_trace = new csmd.CallTrace({
 	id: "binary_search_trace",
-	container_height: 10,
+	margin: [20, 150, 20, 150],
+	width: 70,
+	height: 10,
+	svg_width: 400,
+	svg_height: 60,
 	data: [
 		{ child: "search(root, 60)", parent: "" },
 		{
@@ -2372,10 +2303,11 @@ const binary_search_trace = new csmd.CallTrace({
 
 const binary_search_trace2 = new csmd.CallTrace({
 	id: "binary_search_trace2",
-	container_width: 85,
-	container_height: 20,
-	svg_height: 120,
-	svg_width: 550,
+	margin: [0, 150, 180, 150],
+	width: 80,
+	height: 25,
+	svg_width: 450,
+	svg_height: 300,
 	data: [
 		{ child: "search(root, 60)", parent: "" },
 		{
@@ -2681,7 +2613,7 @@ const t5 = new csmd.Tree({
 	],
 }).render();
 
-const bst_traversal_generation_array = new csmd.StaticArray({
+const bst_traversal_generation_array = new csmd.Sequence({
 	id: "bst_traversal_generation_array",
 	indexed: true,
 	data: [
@@ -2702,11 +2634,12 @@ const bst_traversal_generation_stack = new csmd.Stack({
 	colorFrame: "dodgerblue",
 	colorStroke: "blue",
 	colorText: "white",
-	frames: [{ val: "" }, { val: "" }, { val: "" }],
+	data: [{ val: "" }, { val: "" }, { val: "" }],
 }).render();
 
-const bst_gen_arr1 = new csmd.StaticArray({
+const bst_gen_arr1 = new csmd.Sequence({
 	id: "bst_gen_arr1",
+	width: 60,
 	indexed: true,
 	data: [
 		{ val: 30, focus: "red" },
@@ -2744,11 +2677,12 @@ const bst_gen_stack1 = new csmd.Stack({
 	colorFrame: "dodgerblue",
 	colorStroke: "blue",
 	colorText: "white",
-	frames: [{ val: "" }, { val: "" }, { val: "" }],
+	data: [{ val: "" }, { val: "" }, { val: "" }],
 }).render();
 
-const bst_gen_arr2 = new csmd.StaticArray({
+const bst_gen_arr2 = new csmd.Sequence({
 	id: "bst_gen_arr2",
+	width: 60,
 	indexed: true,
 	data: [
 		{ val: 30, focus: "red" },
@@ -2785,11 +2719,12 @@ const bst_gen_stack2 = new csmd.Stack({
 	colorFrame: "dodgerblue",
 	colorStroke: "blue",
 	colorText: "white",
-	frames: [{ val: "" }, { val: "" }, { val: "ad(30)" }],
+	data: [{ val: "" }, { val: "" }, { val: "ad(30)" }],
 }).render();
 
-const bst_gen_arr3 = new csmd.StaticArray({
+const bst_gen_arr3 = new csmd.Sequence({
 	id: "bst_gen_arr3",
+	width: 60,
 	indexed: true,
 	data: [
 		{ val: 30, focus: "red" },
@@ -2827,11 +2762,12 @@ const bst_gen_stack3 = new csmd.Stack({
 	colorFrame: "dodgerblue",
 	colorStroke: "blue",
 	colorText: "white",
-	frames: [{ val: "" }, { val: "ad(20)" }, { val: "ad(30)" }],
+	data: [{ val: "" }, { val: "ad(20)" }, { val: "ad(30)" }],
 }).render();
 
-const bst_gen_arr4 = new csmd.StaticArray({
+const bst_gen_arr4 = new csmd.Sequence({
 	id: "bst_gen_arr4",
+	width: 60,
 	indexed: true,
 	data: [
 		{ val: 30, focus: "red" },
@@ -2870,11 +2806,12 @@ const bst_gen_stack4 = new csmd.Stack({
 	colorFrame: "dodgerblue",
 	colorStroke: "blue",
 	colorText: "white",
-	frames: [{ val: "" }, { val: "ad(20)" }, { val: "ad(30)" }],
+	data: [{ val: "" }, { val: "ad(20)" }, { val: "ad(30)" }],
 }).render();
 
-const bst_gen_arr5 = new csmd.StaticArray({
+const bst_gen_arr5 = new csmd.Sequence({
 	id: "bst_gen_arr5",
+	width: 60,
 	indexed: true,
 	data: [
 		{ val: 30, focus: "red" },
@@ -2913,11 +2850,12 @@ const bst_gen_stack5 = new csmd.Stack({
 	colorFrame: "dodgerblue",
 	colorStroke: "blue",
 	colorText: "white",
-	frames: [{ val: "" }, { val: "" }, { val: "ad(30)" }],
+	data: [{ val: "" }, { val: "" }, { val: "ad(30)" }],
 }).render();
 
-const bst_gen_arr6 = new csmd.StaticArray({
+const bst_gen_arr6 = new csmd.Sequence({
 	id: "bst_gen_arr6",
+	width: 60,
 	indexed: true,
 	data: [
 		{ val: 30, focus: "red" },
@@ -2925,7 +2863,7 @@ const bst_gen_arr6 = new csmd.StaticArray({
 		{ val: 10, focus: "red" },
 		{ val: 15, focus: "red" },
 		{ val: 25, focus: "red" },
-		{ val: 40, focus: 'red'},
+		{ val: 40, focus: "red" },
 		{ val: 50 },
 		{ val: 45 },
 	],
@@ -2956,10 +2894,10 @@ const bst_gen_stack6 = new csmd.Stack({
 	colorFrame: "dodgerblue",
 	colorStroke: "blue",
 	colorText: "white",
-	frames: [{ val: "" }, { val: "" }, { val: "" }],
+	data: [{ val: "" }, { val: "" }, { val: "" }],
 }).render();
 
-const bst_cost_arr1 = new csmd.StaticArray({
+const bst_cost_arr1 = new csmd.Sequence({
 	id: "bst_cost_arr1",
 	indexed: true,
 	data: [
@@ -2972,7 +2910,7 @@ const bst_cost_arr1 = new csmd.StaticArray({
 		{ val: 70 },
 	],
 }).render();
-const bst_cost_arr2 = new csmd.StaticArray({
+const bst_cost_arr2 = new csmd.Sequence({
 	id: "bst_cost_arr2",
 	indexed: true,
 	data: [
@@ -2992,8 +2930,7 @@ const bst_cost_tree_1 = new csmd.Tree({
 	edgeLength: 130,
 	width: 200,
 	height: 180,
-	container_width: 60,
-	container_height: 50,
+	container_height: 30,
 	data: [
 		{ child: "40", parent: "" },
 
@@ -3013,27 +2950,27 @@ const bst_cost_tree_2 = new csmd.Tree({
 	edgeLength: 140,
 	width: 350,
 	height: 250,
-	container_width: 100,
-	container_height: 50,
+	container_width: 50,
+	container_height: 30,
 	data: [
 		{ child: "10", parent: "" },
 
-		{ child: "a", parent: "10", display: 'none'},
+		{ child: "a", parent: "10", display: "none" },
 		{ child: "20", parent: "10" },
 
-		{ child: "b", parent: "20", display: 'none'},
+		{ child: "b", parent: "20", display: "none" },
 		{ child: "30", parent: "20" },
 
-		{ child: "c", parent: "30", display: 'none'},
+		{ child: "c", parent: "30", display: "none" },
 		{ child: "40", parent: "30" },
 
-		{ child: "d", parent: "40", display: 'none'},
+		{ child: "d", parent: "40", display: "none" },
 		{ child: "50", parent: "40" },
 
-		{ child: "e", parent: "50", display: 'none'},
+		{ child: "e", parent: "50", display: "none" },
 		{ child: "60", parent: "50" },
 
-		{ child: "f", parent: "60", display: 'none'},
+		{ child: "f", parent: "60", display: "none" },
 		{ child: "70", parent: "60" },
 	],
 }).render();

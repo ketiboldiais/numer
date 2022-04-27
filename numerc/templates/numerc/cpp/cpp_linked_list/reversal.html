@@ -1,0 +1,801 @@
+{% load static %}
+
+<h2>List Reversal</h2>
+<p>Suppose we have the following linked list:</p>
+<div id="reverse0"></div>
+<p>
+	When we perform a <b>list reversal</b>, we end up with the following
+	list:
+</p>
+<div id="reverse1"></div>
+<p>
+	As we can see, list reversals are useful for quickly reorienting data. If
+	we have a list with elements ascendingly sorted, reversing yields a list
+	with elements descendingly sorted, and vice versa.
+</p>
+<p>There are two ways to reverse a linked list:</p>
+<ol>
+	<li><i>list reversal by element</i>, or</li>
+	<li><i>list reversal by link</i>.</li>
+</ol>
+
+<section id="reverse_by_element">
+	<h3>Reverse-by-element</h3>
+	<p>
+		Let's consider the first approach, reversing by element, using the
+		following list to illustrate:
+	</p>
+	<div id="element_reverse_0"></div>
+	<p>
+		To reverse by element, we start by focusing on the head and the foot:
+	</p>
+	<div id="element_reverse_1"></div>
+	<p>Then, we swap the values stored in the two nodes's data fields:</p>
+	<div id="element_reverse_2"></div>
+	<p>After doing so, we move to the next nodes:</p>
+	<div id="element_reverse_3"></div>
+	<p>
+		Once more we swap the values stored in the two nodes's data fields:
+	</p>
+	<div id="element_reverse_4"></div>
+	<p>This yields our desired result:</p>
+	<div id="element_reverse_5"></div>
+	<p>
+		To implement this procedure, we need a way to store the data values
+		we're swapping. The most straightforward way is to use an array: We
+		traverse the linked list, and initialize the array's elements with the
+		current node's data value. Using the previous list (call it
+		<var>list0</var>), we first declare an array whose size equals the
+		number of nodes in the list:
+	</p>
+	<figure class="block">
+		<pre class="language-pseudo"><code>
+			List list0 = new List(3, 6, 8, 9)
+			let uint size = List->length
+			let array[size] = []
+			int arr[size]
+		</code></pre>
+		<div id="element_reverse_6"></div>
+		<div id="array_reverse_6"></div>
+	</figure>
+	<p>
+		Next, we have a pointer <var>p</var> point to the head of the list, and
+		assign the data value stored in the head to the first index in the
+		array:
+	</p>
+	<figure class="block">
+		<pre class="language-pseudo"><code>
+			List list0 = new List(3, 6, 8, 9)
+			let uint size = List->length
+			let array[size] = []
+			Node* p = list0->head
+			p->data = array[0]
+		</code></pre>
+		<div id="element_reverse_7"></div>
+		<div id="array_reverse_7"></div>
+	</figure>
+	<p>To completely fill the array, we iterate:</p>
+	<figure class="block">
+		<pre class="language-pseudo"><code>
+			List list0 = new List(3, 6, 8, 9)
+			let uint size = List->length
+			let array[size] = []
+			Node* p = list0->head
+			p->data = array[0]
+			let i = 0
+			while (p isnt null):
+				array[i] = p->data
+				p = p->next
+				i++
+		</code></pre>
+	</figure>
+	<p>
+		After the while loop finishes, we have all of the elements in the
+		array:
+	</p>
+	<figure class="block">
+		<div id="element_reverse_8"></div>
+		<div id="array_reverse_8"></div>
+	</figure>
+	<p>
+		Once we've finished initializing all of the array's elements, we bring
+		<var>p</var> back to the first node:
+	</p>
+	<figure class="block">
+		<pre class="language-pseudo"><code>
+			List list0 = new List(3, 6, 8, 9)
+			let uint size = List->length
+			let array[size] = []
+			Node* p = list0->head
+			p->data = array[0]
+			let i = 0
+			while (p isnt null):
+				array[i] = p->data
+				p = p->next
+				i++
+			p = list->head
+		</code></pre>
+		<div id="element_reverse_9"></div>
+		<div id="array_reverse_9"></div>
+	</figure>
+	<p>
+		Then, we want to decrement <var>i</var> and use another while-loop to
+		assign the contents in the auxiliary array to the list. Since our while
+		loop ended at <var>i = 4</var>, this results in assigning to
+		<var>p</var>'s pointee's <var>data</var> field <var>array[3]</var>,
+		<var>array[2]</var>, <var>array[1]</var>, and so on:
+	</p>
+	<figure class="block">
+		<pre class="language-pseudo"><code>
+			List list0 = new List(3, 6, 8, 9)
+			let uint size = List->length
+			let array[size] = []
+			Node* p = list0->head
+			p->data = array[0]
+			let i = 0
+			while (p isnt null):
+				array[i] = p->data
+				p = p->next
+				i++
+			p = list->head
+			i--
+			while (p isnt null):
+				p->data = A[i]
+				i--
+				p = p->next
+		</code></pre>
+	</figure>
+	<p>The end result:</p>
+	<figure class="block">
+		<div id="element_reverse_10"></div>
+		<div id="array_reverse_10"></div>
+	</figure>
+	<p>
+		We have several costs with this approach. First, we need additional
+		memory for the auxiliary array, equal to the number nodes ${n}$ in the
+		linked list. Accordingly, the procedure above has a space complexity of
+		${O(n).}$ And in terms of time, we must traverse the linked list twice,
+		yielding a running time function of roughly ${T(2n).}$ Asymptotically,
+		this yields a time complexity of ${O(n).}$
+	</p>
+</section>
+
+<section id="reverse_by_link">
+	<h3>Reverse-by-link</h3>
+	<p>
+		Next, let's consider reversing by link. Say we had the following list:
+	</p>
+	<div id="reverseLink0"></div>
+	<p>
+		With this approach, we just switch the direction of each node's next
+		pointer. ${n(3)}$'s next pointer points to ${n(6)}$ (rather than
+		<var>NULL</var>), ${n(6)}$'s next pointer points to ${n(8)}$ (rather
+		than ${n(3)}$), and ${n(8)'s}$ pointer points ${n(9)}$ (rather than
+		${n(6).}$)
+	</p>
+	<p>
+		Two reverse a list by link, we must use the technique of
+		<b>pointer sliding</b>. The idea is as such: We start with four
+		pointers. One pointing at the head called <var>h</var>, and three other
+		pointers, <var>d</var>, <var>t1</var>, and <var>t2</var>. The driver
+		pointer <var>d</var> initially points to the head, while
+		<var>t1</var> and <var>t2</var> are initially <var>NULL</var>:
+	</p>
+	<div id="reverseLink1"></div>
+	<p>
+		Then, as long as <var>d != NULL</var>, we want to <i>slide</i> the
+		pointers forward: <var>t2</var> points to <var>t1</var>'s pointee,
+		<var>t1</var> points to <var>d</var>'s pointee, and <var>d</var> points
+		to its <var>next</var> address. And each time we slide, <var>t1</var>'s
+		<var>next</var> pointer should point to <var>t2</var>.
+	</p>
+	<p>
+		The best way to illustrate pointer sliding is with a trace table.
+		Initially, we have:
+	</p>
+	<table class="csv">
+		<thead>
+			<th>h</th>
+			<th>t1</th>
+			<th>t1->next</th>
+			<th>t2</th>
+			<th>d</th>
+			<th>d->next</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(9)</td>
+				<td>n(8)</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		Because <var>d</var> is not null, we slide. <var>t2</var>'s pointee now
+		becomes <var>t1</var>'s pointee, <var>t1</var>'s pointee changes to
+		<var>d</var>'s pointee, and <var>t1</var>'s pointee's
+		<var>next</var> pointer should point to <var>t2</var>'s pointee.
+	</p>
+	<table class="csv">
+		<thead>
+			<th>h</th>
+			<th>t1</th>
+			<th>t1->next</th>
+			<th>t2</th>
+			<th>d</th>
+			<th>d->next</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(9)</td>
+				<td>n(8)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(8)</td>
+				<td>n(6)</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		<var>d</var> is still not null, so we slide again. <var>t2</var>'s
+		pointee becomes <var>t1</var>'s pointee, <var>t1</var>'s pointee
+		changes to <var>d</var>'s pointee, and <var>t1</var>'s pointee's
+		<var>next</var> pointer should point to <var>t2</var>'s pointee.
+	</p>
+	<table class="csv">
+		<thead>
+			<th>h</th>
+			<th>t1</th>
+			<th>t1->next</th>
+			<th>t2</th>
+			<th>d</th>
+			<th>d->next</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(9)</td>
+				<td>n(8)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(8)</td>
+				<td>n(6)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(8)</td>
+				<td>n(9)</td>
+				<td>n(9)</td>
+				<td>n(6)</td>
+				<td>n(3)</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>Again <var>d</var> is not null, we so slide:</p>
+	<table class="csv">
+		<thead>
+			<th>h</th>
+			<th>t1</th>
+			<th>t1->next</th>
+			<th>t2</th>
+			<th>d</th>
+			<th>d->next</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(9)</td>
+				<td>n(8)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(8)</td>
+				<td>n(6)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(8)</td>
+				<td>n(9)</td>
+				<td>n(9)</td>
+				<td>n(6)</td>
+				<td>n(3)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(6)</td>
+				<td>n(8)</td>
+				<td>n(8)</td>
+				<td>n(3)</td>
+				<td>null</td>
+			</tr>
+		</tbody>
+	</table>
+	<p><var>d</var> is still not <var>null</var>, so we slide once more:</p>
+	<table class="csv">
+		<thead>
+			<th>h</th>
+			<th>t1</th>
+			<th>t1->next</th>
+			<th>t2</th>
+			<th>d</th>
+			<th>d->next</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(9)</td>
+				<td>n(8)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(8)</td>
+				<td>n(6)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(8)</td>
+				<td>n(9)</td>
+				<td>n(9)</td>
+				<td>n(6)</td>
+				<td>n(3)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(6)</td>
+				<td>n(8)</td>
+				<td>n(8)</td>
+				<td>n(3)</td>
+				<td>null</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(3)</td>
+				<td>n(6)</td>
+				<td>n(6)</td>
+				<td>null</td>
+				<td>--</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		Now we have <var>d</var> is null. All that's left to do is set the
+		<var>h</var> pointer (it's always been pointing at the head), to
+		<var>t1</var>:
+	</p>
+	<table class="csv">
+		<thead>
+			<th>h</th>
+			<th>t1</th>
+			<th>t1->next</th>
+			<th>t2</th>
+			<th>d</th>
+			<th>d->next</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>n(9)</td>
+				<td>null</td>
+				<td>null</td>
+				<td>null</td>
+				<td>n(9)</td>
+				<td>n(8)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(9)</td>
+				<td class="redbg">null</td>
+				<td>null</td>
+				<td>n(8)</td>
+				<td>n(6)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(8)</td>
+				<td class="redbg">n(9)</td>
+				<td>n(9)</td>
+				<td>n(6)</td>
+				<td>n(3)</td>
+			</tr>
+			<tr>
+				<td>n(9)</td>
+				<td>n(6)</td>
+				<td class="redbg">n(8)</td>
+				<td>n(8)</td>
+				<td>n(3)</td>
+				<td>null</td>
+			</tr>
+			<tr>
+				<td class="redbg">t1</td>
+				<td class="redbg">n(3)</td>
+				<td class="redbg">n(6)</td>
+				<td>n(6)</td>
+				<td>null</td>
+				<td>--</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		Notice how we've essentially reversed the list. Reading from left to
+		right, starting from the bottom, we see:
+	</p>
+	<pre class="language-pseudo"><code>
+		(t1   n(3)   n(6)   n(8)   n(9)   null)
+	</code></pre>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<pre class="language-pseudo"><code>
+				list->reverse() => list:
+					d  = list->head
+					t1 = null
+					t2 = null
+					while (d isnt null):
+						t2       = t1
+						t1       = d
+						d        = d->next
+						t1->next = 2
+					head = t1
+					return list
+			</code></pre>
+			<p>
+				As we can see, reversing links is the preferred approach for list
+				reversal. Why? Because reversing-by-link consumes far less memory.
+				We just need three more pointers. Compare that with
+				reverse-by-element, which requires an entire array. With our
+				examples, we've been using
+				<var>int</var>. But the data field for each node in the linked list
+				could very well contain arrays, or even larger data structures.
+				This would lead to an even larger memory consumption.
+			</p>
+			<p>
+				Although both approaches take ${O(n)}$ time &mdash; since we must
+				traverse the linked list &mdash; reverse-by-link consumes much less
+				memory. In fact, whenever we're called to move nodes in a linked
+				list, our first consideration should always be to manipulate links,
+				rather than data fields.
+			</p>
+		</div>
+		<div class="js">
+			<p>Here's an implementation in JavaScript:</p>
+			<pre class="language-javascript"><code>
+				reverse() {
+					let tempNode = this.#head;
+					this.#head = this.#tail;
+					this.#tail = tempNode;
+					let nextNode;
+					let previous = null;
+					for (let i = 0; i &lt; this.#length; i++) {
+						nextNode = tempNode.next;
+						tempNode.next = previous;
+						previous = tempNode;
+						tempNode = nextNode;
+					}
+					return this;
+				}
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="recursive_reverse">
+	<h3>Recursive List Reversal</h3>
+	<p>
+		With recursive list reversal, we want to reverse the link of each node
+		as we're returning from the function call:
+	</p>
+	<pre class="language-pseudo"><code>
+		reverse(Node** head) => void:
+			reverseLink(Node* q, Node* p) => void:
+				if (p isnt null):
+					reverseLink(p, p->next)
+					p->next = q
+				else:
+					*head = q
+			reverseLink(NULL, *head)	
+	</code></pre>
+	<p>The function's call would be written as:</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			reverse(&list)
+		</code></pre>
+	</figure>
+	<p>
+		To understand how this function works, it's helpful to trace the
+		operations. Suppose we called it on this list:
+	</p>
+	<div id="recursive_reverse0"></div>
+	<p>Calling <var>reverse()</var> results in the following:</p>
+	<pre class="language-pseudo"><code>
+		**head = &list
+	</code></pre>
+	<p>visually:</p>
+	<div id="recursive_reverse1"></div>
+	<p>
+		Inside <var>reverse()</var>, we call <var>reverseLink()</var>. This
+		results in <var>q</var> pointing to nowhere and <var>p</var> pointing
+		to the the pointer <var>head</var> points to.
+	</p>
+	<pre class="language-pseudo"><code>
+		reverse:
+			**head = &list
+			reverseLink:
+				Node* q = null
+				Node* p = null
+	</code></pre>
+	<div id="recursive_reverse2"></div>
+	<p>
+		Once these pointers are initialized, we branch. If
+		<var>p != NULL</var>, we execute the if-block. Otherwise, we execute
+		the else-block. Here, <var>p</var> is a nonnull pointer, so we make the
+		recursive call <var>reverseLink(p, p->next)</var>.
+	</p>
+	<pre class="language-pseudo"><code>
+		reverse:
+			**head = &list
+			reverseLink:
+				Node* q = null
+				Node* p = null
+				reverseLink:
+					Node* q = p         // q is null
+					Node* p = p->next   // p is now n(1)
+	</code></pre>
+	<div id="recursive_reverse3"></div>
+	<p>
+		We again check our test condition. Once more, <var>p != NULL</var>, so
+		we make another recursive call:
+	</p>
+	<pre class="language-pseudo"><code>
+		reverse:
+			**head = &list
+			reverseLink:
+				Node* q = null
+				Node* p = null
+				reverseLink:
+					Node* q = p             // q is null
+					Node* p = p->next       // p is now n(1)
+					reverseLink:
+						Node* q = p           // q is now n(1)
+						Node* p = p->next     // p is now n(2)
+	</code></pre>
+	<div id="recursive_reverse4"></div>
+	<p>
+		We again check our test condition, and find that <var>p</var> is the
+		nonnull pointer, so we make another recursive call:
+	</p>
+	<pre class="language-pseudo"><code>
+		reverse:
+			**head = &list
+			reverseLink:
+				Node* q = null
+				Node* p = null
+				reverseLink:
+					Node* q = p                     // q is null
+					Node* p = p->next               // p is now n(1)
+					reverseLink:
+						Node* q = p                 // q is n(1)
+						Node* p = p->next           // p is now n(2)
+						reverseLink:
+							Node* q = p             // q is now n(2)
+							Node* p = p->next       // p is now n(3)
+	</code></pre>
+	<div id="recursive_reverse5"></div>
+	<p>
+		Once more we test whether <var>p != NULL</var>. Again, it is not. So we
+		make one last recursive call:
+	</p>
+	<pre class="language-pseudo"><code>
+		reverse:
+			**head = &list
+			reverseLink:
+				Node* q = null
+				Node* p = null
+				reverseLink:
+					Node* q = p                     // q is null
+					Node* p = p->next               // p is now n(1)
+					reverseLink:
+						Node* q = p                 // q is n(1)
+						Node* p = p->next           // p is now n(2)
+						reverseLink:
+							Node* q = p             // q is now n(2)
+							Node* p = p->next       // p is now n(3)
+							reverseLink:
+								Node* q = p         // q is now n(3)
+								Node* p = p->next   // p is now null
+	</code></pre>
+	<div id="recursive_reverse6"></div>
+	<p>
+		With this last call, <var>p</var> is now the null pointer, so we
+		execute the line <var>p->next = q</var>.
+	</p>
+	<pre class="language-pseudo"><code>
+		reverse:
+			**head = &list
+			reverseLink:
+				Node* q = null
+				Node* p = null
+				reverseLink:
+					Node* q = p                     // q is null
+					Node* p = p->next               // p is now n(1)
+					reverseLink:
+						Node* q = p                 // q is n(1)
+						Node* p = p->next           // p is now n(2)
+						reverseLink:
+							Node* q = p             // q is now n(2)
+							Node* p = p->next       // p is now n(3)
+							reverseLink:
+								Node* q = p         // q is now n(3)
+								Node* p = p->next   // p is now null
+							p->next = q             // n(3)->next = n(2)
+						p->next = q                 // n(2)->next = n(1)
+					p->next = q                     // n(1)->next = null
+	</code></pre>
+	<p>
+		With the last return call, we have <var>p == NULL</var>, so we execute
+		the else block: <var>*head = q</var>.
+	</p>
+	<pre class="language-pseudo"><code>
+		reverse:
+			**head = &list
+			reverseLink:
+				Node* q = null
+				Node* p = null
+				reverseLink:
+					Node* q = p
+					Node* p = p->next
+					reverseLink:
+						Node* q = p
+						Node* p = p->next
+						reverseLink:
+							Node* q = p
+							Node* p = p->next
+							reverseLink:
+								Node* q = p
+								Node* p = p->next
+								p->next = q => n(3)
+							n(3)->next = n(2)
+						n(2)->next = n(1)
+					n(1)->next = null
+				*head = n(1)
+	</code></pre>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+		</ul>
+		<div class="pseudo">
+			<pre class="language-pseudo"><code>
+				reverse(Node** head) => void:
+					reverseLink(Node* q, Node* p) => void:
+						if (p isnt null):
+							reverseLink(p, p->next)
+							p->next = q
+						else:
+							*head = q
+					reverseLink(NULL, *head)	
+			</code></pre>
+		</div>
+		<div class="c">
+			<p>
+				Below is an implementation in C. Note that because C does not allow
+				nested functions, the helper function
+				<var>reverseLink()</var> must be written separately:
+			</p>
+			<pre class="language-c"><code>
+				void reverseLink(struct Node **head, struct Node *q, struct Node *p) {
+					if (p != NULL) {
+						reverseLink(head, p, (*p).next);
+						(*p).next = q;
+					} else {
+						*head = q;
+					}
+				}
+				
+				void reverse(struct Node **head) {
+					reverseLink(head, NULL, *head);
+				}
+			</code></pre>
+			<p>Testing:</p>
+			<pre class="language-c"><code>
+				#include &lt;stdlib.h&gt;
+				#include &lt;stdio.h&gt;
+				
+				struct Node {
+					int data;
+					struct Node *next;
+				};
+				
+				struct Node *newNode(int newData) {
+					struct       Node *freshNode = malloc(sizeof(struct Node));
+					(*freshNode).data            = newData;
+					(*freshNode).next            = NULL;
+					return freshNode;
+				}
+				
+				struct Node *list(int arr[], int size) {
+					struct Node *head = newNode(arr[0]);
+					struct Node *foot = head;
+					for (int i = 1; i < size; i++) {
+						struct  Node *freshNode = newNode(arr[i]);
+						(*foot).next            = freshNode;
+										foot            = freshNode;
+					}
+					return head;
+				} 
+				
+				void print(struct Node *headPtr) {
+					printf("(  ");
+					if (headPtr == NULL) {
+						printf("empty \n");
+					} else {
+						while (headPtr != NULL) {
+							printf("%'d  ", (*headPtr).data);
+							headPtr = (*headPtr).next;
+						}
+					}
+					printf(")\n");
+				}
+				
+				void reverseLink(struct Node **head, struct Node *q, struct Node *p) {
+					if (p != NULL) {
+						reverseLink(head, p, (*p).next);
+						(*p).next = q;
+					} else {
+						*head = q;
+					}
+				}
+				
+				void reverse(struct Node **head) {
+					reverseLink(head, NULL, *head);
+				}
+				
+				
+				int main() {
+					int    size        = 5;
+					int    arr[]       = {1,2,3,4,5};
+					struct Node* aList = list(arr, size);
+					print(aList);
+					reverse(&aList);
+					print(aList);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(  1  2  3  4  5  )
+				(  5  4  3  2  1  )
+			</code></pre>
+		</div>
+	</div>
+</section>

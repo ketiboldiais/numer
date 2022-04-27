@@ -1,0 +1,174 @@
+{% load static %}
+<p>
+	In the previous sections, we worked exclusively with arrays. Arguably,
+	the largest limitation we saw with arrays is the fact that they were of
+	fixed size. Whenever we create an array, we must provide a size. And if
+	we do not, the compiler will do so for us. Once set, the array's size is
+	fixed &mdash; we cannot lengthen or shorten the array.
+</p>
+<p>
+	Because of the length limitation, we cannot modify the array at runtime.
+	This makes it prohibitively difficult to work with sequences whose sizes
+	are unknown at the time of writing. Of course, we could always just
+	initialize massive arrays, hoping that our sequences can fit. But this is
+	clearly inefficient &mdash; it's a waste of memory. And even if we went
+	with this approach, there's no guarantee that our sequence would fit the
+	monolithic array.
+</p>
+<p>
+	The linked list corresponds to the abstract data type <b>list</b>.<sup
+	></sup> A list has the following traits:
+</p>
+<div class="note">
+	<p>
+		In these materials, we make a distinction between the abstract data
+		type
+		<i>list</i> and the abstract data type <i>sequence</i>. The static
+		arrays we worked with earlier correspond to the abstract data type
+		<i>sequence</i>.
+	</p>
+</div>
+<ol>
+	<li>
+		A list can store any given number of elements of a given data type
+		${t.}$
+	</li>
+	<li>A list's elements can be written or modified in place.</li>
+	<li>A list has a specified data type ${L_t.}$</li>
+	<li>A list's elements can be read.</li>
+	<li>A list can be traversed.</li>
+	<li>Elements in a list can be enumerated.</li>
+	<li>The empty list has a size of ${0.}$</li>
+	<li>An element can be inserted at <em>any</em> position in the list.</li>
+	<li>An element can be removed at <em>any</em> position in the list.</li>
+</ol>
+<p>
+	The first seven properties above are all properties present in the
+	<i>sequence</i> ADT. It is the last two properties that differentiate
+	lists from sequences. Sequences are implemented as static arrays. And as
+	static arrays, they have a <em>fixed size</em>. The list, however, has a
+	<i>dynamic size</i>. They can grow and shrink as we please.
+</p>
+<p>Listing some of the differences between arrays and linked lists:</p>
+<div id="compare_linkedlists_and_arrays"></div>
+<p>
+	In the map above, green indicates that the operation is efficient. For
+	both static and dynamic arrays, indexing and random access are fast.
+	These operations, however, do not exist for linked-lists (hence the grey
+	color). Where the singly-linked list outshines dynamic and static arrays
+	is in insertion and deletion. Both dynamic arrays and linked lists have
+	variable size.
+</p>
+<p>
+	Comparing arrays and linked lists, it's helpful to visualize how they
+	might be stored in memory. Suppose we had the following sequence:<sup
+	></sup>
+</p>
+<div class="note">
+	<p>With sequences, we used the notation:</p>
+	<figure>
+		<div>
+			<p>${\lang n_0, n_1, n_2, \ldots n_i \rang}$</p>
+		</div>
+	</figure>
+	<p>
+		where ${n}$ is some element. For lists, we will use the following
+		notation:
+	</p>
+	<figure>
+		<div>
+			<p>${(n_0, n_1, n_2, \ldots n_i)}$</p>
+		</div>
+	</figure>
+</div>
+<figure>
+	<div>
+		<p>${\lang 3, 7, 2, 9, 1 \rang}$</p>
+	</div>
+</figure>
+<p>
+	From what we know, we can implement this sequence in three ways: (1) a
+	static array; (2) a dynamic array; and (3) a linked list. Compare these
+	three approaches from a computer memory perspective:
+</p>
+<figure>
+	<img
+		src="{% static 'images/linked_list_compare.svg' %}"
+		alt="Comparison linked list"
+		loading="lazy"
+		width="200px"
+		height="200px"
+	/>
+	<figcaption>
+		Comparing the static array, the dynamic array, and the linked list. The
+		grey regions represent the heap, while the white regions represent the
+		stack. The variable <var>p</var> is a pointer.
+	</figcaption>
+</figure>
+<!-- <p>
+		To remove a node ${x_n,}$ we would simply have the pointer for the node
+		${x_{n-1}}$ point to ${x_{n+1}.}$
+	</p> -->
+<p>Here's a closer look at the linked list:</p>
+<div id="LLintro"></div>
+<p>
+	In the diagram above, each of the boxes are called <b>nodes</b>. A linked
+	list node consists of two parts: (1) substantive data and (2) procedural
+	data. The <b>substantive data</b> consists of the actual data we want to
+	work with. This could be some literal, an array, or some instance of an
+	abstract data type. The <b>procedural data</b> consists of a
+	<i>pointer</i>. That pointer points to the next node. Note what this
+	means:
+</p>
+<figure>
+	<div>
+		<p>A node pointer is of type node.</p>
+	</div>
+</figure>
+<p>
+	Recognizing this point, a node is itself a data structure, albeit simple:
+</p>
+<figure>
+	<img
+		src="{% static 'images/nodeDataStructure.svg' %}"
+		alt="node data structure"
+		loading="lazy"
+		class="thirty-p"
+	/>
+</figure>
+<p>
+	<span class="topic">Notation.</span> In these materials, we use a
+	particular syntax to refer to individual nodes. Suppose we had the
+	following linked list:
+</p>
+<div id="LL_notation"></div>
+<p>
+	When we write ${r,}$ we are referring to the pointer to the first node in
+	the list. When we write ${h,}$ or ${n_1,}$ we are referring to the first
+	node in the list. And when we write ${t,}$ or ${n_\ell,}$ we are
+	referring to the last node in the list, the tailend.
+</p>
+<p>
+	When we refer to the data value of a particular node, say the second
+	node, we write:
+</p>
+<figure>
+	<div>
+		<p>${\large (n \mid D:5)}$</p>
+	</div>
+</figure>
+<p>or, alternatively:</p>
+<figure>
+	<div>
+		<p>${\large (n_2 \mid D)}$</p>
+	</div>
+</figure>
+<p>
+	When we're referring to the node's pointee &mdash; the address inside the
+	particular node's <var>next</var> field &mdash; we write:
+</p>
+<figure>
+	<div>
+		<p>${\large (n_2 \mid N)}$</p>
+	</div>
+</figure>

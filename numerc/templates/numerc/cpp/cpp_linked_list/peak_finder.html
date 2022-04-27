@@ -1,0 +1,133 @@
+{% load static %}
+<h2>Peak Finder</h2>
+<p>
+	As we saw with arrays, a <b>peak finder</b> is an algorithm for finding
+	the maximum element in a given collection. In this case, the maximum
+	element in a linked list.
+</p>
+<p>
+	<strong>Procedure.</strong> Suppose ${n_0}$ is the head, and it
+	contains the peak, ${v_0,}$ in its data field. Iterating through the
+	linked list, compare ${v_0}$ against ${v_1,}$ the value in the data
+	field of the second node, ${n_1.}$ If ${v_0 &lt; v_1,}$ then ${n_1}$
+	contains the peak. Otherwise, ${v_0}$ is the peak, and we compare it
+	against ${v_2,}$ the value in the data field of the third node. The
+	process until we reach the foot of the list: If ${v_i &lt; v_{i+1},}$
+	then ${v_{i+1}}$ is the maximum element. Otherwise, compare ${v_i}$
+	against ${v_{i+2 \ldots k}.}$
+</p>
+<p>Implementing this procedure:</p>
+<pre class="language-cpp"><code>
+	int findMax(Node* p) {
+		int max = p->data;
+		while (p != 0) {
+			if (p->data > max) {
+				max = p->data;
+			} 
+			p = p->next;
+		}
+		return max;
+	}
+</code></pre>
+<p>For testing, let's say we had the following linked list:</p>
+<div id="ll_peakfinder"></div>
+<p>
+	The diagram shows that ${319}$ is the maximum element, so we should
+	expect to see ${319}$ as the output. Testing:
+</p>
+<pre class="language-cpp"><code>
+	#include &lt;iostream&gt;
+
+	struct Node {
+		int data;
+		Node* next;
+	};
+	
+	Node* newNode(int data) {
+		Node* p       = new Node;
+					p->data = data;
+					p->next = 0;
+		return p;
+	}
+	
+	int findMax(Node* p) {
+		int max = p->data;
+		while (p != 0) {
+			if (p->data > max) {
+				max = p->data;
+			} 
+			p = p->next;
+		}
+		return max;
+	}
+	
+	int main() {
+		Node* root        = 0;
+		Node* node1       = newNode(312);
+					root        = node1;
+		Node* node2       = newNode(219);
+					node1->next = node2;
+		Node* node3       = newNode(313);
+					node2->next = node3;
+		Node* node4       = newNode(319);
+					node3->next = node4;
+	
+		Node* temp     = root;
+		int   maxValue = findMax(temp);
+	
+		std::cout &lt;&lt; maxValue &lt;&lt; std::endl;
+	
+		return 0;
+	}
+</code></pre>
+<pre class="language-bash"><code>
+	319
+</code></pre>
+<p>
+	Note that there are a variety of ways to implement the same function.
+	Another approach is to set the initial <var>max</var> to
+	<var><mark>INT_MIN</mark></var
+	>, the smallest possible <var>int</var> value:
+</p>
+<pre class="language-cpp"><code>
+	int findMax(Node* p) {
+		int max = INT_MIN;
+		while (p != 0) {
+			if (p->data > max) {
+				max = p->data;
+			} 
+			p = p->next;
+		}
+		return max;
+	}
+</code></pre>
+<p>
+	<span class="topic">Recursive Implementation.</span> The recursive peak
+	finder is somewhat longer:
+</p>
+<pre class="language-cpp"><code>
+	int findMax(Node* p) {
+		int x = 0;
+		if (p == 0) {
+			return INT_MIN;
+		} else {
+			x = findMax(p->next);
+			if (x > p->data) {
+				return x;
+			} else {
+				return p->data;
+			}
+		}
+	}
+</code></pre>
+<p>Of course, we can shorten it with the ternary operator:</p>
+<pre class="language-cpp"><code>
+	int findMax(Node* p) {
+		int x = 0;
+		if (p == 0) {
+			return INT_MIN;
+		} 
+		x = findMax(p->next);
+		return x > p->data ? x : p->data;
+	}
+</code></pre>

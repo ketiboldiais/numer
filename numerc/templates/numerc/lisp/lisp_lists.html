@@ -1,60 +1,226 @@
 {% extends '../layout.html' %} {% load static %} {% block description %}
-<meta name="description" content="Lisp lists" />
+<meta name="description" content="Lisp lists and other compound data." />
 {% endblock %} {% block title %}
-<title>Lisp Lists</title>
+<title>Compound Data</title>
 {% endblock %} {% block content %}
-<h1>Lists</h1>
-<section id="lists">
+<h1>Compound Data</h1>
+
+<section id="intro">
 	<p>
-		<span class="topic">The <span class="monoText">car</span> Operator.</span>
+		In this article, we present an over of compound data in Racket,
+		alongside some interesting operations.
+	</p>
+</section>
+
+<section id="list_operations">
+	<h2>Operations on Lists</h2>
+	<p>Racket has the following primitive operations for lists:</p>
+	<table class="alg">
+		<thead>
+			<th>Primitive</th>
+			<th>Description</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td><var>null</var></td>
+				<td>The empty list</td>
+			</tr>
+			<tr>
+				<td><var>cons</var></td>
+				<td>Construct a list</td>
+			</tr>
+			<tr>
+				<td><var>car</var></td>
+				<td>Access the head of a list</td>
+			</tr>
+			<tr>
+				<td><var>cdr</var></td>
+				<td>Access the tail of a list</td>
+			</tr>
+			<tr>
+				<td><var>null?</var></td>
+				<td>Check of the empty list</td>
+			</tr>
+			<tr>
+				<td><var>list</var></td>
+				<td>syntactic sugar for building long lists</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>Let's explore each of these primitive operations.</p>
+	<section id="car">
+		<h3>The car Operator</h3>
+		<p>
+			Here's a recursive function for summing all the numbers in a list:
+		</p>
+		<pre class="language-scheme"><code>
+			(define (sum terms)
+				(if (null? terms) 0
+							(+ (car terms) (sum (cdr terms)))))
+		</code></pre>
+		<p>Here's another function that merges two lists:</p>
+		<pre class="language-scheme"><code>
+			#lang racket
+
+			(define (merge list1 list2)
+				(if (null? list1) list2
+							(cons (car list1) (merge (cdr list1) list2))))
+
+			(define list-A (list 1 2 3 4))
+			(define list-B (list 5 6 7 8))
+			(define list-C (merge list-A list-B))
+			(println list-C)
+		</code></pre>
+		<pre class="language-bash"><code>
+			'(1 2 3 4 5 6 7 8)
+		</code></pre>
+		<p>Here's another example, a map function:</p>
+		<pre class="language-scheme"><code>
+			(provide Map)
+			(define (Map f terms)
+				(if (null? terms)
+						null
+						(cons (f (car terms))
+									(Map f (cdr terms)))))
+		</code></pre>
+		<p>Testing:</p>
+		<pre class="language-scheme"><code>
+			#lang racket
+
+			(require "map.rkt")
+			(require "cube.rkt")
+			
+			(define myList (list 1 2 3 4 5 6))
+			
+			(define myListCubed (Map cube myList))
+			
+			(println myListCubed)			
+		</code></pre>
+		<pre class="language-bash"><code>
+			'(1 2 3 4 5 6)
+			'(1 8 27 64 125 216)
+		</code></pre>
+	</section>
+</section>
+
+<section id="revisiting_syntax">
+	<h2>A Closer Look at Racket Syntax</h2>
+	<p>
+		Compared to other languages, Racket has remarkably simple syntax. Every
+		Racket term falls into one of the following categories:
+	</p>
+	<ol>
+		<li>
+			An <b>atom</b> (e.g., <var>#t</var>, <var>#f</var>, <var>17</var>,
+			<var>"hi"</var>, <var>null</var>, and so on).
+		</li>
+		<li>
+			A <b>special form</b> (e.g., <var>define</var>, <var>lambda</var>,
+			<var>if</var>, essentially keywords). We'll see later that we can
+			define our own through <i>macros</i>.
+		</li>
+		<li>
+			Or a <b>sequence</b> of terms in parentheses:
+			<var>(t1, t2, t3, &hellip;)</var>.
+		</li>
+	</ol>
+	<p>
+		Racket manages to keep its syntax extremely simple because of its use
+		of parentheses. To illustrate, suppose we wanted to compute the
+		following:
+	</p>
+	<figure>$$ y = a \div b + c $$</figure>
+	<p>In most other languages, we would write:</p>
+	<pre class="language-pseudo"><code>
+		y = a / b + c
+	</code></pre>
+	<p>
+		To correctly evaluate this expression, the language designer must come
+		up with a operator precedence rules, mirroring the familiar PEMDAS from
+		our days of youth. The expression <var>a / b + c</var> is then
+		evaluated according to those rules. Thus, when the compiler encounters
+		the expression, it must look to the precedence rules:
+		<q
+			>Oh, this is a division symbol. Do I evaluate this before addition?
+			Let me check. No.</q
+		>
+	</p>
+	<p>
+		In Racket, however, no such rules are needed, because the syntax
+		directly dictates the order of operations. Writing:
+	</p>
+	<pre class="language-scheme"><code>
+		(define y (/ a (+ b c)))
+	</code></pre>
+	<p>the expression directly provides the instructions:</p>
+	<ol>
+		<li>Compute: <var>b + c</var></li>
+		<li>Divide the result of step 1 by <var>a</var>.</li>
+		<li>Bind the result of step 2 to <var>y</var>.</li>
+	</ol>
+</section>
+
+<section id="dynamic_typing">
+	<h2>Dynamic Typing</h2>
+	<p>
+		Racket is a dynamically typed language. This means that Racket will
+		execute code like <var>(n * x)</var>, even if one of those variables is
+		undefined. This can be frustrating. On the other hand, dynamic typing
+		does provide for much more flexible data structures and code without
+		going through the hurdles of convincing a type checker that our logic
+		is correct.
+	</p>
+</section>
+
+<section id="car_exercises">
+	<h2>Exercises: CAR</h2>
+	<p>
 		The simplest form of arbitrarily-sized data is a
-		<span class="term">list</span> &mdash; a collection of values. Before we do
-		so, we should be familiar with three operations in Lisp:
-		<span class="monoText">car</span>, <span class="monoText">cdr</span>, and
-		<span class="monoText">cons</span>. Consider the exercises below:
+		<b>list</b> &mdash; a collection of values. Before we do so, we should
+		be familiar with three operations in Lisp: <var>car</var>,
+		<var>cdr</var>, and <var>cons</var>. Consider the exercises below:
 	</p>
 
 	<ol class="ex grid">
 		<li class="grid-item">
 			Is
-			<span class="monoText">'this'</span> an atom?
+			<var>'this'</var> an atom?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, <span class="monoText">'this'</span> is a string starting with
-					the character <span class="monoText">'t'</span>.
+					Yes, <var>'this'</var> is a string starting with the character
+					<var>'t'</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Is
-			<span class="monoText">*abc~</span> an atom?
+			<var>*abc~</var> an atom?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, <span class="monoText">*abc~</span> is an atom consisting of
-					special characters.
+					Yes, <var>*abc~</var> is an atom consisting of special
+					characters.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Is this a list:
-			<span class="monoText">((atom particle) or)</span>
+			<var>((atom particle) or)</var>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					Yes, this is a list with two elements: a list,
-					<span class="monoText">(atom particle)</span> and an atom,
-					<span class="monoText">or</span>.
+					<var>(atom particle)</var> and an atom, <var>or</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Is
-			<span class="monoText">((x y) z)</span> an S-expression?
+			<var>((x y) z)</var> an S-expression?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>Yes, all lists S-expressions.</p>
@@ -62,191 +228,188 @@
 		</li>
 
 		<li class="grid-item">
-			Is <span class="monoText">()</span> a list?
+			Is <var>()</var> a list?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes; it contains zero S-expressions enclosed in parentheses. This is a
-					special list called the <span class="monoText">null</span> list.
+					Yes; it contains zero S-expressions enclosed in parentheses. This
+					is a special list called the
+					<var>null</var> list.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is the
-			<span class="monoText">car</span> of
-			<span class="monoText">(a b c)</span>?
+			<var>car</var> of <var>(a b c)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">a</span> &mdash; it is the first atom of the
-					list <span class="monoText">(a b c)</span>.
+					<var>a</var> &mdash; it is the first atom of the list
+					<var>(a b c)</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is the
-			<span class="monoText">car</span> of <span class="monoText">()</span>?
+			<var>car</var> of <var>()</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					No answer. <span class="monoText">car</span> does not operate on the
-					<span class="monoText">null</span> list.
+					No answer. <var>car</var> does not operate on the
+					<var>null</var> list.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
-			Is <span class="monoText">1329</span> an atom?
+			Is <var>1329</var> an atom?
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>Yes, <span class="monoText">1329</span> is a string of digits.</p>
+				<p>Yes, <var>1329</var> is a string of digits.</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Is
-			<span class="monoText">(atom)</span> a list?
+			<var>(atom)</var> a list?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, because <span class="monoText">(atom)</span> is an atom enclosed
-					by parentheses.
+					Yes, because <var>(atom)</var> is an atom enclosed by
+					parentheses.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
-			Is <span class="monoText">xyz</span> an S-expression?
+			Is <var>xyz</var> an S-expression?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes. <span class="monoText">xyz</span> is an tom, and every atom is an
-					S-expression.
+					Yes. <var>xyz</var> is an tom, and every atom is an S-expression.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Is
-			<span class="monoText">(hey how are you)</span> a list?
-			<details class="answer">
-				<summary>Solution</summary>
-				<p>Yes, it is a collection of S-expressions enclosed by parentheses.</p>
-			</details>
-		</li>
-
-		<li class="grid-item">
-			Is <span class="monoText">()</span> an atom?
-			<details class="answer">
-				<summary>Solution</summary>
-				<p>No. <span class="monoText">()</span> is the empty list.</p>
-			</details>
-		</li>
-
-		<li class="grid-item">
-			What is the
-			<span class="monoText">car</span> of
-			<span class="monoText">((a b c) x y z)</span>?
+			<var>(hey how are you)</var> a list?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(a b c)</span> &mdash; it is the first
-					S-expression in <span class="monoText">((a b c) x y z)</span>.
+					Yes, it is a collection of S-expressions enclosed by parentheses.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
-			Is <span class="monoText">'u'</span> an atom?
+			Is <var>()</var> an atom?
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>No. <var>()</var> is the empty list.</p>
+			</details>
+		</li>
+
+		<li class="grid-item">
+			What is the
+			<var>car</var> of <var>((a b c) x y z)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, <span class="monoText">'u'</span> is a string of length 1, a
-					<span class="italicsText">letter</span>.
+					<var>(a b c)</var> &mdash; it is the first S-expression in
+					<var>((a b c) x y z)</var>.
+				</p>
+			</details>
+		</li>
+
+		<li class="grid-item">
+			Is <var>'u'</var> an atom?
+			<details class="answer">
+				<summary>Solution</summary>
+				<p>
+					Yes, <var>'u'</var> is a string of length 1, a <i>letter</i>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Is this a list:
-			<span class="monoText">(atom particle) or</span>?
+			<var>(atom particle) or</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					No, there is a list, <span class="monoText">(atom particle)</span>,
-					but it is followed by an atom <span class="monoText">or</span>.
+					No, there is a list,
+					<var>(atom particle)</var>, but it is followed by an atom
+					<var>or</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Is
-			<span class="monoText">(x y z)</span> an
-			<span class="monoText">S-expression</span>?
+			<var>(x y z)</var> an <var>S-expression</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes. <span class="monoText">(x y z)</span> is a list, and every list
-					is an s-expression.
+					Yes. <var>(x y z)</var> is a list, and every list is an
+					s-expression.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			How many S-expressions are in the list
-			<span class="monoText">(hey how are you)</span>?
+			<var>(hey how are you)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					There are 4: <span class="monoText">hey</span>,
-					<span class="monoText">how</span>, <span class="monoText">are</span>,
-					and <span class="monoText">you</span>.
+					There are 4: <var>hey</var>, <var>how</var>, <var>are</var>, and
+					<var>you</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Is
-			<span class="monoText">(() () ())</span> a list?
+			<var>(() () ())</var> a list?
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>Yes, it is a collection of S-expressions enclosed by parentheses.</p>
+				<p>
+					Yes, it is a collection of S-expressions enclosed by parentheses.
+				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is the
-			<span class="monoText">car</span> of <span class="monoText">hello</span>?
+			<var>car</var> of <var>hello</var>?
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					No answer. <span class="monoText">car</span> does not operate on
-					atoms.
-				</p>
+				<p>No answer. <var>car</var> does not operate on atoms.</p>
 			</details>
 		</li>
 	</ol>
 
 	<p>
-		The exercises above yield the rule for <span class="monoText">car</span>:
-		The primitive <span class="monoText">car</span> is defined only for
+		The exercises above yield the rule for
+		<var>car</var>: The primitive <var>car</var> is defined only for
 		non-empty lists.
 	</p>
 
 	<ol class="ex grid">
 		<li class="grid-item">
 			What is the
-			<span class="monoText">car</span> of:
+			<var>car</var> of:
 			<pre class="language-pseudo"><code>
 					(((ketchup)) (mayo) (mustard))	
 				</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">((ketchup))</span> &mdash; the list of the list
-					containing <span class="monoText">ketchup</span>.
+					<var>((ketchup))</var> &mdash; the list of the list containing
+					<var>ketchup</var>.
 				</p>
 			</details>
 		</li>
@@ -258,68 +421,57 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(t r)</span>.</p>
+				<p><var>(t r)</var>.</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is the
-			<span class="monoText">cdr</span> of:
+			<var>cdr</var> of:
 			<pre class="language-pseudo"><code>
 				((a b c) x y z)
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(x y z)</span> &mdash; because
-					<span class="monoText">(x y z)</span> is the list
-					<span class="monoText">((a b c) x y z)</span> without
-					<span class="monoText">(car ((a b c) x y z))</span>.
+					<var>(x y z)</var> &mdash; because <var>(x y z)</var> is the list
+					<var>((a b c) x y z)</var> without
+					<var>(car ((a b c) x y z))</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is the
-			<span class="monoText">cdr</span> of
-			<span class="monoText">(ketchup)</span>?
+			<var>cdr</var> of <var>(ketchup)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">()</span> &mdash; because
-					<span class="monoText">()</span> is the list
-					<span class="monoText">(ketchup)</span> without
-					<span class="monoText">(car (ketchup))</span>. I.e., the
-					<span class="monoText">null</span> list.
+					<var>()</var> &mdash; because <var>()</var> is the list
+					<var>(ketchup)</var> without <var>(car (ketchup))</var>. I.e.,
+					the <var>null</var> list.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is
-			<span class="monoText">(cdr mayo)</span>?
+			<var>(cdr mayo)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					No answer. <span class="monoText">cdr</span> does not operate on
-					atoms.
-				</p>
+				<p>No answer. <var>cdr</var> does not operate on atoms.</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is the
-			<span class="monoText">cdr</span> of
-			<span class="monoText">(a b c)</span>?
+			<var>cdr</var> of <var>(a b c)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(b c)</span> &mdash; because
-					<span class="monoText">(b c)</span> is the list
-					<span class="monoText">(a b c)</span> without
-					<span class="monoText">(car (a b c))</span>. We can think of
-					<span class="monoText">cdr</span> as &#8220;the rest of the
-					list.&#8221;
+					<var>(b c)</var> &mdash; because <var>(b c)</var> is the list
+					<var>(a b c)</var> without <var>(car (a b c))</var>. We can think
+					of <var>cdr</var> as &#8220;the rest of the list.&#8221;
 				</p>
 			</details>
 		</li>
@@ -333,8 +485,8 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">((ketchup))</span> &mdash; this is simply
-					wrapping <span class="monoText">car</span> in parentheses.
+					<var>((ketchup))</var> &mdash; this is simply wrapping
+					<var>car</var> in parentheses.
 				</p>
 			</details>
 		</li>
@@ -347,34 +499,33 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(ketchup)</span> &mdash; we are asking for the
-					first S-expression &mdash;
-					<span class="monoText">(ketchup)</span> &mdash; of the list &mdash;
-					<span class="monoText">((ketchup))</span> &mdash; of the list
-					<span class="monoText">((ketchup) (mayo) (mustard))</span>.
+					<var>(ketchup)</var> &mdash; we are asking for the first
+					S-expression &mdash; <var>(ketchup)</var> &mdash; of the list
+					&mdash; <var>((ketchup))</var> &mdash; of the list
+					<var>((ketchup) (mayo) (mustard))</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is
-			<span class="monoText">(cdr ())</span>?
+			<var>(cdr ())</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					No answer. <span class="monoText">cdr</span> does not operate on the
-					<span class="monoText">null</span> list.
+					No answer. <var>cdr</var> does not operate on the
+					<var>null</var> list.
 				</p>
 			</details>
 		</li>
 	</ol>
 
 	<p>
-		<span class="topic">The <span class="monoText">cdr</span> Operator.</span>
+		<span class="topic">The <var>cdr</var> Operator.</span>
 		The above exercises evidence another rule: The primitive
-		<span class="monoText">cdr</span> is defined only for non-empty lists. The
-		<span class="monoText">cdr</span> of any non-empty list is always another
-		list. Now consider the following exercises:
+		<var>cdr</var> is defined only for non-empty lists. The
+		<var>cdr</var> of any non-empty list is always another list. Now
+		consider the following exercises:
 	</p>
 
 	<ol class="ex grid">
@@ -387,13 +538,12 @@
 				<summary>Solution</summary>
 				<p>
 					First, evaluate
-					<span class="monoText">(cdr ((b) (x y) (c)))</span> ${\implies}$
-					<span class="monoText">((x y) (c))</span>.
+					<var>(cdr ((b) (x y) (c)))</var> ${\implies}$
+					<var>((x y) (c))</var>.
 				</p>
 				<p>
 					Next, evaluate
-					<span class="monoText">(car ((x y) (c)))</span> ${\implies}$
-					<span class="monoText">(x y)</span>.
+					<var>(car ((x y) (c)))</var> ${\implies}$ <var>(x y)</var>.
 				</p>
 			</details>
 		</li>
@@ -405,26 +555,20 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
+				<p><var>(car (a (b (c)) d))</var> ${\implies}$ <var>a</var>.</p>
 				<p>
-					<span class="monoText">(car (a (b (c)) d))</span> ${\implies}$
-					<span class="monoText">a</span>.
-				</p>
-				<p>
-					<span class="monoText">(cdr a)</span> ${\implies}$ no answer;
-					<span class="monoText">cdr</span> does not operate on atoms.
+					<var>(cdr a)</var> ${\implies}$ no answer; <var>cdr</var> does
+					not operate on atoms.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What does
-			<span class="monoText">cdr</span> take as an argument?
+			<var>cdr</var> take as an argument?
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">cdr</span> takes as an argument a non-empty
-					list.
-				</p>
+				<p><var>cdr</var> takes as an argument a non-empty list.</p>
 			</details>
 		</li>
 
@@ -436,8 +580,8 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					The <span class="monoText">cons</span> operator adds any S-expression
-					to the front of a list.
+					The <var>cons</var> operator adds any S-expression to the front
+					of a list.
 				</p>
 				<p>
 					&#8756;
@@ -445,38 +589,37 @@
 						>(cons (banana and) (peanut butter and jelly))</span
 					>
 					${\implies}$
-					<span class="monoText">((banana and) (peanut butter and jelly))</span>
+					<span class="monoText"
+						>((banana and) (peanut butter and jelly))</span
+					>
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What does
-			<span class="monoText">cons</span> take as its arguments?
+			<var>cons</var> take as its arguments?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">cons</span> takes as its arguments (first) an
-					S-expression and (second) a list.
+					<var>cons</var> takes as its arguments (first) an S-expression
+					and (second) a list.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is
-			<span class="monoText">(cons a ())</span>?
+			<var>(cons a ())</var>?
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">(cons a ())</span> ${\implies}$
-					<span class="monoText">(a)</span>.
-				</p>
+				<p><var>(cons a ())</var> ${\implies}$ <var>(a)</var>.</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is
-			<span class="monoText">(cons a b)</span>?
+			<var>(cons a b)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>No answer. The second argument must be a list.</p>
@@ -491,30 +634,26 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(cdr ((b) (x y) ((c))))</span> ${\implies}$
-					<span class="monoText">((x y) ((c)))</span>.
+					<var>(cdr ((b) (x y) ((c))))</var>
+					${\implies}$ <var>((x y) ((c)))</var>.
 				</p>
 				<p>
-					<span class="monoText">(cdr ((x y) ((c))))</span> ${\implies}$
-					<span class="monoText">(((c)))</span>.
+					<var>(cdr ((x y) ((c))))</var> ${\implies}$ <var>(((c)))</var>.
 				</p>
 				<p>
 					&#8756;
-					<span class="monoText">(cdr (cdr ((b) (x y) ((c)))))</span> \implies
-					<span class="monoText">(((c)))</span>.
+					<var>(cdr (cdr ((b) (x y) ((c)))))</var>
+					\implies <var>(((c)))</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What does
-			<span class="monoText">car</span> take as an argument?
+			<var>car</var> take as an argument?
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">car</span> takes as an argument a non-empty
-					list.
-				</p>
+				<p><var>car</var> takes as an argument a non-empty list.</p>
 			</details>
 		</li>
 
@@ -526,16 +665,16 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					This is read &#8220;<span class="monoText">cons</span> the atom
-					<span class="monoText">peanut</span> onto the list
-					<span class="monoText">(butter and jelly)</span>.&#8221; The
-					<span class="monoText">cons</span> operator adds any atom to the front
-					of a list.
+					This is read &#8220;<var>cons</var> the atom
+					<var>peanut</var> onto the list
+					<var>(butter and jelly)</var>.&#8221; The
+					<var>cons</var> operator adds any atom to the front of a list.
 				</p>
 				<p>
 					&#8756;
-					<span class="monoText">(cons peanut (butter and jelly))</span>
-					${\implies}$ <span class="monoText">(peanut butter and jelly)</span>.
+					<var>(cons peanut (butter and jelly))</var>
+					${\implies}$
+					<var>(peanut butter and jelly)</var>.
 				</p>
 			</details>
 		</li>
@@ -557,40 +696,40 @@
 
 		<li class="grid-item">
 			What is
-			<span class="monoText">(cons (a b (c)) ())</span>?
+			<var>(cons (a b (c)) ())</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(cons (a b (c)) ())</span> adds the list
-					<span class="monoText">(a b (c))</span> to the empty list
-					<span class="monoText">()</span>.
+					<var>(cons (a b (c)) ())</var> adds the list
+					<var>(a b (c))</var> to the empty list <var>()</var>.
 				</p>
 				<p>
-					&#8756; <span class="monoText">(cons (a b (c)) ())</span> ${\implies}$
-					<span class="monoText">((a b (c)))</span>.
+					&#8756;
+					<var>(cons (a b (c)) ())</var> ${\implies}$
+					<var>((a b (c)))</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is
-			<span class="monoText">(cons ((a b c)) b)</span>?
+			<var>(cons ((a b c)) b)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					No answer. The second argument to a
-					<span class="monoText">cons</span> operation must be a list.
+					<var>cons</var> operation must be a list.
 				</p>
 			</details>
 		</li>
 	</ol>
 
 	<p>
-		<span class="topic">The <span class="monoText">cons</span> Operator.</span>
+		<span class="topic">The <var>cons</var> Operator.</span>
 		From the above, we have the following rule: The primitive
-		<span class="monoText">cons</span> takes two arguments: The first must be an
-		<span class="monoText">S-expression</span>, the second must be a list. The
-		result is a list.
+		<var>cons</var> takes two arguments: The first must be an
+		<var>S-expression</var>, the second must be a list. The result is a
+		list.
 	</p>
 
 	<ol class="ex grid">
@@ -601,45 +740,37 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">(car ((b) c d))</span> ${\implies}$
-					<span class="monoText">(b)</span>.
-				</p>
-				<p>
-					<span class="monoText">(cons a (b))</span> ${\implies}$
-					<span class="monoText">(a b)</span>.
-				</p>
+				<p><var>(car ((b) c d))</var> ${\implies}$ <var>(b)</var>.</p>
+				<p><var>(cons a (b))</var> ${\implies}$ <var>(a b)</var>.</p>
 				<p>
 					&#8756;
-					<span class="monoText">(cons a (car ((b) c d)))</span> ${\implies}$
-					<span class="monoText">(a b)</span>.
+					<var>(cons a (car ((b) c d)))</var>
+					${\implies}$ <var>(a b)</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			Suppose the list ${\ell}$ is
-			<span class="monoText">()</span>. Is it true that the list ${\ell}$ is the
-			<span class="monoText">null</span> list?
+			<var>()</var>. Is it true that the list ${\ell}$ is the
+			<var>null</var> list?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					Yes, it is true. This question can be written in Lisp as:
-					<span class="monoText">(null? ${\ell}$)</span>.
+					<var>(null? ${\ell}$)</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			True or false:
-			<span class="monoText">(null? (a b c))</span>.
+			<var>(null? (a b c))</var>.
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>. The list
-					<span class="monoText">(a b c)</span> contains three elements,
-					<span class="monoText">a</span>, <span class="monoText">b</span>, and
-					<span class="monoText">c</span>.
+					<var>false</var>. The list <var>(a b c)</var> contains three
+					elements, <var>a</var>, <var>b</var>, and <var>c</var>.
 				</p>
 			</details>
 		</li>
@@ -651,18 +782,12 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">(cdr ((b) c d))</span> ${\implies}$
-					<span class="monoText">(c d)</span>.
-				</p>
-				<p>
-					<span class="monoText">(cons a (c d))</span> ${\implies}$
-					<span class="monoText">(a c d)</span>.
-				</p>
+				<p><var>(cdr ((b) c d))</var> ${\implies}$ <var>(c d)</var>.</p>
+				<p><var>(cons a (c d))</var> ${\implies}$ <var>(a c d)</var>.</p>
 				<p>
 					&#8756;
-					<span class="monoText">(cons a (cdr ((b) c d)))</span> ${\implies}$
-					<span class="monoText">(a c d)</span>.
+					<var>(cons a (cdr ((b) c d)))</var>
+					${\implies}$ <var>(a c d)</var>.
 				</p>
 			</details>
 		</li>
@@ -676,42 +801,35 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>. The statement
-					<span class="monoText">'()</span> is a notation for the
-					<span class="monoText">null list</span>.
+					<var>true</var>. The statement <var>'()</var> is a notation for
+					the <var>null list</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			True or false:
-			<span class="monoText">(null? hello)</span>.
+			<var>(null? hello)</var>.
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					No answer. You cannot ask <span class="monoText">null?</span> for an
-					atom.
-				</p>
+				<p>No answer. You cannot ask <var>null?</var> for an atom.</p>
 			</details>
 		</li>
 	</ol>
 
 	<p>
-		<span class="topic">The <span class="monoText">null?</span> Operator.</span>
+		<span class="topic">The <var>null?</var> Operator.</span>
 		From the above, we have the following rule: The primitive
-		<span class="monoText">null?</span> is defined only for lists.
+		<var>null?</var> is defined only for lists.
 	</p>
 
 	<ol class="ex grid">
 		<li class="grid-item">
 			True or false:
-			<span class="monoText">John</span> is an atom.
+			<var>John</var> is an atom.
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">true</span>.
-					<span class="monoText">John</span> is a string of characters.
-				</p>
+				<p><var>true</var>. <var>John</var> is a string of characters.</p>
 			</details>
 		</li>
 
@@ -723,8 +841,8 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">(John is present)</span> is a non-empty list.
+					<var>false</var>. <var>(John is present)</var> is a non-empty
+					list.
 				</p>
 			</details>
 		</li>
@@ -738,13 +856,10 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(car (John is present))</span> ${\implies}$
-					<span class="monoText">John</span>.
+					<var>(car (John is present))</var>
+					${\implies}$ <var>John</var>.
 				</p>
-				<p>
-					<span class="monoText">(atom? John)</span> ${\implies}$
-					<span class="monoText">true</span>.
-				</p>
+				<p><var>(atom? John)</var> ${\implies}$ <var>true</var>.</p>
 			</details>
 		</li>
 
@@ -755,15 +870,10 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
+				<p><var>(cdr (John))</var> ${\implies}$ <var>()</var>.</p>
 				<p>
-					<span class="monoText">(cdr (John))</span> ${\implies}$
-					<span class="monoText">()</span>.
-				</p>
-				<p>
-					<span class="monoText">(atom? ())</span> ${\implies}$
-					<span class="monoText">false</span>.
-					<span class="monoText">()</span> is the
-					<span class="monoText">null list</span>.
+					<var>(atom? ())</var> ${\implies}$ <var>false</var>.
+					<var>()</var> is the <var>null list</var>.
 				</p>
 			</details>
 		</li>
@@ -776,89 +886,74 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(cdr (Hello (I) am Fortran))</span>
-					${\implies}$ <span class="monoText">((I) am Fortran)</span>.
+					<var>(cdr (Hello (I) am Fortran))</var>
+					${\implies}$ <var>((I) am Fortran)</var>.
 				</p>
 				<p>
-					<span class="monoText">(car ((I) am Fortran))</span> ${\implies}$
-					<span class="monoText">(I)</span>.
+					<var>(car ((I) am Fortran))</var> ${\implies}$ <var>(I)</var>.
 				</p>
-				<p>
-					<span class="monoText">(atom? (I))</span> ${\implies}$
-					<span class="monoText">false</span>.
-				</p>
+				<p><var>(atom? (I))</var> ${\implies}$ <var>false</var>.</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			What is
-			<span class="monoText">(eq? John John)</span>?
+			<var>(eq? John John)</var>?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(eq? John John)</span> is just another way of
-					asking, Are <span class="monoText">John</span> and
-					<span class="monoText">John</span> the same
-					<span class="italicsText">non-numeric</span> atom?
+					<var>(eq? John John)</var> is just another way of asking, Are
+					<var>John</var> and <var>John</var> the same
+					<i>non-numeric</i> atom?
 				</p>
-				<p>
-					<span class="monoText">(eq? John John)</span> ${\implies}$
-					<span class="monoText">true</span>.
-				</p>
+				<p><var>(eq? John John)</var> ${\implies}$ <var>true</var>.</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			How many arguments does
-			<span class="monoText">eq?</span> take and what are they?
+			<var>eq?</var> take and what are they?
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">eq?</span> takes two arguments, both of which
+					<var>eq?</var> takes two arguments, both of which
 					<span class="underlineText">must</span> be
-					<span class="italicsText">non-numeric</span> atoms.
+					<i>non-numeric</i> atoms.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			True or false:
-			<span class="monoText">(eq? 6 7)</span>.
+			<var>(eq? 6 7)</var>.
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					No answer. Both arguments taken by
-					<span class="monoText">eq?</span> must be
-					<span class="italicsText">non-numeric</span> atoms.
+					<var>eq?</var> must be <i>non-numeric</i> atoms.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			True or false:
-			<span class="monoText">(atom? John)</span>.
+			<var>(atom? John)</var>.
 			<details class="answer">
 				<summary>Solution</summary>
+				<p><var>true</var>. <var>John</var> is a string of characters.</p>
 				<p>
-					<span class="monoText">true</span>.
-					<span class="monoText">John</span> is a string of characters.
-				</p>
-				<p>
-					<span class="monoText">(atom? ${\alpha}$)</span> is just another way
-					to ask: Is ${\alpha}$ an atom?
+					<var>(atom? ${\alpha}$)</var> is just another way to ask: Is
+					${\alpha}$ an atom?
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			How many arguments does
-			<span class="monoText">atom?</span> take and what are they?
+			<var>atom?</var> take and what are they?
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">atom?</span> takes one argument, any
-					S-expression.
-				</p>
+				<p><var>atom?</var> takes one argument, any S-expression.</p>
 			</details>
 		</li>
 
@@ -871,13 +966,12 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(cdr (John is present))</span> ${\implies}$
-					<span class="monoText">(is present)</span>.
+					<var>(cdr (John is present))</var>
+					${\implies}$ <var>(is present)</var>.
 				</p>
 				<p>
-					<span class="monoText">(atom (is present))</span> ${\implies}$
-					<span class="monoText">false</span>.
-					<span class="monoText">(is present)</span> is a non-empty list.
+					<var>(atom (is present))</var> ${\implies}$ <var>false</var>.
+					<var>(is present)</var> is a non-empty list.
 				</p>
 			</details>
 		</li>
@@ -891,66 +985,56 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(cdr (Hello I am fortran))</span> ${\implies}$
-					<span class="monoText">(I am Fortran)</span>.
+					<var>(cdr (Hello I am fortran))</var>
+					${\implies}$ <var>(I am Fortran)</var>.
 				</p>
-				<p>
-					<span class="monoText">(car (I am Fortran))</span> ${\implies}$
-					<span class="monoText">I</span>.
-				</p>
-				<p>
-					<span class="monoText">(atom? I)</span> ${\implies}$
-					<span class="monoText">true</span>.
-				</p>
+				<p><var>(car (I am Fortran))</var> ${\implies}$ <var>I</var>.</p>
+				<p><var>(atom? I)</var> ${\implies}$ <var>true</var>.</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			True or false: ${\alpha}$ is the atom
-			<span class="monoText">John</span>. ${\beta}$ is the atom
-			<span class="monoText">John</span>. ${\alpha}$ and ${\beta}$ are the same
-			atom.
+			<var>John</var>. ${\beta}$ is the atom <var>John</var>. ${\alpha}$
+			and ${\beta}$ are the same atom.
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>. Both ${\alpha}$ and ${\beta}$ are
-					the atom <span class="monoText">John</span>.
+					<var>true</var>. Both ${\alpha}$ and ${\beta}$ are the atom
+					<var>John</var>.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			True or false:
-			<span class="monoText">(eq? butter margarine)</span>.
+			<var>(eq? butter margarine)</var>.
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">butter</span> and
-					<span class="monoText">margarine</span> are different strings of
-					characters, so they are different atoms.
+					<var>false</var>. <var>butter</var> and <var>margarine</var> are
+					different strings of characters, so they are different atoms.
 				</p>
 			</details>
 		</li>
 
 		<li class="grid-item">
 			True or false:
-			<span class="monoText">(eq? () mango)</span>.
+			<var>(eq? () mango)</var>.
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					No answer. Both arguments taken by
-					<span class="monoText">eq?</span> must be non-numeric
-					<span class="italicsText">atoms</span>.
+					<var>eq?</var> must be non-numeric <i>atoms</i>.
 				</p>
 			</details>
 		</li>
 	</ol>
 
 	<p>
-		<span class="topic">The <span class="monoText">eq?</span> Operator.</span>
+		<span class="topic">The <var>eq?</var> Operator.</span>
 		From the exercises above, we have the following rule: The primitive
-		<span class="monoText">eq?</span> takes two arguments, each of which must be
+		<var>eq?</var> takes two arguments, each of which must be
 		<span class="underlineText">non-numeric atoms</span>.
 	</p>
 
@@ -963,13 +1047,10 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(car (Mary had a little lamb chop))</span>
-					${\implies}$ <span class="monoText">Mary</span>
+					<var>(car (Mary had a little lamb chop))</var>
+					${\implies}$ <var>Mary</var>
 				</p>
-				<p>
-					<span class="monoText">(eq? Mary Mary)</span> ${\implies}$
-					<span class="monoText">true</span>.
-				</p>
+				<p><var>(eq? Mary Mary)</var> ${\implies}$ <var>true</var>.</p>
 			</details>
 
 			<p>True or false:</p>
@@ -985,21 +1066,21 @@
 							>(cdr (beans beans we need jelly beans))</span
 						>
 						${\implies}$
-						<span class="monoText">(beans we need jelly beans)</span>
+						<var>(beans we need jelly beans)</var>
 					</li>
 					<li>
-						<span class="monoText">(car (beans we need jelly beans))</span>
-						${\implies}$ <span class="monoText">beans</span>
+						<var>(car (beans we need jelly beans))</var>
+						${\implies}$ <var>beans</var>
 					</li>
 					<li>
 						<span class="monoText"
 							>(car (beans beans we need jelly beans))</span
 						>
-						${\implies}$ <span class="monoText">beans</span>
+						${\implies}$ <var>beans</var>
 					</li>
 					<li>
-						<span class="monoText">(eq? beans beans)</span> ${\implies}$
-						<span class="monoText">true</span>
+						<var>(eq? beans beans)</var> ${\implies}$
+						<var>true</var>
 					</li>
 				</ol>
 			</details>
@@ -1012,13 +1093,10 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
+				<p><var>(cdr (sour milk))</var> ${\implies}$ <var>(milk)</var>.</p>
 				<p>
-					<span class="monoText">(cdr (sour milk))</span> ${\implies}$
-					<span class="monoText">(milk)</span>.
-				</p>
-				<p>
-					<span class="monoText">(eq? (milk) milk)</span> ${\implies}$ no
-					answer; both arguments must be non-numeric atoms.
+					<var>(eq? (milk) milk)</var> ${\implies}$ no answer; both
+					arguments must be non-numeric atoms.
 				</p>
 			</details>
 		</div>
@@ -1026,7 +1104,7 @@
 </section>
 
 <section id="repeat_with_lists">
-	<h4>Recur with Lists</h4>
+	<h2>Recur with Lists</h2>
 	<div class="compare">
 		<div>
 			<p>True or false: .</p>
@@ -1035,12 +1113,11 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">true</span>.</p>
+				<p><var>true</var>.</p>
 				<p>
-					<span class="monoText">(lat? ${\ell}$)</span> is just another way of
-					asking: Is each S-expression in the list ${\ell}$ an atom? If yes,
-					<span class="monoText">true</span>, if no,
-					<span class="monoText">false</span>.
+					<var>(lat? ${\ell}$)</var> is just another way of asking: Is each
+					S-expression in the list ${\ell}$ an atom? If yes,
+					<var>true</var>, if no, <var>false</var>.
 				</p>
 			</details>
 
@@ -1050,67 +1127,64 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">false</span>. There is a list in the list.</p>
+				<p><var>false</var>. There is a list in the list.</p>
 			</details>
 
 			<p>
 				True or false: a
-				<span class="monoText">lat</span> is a list of atoms.
+				<var>lat</var> is a list of atoms.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>True. Every <span class="monoText">lat</span> is a list of atoms.</p>
+				<p>True. Every <var>lat</var> is a list of atoms.</p>
 			</details>
 
 			<p>
 				What is the first question asked by
-				<span class="monoText">(lat? ${\ell}$)</span>?
+				<var>(lat? ${\ell}$)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					The first question is <span class="monoText">(null? ${\ell}$)</span>.
-					I.e., is the list ${\ell}$ <span class="monoText">null</span>?
+					The first question is
+					<var>(null? ${\ell}$)</var>. I.e., is the list ${\ell}$
+					<var>null</var>?
 				</p>
 				<p>From the function definition in the previous exercise:</p>
 				<ol>
-					<li><span class="monoText">(cond ...)</span> asks questions.</li>
-					<li>
-						<span class="monoText">(lambda ...)</span> creates a function.
-					</li>
-					<li>
-						<span class="monoText">(define ...)</span> names the function.
-					</li>
+					<li><var>(cond ...)</var> asks questions.</li>
+					<li><var>(lambda ...)</var> creates a function.</li>
+					<li><var>(define ...)</var> names the function.</li>
 				</ol>
 			</details>
 
 			<p>
 				What is the question after
-				<span class="monoText">((null? ${\ell}$) #t)</span>?
+				<var>((null? ${\ell}$) #t)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(atom? (car ${\ell}$))</span>.</p>
+				<p><var>(atom? (car ${\ell}$))</var>.</p>
 			</details>
 
 			<p>
 				What is the meaning of
-				<span class="monoText">(lat (cdr ${\ell}$))</span>?
+				<var>(lat (cdr ${\ell}$))</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(lat? (cdr ${\ell}$))</span> determines if the
-					rest of ${\ell}$ is composed of only atoms, by referring to the
-					function with a new argument &mdash; the list ${\ell}$ without
-					<span class="monoText">(car ${\ell}$)</span>.
+					<var>(lat? (cdr ${\ell}$))</var> determines if the rest of
+					${\ell}$ is composed of only atoms, by referring to the function
+					with a new argument &mdash; the list ${\ell}$ without
+					<var>(car ${\ell}$)</var>.
 				</p>
 			</details>
 
 			<p>What is the next question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(null? ${\ell}$)</span>.</p>
+				<p><var>(null? ${\ell}$)</var>.</p>
 			</details>
 
 			<p>What is the next question?</p>
@@ -1118,20 +1192,20 @@
 				<summary>Solution</summary>
 				<p>
 					The next question is
-					<span class="monoText">(atom? (car ${\ell}$))</span>.
+					<var>(atom? (car ${\ell}$))</var>.
 				</p>
 			</details>
 
 			<p>
 				What is the meaning of
-				<span class="monoText">(lat? (cdr ${\ell}$))</span>?
+				<var>(lat? (cdr ${\ell}$))</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(lat? (cdr ${\ell}$))</span> determines if the
-					rest of ${\ell}$ &mdash; <span class="monoText">(eggs)</span> &mdash;
-					is composed of only atoms.
+					<var>(lat? (cdr ${\ell}$))</var> determines if the rest of
+					${\ell}$ &mdash; <var>(eggs)</var> &mdash; is composed of only
+					atoms.
 				</p>
 			</details>
 
@@ -1146,62 +1220,61 @@
 						<span class="monoText"
 							>(atom? (car ${\ell}$) (lat? (cdr ${\ell}$)))</span
 						>
-						asks if <span class="monoText">(car ${\ell}$)</span> is an atom.
+						asks if <var>(car ${\ell}$)</var> is an atom.
 					</li>
 					<li>
 						If it is, the value of
 						<span class="monoText"
 							>(atom? (car ${\ell}$) (lat? (cdr ${\ell}$)))</span
 						>
-						is <span class="monoText">(lat (cdr ${\ell}$))</span>.
+						is <var>(lat (cdr ${\ell}$))</var>.
 					</li>
 					<li>If it is not, then we ask the next question.</li>
 					<p>
-						Here, <span class="monoText">(car ${\ell}$)</span> is
-						<span class="monoText">eggs</span>, an atom. So, the value of
+						Here, <var>(car ${\ell}$)</var> is <var>eggs</var>, an atom.
+						So, the value of
 						<span class="monoText"
 							>(atom? (car ${\ell}$) (lat? (cdr ${\ell}$)))</span
 						>
-						is <span class="monoText">(lat? (cdr ${\ell}$))</span>.
+						is <var>(lat? (cdr ${\ell}$))</var>.
 					</p>
 				</ul>
 			</details>
 
 			<p>
 				Now that ${\ell}$ is
-				<span class="monoText">()</span> what is the meaning of
-				<span class="monoText">((null? ${\ell}$) #t)</span>?
+				<var>()</var> what is the meaning of
+				<var>((null? ${\ell}$) #t)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<ul>
 					<li>
-						<span class="monoText">(null? ${\ell}$)</span> asks if the argument
-						${\ell}$ is the <span class="monoText">null list</span>.
+						<var>(null? ${\ell}$)</var> asks if the argument ${\ell}$ is
+						the <var>null list</var>.
 					</li>
 					<li>
 						If it is, the value of
-						<span class="monoText">(null? ${\ell}$)</span> is
-						<span class="monoText">true.</span>
+						<var>(null? ${\ell}$)</var> is
+						<var>true.</var>
 					</li>
 					<li>If not, we ask the next question.</li>
 				</ul>
 				<p>
-					Here, ${\ell}$ is the <span class="monoText">null</span> list, so the
-					application evaluates to <span class="monoText">true</span>.
+					Here, ${\ell}$ is the <var>null</var> list, so the application
+					evaluates to <var>true</var>.
 				</p>
 			</details>
 
 			<p>
 				Now suppose ${\ell}$ is
-				<span class="monoText">(bacon (and eggs))</span>. What is the first
-				question?
+				<var>(bacon (and eggs))</var>. What is the first question?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					The first question is
-					<span class="monoText">((null? ${\ell}$) #t)</span>.
+					<var>((null? ${\ell}$) #t)</var>.
 				</p>
 			</details>
 
@@ -1218,19 +1291,17 @@
 
 			<p>
 				What is the meaning of
-				<span class="monoText">(lat? (cdr ${\ell}$))</span>?
+				<var>(lat? (cdr ${\ell}$))</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<ul>
 					<li>
-						<span class="monoText">(lat? (cdr ${\ell}$))</span> asks if
-						<span class="monoText">(cdr ${\ell}$)</span> is composed of only
-						atoms.
+						<var>(lat? (cdr ${\ell}$))</var> asks if
+						<var>(cdr ${\ell}$)</var> is composed of only atoms.
 					</li>
 					<li>
-						Here, <span class="monoText">(cdr ${\ell}$)</span> is
-						<span class="monoText">((and eggs))</span>.
+						Here, <var>(cdr ${\ell}$)</var> is <var>((and eggs))</var>.
 					</li>
 				</ul>
 			</details>
@@ -1249,23 +1320,21 @@
 			<p>What is the next question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">else.</span></p>
+				<p><var>else.</var></p>
 			</details>
 
 			<p>
 				Is
-				<span class="monoText">else</span> true?
+				<var>else</var> true?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					Yes. The question <span class="monoText">else</span> is always true!
-				</p>
+				<p>Yes. The question <var>else</var> is always true!</p>
 			</details>
 
 			<p>
 				Why is
-				<span class="monoText">else</span> the last question?
+				<var>else</var> the last question?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
@@ -1274,15 +1343,14 @@
 
 			<p>
 				What is the meaning of the line
-				<span class="monoText">(else #f)</span>?
+				<var>(else #f)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">else</span> asks if
-					<span class="monoText">else</span> is true.
-					<span class="monoText">else</span> is always true, so the answer is
-					<span class="monoText">#false</span>.
+					<var>else</var> asks if <var>else</var> is true.
+					<var>else</var> is always true, so the answer is
+					<var>#false</var>.
 				</p>
 			</details>
 		</div>
@@ -1295,36 +1363,29 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>. The list contains a list,
-					<span class="monoText">(Jack)</span>.
+					<var>false</var>. The list contains a list, <var>(Jack)</var>.
 				</p>
 			</details>
 
 			<p>
 				True or false:
-				<span class="monoText">(lat? ())</span>.
+				<var>(lat? ())</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
+				<p><var>true</var>. The list does not contain a list.</p>
 				<p>
-					<span class="monoText">true</span>. The list does not contain a list.
-				</p>
-				<p>
-					<span class="monoText">(lat? ${\ell}$)</span> is another way of
-					asking, Does this list contain a list? If yes,
-					<span class="monoText">false</span>, if no,
-					<span class="monoText">true</span>.
+					<var>(lat? ${\ell}$)</var> is another way of asking, Does this
+					list contain a list? If yes, <var>false</var>, if no,
+					<var>true</var>.
 				</p>
 			</details>
 
 			<p>
 				Write the function
-				<span class="monoText">lat?</span> using some, but not all of the
-				functions: <span class="monoText">car</span>,
-				<span class="monoText">cdr</span>, <span class="monoText">cons</span>,
-				<span class="monoText">null?</span>,
-				<span class="monoText">atom?</span>, and
-				<span class="monoText">eq?</span>.
+				<var>lat?</var> using some, but not all of the functions:
+				<var>car</var>, <var>cdr</var>, <var>cons</var>, <var>null?</var>,
+				<var>atom?</var>, and <var>eq?</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
@@ -1338,21 +1399,17 @@
 				</code></pre>
 				<p>
 					The function works as such: Pass into
-					<span class="monoText">lat</span> a list called
-					<span class="monoText">l</span>. Then, first check if
-					<span class="monoText">l</span> is <span class="monoText">null</span>.
-					If it is, return <span class="monoText">true</span>. Next, check if
-					the first element of <span class="monoText">l</span> is an atom. If it
-					is, return <span class="monoText">true</span>, otherwise, return
-					<span class="monoText">(lat? (cdr l))</span>. If
-					<span class="monoText">l</span> is not
-					<span class="monoText">null</span>, an
-					<span class="monoText">atom</span>, or a
-					<span class="monoText">lat</span>, return
-					<span class="monoText">false</span>.
+					<var>lat</var> a list called <var>l</var>. Then, first check if
+					<var>l</var> is <var>null</var>. If it is, return
+					<var>true</var>. Next, check if the first element of
+					<var>l</var> is an atom. If it is, return <var>true</var>,
+					otherwise, return <var>(lat? (cdr l))</var>. If <var>l</var> is
+					not <var>null</var>, an <var>atom</var>, or a <var>lat</var>,
+					return <var>false</var>.
 				</p>
 				<p>
-					So, for example, <span class="monoText">(lat? (bacon eggs))</span>:
+					So, for example,
+					<var>(lat? (bacon eggs))</var>:
 				</p>
 				<figure class="math-display">
 					<pre class="language-pseudo"><code>
@@ -1374,25 +1431,22 @@
 
 			<p>
 				Assume ${\ell}$ is
-				<span class="monoText">(bacon eggs)</span>. What is meaning of the
-				<span class="monoText">cond</span> line
-				<span class="monoText">((null? ${\ell}$) #t)</span>?
+				<var>(bacon eggs)</var>. What is meaning of the
+				<var>cond</var> line <var>((null? ${\ell}$) #t)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					The <span class="monoText">cond</span> line
-					<span class="monoText">((null? ${\ell}$) #t)</span> asks if the
-					argument ${\ell}$ is the <span class="monoText">null list</span>. If
-					it is, the value of <span class="monoText">(lat? ${\ell}$)</span> is
-					<span class="monoText">true</span>.
+					The <var>cond</var> line <var>((null? ${\ell}$) #t)</var> asks if
+					the argument ${\ell}$ is the <var>null list</var>. If it is, the
+					value of <var>(lat? ${\ell}$)</var> is <var>true</var>.
 				</p>
 				<p>If it is not, then we ask the next question.</p>
 			</details>
 
 			<p>
 				What is the meaning of the
-				<span class="monoText">cond</span> line
+				<var>cond</var> line
 				<span class="monoText"
 					>((atom? (car ${\ell}$)) (lat? (cdr ${\ell}$)))</span
 				>?
@@ -1401,51 +1455,49 @@
 				<summary>Solution</summary>
 				<ol>
 					<li>
-						<span class="monoText">(atom? (car ${\ell}$))</span> asks if the
-						first S-expression of the list ${\ell}$ is an atom.
+						<var>(atom? (car ${\ell}$))</var> asks if the first
+						S-expression of the list ${\ell}$ is an atom.
 					</li>
 					<li>
-						If <span class="monoText">(car ${\ell}$)</span> is an atom, then we
-						ask if the rest of ${\ell}$ is also composed of only atoms.
+						If <var>(car ${\ell}$)</var> is an atom, then we ask if the
+						rest of ${\ell}$ is also composed of only atoms.
 					</li>
 					<li>
-						If <span class="monoText">(car ${\ell}$)</span> is not an atom, we
-						ask the next question.
+						If <var>(car ${\ell}$)</var> is not an atom, we ask the next
+						question.
 					</li>
 				</ol>
 				<p>
-					Here, <span class="monoText">(car ${\ell}$)</span> is an atom, so the
-					value of the function is
-					<span class="monoText">(lat? (cdr ${\ell}$))</span>.
+					Here, <var>(car ${\ell}$)</var> is an atom, so the value of the
+					function is <var>(lat? (cdr ${\ell}$))</var>.
 				</p>
 			</details>
 
 			<p>
 				What is the argument ${\ell}$ for
-				<span class="monoText">(lat? (cdr ${\ell}$))</span>?
+				<var>(lat? (cdr ${\ell}$))</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>Now the argument is <span class="monoText">(and eggs)</span>.</p>
+				<p>Now the argument is <var>(and eggs)</var>.</p>
 			</details>
 
 			<p>
 				Now that ${\ell}$ is
-				<span class="monoText">(and eggs)</span>, what is the meaning of the
-				line <span class="monoText">((null? ${\ell}$) #t)</span>?
+				<var>(and eggs)</var>, what is the meaning of the line
+				<var>((null? ${\ell}$) #t)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">((null? ${\ell}) #t)$</span> asks if the
-					argument ${\ell}$ is the <span class="monoText">null list</span>. If
-					it is, the value of
-					<span class="monoText">(lat? (cdr ${\ell}$))</span> is
-					<span class="monoText">true</span>. If not, we ask the next question.
+					<var>((null? ${\ell}) #t)$</var> asks if the argument ${\ell}$ is
+					the <var>null list</var>. If it is, the value of
+					<var>(lat? (cdr ${\ell}$))</var> is <var>true</var>. If not, we
+					ask the next question.
 				</p>
 				<p>
 					Here, ${(cdr ${\ell}$)}$ is not the
-					<span class="monoText">null list</span>, so we ask the next question.
+					<var>null list</var>, so we ask the next question.
 				</p>
 			</details>
 
@@ -1459,23 +1511,21 @@
 				<summary>Solution</summary>
 				<ol>
 					<li>
-						<span class="monoText">(atom (car ${\ell}$))</span> asks if
-						<span class="monoText">(car ${\ell}$)</span> is an atom. In this
-						case, ${\ell}$ is <span class="monoText">(and eggs)</span>, so
-						<span class="monoText">(car (and eggs))</span> is
-						<span class="monoText">and</span>.
+						<var>(atom (car ${\ell}$))</var> asks if
+						<var>(car ${\ell}$)</var> is an atom. In this case, ${\ell}$ is
+						<var>(and eggs)</var>, so <var>(car (and eggs))</var> is
+						<var>and</var>.
 					</li>
 					<li>
-						If <span class="monoText">(car ${\ell}$)</span> is an atom, then the
-						value of <span class="monoText">(atom (car ${\ell}$))</span> is
-						<span class="monoText">(lat? (cdr ${\ell}$))</span>.
+						If <var>(car ${\ell}$)</var> is an atom, then the value of
+						<var>(atom (car ${\ell}$))</var> is
+						<var>(lat? (cdr ${\ell}$))</var>.
 					</li>
 					<li>If not, we ask the next question.</li>
 				</ol>
 				<p>
-					Here, <span class="monoText">(atom? and)</span> is
-					<span class="monoText">true</span>, so the value returned is
-					<span class="monoText">(lat? (cdr ${\ell}$))</span>.
+					Here, <var>(atom? and)</var> is <var>true</var>, so the value
+					returned is <var>(lat? (cdr ${\ell}$))</var>.
 				</p>
 			</details>
 
@@ -1483,47 +1533,44 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					The next question is <span class="monoText">(null? ${\ell}$)</span>.
+					The next question is
+					<var>(null? ${\ell}$)</var>.
 				</p>
 			</details>
 
 			<p>
 				Now what is the argument for
-				<span class="monoText">(lat? (cdr ${\ell}$))</span>?
+				<var>(lat? (cdr ${\ell}$))</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					Now the argument is <span class="monoText">()</span>, the
-					<span class="monoText">null list</span>.
-				</p>
+				<p>Now the argument is <var>()</var>, the <var>null list</var>.</p>
 			</details>
 
-			<p>What does the function <span class="monoText">lat?</span> do?</p>
+			<p>What does the function <var>lat?</var> do?</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">lat?</span> looks at each S-expression in a
-					list, one by one, and asks if each S-expression is an atom. It
-					continues to do so until it runs out of S-expressions to check. If it
-					runs out without encountering a list, the value is
-					<span class="monoText">#t</span>. If it finds a list, the value is
-					<span class="monoText">#f</span>.
+					<var>lat?</var> looks at each S-expression in a list, one by one,
+					and asks if each S-expression is an atom. It continues to do so
+					until it runs out of S-expressions to check. If it runs out
+					without encountering a list, the value is <var>#t</var>. If it
+					finds a list, the value is <var>#f</var>.
 				</p>
 			</details>
 
 			<p>
 				What is the meaning of the line
-				<span class="monoText">((null? ${\ell}$) #t)</span>?
+				<var>((null? ${\ell}$) #t)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<ul>
 					<li>
-						<span class="monoText">((null? ${\ell}$) #t)</span> asks if ${\ell}$
-						is the <span class="monoText">null list</span>.
+						<var>((null? ${\ell}$) #t)</var> asks if ${\ell}$ is the
+						<var>null list</var>.
 					</li>
-					<li>If it is, return <span class="monoText">true</span>.</li>
+					<li>If it is, return <var>true</var>.</li>
 					<li>If it is not, ask the next question.</li>
 				</ul>
 			</details>
@@ -1541,35 +1588,35 @@
 						<span class="monoText"
 							>((atom? (car ${\ell}$)) (lat? (cdr ${\ell}$)))</span
 						>
-						asks if <span class="monoText">(car ${\ell}$)</span> is an atom.
+						asks if <var>(car ${\ell}$)</var> is an atom.
 					</li>
 					<li>
 						If it is, then the value of the application is
-						<span class="monoText">(lat? (cdr ${\ell}$))</span>.
+						<var>(lat? (cdr ${\ell}$))</var>.
 					</li>
 					<li>If it is not, then we ask the next question.</li>
 				</ul>
 				<p>
-					Here, <span class="monoText">(car ${\ell}$)</span> is
-					<span class="monoText">bacon</span>, which is an atom. So, the value
-					of returned is <span class="monoText">(lat? (cdr ${\ell}$))</span>.
+					Here, <var>(car ${\ell}$)</var> is <var>bacon</var>, which is an
+					atom. So, the value of returned is
+					<var>(lat? (cdr ${\ell}$))</var>.
 				</p>
 			</details>
 
 			<p>
 				What is the meaning of the line
-				<span class="monoText">((null? ${\ell}$) #t)</span>?
+				<var>((null? ${\ell}$) #t)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<ul>
 					<li>
-						<span class="monoText">((null? ${\ell}$) #t)</span> asks if ${\ell}$
-						is the <span class="monoText">null list</span>.
+						<var>((null? ${\ell}$) #t)</var> asks if ${\ell}$ is the
+						<var>null list</var>.
 					</li>
 					<li>
 						If it is, the value of the application is
-						<span class="monoText">true</span>.
+						<var>true</var>.
 					</li>
 					<li>If it is not, we ask the next question.</li>
 				</ul>
@@ -1588,32 +1635,28 @@
 						<span class="monoText"
 							>((atom? (car ${\ell}$)) (lat? (cdr ${\ell}$)))</span
 						>
-						asks whether <span class="monoText">(car ${\ell}$)</span> is an
-						atom.
+						asks whether <var>(car ${\ell}$)</var> is an atom.
 					</li>
 					<li>
 						If it is, then the value of the application is
-						<span class="monoText">(lat? (cdr ${ell}$))</span>.
+						<var>(lat? (cdr ${ell}$))</var>.
 					</li>
 					<li>If it is not, then we ask the next question.</li>
 				</ul>
 				<p>
-					Here, the value of <span class="monoText">(car ${\ell}$)</span> is
-					<span class="monoText">(and eggs)</span>. This is not an atom, it is a
-					list, so we ask the next question.
+					Here, the value of
+					<var>(car ${\ell}$)</var> is <var>(and eggs)</var>. This is not
+					an atom, it is a list, so we ask the next question.
 				</p>
 			</details>
 
 			<p>
 				What is the meaning of the question
-				<span class="monoText">else</span>.
+				<var>else</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">else</span> asks if
-					<span class="monoText">else</span> is true.
-				</p>
+				<p><var>else</var> asks if <var>else</var> is true.</p>
 			</details>
 
 			<p>else.</p>
@@ -1626,41 +1669,37 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Because we have exhausted all of the possibilities: (1) A list can be
-					empty, (2) A list can have an atom in the first positions, or (3) A
-					list can have a list in the first position.
+					Because we have exhausted all of the possibilities: (1) A list
+					can be empty, (2) A list can have an atom in the first positions,
+					or (3) A list can have a list in the first position.
 				</p>
 			</details>
 
 			<p>
 				How did
-				<span class="monoText">lat?</span> determine the value
-				<span class="monoText">#f</span> for
-				<span class="monoText">(lat? (bacon (and eggs))</span>?
+				<var>lat?</var> determine the value <var>#f</var> for
+				<var>(lat? (bacon (and eggs))</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(lat? ${\ell}$)</span> looks at each item in
-					its argument to see if it is an atom. If it runs out of items before
-					it finds a list, the value of
-					<span class="monoText">(lat ${\ell}$)</span> is
-					<span class="monoText">#t</span>. If it finds a list, the value of
-					<span class="monoText">(lat? ${\ell}$)</span> is
-					<span class="monoText">#f</span>.
+					<var>(lat? ${\ell}$)</var> looks at each item in its argument to
+					see if it is an atom. If it runs out of items before it finds a
+					list, the value of <var>(lat ${\ell}$)</var> is <var>#t</var>. If
+					it finds a list, the value of <var>(lat? ${\ell}$)</var> is
+					<var>#f</var>.
 				</p>
 			</details>
 		</div>
 	</div>
 
 	<p>
-		<span class="topic">The <span class="monoText">lat?</span> Operator.</span>
+		<span class="topic">The <var>lat?</var> Operator.</span>
 		From the exercises above, we have the following rule: The
-		<span class="monoText">lat?</span> primitive takes a list as an argument,
-		and determines if each item in the list is an atom. If each item is an atom,
-		<span class="monoText">(lat? ${\ell}$)</span> returns
-		<span class="monoText">true</span>. Otherwise,
-		<span class="monoText">false</span>.
+		<var>lat?</var> primitive takes a list as an argument, and determines
+		if each item in the list is an atom. If each item is an atom,
+		<var>(lat? ${\ell}$)</var> returns <var>true</var>. Otherwise,
+		<var>false</var>.
 	</p>
 
 	<h4>Logical Connectives.</h4>
@@ -1674,20 +1713,14 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">true</span>.</p>
+				<p><var>true</var>.</p>
 				<ul>
-					<li>
-						<span class="monoText">(null? ())</span> returns
-						<span class="monoText">true</span>.
-					</li>
-					<li>
-						<span class="monoText">(null? (d e f g))</span> returns
-						<span class="monoText">false</span>.
-					</li>
+					<li><var>(null? ())</var> returns <var>true</var>.</li>
+					<li><var>(null? (d e f g))</var> returns <var>false</var>.</li>
 					<li>
 						But, only one S-expression must be
-						<span class="monoText">true</span> for the entire S-expression to be
-						<span class="monoText">true.</span>
+						<var>true</var> for the entire S-expression to be
+						<var>true.</var>
 					</li>
 				</ul>
 			</details>
@@ -1700,9 +1733,8 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					False. Neither <span class="monoText">(null? (a b c))</span> nor
-					<span class="monoText">(null? (atom))</span> evaluates to
-					<span class="monoText">true</span>.
+					False. Neither <var>(null? (a b c))</var> nor
+					<var>(null? (atom))</var> evaluates to <var>true</var>.
 				</p>
 			</details>
 		</div>
@@ -1715,40 +1747,33 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					True. <span class="monoText">(null? ())</span> returns
-					<span class="monoText">true</span>.
-				</p>
+				<p>True. <var>(null? ())</var> returns <var>true</var>.</p>
 			</details>
 		</div>
 	</div>
 
 	<p>
-		<span class="topic">The <span class="monoText">or</span> Operator.</span>
-		The primitive <span class="monoText">(or (${Q_1}$) (${Q_2}$))</span> asks
-		two questions, ${Q_1}$ and ${Q_2}$, one at a time. If the first question,
-		${Q_1,}$ is <span class="monoText">true</span>, it stops and the entire
-		expression evaluates to <span class="monoText">true</span>. Otherwise, it
-		asks if ${Q_2}$ is true or false, and evaluates entire expression with
-		whatever ${Q_2}$ answers.
+		<span class="topic">The <var>or</var> Operator.</span>
+		The primitive
+		<var>(or (${Q_1}$) (${Q_2}$))</var> asks two questions, ${Q_1}$ and
+		${Q_2}$, one at a time. If the first question, ${Q_1,}$ is
+		<var>true</var>, it stops and the entire expression evaluates to
+		<var>true</var>. Otherwise, it asks if ${Q_2}$ is true or false, and
+		evaluates entire expression with whatever ${Q_2}$ answers.
 	</p>
 
 	<div class="compare">
 		<div>
 			<p>
 				True or false: Given
-				<span class="monoText">lat</span> is
-				<span class="monoText">(coffee tea or milk)</span>,
-				<span class="monoText">tea</span> is a member of
-				<span class="monoText">lat</span>.
+				<var>lat</var> is <var>(coffee tea or milk)</var>,
+				<var>tea</var> is a member of <var>lat</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>. One of the atoms of the
-					<span class="monoText">lat</span>,
-					<span class="monoText">(coffee tea or milk)</span> is the atom
-					<span class="monoText">tea</span>.
+					<var>true</var>. One of the atoms of the <var>lat</var>,
+					<var>(coffee tea or milk)</var> is the atom <var>tea</var>.
 				</p>
 			</details>
 		</div>
@@ -1756,16 +1781,14 @@
 		<div>
 			<p>
 				Given
-				<span class="monoText">lat</span> is
-				<span class="monoText">(fried eggs and scrambled eggs)</span>, what
-				value: <span class="monoText">(member? poached lat)</span>.
+				<var>lat</var> is <var>(fried eggs and scrambled eggs)</var>, what
+				value: <var>(member? poached lat)</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">poached</span> is not one of the members of the
-					<span class="monoText">lat</span>.
+					<var>false</var>. <var>poached</var> is not one of the members of
+					the <var>lat</var>.
 				</p>
 			</details>
 		</div>
@@ -1773,7 +1796,7 @@
 
 	<p>
 		This is an implementation of the function
-		<span class="monoText">member?</span>:
+		<var>member?</var>:
 	</p>
 	<pre class="language-scheme"><code>
 		(define member?
@@ -1793,22 +1816,22 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					The value is <span class="monoText">true</span>, since
-					<span class="monoText">meat</span> is a member of
-					<span class="monoText">(mashed potatoes and meat gravy)</span>.
+					The value is <var>true</var>, since <var>meat</var> is a member
+					of <var>(mashed potatoes and meat gravy)</var>.
 				</p>
 			</details>
 
 			<p>
 				What is the first question asked by
-				<span class="monoText">(member? a lat)</span>?
+				<var>(member? a lat)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					The first question is <span class="monoText">((null? lat) #f)</span>.
-					Notice that this is the first question asked by
-					<span class="monoText">lat?</span>
+					The first question is
+					<var>((null? lat) #f)</var>. Notice that this is the first
+					question asked by
+					<var>lat?</var>
 				</p>
 			</details>
 		</div>
@@ -1816,58 +1839,50 @@
 		<div>
 			<p>
 				How do we determine the value
-				<span class="monoText">#t</span> for the above application?
+				<var>#t</var> for the above application?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<ul>
 					<li>
-						<span class="monoText">member?</span> first asks if
-						<span class="monoText">lat</span> is the
-						<span class="monoText">null list</span>.
+						<var>member?</var> first asks if <var>lat</var> is the
+						<var>null list</var>.
 					</li>
 					<li>
 						If it is, then the application returns
-						<span class="monoText">false</span>.
+						<var>false</var>.
 					</li>
 					<li>
-						If it is not the <span class="monoText">null list</span>, it moves
-						to the next question, <span class="monoText">else</span>.
+						If it is not the <var>null list</var>, it moves to the next
+						question, <var>else</var>.
 					</li>
 					<li>
-						<span class="monoText">else</span> is always
-						<span class="monoText">true</span>, so it evaluates:
+						<var>else</var> is always <var>true</var>, so it evaluates:
 						<span class="monoText"
 							>(or (eq? (car lat a)) (member? a (cdr lat)))</span
 						>.
 					</li>
 					<li>This asks two questions:</li>
 					<ul>
-						<li><span class="monoText">(eq? (car lat) a)</span> and</li>
-						<li><span class="monoText">(member? a (cdr lat))</span>.</li>
+						<li><var>(eq? (car lat) a)</var> and</li>
+						<li><var>(member? a (cdr lat))</var>.</li>
 					</ul>
 					<li>
-						<span class="monoText">(eq? (car lat) a)</span> asks if the first
-						S-expression of <span class="monoText">lat</span> is the same atom
-						as <span class="monoText">a</span>. Here,
-						<span class="monoText">(car lat)</span> is
-						<span class="monoText">mashed</span> and
-						<span class="monoText">a</span> is
-						<span class="monoText">meat</span>. This evaluates to
-						<span class="monoText">false</span>.
+						<var>(eq? (car lat) a)</var> asks if the first S-expression of
+						<var>lat</var> is the same atom as <var>a</var>. Here,
+						<var>(car lat)</var> is <var>mashed</var> and <var>a</var> is
+						<var>meat</var>. This evaluates to <var>false</var>.
 					</li>
 					<li>
 						So, the next question is
-						<span class="monoText">(member? a (cdr lat))</span>.
+						<var>(member? a (cdr lat))</var>.
 					</li>
 					<li>
-						Now <span class="monoText">lat</span> is
-						<span class="monoText">(potatoes and meat gravy)</span>.
+						Now <var>lat</var> is <var>(potatoes and meat gravy)</var>.
 					</li>
 					<li>
-						<span class="monoText">member?</span> asks if
-						<span class="monoText">lat</span> is the
-						<span class="monoText">null list</span>.
+						<var>member?</var> asks if <var>lat</var> is the
+						<var>null list</var>.
 					</li>
 					<li>
 						It is not, so it asks the next question:
@@ -1877,82 +1892,68 @@
 					</li>
 					<li>This asks two questions:</li>
 					<ul>
-						<li><span class="monoText">(eq? (car lat) a)</span> and</li>
-						<li><span class="monoText">(member? a (cdr lat))</span>.</li>
+						<li><var>(eq? (car lat) a)</var> and</li>
+						<li><var>(member? a (cdr lat))</var>.</li>
 					</ul>
 					<li>
-						<span class="monoText">(eq? (car lat) a)</span> asks if the first
-						S-expression of <span class="monoText">lat</span> is the same atom
-						is <span class="monoText">a</span>. Here,
-						<span class="monoText">(car lat)</span> is
-						<span class="monoText">potatoes</span> and
-						<span class="monoText">a</span> is
-						<span class="monoText">meat</span>. This evaluates to
-						<span class="monoText">false</span>.
+						<var>(eq? (car lat) a)</var> asks if the first S-expression of
+						<var>lat</var> is the same atom is <var>a</var>. Here,
+						<var>(car lat)</var> is <var>potatoes</var> and <var>a</var> is
+						<var>meat</var>. This evaluates to <var>false</var>.
 					</li>
 					<li>
 						So, the next question is
-						<span class="monoText">(member? a (cdr lat))</span>.
-						<span class="monoText">(cdr lat)</span> is
-						<span class="monoText">(and meat gravy)</span>.
+						<var>(member? a (cdr lat))</var>. <var>(cdr lat)</var> is
+						<var>(and meat gravy)</var>.
 					</li>
 					<li>
-						<span class="monoText">member?</span> first asks if
-						<span class="monoText">lat</span> is the
-						<span class="monoText">null list</span>. It is not, so it asks the
-						next question:
+						<var>member?</var> first asks if <var>lat</var> is the
+						<var>null list</var>. It is not, so it asks the next question:
 						<span class="monoText"
 							>(or (eq? (car lat a)) (member? a (cdr lat)))</span
 						>.
 					</li>
 					<li>Again, this question asks two questions:</li>
 					<ul>
-						<li><span class="monoText">(eq? (car lat) a)</span> and</li>
-						<li><span class="monoText">(member? a (cdr lat))</span>.</li>
+						<li><var>(eq? (car lat) a)</var> and</li>
+						<li><var>(member? a (cdr lat))</var>.</li>
 					</ul>
 					<li>
-						<span class="monoText">(eq? (car lat) a)</span> asks if the first
-						S-expression of <span class="monoText">lat</span> is the same atom
-						as <span class="monoText">a</span>. Here,
-						<span class="monoText">(car lat)</span> is
-						<span class="monoText">and</span> and
-						<span class="monoText">a</span> is meat. Thus, this evaluates to
-						<span class="monoText">false</span>.
+						<var>(eq? (car lat) a)</var> asks if the first S-expression of
+						<var>lat</var> is the same atom as <var>a</var>. Here,
+						<var>(car lat)</var> is <var>and</var> and <var>a</var> is
+						meat. Thus, this evaluates to <var>false</var>.
 					</li>
 					<li>
-						So, we ask: <span class="monoText">(member? a (cdr lat))</span>. Now
-						<span class="monoText">lat</span> is
-						<span class="monoText">(meat gravy)</span>.
+						So, we ask:
+						<var>(member? a (cdr lat))</var>. Now <var>lat</var> is
+						<var>(meat gravy)</var>.
 					</li>
 					<li>
-						<span class="monoText">member?</span> asks if
-						<span class="monoText">lat</span> is the
-						<span class="monoText">null list</span>. Here, it is not, so it asks
-						the next question:
+						<var>member?</var> asks if <var>lat</var> is the
+						<var>null list</var>. Here, it is not, so it asks the next
+						question:
 						<span class="monoText"
 							>(or (eq? (car lat a)) (member? a (cdr lat)))</span
 						>.
 					</li>
 					<li>This is a question with two questions:</li>
 					<ul>
-						<li><span class="monoText">(eq? (car lat) a)</span> and</li>
-						<li><span class="monoText">(member? a (cdr lat))</span>.</li>
+						<li><var>(eq? (car lat) a)</var> and</li>
+						<li><var>(member? a (cdr lat))</var>.</li>
 					</ul>
 					<li>
-						<span class="monoText">(eq? (car lat) a)</span> asks if the first
-						S-expression of <span class="monoText">lat</span> is the same atom
-						as <span class="monoText">a</span>. Here,
-						<span class="monoText">(car lat)</span> is
-						<span class="monoText">meat</span> and
-						<span class="monoText">a</span> is meat. This evaluates to
-						<span class="monoText">true</span>.
+						<var>(eq? (car lat) a)</var> asks if the first S-expression of
+						<var>lat</var> is the same atom as <var>a</var>. Here,
+						<var>(car lat)</var> is <var>meat</var> and <var>a</var> is
+						meat. This evaluates to <var>true</var>.
 					</li>
 					<li>
 						&#8756;
 						<span class="monoText"
 							>(member? meat (mashed potatoes and meat gravy))</span
 						>
-						evaluates to <span class="monoText">true</span>.
+						evaluates to <var>true</var>.
 					</li>
 				</ul>
 			</details>
@@ -1961,41 +1962,37 @@
 
 	<p>
 		From the preceding exercises, we have our first major rule for writing
-		functions: Always ask <span class="monoText">null?</span> as the first
-		question in expressing any function.
+		functions: Always ask <var>null?</var> as the first question in
+		expressing any function.
 	</p>
 
 	<div class="compare">
 		<div>
 			<p>
 				What is the meaning of the line
-				<span class="monoText">((null? lat) #f)</span> where
-				<span class="monoText">lat</span> is
-				<span class="monoText">(mashed potatoes and meat gravy)</span>?
+				<var>((null? lat) #f)</var> where <var>lat</var> is
+				<var>(mashed potatoes and meat gravy)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">((null? lat) #f)</span> asks if
-					<span class="monoText">lat</span> is the
-					<span class="monoText">null list</span>. If it is, the expression
-					returns <span class="monoText">false</span>. Otherwise, it asks the
-					next question.
+					<var>((null? lat) #f)</var> asks if <var>lat</var> is the
+					<var>null list</var>. If it is, the expression returns
+					<var>false</var>. Otherwise, it asks the next question.
 				</p>
 			</details>
 
 			<p>
 				Why is
-				<span class="monoText">else</span> the next question?
+				<var>else</var> the next question?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					Because there are only two possibilities: (1)
-					<span class="monoText">lat</span> is an empty list,
-					<span class="monoText">null list</span>; or (2)
-					<span class="monoText">lat</span> is a non-empty list. We do not need
-					to ask anymore questions.
+					<var>lat</var> is an empty list, <var>null list</var>; or (2)
+					<var>lat</var> is a non-empty list. We do not need to ask anymore
+					questions.
 				</p>
 			</details>
 
@@ -2008,13 +2005,11 @@
 				<summary>Solution</summary>
 				<p>
 					This line asks if the first question,
-					<span class="monoText">(eq? (car lat) a)</span> is
-					<span class="monoText">true</span>. If it is, then the entire
-					expression is <span class="monoText">true</span>. If not, it asks if
-					<span class="monoText">(member? a (cdr lat))</span> is true or false.
-					If it is true, then the entire expression is
-					<span class="monoText">true</span>. Otherwise, the entire expression
-					is <span class="monoText">false</span>.
+					<var>(eq? (car lat) a)</var> is <var>true</var>. If it is, then
+					the entire expression is <var>true</var>. If not, it asks if
+					<var>(member? a (cdr lat))</var> is true or false. If it is true,
+					then the entire expression is <var>true</var>. Otherwise, the
+					entire expression is <var>false</var>.
 				</p>
 			</details>
 
@@ -2025,23 +2020,20 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">(car lat)</span> is
-					<span class="monoText">mashed</span> and
-					<span class="monoText">a</span> is meat. These atoms are not the same.
+					<var>false</var>. <var>(car lat)</var> is <var>mashed</var> and
+					<var>a</var> is meat. These atoms are not the same.
 				</p>
 			</details>
 
 			<p>
 				Now what are the arguments of
-				<span class="monoText">member?</span>
+				<var>member?</var>
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					The arguments are now
-					<span class="monoText">(potatoes and meat gravy)</span> and
-					<span class="monoText">meat</span>.
+					<var>(potatoes and meat gravy)</var> and <var>meat</var>.
 				</p>
 			</details>
 
@@ -2059,11 +2051,10 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					This asks if <span class="monoText">(eq? (car lat) a)</span> or
-					<span class="monoText">(member? a (cdr lat))</span> are true or false.
-					If <span class="monoText">(eq (car lat) a)</span> is true, then the
-					entire expression is true. Otherwise, we ask
-					<span class="monoText">(member? a (cdr lat))</span>.
+					This asks if <var>(eq? (car lat) a)</var> or
+					<var>(member? a (cdr lat))</var> are true or false. If
+					<var>(eq (car lat) a)</var> is true, then the entire expression
+					is true. Otherwise, we ask <var>(member? a (cdr lat))</var>.
 				</p>
 			</details>
 
@@ -2076,32 +2067,27 @@
 			<p>What is the next question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The next question is <span class="monoText">(null? lat)</span>.</p>
+				<p>The next question is <var>(null? lat)</var>.</p>
 			</details>
 
 			<p>What is the next question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The next question is <span class="monoText">else</span>.</p>
+				<p>The next question is <var>else</var>.</p>
 			</details>
 
 			<p>Why?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					Because <span class="monoText">(eq? (car lat) a)</span> is
-					<span class="monoText">false</span>.
-				</p>
+				<p>Because <var>(eq? (car lat) a)</var> is <var>false</var>.</p>
 			</details>
 
 			<p>What are the new arguments?</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					The new arguments are <span class="monoText">a</span>, which is
-					<span class="monoText">meat</span>, and
-					<span class="monoText">(cdr lat)</span>, which is
-					<span class="monoText">(meat gravy)</span>.
+					The new arguments are <var>a</var>, which is <var>meat</var>, and
+					<var>(cdr lat)</var>, which is <var>(meat gravy)</var>.
 				</p>
 			</details>
 
@@ -2110,8 +2096,7 @@
 				<summary>Solution</summary>
 				<p>
 					Ask the next question, since
-					<span class="monoText">(null? lat)</span> is
-					<span class="monoText">false</span>.
+					<var>(null? lat)</var> is <var>false</var>.
 				</p>
 			</details>
 
@@ -2123,109 +2108,82 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>.
-					<span class="monoText">(eq? (car lat) a)</span> evaluates to
-					<span class="monoText">true</span>, since
-					<span class="monoText">(car lat)</span> is
-					<span class="monoText">meat</span> and
-					<span class="monoText">a</span> is <span class="monoText">meat</span>.
-					These are the same atoms.
+					<var>true</var>. <var>(eq? (car lat) a)</var> evaluates to
+					<var>true</var>, since <var>(car lat)</var> is
+					<var>meat</var> and <var>a</var> is <var>meat</var>. These are
+					the same atoms.
 				</p>
 			</details>
 
 			<p>
 				What is the value of
-				<span class="monoText">(member? a lat)</span> where
-				<span class="monoText">a</span> is
-				<span class="monoText">meat</span> and
-				<span class="monoText">lat</span> is
-				<span class="monoText">(and meat gravy)</span>?
+				<var>(member? a lat)</var> where <var>a</var> is
+				<var>meat</var> and <var>lat</var> is <var>(and meat gravy)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>, since we have found the value of
-					<span class="monoText">(member? a lat)</span> where
-					<span class="monoText">a</span> is
-					<span class="monoText">meat</span> and
-					<span class="monoText">lat</span> is
-					<span class="monoText">(meat gravy)</span>,
-					<span class="monoText">true.</span>
+					<var>true</var>, since we have found the value of
+					<var>(member? a lat)</var> where <var>a</var> is
+					<var>meat</var> and <var>lat</var> is <var>(meat gravy)</var>,
+					<var>true.</var>
 				</p>
 			</details>
 
 			<p>
 				What is the value of
-				<span class="monoText">(member? a lat)</span> where
-				<span class="monoText">a</span> is
-				<span class="monoText">meat</span> and
-				<span class="monoText">lat</span> is
-				<span class="monoText">(mashed potatoes and meat gravy)</span>?
+				<var>(member? a lat)</var> where <var>a</var> is
+				<var>meat</var> and <var>lat</var> is
+				<var>(mashed potatoes and meat gravy)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>, since we have found the value of
-					<span class="monoText">(member? a lat)</span> where
-					<span class="monoText">a</span> is
-					<span class="monoText">meat</span> and
-					<span class="monoText">lat</span> is
-					<span class="monoText">(potatoes and meat gravy)</span>,
-					<span class="monoText">true.</span>
+					<var>true</var>, since we have found the value of
+					<var>(member? a lat)</var> where <var>a</var> is
+					<var>meat</var> and <var>lat</var> is
+					<var>(potatoes and meat gravy)</var>,
+					<var>true.</var>
 				</p>
 			</details>
 
 			<p>
 				What is the first question
-				<span class="monoText">member?</span> asks?
+				<var>member?</var> asks?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(null? lat)</span></p>
+				<p><var>(null? lat)</var></p>
 			</details>
 
-			<p><span class="monoText">else</span>.</p>
+			<p><var>else</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, but <span class="monoText">(eq? (car lat) a)</span> is
-					<span class="monoText">false.</span> Recur with
-					<span class="monoText">a</span> and
-					<span class="monoText">(cdr lat)</span> where
-					<span class="monoText">a</span> is
-					<span class="monoText">liver</span> and
-					<span class="monoText">(cdr lat)</span> is
-					<span class="monoText">(and lox)</span>.
+					Yes, but <var>(eq? (car lat) a)</var> is <var>false.</var> Recur
+					with <var>a</var> and <var>(cdr lat)</var> where <var>a</var> is
+					<var>liver</var> and <var>(cdr lat)</var> is
+					<var>(and lox)</var>.
 				</p>
 			</details>
 
-			<p><span class="monoText">else</span>.</p>
+			<p><var>else</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, but <span class="monoText">(eq? (car lat) a)</span> is
-					<span class="monoText">false</span>. Recur with
-					<span class="monoText">a</span> and
-					<span class="monoText">(cdr lat)</span> where
-					<span class="monoText">a</span> is
-					<span class="monoText">liver</span> and
-					<span class="monoText">(cdr lat)</span> is
-					<span class="monoText">(lox)</span>.
+					Yes, but <var>(eq? (car lat) a)</var> is <var>false</var>. Recur
+					with <var>a</var> and <var>(cdr lat)</var> where <var>a</var> is
+					<var>liver</var> and <var>(cdr lat)</var> is <var>(lox)</var>.
 				</p>
 			</details>
 
-			<p><span class="monoText">else</span>.</p>
+			<p><var>else</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, but <span class="monoText">(eq (car lat) a)</span> is
-					<span class="monoText">false</span>. Recur with
-					<span class="monoText">a</span> and
-					<span class="monoText">(cdr lat)</span> where
-					<span class="monoText">a</span> is
-					<span class="monoText">liver</span> and
-					<span class="monoText">(cdr lat)</span> is
-					<span class="monoText">()</span>.
+					Yes, but <var>(eq (car lat) a)</var> is <var>false</var>. Recur
+					with <var>a</var> and <var>(cdr lat)</var> where <var>a</var> is
+					<var>liver</var> and <var>(cdr lat)</var> is <var>()</var>.
 				</p>
 			</details>
 
@@ -2236,10 +2194,8 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">lat</span> is the
-					<span class="monoText">null list</span>,
-					<span class="monoText">()</span>.
+					<var>false</var>. <var>lat</var> is the <var>null list</var>,
+					<var>()</var>.
 				</p>
 			</details>
 
@@ -2249,7 +2205,7 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">false</span>.</p>
+				<p><var>false</var>.</p>
 			</details>
 
 			<p>What is the value of:</p>
@@ -2258,7 +2214,7 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">false</span>.</p>
+				<p><var>false</var>.</p>
 			</details>
 
 			<p>What is the value of:</p>
@@ -2267,7 +2223,7 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">false</span>.</p>
+				<p><var>false</var>.</p>
 			</details>
 		</div>
 
@@ -2275,19 +2231,18 @@
 			<p>What is the next question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The next question is <span class="monoText">else</span>.</p>
+				<p>The next question is <var>else</var>.</p>
 			</details>
 
 			<p>
 				Is
-				<span class="monoText">else</span> really a question?
+				<var>else</var> really a question?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, <span class="monoText">else</span> is really a question whose
-					value is <span class="underlineText">always</span>
-					<span class="monoText">true</span>.
+					Yes, <var>else</var> is really a question whose value is
+					<span class="underlineText">always</span> <var>true</var>.
 				</p>
 			</details>
 
@@ -2303,20 +2258,20 @@
 
 			<p>
 				What is the second question of the
-				<span class="monoText">(or ...)</span>?
+				<var>(or ...)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
 					The second question is
-					<span class="monoText">(member? a (cdr lat))</span>.
+					<var>(member? a (cdr lat))</var>.
 				</p>
 			</details>
 
 			<p>What is the next question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The next question is <span class="monoText">(null? lat)</span>.</p>
+				<p>The next question is <var>(null? lat)</var>.</p>
 			</details>
 
 			<p>What is the next question?</p>
@@ -2329,31 +2284,25 @@
 				</code></pre>
 			</details>
 
-			<p>
-				Is <span class="monoText">a</span> <span class="monoText">eq?</span> to
-				<span class="monoText">(car lat)</span>?
-			</p>
+			<p>Is <var>a</var> <var>eq?</var> to <var>(car lat)</var>?</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					No. <span class="monoText">(car lat)</span> is
-					<span class="monoText">potatoes</span> and
-					<span class="monoText">a</span> is <span class="monoText">meat</span>.
+					No. <var>(car lat)</var> is <var>potatoes</var> and
+					<var>a</var> is <var>meat</var>.
 				</p>
 			</details>
 
 			<p>
 				Now what are the arguments of
-				<span class="monoText">member?</span>
+				<var>member?</var>
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Now the arguments of <span class="monoText">member?</span> are
-					<span class="monoText">a</span>, which is
-					<span class="monoText">meat</span>, and
-					<span class="monoText">(cdr lat)</span>, which is
-					<span class="monoText">(and meat gravy)</span>.
+					Now the arguments of <var>member?</var> are <var>a</var>, which
+					is <var>meat</var>, and <var>(cdr lat)</var>, which is
+					<var>(and meat gravy)</var>.
 				</p>
 			</details>
 
@@ -2362,8 +2311,7 @@
 				<summary>Solution</summary>
 				<p>
 					Now we ask the next question, since
-					<span class="monoText">(null? lat)</span> is
-					<span class="monoText">false</span>.
+					<var>(null? lat)</var> is <var>false</var>.
 				</p>
 			</details>
 
@@ -2374,63 +2322,56 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The value of <span class="monoText">(member? a (cdr lat))</span>.</p>
+				<p>The value of <var>(member? a (cdr lat))</var>.</p>
 			</details>
 
 			<p>What do we do now?</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="term">Recur</span> &mdash; refer to the function with new
-					arguments.
+					<b>Recur</b> &mdash; refer to the function with new arguments.
 				</p>
 			</details>
 
 			<p>What is the next question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The next question is <span class="monoText">(null? lat)</span>.</p>
+				<p>The next question is <var>(null? lat)</var>.</p>
 			</details>
 
 			<p>What is the next question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">else</span>.</p>
+				<p><var>else</var>.</p>
 			</details>
 
 			<p>
 				What is the value of the application
-				<span class="monoText">(member? a lat)</span> where
-				<span class="monoText">lat</span> is
-				<span class="monoText">(meat gravy)</span>.
+				<var>(member? a lat)</var> where <var>lat</var> is
+				<var>(meat gravy)</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>, since we have found
-					<span class="monoText">meat</span> is a member of
-					<span class="monoText">(meat gravy)</span>.
+					<var>true</var>, since we have found <var>meat</var> is a member
+					of <var>(meat gravy)</var>.
 				</p>
 			</details>
 
 			<p>
 				What is the value of
-				<span class="monoText">(member? a lat)</span> where
-				<span class="monoText">a</span> is
-				<span class="monoText">meat</span> and
-				<span class="monoText">lat</span> is
-				<span class="monoText">(potatoes and meat gravy)</span>?
+				<var>(member? a lat)</var> where <var>a</var> is
+				<var>meat</var> and <var>lat</var> is
+				<var>(potatoes and meat gravy)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>, since we have found the value of
-					<span class="monoText">(member? a lat)</span> where
-					<span class="monoText">a</span> is
-					<span class="monoText">meat</span> and
-					<span class="monoText">lat</span> is
-					<span class="monoText">(and meat gravy)</span>,
-					<span class="monoText">true.</span>
+					<var>true</var>, since we have found the value of
+					<var>(member? a lat)</var> where <var>a</var> is
+					<var>meat</var> and <var>lat</var> is
+					<var>(and meat gravy)</var>,
+					<var>true.</var>
 				</p>
 			</details>
 
@@ -2440,43 +2381,41 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">false</span>.</p>
+				<p><var>false</var>.</p>
 			</details>
 
 			<p>
 				What is the next question
-				<span class="monoText">member?</span> asks?
+				<var>member?</var> asks?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">else</span>.</p>
+				<p><var>else</var>.</p>
 			</details>
 
-			<p><span class="monoText">(null? lat)</span>?</p>
+			<p><var>(null? lat)</var>?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">false</span>.</p>
+				<p><var>false</var>.</p>
 			</details>
 
 			<p>
-				<span class="monoText">(null? lat)</span>
+				<var>(null? lat)</var>
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">false</span>. Next question.</p>
+				<p><var>false</var>. Next question.</p>
 			</details>
 
 			<p>
-				<span class="monoText">(null? lat)</span>
+				<var>(null? lat)</var>
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true.</span>
-					<span class="monoText">(cdr lat)</span> is the
-					<span class="monoText">null list</span>,
-					<span class="monoText">()</span>. Return
-					<span class="monoText">false</span>.
+					<var>true.</var>
+					<var>(cdr lat)</var> is the <var>null list</var>, <var>()</var>.
+					Return <var>false</var>.
 				</p>
 			</details>
 
@@ -2489,32 +2428,30 @@
 				<summary>Solution</summary>
 				<ol>
 					<li>
-						<span class="monoText">(eq? (car (lox)) liver)</span> is
-						<span class="monoText">false</span>.
-						<span class="monoText">(car (lox))</span> is
-						<span class="monoText">lox</span> which is not the same atom as
-						<span class="monoText">liver</span>.
+						<var>(eq? (car (lox)) liver)</var> is <var>false</var>.
+						<var>(car (lox))</var> is <var>lox</var> which is not the same
+						atom as <var>liver</var>.
 					</li>
 					<li>
 						Next question:
-						<span class="monoText">(member? liver (cdr (lox)))</span>.
+						<var>(member? liver (cdr (lox)))</var>.
 					</li>
 					<li>
-						<span class="monoText">(cdr (lox))</span> is the empty list
-						<span class="monoText">()</span>, so
-						<span class="monoText">(member? liver (cdr (lox)))</span> is
-						<span class="monoText">false.</span>
+						<var>(cdr (lox))</var> is the empty list <var>()</var>, so
+						<var>(member? liver (cdr (lox)))</var> is
+						<var>false.</var>
 					</li>
 					<li>
-						Because both <span class="monoText">(eq? (car lat) a)</span> and
-						<span class="monoText">(member? liver (cdr (lox)))</span> are
-						<span class="monoText">false,</span>
+						Because both
+						<var>(eq? (car lat) a)</var> and
+						<var>(member? liver (cdr (lox)))</var> are
+						<var>false,</var>
 					</li>
 					<pre class="language-pseudo"><code>
 						(or (eq? (car (lox)) liver)
 								(member? liver (cdr (lox))))
 					</code></pre>
-					<li>is <span class="monoText">false</span>.</li>
+					<li>is <var>false</var>.</li>
 				</ol>
 			</details>
 
@@ -2528,40 +2465,32 @@
 				<ul>
 					<li>
 						First question:
-						<span class="monoText">(eq? (car (and lox)) liver)</span>.
+						<var>(eq? (car (and lox)) liver)</var>.
 					</li>
+					<li><var>(car (and lox))</var> ${\implies}$ <var>and</var>.</li>
 					<li>
-						<span class="monoText">(car (and lox))</span> ${\implies}$
-						<span class="monoText">and</span>.
-					</li>
-					<li>
-						<span class="monoText">and</span> and
-						<span class="monoText">lox</span> are not the same atoms. Next
+						<var>and</var> and <var>lox</var> are not the same atoms. Next
 						question.
 					</li>
-					<li>
-						<span class="monoText">(member? liver (cdr (and lox)))</span>.
-					</li>
-					<li>
-						<span class="monoText">(cdr (and lox))</span> is
-						<span class="monoText">(lox)</span>.
-					</li>
+					<li><var>(member? liver (cdr (and lox)))</var>.</li>
+					<li><var>(cdr (and lox))</var> is <var>(lox)</var>.</li>
 					<li>
 						Question is now:
-						<span class="monoText">(member? liver (lox))</span>.
+						<var>(member? liver (lox))</var>.
 					</li>
-					<li><span class="monoText">false</span>.</li>
+					<li><var>false</var>.</li>
 					<li>
 						Because both
-						<span class="monoText">(eq? (car (and lox)) liver)</span> and
-						<span class="monoText">(member? liver (cdr (and lox)))</span> are
-						<span class="monoText">false,</span>
+						<var>(eq? (car (and lox)) liver)</var> and
+						<var>(member? liver (cdr (and lox)))</var>
+						are
+						<var>false,</var>
 					</li>
 					<pre class="language-pseudo"><code>
 						(or (eq? (car (and lox)) liver)
 								(member? liver (cdr (and lox))))
 					</code></pre>
-					<li>is <span class="monoText">false</span>.</li>
+					<li>is <var>false</var>.</li>
 				</ul>
 			</details>
 
@@ -2575,37 +2504,39 @@
 				<ul>
 					<li>
 						First question:
-						<span class="monoText">(eq? (car (bagels and lox)) liver)</span>.
-						<span class="monoText">(car (bagels and lox))</span> is
-						<span class="monoText">bagels</span>. This is not the same atom as
-						<span class="monoText">liver</span>.
+						<span class="monoText">(eq? (car (bagels and lox)) liver)</span
+						>. <var>(car (bagels and lox))</var> is <var>bagels</var>. This
+						is not the same atom as <var>liver</var>.
 					</li>
 					<li>
 						Next question:
-						<span class="monoText">(member? liver (cdr (bagels and lox)))</span
+						<span class="monoText"
+							>(member? liver (cdr (bagels and lox)))</span
 						>.
 					</li>
 					<li>
-						<span class="monoText">(cdr (bagels and lox))</span> is
-						<span class="monoText">(and lox)</span>.
-						<span class="monoText">liver</span> is not a member of the list
-						<span class="monoText">(and lox)</span>.
+						<var>(cdr (bagels and lox))</var> is <var>(and lox)</var>.
+						<var>liver</var> is not a member of the list
+						<var>(and lox)</var>.
 					</li>
 					<li>
 						Because both
-						<span class="monoText">(eq? (car (bagels and lox)) liver)</span> and
+						<span class="monoText"
+							>(eq? (car (bagels and lox)) liver)</span
+						>
+						and
 						<span class="monoText"
 							><span class="monoText"
 								>(member? liver (cdr (bagels and lox)))</span
 							></span
 						>
-						are <span class="monoText">false</span>,
+						are <var>false</var>,
 					</li>
 					<pre class="language-pseudo"><code>
 						(or (eq? (car (bagels and lox)) liver)
 								(member? liver (cdr (bagels and lox))))
 					</code></pre>
-					<li>is <span class="monoText">false</span>.</li>
+					<li>is <var>false</var>.</li>
 				</ul>
 			</details>
 		</div>
@@ -2613,7 +2544,7 @@
 </section>
 
 <section id="rember">
-	<h4><span class="monoText">rember</span></h4>
+	<h4>rember</h4>
 
 	<div class="compare">
 		<div>
@@ -2624,9 +2555,9 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(lamb chops and jelly)</span>. The
-					<span class="monoText">rember</span> primitive removes a member
-					matching the first argument from the list.
+					<var>(lamb chops and jelly)</var>. The
+					<var>rember</var> primitive removes a member matching the first
+					argument from the list.
 				</p>
 			</details>
 
@@ -2637,9 +2568,9 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(lamb chops and flavored mint jelly)</span>.
-					The <span class="monoText">rember</span> primitive only removes the
-					first matching member.
+					<span class="monoText">(lamb chops and flavored mint jelly)</span
+					>. The <var>rember</var> primitive only removes the first
+					matching member.
 				</p>
 			</details>
 
@@ -2650,25 +2581,24 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(bacon lettuce and tomato)</span>. There was no
-					matching remember, so the list returns intact.
+					<var>(bacon lettuce and tomato)</var>. There was no matching
+					remember, so the list returns intact.
 				</p>
 			</details>
 
 			<p>
 				What does
-				<span class="monoText">(rember ${a}$ ${\ell}$)</span> do?
+				<var>(rember ${a}$ ${\ell}$)</var> do?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(rember ${a}$ ${\ell}$)</span> removes a member
-					of the list ${\ell}$ that matches the argument ${a.}$ More
-					specifically, <span class="monoText">rember</span> takes two
-					arguments: an atom, and a <span class="monoText">lat</span> (a list of
-					only atoms). It returns a new <span class="monoText">lat</span> with
-					the first occurrence of the atom in the old
-					<span class="monoText">lat</span> removed.
+					<var>(rember ${a}$ ${\ell}$)</var> removes a member of the list
+					${\ell}$ that matches the argument ${a.}$ More specifically,
+					<var>rember</var> takes two arguments: an atom, and a
+					<var>lat</var> (a list of only atoms). It returns a new
+					<var>lat</var> with the first occurrence of the atom in the old
+					<var>lat</var> removed.
 				</p>
 			</details>
 
@@ -2679,34 +2609,32 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(coffee tea cup and hick cup)</span>. Remove
-					the first matching member.
+					<var>(coffee tea cup and hick cup)</var>. Remove the first
+					matching member.
 				</p>
 			</details>
 
 			<p>
 				If
-				<span class="monoText">(null? lat)</span> is
-				<span class="monoText">true</span>?
+				<var>(null? lat)</var> is <var>true</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					If <span class="monoText">(null? lat)</span> is
-					<span class="monoText">true</span>, return
-					<span class="monoText">()</span>.
+					If <var>(null? lat)</var> is <var>true</var>, return
+					<var>()</var>.
 				</p>
 			</details>
 
 			<p>
 				What is the first step to implementing
-				<span class="monoText">rember</span>?
+				<var>rember</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					The first step is to check if <span class="monoText">lat</span> is
-					<span class="monoText">null</span>:
+					The first step is to check if
+					<var>lat</var> is <var>null</var>:
 				</p>
 				<pre class="language-scheme"><code>
 					(null? lat)
@@ -2715,35 +2643,32 @@
 
 			<p>
 				Is there any other question we should ask about the
-				<span class="monoText">lat</span>?
+				<var>lat</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					No. Either a <span class="monoText">lat</span> is empty or it contains
-					one atom.
+					No. Either a <var>lat</var> is empty or it contains one atom.
 				</p>
 			</details>
 
 			<p>
 				What do we know if
-				<span class="monoText">(null? lat)</span> is
-				<span class="monoText">false</span>?
+				<var>(null? lat)</var> is <var>false</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					If <span class="monoText">(null? lat)</span> is
-					<span class="monoText">false</span>, then
-					<span class="monoText">lat</span> is a non-empty list &mdash; there
-					must be at least one member in <span class="monoText">lat</span>.
+					If <var>(null? lat)</var> is <var>false</var>, then
+					<var>lat</var> is a non-empty list &mdash; there must be at least
+					one member in <var>lat</var>.
 				</p>
 			</details>
 
 			<p>How do we ask such questions?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>We use <span class="monoText">cond</span>:</p>
+				<p>We use <var>cond</var>:</p>
 				<pre class="language-scheme"><code>
 					(cond 
 						((null? lat) ()
@@ -2753,49 +2678,47 @@
 
 			<p>
 				What do we know if we know that the
-				<span class="monoText">lat</span> contains one atom?
+				<var>lat</var> contains one atom?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					We know that <span class="monoText">lat</span> contains at least one
-					atom, so we ask: <span class="monoText">(eq? (car lat) a)</span>
+					We know that <var>lat</var> contains at least one atom, so we
+					ask:
+					<var>(eq? (car lat) a)</var>
 				</p>
 			</details>
 
 			<p>
 				What do we do if
-				<span class="monoText">a</span> is not the same as
-				<span class="monoText">(car lat)</span>?
+				<var>a</var> is not the same as <var>(car lat)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					We want to keep <span class="monoText">(car lat)</span>, but we should
-					check if <span class="monoText">a</span> is somewhere in the rest of
-					the <span class="monoText">lat</span>.
+					We want to keep <var>(car lat)</var>, but we should check if
+					<var>a</var> is somewhere in the rest of the <var>lat</var>.
 				</p>
 			</details>
 
 			<p>
 				What would be the value of
-				<span class="monoText">(rember a lat)</span> if
-				<span class="monoText">a</span> were the same as
-				<span class="monoText">(car lat)</span>?
+				<var>(rember a lat)</var> if <var>a</var> were the same as
+				<var>(car lat)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(cdr lat)</span>.</p>
+				<p><var>(cdr lat)</var>.</p>
 				<ul>
 					<li>
-						<span class="monoText">(rember (car lat) lat)</span> ${\implies}$
-						<span class="monoText">(cdr lat)</span>
+						<var>(rember (car lat) lat)</var>
+						${\implies}$
+						<var>(cdr lat)</var>
 					</li>
 					<li>
-						<span class="monoText">rember</span> removes the head of the
-						<span class="monoText">lat</span>, which gives us
-						<span class="monoText">(cdr lat)</span>, the tail of the list
-						<span class="monoText">lat</span>.
+						<var>rember</var> removes the head of the <var>lat</var>, which
+						gives us <var>(cdr lat)</var>, the tail of the list
+						<var>lat</var>.
 					</li>
 				</ul>
 			</details>
@@ -2808,18 +2731,16 @@
 
 			<p>
 				How do we remove the first occurrence of
-				<span class="monoText">a</span> in the rest of
-				<span class="monoText">lat</span>?
+				<var>a</var> in the rest of <var>lat</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(rember a (cdr lat))</span>.</p>
+				<p><var>(rember a (cdr lat))</var>.</p>
 			</details>
 
 			<p>
 				Define the function for
-				<span class="monoText">rember</span> with what we have come up with so
-				far.
+				<var>rember</var> with what we have come up with so far.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
@@ -2837,15 +2758,15 @@
 
 			<p>
 				What does
-				<span class="monoText">rember</span> do according to our definiton?
+				<var>rember</var> do according to our definiton?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					It looks at the head of <span class="monoText">lat</span>, and if it
-					matches the atom <span class="monoText">a</span>, it returns the tail
-					of the <span class="monoText">lat</span>. If it does not match, then
-					it moves to the head of the tail, and so on and so forth.
+					It looks at the head of <var>lat</var>, and if it matches the
+					atom <var>a</var>, it returns the tail of the <var>lat</var>. If
+					it does not match, then it moves to the head of the tail, and so
+					on and so forth.
 				</p>
 			</details>
 
@@ -2855,7 +2776,7 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">'("lettuce" "and" "tomato")</span></p>
+				<p><var>'("lettuce" "and" "tomato")</var></p>
 			</details>
 		</div>
 
@@ -2864,21 +2785,19 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(null? lat)</span> is
-					<span class="monoText">false</span>, since
-					<span class="monoText">'("bacon" "lettuce" "and" "tomato")</span> is a
-					non-empty list. Ask the next question.
+					<var>(null? lat)</var> is <var>false</var>, since
+					<var>'("bacon" "lettuce" "and" "tomato")</var>
+					is a non-empty list. Ask the next question.
 				</p>
 			</details>
 
-			<p><span class="monoText">(eq? (car lat) a)</span>.</p>
+			<p><var>(eq? (car lat) a)</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>, so return the tail of
-					<span class="monoText">lat</span>,
-					<span class="monoText">(cdr lat)</span> &mdash;
-					<span class="monoText">("lettuce" "and" "tomato")</span>.
+					<var>true</var>, so return the tail of <var>lat</var>,
+					<var>(cdr lat)</var> &mdash;
+					<var>("lettuce" "and" "tomato")</var>.
 				</p>
 			</details>
 
@@ -2887,7 +2806,7 @@
 				<summary>Solution</summary>
 				<p>
 					Ask the next question,
-					<span class="monoText">(eq? (car lat) a)</span>.
+					<var>(eq? (car lat) a)</var>.
 				</p>
 			</details>
 
@@ -2897,43 +2816,39 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">("lettuce" "and" "tomato")</span></p>
+				<p><var>("lettuce" "and" "tomato")</var></p>
 			</details>
 
 			<p>
 				What is the first question asked by
-				<span class="monoText">rember</span>?
+				<var>rember</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(null? lat)</span>.</p>
+				<p><var>(null? lat)</var>.</p>
 			</details>
 
 			<p>What do we do now?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">(null? lat)</span> is false, so ask the next
-					question.
-				</p>
+				<p><var>(null? lat)</var> is false, so ask the next question.</p>
 			</details>
 
-			<p><span class="monoText">else</span>.</p>
+			<p><var>else</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">true</span>, ask the next question.</p>
+				<p><var>true</var>, ask the next question.</p>
 			</details>
 
 			<p>
 				What is the meaning of
-				<span class="monoText">(else (rember a (cdr lat)))</span>?
+				<var>(else (rember a (cdr lat)))</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Call the function <span class="monoText">rember</span> with the
-					arguments <span class="monoText">a</span> and
-					<span class="monoText">(cdr lat)</span>.
+					Call the function <var>rember</var> with the arguments
+					<var>a</var> and <var>(cdr lat)</var>.
 				</p>
 			</details>
 
@@ -2942,7 +2857,7 @@
 				<summary>Solution</summary>
 				<p>
 					Yes. It is the list
-					<span class="monoText">("bacon" "lettuce" "and" "tomato")</span>
+					<var>("bacon" "lettuce" "and" "tomato")</var>
 					without the first atom in the list.
 				</p>
 			</details>
@@ -2955,20 +2870,20 @@
 				<summary>Solution</summary>
 				<p>
 					Expected value is
-					<span class="monoText">("bacon" "lettuce" "tomato")</span>
+					<var>("bacon" "lettuce" "tomato")</var>
 				</p>
 			</details>
 
 			<p>
 				What is the first question asked by
-				<span class="monoText">rember</span>?
+				<var>rember</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(null? lat)</span>.</p>
+				<p><var>(null? lat)</var>.</p>
 			</details>
 
-			<p><span class="monoText">else</span>.</p>
+			<p><var>else</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>Yes.</p>
@@ -2981,39 +2896,33 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					We call the function <span class="monoText">rember</span> with the
-					arguments <span class="monoText">a</span> and
-					<span class="monoText">(cdr lat)</span>. Here,
-					<span class="monoText">(cdr lat)</span> is
-					<span class="monoText">("lettuce" "and" "tomato")</span>.
-					<span class="monoText">a</span> remains as
-					<span class="monoText">"and"</span>.
+					We call the function <var>rember</var> with the arguments
+					<var>a</var> and <var>(cdr lat)</var>. Here,
+					<var>(cdr lat)</var> is <var>("lettuce" "and" "tomato")</var>.
+					<var>a</var> remains as <var>"and"</var>.
 				</p>
 			</details>
 
-			<p><span class="monoText">(null? lat)</span>.</p>
+			<p><var>(null? lat)</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">false</span>. Ask the next question.</p>
+				<p><var>false</var>. Ask the next question.</p>
 			</details>
 
 			<p>
-				<span class="monoText">else.</span>
+				<var>else.</var>
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">true</span>.</p>
+				<p><var>true</var>.</p>
 			</details>
 
-			<p><span class="monoText">(eq? (car lat) a)</span>.</p>
+			<p><var>(eq? (car lat) a)</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">(car lat)</span> is
-					<span class="monoText">"lettuce"</span>.
-					<span class="monoText">a</span> is
-					<span class="monoText">"and"</span>. Ask the next question.
+					<var>false</var>. <var>(car lat)</var> is <var>"lettuce"</var>.
+					<var>a</var> is <var>"and"</var>. Ask the next question.
 				</p>
 			</details>
 
@@ -3024,72 +2933,67 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Call the function <span class="monoText">rember</span> with the
-					arguments <span class="monoText">a</span> and
-					<span class="monoText">(cdr lat)</span>.
-					<span class="monoText">a</span> remains the same, but
-					<span class="monoText">(cdr lat)</span> is now
-					<span class="monoText">("and" "tomato")</span>.
+					Call the function <var>rember</var> with the arguments
+					<var>a</var> and <var>(cdr lat)</var>. <var>a</var> remains the
+					same, but <var>(cdr lat)</var> is now
+					<var>("and" "tomato")</var>.
 				</p>
 			</details>
 
 			<p>
-				<span class="monoText">(null? lat)</span>
+				<var>(null? lat)</var>
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">lat</span> is
-					<span class="monoText">("and" "tomato")</span>, a non-empty list.
+					<var>false</var>. <var>lat</var> is <var>("and" "tomato")</var>,
+					a non-empty list.
 				</p>
 			</details>
 
 			<p>
-				<span class="monoText">else.</span>
+				<var>else.</var>
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">true</span>.</p>
+				<p><var>true</var>.</p>
 			</details>
 
-			<p><span class="monoText">(eq? (car lat) a)</span>.</p>
+			<p><var>(eq? (car lat) a)</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					<span class="monoText">true</span>. The result is
-					<span class="monoText">("tomato")</span>.
-				</p>
+				<p><var>true</var>. The result is <var>("tomato")</var>.</p>
 			</details>
 
 			<p>Is the result correct?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>No. We want the entire list but without the matching element.</p>
+				<p>
+					No. We want the entire list but without the matching element.
+				</p>
 			</details>
 
 			<p>What went wrong?</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					We did not keep the atoms that did not match. More specifically, we
-					lost all the atoms preceding the match.
+					We did not keep the atoms that did not match. More specifically,
+					we lost all the atoms preceding the match.
 				</p>
 			</details>
 
 			<p>How do we keep from losing the preceding atoms?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>Use <span class="monoText">cons</span>.</p>
+				<p>Use <var>cons</var>.</p>
 			</details>
 		</div>
 	</div>
 
 	<p>
 		The example above gives us the next rule: We use
-		<span class="monoText">cons</span> to build lists. Consider the following
-		definition for <span class="monoText">rember</span> that uses
-		<span class="monoText">cons</span>:
+		<var>cons</var> to build lists. Consider the following definition for
+		<var>rember</var> that uses <var>cons</var>:
 	</p>
 	<pre class="language-scheme"><code>
 		(define rember
@@ -3110,48 +3014,44 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">("bacon" "lettuce" "tomato")</span></p>
+				<p><var>("bacon" "lettuce" "tomato")</var></p>
 			</details>
 
 			<p>What is the first question?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(null? lat)</span></p>
+				<p><var>(null? lat)</var></p>
 			</details>
 
 			<p>What next?</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(null? lat)</span> is
-					<span class="monoText">false</span>, so ask the next question.
+					<var>(null? lat)</var> is <var>false</var>, so ask the next
+					question.
 				</p>
 			</details>
 
-			<p><span class="monoText">else</span>.</p>
+			<p><var>else</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">true</span>.</p>
+				<p><var>true</var>.</p>
 			</details>
 
-			<p><span class="monoText">(eq? (car lat) a)</span>.</p>
+			<p><var>(eq? (car lat) a)</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">(car lat)</span> is
-					<span class="monoText">"bacon"</span> and
-					<span class="monoText">a</span> is
-					<span class="monoText">"lettuce"</span>. Ask the next question.
+					<var>false</var>. <var>(car lat)</var> is <var>"bacon"</var> and
+					<var>a</var> is <var>"lettuce"</var>. Ask the next question.
 				</p>
 			</details>
 
 			<p>
 				Where
-				<span class="monoText">a</span> is <span class="monoText">"and"</span>,
-				and <span class="monoText">lat</span> is
-				<span class="monoText">("bacon" "lettuce" "and" "tomato")</span>, what
-				is the meaning of:
+				<var>a</var> is <var>"and"</var>, and <var>lat</var> is
+				<var>("bacon" "lettuce" "and" "tomato")</var>, what is the meaning
+				of:
 			</p>
 			<pre class="language-pseudo"><code>
 				(cons (car lat)
@@ -3162,45 +3062,40 @@
 				<summary>Solution</summary>
 				<p>
 					Insert the atom resulting from
-					<span class="monoText">(car lat)</span> to the list resulting from
-					<span class="monoText">(rember a (cdr lat))</span>. In this case,
-					<span class="monoText">(car lat)</span> is
-					<span class="monoText">"bacon"</span>, and
-					<span class="monoText">(cdr lat)</span> is
-					<span class="monoText">("lettuce" "and" "tomato")</span>. So,
-					<span class="monoText">"bacon"</span> will be added to the list
-					resulting from
-					<span class="monoText">(rember "and" ("lettuce" "and" "tomato"))</span
+					<var>(car lat)</var> to the list resulting from
+					<var>(rember a (cdr lat))</var>. In this case,
+					<var>(car lat)</var> is <var>"bacon"</var>, and
+					<var>(cdr lat)</var> is <var>("lettuce" "and" "tomato")</var>.
+					So, <var>"bacon"</var> will be added to the list resulting from
+					<span class="monoText"
+						>(rember "and" ("lettuce" "and" "tomato"))</span
 					>.
 				</p>
 			</details>
 
-			<p><span class="monoText">(null? lat)</span>.</p>
+			<p><var>(null? lat)</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false.</span>
-					<span class="monoText">(cdr lat)</span> is
-					<span class="monoText">("lettuce" "and" "tomato")</span>, a non-empty
-					list. Ask the next question.
+					<var>false.</var>
+					<var>(cdr lat)</var> is <var>("lettuce" "and" "tomato")</var>, a
+					non-empty list. Ask the next question.
 				</p>
 			</details>
 
-			<p><span class="monoText">else</span>.</p>
+			<p><var>else</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">true</span>.</p>
+				<p><var>true</var>.</p>
 			</details>
 
-			<p><span class="monoText">(eq? (car lat) a)</span>.</p>
+			<p><var>(eq? (car lat) a)</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">(car lat)</span> is
-					<span class="monoText">"lettuce"</span> and
-					<span class="monoText">a</span> is
-					<span class="monoText">"and"</span>. Ask the next question.
+					<var>false</var>. <var>(car lat)</var> is
+					<var>"lettuce"</var> and <var>a</var> is <var>"and"</var>. Ask
+					the next question.
 				</p>
 			</details>
 
@@ -3214,34 +3109,29 @@
 				<summary>Solution</summary>
 				<p>
 					Insert the atom resulting from
-					<span class="monoText">(car lat)</span> to the list resulting from
-					<span class="monoText">(rember a (cdr lat))</span>. Here,
-					<span class="monoText">(car lat)</span> is
-					<span class="monoText">"lettuce"</span>, and
-					<span class="monoText">(cdr lat)</span> is
-					<span class="monoText">("and" "tomato")</span>. Thus, insert
-					<span class="monoText">"lettuce"</span> to the list resulting from
-					<span class="monoText">(rember a ("and" "tomato"))</span>.
+					<var>(car lat)</var> to the list resulting from
+					<var>(rember a (cdr lat))</var>. Here, <var>(car lat)</var> is
+					<var>"lettuce"</var>, and <var>(cdr lat)</var> is
+					<var>("and" "tomato")</var>. Thus, insert <var>"lettuce"</var> to
+					the list resulting from <var>(rember a ("and" "tomato"))</var>.
 				</p>
 			</details>
 		</div>
 
 		<div>
-			<p><span class="monoText">(null? lat)</span>.</p>
+			<p><var>(null? lat)</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">false</span>.
-					<span class="monoText">lat</span> is
-					<span class="monoText">("and" "tomato")</span>, a non-empty list. Ask
-					the next question.
+					<var>false</var>. <var>lat</var> is <var>("and" "tomato")</var>,
+					a non-empty list. Ask the next question.
 				</p>
 			</details>
 
-			<p><span class="monoText">else</span>.</p>
+			<p><var>else</var>.</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">true</span>.</p>
+				<p><var>true</var>.</p>
 			</details>
 
 			<p>What value:</p>
@@ -3251,13 +3141,9 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">true</span>.
-					<span class="monoText">(car lat)</span> is
-					<span class="monoText">"and"</span> and
-					<span class="monoText">a</span> is
-					<span class="monoText">"and"</span>. Thus, the value is
-					<span class="monoText">(cdr lat)</span>, which is
-					<span class="monoText">("tomato")</span>.
+					<var>true</var>. <var>(car lat)</var> is <var>"and"</var> and
+					<var>a</var> is <var>"and"</var>. Thus, the value is
+					<var>(cdr lat)</var>, which is <var>("tomato")</var>.
 				</p>
 			</details>
 
@@ -3271,18 +3157,18 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Now insert <span class="monoText">"lettuce"</span> to the list &mdash;
-					<span class="monoText">("lettuce" "tomato")</span>.
+					Now insert <var>"lettuce"</var> to the list &mdash;
+					<var>("lettuce" "tomato")</var>.
 				</p>
 			</details>
 
 			<p>
 				What does
-				<span class="monoText">("lettuce" "tomato")</span> represent?
+				<var>("lettuce" "tomato")</var> represent?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">("lettuce" "tomato")</span> represents:</p>
+				<p><var>("lettuce" "tomato")</var> represents:</p>
 				<pre class="language-pseudo"><code>
 					(cons (car lat) (rember a (cdr lat)))
 				</code></pre>
@@ -3298,19 +3184,21 @@
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Now insert <span class="monoText">"bacon"</span> to the list
-					<span class="monoText">("lettuce" "tomato")</span>.
+					Now insert <var>"bacon"</var> to the list
+					<var>("lettuce" "tomato")</var>.
 				</p>
 			</details>
 
 			<p>
 				What does
-				<span class="monoText">("bacon" "lettuce" "tomato")</span> represent?
+				<var>("bacon" "lettuce" "tomato")</var>
+				represent?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">("bacon" "lettuce" "tomato")</span> represents:
+					<var>("bacon" "lettuce" "tomato")</var>
+					represents:
 				</p>
 				<pre class="language-pseudo"><code>
 					(cons (car lat) (rember a (cdr lat)))
@@ -3327,20 +3215,20 @@
 
 	<p>
 		Suppose we wrote
-		<span class="monoText">(rember ${a}$ (${x}$ ${y}$ ${a}$ ${z}$))</span>. We
-		can envision the evaluation as such:
+		<var>(rember ${a}$ (${x}$ ${y}$ ${a}$ ${z}$))</var>. We can envision
+		the evaluation as such:
 	</p>
 	<figure class="math-display">
 		<ul class="syntax">
 			<li>(rember ${a}$ (${x}$ ${y}$ ${a}$ ${z}$))</li>
 			<li>
-				(cons (car (${x}$ ${y}$ ${a}$ ${z}$)) (rember ${a}$ (cdr (${x}$ ${y}$
-				${a}$ ${z}$))))
+				(cons (car (${x}$ ${y}$ ${a}$ ${z}$)) (rember ${a}$ (cdr (${x}$
+				${y}$ ${a}$ ${z}$))))
 			</li>
 			<li>(cons ${x}$ (rember ${a}$ (${y}$ ${a}$ ${z}$)))</li>
 			<li>
-				(cons ${x}$ (cons (car (${y}$ ${a}$ ${z}$)) (rember ${a}$ (cdr (${y}$
-				${a}$ ${z}$))))))
+				(cons ${x}$ (cons (car (${y}$ ${a}$ ${z}$)) (rember ${a}$ (cdr
+				(${y}$ ${a}$ ${z}$))))))
 			</li>
 			<li>(cons ${x}$ (cons ${y}$ (rember ${a}$ (${a}$ ${z}$))))</li>
 			<li>(cons ${x}$ (cons ${y}$ (${z}$) ))</li>
@@ -3351,7 +3239,7 @@
 
 	<p>
 		We can further simplify our definition for
-		<span class="monoText">rember</span>:
+		<var>rember</var>:
 	</p>
 	<pre class="language-scheme"><code>
 		(define rember
@@ -3365,16 +3253,16 @@
 </section>
 
 <section id="firsts">
+	<h2>Firsts</h2>
 	<p>
-		<span class="topic"><span class="monoText">firsts.</span></span> Here we
-		introduce a new function, <span class="monoText">firsts</span>. Engage the
+		Here we introduce a new function, <var>firsts</var>. Engage the
 		exercises below to decipher its meaning.
 	</p>
 	<div class="compare">
 		<div>
 			<p>
 				What is
-				<span class="monoText">(firsts ${\ell}$)</span> where ${\ell}$ is:
+				<var>(firsts ${\ell}$)</var> where ${\ell}$ is:
 			</p>
 			<pre class="language-pseudo"><code>
 				(("apple" "peach" "pumpkin")
@@ -3384,33 +3272,33 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">("apple" "plum" "grape" "bean")</span>.</p>
+				<p><var>("apple" "plum" "grape" "bean")</var>.</p>
 			</details>
 
 			<p>
 				What is
-				<span class="monoText">(firsts ${\ell}$)</span> where ${\ell}$ is:
+				<var>(firsts ${\ell}$)</var> where ${\ell}$ is:
 			</p>
 			<pre class="language-pseudo"><code>
 				((a b) (c d) (e f))
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(a c e)</span></p>
+				<p><var>(a c e)</var></p>
 			</details>
 
 			<p>
 				What is
-				<span class="monoText">(firsts ())</span>.
+				<var>(firsts ())</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">()</span>.</p>
+				<p><var>()</var>.</p>
 			</details>
 
 			<p>
 				What is
-				<span class="monoText">(firsts ${\ell}$)</span> where ${\ell}$ is:
+				<var>(firsts ${\ell}$)</var> where ${\ell}$ is:
 			</p>
 			<pre class="language-pseudo"><code>
 				(("five" "plums") 
@@ -3419,14 +3307,14 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">("five" "four" "eleven")</span></p>
+				<p><var>("five" "four" "eleven")</var></p>
 			</details>
 		</div>
 
 		<div>
 			<p>
 				What is
-				<span class="monoText">(firsts ${\ell}$)</span> where ${\ell}$ is:
+				<var>(firsts ${\ell}$)</var> where ${\ell}$ is:
 			</p>
 			<pre class="language-pseudo"><code>
 				((("five" "plums") "four")
@@ -3435,26 +3323,28 @@
 			</code></pre>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p><span class="monoText">(("five" "plums") "eleven" ("no"))</span></p>
+				<p>
+					<var>(("five" "plums") "eleven" ("no"))</var>
+				</p>
 			</details>
 
 			<p>
 				What does
-				<span class="monoText">(firsts ${\ell}$)</span> do?
+				<var>(firsts ${\ell}$)</var> do?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					<span class="monoText">(firsts ${\ell}$)</span> takes a list ${\ell,}$
-					as an argument,, which either contains an empty list(s) or non-empty
-					lists. Then, it evaluates to a list containing the first S-expressions
-					of each list contained in ${\ell.}$
+					<var>(firsts ${\ell}$)</var> takes a list ${\ell,}$ as an
+					argument,, which either contains an empty list(s) or non-empty
+					lists. Then, it evaluates to a list containing the first
+					S-expressions of each list contained in ${\ell.}$
 				</p>
 			</details>
 
 			<p>
 				Write a function defining
-				<span class="monoText">firsts</span>.
+				<var>firsts</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
@@ -3468,27 +3358,27 @@
 
 			<p>
 				Why use
-				<span class="monoText">(firsts (cdr l))</span>?
+				<var>(firsts (cdr l))</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Because we can only look at one S-expression at a time. To look at the
-					rest, we must recur.
+					Because we can only look at one S-expression at a time. To look
+					at the rest, we must recur.
 				</p>
 			</details>
 		</div>
 	</div>
 	<p>
-		The above exercises yield another rule: When building a list, describe the
-		first typical element, and then insert it onto the natural recursion. In the
-		example above, <span class="monoText">(car (car l))</span> is the typical
-		element, and <span class="monoText">(firsts (cdr l))</span> is the natural
-		recursion. More practice:
+		The above exercises yield another rule: When building a list, describe
+		the first typical element, and then insert it onto the natural
+		recursion. In the example above,
+		<var>(car (car l))</var> is the typical element, and
+		<var>(firsts (cdr l))</var> is the natural recursion. More practice:
 	</p>
 	<p>
 		The function
-		<span class="monoText">insertR</span> outputs the following:
+		<var>insertR</var> outputs the following:
 	</p>
 	<figure class="math-display">
 		<pre class="language-scheme"><code>
@@ -3506,18 +3396,19 @@
 			;; ("a" "b" "c" "d" "e" "f" "g" "d" "h")
 		</code></pre>
 	</figure>
-	<p>What does <span class="monoText">insertR</span> do?</p>
+	<p>What does <var>insertR</var> do?</p>
 	<details class="answer">
 		<summary>Solution</summary>
 		<p>
-			It takes three arguments: (1) the first atom, (2) the second atom, and (3)
-			a list of atoms. <span class="monoText">insertR</span> then builds a list
-			where the first atom is inserted to the right of the first occurrence of
+			It takes three arguments: (1) the first atom, (2) the second atom,
+			and (3) a list of atoms. <var>insertR</var> then builds a list where
+			the first atom is inserted to the right of the first occurrence of
 			the second atom.
 		</p>
 	</details>
 	<p>
-		Write a definition for the function <span class="monoText">insertR</span>.
+		Write a definition for the function
+		<var>insertR</var>.
 	</p>
 	<details class="answer">
 		<summary>Solution</summary>
@@ -3531,14 +3422,14 @@
 		</code></pre>
 		<p>
 			The function
-			<span class="monoText">subst</span> has the following behavior:
+			<var>subst</var> has the following behavior:
 		</p>
 		<pre class="language-scheme"><code>
 			(subst2 "vanilla" "chocolate" "banana" ("banana" "ice" "cream" "with" "chocolate" "topping"))
 			;; Output:
 			;; ("vanilla" "ice" "cream" "with" "chocolate" "topping")
 		</code></pre>
-		<p>Write a function definition for <span class="monoText">subst</span>.</p>
+		<p>Write a function definition for <var>subst</var>.</p>
 		<details class="answer">
 			<summary>Solution</summary>
 			<pre class="language-scheme"><code>
@@ -3551,36 +3442,35 @@
 			</code></pre>
 			<p>
 				Recall the function definition for
-				<span class="monoText">rember</span>. Write a function called
-				<span class="monoText">multirember</span> that gives as its final value
-				a list with all occurrences of the argument
-				<span class="monoText">a</span> removed.
+				<var>rember</var>. Write a function called
+				<var>multirember</var> that gives as its final value a list with
+				all occurrences of the argument <var>a</var> removed.
 			</p>
 			<p>
 				We arrive at another rule for recursion: Always change
-				<span class="underlineText">at least one</span> argument when recurring.
-				It must be changed to be closer to termination. The changing argument
-				must be tested in the termination condition. When using
-				<span class="monoText">cdr</span>, the termination is tested with
-				<span class="monoText">null?</span>.
+				<span class="underlineText">at least one</span> argument when
+				recurring. It must be changed to be closer to termination. The
+				changing argument must be tested in the termination condition. When
+				using <var>cdr</var>, the termination is tested with
+				<var>null?</var>.
 			</p>
 		</details>
 	</details>
 </section>
 
 <section id="operations_on_lists">
-	<h3>Operations on Lists</h3>
+	<h2>Operations on Lists</h2>
 	<p>Consider the code below:</p>
 	<pre class="language-scheme"><code>
 		(cons "rice" empty)
 	</code></pre>
 
 	<p>
-		The symbol <span class="monoText">empty</span> represents an empty list.
-		When we write <span class="monoText">(cons "rice" empty)</span>, we tell
-		Lisp to place the value <span class="monoText">"rice"</span> in front of the
-		<span class="monoText">empty</span> list. This effectively creates a list of
-		size one. To create a list of two elements:
+		The symbol <var>empty</var> represents an empty list. When we write
+		<var>(cons "rice" empty)</var>, we tell Lisp to place the value
+		<var>"rice"</var> in front of the <var>empty</var> list. This
+		effectively creates a list of size one. To create a list of two
+		elements:
 	</p>
 
 	<pre class="language-scheme"><code>
@@ -3589,13 +3479,11 @@
 
 	<p>
 		The code above tells Lisp: Construct a list where
-		<span class="monoText">"corn"</span> is in front of
-		<span class="monoText">"rice"</span>, and
-		<span class="monoText">"rice"</span> is in front of the
-		<span class="monoText">empty</span> list. A key point to understand when
-		constructing lists in Lisp is that the list can only contain values. If we
-		place an expression inside a list, Lisp will evaluate that expression first
-		before including it in the list:
+		<var>"corn"</var> is in front of <var>"rice"</var>, and
+		<var>"rice"</var> is in front of the <var>empty</var> list. A key point
+		to understand when constructing lists in Lisp is that the list can only
+		contain values. If we place an expression inside a list, Lisp will
+		evaluate that expression first before including it in the list:
 	</p>
 
 	<pre class="language-scheme"><code>
@@ -3617,10 +3505,9 @@
 	</code></pre>
 
 	<p>
-		The output tells us that <span class="monoText">cons</span> is a
-		<span class="italicsText">constructor</span> that takes two parameters
-		&mdash; the value we want to include in the list, and the
-		<span class="monoText">empty</span> list.
+		The output tells us that <var>cons</var> is a <i>constructor</i> that
+		takes two parameters &mdash; the value we want to include in the list,
+		and the <var>empty</var> list.
 	</p>
 
 	<pre class="language-scheme"><code>
@@ -3644,8 +3531,8 @@
 	</code></pre>
 
 	<p>
-		<span class="topic">Naming Lists.</span> As usual, we can name lists with
-		<span class="monoText">define</span>:
+		<span class="topic">Naming Lists.</span> As usual, we can name lists
+		with <var>define</var>:
 	</p>
 
 	<pre class="language-scheme"><code>
@@ -3672,9 +3559,9 @@
 	</code></pre>
 
 	<p>
-		Notice that the first element in the list is the last element we included in
-		the list. To see all of the elements other than the first element, we use
-		the symbol <span class="monoText">rest</span>:
+		Notice that the first element in the list is the last element we
+		included in the list. To see all of the elements other than the first
+		element, we use the symbol <var>rest</var>:
 	</p>
 
 	<pre class="language-scheme"><code>
@@ -3691,14 +3578,12 @@
 	</code></pre>
 
 	<p>
-		Note that when <span class="monoText">rest</span> is used on a list of size
-		1, we will get back the <span class="monoText">empty</span> list, since the
-		rest of the list other than the first element is the
-		<span class="monoText">empty</span> list. Question: How do we get the second
-		element in the list with only <span class="monoText">first</span> and
-		<span class="monoText">rest</span>? Well, we first get the
-		<span class="monoText">rest</span> of the list, then pass that as an
-		argument to <span class="monoText">first</span>:
+		Note that when <var>rest</var> is used on a list of size 1, we will get
+		back the <var>empty</var> list, since the rest of the list other than
+		the first element is the <var>empty</var> list. Question: How do we get
+		the second element in the list with only <var>first</var> and
+		<var>rest</var>? Well, we first get the <var>rest</var> of the list,
+		then pass that as an argument to <var>first</var>:
 	</p>
 
 	<pre class="language-scheme"><code>
@@ -3738,49 +3623,46 @@
 
 <section id="recursion_with_numbers">
 	<p>
-		<span class="topic">Recursion with Numbers.</span> Answer the following.
+		<span class="topic">Recursion with Numbers.</span> Answer the
+		following.
 	</p>
 	<div class="compare">
 		<div>
-			<p>Is <span class="monoText">7</span> an atom?</p>
+			<p>Is <var>7</var> an atom?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>
-					Yes, <span class="monoText">7</span> is an atom. All numbers are
-					atoms.
-				</p>
+				<p>Yes, <var>7</var> is an atom. All numbers are atoms.</p>
 			</details>
 
 			<p>
 				What does this expression evaluate to:
-				<span class="monoText">(atom? 7)</span>.
+				<var>(atom? 7)</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					It evaluates to <span class="monoText">true</span>, since
-					<span class="monoText">7</span> is an atom.
+					It evaluates to <var>true</var>, since <var>7</var> is an atom.
 				</p>
 			</details>
 
-			<p>Is <span class="monoText">-1</span> a number?</p>
+			<p>Is <var>-1</var> a number?</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, <span class="monoText">-1</span> is a negative integer, but for
-					now, we will only consider positive integers.
+					Yes, <var>-1</var> is a negative integer, but for now, we will
+					only consider positive integers.
 				</p>
 			</details>
 
 			<p>
 				Is
-				<span class="monoText">2.178</span> a number?
+				<var>2.178</var> a number?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
 				<p>
-					Yes, it is a rational number, but for now, we will only consider the
-					nonnegative integers ${\{ 0, 1, 2, 3, 4, \ldots \}}$
+					Yes, it is a rational number, but for now, we will only consider
+					the nonnegative integers ${\{ 0, 1, 2, 3, 4, \ldots \}}$
 				</p>
 			</details>
 
@@ -3790,10 +3672,10 @@
 					(lambda (n)
 						(+ n 1)))
 			</code></pre>
-			<p>What is the value of <span class="monoText">(add 1 67)</span>?</p>
+			<p>What is the value of <var>(add 1 67)</var>?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The value is <span class="monoText">68</span>.</p>
+				<p>The value is <var>68</var>.</p>
 			</details>
 		</div>
 
@@ -3804,43 +3686,42 @@
 					(lambda (n)
 						(-n 1)))
 			</code></pre>
-			<p>What is the value of <span class="monoText">(sub1 5)</span>?</p>
+			<p>What is the value of <var>(sub1 5)</var>?</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The value is <span class="monoText">4</span>.</p>
+				<p>The value is <var>4</var>.</p>
 			</details>
 
 			<p>
 				What is the value of
-				<span class="monoText">(zero? 0)</span>.
+				<var>(zero? 0)</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The value is <span class="monoText">true</span>.</p>
+				<p>The value is <var>true</var>.</p>
 			</details>
 
 			<p>
 				What is the value of
-				<span class="monoText">(zero? 1)</span>.
+				<var>(zero? 1)</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The value is <span class="monoText">false</span>.</p>
+				<p>The value is <var>false</var>.</p>
 			</details>
 
 			<p>
 				What is the value of
-				<span class="monoText">(+ 10 20)</span>?
+				<var>(+ 10 20)</var>?
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
-				<p>The value is <span class="monoText">30</span>.</p>
+				<p>The value is <var>30</var>.</p>
 			</details>
 
 			<p>
 				Write the function
-				<span class="monoText">+</span>, but call it
-				<span class="monoText">sum</span>.
+				<var>+</var>, but call it <var>sum</var>.
 			</p>
 			<details class="answer">
 				<summary>Solution</summary>
@@ -3864,15 +3745,13 @@
 		</div>
 	</div>
 	<p>
-		Notice that <span class="monoText">zero?</span> acts just like
-		<span class="monoText">null?</span> for lists.
+		Notice that <var>zero?</var> acts just like <var>null?</var> for lists.
 	</p>
 	<p>
-		We can also think of <span class="monoText">add1</span> as acting like
-		<span class="monoText">cons</span>. The operator
-		<span class="monoText">cons</span> builds a list, and the operator
-		<span class="monoText">add1</span> builds numbers. From the definition in
-		the last exercise, we can think of the evaluation as such:
+		We can also think of <var>add1</var> as acting like <var>cons</var>.
+		The operator <var>cons</var> builds a list, and the operator
+		<var>add1</var> builds numbers. From the definition in the last
+		exercise, we can think of the evaluation as such:
 	</p>
 	<figure class="math-display">
 		<pre class="language-pseudo"><code>
@@ -3899,55 +3778,51 @@
 
 	<p>
 		Evaluate:
-		<span class="monoText">(- 10 3)</span>
+		<var>(- 10 3)</var>
 	</p>
 	<details class="answer">
 		<summary>Solution</summary>
 		<p>
-			<span class="monoText">(-10 3)</span> ${\implies}$
-			<span class="monoText">7</span>
+			<var>(-10 3)</var> ${\implies}$
+			<var>7</var>
 		</p>
 	</details>
 
 	<p>
 		Evaluate:
-		<span class="monoText">(- 17 9)</span>.
+		<var>(- 17 9)</var>.
 	</p>
 	<details class="answer">
 		<summary>Solution</summary>
 		<p>
-			<span class="monoText">(-17 9)</span> ${\implies}$
-			<span class="monoText">8</span>
+			<var>(-17 9)</var> ${\implies}$
+			<var>8</var>
 		</p>
 	</details>
 
 	<p>
 		Evaluate:
-		<span class="monoText">(- 18 25)</span>.
+		<var>(- 18 25)</var>.
 	</p>
 	<details class="answer">
 		<summary>Solution</summary>
 		<p>
-			<span class="monoText">(- 18 25)</span> ${\implies}$
-			<span class="monoText">-7</span>. For now, our upcoming function
-			definitions will not have an answer to this.
+			<var>(- 18 25)</var> ${\implies}$ <var>-7</var>. For now, our
+			upcoming function definitions will not have an answer to this.
 		</p>
 	</details>
 
 	<p>
 		Write a function called
-		<span class="monoText">diff</span> that behaves like
-		<span class="monoText">-</span>.
+		<var>diff</var> that behaves like <var>-</var>.
 	</p>
 	<details class="answer">
 		<summary>Solution</summary>
 		<p>
-			To write this function, we first consider the base case. Here, we have a
-			base case for when <span class="monoText">b</span> equals
-			<span class="monoText">0</span>. In that case, we should return
-			<span class="monoText">a</span>, since
-			<span class="monoText">a</span> minus <span class="monoText">0</span> is
-			<span class="monoText">a</span>.
+			To write this function, we first consider the base case. Here, we
+			have a base case for when <var>b</var> equals <var>0</var>. In that
+			case, we should return <var>a</var>, since <var>a</var> minus
+			<var>0</var> is <var>a</var>.
 		</p>
 		<pre class="language-scheme"><code>
 				(define diff
@@ -3989,15 +3864,16 @@
 	<figure class="math-display">
 		<div class="rule">
 			<p>
-				We are designing a program that keeps track of different invasive plant
-				species in the Republic of Palau: kasoring, nila grass, tearthumb.
-				Design a data definition to represent a list of these pests.
+				We are designing a program that keeps track of different invasive
+				plant species in the Republic of Palau: kasoring, nila grass,
+				tearthumb. Design a data definition to represent a list of these
+				pests.
 			</p>
 		</div>
 	</figure>
 	<p>
-		Because we are dealing with a more complex data structure, we want to layout
-		the information we seek to represent:
+		Because we are dealing with a more complex data structure, we want to
+		layout the information we seek to represent:
 	</p>
 	<pre class="language-scheme"><code>
 		;; Information
@@ -4021,8 +3897,8 @@
 		;;  "tearthumb"
 	</code></pre>
 	<p>
-		We're going to represent the data as a string, so we will want to write the
-		type comment as <span class="monoText">ListOfString</span>.
+		We're going to represent the data as a string, so we will want to write
+		the type comment as <var>ListOfString</var>.
 	</p>
 	<pre class="language-scheme"><code>
 		;; Information
@@ -4041,9 +3917,8 @@
 	</code></pre>
 	<p>
 		Notice that in our type comment, we used
-		<span class="monoText">ListOfString</span> in defining
-		<span class="monoText">ListOfString</span>. This is a self-reference. Next,
-		we write an interpretation:
+		<var>ListOfString</var> in defining <var>ListOfString</var>. This is a
+		self-reference. Next, we write an interpretation:
 	</p>
 	<pre class="language-scheme"><code>
 		;; Information
@@ -4119,9 +3994,9 @@
 						(func-for-ListOfString (rest ListOfString))])) ;ListOfString
 	</code></pre>
 	<p>
-		Notice that we commented two self-references in the code above. Before we
-		explain why those self-references are there, let's first look at a problem
-		requiring a function:
+		Notice that we commented two self-references in the code above. Before
+		we explain why those self-references are there, let's first look at a
+		problem requiring a function:
 	</p>
 	<figure class="math-display">
 		<div class="rule">
@@ -4180,15 +4055,14 @@
 						(contains-tearthumb? (rest ListOfString)))]))
 	</code></pre>
 	<p>
-		The above is an example of <span class="term">recursion</span>, and it is
-		closely tied to the idea of self-reference.
+		The above is an example of <b>recursion</b>, and it is closely tied to
+		the idea of self-reference.
 	</p>
 	<p>
 		Whenever we are handling data of arbitrary size, we want to see
 		self-referencing in our type comments. Additionally, data definitions
 		incorporating self-reference should be
-		<span class="italicsText">well-formed data definitions</span>. Recall the
-		data definition:
+		<i>well-formed data definitions</i>. Recall the data definition:
 	</p>
 	<pre class="language-scheme"><code>
 		;; ListOfString is one of:
@@ -4198,25 +4072,25 @@
 	<p>
 		There are two components to a well-formed data definition incorporating
 		self-reference: (1) at least one self-reference, and (2) at least one
-		<span class="term">base case</span>. The base case in the data definition
-		above is <span class="monoText">empty</span>. We say &#8220;at least
-		one&#8221; because a self-referencing data definition can incorporate more
-		than one base case or more than one self-reference. Because of these two
+		<b>base case</b>. The base case in the data definition above is
+		<var>empty</var>. We say &#8220;at least one&#8221; because a
+		self-referencing data definition can incorporate more than one base
+		case or more than one self-reference. Because of these two
 		requirements, examples and tests
-		<span class="underlineText">must</span> include use of the base case, and
-		use of the self-referential cases.
+		<span class="underlineText">must</span> include use of the base case,
+		and use of the self-referential cases.
 	</p>
 	<p>
 		We call the type of recursion incorporated above
-		<span class="term">natural recursion</span> &mdash; the recursion occurs
-		precisely where in the type comment we have a self-reference. When we test
-		or debug the cases, we should always target the base case first. This is
-		because all of the other cases depend on the base case.
+		<b>natural recursion</b> &mdash; the recursion occurs precisely where
+		in the type comment we have a self-reference. When we test or debug the
+		cases, we should always target the base case first. This is because all
+		of the other cases depend on the base case.
 	</p>
 	<p>
-		<span class="exh">Exercise.</span> Several donors have donated money for a
-		large charity project. We want to know how many donors there are, and the
-		total amount of money donated.
+		<span class="exh">Exercise.</span> Several donors have donated money
+		for a large charity project. We want to know how many donors there are,
+		and the total amount of money donated.
 	</p>
 	<details class="answer">
 		<summary>Solution</summary>
@@ -4282,27 +4156,28 @@
 		</code></pre>
 	</details>
 	<p>
-		When writing functions employing natural recursion, there are two questions
-		we should ask:
+		When writing functions employing natural recursion, there are two
+		questions we should ask:
 	</p>
 	<ol>
 		<li>
-			How do we break down the computation so that each caller hires another
-			caller who hires another caller ... all the way down to the base case?
+			How do we break down the computation so that each caller hires
+			another caller who hires another caller ... all the way down to the
+			base case?
 		</li>
 		<li>
-			When we reach the base case, what should the previous caller do with the
-			results from the base case?
+			When we reach the base case, what should the previous caller do with
+			the results from the base case?
 		</li>
 	</ol>
 	<p>
 		We ask these questions to ensure we have a
-		<span class="italicsText">combination</span> &mdash; how the contribution of
-		the first caller combines with the result of the natural recursion. In other
-		words: Luke (the first caller) hires John who hires Mary who hires Yuri (the
-		last call; the base case). How does Mary combine the results from Yuri? How
-		does John combine the results from Mary? How does Luke combine the results
-		from John?
+		<i>combination</i> &mdash; how the contribution of the first caller
+		combines with the result of the natural recursion. In other words: Luke
+		(the first caller) hires John who hires Mary who hires Yuri (the last
+		call; the base case). How does Mary combine the results from Yuri? How
+		does John combine the results from Mary? How does Luke combine the
+		results from John?
 	</p>
 </section>
 {% endblock %}

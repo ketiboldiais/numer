@@ -1,0 +1,127 @@
+{% load static %}
+<h2>Sum of All Elements</h2>
+<p>
+	Just as we saw with arrays, given a linked list of numeric type, we can
+	find the sum of all its elements through iteration. Suppose we had the
+	following linked list:
+</p>
+<div id="ll_sum"></div>
+<p>In code:</p>
+<pre class="language-cpp"><code>
+	#include &lt;iostream&gt;
+
+	struct Node {
+		int data;
+		Node* next;
+	};
+	
+	Node* newNode(int data) {
+		Node* node       = new Node;
+					node->data = data;
+					node->next = 0;
+		return node;
+	}
+	
+	int main() {
+		Node* root        = 0;
+		Node* node1       = newNode(7);  // First node
+					root        = node1;
+		Node* node2       = newNode(3);  // Second node
+					node1->next = node2;
+		Node* node3       = newNode(5)   // Third node
+					node2->next = node3;
+		Node* node4       = newNode(4)   // Fourth node
+					node3->next = node4;
+		
+		return 0;
+	}
+</code></pre>
+<p>
+	To sum all of the elements, we use a variable <var>sum</var>, set
+	initially to zero. Then, we iterate through the linked list,
+	incrementing <var>sum</var> by each element's <var>data</var> field:
+</p>
+<pre class="language-cpp"><code>
+	int listSum(Node* p) {
+		int sum = 0;
+		while (p != 0) {
+			sum += p->data;
+			p    = p->next;
+		}
+		return sum;
+	}
+</code></pre>
+<p>Testing:</p>
+<pre class="language-cpp"><code>
+	#include &lt;iostream&gt;
+
+	struct Node {
+		int data;
+		Node* next;
+	};
+	
+	Node* newNode(int data) {
+		Node* node       = new Node;
+					node->data = data;
+					node->next = 0;
+		return node;
+	}
+	
+	int listSum(Node* p) {
+		int sum = 0;
+		while (p != 0) {
+			sum += p->data;
+			p    = p->next;
+		}
+		return sum;
+	}
+	
+	int main() {
+		Node* root        = 0;
+		Node* node1       = newNode(7);  // First node
+					root        = node1;
+		Node* node2       = newNode(3);  // Second node
+					node1->next = node2;
+		Node* node3       = newNode(5);  // Third node
+					node2->next = node3;
+		Node* node4       = newNode(4);  // Fourth node
+					node3->next = node4;
+	
+		Node* sumPtr = root;
+		int   sum    = listSum(sumPtr);
+	
+		std::cout << sum << std::endl;
+		
+		return 0;
+	}
+</code></pre>
+<pre class="language-bash"><code>
+	19
+</code></pre>
+<p>
+	The time complexity for this function is linear, and the space
+	complexity is constant. We're iterating through ${n}$ nodes, and the
+	operations of
+	<var>==</var> and <var>+=</var> are basic steps. Accordingly, the
+	function has a time complexity of ${O(n).}$ With respect to space, only
+	a single function call is made, and each of the variables take a fixed
+	amount of memory. Hence, the space complexity is ${O(1).}$
+</p>
+<p>
+	<span class="topic">Recursive Approach.</span> The same function can be
+	implemented recursively:
+</p>
+<pre class="language-cpp"><code>
+	int listSum(Node* p) {
+		if (p == 0) {
+			return 0;
+		} else {
+			return listSum(p->next) + p->data;
+		}
+	}
+</code></pre>
+<p>
+	With the recursive approach, the time complexity is ${O(n),}$ just as
+	we saw with the iterative approach. The space complexity, however, is
+	${O(n),}$ given that ${n+1}$ calls must be made.
+</p>

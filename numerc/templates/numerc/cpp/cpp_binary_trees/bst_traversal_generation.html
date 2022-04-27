@@ -1,0 +1,175 @@
+{% load static %}
+
+<p>
+	Earlier, we saw that we can generate a binary search tree by iteratively
+	calling the <var>insert()</var> function. We can, however, also generate
+	a BST through preorder-traversal (or postorder-traversal). Moreover,
+	unlike the previous sections where we saw how we needed an additional
+	inorder-traversal sequence, we can generate a binary search tree with
+	preorder- or postorder-traversal alone. Let's start with
+	preorder-traversal.
+</p>
+<p>We're given the following preorder-traversal sequence:</p>
+<div id="bst_traversal_generation_array"></div>
+<p>
+	Alongside this array, we also need an auxiliary data structure, a stack:
+</p>
+<div id="bst_traversal_generation_stack"></div>
+<p>
+	With the sequence and the stack, we can begin. We start by focusing on
+	the first element of the sequence. In this case, <var>pre[0]=30</var>. We
+	create a node and have two pointers point to it, the
+	<var>root</var> pointer, and a temporary pointer <var>p</var>:
+</p>
+<div class="col2">
+	<div id="bst_gen_arr1"></div>
+	<div id="bst_gen_trav1"></div>
+	<div id="bst_gen_stack1"></div>
+</div>
+<p>
+	Now we focus on the next element, <var>pre[1]=20</var>. We make a check:
+	<var>pre[0] &lt; 30</var>. True. Because it's true, we perform the
+	following steps:
+</p>
+<ol>
+	<li>Create a new node with a temporary pointer <var>t</var>.</li>
+	<li>Make <var>p</var>'s left-child pointer point to the new node.</li>
+	<li>Push the address of <var>p</var>'s pointee into the stack.</li>
+	<li>Move <var>p</var> to the newly created node.</li>
+</ol>
+<p>Thus, we have:</p>
+<div class="col2">
+	<div id="bst_gen_arr2"></div>
+	<div id="bst_gen_trav2"></div>
+	<div id="bst_gen_stack2"></div>
+</div>
+<p>
+	Now we move to the next element in the sequence, <var>pre[2]=10</var>. We
+	perform the check again: <var>pre[2] &lt; 20</var>. True. Again, we
+	create a new node with a temporary pointer <var>t</var>, make
+	<var>p</var>'s left-child pointer to the new node, push the address of
+	<var>p</var>'s pointee into the stack, and move <var>p</var> to the newly
+	created node:
+</p>
+<div class="col2">
+	<div id="bst_gen_arr3"></div>
+	<div id="bst_gen_trav3"></div>
+	<div id="bst_gen_stack3"></div>
+</div>
+<p>
+	Move the next element, <var>pre[3]=15</var>. Check:
+	<var>pre[3] &lt; 10</var>. False. So, <var>node(15)</var> should be the
+	right-child of <var>node(10)</var>. But not so fast. We have to be
+	careful here. Suppose <var>pre[3]</var> was <var>28</var> instead. If
+	that were the case, then blindly attaching <var>node(28)</var> as the
+	right-child of <var>node(10)</var> would cause a problem &mdash;
+	<var>28</var> is greater than <var>25</var>, and any node greater than
+	<var>25</var> should be in <var>node(25)</var>'s right-subtree, not its
+	left. Accordingly, we have two possibilities when
+	<var>node(i) &lt; node(i-1)</var> (i.e., when the node we're about to
+	insert has a value less than the node we just inserted):
+</p>
+<ol>
+	<li><var>node(i-1) &lt; node(i) &lt; stackTop(node)</var></li>
+	<li><var>node(i-1) &lt; stackTop(node) &lt; node(i)</var></li>
+</ol>
+<p>
+	The first case is when the node we're about to insert has a value greater
+	than the node we just inserted, but less than the value of the node at
+	the stack's topframe. (The node at the stack's topframe is the node we
+	inserted just before the last node we inserted). If the first case is
+	true, then we proceed to inserting the new node as the right-child. In
+	this case, it is, so we perform the following:
+</p>
+<ol>
+	<li>Create a new node as the pointee of <var>t.</var></li>
+	<li>Make <var>p</var>'s right-child point to <var>t</var>.</li>
+	<li>Set <var>p</var>'s new pointee as <var>t</var>.</li>
+</ol>
+<p>
+	Importantly, we <em>do not</em> push <var>p</var> onto the stack. Why
+	don't we push <var>p</var>? Because if we pushed <var>p</var> onto the
+	stack, then the stack's topmost frame would contain the address of
+	<var>Node(10)</var>. But we don't need that address in there. The stack's
+	sole purpose is to keep track of which nodes could still have children.
+	The moment we assign a right-child to a node, there are no other possible
+	children the node can have, because the sequence we're given is the
+	inorder traversal sequence &mdash; there are no left-children for a
+	particular node once we've been given its right-child.
+</p>
+<p>That said, performing the above results in:</p>
+<div class="col2">
+	<div id="bst_gen_arr4"></div>
+	<div id="bst_gen_trav4"></div>
+	<div id="bst_gen_stack4"></div>
+</div>
+<p>
+	Now we go to the next element &mdash; <var>pre[4]=25</var>. Check once
+	more: <var>pre[4] &lt; 15</var>. False. We've hit another false case, so
+	we make the additional check we saw earlier. Is
+	<var>pre[4] &gt; (*p).data</var>? I.e., is <var>25 &gt; 15</var>? Yes.
+	Check the second possibility: Is <var>pre[4] &lt; stackTop(node)</var>?
+	No, <var>25 &nlt; 20</var>.
+</p>
+<p>
+	Here, the second case is true. So, we pop the stack, and move
+	<var>p</var> to that address <var>node(20)</var>. Then we must compare
+	again: <var>25 &lt; 20</var>? False. Once more we make a check: Is
+	<var>pre[4] &lt; stackTop(node)</var>? Yes. <var>25 &lt; 30.</var> Now we
+	can continue the normal course &mdash; attach <var>node(25)</var> as the
+	right-child of <var>node(20)</var>, with <var>p</var> pointing to the new
+	node:
+</p>
+<div class="col2">
+	<div id="bst_gen_arr5"></div>
+	<div id="bst_gen_trav5"></div>
+	<div id="bst_gen_stack5"></div>
+</div>
+<p>
+	Next: <var>pre[5]=40</var>. First check:
+	<var>pre[5] &lt; (*p).data</var>. False; <var>40 &nlt; 25.</var> Second
+	check: <var>pre[5] &gt; (*p).data</var>. True. Third check: Is
+	<var>pre[5] &lt; peek(stack)->data</var> False. So, we have to pop the
+	stack. <var>p = pop(stack)</var>. Now <var>p</var> points to
+	<var>node(30)</var>, and we go through checks again. This results in:
+</p>
+<div class="col2">
+	<div id="bst_gen_arr6"></div>
+	<div id="bst_gen_trav6"></div>
+	<div id="bst_gen_stack6"></div>
+</div>
+<p>The process continues for the remaining elements. The algorithm:</p>
+<ol class="alg">
+	<li>fn createPre(int pre[], int n):</li>
+	<ol>
+		<li>Stack _stack = newStack(5);</li>
+		<li>Node *t;</li>
+		<li>int i = 0;</li>
+		<li>root = newNode();</li>
+		<li>(*root).data = pre[i];</li>
+		<li>i++;</li>
+		<li>Node* p = root;</li>
+		<li>while (i &lt; n):</li>
+		<ol>
+			<li>if (pre[i] < (*p).data):</li>
+			<ol>
+				<li>t = newNode(pre[i++]);</li>
+				<li>(*p).left_child = t;</li>
+				<li>push(_stack, p);</li>
+				<li>p = t;</li>
+			</ol>
+			<li>
+				else if ((pre[i] > (*p).data) && (pre[i] < peek(stack)->data)):
+			</li>
+			<ol>
+				<li>t = newNode(pre[i++]);</li>
+				<li>(*p).right_child = t;</li>
+				<li>p = t;</li>
+			</ol>
+			<li>else:</li>
+			<ol>
+				<li>p = pop(stack);</li>
+			</ol>
+		</ol>
+	</ol>
+</ol>

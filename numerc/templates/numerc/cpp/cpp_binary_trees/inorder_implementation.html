@@ -1,0 +1,81 @@
+{% load static %}
+
+<p>
+	The inorder traversal algorithm is implemented with the following
+	function:
+</p>
+<ol class="alg">
+	<li>fn inorder(Node* root) -> void:</li>
+	<ol>
+		<li>if (root != NULL):</li>
+		<ol>
+			<li>inorder((*root).left_child);</li>
+			<li>print "{(*root).data}";</li>
+			<li>inorder((*root).right_child);</li>
+		</ol>
+	</ol>
+</ol>
+<p>
+	Suppose we want to inorder-traverse the following tree, named
+	<var>sequoia</var>.
+</p>
+<div id="inorder_tree_demo"></div>
+<p>
+	We begin by making the call <var>inorder((*sequoia).root)</var>. Suppose
+	<var>root</var> points to the address <var>F0</var>. This results in the
+	call <var>inorder(F0)</var>. Making this call, the first statement is
+	<var>inorder((*root).left_child)</var>. This evaluates to
+	<var>inorder(F0.left_child)</var>, which evaluates to
+	<var>inorder(F1)</var>:
+</p>
+<div id="inorder_trace_f1"></div>
+<p>
+	Calling <var>inorder(F1)</var>, we then call
+	<var>inorder(F1.left_child)</var>, which evaluates to
+	<var>inorder(F3)</var>.
+</p>
+<div id="inorder_trace_f3"></div>
+<p>
+	The call <var>inorder(F3)</var> results in the call
+	<var>inorder(F3.left_child)</var>. Because <var>F3</var> has no
+	left-child, this evaluates to the call <var>inorder(0)</var>. This does
+	not lead to any further calls, so it completes and we go to the next
+	call, <var>print "{F3.data}"</var>:
+</p>
+<div id="inorder_trace_f3_1"></div>
+<p>
+	Once the <var>print</var> line finishes executing, we go to the next
+	call, <var>inorder(F3.right_child)</var>. Here, <var>F3</var> has no
+	right-child, so the call evaluates to <var>inorder(0)</var>.
+</p>
+<div id="inorder_trace_f3_2"></div>
+<p>
+	This completes the call to <var>inorder(F3)</var>, so we go back to the
+	call <var>inorder(F1)</var>. The next line is
+	<var>print "{F1.data}"</var>, so we print the value <var>8</var>:
+</p>
+<div id="inorder_trace_f1_1"></div>
+<p>
+	We then proceed to the next line, <var>inorder(F1.right_child)</var>.
+	Because <var>F1</var> has a right-child, this call evaluates to
+	<var>inorder(F4)</var>. Inside this call, we make the recursive call
+	<var>inorder(F4.left_child)</var>. But <var>F4</var> has no left-child,
+	so the call evaluates to <var>inorder(0)</var>.
+</p>
+<div id="inorder_trace_f4"></div>
+<p>
+	We go to the next line, <var>print "{F4.data}"</var>, which prints the
+	value <var>6</var>. This line is followed by
+	<var>inorder(F4.right_child)</var>. And once again, because
+	<var>F4</var> has no right-child, the call evaluates to
+	<var>inorder(0)</var>:
+</p>
+<div id="inorder_trace_f4_1"></div>
+<p>
+	This completes the call to <var>inorder(F4)</var>, which in turn
+	completes the call to <var>inorder(F1)</var>. This brings us back to
+	<var>inorder(F0)</var>. We execute the line <var>print "{F0.data}"</var>,
+	and proceed to <var>inorder(F0.right_child)</var>, repeating the process
+	we've covered. All of the calls together yield the following call trace:
+</p>
+<div id="inorder_trace_final"></div>

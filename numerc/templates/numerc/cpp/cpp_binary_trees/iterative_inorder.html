@@ -1,0 +1,52 @@
+{% load static %}
+
+<p>
+	Just as we saw with preorder traversal, we can also implement an
+	iterative version of inorder traversal. Recall that with inorder
+	traversal, we want to traverse all of the left-subtrees before visiting
+	the node. Thus, the iterative procedure looks similar to the
+	<var>preorderLoop()</var>, with a few modifications:
+</p>
+<ol class="alg">
+	<li>fn inorderLoop(Node* root) -> void:</li>
+	<ol>
+		<li>Stack nodeStack;</li>
+		<li>while (root != NULL || !isEmpty(nodeStack)):</li>
+		<ol>
+			<li>if (root != NULL):</li>
+			<ol>
+				<li>push(nodeStack, root);</li>
+				<li>root = (*root).left_child;</li>
+			</ol>
+			<li>else:</li>
+			<ol>
+				<li>root = pop(nodeStack);</li>
+				<li>print((*root).data);</li>
+				<li>root = (*root).right_child;</li>
+			</ol>
+		</ol>
+	</ol>
+</ol>
+<p>
+	Notice that with <var>inorderLoop()</var>, the first arm of the while
+	loop is to traverse the entire left-subtree. Only after we've traversed
+	the entire left-subtree do we enter the second arm. Once we've arrived
+	at the state where there are no left-children, we proceed to the second
+	arm. Here, we pop node stack (binding the return value to
+	<var>root</var>), then <var>print()</var> the relevant data.
+	Thereafter, we change <var>root</var>'s assigned value to
+	<var>(*root).right_child</var>.
+</p>
+<p>Our auxiliary <var>nodeStack</var>'s changes over time:</p>
+<div id="inorder_stack_growth"></div>
+<p>
+	Notice that, broadly, the changes occur in the same way as
+	<var>preorderLoop()</var>. This isn't all that odd, the only change
+	we've made is moving the <var>print()</var> line elsewhere. With
+	<var>preorderLoop()</var>, we printed the value before moving on to the
+	<em>left-child</em>. With <var>inorderLoop()</var>, we print the value
+	before moving on to the <em>right-child</em>. Moving this
+	<var>print()</var> line does not impact the time complexity of
+	traversing the entire tree &mdash; it's still ${O(n),}$ where ${n}$ is
+	the number of nodes in the tree.
+</p>

@@ -1,0 +1,166 @@
+{% load static %}
+<p>Suppose we're given the following tree:</p>
+<div id="traversal_1"></div>
+<p>For preorder traversal, we have the following function:</p>
+<pre class="language-pseudo"><code>
+	preorder(binaryTree):
+		let root = binaryTree->root
+		if (binaryTree->root isnt null):
+			read(root->data)
+			preorder(root->left)
+			preorder(root->right)
+</code></pre>
+<p>
+	This is a recursive function. If the root is not null, we read the data
+	stored in the root. Then, we make a recursive call passing the root's
+	left child as an argument. After that recursive call, we make another
+	recursive call, passing the root's right-child of as an argument.
+</p>
+<p>
+	For example, suppose our example tree is called <var>oak</var>, whose
+	root has the address <var>F0</var>. To preorder traverse <var>oak</var>,
+	we make the call <var>preorder(oak)</var>. This results in a function
+	call in stack memory, <var>preorder(F0)</var>. The first line in this
+	call prints the value <var>8</var>:
+</p>
+<div id="preorder_stack1"></div>
+<div>
+	<div class="ds-stack">
+		<ol>
+			<li>preorder(F0)</li>
+		</ol>
+	</div>
+	<div id="preorder_trace1"></div>
+</div>
+<p>
+	Inside <var>preorder(F0)</var>, we call
+	<var>preorder((*root).left_child)</var>. Following our diagram, this
+	means making the call <var>preorder(F1)</var>:
+</p>
+<div>
+	<div class="ds-stack">
+		<ol>
+			<li>preorder(F0)</li>
+			<li>preorder(F1)</li>
+		</ol>
+	</div>
+	<div id="preorder_trace2"></div>
+</div>
+<p>
+	Given <var>preorder(F1)</var>, we print the value <var>3</var>, then make
+	the call <var>preorder(F3)</var>:
+</p>
+<div>
+	<div class="ds-stack">
+		<ol>
+			<li>preorder(F0)</li>
+			<li>preorder(F1)</li>
+			<li>preorder(F3)</li>
+		</ol>
+	</div>
+	<div id="preorder_trace3"></div>
+</div>
+<p>
+	The call <var>preorder(F3)</var> then prints the value <var>4</var>, and
+	calls <var>preorder((*root).left_child)</var>.
+</p>
+<div>
+	<div class="ds-stack">
+		<ol>
+			<li>preorder(F0)</li>
+			<li>preorder(F1)</li>
+			<li>preorder(F3)</li>
+			<li>preorder(0)</li>
+		</ol>
+	</div>
+	<div id="preorder_trace4"></div>
+</div>
+<p>
+	Because <var>F3</var> has no left-child, the call is essentially
+	<var>preorder(0)</var> (a null pointer). Nevertheless, the call is made
+	and subsequently popped off the stack. This takes us to the next call,
+	<var>preorder((*root).right_child)</var>. Because <var>F3</var> has no
+	right-child, this call also results in <var>preorder(0)</var>:
+</p>
+<div>
+	<div class="ds-stack">
+		<ol>
+			<li>preorder(F0)</li>
+			<li>preorder(F1)</li>
+			<li>preorder(F3)</li>
+			<li>preorder(0)</li>
+		</ol>
+	</div>
+	<div id="preorder_trace5"></div>
+</div>
+<p>
+	Having executed all of the instructions for
+	<var>preorder(F3)</var>, the most recent being the call
+	<var>preorder(F1.left_child)</var>, the call <var>preorder(F3)</var> is
+	popped off the stack:
+</p>
+<div>
+	<div class="ds-stack">
+		<ol>
+			<li>preorder(F0)</li>
+			<li>preorder(F1)</li>
+		</ol>
+	</div>
+	<div id="preorder_trace5"></div>
+</div>
+<p>
+	We're now back at <var>preorder(F1)</var> to execute
+	<var>preorder(F1.right_child)</var>. This results in the call
+	<var>preorder(F4)</var>. The value <var>9</var> is printed, and the call
+	<var>preorder(F4.left_child)</var> is made.
+</p>
+
+<div class="ds-stack">
+	<ol>
+		<li>preorder(F0)</li>
+		<li>preorder(F1)</li>
+		<li>preorder(F4)</li>
+	</ol>
+</div>
+<div id="preorder_trace6"></div>
+
+<p>
+	This recursive call evaluates to <var>preorder(NULL)</var>, so we make
+	the next recursive call, <var>preorder(F4.right_child)</var>. This also
+	results in <var>preorder(NULL)</var>, so <var>preorder(F4)</var> is
+	popped off the stack.
+</p>
+<p>
+	With <var>preorder(F4.right_child)</var> finished, this completes the
+	call for <var>preorder(F4)</var>, which completes the call for
+	<var>preorder(F1)</var>. This then completes the call for
+	<var>preorder(F1.left_child)</var>. The process continues for
+	<var>preorder(F1.right_child)</var>. Putting it all together, we have a
+	call trace that looks like:
+</p>
+<div id="preorder_trace_final"></div>
+<p>
+	If we count the number <var>preorder()</var> calls, we'll find that there
+	are ${15}$ calls total, given ${7}$ nodes. Recall from our earlier
+	discussion that given ${N}$ nodes, there are ${N}$ non-null pointers and
+	${N+1}$ null pointers. Thus, the total number of calls we make is ${2N +
+	1.}$ This conforms with our data: Given a binary tree of ${7}$ nodes, we
+	have ${2(7) + 1 = 15}$ calls for preorder traversal.
+</p>
+<p>
+	Now, although there are ${15}$ calls, that does not mean the size of the
+	call stack grows to ${15.}$ Indeed, the most the call stack grows up to
+	is ${4.}$ When we called <var>preorder(F0)</var>, that resulted in a call
+	to <var>preorder(F2)</var>, then a call to <var>preorder(F5)</var>, then
+	a call to <var>preorder(0)</var>. Once <var>preorder(0)</var> finishes,
+	it's popped off the stack, then we make another call to
+	<var>preorder(0)</var>, then that's popped off the stack, then back to
+	<var>preorder(F5)</var>, and so on. The call stack grows up to
+	<var>preorder(0)</var>, then back down, and so on.
+</p>
+<p>
+	Because of this up and down movement, the most the call stack grows to is
+	${H + 2,}$ where ${H}$ is the height of the binary tree. For our example
+	tree, the height is ${H = 2,}$ which yields the call stack size of ${S_c
+	= H + 2 = 4.}$
+</p>

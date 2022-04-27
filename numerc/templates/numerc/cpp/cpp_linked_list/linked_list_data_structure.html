@@ -1,0 +1,1394 @@
+{% load static %}
+<h2>The Linked List Data Structure</h2>
+<p>
+	Before we examine linked list algorithms, we must first understand the
+	linked list data structure. We will do so by investigating the mechanics
+	behind implementing a linked list.
+</p>
+<section id="node_implementation">
+	<h3>Implementing the Node Data Structure</h3>
+	<p>
+		To implement the node data structure, we use a record. The record looks
+		something like:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+			<li>C++</li>
+			<li>Java</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseuds">
+			<ol class="alg">
+				<li>struct Node:</li>
+				<ol>
+					<li>T data;</li>
+					<li>Node* next;</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li>Declare a structure.</li>
+				<li>
+					The <var>data</var> field will store the actual substantive data.
+					Here, it's some generic type <var>T</var>.
+				</li>
+				<li>
+					The <var>next</var> field will store a pointer <var>next</var>,
+					which points to the next node in the list.
+				</li>
+			</ol>
+		</div>
+		<div class="c">
+			<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* next;
+					}
+				</code></pre>
+		</div>
+		<div class="cpp">
+			<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node* next;
+					}
+				</code></pre>
+		</div>
+		<div class="java">
+			<pre class="language-java"><code>
+					private class Node {
+						int data;
+						Node next;
+					}
+				</code></pre>
+		</div>
+		<div class="javascript">
+			<p>
+				Because we'll be using <var>Node</var> objects later, we prepend
+				the <var>export</var> keyword:
+			</p>
+			<pre class="language-javascript"><code>
+					export class Node {
+						constructor(data) {
+							this.data = data;
+							this.next = null;
+						}
+					}
+				</code></pre>
+		</div>
+	</div>
+	<p>
+		A linked list's data field determines its type. Thus,
+		<var>int data</var> indicates a linked list of type <var>int</var>, and
+		<var>int data</var> a linked list of type <var>char</var>. A linked
+		list's data type, however, is distinct from its nodes's data type.
+	</p>
+	<p>
+		A linked list <i>node</i> is of type <var>Node</var>. The type node is
+		a
+		<a
+			href="{% url 'numerc:ml_customDataTypes' %}#recursive_types"
+			target="_blank"
+			><i>recursive sum type</i></a
+		>
+		${N.}$ It consists of a type ${t,}$ <em>and</em> a type ${N^*}$ &mdash;
+		a pointer to a value of type ${N.}$ Notice this self-referential
+		structure; linked lists provide great opportunities for recursion, as
+		we'll soon see.
+	</p>
+	<p>
+		Let's get a bit of terminology out of the way. Examine the diagram
+		below:
+	</p>
+	<img
+		src="{% static 'images/headTail.svg' %}"
+		alt="Linked last data structure"
+		loading="lazy"
+	/>
+	<p>
+		Above, ${n}$ represents some node. Each node ${n}$ consists of two
+		parts, a <i>data field</i>, containing of some data value ${v,}$ and a
+		<i>next field</i>, containing a pointer to some heap memory address
+		${h.}$ Notice that each node stores the address ${h}$ of the next node.
+	</p>
+	<p>
+		Every linked list has a <b>root</b>. This is a pointer to the first
+		node of the list, called the <b>head</b>. All nodes that are
+		<em>not</em> the head comprise the list's <b>tail</b>. The last node of
+		the list is called the <b>foot</b>. Finally, all nodes between the head
+		and the tailend constitute the <b>trunk</b>.
+	</p>
+	<p>
+		Question: How much memory does the node data structure take? Well, we
+		know that there are two parts to the node; the substantive data and the
+		pointer. We'll denote the substantive data ${d,}$ and the pointer
+		${p.}$ We'll also denote the amount of memory a given node consumes as
+		the function ${N:}$
+	</p>
+	<figure>
+		<div>
+			<p>${N = d + p}$</p>
+		</div>
+	</figure>
+	<p>
+		Focusing on the variable ${d}$ first, the amount of memory consumed by
+		${d}$ is a function of its type, and number of instances of ${d.}$
+		We'll denote the amount of memory consumed by a value of type ${d}$ as
+		${S(t_d),}$ and the number of instances as ${n.}$ Thus, ${d = n \cdot
+		t_d.}$ Placing this in our equation:
+	</p>
+	<figure>
+		<div>
+			<p>${N = n(S(t_d)) + p}$</p>
+		</div>
+	</figure>
+	<p>
+		Now let's think about ${p.}$ For any given compiler, the memory
+		consumed by ${p}$ depends on the data type of the value the pointer
+		points to. For example, if an <var>int</var> value <var>x</var> takes
+		${2}$ bytes, a pointer <var>p</var> to <var>x</var> would take ${2}$
+		bytes. Thus, we have:
+	</p>
+	<figure>
+		<div>
+			<p>${N = n(S(t_d)) + S(t_d)}$</p>
+		</div>
+	</figure>
+	<p>
+		Simplifying, we have the following formula for the amount of memory a
+		single node takes:
+	</p>
+	<figure>
+		<div>
+			<p>${N = S(t_d) \cdot (n + 1)}$</p>
+		</div>
+		<figcaption>
+			Where ${t_d}$ is the data type of the substantive data value, ${n}$
+			is the number of substantive data values stored in a single node, and
+			${S(t_d)}$ is the size of the data type ${t_d.}$
+		</figcaption>
+	</figure>
+	<p>
+		Applying this formula, suppose we have a node storing the
+		<var>int</var> value ${1.}$ On a 64-bit compiler where an
+		<var>int</var> takes up ${4}$ bytes, the size of the node would be:
+	</p>
+	<figure>
+		<div>
+			<p>${N = 4 \cdot (1 + 1) = 8}$ bytes.</p>
+		</div>
+	</figure>
+</section>
+
+<section id="instantiating_node">
+	<h3>Instantiating the Node</h3>
+	<p>
+		After creating the node data structure, we want to begin the linking of
+		different nodes. To do so, we employ the following fact:
+	</p>
+	<figure>
+		<div>
+			<p>
+				<span class="topic">Fact.</span> Linked lists are stored in heap
+				memory.
+			</p>
+		</div>
+	</figure>
+	<p>
+		Thus, to instantiate a node, we must first have a pointer to the node:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+			<li>C++</li>
+		</ul>
+		<div class="pseudosource">
+			<ol class="alg">
+				<li>struct Node:</li>
+				<ol>
+					<li>T data;</li>
+					<li>Node* next;</li>
+				</ol>
+				<li>main():</li>
+				<ol>
+					<li>Node* root = NULL;</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li>The node definition.</li>
+				<li>The <var>data</var> field.</li>
+				<li>The <var>next</var> field.</li>
+				<li>The <var>main()</var> function.</li>
+				<li>
+					Instantiate a pointer to a node called <var>root</var>. Initially
+					set it to <var>NULL</var>.
+				</li>
+			</ol>
+		</div>
+		<div class="c">
+			<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* next;
+					};
+					
+					int main() {
+						struct Node* h = NULL;
+						return 0;
+					}
+				</code></pre>
+		</div>
+		<div class="cpp">
+			<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node *next;
+					};
+					
+					int main() {
+						Node* h = NULL;
+						return 0;
+					}
+				</code></pre>
+		</div>
+	</div>
+	<p>
+		Above, we've instantiated a <var>Node*</var> pointer, currently
+		pointing to nowhere (the list is empty). Importantly, the pointer we've
+		just initialized lives in the stack. This is a necessary feature of the
+		linked list because we cannot access heap memory ourselves. The pointer
+		<var>p</var> serves as our link to the heap. We can't go to the heap,
+		but we can use <var>p</var> to control what we've created there.
+	</p>
+	<p>
+		Now that we've got a head, let's create our first node in the heap. In
+		C, we write:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+		</ul>
+		<div class="pseuds">
+			<ol class="alg">
+				<li>struct Node:</li>
+				<ol>
+					<li>T data;</li>
+					<li>Node* next;</li>
+				</ol>
+				<li>main():</li>
+				<ol>
+					<li>Node* root = NULL;</li>
+					<li>Node* temp = malloc(sizeof(Node));</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li>The node definition.</li>
+				<li>The <var>data</var> field.</li>
+				<li>The <var>next</var> field.</li>
+				<li>The <var>main()</var> function.</li>
+				<li>
+					Instantiate a pointer to a node called <var>root</var>. Initially
+					set it to <var>NULL</var>.
+				</li>
+				<li>Allocate enough space in the heap for a node.</li>
+			</ol>
+		</div>
+		<div class="c">
+			<pre class="language-c"><code>
+					#include &lt;stdio.h&gt;
+			
+					struct Node {
+						int data;
+						struct Node* next;
+					};
+					
+					int main() {
+						struct Node* h    = NULL;
+						struct Node* temp = malloc(sizeof(struct Node));
+						return 0;
+					}
+				</code></pre>
+		</div>
+	</div>
+	<p>
+		Notice line ${5.}$ Herere, we're allocating space in the heap for a
+		<var>Node</var> struct. The <var>malloc()</var> function takes
+		allocates the requested memory and returns a pointer to the address of
+		the memory allocated in the <em>heap</em>. The code thus far looks like
+		the following in memory:
+	</p>
+	<div id="register1"></div>
+	<p>
+		Now that we have a node, we can initialize its fields by dereferencing
+		<var>temp</var>:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+			<li>C++</li>
+		</ul>
+		<div class="pseuds">
+			<ol class="alg">
+				<li>struct Node:</li>
+				<ol>
+					<li>T data;</li>
+					<li>Node* next;</li>
+				</ol>
+				<li>main():</li>
+				<ol>
+					<li>Node* root = NULL;</li>
+					<li>Node* temp = malloc(sizeof(Node));</li>
+					<li>(*temp).data = 1;</li>
+					<li>(*temp).next = NULL;</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li>The node definition.</li>
+				<li>The <var>data</var> field.</li>
+				<li>The <var>next</var> field.</li>
+				<li>The <var>main()</var> function.</li>
+				<li>
+					Instantiate a pointer to a node called <var>root</var>. Initially
+					set it to <var>NULL</var>.
+				</li>
+				<li>Allocate enough space in the heap for a node.</li>
+				<li>
+					Store the value <var>1</var> inside the node
+					<var>temp</var> points to.
+				</li>
+				<li>
+					Set <var>temp</var>'s pointee node's <var>next</var> pointer to
+					<var>NULL</var>.
+				</li>
+			</ol>
+		</div>
+		<div class="c">
+			<p>The same code in C:</p>
+			<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* next;
+					}
+					
+					int main() {
+						struct  Node* h    = NULL;
+						struct  Node* temp = malloc(sizeof(struct Node));
+						(*temp).data       = 1;
+						(*temp).next       = NULL;
+						return 0;
+					}
+				</code></pre>
+		</div>
+		<div class="cpp">
+			<p>
+				C++ provides derferencing through the arrow pointer (as does C).
+				C++ also provides the <var>new</var> operator in place of
+				<var>malloc()</var>:
+			</p>
+			<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node* next;
+					}
+					
+					int main() {
+						Node* h          = 0;
+						Node* temp       = new Node();
+									temp->data = 1;
+									temp->next = 0;
+						return 0;
+					}
+				</code></pre>
+		</div>
+	</div>
+	<p>In memory, we now have:</p>
+	<div id="register2"></div>
+	<p>
+		Now, all that's left to do is to link the address of the newly created
+		node to our head:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+			<li>C++</li>
+		</ul>
+		<div class="pseuds">
+			<ol class="alg">
+				<li>struct Node:</li>
+				<ol>
+					<li>T data;</li>
+					<li>Node* next;</li>
+				</ol>
+				<li>main():</li>
+				<ol>
+					<li>Node* root = NULL;</li>
+					<li>Node* temp = malloc(sizeof(Node));</li>
+					<li>(*temp).data = 1;</li>
+					<li>(*temp).next = NULL;</li>
+					<li>root = temp;</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li>The node definition.</li>
+				<li>The <var>data</var> field.</li>
+				<li>The <var>next</var> field.</li>
+				<li>The <var>main()</var> function.</li>
+				<li>
+					Instantiate a pointer to a node called <var>root</var>. Initially
+					set it to <var>NULL</var>.
+				</li>
+				<li>Allocate enough space in the heap for a node.</li>
+				<li>
+					Store the value <var>1</var> inside the node
+					<var>temp</var> points to.
+				</li>
+				<li>
+					Set <var>temp</var>'s pointee node's <var>next</var> pointer to
+					<var>NULL</var>.
+				</li>
+				<li>Make <var>root</var> point to <var>temp</var>.</li>
+			</ol>
+		</div>
+		<div class="c">
+			<pre class="language-c"><code>
+					struct Node {
+						int data;
+						struct Node* next;
+					}
+					
+					int main() {
+						struct  Node* h    = NULL;
+						struct  Node* temp = malloc(sizeof(struct Node));
+						(*temp).data       = 1;
+						(*temp).next       = NULL;
+										h          = temp;
+						return 0;
+					}
+				</code></pre>
+		</div>
+		<div class="cpp">
+			<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node* next;
+					}
+					
+					int main() {
+						Node* h          = 0;
+						Node* temp       = new Node();
+									temp->data = 1;
+									temp->next = 0;
+									h          = temp;
+						return 0;
+					}
+				</code></pre>
+		</div>
+	</div>
+	<p>
+		Writing the code above results in the diagram below. Suppose the
+		allocated memory in the heap has the address <var>200</var>. The
+		pointer <var>p</var> resides in the stack, and its address is
+		<var>100</var>. The address <var>200</var>, returned from
+		<var>malloc()</var>, is stored in <var>p</var>.
+	</p>
+	<figure>
+		<img
+			src="{% static 'images/linkedNode.svg' %}"
+			alt="Node initialization"
+			loading="lazy"
+			class="fifty-p"
+		/>
+	</figure>
+	<p>
+		Great, we've made our first linked list. Below are some examples of
+		creating linked lists with just the node data structure in other
+		languages.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>C++</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="cpp">
+			<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node *next;
+					};
+					
+					int main() {
+						// Head
+						Node* head = 0;
+		
+						// First node
+						Node* node1       = new Node();
+									node1->data = 1;
+									node1->next = 0;           // first node is the tail
+									head        = node1;       // link head to first node
+					
+						// Second node
+						Node* node2       = new Node();
+									node2->data = 2;
+									node1->next = 0;           // second node is now the tail
+									node1->next = node2;       // link first node to second node
+					
+						// Third node
+						Node* node3       = new Node();
+									node3->data = 3;
+									node3->next = 0;           // third node is now the tail
+									node2->next = node3;       // link second node to third node
+						return 0;
+					}
+				</code></pre>
+		</div>
+		<div class="js">
+			<pre class="language-javascript"><code>
+					import { Node } from "./Node.js";
+	
+					const n1 = new Node(1);
+					n1.next = new Node(2);
+					n1.next.next = new Node(3);
+					n1.next.next.next = new Node(4);
+					n1.next.next.next.next = new Node(5);
+	
+					console.log(n1);				
+				</code></pre>
+			<pre class="language-bash"><code>
+					Node {
+						data: 1,
+						next: Node { data: 2, next: Node { data: 3, next: [Node] } }
+					}
+				</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="node_operations">
+	<h3>Aside: Linked List &amp; Pointers</h3>
+	<p>Say we had the following code in C++:</p>
+
+	<pre class="language-cpp"><code>
+			struct Node {
+				int data;
+				Node *next;
+			};
+			
+			int main() {
+				Node* q = NULL;
+				Node* p = 0;
+				Node* n = new Node();
+				      n->data = 1;
+				      n->next = 0;
+				      p       = n;
+				Node* m = new Node();
+				      m->data = 2;
+				      m->next = 0;
+				      n->next = m;
+			}
+		</code></pre>
+
+	<p>Next, suppose the following:</p>
+	<figure>
+		<div>
+			<ul>
+				<li>The address in <var>p</var> is <var>0x200</var>.</li>
+				<li>The address of <var>n</var> is <var>0x200</var>.</li>
+				<li>The address in <var>n->next</var> is <var>0x210</var>.</li>
+			</ul>
+		</div>
+	</figure>
+	<p>What happens if we write the statement below?</p>
+	<pre class="language-cpp"><code>
+			q = p;
+		</code></pre>
+	<p>
+		Well, <var>q</var> is just a pointer, so assigning it the value
+		<var>p</var> assigns it the address <var>0x200</var>. This means that
+		the linked list now has <i>two</i> heads, since <var>p</var> and
+		<var>q</var> both point to <var>n</var>, the first node.<sup></sup>
+	</p>
+	<div class="note">
+		<p>More explicitly:</p>
+		<pre class="language-pseudo"><code>
+				q = p = &n = 0x200
+			</code></pre>
+	</div>
+	<p>Next, what happens if we write:</p>
+	<pre class="language-cpp"><code>
+			q = p->next;
+		</code></pre>
+	<p>
+		Well, we know that <var>p</var> stores the address <var>0x200</var>.
+		That's the address of <var>n</var>. Thus, by writing the above,
+		<var>q</var> now stores the address in <var>n->next</var>, which is
+		<var>0x210</var>. This is the address of the node <var>m</var>.<sup
+		></sup>
+	</p>
+	<div class="note">
+		<p>Expanding:</p>
+		<pre class="language-pseudo"><code>
+				q = p->next = &n->next = &amp;m;
+			</code></pre>
+		<p>It can also be helpful to think in terms of dereferencing in C:</p>
+		<pre class="language-pseudo"><code>
+				q = (*p).next = &n.next = &amp;m;
+			</code></pre>
+	</div>
+	<p>How about this statement:</p>
+	<pre class="language-cpp"><code>
+			p = p->next;
+		</code></pre>
+	<p>
+		Writing the line above, we assign to <var>p</var> the address
+		<var>p->next</var>. This is the address of <var>m</var>. Thus, the
+		pointer <var>p</var> ceases pointing at <var>n</var>, and instead
+		points at <var>m</var>.<sup></sup> This statement is particularly
+		useful &mdash; it allows us to move from the current node to the next
+		node. And if we can move from the current node to the next node, we can
+		<i>iterate</i> through a list. Because of how useful it is, we state it
+		more explicitly:
+	</p>
+	<div class="note">
+		<p>Expanding:</p>
+		<pre class="language-pseudo"><code>
+				p = p->next = &amp;n->next = &amp;m
+			</code></pre>
+		<p>In C terms:</p>
+		<pre class="language-pseudo"><code>
+				p = (*p).next = n.next &amp;m;
+			</code></pre>
+	</div>
+	<figure>
+		<dfn>
+			<small>Statement.</small>
+			<p>
+				Given a head pointer ${H}$ pointing to the head ${n_0,}$ to move to
+				${n_1,}$ we write:
+			</p>
+			<figure>
+				<div>
+					<p><var>${\large H}$ = ${\large H}$->next</var>, or</p>
+					<p><var>${\large H}$ = (*${\large H}$).next</var></p>
+				</div>
+			</figure>
+			<p>
+				More generally, given a pointer ${P}$ pointing to some node
+				${n_i,}$ to move to ${n_{i+1},}$ we write:
+			</p>
+			<figure>
+				<div>
+					<p><var>${\large P}$ = ${\large P}$->next</var>, or</p>
+					<p><var>${\large P}$ = (*${\large P}$).next</var></p>
+				</div>
+			</figure>
+		</dfn>
+	</figure>
+
+	<section id="null_nonnull_check">
+		<h3>Null &amp; Nonnull Tests</h3>
+		<p>Compare the two examples below:</p>
+		<div class="split">
+			<figure>
+				<pre class="language-cpp"><code>
+						struct Node {
+							int data;
+							Node *next;
+						}
+						int main() {
+							*p = NULL;
+						}
+					</code></pre>
+				<figcaption>Program 1</figcaption>
+			</figure>
+			<figure>
+				<pre class="language-cpp"><code>
+						struct Node {
+							int data;
+							Node *next;
+						}
+						int main() {
+							Node* p       = 0;
+							Node* n       = new Node();
+							      n->data = 1;
+							      n->next = 0;
+							      p       = n;
+							Node* m       = new Node();
+							      m->data = 2;
+							      m->next = 0;
+							      n->next = m;
+						}
+					</code></pre>
+				<figcaption>Program 2</figcaption>
+			</figure>
+		</div>
+		<p>
+			In Program 1, the pointer <var>p</var> is the null pointer. In
+			Program 2, the pointer <var>p</var> points to the address of
+			<var>n</var> (suppose it's <var>0x200</var>).
+		</p>
+		<p>
+			Whether a pointer is the null address or otherwise corresponds to
+			Boolean values. In Program 1, the pointer <var>p</var> has the value
+			<var>0</var>. In Program 2, the pointer <var>p</var> has a non-zero
+			value. In C and its descendants &mdash; e.g., C++ &mdash; zero
+			corresponds to <var>false</var> and non-zero values correspond to
+			<var>true</var>. Thus, if some pointer ${p}$ is not pointing on any
+			node, then it is <i>false</i>. Otherwise, it is <i>true</i>. Because
+			of this fact, we have the following:
+		</p>
+		<dfn>
+			<small>Null Pointer Test</small>
+			<p>
+				A pointer ${p}$ is the <i>null pointer</i> &mdash; a pointer
+				pointing nowhere &mdash; if and only if the following expressions
+				are true:
+			</p>
+			<figure>
+				<div>
+					<p><var>${\large p}$ == NULL</var></p>
+					<p><var>${\large p}$ == 0</var> ${~~or}$</p>
+					<p><var>!${\large p}$</var></p>
+				</div>
+			</figure>
+		</dfn>
+		<p>For the nonnull pointer, we have the following:</p>
+		<dfn>
+			<small>Nonnull Pointer Test</small>
+			<p>
+				A pointer ${p}$ is the <i>nonnull pointer</i> &mdash; a pointer
+				pointing to a valid address &mdash; if and only if the following
+				expressions are true:
+			</p>
+			<figure>
+				<div>
+					<p><var>${\large p}$ !== NULL</var></p>
+					<p><var>${\large p}$ !== 0</var> ${~~or}$</p>
+					<p><var>${\large p}$</var></p>
+				</div>
+			</figure>
+		</dfn>
+	</section>
+
+	<section id="last_node_check">
+		<h3>Foot Test</h3>
+		<p>
+			Many operations involving linked lists require to test whether a
+			given node ${n}$ is the <b>tailend</b> &mdash; the last node in the
+			list. If a given node ${n}$ is the <b>tailend</b>, then there are no
+			other nodes after it. If a given node ${n}$ is <em>not</em> the
+			<b>tailend</b>, then there are nodes after the node ${n}$ &mdash;
+			node ${n}$ is a <b>parent node</b>. The test:
+		</p>
+		<dfn>
+			<small>Tailend Test</small>
+			<p>
+				The node ${n}$ is the
+				<i>tailend</i> &mdash; the last node in the linked list &mdash; if
+				and only if:
+			</p>
+			<figure>
+				<div>
+					<p><var>!(${n}$->next == NULL)</var></p>
+					<p><var>!(${n}$->next == 0)</var> ${~~or}$</p>
+					<p><var>!(${n}$->next)</var></p>
+				</div>
+			</figure>
+			<p>Otherwise, the node is a <i>parent node</i>.</p>
+		</dfn>
+	</section>
+
+	<section id="traversing_a_linked_list">
+		<h3>Iterative List Traversal</h3>
+		<p>Suppose we had the following linked list:</p>
+		<div id="ll_traverse"></div>
+		<p>
+			Now suppose we want to traverse the linked list &mdash; i.e.,
+			visiting all of the nodes one at a time. To do so, we employ the
+			facts: First, suppose the pointer <var>p</var> has the pointee
+			<var>0x200</var>. This is the address of the first node storing
+			<var>7</var>. Suppose the next node, storing <var>5</var>, has the
+			address <var>0x210</var>, which is the pointee of the first node's
+			<var>next</var> field. From the previous section, we know that the
+			first node's <var>next</var> field can be expressed as:
+		</p>
+
+		<pre class="language-pseudo"><code>
+				p->next
+			</code></pre>
+
+		<p>
+			Thus, to iterate through the linked list, all we must do is execute
+			<var>p = p->next</var>, so long as <var>next</var> is a nonnull
+			pointer. Accordingly, the general form for iteratively traversing the
+			linked list is as follows:
+		</p>
+
+		<pre class="language-pseudo"><code>
+				while(p != null) {
+					p = p->next;
+				}
+			</code></pre>
+
+		<section id="printing_linked_list">
+			<h4>Printing a Linked List</h4>
+			<p>
+				Now that we know how to iteratively traverse a linked list, we can
+				perform the simple operating of printing the linked list's data
+				fields.
+			</p>
+			<div class="tabs">
+				<ul>
+					<li>Pseudocode</li>
+					<li>C</li>
+				</ul>
+				<div class="pseudo">
+					<ol class="alg">
+						<li>print(List list) -> void:</li>
+						<ol>
+							<li>let p := list->head</li>
+							<li>if (p = null):</li>
+							<ol>
+								<li>print('empty list')</li>
+							</ol>
+							<li>else:</li>
+							<ol>
+								<li>while (p != null):</li>
+								<ol>
+									<li>print(p->data)</li>
+									<li>p = p -> next</li>
+								</ol>
+							</ol>
+						</ol>
+					</ol>
+				</div>
+				<div class="c">
+					<p>
+						Note how we use a variable <var>p</var> to iterate through the
+						linked list. We need the temporary pointer <var>p</var> because
+						using <var>root</var> directly would cause losing the address
+						to the head.
+					</p>
+					<pre class="language-cpp"><code>
+							while(p != 0) {
+								print("%d", p->data);
+								p = p->next;
+							}
+						</code></pre>
+					<p>Testing:</p>
+					<pre class="language-cpp"><code>
+							#include &lt;iostream&gt;
+							int main() {
+								Node* root = 0;
+			
+								// first node
+								Node* n1       = new Node();
+											n1->data = 1;
+											n1->next = 0;
+											root     = n1;
+			
+								// second node
+								Node* n2       = new Node();
+											n2->data = 2;
+											n2->next = 0;
+											n1->next = n2;
+			
+								// third node
+								Node* n3       = new Node();
+											n3->data = 3;
+											n3->next = 0;
+											n2->next = n3;
+			
+								// temporary pointer for traversal
+								Node* p = root;
+			
+								// print the node
+								while (p != 0) {
+									std:: cout &lt;&lt; temp->data &lt;&lt; std:: endl;
+									p = p->next;
+								}
+								return 0;
+							}
+						</code></pre>
+					<pre class="language-bash"><code>
+							1
+							2
+							3
+						</code></pre>
+					<p>
+						This is a pretty useful procedure. Let's encapsulate it in a
+						function:
+					</p>
+					<pre class="language-cpp"><code>
+							#include &lt;iostream&gt;
+			
+							void printList(Node* p)  {
+								while (p != 0) {
+									std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+									p = p->next;
+								}
+							}
+						</code></pre>
+				</div>
+			</div>
+		</section>
+	</section>
+
+	<section id="traversing_a_linked_list_recursively">
+		<h3>Traversing a Linked List Recursively</h3>
+		<p>
+			Because of the linked list's self-referential nature, we can also
+			traverse a linked list recursively. Suppose we had the following
+			linked list:
+		</p>
+		<div id="ll_traverse_recurse"></div>
+		<p>
+			Like the iterative approach, we need a traversal pointer. Call it
+			<var>p</var>. Our function's head:
+		</p>
+		<figure>
+			<div>
+				<pre class="language-pseudo"><code>
+						void printList(Node* p)
+					</code></pre>
+			</div>
+		</figure>
+		<p>
+			As we know, if <var>p</var> is not the tail, then there's data to
+			print. And after printing that data, we should move on to the next
+			node <i>recursively</i>. Thus, <var>printList()</var> will call
+			itself by passing the next node's pointer:
+		</p>
+		<figure>
+			<div>
+				<pre class="language-pseudo"><code>
+						void printList(Node* p) {
+							if (p != 0) {
+								printf("%d", p->data);
+								printList(p->next);
+							}
+						}
+					</code></pre>
+			</div>
+		</figure>
+		<p>That's it. Implementing this in C++:</p>
+		<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				void printList(Node* p)  {
+					if (p != 0) {
+						std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+						printList(p->next);
+					}
+				}
+				
+				int main() {
+					Node* root = 0;
+				
+					Node* n1       = new Node();
+					      n1->data = 1;
+					      n1->next = 0;
+					      root     = n1;
+				
+					Node* n2       = new Node();
+					      n2->data = 2;
+					      n2->next = 0;
+					      n1->next = n2;
+				
+					Node* n3       = new Node();
+					      n3->data = 3;
+					      n3->next = 0;
+					      n2->next = n3;
+				
+					Node* p = root;
+				
+					printList(p);
+					return 0;
+				}
+			</code></pre>
+		<pre class="language-bash"><code>
+				1
+				2
+				3
+			</code></pre>
+		<p>
+			Very cool. Comparing the iterative approach and the recursive
+			approach side by side:
+		</p>
+		<div class="compare">
+			<figure>
+				<pre class="language-cpp"><code>
+							void printList(Node* p)  {
+								while (p != 0) {
+									std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+									p = p->next;
+								}
+							}
+					</code></pre>
+				<figcaption>Iterative traversal.</figcaption>
+			</figure>
+			<figure>
+				<pre class="language-cpp"><code>
+							void printList(Node* p)  {
+								if (p != 0) {
+									std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+									printList(p->next);
+								}
+							}
+					</code></pre>
+				<figcaption>Recursive traveral.</figcaption>
+			</figure>
+		</div>
+		<p>
+			The time complexity for either of these approaches is linear &mdash;
+			${O(n).}$ This is because we're iterating through ${n}$ nodes, and
+			outputting to the console and the
+			<var>p != 0</var> comparison are basic steps.
+		</p>
+		<p>
+			The space complexity, however, is a different story. With the
+			iterative approach, we're only calling the function once. And because
+			each function call takes one stack frame, the iterative approach has
+			constant space complexity &mdash; ${O(1).}$ In contrast, the
+			recursive approach makes ${n+1}$ calls, given ${n}$ nodes. As such,
+			the recursive approach is of linear space complexity &mdash;
+			${O(n).}$
+		</p>
+		<p>
+			<span class="topic">Printing in Reverse.</span> With the recursive
+			approach, printing in reverse is just a matter of changing the order:
+		</p>
+		<pre class="language-cpp"><code>
+				void printList(Node* p)  {
+					if (p != 0) {
+						printList(p->next);
+						std::cout &lt;&lt; p->data &lt;&lt; std::endl;
+					}
+				}
+			</code></pre>
+	</section>
+</section>
+
+<section id="creating_node_function">
+	<h3>Node Constructor</h3>
+	<p>
+		In our previous code examples, we've had some fairly repetitive code.
+		The first of which is the way we've been creating new nodes:
+	</p>
+	<pre class="language-pseudo"><code>
+			n       = new Node();
+			n->data = 1
+			n->next = m;
+		</code></pre>
+	<p>
+		To make our lives easier, we should write a function for this
+		procedure:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>fn newNode(int dataVal) -> Node* :</li>
+			<ol>
+				<li>Node* node = new Node;</li>
+				<li>node.data = dataVal;</li>
+				<li>node.next = NULL;</li>
+				<li>return node;</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		This constructor takes an <var>int</var> value as a parameter, creates
+		a new <var>Node</var>, and returns a pointer to that node. Note that
+		all this constructor does is create a new node. Nothing more. We will
+		see later how to insert nodes into a linked list. For now, we'll use
+		the <var>newNode()</var> constructor to clean up our code a bit.
+	</p>
+	<div class="demo">
+		<button>C++</button>
+		<button>C</button>
+		<div class="implementation">
+			<p>Here's an implementation in C++:</p>
+			<pre class="language-cpp"><code>
+					struct Node {
+						int data;
+						Node* next;
+					}
+					Node* newNode(int data) {
+						Node* node       = new Node;
+									node->data = data;
+									node->next = 0;
+						return node;
+					}
+				</code></pre>
+		</div>
+		<div class="implementation">
+			<p>
+				The C implementation is similar to the C++ implementation. The only
+				difference is we must use the keyword <var>struct</var>:
+			</p>
+			<pre class="language-c"><code>
+					#include &lt;stdlib.h&gt;
+					#include &lt;stdio.h&gt;
+
+					struct Node {
+						int data;
+						struct Node* next;
+					};
+
+					struct Node* newNode(int data) {
+						struct Node* node = (struct Node*) malloc(sizeof(struct Node*));
+						(*node).data = data;
+						(*node).next = NULL;
+						return node;
+					};
+
+					int main() {
+						return 0;
+					}
+				</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="linked_list_creator_from_array">
+	<h3>Constructing a List from an Array</h3>
+	<p>
+		For efficiency's sake, we want to create linked lists quickly. One way
+		to do so is to construct a linked list from an array argument. Now that
+		we have a node constructor, our job is a little easier. First, suppose
+		we have the following array (in pseudocode):
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>int arr[] = {1, 2, 3};</li>
+		</ol>
+	</figure>
+	<p>We want to write:</p>
+	<figure>
+		<ol class="alg">
+			<li>arrayToList(arr, 3)</li>
+		</ol>
+	</figure>
+	<p>
+		to produce the linked list ${(1, 2, 3).}$ To do so, assume we have our
+		node constructor:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>fn newNode(int data) -> Node* :</li>
+			<ol>
+				<li>Node* node = new Node;</li>
+				<li>node.data = data;</li>
+				<li>node.next = 0;</li>
+				<li>return node;</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		With that, we can now write our list constructor. This function takes
+		as an argument an array of type ${t}$ (we'll stick with
+		<var>int</var> for now), and a size of type <var>int</var>. It will
+		then return a pointer to a node:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>fn arrayToList(int arr[], int size) -> Node* :</li>
+		</ol>
+	</figure>
+	<p>
+		Inside our function, we'll first create a new node storing the first
+		element in the array. This is our <i>head</i>:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>fn arrayToList(int arr[], int size) -> Node* :</li>
+			<ol>
+				<li>Node* head = newNode(A[0]);</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		Let's also create another node pointer for the list's tailend (the last
+		node in the list):
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>fn arrayToList(int arr[], int size) -> Node* :</li>
+			<ol>
+				<li>Node* head = newNode(A[0]);</li>
+				<li>Node* tailend;</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		Finally, we want to ensure the <var>tailend</var> is initially at the
+		<var>head</var>. The <var>tailend</var> will move as the list grows,
+		and we need it to start from somewhere:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>fn arrayToList(int arr[], int size) -> Node* :</li>
+			<ol>
+				<li>Node* head = newNode(A[0]);</li>
+				<li>Node* tailend = head;</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		After all of this, we can now iterate through the array, creating the
+		linked list:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>fn arrayToList(int arr[], int size) -> Node* :</li>
+			<ol>
+				<li>Node* head = newNode(A[0]);</li>
+				<li>Node* tailend = head;</li>
+				<li>for (int i = 1; i < size; i++):</li>
+				<ol>
+					<li>Node* freshNode = newNode(A[i]);</li>
+					<li>tailend.next = freshNode;</li>
+					<li>tailend = freshNode;</li>
+				</ol>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		Let's go over each of the lines in the for-loop carefully. First, we
+		wrote:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>Node* freshNode = newNode(A[i]);</li>
+		</ol>
+	</figure>
+	<p>
+		This creates a new node, <var>freshNode</var>, whose data field
+		contains <var>A[i]</var>. Next, we wrote:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>tailend.next = freshNode;</li>
+		</ol>
+	</figure>
+	<p>
+		Recall that the <var>tailend</var> was initially pointing to the
+		<var>head</var>. Writing the above, <var>tailend</var>'s next pointer
+		now points at <var>freshNode</var>. Then, we wrote:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>tailend = freshNode;</li>
+		</ol>
+	</figure>
+	<p>
+		This last line ensures <var>tailend</var> is now the recently added
+		<var>freshNode</var>. At the end of all this, we return the
+		<var>head</var>, to be stored by some pointer in the stack:
+	</p>
+	<figure>
+		<ol class="alg">
+			<li>fn arrayToList(int arr[], int size) -> Node* :</li>
+			<ol>
+				<li>Node* head = newNode(A[0]);</li>
+				<li>Node* tailend = head;</li>
+				<li>for (int i = 1; i < size; i++):</li>
+				<ol>
+					<li>Node* freshNode = newNode(A[i]);</li>
+					<li>tailend.next = freshNode;</li>
+					<li>tailend = freshNode;</li>
+				</ol>
+				<li>return head;</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>Putting it all together, we have:</p>
+	<figure>
+		<ol class="alg">
+			<li>fn newNode(int data) -> Node* :</li>
+			<ol>
+				<li>Node* node = new Node;</li>
+				<li>node.data = data;</li>
+				<li>node.next = 0;</li>
+				<li>return node;</li>
+			</ol>
+			<li>fn arrayToList(int arr[], int size) -> Node* :</li>
+			<ol>
+				<li>Node* head = newNode(A[0]);</li>
+				<li>Node* tailend = head;</li>
+				<li>for (int i = 1; i < size; i++):</li>
+				<ol>
+					<li>Node* freshNode = newNode(A[i]);</li>
+					<li>tailend.next = freshNode;</li>
+					<li>tailend = freshNode;</li>
+				</ol>
+				<li>return head;</li>
+			</ol>
+		</ol>
+	</figure>
+	<p>
+		Specific implementations are provided below. Going forward, we will use
+		the <var>arrayToList()</var> function to create linked lists. In terms
+		complexity, the <var>arrayToList()</var> function's time complexity
+		depends on the size of the array. Given an array of ${n}$ elements, the
+		function will take linear time to execute &mdash; ${O(n).}$
+	</p>
+	<div class="demo">
+		<button>C</button>
+		<div class="implementation">
+			<p>Here's an implementation in C:</p>
+			<pre class="language-c"><code>
+					#include &lt;stdio.h&gt;
+					#include &lt;stdlib.h&gt;
+					
+					struct Node {
+						int data;
+						struct Node* next;
+					};
+					
+					struct Node* newNode(int data) {
+						struct Node* n = (struct Node*) malloc(sizeof(struct Node));
+						(*n).data = data;
+						(*n).next = NULL;
+						return n;
+					} 
+					
+					struct Node* arrayToList(int A[], int n) {
+						struct Node* head    = newNode(A[0]);
+						struct Node* tailend = head;
+						for (int i = 1; i < n; i++) {
+							struct     Node* freshNode = newNode(A[i]);
+							(*tailend).next            = freshNode;
+							           tailend         = freshNode;
+						}
+						return head;
+					}
+					
+					void print(struct Node* p) {
+						printf("( ");
+						while (p != NULL) {
+							printf("%d ", (*p).data);
+							p = (*p).next;
+						}
+						printf(")\n");
+					}
+					
+					
+					int main() {
+						int    A[]        = {3, 5, 7, 10, 15};
+						struct Node* list = arrayToList(A, 5);
+						print(list);
+						return 0;
+					}
+				</code></pre>
+			<pre class="language-bash"><code>
+					(3 5 7 10 15)
+				</code></pre>
+		</div>
+	</div>
+</section>
+
+

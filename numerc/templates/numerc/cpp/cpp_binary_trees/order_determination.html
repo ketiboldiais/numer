@@ -1,0 +1,79 @@
+{% load static %}
+<p>
+	Suppose we want to determine a binary tree's order (the number of nodes
+	in the binary tree). Given what we know about traversals, one way to do
+	so is to traverse the entire tree, counting each time we visit a node:
+</p>
+<div class="tabs">
+	<ul>
+		<li>Pseudo</li>
+	</ul>
+	<div class="p">
+		<p>
+			Below, we have a function called <var>TreeOrder()</var>. This
+			function takes a <var>Node</var> pointer as an argument, and returns
+			an <var>int</var>. Inside <var>TreeOrder()</var>, we have two local
+			variables, <var>x</var> and <var>y</var>. These variables will keep
+			track of the count for the left-subtrees and right-subtrees
+			respectively. As long as <var>root</var> is not <var>NULL</var>, we
+			will traverse the subtrees. At some point, we reachl a leaf, in which
+			case we go to line <var>6</var>: <var>return 0</var>. This ultimately
+			leads to the final line in the if-block: <var>return x + y + 1</var>.
+		</p>
+		<div class="pseudosource">
+			<ol class="alg">
+				<li>TreeOrder(Node* root) -> int :</li>
+				<ol>
+					<li>int x, y;</li>
+					<li>if (root != NULL):</li>
+					<ol>
+						<li>x = TreeOrder((*root).left_child);</li>
+						<li>y = TreeOrder((*root).right_child);</li>
+						<li>return x + y + 1;</li>
+					</ol>
+					<li>return 0;</li>
+				</ol>
+			</ol>
+			<ol class="algc">
+				<li>${O(1)}$</li>
+				<li>${O(1)}$</li>
+				<li>${O(1)}$</li>
+				<li>${O(\lg n) \cup O(n)}$</li>
+				<li>${O(\lg n) \cup O(n)}$</li>
+				<li>${O(1)}$</li>
+				<li>${O(1)}$</li>
+			</ol>
+		</div>
+		<p>
+			Notice that this algorithm uses postorder traversal. This isn't
+			necessarily some arbitrary decision. For post applications, binary
+			tree processing is done with post-order traversal.
+		</p>
+		<div class="c"></div>
+		<div class="cpp"></div>
+	</div>
+</div>
+<p>
+	What if instead we wanted to only count the nodes with a degree of two?
+	To do so, we use the following:
+</p>
+<ol class="alg">
+	<li>TreeOrder2(Node* root) -> int :</li>
+	<ol>
+		<li>int x, y;</li>
+		<li>if (root != NULL):</li>
+		<ol>
+			<li>x = TreeOrder2((*root).left_child);</li>
+			<li>y = TreeOrder2((*root).right_child);</li>
+			<li>if ((*root).left_child && (*root).right_child):</li>
+			<ol>
+				<li>return x + y + 1;</li>
+			</ol>
+			<li>else</li>
+			<ol>
+				<li>return x + y;</li>
+			</ol>
+		</ol>
+		<li>return 0;</li>
+	</ol>
+</ol>

@@ -1,0 +1,94 @@
+{% load static %}
+<p>
+	In this section, we examine different ways of generating trees. Since
+	we've just gone over traversals, we begin by considering how we might
+	generate a tree using the traversal methods.
+</p>
+<p>
+	The idea behind traversal generation can be thought of as
+	<q>working backwards:</q> If we're given traversal sequences, we can
+	generate the tree that results in those sequences. Note the plural
+	&mdash; traversal <i>sequences</i>. This is a key point, because with
+	just a single traversal sequence, we do not have enough data to generate
+	a tree. For example, suppose we're told that the following is a preorder
+	traversal sequence of the tree's node values:
+</p>
+<div id="sample_data_traversal_generation"></div>
+<p>
+	Without further information, we cannot construct a tree because the
+	traversal sequence above could have come from five possible trees:
+</p>
+<div>
+	<div id="tg1"></div>
+	<div id="tg2"></div>
+	<div id="tg3"></div>
+</div>
+<div>
+	<div id="tg4"></div>
+	<div id="tg5"></div>
+</div>
+<p>
+	Accordingly, preorder, inorder, and postorder sequences alone are
+	insufficient. We need additional sequences. Specifically, we need one of
+	the following combinations of data:
+</p>
+<ol>
+	<li>The preorder sequence and inorder sequence, or</li>
+	<li>the postorder sequence and inorder sequence.</li>
+</ol>
+<p>
+	Notice that in both cases, we need the inorder sequence. To see why we
+	need the inorder sequence, let's just go straight to the algorithm with
+	an example.
+</p>
+<p>First, we're given the sequences:</p>
+<figure class="block">
+	<div id="tg_pre_array"></div>
+	<figcaption>Preorder</figcaption>
+</figure>
+<figure class="block">
+	<div id="tg_in_array"></div>
+	<figcaption>Inorder</figcaption>
+</figure>
+<p>
+	From the preorder sequence, we know that the node containing
+	<var>4</var> is the root. Thus, the tree's root is a node containing
+	<var>4</var>. Then, from the inorder sequence of the tree, we know that
+	all the values to the left of <var>4</var> form the left-subtree, and all
+	the values to the right of <var>4</var> form the right-subtree. Thus, we
+	have:
+</p>
+<div id="tg_true_tree"></div>
+<p>
+	The rest of the algorithm follows this basic step. We continue splitting
+	until there's nothing left to split. So, we look at the next element in
+	the preorder sequence and see that it's <var>7</var>. This tells us that
+	the node containing <var>7</var> is the root of the left-subtree.
+</p>
+<p>
+	We go to the inorder sequence and look for <var>7</var>, and find that
+	it's the first element. Inorder sequence then tells us that everything to
+	the left of <var>7</var> forms its left-subtree, and everything to the
+	right forms the right-subtree. Thus, we have:
+</p>
+<div id="tg_true_tree2"></div>
+<p>
+	The algorithm continues. We go to the next element, and see that it's
+	<var>9</var>. We go to the inorder sequence, look for <var>9</var>, and
+	divide accordingly:
+</p>
+<div id="tg_true_tree3"></div>
+<p>
+	We then move to the next element in the preorder sequence,
+	<var>6</var>. Here, we see that it's a single element &mdash; there's
+	nothing to its left or right. The same goes for <var>3</var>. So we go
+	the next element, <var>2</var>. Again we search for <var>2</var> in the
+	inorder sequence, and find that it has <var>5</var> and <var>8</var> to
+	its left, and <var>1</var> to its right:
+</p>
+<div id="tg_true_tree4"></div>
+<p>
+	At this point, the algorithm should be clear. Executing the rest of the
+	algorithm, we get:
+</p>
+<div id="tg_true_tree5"></div>

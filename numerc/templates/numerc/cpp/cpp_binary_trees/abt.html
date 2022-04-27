@@ -1,0 +1,170 @@
+{% load static %}
+<p>
+	As its name implies, an <b>array-implemented binary tree (ABT)</b> is a
+	binary tree implemented, and represented, with an array. First, we have
+	the following binary tree, with an accompanying array:
+</p>
+<div id="abt1"></div>
+<div id="abt1_array"></div>
+<p>
+	The challenge: How do we store each node in this binary tree in the array
+	such that the relationships between the nodes are preserved? For example,
+	<var>B</var> is the left child of <var>A</var>, and <var>C</var> is the
+	right child of <var>A</var>. How is that information preserved in an
+	array implementation?
+</p>
+<p>
+	Here's an idea: Use the array's indices. Let's start by storing the
+	elements from the top generation to the bottom generation, left to right.
+	At ${L = 1,}$ we have a single node, <var>A</var>. So we store in the
+	array:
+</p>
+<div id="abt1_array_level1"></div>
+<p>
+	At ${L = 2,}$ we have two nodes, <var>B</var> and <var>C</var>, so we
+	store, from left to right, <var>B</var> then <var>C</var>:
+</p>
+<div id="abt1_array_level2"></div>
+<p>
+	Then, we go on to ${L = 3,}$ and see that there are ${4}$ nodes &mdash;
+	<var>D</var>, <var>E</var>, <var>F</var>, and <var>G</var>. Again we
+	store the nodes from left to right:
+</p>
+<div id="abt1_array_level3"></div>
+<p>
+	Let's construct a table to see if we can find a pattern. Suppose ${i}$ is
+	an index in the array, ${i_L}$ is the index of the left child, and
+	${i_R}$ is the index of the right child.
+</p>
+<table class="alg">
+	<thead>
+		<th>Element</th>
+		<th>${i}$</th>
+		<th>${i_L}$</th>
+		<th>${i_R}$</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td><var>A</var></td>
+			<td>${0}$</td>
+			<td>${1}$</td>
+			<td>${2}$</td>
+		</tr>
+		<tr>
+			<td><var>B</var></td>
+			<td>${1}$</td>
+			<td>${3}$</td>
+			<td>${4}$</td>
+		</tr>
+		<tr>
+			<td><var>C</var></td>
+			<td>${2}$</td>
+			<td>${5}$</td>
+			<td>${6}$</td>
+		</tr>
+		<tr>
+			<td><var>D</var></td>
+			<td>${3}$</td>
+			<td>${\varnothing}$</td>
+			<td>${\varnothing}$</td>
+		</tr>
+		<tr>
+			<td><var>E</var></td>
+			<td>${4}$</td>
+			<td>${\varnothing}$</td>
+			<td>${\varnothing}$</td>
+		</tr>
+		<tr>
+			<td><var>F</var></td>
+			<td>${5}$</td>
+			<td>${\varnothing}$</td>
+			<td>${\varnothing}$</td>
+		</tr>
+		<tr>
+			<td><var>G</var></td>
+			<td>${6}$</td>
+			<td>${\varnothing}$</td>
+			<td>${\varnothing}$</td>
+		</tr>
+	</tbody>
+</table>
+<p>
+	Examining the table, we see that at the first generation, the element's
+	left child is offset by ${1,}$ and its right child is offset by ${2.}$
+	For the left node on the second generation, the element's left child is
+	offset by ${2}$ and its right child is offset by ${3.}$ For the right
+	node on the second generation, the element's left child is offset by
+	${3}$ and its right child is offset by ${4.}$ Examining these mappings we
+	that, to get the left child, we use:
+</p>
+<figure>$$ i_L = 2i + 1 $$</figure>
+<p>and to get the right child, we use:</p>
+<figure>$$ i_R = 2i + 2 $$</figure>
+<p>
+	These two formulas allow us to access the left and right children. But
+	what about the parents? Well, let's construct another table, where
+	${i_P}$ is the index of the given element's parent.
+</p>
+<table class="alg">
+	<thead>
+		<th>Element</th>
+		<th>${i}$</th>
+		<th>${i_P}$</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td><var>A</var></td>
+			<td>${0}$</td>
+			<td>${\varnothing}$</td>
+		</tr>
+		<tr>
+			<td><var>B</var></td>
+			<td>${1}$</td>
+			<td>${0}$</td>
+		</tr>
+		<tr>
+			<td><var>C</var></td>
+			<td>${2}$</td>
+			<td>${0}$</td>
+		</tr>
+		<tr>
+			<td><var>D</var></td>
+			<td>${3}$</td>
+			<td>${1}$</td>
+		</tr>
+		<tr>
+			<td><var>E</var></td>
+			<td>${4}$</td>
+			<td>${1}$</td>
+		</tr>
+		<tr>
+			<td><var>F</var></td>
+			<td>${5}$</td>
+			<td>${2}$</td>
+		</tr>
+		<tr>
+			<td><var>G</var></td>
+			<td>${6}$</td>
+			<td>${2}$</td>
+		</tr>
+	</tbody>
+</table>
+<p>
+	Examining this table, we see that given an element with the index ${i,}$
+	the index of its parent is:
+</p>
+<figure>$$ i_P = \left\lfloor \dfrac{i}{2} \right\rfloor $$</figure>
+<p>
+	This is a fairly useful piece of information, so we state it as a lemma:
+</p>
+<dfn>
+	<small>Lemma</small>
+	<p>
+		Let ${A}$ be an array representing an array-implemented binary tree,
+		and ${i}$ an index in the array. Given a branch node ${A[i],}$ the left
+		child of ${A[i]}$ has the index ${i_L,}$ where
+	</p>
+	<figure>$$ i_L = 2i + 1 $$</figure>
+	<p>and the right child of ${A[i]}$ has the index ${i_R,}$ where</p>
+	<figure>$$ i_R = 2i + 2 $$</figure>
+</dfn>

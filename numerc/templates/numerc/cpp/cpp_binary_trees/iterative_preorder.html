@@ -1,0 +1,358 @@
+{% load static %}
+<p>
+	Although recursion is the preferred and more common approach for
+	implementing tree traversals, we can also traverse through iterative
+	means. With an iterative approach, we may have to implement our own
+	stack. To see why, let's reuse our
+	<var>oak</var> tree to illustrate. We'll use a function that (for now)
+	looks like the recursive implementation:
+</p>
+<div>
+	<ol class="alg">
+		<li>fn preorderLoop(Node* root) -> void:</li>
+		<li>while (root != NULL):</li>
+		<ol>
+			<li>if ((*root).left_child != NULL):</li>
+			<ol>
+				<li>print((*root).data);</li>
+				<li>root = (*root).left_child;</li>
+			</ol>
+			<li>else if ((*root).right_child != NULL):</li>
+			<ol>
+				<li>print((*root).data);</li>
+				<li>root = (*root).right_child;</li>
+			</ol>
+			<li>else:</li>
+			<ol>
+				<li>print("Finished")</li>
+			</ol>
+		</ol>
+	</ol>
+	<div id="preorder_loop"></div>
+</div>
+<p>
+	Suppose <var>(*oak).root</var> has the address <var>F0</var>. First we
+	make the call <var>preorderLoop((*oak).root)</var>, which evaluates to
+	<var>preorderLoop(F0)</var>. The first instruction in this call is
+	<var>print((*root).data)</var>, which evaluates to
+	<var>print(F0.data)</var>. The value <var>8</var> is thus printed to the
+	console.
+</p>
+<p>
+	Next, we make a call to <var>preorderLoop(F0.left_child)</var>. This
+	evaluates to <var>preorderLoop(F1)</var>. The first instruction for this
+	call is <var>print(F1.data)</var>, so the value <var>3</var> is logged to
+	the console. Following this call, we have
+	<var>preorderLoop(F1.left_child)</var>. This evaluates to
+	<var>preorderLoop(F3)</var>. Again the first instruction is
+	<var>print(F3.data)</var>, so we output <var>4</var> to the console.
+</p>
+<p>
+	Then we have <var>preorderLoop(F3.left_child)</var>. There is no
+	left-child, so we call <var>preorderLoop(F3.right_child)</var>. Now we've
+	got a problem. There is no right-child of <var>F3</var> &mdash; it's a
+	null pointer. Given the program as is, we have no way of
+	<q>going back</q> to the previous node, <var>F1</var>. Accordingly, what
+	we need is an auxiliar data structure to keep track of the nodes we've
+	previously visited &mdash; a <i>stack</i>.
+</p>
+<p>
+	Suppose we've implemented a <var>Stack</var> data structure, with the
+	functions <var>push()</var> and <var>pop()</var>. The function
+	<var>push()</var> inserts a new node address onto the stack, and the
+	function <var>pop()</var> removes the topmost address from the stack,
+	returning that address as an output value. We also have a function
+	<var>isEmpty()</var> which returns <var>true</var> if the stack is empty,
+	and <var>false</var> otherwise. With this auxiliary data structure, we'll
+	write the rewrite our <var>preorderLoop()</var> function as follows:
+</p>
+<ol class="alg">
+	<li>fn preorderLoop(Node* root) -> void:</li>
+	<ol>
+		<li>struct Stack nodeStack;</li>
+		<li>while (root != NULL || !isEmpty()):</li>
+		<ol>
+			<li>if (root != NULL):</li>
+			<ol>
+				<li>print((*root).data);</li>
+				<li>push(nodeStack, root);</li>
+				<li>root = (*root).left_child;</li>
+			</ol>
+			<li>else:</li>
+			<ol>
+				<li>root = pop(nodeStack);</li>
+				<li>root = (*root).right_child;</li>
+			</ol>
+		</ol>
+	</ol>
+</ol>
+<p>
+	Let's trace the call. We bgin by calling
+	<var>preorder((*oak).root)</var>. The variable <var>root</var> is not
+	<var>NULL</var>, so we enter the while-loop.
+</p>
+<figure>
+	<table class="alg">
+		<thead>
+			<th>Iteration Count</th>
+			<th>Evaluation</th>
+			<th>Stack</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${1}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop((*oak).root)
+								└── preorderLoop(F0)
+										├── print(F0.data)
+										├── push(nodeStack, root);
+										└── root = (F0).left_child = F1;
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+<p>
+	The variable <var>root</var> now points to the address <var>F1</var>.
+	This is not a <var>NULL</var> value, so we again enter the loop and
+	evaluate:
+</p>
+<figure>
+	<table class="alg">
+		<thead>
+			<th>Iteration Count</th>
+			<th>Evaluation</th>
+			<th>Stack</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${1}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop(root)
+								└── preorderLoop(F0)
+										├── print(F0.data) >> "8"
+										├── push(nodeStack, root);
+										└── root = (F0).left_child = F1;
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>${2}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop(root)
+								└── preorderLoop(F1)
+										├── print(F1.data) >> "3"
+										├── push(nodeStack, root);
+										└── root = (F1).left_child = F3;
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+							<li>F1</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+<p>
+	The variable <var>root</var> is now <var>F3</var>. This is not
+	<var>NULL</var>, so we again enter the loop and evaluate:
+</p>
+<figure>
+	<table class="alg">
+		<thead>
+			<th>Iteration Count</th>
+			<th>Evaluation</th>
+			<th>Stack</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${1}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop(root)
+								└── preorderLoop(F0)
+										├── print(F0.data) >> "8"
+										├── push(nodeStack, root);
+										└── root = (F0).left_child = F1;
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>${2}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop(root)
+								└── preorderLoop(F1)
+										├── print(F1.data) >> "3"
+										├── push(nodeStack, F3);
+										└── root = (F1).left_child = F3;
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+							<li>F1</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>${2}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop(root)
+								└── preorderLoop(F3)
+										├── print(F3.data) >> "4"
+										├── push(nodeStack, F3);
+										└── root = (F1).left_child = NULL;
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+							<li>F1</li>
+							<li>F3</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+<p>
+	Now <var>root == NULL</var>. Accordingly, we check the second prong of
+	the while-loop's guard clause, <var>!isEmpty()</var>. This returns
+	<var>true</var>, so we again enter the loop. However, because
+	<var>root == NULL</var>, we enter the second prong:
+</p>
+<figure>
+	<table class="alg">
+		<thead>
+			<th>Iteration Count</th>
+			<th>Evaluation</th>
+			<th>Stack</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${1}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop(root)
+								└── preorderLoop(F0)
+										├── print(F0.data) >> "8"
+										├── push(nodeStack, root);
+										└── root = (F0).left_child = F1;
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>${2}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop(root)
+								└── preorderLoop(F1)
+										├── print(F1.data) >> "3"
+										├── push(nodeStack, F3);
+										└── root = (F1).left_child = F3;
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+							<li>F1</li>
+							<li>F3</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>${3}$</td>
+				<td>
+					<pre class="language-pseudo"><code>
+						.
+						└── preorderLoop(root)
+								├── root = pop(nodeStack) = F3
+								└── root = (*root).right_child = (F3).right_child = F4
+					</code></pre>
+				</td>
+				<td>
+					<div class="ds-stack">
+						<ol>
+							<li>F0</li>
+							<li>F1</li>
+						</ol>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+<p>
+	At this point, it should be apparent how the auxiliary
+	<var>nodeStack</var> is helping us <q>go back</q> to our previously
+	visited nodes. Eventually, the stack is emptied, and the while-loop
+	terminates. Comparing the stack's growth over time:
+</p>
+<div id="preorder_stack_growth"></div>
+<p>
+	Examining this chart, we see that a total of ${15}$ iterations are done
+	to traverse the entire tree. Indeed, there is no difference in terms of
+	time complexity between recursive and iterative preorder traversals
+	&mdash; it's still ${O(n),}$ where ${n}$ is the number of nodes in the
+	tree.
+</p>
+<div class="demo">
+	<button>C</button>
+	<div class="implementation">
+		<h3>C Implementation</h3>
+		<p>Below is an implementation in C.</p>
+	</div>
+</div>

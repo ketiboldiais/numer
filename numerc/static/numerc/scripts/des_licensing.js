@@ -34,6 +34,372 @@ const license_trends = new csmd.LinePlot({
 	],
 }).render();
 
+const licenseCompare = new csmd.HeatMap({
+	id: "licenseCompare",
+	width: 100,
+	height: 85,
+	margin: [0, 70, 200, 140],
+	svg_width: 470,
+	svg_height: 390,
+	data: [
+		{ v: "MIT", g: "commercial use allowed", l: 0 },
+		{ v: "MIT", g: "modification allowed", l: 0 },
+		{ v: "MIT", g: "distribution allowed", l: 0 },
+		{ v: "MIT", g: "liability provided", l: 7 },
+		{ v: "MIT", g: "warranty provided", l: 7 },
+		{ v: "MIT", g: "must include original license", l: 0 },
+		{ v: "MIT", g: "must include original copyright notice", l: 0 },
+		{ v: "MIT", g: "must use same license", l: 7 },
+		{ v: "MIT", g: "must state changes", l: 7 },
+		{ v: "MIT", g: "must disclose source", l: 7 },
+		{ v: "MIT", g: "patent use allowed", l: -1 },
+		{ v: "MIT", g: "private use allowed", l: 0 },
+		{ v: "MIT", g: "trademark use allowed", l: -1 },
+
+		{ v: "Universal Permissive", g: "commercial use allowed", l: 0 },
+		{ v: "Universal Permissive", g: "modification allowed", l: 0 },
+		{ v: "Universal Permissive", g: "distribution allowed", l: 0 },
+		{ v: "Universal Permissive", g: "liability provided", l: 7 },
+		{ v: "Universal Permissive", g: "warranty provided", l: 7 },
+		{
+			v: "Universal Permissive",
+			g: "must include original license",
+			l: 0,
+		},
+		{
+			v: "Universal Permissive",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "Universal Permissive", g: "must use same license", l: 7 },
+		{ v: "Universal Permissive", g: "must state changes", l: 7 },
+		{ v: "Universal Permissive", g: "must disclose source", l: 7 },
+		{ v: "Universal Permissive", g: "patent use allowed", l: 0 },
+		{ v: "Universal Permissive", g: "private use allowed", l: 0 },
+		{ v: "Universal Permissive", g: "trademark use allowed", l: -1 },
+
+		{ v: "Academic Free", g: "commercial use allowed", l: 0 },
+		{ v: "Academic Free", g: "modification allowed", l: 0 },
+		{ v: "Academic Free", g: "distribution allowed", l: 0 },
+		{ v: "Academic Free", g: "liability provided", l: 7 },
+		{ v: "Academic Free", g: "warranty provided", l: 7 },
+		{ v: "Academic Free", g: "must include original license", l: 0 },
+		{
+			v: "Academic Free",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "Academic Free", g: "must use same license", l: 7 },
+		{ v: "Academic Free", g: "must state changes", l: 0 },
+		{ v: "Academic Free", g: "must disclose source", l: 7 },
+		{ v: "Academic Free", g: "patent use allowed", l: 0 },
+		{ v: "Academic Free", g: "private use allowed", l: 0 },
+		{ v: "Academic Free", g: "trademark use allowed", l: -1 },
+
+		{ v: "Unlicense", g: "commercial use allowed", l: 0 },
+		{ v: "Unlicense", g: "modification allowed", l: 0 },
+		{ v: "Unlicense", g: "distribution allowed", l: 0 },
+		{ v: "Unlicense", g: "liability provided", l: 7 },
+		{ v: "Unlicense", g: "warranty provided", l: 7 },
+		{ v: "Unlicense", g: "must include original license", l: 7 },
+		{ v: "Unlicense", g: "must include original copyright notice", l: 7 },
+		{ v: "Unlicense", g: "must use same license", l: 7 },
+		{ v: "Unlicense", g: "must state changes", l: 7 },
+		{ v: "Unlicense", g: "must disclose source", l: 7 },
+		{ v: "Unlicense", g: "patent use allowed", l: -1 },
+		{ v: "Unlicense", g: "private use allowed", l: 0 },
+		{ v: "Unlicense", g: "trademark use allowed", l: -1 },
+
+		{ v: "Artistic Free", g: "commercial use allowed", l: 0 },
+		{ v: "Artistic Free", g: "modification allowed", l: 0 },
+		{ v: "Artistic Free", g: "distribution allowed", l: 0 },
+		{ v: "Artistic Free", g: "liability provided", l: 7 },
+		{ v: "Artistic Free", g: "warranty provided", l: 7 },
+		{ v: "Artistic Free", g: "must include original license", l: 0 },
+		{
+			v: "Artistic Free",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "Artistic Free", g: "must use same license", l: 7 },
+		{ v: "Artistic Free", g: "must state changes", l: 0 },
+		{ v: "Artistic Free", g: "must disclose source", l: 7 },
+		{ v: "Artistic Free", g: "patent use allowed", l: 0 },
+		{ v: "Artistic Free", g: "private use allowed", l: 0 },
+		{ v: "Artistic Free", g: "trademark use allowed", l: -1 },
+
+		{ v: "ODbL", g: "commercial use allowed", l: 0 },
+		{ v: "ODbL", g: "modification allowed", l: 0 },
+		{ v: "ODbL", g: "distribution allowed", l: 0 },
+		{ v: "ODbL", g: "liability provided", l: 7 },
+		{ v: "ODbL", g: "warranty provided", l: 7 },
+		{ v: "ODbL", g: "must include original license", l: 0 },
+		{ v: "ODbL", g: "must include original copyright notice", l: 0 },
+		{ v: "ODbL", g: "must use same license", l: 0 },
+		{ v: "ODbL", g: "must state changes", l: 7 },
+		{ v: "ODbL", g: "must disclose source", l: 0 },
+		{ v: "ODbL", g: "patent use allowed", l: 7 },
+		{ v: "ODbL", g: "private use allowed", l: 0 },
+		{ v: "ODbL", g: "trademark use allowed", l: 7 },
+
+		{ v: "EUPL", g: "commercial use allowed", l: 0 },
+		{ v: "EUPL", g: "modification allowed", l: 0 },
+		{ v: "EUPL", g: "distribution allowed", l: 0 },
+		{ v: "EUPL", g: "liability provided", l: 7 },
+		{ v: "EUPL", g: "warranty provided", l: 7 },
+		{ v: "EUPL", g: "must include original license", l: 0 },
+		{ v: "EUPL", g: "must include original copyright notice", l: 0 },
+		{ v: "EUPL", g: "must use same license", l: 0 },
+		{ v: "EUPL", g: "must state changes", l: 0 },
+		{ v: "EUPL", g: "must disclose source", l: 0 },
+		{ v: "EUPL", g: "patent use allowed", l: 0 },
+		{ v: "EUPL", g: "private use allowed", l: 0 },
+		{ v: "EUPL", g: "trademark use allowed", l: 7 },
+
+		{ v: "Boost", g: "commercial use allowed", l: 0 },
+		{ v: "Boost", g: "modification allowed", l: 0 },
+		{ v: "Boost", g: "distribution allowed", l: 0 },
+		{ v: "Boost", g: "liability provided", l: 7 },
+		{ v: "Boost", g: "warranty provided", l: 7 },
+		{ v: "Boost", g: "must include original license", l: 4 }, // only for source
+		{ v: "Boost", g: "must include original copyright notice", l: 4 }, // only for source
+		{ v: "Boost", g: "must use same license", l: 7 },
+		{ v: "Boost", g: "must state changes", l: 7 },
+		{ v: "Boost", g: "must disclose source", l: 7 },
+		{ v: "Boost", g: "patent use allowed", l: -1 },
+		{ v: "Boost", g: "private use allowed", l: 0 },
+		{ v: "Boost", g: "trademark use allowed", l: -1 },
+
+		{ v: "CC Share Alike", g: "commercial use allowed", l: 0 },
+		{ v: "CC Share Alike", g: "modification allowed", l: 0 },
+		{ v: "CC Share Alike", g: "distribution allowed", l: 0 },
+		{ v: "CC Share Alike", g: "liability provided", l: 7 },
+		{ v: "CC Share Alike", g: "warranty provided", l: 7 },
+		{ v: "CC Share Alike", g: "must include original license", l: 0 },
+		{
+			v: "CC Share Alike",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "CC Share Alike", g: "must use same license", l: 0 },
+		{ v: "CC Share Alike", g: "must state changes", l: 0 },
+		{ v: "CC Share Alike", g: "must disclose source", l: 7 },
+		{ v: "CC Share Alike", g: "patent use allowed", l: 7 },
+		{ v: "CC Share Alike", g: "private use allowed", l: 0 },
+		{ v: "CC Share Alike", g: "trademark use allowed", l: 7 },
+
+		{ v: "Mozilla Public", g: "commercial use allowed", l: 0 },
+		{ v: "Mozilla Public", g: "modification allowed", l: 0 },
+		{ v: "Mozilla Public", g: "distribution allowed", l: 0 },
+		{ v: "Mozilla Public", g: "liability provided", l: 7 },
+		{ v: "Mozilla Public", g: "warranty provided", l: 7 },
+		{ v: "Mozilla Public", g: "must include original license", l: 0 },
+		{
+			v: "Mozilla Public",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "Mozilla Public", g: "must use same license", l: 3 }, // only the file needs to be the same
+		{ v: "Mozilla Public", g: "must state changes", l: 7 },
+		{ v: "Mozilla Public", g: "must disclose source", l: 0 },
+		{ v: "Mozilla Public", g: "patent use allowed", l: 0 },
+		{ v: "Mozilla Public", g: "private use allowed", l: 0 },
+		{ v: "Mozilla Public", g: "trademark use allowed", l: 7 },
+
+		{ v: "Open Software", g: "commercial use allowed", l: 0 },
+		{ v: "Open Software", g: "modification allowed", l: 0 },
+		{ v: "Open Software", g: "distribution allowed", l: 0 },
+		{ v: "Open Software", g: "liability provided", l: 7 },
+		{ v: "Open Software", g: "warranty provided", l: 7 },
+		{ v: "Open Software", g: "must include original license", l: 0 },
+		{
+			v: "Open Software",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "Open Software", g: "must use same license", l: 0 },
+		{ v: "Open Software", g: "must state changes", l: 0 },
+		{ v: "Open Software", g: "must disclose source", l: 0 },
+		{ v: "Open Software", g: "patent use allowed", l: 0 },
+		{ v: "Open Software", g: "private use allowed", l: 0 },
+		{ v: "Open Software", g: "trademark use allowed", l: 0 },
+
+		{ v: "BSD-3 Clause New", g: "commercial use allowed", l: 0 },
+		{ v: "BSD-3 Clause New", g: "modification allowed", l: 0 },
+		{ v: "BSD-3 Clause New", g: "distribution allowed", l: 0 },
+		{ v: "BSD-3 Clause New", g: "liability provided", l: 7 },
+		{ v: "BSD-3 Clause New", g: "warranty provided", l: 7 },
+		{ v: "BSD-3 Clause New", g: "must include original license", l: 0 },
+		{
+			v: "BSD-3 Clause New",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "BSD-3 Clause New", g: "must use same license", l: 7 },
+		{ v: "BSD-3 Clause New", g: "must state changes", l: 7 },
+		{ v: "BSD-3 Clause New", g: "must disclose source", l: 7 },
+		{ v: "BSD-3 Clause New", g: "patent use allowed", l: -1 },
+		{ v: "BSD-3 Clause New", g: "private use allowed", l: 0 },
+		{ v: "BSD-3 Clause New", g: "trademark use allowed", l: -1 },
+
+		{ v: "CDDL", g: "commercial use allowed", l: 0 },
+		{ v: "CDDL", g: "modification allowed", l: 0 },
+		{ v: "CDDL", g: "distribution allowed", l: 0 },
+		{ v: "CDDL", g: "liability provided", l: 7 },
+		{ v: "CDDL", g: "warranty provided", l: 7 },
+		{ v: "CDDL", g: "must include original license", l: 0 },
+		{ v: "CDDL", g: "must include original copyright notice", l: 0 },
+		{ v: "CDDL", g: "must use same license", l: 2 }, // only source code of software
+		{ v: "CDDL", g: "must state changes", l: 7 },
+		{ v: "CDDL", g: "must disclose source", l: 7 },
+		{ v: "CDDL", g: "patent use allowed", l: 0 },
+		{ v: "CDDL", g: "private use allowed", l: 0 },
+		{ v: "CDDL", g: "trademark use allowed", l: -1 },
+
+		{ v: "FreeBSD", g: "commercial use allowed", l: 0 },
+		{ v: "FreeBSD", g: "modification allowed", l: 0 },
+		{ v: "FreeBSD", g: "distribution allowed", l: 0 },
+		{ v: "FreeBSD", g: "liability provided", l: 7 },
+		{ v: "FreeBSD", g: "warranty provided", l: 7 },
+		{ v: "FreeBSD", g: "must include original license", l: 0 },
+		{ v: "FreeBSD", g: "must include original copyright notice", l: 0 },
+		{ v: "FreeBSD", g: "must use same license", l: 7 },
+		{ v: "FreeBSD", g: "must state changes", l: 7 },
+		{ v: "FreeBSD", g: "must disclose source", l: 7 },
+		{ v: "FreeBSD", g: "patent use allowed", l: -1 },
+		{ v: "FreeBSD", g: "private use allowed", l: 0 },
+		{ v: "FreeBSD", g: "trademark use allowed", l: -1 },
+
+		{ v: "ISC", g: "commercial use allowed", l: 0 },
+		{ v: "ISC", g: "modification allowed", l: 0 },
+		{ v: "ISC", g: "distribution allowed", l: 0 },
+		{ v: "ISC", g: "liability provided", l: 7 },
+		{ v: "ISC", g: "warranty provided", l: 7 },
+		{ v: "ISC", g: "must include original license", l: 0 },
+		{ v: "ISC", g: "must include original copyright notice", l: 0 },
+		{ v: "ISC", g: "must use same license", l: 7 },
+		{ v: "ISC", g: "must state changes", l: 7 },
+		{ v: "ISC", g: "must disclose source", l: 7 },
+		{ v: "ISC", g: "patent use allowed", l: -1 },
+		{ v: "ISC", g: "private use allowed", l: 0 },
+		{ v: "ISC", g: "trademark use allowed", l: -1 },
+
+		{ v: "Affero GPL", g: "commercial use allowed", l: 0 },
+		{ v: "Affero GPL", g: "modification allowed", l: 0 },
+		{ v: "Affero GPL", g: "distribution allowed", l: 0 },
+		{ v: "Affero GPL", g: "liability provided", l: 7 },
+		{ v: "Affero GPL", g: "warranty provided", l: 7 },
+		{ v: "Affero GPL", g: "must include original license", l: 0 },
+		{ v: "Affero GPL", g: "must include original copyright notice", l: 0 },
+		{ v: "Affero GPL", g: "must use same license", l: 0 },
+		{ v: "Affero GPL", g: "must state changes", l: 0 },
+		{ v: "Affero GPL", g: "must disclose source", l: 0 },
+		{ v: "Affero GPL", g: "patent use allowed", l: 0 },
+		{ v: "Affero GPL", g: "private use allowed", l: 0 },
+		{ v: "Affero GPL", g: "trademark use allowed", l: -1 },
+
+		{ v: "GPLv3", g: "commercial use allowed", l: 0 },
+		{ v: "GPLv3", g: "modification allowed", l: 0 },
+		{ v: "GPLv3", g: "distribution allowed", l: 0 },
+		{ v: "GPLv3", g: "liability provided", l: 7 },
+		{ v: "GPLv3", g: "warranty provided", l: 7 },
+		{ v: "GPLv3", g: "must include original license", l: 0 },
+		{ v: "GPLv3", g: "must include original copyright notice", l: 0 },
+		{ v: "GPLv3", g: "must use same license", l: 0 },
+		{ v: "GPLv3", g: "must state changes", l: 0 },
+		{ v: "GPLv3", g: "must disclose source", l: 0 },
+		{ v: "GPLv3", g: "patent use allowed", l: 0 },
+		{ v: "GPLv3", g: "private use allowed", l: 0 },
+		{ v: "GPLv3", g: "trademark use allowed", l: -1 },
+
+		{ v: "LGPLv3", g: "commercial use allowed", l: 0 },
+		{ v: "LGPLv3", g: "modification allowed", l: 0 },
+		{ v: "LGPLv3", g: "distribution allowed", l: 0 },
+		{ v: "LGPLv3", g: "liability provided", l: 7 },
+		{ v: "LGPLv3", g: "warranty provided", l: 7 },
+		{ v: "LGPLv3", g: "must include original license", l: 0 },
+		{ v: "LGPLv3", g: "must include original copyright notice", l: 0 },
+		{ v: "LGPLv3", g: "must use same license", l: 4 },
+		{ v: "LGPLv3", g: "must state changes", l: 0 },
+		{ v: "LGPLv3", g: "must disclose source", l: 0 },
+		{ v: "LGPLv3", g: "patent use allowed", l: 0 },
+		{ v: "LGPLv3", g: "private use allowed", l: 0 },
+		{ v: "LGPLv3", g: "trademark use allowed", l: -1 },
+
+		{ v: "Apache 2.0", g: "commercial use allowed", l: 0 },
+		{ v: "Apache 2.0", g: "modification allowed", l: 0 },
+		{ v: "Apache 2.0", g: "distribution allowed", l: 0 },
+		{ v: "Apache 2.0", g: "liability provided", l: 7 },
+		{ v: "Apache 2.0", g: "warranty provided", l: 7 },
+		{ v: "Apache 2.0", g: "must include original license", l: 0 },
+		{ v: "Apache 2.0", g: "must include original copyright notice", l: 0 },
+		{ v: "Apache 2.0", g: "must use same license", l: 7 },
+		{ v: "Apache 2.0", g: "must state changes", l: 0 },
+		{ v: "Apache 2.0", g: "must disclose source", l: 7 },
+		{ v: "Apache 2.0", g: "patent use allowed", l: 0 },
+		{ v: "Apache 2.0", g: "private use allowed", l: 0 },
+		{ v: "Apache 2.0", g: "trademark use allowed", l: 7 },
+
+		{ v: "Eclipse 2.0", g: "commercial use allowed", l: 0 },
+		{ v: "Eclipse 2.0", g: "modification allowed", l: 0 },
+		{ v: "Eclipse 2.0", g: "distribution allowed", l: 0 },
+		{ v: "Eclipse 2.0", g: "liability provided", l: 7 },
+		{ v: "Eclipse 2.0", g: "warranty provided", l: 7 },
+		{ v: "Eclipse 2.0", g: "must include original license", l: 0 },
+		{
+			v: "Eclipse 2.0",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "Eclipse 2.0", g: "must use same license", l: 0 },
+		{ v: "Eclipse 2.0", g: "must state changes", l: 7 },
+		{ v: "Eclipse 2.0", g: "must disclose source", l: 0 },
+		{ v: "Eclipse 2.0", g: "patent use allowed", l: 0 },
+		{ v: "Eclipse 2.0", g: "private use allowed", l: 0 },
+		{ v: "Eclipse 2.0", g: "trademark use allowed", l: -1 },
+
+		{ v: "Microsoft Public", g: "commercial use allowed", l: 0 },
+		{ v: "Microsoft Public", g: "modification allowed", l: 0 },
+		{ v: "Microsoft Public", g: "distribution allowed", l: 0 },
+		{ v: "Microsoft Public", g: "liability provided", l: -1 },
+		{ v: "Microsoft Public", g: "warranty provided", l: 7 },
+		{ v: "Microsoft Public", g: "must include original license", l: 0 },
+		{
+			v: "Microsoft Public",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "Microsoft Public", g: "must use same license", l: 7 },
+		{ v: "Microsoft Public", g: "must state changes", l: 7 },
+		{ v: "Microsoft Public", g: "must disclose source", l: 7 },
+		{ v: "Microsoft Public", g: "patent use allowed", l: 0 },
+		{ v: "Microsoft Public", g: "private use allowed", l: 0 },
+		{ v: "Microsoft Public", g: "trademark use allowed", l: 7 },
+
+		{ v: "Microsoft Reciprocal", g: "commercial use allowed", l: 0 },
+		{ v: "Microsoft Reciprocal", g: "modification allowed", l: 0 },
+		{ v: "Microsoft Reciprocal", g: "distribution allowed", l: 0 },
+		{ v: "Microsoft Reciprocal", g: "liability provided", l: -1 },
+		{ v: "Microsoft Reciprocal", g: "warranty provided", l: 7 },
+		{
+			v: "Microsoft Reciprocal",
+			g: "must include original license",
+			l: 0,
+		},
+		{
+			v: "Microsoft Reciprocal",
+			g: "must include original copyright notice",
+			l: 0,
+		},
+		{ v: "Microsoft Reciprocal", g: "must use same license", l: 4 }, // same file
+		{ v: "Microsoft Reciprocal", g: "must state changes", l: 7 },
+		{ v: "Microsoft Reciprocal", g: "must disclose source", l: 0 },
+		{ v: "Microsoft Reciprocal", g: "patent use allowed", l: 0 },
+		{ v: "Microsoft Reciprocal", g: "private use allowed", l: 0 },
+		{ v: "Microsoft Reciprocal", g: "trademark use allowed", l: 7 },
+	],
+}).render();
+
 const github_license_trends = new csmd.LinePlot({
 	id: "github_license_trends",
 	radialMagnitude: true,
@@ -42,7 +408,7 @@ const github_license_trends = new csmd.LinePlot({
 	yMax: 70,
 	height: 70,
 	lineColors: ["cornflowerblue", "orange", "red", "purple", "green"],
-	color: 'greyScheme',
+	color: "greyScheme",
 	svg_width: 480,
 	svg_height: 400,
 	margin: [15, 15, 50, 20],
@@ -128,108 +494,29 @@ const github_license_trends = new csmd.LinePlot({
 	],
 }).render();
 
-/*
-year: 2010
-	gpl: 2,116
-	mit: 5,684
-	apache: 355
-	bsd3: 293
-	lgpl: 340
-
-	total: 8788
-
-year: 2011
-	gpl: 5,559
-	mit: 12,549
-	apache: 1,258
-	bsd3: 1,035
-	lgpl: 837
-
-	total: 20401
-
-year: 2012
-	gpl: 11,881
-	mit: 23,213
-	apache: 3,213
-	bsd3: 2253
-	lgpl: 1886
-
-	total: 42,446
-
-year: 2013
-	gpl: 22,336
-	mit: 43,905
-	apache: 7,256
-	bsd3: 2,253
-	lgpl: 3655
-
-	total: 79405
-
-
-year: 2014
-	gpl: 58,236
-	mit: 118,822
-	apache: 26,326
-	bsd3: 8,748
-	lgpl: 8018
-
-	total: 220150
-
-year: 2015
-	gpl: 145,467
-	mit: 308,656
-	apache: 77,050
-	bsd3: 17,797
-	lgpl: 15,276
-
-	total:
-
-year: 2016
-	gpl: 280,253
-	mit: 612,854
-	apache: 173,933
-	bsd3: 30,845
-	lgpl: 26,557
-
-year: 2017
-	gpl: 465,270
-	mit: 1,078,014
-	apache: 328,391
-	bsd3: 43,812
-	lgpl: 37,489
-
-year: 2018
-	gpl: 683,095
-	mit: 1,757,170
-	apache: 523,012
-	bsd3: 61,478
-	lgpl: 50,596
-
-year: 2019
-	gpl: 941,880
-	mit: 2.625,480
-	apache: 760,105
-	bsd3: 83,069
-	lgpl: 66,351
-
-year: 2020
-	gpl: 1,202,020
-	mit: 3,429,925
-	apache: 974,496
-	bsd3: 110,164
-	lgpl: 81,098
-
-year: 2021
-	gpl: 1,535,407
-	mit: 4,560,119
-	apache: 1,241,996
-	bsd3: 149,117
-	lgpl: 98,301
-
-year: 2022
-	gpl: 2,036,077
-	mit: 5,667,446
-	apache: 1,646,992
-	bsd3: 206,591
-	lgpl: 119,949
-*/
+const riskyAreas = new csmd.BarGraph({
+	xTickRotate: 45,
+	yLabel: 'IQV',
+	svg_width: 450,
+	svg_height: 350,
+	margin: [20,60,110,30],
+	width: 80,
+	height: 80,
+	colorWeight: true,
+	id: "riskyAreas",
+	data: [
+		{ x: "comercial use allowed", y: 0.01 },
+		{ x: "modification allowed", y: 0.01 },
+		{ x: "distribution allowed", y: 0.01 },
+		{ x: "liability provided", y: 0.2066115702},
+		{ x: "warranty provided", y: 0.01 },
+		{ x: "must include original license", y: 0.2117768595 },
+		{ x: "must include original copyright", y: 0.2117768595},
+		{ x: "must use same license", y: 0.7851239669 },
+		{ x: "must state changes", y: 0.604338843 },
+		{ x: "must disclose source", y: 0.604338843},
+		{ x: "patent use allowed", y: 0.6404958678 },
+		{ x: "private use allowed", y: 0.01 },
+		{ x: "trademark use allowed", y: 0.6146694215 },
+	],
+}).render();

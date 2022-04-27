@@ -1,0 +1,119 @@
+{% load static %}
+<p>
+	When working with binary tree data structures, we often want to quickly
+	sketch in our minds what a particular approach's traversal sequence looks
+	like. Having this sketch can be a powerful tool for gainign some traction
+	on solving a problem. Accordingly, let's investigate some techniques for
+	quickly determining a particular sequence.
+</p>
+<p>
+	First, it's helpful to associate the traversal approaches with a few
+	visit sequences. For the visit sequences in the table below,
+	<var>L</var> stands for <q>visit the <i>left</i> subtree,</q>
+	<var>root</var> stands for <q>visit the <i>root</i>,</q> and
+	<var>R</var> stands for <q>visit the <i>right</i> subtree.</q>
+</p>
+<table class="alg">
+	<thead>
+		<th>Traversal</th>
+		<th>Visit Sequence</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Preorder</td>
+			<td><var>root L R</var></td>
+		</tr>
+		<tr>
+			<td>Inorder</td>
+			<td><var>L root R</var></td>
+		</tr>
+		<tr>
+			<td>Postorder</td>
+			<td><var>L R root</var></td>
+		</tr>
+		<tr>
+			<td>Generational</td>
+			<td>Generation by generation, left to right</td>
+		</tr>
+	</tbody>
+</table>
+<p>
+	Knowing this sequences can make traversal sequences for more complicated
+	trees clearer. For example, consider the following tree:
+</p>
+<div id="big_traverse"></div>
+<p>
+	Trying to determine the traversal sequence for any given traversal
+	approach can appear daunting. The trick, however, is
+	<i>divide and conquer</i>: Break the tree down into subtrees. In this
+	case, let's break it down into a left-subtree (the nodes in blue) and a
+	right-subtree (the nodes in purple):
+</p>
+<div id="big_traverse_subtree"></div>
+<p>
+	Let's first consider preorder traversal. For preorder traversal, we have
+	<var>root L R</var>. So, we write:
+</p>
+<figure>$$ a, (~~~~~)_{\texttt{L}}, (~~~~~)_{\texttt{R}} $$</figure>
+<p>
+	Now we fill in the parentheses. First, the left subtree, following the
+	same sequence, <var>root L R</var>:
+</p>
+<figure>$$ a, (b, d, e)_{\texttt{L}}, (~~~~~)_{\texttt{R}} $$</figure>
+<p>
+	Then the right subtree, following the same sequence,
+	<var>root L R</var>.
+</p>
+<figure>$$ a, (b, d, e)_{\texttt{L}}, (c, f, g)_{\texttt{R}} $$</figure>
+<p>Thus, the inorder traversal sequence for the tree is:</p>
+<figure class="block">
+	<div id="big_traverse_subtree_preorder"></div>
+	<figcaption>$$ (a, b, d, e, c, f, g) $$</figcaption>
+</figure>
+<p>
+	Using the same method, let's try inorder traversal. For inorder
+	traversal, the visit sequence is <var>L root R</var>. So we write:
+</p>
+<figure>$$ (~~~~~)_{\texttt{L}}, a, (~~~~~)_{\texttt{R}} $$</figure>
+<p>
+	Now we fill in the subtree parentheses. Starting with the left subtree,
+	we use the same sequence, <var>L root R</var>:
+</p>
+<figure>$$ (d, b, e)_{\texttt{L}}, a, (~~~~~)_{\texttt{R}} $$</figure>
+<p>
+	Then we fill in the right subtree's parentheses, again using
+	<var>L root R</var>:
+</p>
+<figure>$$ (d, b, e)_{\texttt{L}}, a, (f, c, g)_{\texttt{R}} $$</figure>
+<p>Hence, the inorder traversal sequence is:</p>
+<figure class="block">
+	<div id="big_traverse_subtree_inorder"></div>
+	<figcaption>$$ (a, b, d, e, c, f, g) $$</figcaption>
+</figure>
+
+<p>
+	Now let's try postorder traversal. The visit sequence is
+	<var>L R root</var>, so we have:
+</p>
+<figure>$$ (~~~~~)_{\texttt{L}}, (~~~~~)_{\texttt{R}}, a $$</figure>
+<p>
+	Now we fill in the subtrees, again using <var>L R root</var>. For the
+	left subtree:
+</p>
+<figure>$$ (d, e, b)_{\texttt{L}}, (~~~~~)_{\texttt{R}}, a $$</figure>
+<p>And for the right subtree:</p>
+<figure>$$ (d, e, b)_{\texttt{L}}, (f, g, c)_{\texttt{R}}, a $$</figure>
+<p>This yields the postorder traversal sequence:</p>
+<figure class="block">
+	<div id="big_traverse_subtree_postorder"></div>
+	<figcaption>$$ (d, e, b, f, g, c, a) $$</figcaption>
+</figure>
+<p>
+	Finally, generational traversal is simple enough that we don't need to
+	apply some visit sequence. We merely traverse the tree from the first
+	generation to the last generation, visiting each node from left to right:
+</p>
+<figure class="block">
+	<div id="big_traverse_subtree_generational"></div>
+	<figcaption>$$ (a, b, c, d, e, f, g) $$</figcaption>
+</figure>

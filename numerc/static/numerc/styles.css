@@ -442,19 +442,23 @@
 	figure div p {
 		margin: 0;
 	}
+	
 	figure.block {
+		margin: 0;
 		display: block;
 		width: 100%;
-		margin: 0;
+	}
+	figure pre {
+		width: 100%;
+		margin: 0 1%;
 	}
 	figure.iblock {
 		display: flex;
 		flex-direction: row;
-		flex: 1;
 		margin: 0;
 	}
 	figure.iblock div {
-		width: 100%;
+		flex: 1;
 	}
 	div.col2 {
 		display: grid;
@@ -603,34 +607,42 @@
 	div.implementation h5 { font-size: 1.2em; }
 	div.implementation h6 { font-size: 1.1em; }
 /* Heading Section Numbers */
-	div.content { counter-set: head2 -1; }
-	div.content>section { counter-set: head3 0; }
-	div.content>section>section { counter-set: head4 0; }
-	div.content>section>section>section { counter-set: head5 0; }
-
-	h2::after {
-		content: counter(head2) ".0";
-		float: right;
+/* heading numbering */
+	article { counter-set: L2; }
+	h2:after {
+		content: counter(L2);
+		float:right;
+		text-align: right;
+		counter-increment: L2;
 	}
-	h3::after {
-		content: counter(head2) "." counter(head3);
-		float: right;
+	h2 { counter-reset: L3; }
+	h3:after {
+		content: counter(L2) "." counter(L3);
+		float:right;
+		text-align: right;
+		counter-increment: L3;
 	}
-	h4::after {
-		content: counter(head2) "." counter(head3) "." counter(head4);
-		float: right;
+	h3 {counter-reset: L4;}
+	h4:after {
+		content: counter(L2) "." counter(L3) "." counter(L4);
+		float:right;
+		text-align: right;
+		counter-increment: L4;
 	}
-	h5::after {
-		content: counter(head2) "." counter(head3) "." counter(head4) "." counter(head5);
-		float: right;
+	h4 {counter-reset: L5;}
+	h5:after {
+		content: counter(L2) "." counter(L3) "." counter(L4) "." counter(L5);
+		float:right;
+		text-align: right;
+		counter-increment: L5;
 	}
-	
-
-
-	h2 {counter-increment: head2;}
-	h3 {counter-increment: head3;}
-	h4 {counter-increment: head4;}
-	h5 {counter-increment: head5;}
+	h5 {counter-reset: L6;}
+	h6:after {
+		content: counter(L2) "." counter(L3) "." counter(L4) "." counter(L5) "." counter(L6);
+		float:right;
+		text-align: right;
+		counter-increment: L6;
+	}
 	
 
 	figure.p {
@@ -849,7 +861,9 @@
 	}
 	
 /* List styles */
-	section ul li::marker { font-size: 0.7rem; }
+	section ul li::marker {
+		font-size: 0.7rem;
+	}
 	ul li, ol li {
 		padding: 1px 0 0 3px;
 	}
@@ -869,15 +883,52 @@
 	}
 	/* Outline */
 		section.outline {
-			display: flex;
+			font-size: 0.8rem;
 			justify-content: space-between;
+			counter-set: O2;
 		}
-		
-		section.outline>ol {padding: 0 1em} 
+		section.outline>ol>li {
+			counter-reset: O3;
+		}
+		section.outline>ol>li:after {
+			content: counter(O2);
+			float:right;
+			text-align: right;
+			counter-increment: O2;
+		}
+		section.outline>ol>ol>li {
+			counter-reset: O4;
+		}
+		section.outline>ol>ol>li:after {
+			content: counter(O2) "." counter(O3);
+			float:right;
+			text-align: right;
+			counter-increment: O3;
+		}
+		section.outline>ol>ol>ol>li:after {
+			content: counter(O2) "." counter(O3) "." counter(O4);
+			float:right;
+			text-align: right;
+			counter-increment: O4;
+		}
+		section.outline li::marker {
+			font-size: 0.7rem;
+		}
+		section.outline li {padding-left: 0.2em;}
+		section.outline ol {padding: 0 0 0 1.5em} 
+		section.outline>ol::before {
+			content: "Table of Contents";
+			margin: 5% 0;
+			font-size: 0.9rem;
+			text-align: center;
+			display: block;
+			font-weight: bold;
+		}
 		section.outline>ul.references {padding: 0}
 		section.outline ol { list-style-type: upper-roman; }
 		section.outline ol ol { list-style-type: decimal; }
 		section.outline ol ol ol { list-style-type: upper-alpha; }
+		section.outline ol ol ol ol { list-style-type: lower-roman; }
 	/* Logic Argument */
 		ul.larg li:nth-last-child(2) {
 			border-bottom: 1px solid rgb(35, 35, 35); 
@@ -1129,6 +1180,7 @@
 	}
 	b {
 		font-weight: bold;
+		white-space: nowrap;
 	}
 	i {font-style: italic;}
 	.redText {color: var(--scarlet);}
@@ -1434,36 +1486,37 @@
 	table.api.syntax td {padding: 0.8em 0;}
 	table.api.syntax var {font-size: inherit; color: cyan}
 /* Trace table */
-	table.trace {
-		width: 100%;
-		border: none;
-	}
-	
+	table.trace, 
+	table.trace td, 
 	table.trace th {
 		border: none;
+	}
+	table.trace th {text-align: center;}
+	table.trace td:not(:last-child) {
+		border-right: solid thin lightgrey;
 		text-align: center;
 	}
-	table.trace td {
-		border: none;
-		padding: 0;
+	table.trace td, table.trace th {
+		padding: 0.2em;
 	}
-	table.trace tr td:first-child {
-		vertical-align: top;
-		width: 40%;
+	table.trace tr:not(:last-child) {
+		border-bottom: solid thin lightgrey;
 	}
-	table.trace tr td:last-child {
-		width: 60%;
-	}
-	table.trace tr td[colspan] {
-		font-family: "CMU";
-		color: grey;
-		padding-bottom: 0.3em;
-		border-bottom: solid 2px lightgray;
-	}
+
 /* Table spreadsheet */
 	table.csv {
 		margin: 0 auto;
-		font-family: 'Courier New', Courier, monospace;
+		font-family: "Fira";
+		text-rendering: optimizeLegibility;
+	}
+	table.csv th {
+		text-align: center;
+		color: var(--darkRed);
+		padding: 0 0.2em;
+		font-weight: normal;
+	}
+	table.csv td {
+		padding: 0.1em 0.2em;
 	}
 /* Matrix */
 	table.matrix {
@@ -1500,17 +1553,12 @@
 		color: var(--commentGrey);
 		border: none;
 	}
-/* Algorithm - English */
-	ol.proc {
-		padding: 0 2.5em;
-		font-size: 0.85rem;
-		text-rendering: optimizeLegibility;
-		font-style: normal; 
+
+/* plaintext */
+	pre.plaintext {
+		width: fit-content;
 	}
-	ol.proc li {
-		padding: 0.2em 0;
-		margin: 0 0.6em;
-	}
+
 /* Algorithms - Pseudocode */
 	ol.alg, ol.algc {
 		color: var(--textColor);
@@ -1538,9 +1586,9 @@
 		border-bottom: solid thin var(--gold);
 	}
 	ol.alg ol, ol.algc ol {margin: 0; padding: 0;}
+
 	ol.alg li, ol.algc li {
 		display: block;
-		white-space: nowrap;
 		padding: 2px 0;
 		margin: 2px 0;
 		margin-top: -13px;
@@ -1549,12 +1597,15 @@
 		counter-increment: lineNumber;
 		cursor: pointer;
 	}
-	ol.algc li {
+	div.pseudosource ol.algc li {
 		max-width: 40em;
 		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
 		font-size: 0.73rem;
+		text-overflow: ellipsis;
+	}
+	section.pseuds {margin: 0; padding: 0;}
+	ol.algc li {
+		font-size: 0.75rem;
 	}
 	ol.alg li var {
 		color: rgb(196, 196, 196);
@@ -1612,7 +1663,7 @@
 	ol.algc li .katex {
 		font-size: 0.98em !important;
 	}
-	li.highlight_match, li.highlight_match * {
+	li.highlight_match {
 		color: var(--darkRed) !important;
 	}
 	/* Table for counting operations - algorithmic analysis */
@@ -1873,8 +1924,6 @@
 	pre {
 		width: auto;
 		height: auto;
-		background: rgb(36, 36, 36);
-		color: white;
 		font-family: var(--mono);
 		text-align: left;
 		font-size: 0.7rem;
@@ -1897,7 +1946,7 @@
 		margin: 0.5em auto;
 		padding: 0.5rem 0.6rem;
 		overflow: auto;
-		box-shadow: 0 2px 6px 0 rgba(0,0,0,0.2) !important;
+		box-shadow: 0 2px 6px 0 rgba(0,0,0,0.2);
 		border-radius: 0.3em !important;
 	}
 	pre details {
@@ -1940,8 +1989,8 @@
 		height: fit-content;
 	}
 /* Language - Pseudo */
-	pre[class="language-pseudo"] {
-		padding: 0.8em;
+	pre.language-pseudo {
+		padding: 1em 0;
 		color: var(--textColor);
 		background-color: var(--page);
 		margin: 1% auto;
@@ -1952,7 +2001,8 @@
 		word-wrap: normal;
 		-moz-tab-size: 3;
 		-o-tab-size: 3;
-		tab-size: 3;
+		tab-size: 4;
+		box-shadow: none;
 		
 
 		-webkit-hyphens: none;
@@ -1960,93 +2010,92 @@
 		-ms-hyphens: none;
 		hyphens: none;
 	}
-	pre[class="language-pseudo"] code {
+	pre.language-pseudo code {
 		font-family: "Fira";
 		text-rendering: optimizeLegibility;
 	}
 
 /* Language - Java */
-	code[class="language-java"], 
-	pre[class="language-java"] {
+	pre.language-java {
 		color: rgb(255, 247, 228); /* base00 */
 	}
-	:not(pre) > code[class="language-java"],
-	pre[class="language-java"] {
+	:not(pre) > code.language-java,
+	pre.language-java {
 		background-color: var(--codeNavyBG);
 	}
 	/* Inline code */
-	:not(pre) > code[class="language-java"] {
+	:not(pre) > code.language-java {
 		padding: .1em;
 		border-radius: .3em;
 	}
 
-	code[class="language-java"]>.token.comment,
-	code[class="language-java"]>.token.prolog,
-	code[class="language-java"]>.token.doctype,
-	code[class="language-java"]>.token.cdata {
+	code.language-java>.token.comment,
+	code.language-java>.token.prolog,
+	code.language-java>.token.doctype,
+	code.language-java>.token.cdata {
 		color: rgb(134,112,124); /* base01 */
 		color: #a89984; /* base1 */
 	}
-	code[class="language-java"]>.token.punctuation {
+	code.language-java>.token.punctuation {
 		color: rgb(221, 138, 184); /* base01 */
 	}
-	code[class="language-java"]>.token.namespace {
+	code.language-java>.token.namespace {
 		opacity: .7;
 	}
-	code[class="language-java"]>.token.property,
-	code[class="language-java"]>.token.tag,
-	code[class="language-java"]>.token.number,
-	code[class="language-java"]>.token.constant,
-	code[class="language-java"]>.token.symbol,
-	code[class="language-java"]>.token.deleted {
+	code.language-java>.token.property,
+	code.language-java>.token.tag,
+	code.language-java>.token.number,
+	code.language-java>.token.constant,
+	code.language-java>.token.symbol,
+	code.language-java>.token.deleted {
 		color: #ffe590; /* blue */
 	}
-	code[class="language-java"]>.token.boolean,
-	code[class="language-java"]>.token.class-name {
+	code.language-java>.token.boolean,
+	code.language-java>.token.class-name {
 		color: #b7ffed;
 	}
-	code[class="language-java"]>.token.selector,
-	code[class="language-java"]>.token.attr-name,
-	code[class="language-java"]>.token.string,
-	code[class="language-java"]>.token.char,
-	code[class="language-java"]>.token.builtin,
-	code[class="language-java"]>.token.url,
-	code[class="language-java"]>.token.inserted {
+	code.language-java>.token.selector,
+	code.language-java>.token.attr-name,
+	code.language-java>.token.string,
+	code.language-java>.token.char,
+	code.language-java>.token.builtin,
+	code.language-java>.token.url,
+	code.language-java>.token.inserted {
 		color: #9fff7c;
 	}
-	code[class="language-java"]>.token.entity {
+	code.language-java>.token.entity {
 		color: #657b83; /* base00 */
 		background: #eee8d5; /* base2 */
 	}
-	code[class="language-java"]>.token.atrule,
-	code[class="language-java"]>.token.attr-value,
-	code[class="language-java"]>.token.keyword {
+	code.language-java>.token.atrule,
+	code.language-java>.token.attr-value,
+	code.language-java>.token.keyword {
 		color: rgb(218, 174, 248); /* green */
 	}
-	code[class="language-java"]>.token.function,
-	code[class="language-java"]>.token.operator {
+	code.language-java>.token.function,
+	code.language-java>.token.operator {
 		color: rgb(255, 126, 126);
 	}
-	code[class="language-java"]>.token.regex,
-	code[class="language-java"]>.token.important,
-	code[class="language-java"]>.token.variable {
+	code.language-java>.token.regex,
+	code.language-java>.token.important,
+	code.language-java>.token.variable {
 		color: #cb4b16; /* orange */
 	}
-	code[class="language-java"]>.token.important,
-	code[class="language-java"]>.token.bold {
+	code.language-java>.token.important,
+	code.language-java>.token.bold {
 		font-weight: bold;
 	}
-	code[class="language-java"]>.token.italic {
+	code.language-java>.token.italic {
 		font-style: italic;
 	}
-	code[class="language-java"]>.token.entity {
+	code.language-java>.token.entity {
 		cursor: help;
 	}
-	code[class="language-java"]>pre[data-line] {
+	code.language-java>pre[data-line] {
 		position: relative;
 		padding: 1em 0 1em 3em;
 	}
-	code[class="language-java"]>span.inline-color {
+	code.language-java>span.inline-color {
 		display: block;
 		/* To prevent visual glitches again */
 		height: 120%;
@@ -2184,12 +2233,8 @@
 	}
 
 /* Language - JavaScript */
-	code[class="language-javascript"],
-	pre[class="language-javascript"] {
+	pre.language-javascript {
 		color: white;
-	}
-	:not(pre) > code[class="language-javascript"],
-	pre[class="language-javascript"] {
 		background-color: rgb(32, 32, 32);
 	}
 	code[class="language-javascript"]>.token.dom {color: rgb(195, 115, 3);}
@@ -2198,7 +2243,7 @@
 		color: rgb(163, 163, 163);
 	}
 
-	code[class="language-javascript"]>.token.punctuation {
+	code[class="language-javascript"] .token.punctuation {
 		color: white;
 	}
 	
@@ -2232,77 +2277,241 @@
 		color: greenyellow;
 		font-style: italic;
 	}
+	code[class="language-javascript"] .token.punctuation.brace-level-1,
+	code[class="language-javascript"] .token.punctuation.brace-level-5,
+	code[class="language-javascript"] .token.punctuation.brace-level-9 {
+		color: rgb(255, 123, 52);
+		opacity: 1;
+	}
+	code[class="language-javascript"]> .token.punctuation.brace-level-10,
+	code[class="language-javascript"]> .token.punctuation.brace-level-2,
+	code[class="language-javascript"]> .token.punctuation.brace-level-6 {
+		color: rgb(16, 255, 175);
+		opacity: 1;
+	}
+	code[class="language-javascript"]> .token.punctuation.brace-level-11,
+	code[class="language-javascript"]> .token.punctuation.brace-level-3,
+	code[class="language-javascript"]> .token.punctuation.brace-level-7 {
+		color: rgb(86, 136, 255);
+		opacity: 1;
+	}
+	code[class="language-javascript"]> .token.punctuation.brace-level-12,
+	code[class="language-javascript"]> .token.punctuation.brace-level-4,
+	code[class="language-javascript"]> .token.punctuation.brace-level-8 {
+		color: rgb(255, 131, 255);
+		opacity: 1;
+	}
+/* Line numbers and buttons for code */
+	pre[class*="language-"].line-numbers {
+		position: relative;
+		padding-left: 3.8em;
+		counter-reset: linenumber;
+	}
+	pre[class*="language-"].line-numbers > code {
+		position: relative;
+		white-space: inherit;
+	}
+	.line-numbers .line-numbers-rows {
+		position: absolute;
+		pointer-events: none;
+		top: 0;
+		font-size: 100%;
+		left: -4em;
+		width: 3em;
+		letter-spacing: -1px;
+		border-right: 1px solid #999;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+	.line-numbers-rows > span {
+		display: block;
+		counter-increment: linenumber;
+	}
+	.line-numbers-rows > span:before {
+		content: counter(linenumber);
+		color: #999;
+		display: block;
+		padding-right: 0.8em;
+		text-align: right;
+	}
+	div.code-toolbar {
+		position: relative;
+	}
+	div.code-toolbar > .toolbar {
+		position: absolute;
+		z-index: 10;
+		top: 0.3em;
+		right: 0.2em;
+		transition: opacity 0.3s ease-in-out;
+		opacity: 0;
+	}
+	div.code-toolbar:hover > .toolbar {
+		opacity: 1;
+	}
+	div.code-toolbar:focus-within > .toolbar {
+		opacity: 1;
+	}
+	div.code-toolbar > .toolbar > .toolbar-item {
+		display: inline-block;
+	}
+	div.code-toolbar > .toolbar > .toolbar-item > a {
+		cursor: pointer;
+	}
+	div.code-toolbar > .toolbar > .toolbar-item > button {
+		background: 0 0;
+		margin: 0 3px;
+		border: 0;
+		color: inherit;
+		font: inherit;
+		line-height: normal;
+		overflow: visible;
+		padding: 0;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+	}
+	div.code-toolbar > .toolbar > .toolbar-item > a,
+	div.code-toolbar > .toolbar > .toolbar-item > button,
+	div.code-toolbar > .toolbar > .toolbar-item > span {
+		font-family: var(--mono);
+		color: #bbb;
+		font-size: 0.8em;
+		padding: 0 0.5em;
+		background: #f5f2f0;
+		background: rgba(224, 224, 224, 0.2);
+		box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2);
+		border-radius: 0.5em;
+	}
+	div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+	div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+	div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+	div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+	div.code-toolbar > .toolbar > .toolbar-item > span:focus,
+	div.code-toolbar > .toolbar > .toolbar-item > span:hover {
+		color: inherit;
+		text-decoration: none;
+	}
+/* Language - Ruby */
+	code.language-ruby,
+	pre.language-ruby {
+		color: rgb(68, 68, 68);
+	}
+	:not(pre) > code.language-ruby,
+	pre.language-ruby {
+		background-color: rgb(255, 241, 241);
+	}
+	code.language-ruby>.token.comment,
+	code.language-ruby>.token.block-comment {
+		color: rgb(163, 163, 163);
+	}
+
+	code.language-ruby>.token.punctuation {
+		color: rgb(218, 0, 0);
+	}
+
+	code.language-ruby>.token.string,
+	code.language-ruby>.token.char,
+	code.language-ruby>.token.boolean,
+	code.language-ruby>.token.number {
+		color: rgb(160, 0, 200);
+	}
+	code.language-ruby>.token.method-definition {
+		color: rgb(31, 135, 0);
+	}
+	code.language-ruby>.token.operator {
+		color: rgb(65, 109, 255);
+	}
+
+	code.language-ruby>.token.property {
+		color: rgb(228, 237, 255);
+	}
+
+	code.language-ruby>.token.regex,
+
+	code.language-ruby>.token.class-name,
+	code.language-ruby>.token.symbol {
+		color: rgb(229, 0, 0);
+	}
+	code.language-ruby>.token.keyword {
+		color: rgb(0, 143, 143);
+	}
+	code.language-ruby>.token.control-flow {
+		color: rgb(3, 164, 0);
+		font-style: italic;
+	}
 /* Language - C */
-	pre[class="language-c"] {
+	pre.language-c {
 		background-color: var(--CBackground);
 	}
-	pre[class="language-c"] {
+	pre.language-c {
 		color: var(--CPrimary);
 	}
-	code[class="language-c"]>.token.comment {
+	code.language-c>.token.comment {
 		color: var(--CComment); 
 	}
-	code[class="language-c"]>.token.prolog,
-	code[class="language-c"]>.token.doctype,
-	code[class="language-c"]>.token.cdata {
+	code.language-c>.token.prolog,
+	code.language-c>.token.doctype,
+	code.language-c>.token.cdata {
 		color: var(--codeBrightBlue); /* base1 */
 	}
-	code[class="language-c"]>.token.punctuation {
+	code.language-c>.token.punctuation {
 		color: var(--commentGrey);
 	}
-	code[class="language-c"]>.token.operator {
+	code.language-c>.token.operator {
 		color: var(--COperator);
 	}
-	code[class="language-c"]>.token.property,
-	code[class="language-c"]>.token.tag,
-	code[class="language-c"]>.token.boolean,
-	code[class="language-c"]>.token.number,
-	code[class="language-c"]>.token.string,
-	code[class="language-c"]>.token.constant,
-	code[class="language-c"]>.token.symbol {
+	code.language-c>.token.property,
+	code.language-c>.token.tag,
+	code.language-c>.token.boolean,
+	code.language-c>.token.number,
+	code.language-c>.token.string,
+	code.language-c>.token.constant,
+	code.language-c>.token.symbol {
 		color: var(--CLiteral);
 	}
-	code[class="language-c"]>.token.selector,
-	code[class="language-c"]>.token.attr-name,
-	code[class="language-c"]>.token.char,
-	code[class="language-c"]>.token.builtin,
-	code[class="language-c"]>.token.url,
-	code[class="language-c"]>.token.inserted {
+	code.language-c>.token.selector,
+	code.language-c>.token.attr-name,
+	code.language-c>.token.char,
+	code.language-c>.token.builtin,
+	code.language-c>.token.url,
+	code.language-c>.token.inserted {
 		color: #f3f3f3; /* cyan */
 	}
-	code[class="language-c"]>.token.entity {
+	code.language-c>.token.entity {
 		color: #657b83; /* base00 */
 		background: #eee8d5; /* base2 */
 	}
-	code[class="language-c"]>.token.atrule,
-	code[class="language-c"]>.token.attr-value {
+	code.language-c>.token.atrule,
+	code.language-c>.token.attr-value {
 		color: var(--codeLimeGreen);
 	}
-	code[class="language-c"]>.token.keyword,
-	code[class="language-c"]>.token.directive-hash {
+	code.language-c>.token.keyword,
+	code.language-c>.token.directive-hash {
 		color: var(--CKeyword);
 	}
-	code[class="language-c"]>.token.function,
-	code[class="language-c"]>.token.class-name {
+	code.language-c>.token.function,
+	code.language-c>.token.class-name {
 		color: var(--CFunction); /* yellow */
 	}
-	code[class="language-c"]>.token.regex,
-	code[class="language-c"]>.token.important,
-	code[class="language-c"]>.token.variable {
+	code.language-c>.token.regex,
+	code.language-c>.token.important,
+	code.language-c>.token.variable {
 		color: var(--codeRedOrange); /* orange */
 	}
-	code[class="language-c"]>.token.important,
-	code[class="language-c"]>.token.bold {
+	code.language-c>.token.important,
+	code.language-c>.token.bold {
 		font-weight: bold;
 	}
-	code[class="language-c"]>.token.italic {
+	code.language-c>.token.italic {
 		font-style: italic;
 	}
-	code[class="language-c"]>.token.entity {
+	code.language-c>.token.entity {
 		cursor: help;
 	}
 /* Language - C++ */
-	pre[class="language-cpp"] {
+	pre.language-cpp {
 		background-color: rgb(32, 13, 40);
 		color: whitesmoke;
 	}
@@ -2428,492 +2637,506 @@
 		color: hsl(33, 33%, 52%); /* #AC885B */
 	}
 /* Language - Swift */
-	code[class="language-swift"],
-	pre[class="language-swift"] {
+	code.language-swift,
+	pre.language-swift {
 		color: rgb(39, 39, 39); /* base00 */
 		background-color: rgb(255, 255, 255);
 	}
 
 	/* Keywords */
-	code[class="language-swift"] > .token.comment,
-	code[class="language-swift"] > .token.block-comment,
-	code[class="language-swift"] > .token.prolog,
-	code[class="language-swift"] > .token.doctype,
-	code[class="language-swift"] > .token.cdata {
+	code.language-swift > .token.comment,
+	code.language-swift > .token.block-comment,
+	code.language-swift > .token.prolog,
+	code.language-swift > .token.doctype,
+	code.language-swift > .token.cdata {
 		color: rgb(109, 127, 141);
 	}
 
 	
-	code[class="language-swift"] > .token.operator {
+	code.language-swift > .token.operator {
 		color: rgb(0, 103, 221);
 	}
 
-	code[class="language-swift"] > .token.punctuation	{
+	code.language-swift > .token.punctuation	{
 		color: rgb(39,39,39);
 	}
 
-	code[class="language-swift"] > .token.builtin {
+	code.language-swift > .token.builtin {
 		color:rgb(35, 111, 116);
 	}
 	
-	code[class="language-swift"] > .token.property,
-	code[class="language-swift"] > .token.tag,
-	code[class="language-swift"] > .token.boolean,
-	code[class="language-swift"] > .token.number,
-	code[class="language-swift"] > .token.function-name,
-	code[class="language-swift"] > .token.constant,
-	code[class="language-swift"] > .token.symbol,
-	code[class="language-swift"] > .token.string,
-	code[class="language-swift"] > .token.char,
-	code[class="language-swift"] > .token.deleted {
+	code.language-swift > .token.property,
+	code.language-swift > .token.tag,
+	code.language-swift > .token.boolean,
+	code.language-swift > .token.number,
+	code.language-swift > .token.function-name,
+	code.language-swift > .token.constant,
+	code.language-swift > .token.symbol,
+	code.language-swift > .token.string,
+	code.language-swift > .token.char,
+	code.language-swift > .token.deleted {
 		color: rgb(230, 19, 19);
 	}
 	
-	code[class="language-swift"] > .token.selector,
-	code[class="language-swift"] > .token.attr-name,
-	code[class="language-swift"] > .token.function,
-	code[class="language-swift"] > .token.inserted {
+	code.language-swift > .token.selector,
+	code.language-swift > .token.attr-name,
+	code.language-swift > .token.function,
+	code.language-swift > .token.inserted {
 		color: rgb(93,0,178);
 	}
 
 
 	
-	code[class="language-swift"] > .token.entity,
-	code[class="language-swift"] > .token.url,
-	code[class="language-swift"] > .token.variable {
+	code.language-swift > .token.entity,
+	code.language-swift > .token.url,
+	code.language-swift > .token.variable {
 		color: #0f854e;
 	}
 	
-	code[class="language-swift"] > .token.atrule,
-	code[class="language-swift"] > .token.attr-value,
-	code[class="language-swift"] > .token.keyword,
-	code[class="language-swift"] > .token.class-name {
+	code.language-swift > .token.atrule,
+	code.language-swift > .token.attr-value,
+	code.language-swift > .token.keyword,
+	code.language-swift > .token.class-name {
 		color: rgb(192, 0, 163);
 	}
 	
-	code[class="language-swift"] > .token.regex,
-	code[class="language-swift"] > .token.important {
+	code.language-swift > .token.regex,
+	code.language-swift > .token.important {
 		color: rgb(255, 221, 158);
 	}
 	
-	code[class="language-swift"] > .language-css .token.string,
-	code[class="language-swift"] > .style .token.string {
+	code.language-swift > .language-css .token.string,
+	code.language-swift > .style .token.string {
 		color: #a67f59;
 		background: rgba(255, 255, 255, 0.5);
 	}
 	
-	code[class="language-swift"] > .token.important {
+	code.language-swift > .token.important {
 		font-weight: normal;
 	}
 	
-	code[class="language-swift"] > .token.bold {
+	code.language-swift > .token.bold {
 		font-weight: bold;
 	}
-	code[class="language-swift"] > .token.italic {
+	code.language-swift > .token.italic {
 		font-style: italic;
 	}
 	
-	code[class="language-swift"] > .token.entity {
+	code.language-swift > .token.entity {
 		cursor: help;
 	}
 	
-	code[class="language-swift"] > .token.namespace {
+	code.language-swift > .token.namespace {
 		opacity: .7;
 	}
 /* Language - Python */
-	code[class="language-python"],
-	pre[class="language-python"] {
+	code.language-python,
+	pre.language-python {
 		color: var(--codeWhite);
 	}
 
-	:not(pre) > code[class="language-python"],
-	pre[class="language-python"] {
+	:not(pre) > code.language-python,
+	pre.language-python {
 		background: var(--codeLightNavBG);
 	}
 
-	code[class="language-python"] > .token.comment,
-	code[class="language-python"] > .token.triple-quoted-string.string,
-	code[class="language-python"] > .token.block-comment,
-	code[class="language-python"] > .token.prolog,
-	code[class="language-python"] > .token.doctype,
-	code[class="language-python"] > .token.cdata {
+	code.language-python > .token.comment,
+	code.language-python > .token.triple-quoted-string.string,
+	code.language-python > .token.block-comment,
+	code.language-python > .token.prolog,
+	code.language-python > .token.doctype,
+	code.language-python > .token.cdata {
 		color: var(--commentBlue);
 	}
 
-	code[class="language-python"] > .token.punctuation {
+	code.language-python > .token.punctuation {
 		color: rgb(255, 255, 255);
 	}
 
-	code[class="language-python"] > .token.tag,
-	code[class="language-python"] > .token.attr-name,
-	code[class="language-python"] > .token.namespace,
-	code[class="language-python"] > .token.deleted {
+	code.language-python > .token.tag,
+	code.language-python > .token.attr-name,
+	code.language-python > .token.namespace,
+	code.language-python > .token.deleted {
 		color: #e2777a;
 	}
 
-	code[class="language-python"] > .token.function-name {
+	code.language-python > .token.function-name {
 		color: #70f7e0;
 	}
 
-	code[class="language-python"] > .token.boolean,
-	code[class="language-python"] > .token.number,
-	code[class="language-python"] > .token.function {
+	code.language-python > .token.boolean,
+	code.language-python > .token.number,
+	code.language-python > .token.function {
 		color: rgb(255, 118, 111);
 	}
 
-	code[class="language-python"] > .token.property,
-	code[class="language-python"] > .token.class-name,
-	code[class="language-python"] > .token.constant,
-	code[class="language-python"] > .token.symbol {
+	code.language-python > .token.property,
+	code.language-python > .token.class-name,
+	code.language-python > .token.constant,
+	code.language-python > .token.symbol {
 		color: #2cf8ff;
 	}
 
-	code[class="language-python"] > .token.selector,
-	code[class="language-python"] > .token.important,
-	code[class="language-python"] > .token.atrule,
-	code[class="language-python"] > .token.keyword {
+	code.language-python > .token.selector,
+	code.language-python > .token.important,
+	code.language-python > .token.atrule,
+	code.language-python > .token.keyword {
 		color: #feb1ff;
 	}
 
-	code[class="language-python"] > .token.builtin {color: rgb(139, 255, 211)}
-	code[class="language-python"] > .token.string-interpolation {color: #f8c555}
-	code[class="language-python"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	code.language-python > .token.builtin {color: rgb(139, 255, 211)}
+	code.language-python > .token.string-interpolation {color: #f8c555}
+	code.language-python > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
 
-	code[class="language-python"] > .token.string,
-	code[class="language-python"] > .token.char,
-	code[class="language-python"] > .token.attr-value,
-	code[class="language-python"] > .token.regex,
-	code[class="language-python"] > .token.variable {
+	code.language-python > .token.string,
+	code.language-python > .token.char,
+	code.language-python > .token.attr-value,
+	code.language-python > .token.regex,
+	code.language-python > .token.variable {
 		color: #ffdf9b;
 	}
 
-	code[class="language-python"] > .token.operator,
-	code[class="language-python"] > .token.entity,
-	code[class="language-python"] > .token.url {
+	code.language-python > .token.operator,
+	code.language-python > .token.entity,
+	code.language-python > .token.url {
 		color: #6fe7e5;
 	}
 
-	code[class="language-python"] > .token.important,
-	code[class="language-python"] > .token.bold {
+	code.language-python > .token.important,
+	code.language-python > .token.bold {
 		font-weight: bold;
 	}
-	code[class="language-python"] > .token.italic {
+	code.language-python > .token.italic {
 		font-style: italic;
 	}
 
-	code[class="language-python"] > .token.entity {
+	code.language-python > .token.entity {
 		cursor: help;
 	}
 
-	code[class="language-python"] > .token.inserted {
+	code.language-python > .token.inserted {
 		color: green;
 	}
 /* Language - SML */
-	code[class="language-sml"],
-	pre[class="language-sml"] {
+	code.language-sml,
+	pre.language-sml {
 		color: var(--codeWhite);
 	}
 
-	:not(pre) > code[class="language-sml"],
-	pre[class="language-sml"] {
+	:not(pre) > code.language-sml,
+	pre.language-sml {
 		background: var(--codePurpleBG);
 	}
 
-	code[class="language-sml"] > .token.comment,
-	code[class="language-sml"] > .token.triple-quoted-string.string,
-	code[class="language-sml"] > .token.block-comment,
-	code[class="language-sml"] > .token.prolog,
-	code[class="language-sml"] > .token.doctype,
-	code[class="language-sml"] > .token.cdata {
+	code.language-sml > .token.comment,
+	code.language-sml > .token.triple-quoted-string.string,
+	code.language-sml > .token.block-comment,
+	code.language-sml > .token.prolog,
+	code.language-sml > .token.doctype,
+	code.language-sml > .token.cdata {
 		color: var(--commentLavender);
 	}
 
-	code[class="language-sml"] > .token.punctuation {
+	code.language-sml > .token.punctuation {
 		color: var(--punctuationLavender);
 	}
 
-	code[class="language-sml"] > .token.tag,
-	code[class="language-sml"] > .token.attr-name,
-	code[class="language-sml"] > .token.namespace,
-	code[class="language-sml"] > .token.deleted {
+	code.language-sml > .token.tag,
+	code.language-sml > .token.attr-name,
+	code.language-sml > .token.namespace,
+	code.language-sml > .token.deleted {
 		color: #ff5056;
 	}
 
-	code[class="language-sml"] > .token.function-name, 
-	code[class="language-sml"] > .token.function {
+	code.language-sml > .token.function-name, 
+	code.language-sml > .token.function {
 		color: rgb(236, 218, 159);
 	}
 
-	code[class="language-sml"] > .token.number {
+	code.language-sml > .token.number {
 		color: rgb(255, 157, 0);
 	}
 
-	code[class="language-sml"] > .token.boolean,
-	code[class="language-sml"] > .token.property,
-	code[class="language-sml"] > .token.constant,
-	code[class="language-sml"] > .token.symbol {
+	code.language-sml > .token.boolean,
+	code.language-sml > .token.property,
+	code.language-sml > .token.constant,
+	code.language-sml > .token.symbol {
 		color: rgb(119, 255, 153);
 	}
 
-	code[class="language-sml"] > .token.class-name {
+	code.language-sml > .token.class-name {
 		color: rgb(255, 146, 255);
 	}
 
 
-	code[class="language-sml"] > .token.selector,
-	code[class="language-sml"] > .token.important,
-	code[class="language-sml"] > .token.atrule,
-	code[class="language-sml"] > .token.keyword {
+	code.language-sml > .token.selector,
+	code.language-sml > .token.important,
+	code.language-sml > .token.atrule,
+	code.language-sml > .token.keyword {
 		color: rgb(64, 215, 226);
 	}
 
-	code[class="language-sml"] > .token.builtin {color: rgb(167, 228, 110)}
-	code[class="language-sml"] > .token.string-interpolation {color: #f8c555}
-	code[class="language-sml"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	code.language-sml > .token.builtin {color: rgb(167, 228, 110)}
+	code.language-sml > .token.string-interpolation {color: #f8c555}
+	code.language-sml > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
 
-	code[class="language-sml"] > .token.string,
-	code[class="language-sml"] > .token.char,
-	code[class="language-sml"] > .token.attr-value,
-	code[class="language-sml"] > .token.regex,
-	code[class="language-sml"] > .token.variable {
+	code.language-sml > .token.string,
+	code.language-sml > .token.char,
+	code.language-sml > .token.attr-value,
+	code.language-sml > .token.regex,
+	code.language-sml > .token.variable {
 		color: #f8c555;
 	}
 
-	code[class="language-sml"] > .token.operator,
-	code[class="language-sml"] > .token.entity,
-	code[class="language-sml"] > .token.url {
+	code.language-sml > .token.operator,
+	code.language-sml > .token.entity,
+	code.language-sml > .token.url {
 		color: rgb(247, 97, 92);
 	}
 
-	code[class="language-sml"] > .token.important,
-	code[class="language-sml"] > .token.bold {
+	code.language-sml > .token.important,
+	code.language-sml > .token.bold {
 		font-weight: bold;
 	}
-	code[class="language-sml"] > .token.italic {
+	code.language-sml > .token.italic {
 		font-style: italic;
 	}
 
-	code[class="language-sml"] > .token.entity {
+	code.language-sml > .token.entity {
 		cursor: help;
 	}
 
-	code[class="language-sml"] > .token.inserted {
+	code.language-sml > .token.inserted {
 		color: green;
 	}
 /* Language - Haskell */
-	pre[class="language-haskell"],
-	pre[class="language-haskell"] code {
+	pre.language-haskell,
+	pre.language-haskell code {
 		color: var(--HaskellPrimary);
 		background-color: var(--HaskellBackground);
 	}
 
-	code[class="language-haskell"] > .token.comment,
-	code[class="language-haskell"] > .token.block-comment,
-	code[class="language-haskell"] > .token.prolog,
-	code[class="language-haskell"] > .token.doctype,
-	code[class="language-haskell"] > .token.cdata {
+	code.language-haskell > .token.comment,
+	code.language-haskell > .token.block-comment,
+	code.language-haskell > .token.prolog,
+	code.language-haskell > .token.doctype,
+	code.language-haskell > .token.cdata {
 		color: var(--HaskellComment);
 	}
 
-	code[class="language-haskell"] > .token.punctuation {
+	code.language-haskell > .token.punctuation {
 		color: var(--HaskellPrimary);
 	}
-	code[class="language-haskell"] > .token.hvariable {
+	code.language-haskell > .token.hvariable {
 		color: var(--HaskellFunctionName);
 	}
-	code[class="language-haskell"] > .token.tag,
-	code[class="language-haskell"] > .token.attr-name,
-	code[class="language-haskell"] > .token.namespace,
-	code[class="language-haskell"] > .token.deleted {
+	code.language-haskell > .token.tag,
+	code.language-haskell > .token.attr-name,
+	code.language-haskell > .token.namespace,
+	code.language-haskell > .token.deleted {
 		color: var(--HaskellPrimary);
 	}
 
-	code[class="language-haskell"] > .token.function-name {
+	code.language-haskell > .token.function-name {
 		color: var(--HaskellFunction);
 	}
 
-	code[class="language-haskell"] > .token.boolean,
-	code[class="language-haskell"] > .token.string,
-	code[class="language-haskell"] > .token.char,
-	code[class="language-haskell"] > .token.number,
-	code[class="language-haskell"] > .token.function {
+	code.language-haskell > .token.boolean,
+	code.language-haskell > .token.string,
+	code.language-haskell > .token.char,
+	code.language-haskell > .token.number,
+	code.language-haskell > .token.function {
 		color: var(--HaskellLiteral);
 	}
 
-	code[class="language-haskell"] > .token.property,
-	code[class="language-haskell"] > .token.class-name,
-	code[class="language-haskell"] > .token.constant,
-	code[class="language-haskell"] > .token.symbol {
+	code.language-haskell > .token.property,
+	code.language-haskell > .token.class-name,
+	code.language-haskell > .token.constant,
+	code.language-haskell > .token.symbol {
 		color: var(--HaskellPrimary);
 	}
 
-	code[class="language-haskell"] > .token.selector,
-	code[class="language-haskell"] > .token.operator,
-	code[class="language-haskell"] > .token.important,
-	code[class="language-haskell"] > .token.atrule,
-	code[class="language-haskell"] > .token.keyword {
+	code.language-haskell > .token.selector,
+	code.language-haskell > .token.operator,
+	code.language-haskell > .token.important,
+	code.language-haskell > .token.atrule,
+	code.language-haskell > .token.keyword {
 		color: var(--HaskellKeyword);
 	}
 
-	code[class="language-haskell"] > .token.string-interpolation {color: #f8c555}
-	code[class="language-haskell"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	code.language-haskell > .token.string-interpolation {color: #f8c555}
+	code.language-haskell > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
 
 
-	code[class="language-haskell"] > .token.attr-value,
-	code[class="language-haskell"] > .token.regex,
-	code[class="language-haskell"] > .token.variable {
+	code.language-haskell > .token.attr-value,
+	code.language-haskell > .token.regex,
+	code.language-haskell > .token.variable {
 		color: rgb(199,255,145);
 	}
 
-	code[class="language-haskell"] > .token.entity,
-	code[class="language-haskell"] > .token.url {
+	code.language-haskell > .token.entity,
+	code.language-haskell > .token.url {
 		color: #6fe7e5;
 	}
 
-	code[class="language-haskell"] > .token.important,
-	code[class="language-haskell"] > .token.bold {
+	code.language-haskell > .token.important,
+	code.language-haskell > .token.bold {
 		font-weight: bold;
 	}
-	code[class="language-haskell"] > .token.italic {
+	code.language-haskell > .token.italic {
 		font-style: italic;
 	}
 
-	code[class="language-haskell"] > .token.entity {
+	code.language-haskell > .token.entity {
 		cursor: help;
 	}
 
-	code[class="language-haskell"] > .token.inserted {
+	code.language-haskell > .token.inserted {
 		color: green;
 	}
 /* Language - Rust */
-	pre[class="language-rust"],
-	pre[class="language-rust"] code {
+	pre.language-rust,
+	pre.language-rust code {
 		color: var(--rustPrimary);
 		background-color: var(--rustBackground);
 	}
 	
-	code[class="language-rust"] > .token.comment,
-	code[class="language-rust"] > .token.block-comment,
-	code[class="language-rust"] > .token.prolog,
-	code[class="language-rust"] > .token.doctype,
-	code[class="language-rust"] > .token.cdata {
+	code.language-rust > .token.comment,
+	code.language-rust > .token.block-comment,
+	code.language-rust > .token.prolog,
+	code.language-rust > .token.doctype,
+	code.language-rust > .token.cdata {
 		color: var(--rustComment);
 	}
 	
-	code[class="language-rust"] > .token.punctuation {
+	code.language-rust > .token.punctuation {
 		color: var(--rustPrimary);
 	}
 	
-	code[class="language-rust"] > .token.tag,
-	code[class="language-rust"] > .token.attr-name,
-	code[class="language-rust"] > .token.namespace,
-	code[class="language-rust"] > .token.deleted {
+	code.language-rust > .token.tag,
+	code.language-rust > .token.attr-name,
+	code.language-rust > .token.namespace,
+	code.language-rust > .token.deleted {
 		color: var(--rustPrimary);
 	}
 	
-	code[class="language-rust"] > .token.boolean,
-	code[class="language-rust"] > .token.string,
-	code[class="language-rust"] > .token.char,
-	code[class="language-rust"] > .token.number {
+	code.language-rust > .token.boolean,
+	code.language-rust > .token.string,
+	code.language-rust > .token.char,
+	code.language-rust > .token.number {
 		color: var(--rustLiteral);
 	}
-	code[class="language-rust"] > .token.function {
+	code.language-rust > .token.function {
 		color: var(--rustFunction);
 	}
 
-	code[class="language-rust"] > .token.function-definition.function {
+	code.language-rust > .token.function-definition.function {
 		color: var(--rustFunctionDefinition);
 	}
 	
-	code[class="language-rust"] > .token.property,
-	code[class="language-rust"] > .token.class-name,
-	code[class="language-rust"] > .token.constant,
-	code[class="language-rust"] > .token.symbol {
+	code.language-rust > .token.property,
+	code.language-rust > .token.class-name,
+	code.language-rust > .token.constant,
+	code.language-rust > .token.symbol {
 		color: var(--rustPrimary);
 	}
 	
-	code[class="language-rust"] > .token.selector,
-	code[class="language-rust"] > .token.operator,
-	code[class="language-rust"] > .token.important,
-	code[class="language-rust"] > .token.atrule,
-	code[class="language-rust"] > .token.keyword {
+	code.language-rust > .token.selector,
+	code.language-rust > .token.operator,
+	code.language-rust > .token.important,
+	code.language-rust > .token.atrule,
+	code.language-rust > .token.keyword {
 		color: var(--rustKeyword);
 	}
 	
-	code[class="language-rust"] > .token.string-interpolation {color: #f8c555}
-	code[class="language-rust"] > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
+	code.language-rust > .token.string-interpolation {color: #f8c555}
+	code.language-rust > .token.string-interpolation > .token.interpolation {color: rgb(255, 245, 187)}
 	
 	
-	code[class="language-rust"] > .token.attr-value,
-	code[class="language-rust"] > .token.regex,
-	code[class="language-rust"] > .token.variable {
+	code.language-rust > .token.attr-value,
+	code.language-rust > .token.regex,
+	code.language-rust > .token.variable {
 		color: rgb(199,255,145);
 	}
 	
-	code[class="language-rust"] > .token.entity,
-	code[class="language-rust"] > .token.url {
+	code.language-rust > .token.entity,
+	code.language-rust > .token.url {
 		color: #6fe7e5;
 	}
 	
-	code[class="language-rust"] > .token.important,
-	code[class="language-rust"] > .token.bold {
+	code.language-rust > .token.important,
+	code.language-rust > .token.bold {
 		font-weight: bold;
 	}
-	code[class="language-rust"] > .token.italic {
+	code.language-rust > .token.italic {
 		font-style: italic;
 	}
 	
-	code[class="language-rust"] > .token.entity {
+	code.language-rust > .token.entity {
 		cursor: help;
 	}
 	
-	code[class="language-rust"] > .token.inserted {
+	code.language-rust > .token.inserted {
 		color: green;
 	}
 /* Language - HTML */
-	pre[class="language-html"] {
+	pre.language-html {
 		background-color: white;
 		color: var(--textColor);
 	}
-	code[class="language-html"]>.token.comment,
-	code[class="language-html"]>.token.doctype {
+	code.language-html>.token.comment,
+	code.language-html>.token.doctype {
 		color: rgb(145, 145, 145);
 	}
-	code[class="language-html"]>.token.tag {color: rgb(0, 92, 157);}
-	code[class="language-html"]>.token.tag .token.punctuation {color: tomato;}
+	code.language-html>.token.tag {color: rgb(0, 92, 157);}
+	code.language-html>.token.tag .token.punctuation {color: tomato;}
 
 /* Language - Verilog */
-	pre[class="language-verilog"] {
+	pre.language-verilog {
 		background-color: #1E3163;
 	}
-	pre[class="language-verilog"] code {
+	pre.language-verilog code {
 		color: var(--codeWhite);
 	}
-	code[class="language-verilog"] .token.keyword-module, 
-	code[class="language-verilog"] .token.keyword-endmodule {
+	code.language-verilog .token.keyword-module, 
+	code.language-verilog .token.keyword-endmodule {
 		color: tomato;
 	}
-	code[class="language-verilog"] .token.keyword-input {
+	code.language-verilog .token.keyword-input {
 		color: rgb(255, 245, 158);
 	}
-	code[class="language-verilog"] .token.keyword-output {
+	code.language-verilog .token.keyword-output {
 		color: rgb(255, 191, 131);
 	}
-	code[class="language-verilog"] .token.comment {
+	code.language-verilog .token.comment {
 		color: rgb(156, 190, 212);
 	}
-	code[class="language-verilog"] .token.operator {
+	code.language-verilog .token.operator {
 		color: gold;
 	}
-	code[class="language-verilog"] .token.punctuation {
+	code.language-verilog .token.punctuation {
 		color: greenyellow;
 	}
-	code[class="language-verilog"] .token.number {
+	code.language-verilog .token.number {
 		color: var(--codeBrightBlue);
 	}
-	code[class="language-verilog"] .token.function {
+	code.language-verilog .token.function {
 		color: #f7aeff;
 	}
+/* Margin node code */
+	div.note pre {
+		background-color: var(--page);
+		box-shadow: none !important;
+	}
+	div.note pre * {
+		color: var(--darkBlue) !important;
+	}
+/* Braces */
+	.token.punctuation.brace-hover,
+	.token.punctuation.brace-selected {
+		outline: solid 1px;
+	}
+
 /* Directory Tree */
 	pre.language-dir {
 		width: fit-content;
@@ -3944,6 +4167,14 @@
 				column-gap: 2%;
 			}
 		}
+		@media (max-width: 700px) {
+			figure.iblock {
+				display: flex;
+			}
+			figure.iblock pre {
+				margin: 2px 0;
+			}
+		}
 		@media (max-width: 900px) {
 			.grid {
 				display: block;
@@ -3966,7 +4197,8 @@
 		@media (min-width: 0px) and (max-width: 600px) {
 			section {padding: 1vw 3vw;}
 		}
-/* Page Styling */
+/* Dark Mode */
+/* Print Styling */
 	@page {
 		size: A4;
 		margin: 1in;

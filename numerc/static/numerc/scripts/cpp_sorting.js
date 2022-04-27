@@ -603,24 +603,14 @@ const msort_1 = new csmd.Sequence({
 	id: "msort_1",
 	width: 40,
 	height: 25,
-	data: [
-		{ val: 6 },
-		{ val: 2 },
-		{ val: 5 },
-		{ val: 8 },
-	],
+	data: [{ val: 6 }, { val: 2 }, { val: 5 }, { val: 8 }],
 }).render();
 
 const msort_2 = new csmd.Sequence({
 	id: "msort_2",
 	width: 40,
 	height: 25,
-	data: [
-		{ val: 3 },
-		{ val: 4 },
-		{ val: 1 },
-		{ val: 7 },
-	],
+	data: [{ val: 3 }, { val: 4 }, { val: 1 }, { val: 7 }],
 }).render();
 
 const msort_3 = new csmd.Sequence({
@@ -629,10 +619,7 @@ const msort_3 = new csmd.Sequence({
 	svg_height: 80,
 	width: 60,
 	height: 40,
-	data: [
-		{ val: 6 },
-		{ val: 2 },
-	],
+	data: [{ val: 6 }, { val: 2 }],
 }).render();
 
 const msort_4 = new csmd.Sequence({
@@ -641,10 +628,7 @@ const msort_4 = new csmd.Sequence({
 	svg_height: 80,
 	width: 60,
 	height: 40,
-	data: [
-		{ val: 5 },
-		{ val: 8 },
-	],
+	data: [{ val: 5 }, { val: 8 }],
 }).render();
 
 const msort_5 = new csmd.Sequence({
@@ -653,10 +637,7 @@ const msort_5 = new csmd.Sequence({
 	svg_height: 80,
 	width: 60,
 	height: 40,
-	data: [
-		{ val: 3 },
-		{ val: 4 },
-	],
+	data: [{ val: 3 }, { val: 4 }],
 }).render();
 
 const msort_6 = new csmd.Sequence({
@@ -665,10 +646,7 @@ const msort_6 = new csmd.Sequence({
 	svg_height: 80,
 	width: 60,
 	height: 40,
-	data: [
-		{ val: 1 },
-		{ val: 7 },
-	],
+	data: [{ val: 1 }, { val: 7 }],
 }).render();
 
 const msort_7 = new csmd.Sequence({
@@ -677,9 +655,7 @@ const msort_7 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 6 },
-	],
+	data: [{ val: 6 }],
 }).render();
 
 const msort_8 = new csmd.Sequence({
@@ -688,9 +664,7 @@ const msort_8 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 2 },
-	],
+	data: [{ val: 2 }],
 }).render();
 
 const msort_9 = new csmd.Sequence({
@@ -699,9 +673,7 @@ const msort_9 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 5 },
-	],
+	data: [{ val: 5 }],
 }).render();
 
 const msort_10 = new csmd.Sequence({
@@ -710,9 +682,7 @@ const msort_10 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 8 },
-	],
+	data: [{ val: 8 }],
 }).render();
 
 const msort_11 = new csmd.Sequence({
@@ -721,9 +691,7 @@ const msort_11 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 3 },
-	],
+	data: [{ val: 3 }],
 }).render();
 
 const msort_12 = new csmd.Sequence({
@@ -732,9 +700,7 @@ const msort_12 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 4 },
-	],
+	data: [{ val: 4 }],
 }).render();
 
 const msort_13 = new csmd.Sequence({
@@ -743,9 +709,7 @@ const msort_13 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 1 },
-	],
+	data: [{ val: 1 }],
 }).render();
 
 const msort_14 = new csmd.Sequence({
@@ -754,9 +718,7 @@ const msort_14 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 7 },
-	],
+	data: [{ val: 7 }],
 }).render();
 
 const msort_15 = new csmd.Sequence({
@@ -765,9 +727,7 @@ const msort_15 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 6 },
-	],
+	data: [{ val: 6 }],
 }).render();
 
 const msort_16 = new csmd.Sequence({
@@ -776,9 +736,7 @@ const msort_16 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 2 },
-	],
+	data: [{ val: 2 }],
 }).render();
 
 const msort_17 = new csmd.Sequence({
@@ -787,10 +745,7 @@ const msort_17 = new csmd.Sequence({
 	svg_height: 80,
 	width: 60,
 	height: 40,
-	data: [
-		{ val: 2 },
-		{ val: 6 },
-	],
+	data: [{ val: 2 }, { val: 6 }],
 }).render();
 
 const msort_18 = new csmd.Sequence({
@@ -799,9 +754,7 @@ const msort_18 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 5 },
-	],
+	data: [{ val: 5 }],
 }).render();
 
 const msort_19 = new csmd.Sequence({
@@ -810,9 +763,7 @@ const msort_19 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 8 },
-	],
+	data: [{ val: 8 }],
 }).render();
 
 const msort_20 = new csmd.Sequence({
@@ -821,10 +772,7 @@ const msort_20 = new csmd.Sequence({
 	svg_height: 80,
 	width: 60,
 	height: 40,
-	data: [
-		{ val: 5 },
-		{ val: 8 },
-	],
+	data: [{ val: 5 }, { val: 8 }],
 }).render();
 
 const msort_21 = new csmd.Sequence({
@@ -833,9 +781,7 @@ const msort_21 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 3 },
-	],
+	data: [{ val: 3 }],
 }).render();
 
 const msort_22 = new csmd.Sequence({
@@ -844,9 +790,7 @@ const msort_22 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 4 },
-	],
+	data: [{ val: 4 }],
 }).render();
 
 const msort_23 = new csmd.Sequence({
@@ -855,10 +799,7 @@ const msort_23 = new csmd.Sequence({
 	svg_height: 80,
 	width: 60,
 	height: 40,
-	data: [
-		{ val: 3 },
-		{ val: 4 },
-	],
+	data: [{ val: 3 }, { val: 4 }],
 }).render();
 
 const msort_24 = new csmd.Sequence({
@@ -867,9 +808,7 @@ const msort_24 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 1 },
-	],
+	data: [{ val: 1 }],
 }).render();
 
 const msort_25 = new csmd.Sequence({
@@ -878,9 +817,7 @@ const msort_25 = new csmd.Sequence({
 	svg_height: 60,
 	width: 90,
 	height: 100,
-	data: [
-		{ val: 7 },
-	],
+	data: [{ val: 7 }],
 }).render();
 
 const msort_26 = new csmd.Sequence({
@@ -889,34 +826,21 @@ const msort_26 = new csmd.Sequence({
 	svg_height: 80,
 	width: 60,
 	height: 40,
-	data: [
-		{ val: 1 },
-		{ val: 7 },
-	],
+	data: [{ val: 1 }, { val: 7 }],
 }).render();
 
 const msort_27 = new csmd.Sequence({
 	id: "msort_27",
 	width: 40,
 	height: 25,
-	data: [
-		{ val: 2 },
-		{ val: 5 },
-		{ val: 6 },
-		{ val: 8 },
-	],
+	data: [{ val: 2 }, { val: 5 }, { val: 6 }, { val: 8 }],
 }).render();
 
 const msort_28 = new csmd.Sequence({
 	id: "msort_28",
 	width: 40,
 	height: 25,
-	data: [
-		{ val: 1 },
-		{ val: 3 },
-		{ val: 4 },
-		{ val: 7 },
-	],
+	data: [{ val: 1 }, { val: 3 }, { val: 4 }, { val: 7 }],
 }).render();
 
 const msort_29 = new csmd.Sequence({
@@ -924,13 +848,366 @@ const msort_29 = new csmd.Sequence({
 	width: 45,
 	height: 10,
 	data: [
-		{ val: 1, colors: {fill: 'green', text: 'white', stroke: 'forestgreen'} },
-		{ val: 2, colors: {fill: 'green', text: 'white', stroke: 'forestgreen'} },
-		{ val: 3, colors: {fill: 'green', text: 'white', stroke: 'forestgreen'} },
-		{ val: 4, colors: {fill: 'green', text: 'white', stroke: 'forestgreen'} },
-		{ val: 5, colors: {fill: 'green', text: 'white', stroke: 'forestgreen'} },
-		{ val: 6, colors: {fill: 'green', text: 'white', stroke: 'forestgreen'} },
-		{ val: 7, colors: {fill: 'green', text: 'white', stroke: 'forestgreen'} },
-		{ val: 8, colors: {fill: 'green', text: 'white', stroke: 'forestgreen'} },
+		{
+			val: 1,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 2,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 3,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 4,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 5,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 6,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 7,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 8,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
 	],
 }).render();
+
+const qsort0 = new csmd.Sequence({
+	id: "qsort0",
+	width: 40,
+	height: 15,
+	data: [
+		{ val: 5 },
+		{ val: 3 },
+		{ val: 4 },
+		{ val: 9 },
+		{ val: 1 },
+		{ val: 7 },
+	],
+}).render();
+
+const qsort1 = new csmd.Sequence({
+	id: "qsort1",
+	svg_width: 60,
+	svg_height: 60,
+	width: 20,
+	height: 10,
+	data: [
+		{
+			val: 5,
+			ant: "pivot",
+			colors: { fill: "tomato", text: "white", stroke: "firebrick" },
+		},
+	],
+}).render();
+
+const qsort2 = new csmd.Sequence({
+	id: "qsort2",
+	name: "remains",
+	width: 50,
+	height: 20,
+	svg_width: 180,
+	data: [{ val: 3 }, { val: 4 }, { val: 9 }, { val: 1 }, { val: 7 }],
+}).render();
+
+const qsort3 = new csmd.Sequence({
+	id: "qsort3",
+	name: "left",
+	width: 50,
+	height: 20,
+	svg_width: 110,
+	svg_height: 110,
+	data: [{ val: 3 }, { val: 4 }, { val: 1 }],
+}).render();
+
+const qsort4 = new csmd.Sequence({
+	id: "qsort4",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 20,
+	data: [
+		{
+			val: 5,
+			ant: "pivot",
+			colors: { fill: "tomato", text: "white", stroke: "firebrick" },
+		},
+	],
+}).render();
+
+const qsort5 = new csmd.Sequence({
+	id: "qsort5",
+	name: "right",
+	width: 40,
+	height: 25,
+	svg_width: 80,
+	svg_height: 80,
+	data: [{ val: 9 }, { val: 7 }],
+}).render();
+
+const qsort6 = new csmd.Sequence({
+	id: "qsort6",
+	width: 20,
+	svg_width: 60,
+	svg_height: 60,
+	height: 15,
+	data: [
+		{
+			val: 3,
+			ant: "pivot",
+			colors: { fill: "tomato", text: "white", stroke: "firebrick" },
+		},
+	],
+}).render();
+
+const qsort7 = new csmd.Sequence({
+	id: "qsort7",
+	name: "remains",
+	width: 25,
+	height: 15,
+	svg_width: 80,
+	svg_height: 80,
+	data: [{ val: 4 }, { val: 1 }],
+}).render();
+
+const qsort8 = new csmd.Sequence({
+	id: "qsort8",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 25,
+	data: [
+		{
+			val: 1,
+			ant: "left",
+		},
+	],
+}).render();
+
+const qsort9 = new csmd.Sequence({
+	id: "qsort9",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 25,
+	data: [
+		{
+			val: 3,
+			ant: "pivot",
+			colors: { fill: "tomato", text: "white", stroke: "firebrick" },
+		},
+	],
+}).render();
+
+const qsort10 = new csmd.Sequence({
+	id: "qsort10",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 25,
+	data: [
+		{
+			val: 4,
+			ant: "right",
+		},
+	],
+}).render();
+
+const qsort11 = new csmd.Sequence({
+	id: "qsort11",
+	width: 20,
+	height: 10,
+	svg_width: 110,
+	svg_height: 110,
+	data: [{ val: 1 }, { val: 3 }, { val: 4 }],
+}).render();
+
+const qsort12 = new csmd.Sequence({
+	id: "qsort12",
+	name: "left",
+	width: 50,
+	height: 20,
+	svg_width: 110,
+	svg_height: 110,
+	data: [{ val: 1 }, { val: 3 }, { val: 4 }],
+}).render();
+
+const qsort13 = new csmd.Sequence({
+	id: "qsort13",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 20,
+	data: [
+		{
+			val: 5,
+			ant: "pivot",
+			colors: { fill: "tomato", text: "white", stroke: "firebrick" },
+		},
+	],
+}).render();
+
+const qsort14 = new csmd.Sequence({
+	id: "qsort14",
+	name: "right",
+	width: 40,
+	height: 25,
+	svg_width: 80,
+	svg_height: 80,
+	data: [{ val: 9 }, { val: 7 }],
+}).render();
+
+const qsort15 = new csmd.Sequence({
+	id: "qsort15",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 25,
+	data: [
+		{
+			val: 7,
+			ant: "left",
+		},
+	],
+}).render();
+
+const qsort16 = new csmd.Sequence({
+	id: "qsort16",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 25,
+	data: [
+		{
+			val: 9,
+			ant: "pivot",
+			colors: { fill: "tomato", text: "white", stroke: "firebrick" },
+		},
+	],
+}).render();
+
+const qsort17 = new csmd.Sequence({
+	id: "qsort17",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 25,
+	data: [
+		{
+			val: "",
+			ant: "right",
+		},
+	],
+}).render();
+
+const qsort18 = new csmd.Sequence({
+	id: "qsort18",
+	width: 15,
+	height: 10,
+	svg_width: 90,
+	svg_height: 90,
+	data: [{ val: 7 }, { val: 9 }],
+}).render();
+
+const qsort19 = new csmd.Sequence({
+	id: "qsort19",
+	name: "left",
+	width: 50,
+	height: 20,
+	svg_width: 110,
+	svg_height: 110,
+	data: [{ val: 1 }, { val: 3 }, { val: 4 }],
+}).render();
+
+const qsort20 = new csmd.Sequence({
+	id: "qsort20",
+	width: 30,
+	svg_width: 60,
+	svg_height: 60,
+	height: 20,
+	data: [
+		{
+			val: 5,
+			ant: "pivot",
+			colors: { fill: "tomato", text: "white", stroke: "firebrick" },
+		},
+	],
+}).render();
+
+const qsort21 = new csmd.Sequence({
+	id: "qsort21",
+	name: "right",
+	width: 40,
+	height: 25,
+	svg_width: 80,
+	svg_height: 80,
+	data: [{ val: 7 }, { val: 9 }],
+}).render();
+
+const qsort22 = new csmd.Sequence({
+	id: "qsort22",
+	width: 40,
+	height: 15,
+	data: [
+		{
+			val: 1,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 3,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 4,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 5,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 7,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+		{
+			val: 9,
+			colors: { fill: "green", text: "white", stroke: "forestgreen" },
+		},
+	],
+}).render();
+
+const radix0 = new csmd.Multistack({
+	id: 'radix0',
+	width: 90,
+	height: 18,
+	svg_width: 690,
+	svg_height: 290,
+	data: [
+		[{val: 5}],
+		["F0"],
+		["F0", "F1"],
+		["F0", "F1", "F3"],
+		["F0", "F1"],
+		["F0", "F1", "F4"],
+		["F0", "F1"],
+		["F0"],
+		["F0", "F2"],
+		["F0", "F2", "F5"],
+		["F0", "F2"],
+		["F0", "F2", "F6"],
+		["F0", "F2"],
+		["F0"],
+		[""],
+	],
+}).render()

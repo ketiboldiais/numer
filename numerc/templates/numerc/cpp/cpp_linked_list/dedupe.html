@@ -1,0 +1,407 @@
+{% load static %}
+<h2>Dedupe a Sorted List</h2>
+<p>Suppose we have the following linked list:</p>
+<ul class="linkedlist">
+	<ul>
+		<li>
+			<div>2</div>
+			<div>0x200</div>
+			<div>0x100</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>4</div>
+			<div>0x300</div>
+			<div>0x200</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>4</div>
+			<div>0x400</div>
+			<div>0x300</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0x500</div>
+			<div>0x400</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0x600</div>
+			<div>0x500</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0</div>
+			<div>0x600</div>
+		</li>
+	</ul>
+</ul>
+<p>
+	Notice that the list above is sorted, but we have duplicates: ${4}$ and
+	${8.}$ Many procedures require us to <b>dedupe</b> (<q>deduplicate</q>)
+	this list &mdash; removing nodes with duplicate values in their data
+	fields. Post-dedupe, we have the list:
+</p>
+<ul class="linkedlist">
+	<ul>
+		<li>
+			<div>2</div>
+			<div>0x10</div>
+			<div>0x05</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>4</div>
+			<div>0x15</div>
+			<div>0x10</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0</div>
+			<div>0x15</div>
+		</li>
+	</ul>
+</ul>
+<p>
+	The most straightforward way to dedupe a linked list is to start with
+	two pointers, one pointing to the list's head, the other pointing the
+	node immediately after:
+</p>
+<ul class="linkedlist">
+	<ul class="rhl">
+		<li>
+			<div>2</div>
+			<div>0x200</div>
+			<div><span class="redText">t</span></div>
+		</li>
+	</ul>
+	<ul class="ghl">
+		<li>
+			<div>4</div>
+			<div>0x300</div>
+			<div><span class="greenText">d</span></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>4</div>
+			<div>0x400</div>
+			<div>0x300</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0x500</div>
+			<div>0x400</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0x600</div>
+			<div>0x500</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0</div>
+			<div>0x600</div>
+		</li>
+	</ul>
+</ul>
+<p>
+	Once there, we ask: ${v(d) = v(d)?}$ Where ${v}$ is a function
+	returning the data value of the pointee node. If it does not match,
+	then we move
+	<var>d</var> to its next node, and <var>t</var> its next node. With the
+	pointers <var>d</var> and <var>t</var> positioned, we check again,
+	${v(d) = v(t)?}$
+</p>
+<ul class="linkedlist">
+	<ul>
+		<li>
+			<div>2</div>
+			<div>0x200</div>
+			<div>0x100</div>
+		</li>
+	</ul>
+	<ul class="rhl">
+		<li>
+			<div>4</div>
+			<div>0x300</div>
+			<div><span class="redText">t</span></div>
+		</li>
+	</ul>
+	<ul class="ghl">
+		<li>
+			<div>4</div>
+			<div>0x400</div>
+			<div><span class="greenText">d</span></div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0x500</div>
+			<div>0x400</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0x600</div>
+			<div>0x500</div>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<div>8</div>
+			<div>0</div>
+			<div>0x600</div>
+		</li>
+	</ul>
+</ul>
+<p>
+	Here, we see that ${v(d) = v(t),}$ since ${v(n_2) = 4 = v(n_3) = 4.}$
+	If the nodes match, we want to delete <var>d</var>'s pointee.<sup
+	></sup> To do so, we have <var>t</var>'s <var>next</var> field point to
+	<var>d</var>'s next field. Then, we <var>delete</var> <var>d</var>'s
+	pointee. Then, we make <var>d</var>'s <var>next</var> point to
+	<var>t</var>'s next. More explicitly with pseudocode:
+</p>
+<div class="note">
+	<p>
+		We can delete either <var>t</var>'s pointee or <var>d</var>'s
+		pointee; it makes no difference.
+	</p>
+</div>
+<figure>
+	<ol class="alg">
+		<li>fn dedupeSorted() -> void :</li>
+		<ol>
+			<li>Node* t = head;</li>
+			<li>Node* d = head->next;</li>
+			<li>while (d != NULL):</li>
+			<ol>
+				<li>if (t->data != d->data):</li>
+				<ol>
+					<li>t = d;</li>
+					<li>d = d->next;</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>t->next = d->next;</li>
+					<li>delete d;</li>
+					<li>d = t->next;</li>
+				</ol>
+			</ol>
+		</ol>
+	</ol>
+</figure>
+<p>
+	With this implementation, we must scan through the entire list of ${n}$
+	nodes to dedupe. As such, this approach has a time complexity of
+	${O(n)}$ &mdash; linear time. Because the procedure must
+	<em>always</em> traverse the entire linked list to dedupe, the time
+	complexity is always ${O(n).}$
+</p>
+<div class="demo">
+	<button>C</button>
+	<div class="implementation">
+		<p>Here's an implementation in C:</p>
+		<pre class="language-c"><code>
+			void dedupe(struct Node **head) {
+				struct Node *t = *head;
+				struct Node *d = (**head).next;
+				while (d != NULL) {
+					if ((*t).data != (*d).data) {
+						t = d;
+						d = (*d).next;
+					} else {
+						(*t).next = (*d).next;
+						free(d);
+						d = (*t).next;
+					}
+				}
+			}
+
+			// The function call:
+			dedupe(&list);
+		</code></pre>
+		<p>
+			Here's a line by line analysis of what's going on in the function
+			above:
+		</p>
+		<table class="alg">
+			<thead>
+				<th>Statement</th>
+				<th>Description</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td><var>void dedupe(struct Node **head)</var></td>
+					<td>
+						The function header provides that <var>dedupe()</var> returns
+						nothing, and takes as an argument the memory address of a
+						pointer. The identifier <var>head</var> is a pointer to a
+						pointer. In this case,
+						<var>**head = &list = &(Node *${p}$)</var>, where ${p}$ is
+						the pointer to some node.
+					</td>
+				</tr>
+				<tr>
+					<td><var>struct Node *t = *head;</var></td>
+					<td>
+						The contents of <var>head</var>, i.e., the address stored in
+						<var>head</var>, is stored in <var>t</var>. In other words,
+						<var>t</var> points to the address stored in <var>head</var>,
+						which is <var>&list</var>.
+					</td>
+				</tr>
+				<tr>
+					<td><var>struct Node *d = (**head).next</var></td>
+					<td>
+						The pointer <var>d</var> points to the address stored in
+						<var>head</var>'s <var>next</var> field. This is the next
+						field of the original list's head.
+					</td>
+				</tr>
+				<tr>
+					<td><var>while (d != NULL)</var></td>
+					<td>
+						<q>As long as <var>d</var>'s pointee is a valid address.</q>
+					</td>
+				</tr>
+				<tr>
+					<td><var>if ((*t).data != (*d).data)</var></td>
+					<td>
+						<q
+							>If the data in <var>t</var> (the data in the original
+							list's head) is not equal to the data in <var>d</var> (in
+							the original list, the node immediately after the head).</q
+						>
+					</td>
+				</tr>
+				<tr>
+					<td><var>t = d</var></td>
+					<td>
+						The address in <var>d</var> is now the address in
+						<var>t</var>. I.e., the pointer <var>t</var> now points to
+						the node immediately after its previous pointee.
+					</td>
+				</tr>
+				<tr>
+					<td><var>d = (*d).next</var></td>
+					<td>
+						The address stored in <var>d</var>'s next field is now the
+						address of <var>d</var>.
+					</td>
+				</tr>
+				<tr>
+					<td><var>(*t).next = (*d).next</var></td>
+					<td>
+						If the data in <var>t</var> is not equal to the data in
+						<var>d</var>, then the address in <var>d</var>'s next field
+						becomes the address in <var>t</var>'s next field.
+					</td>
+				</tr>
+				<tr>
+					<td><var>free(d)</var></td>
+					<td>Free the memory <var>d</var> points to.</td>
+				</tr>
+				<tr>
+					<td><var>d = (*t).next</var></td>
+					<td>
+						The address in <var>t</var>'s next field becomes the address
+						in <var>d</var>.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>Testing the implementation above:</p>
+		<pre class="language-c"><code>
+			#include &lt;stdlib.h&gt;
+			#include &lt;stdio.h&gt;
+			
+			struct Node {
+				int data;
+				struct Node *next;
+			};
+			
+			struct Node *newNode(int newData) {
+				struct     Node *newNode = malloc(sizeof(struct Node));
+				(*newNode).data          = newData;
+				(*newNode).next          = NULL;
+				return newNode;
+			}
+			
+			struct Node *List(int arr[], int arrSize) {
+				if (arrSize <= 0) {
+					return NULL;
+				} else {
+					struct Node* head = newNode(arr[0]);
+					struct Node* foot = head;
+					for (int i = 1; i < arrSize; i++) {
+						struct Node* freshNode = newNode(arr[i]);
+										foot->next      = freshNode;
+										foot            = freshNode;
+					}
+					return head;
+				}
+			}
+			
+			void print(struct Node *headRef) {
+				struct Node* foot = headRef;
+				printf("( ");
+				while (foot != NULL) {
+					printf("%d ", foot->data);
+					foot = foot->next;
+				}
+				printf(")\n");
+			}
+			
+			void dedupe(struct Node **head) {
+				struct Node *t = *head;
+				struct Node *d = (**head).next;
+				while (d != NULL) {
+					if ((*t).data != (*d).data) {
+						t = d;
+						d = (*d).next;
+					} else {
+						(*t).next = (*d).next;
+						free(d);
+						d = (*t).next;
+					}
+				}
+			}
+			
+			int main() {
+				int    size       = 6;
+				int    arr[]      = {1,3,3,8,8,8};
+				struct Node *list = List(arr, size);
+				print(list);
+				dedupe(&list);
+				print(list);
+				return 0;
+			}
+		</code></pre>
+		<pre class="language-bash"><code>
+			( 1 3 3 8 8 8 )
+			( 1 3 8 )
+		</code></pre>
+	</div>
+</div>

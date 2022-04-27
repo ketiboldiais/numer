@@ -1,0 +1,149 @@
+{% load static %}
+<p>We have the following tree:</p>
+<div id="bst_delete_1"></div>
+<p>
+	Now suppose that we're asked to delete a node associated with a
+	particular value in the tree. Call it the <i>target node</i>. How might
+	we do so? Once again, because we know how to search for nodes, deleting
+	is <i>almost</i> trivial, at least for tree's leaves. We just to search
+	for the particular node containing the key, then delete if found. For
+	the leaves, this is straightforward. If we wanted to delete the node
+	containing <var>70</var>, we just have call
+	<var>search(root, 70)</var>, then, when we get to <var>70</var>,
+	delete:
+</p>
+<div id="bst_delete_2"></div>
+<p>
+	All that's left to do after deleting <var>node(70)</var> is to ensure
+	its parent, <var>node(60)</var> has its left-child pointer set to
+	<var>NULL</var>. Now, we emphasized <i>almost</i> trivial because
+	there's a bit of a troublesome case: Deleting branch nodes. For
+	example, suppose we were asked to delete the node containing
+	<var>60</var>. If we just blindly deleted the node, we'd end up with:
+</p>
+<div id="bst_delete_3"></div>
+<p>
+	We've partitioned the tree, and that's likely not what we intended. But
+	even if we did, assuming the only way to access the tree was through a
+	single <var>root</var> pointer, the other tree &mdash;
+	<var>node(55)</var> &mdash; is lost in memory; from a practical
+	perspective, we've essentially destroyed it.
+</p>
+<p>
+	To avoid this problem: Before deletion, always check if the target node
+	is a branch node or a leaf node. If the target node is a branch node
+	with only one child, as is the case with <var>node(60)</var>, then the
+	target node must take its parent's place after deletion:
+</p>
+<div id="bst_delete_4"></div>
+<p>
+	This avoids partitioning, but only for deleting uniparous nodes. What
+	if we were now asked to delete <var>node(50)</var>? Once again, blindly
+	deleting causes a partition:
+</p>
+<div id="bst_delete_5"></div>
+<p>
+	There are several ways to avoid this problem. One way is to fill the
+	newly-emptied position with the target node's
+	<i>inorder predecesor</i>. In other words, fill the vacancy with the
+	node that comes before the target node within the tree's inorder
+	traversal sequence. For our tree above, the inorder traversal sequence
+	is:
+</p>
+<figure>
+	$$ \lang 10, 15, 20, 30, {\color{forestgreen}{40}},
+	{\color{indianred}{50}}, {\color{dodgerblue}55} \rang $$
+</figure>
+<p>
+	and we can see that <var>node(40)</var> comes before
+	<var>node(50)</var>. Above, we've also indicated the blue-colored
+	<var>node(55)</var>, <var>node(50)</var>'s <i>inorder successor</i>.
+	Thus, if we delete a biparous node, we can choose either the inorder
+	predecesor or the inorder successor to fill the vacancy:
+</p>
+<div class="col2">
+	<figure class="block">
+		<div id="bst_delete_inorder_predecesor"></div>
+		<figcaption>Inorder predecesor succession.</figcaption>
+	</figure>
+	<figure class="block">
+		<div id="bst_delete_inorder_successor"></div>
+		<figcaption>Inorder successor succession.</figcaption>
+	</figure>
+</div>
+<p>
+	Given the binary search tree's structure, finding either of these
+	successors is easy enough, per the following lemmas:
+</p>
+<dfn>
+	<small>definition: inorder predecesor</small>
+	<p>
+		Let ${N}$ be a node in a binary search tree ${B.}$ The
+		<b>inorder predecesor</b> of ${N}$ is the rightmost child of ${B}$'s
+		left subtree.
+	</p>
+</dfn>
+<dfn>
+	<small>definition: inorder successor</small>
+	<p>
+		Let ${N}$ be a node in a binary search tree ${B.}$ The
+		<b>inorder successor</b> of ${N}$ is the leftmost child of ${B}$'s
+		right subtree.
+	</p>
+</dfn>
+<p>
+	We call this vacancy-filling technique <i>inorder-succession</i>.
+	Having given a broad overview of how the technique works, let's point
+	out some of the flaws with this technique. First, suppose we had the
+	following tree:
+</p>
+<div id="removal_degenerate_tree"></div>
+<p>The inorder traversal squence for this tree is:</p>
+<figure>$$ \lang 10, 20, 30, 70, 80, 90 \rang $$</figure>
+<p>
+	If we deleted <var>node(20)</var> using inorder-successor-succession,
+	then we suddenly have to perform several successions:
+</p>
+
+<p>Before deletion. No changes.</p>
+
+<div>$$ \lang 10, 20, 30, 70, 80, 90 \rang $$</div>
+<div id="t1"></div>
+
+<p>
+	Remove <var>node(20)</var>. There's a vacancy that must be filled, and
+	because we're using inorder-successor-succession,
+	<var>node(30)</var> must rise to fill the vacancy. In this case, it
+	becomes the left-child of <var>node(90)</var>.
+</p>
+
+<div>$$ \lang 10, 30, \square, 70, 80, 90 \rang $$</div>
+<div id="t2"></div>
+
+<p>
+	The previous step results in a vacancy, and now
+	<var>node(70)</var> must succeed.
+</p>
+
+<div>$$ \lang 10, 30, 70, \square, 80, 90 \rang $$</div>
+<div id="t3"></div>
+
+<p>Now <var>node(80)</var> must succeed.</p>
+
+<div>$$ \lang 10, 30, 70, 80, \square, 90 \rang $$</div>
+<div id="t4"></div>
+
+<p>
+	And finally, <var>node(90)</var> must succeed, which means
+	<var>node(30)</var> must succeed.
+</p>
+
+<div>$$ \lang 10, 30, 70, 80, 90 \rang $$</div>
+<div id="t5"></div>
+
+<p>
+	<span class="title"><b>time complexity.</b></span> Examining this
+	process, we see that the time complexity for removing nodes depends on
+	the tree's height. We must search &mdash; i.e., traverse &mdash; the
+	tree and modify accordingly.
+</p>

@@ -1,0 +1,326 @@
+<section id="module design">
+	<h3>Module Design</h3>
+	<p>
+		The
+		<b>module design</b> outlines a systematic way to design
+		<i>interactive programs</i> &mdash; programs where different pieces of
+		data and various functions work interact with another. The defining
+		characteristic of interactive programs is the program's parts'
+		<i>states</i> and <i>behaviors</i> change based on user input. For
+		example, when a first person shooter, getting hurt might turn the
+		screen red while also reducing your life line. Or, when you swipe left
+		or right on Tinder, the profile slides respectively while also storing
+		your data. These are all interactive programs, and
+		<var>module design</var> provides a systematic approach to designing
+		them. First, we provide a high-level overview of
+		<var>module design</var>.
+	</p>
+	<p>
+		The first step of module design is <i>domain analysis</i> &mdash;
+		understanding the scope of the problem. The key substeps here are: (1)
+		sketching program scenarios; (2) identifying constant information; (3)
+		identifying changing information; and (4) identifying
+		<i>big-bang</i> options.
+	</p>
+	<p>
+		The term big-bang is what module design uses to refer to the function
+		call that evaluates to the <i>initial world state</i>. In other words,
+		when call <var>(big-bang 0)</var>, we create the initial world state.
+		Once <var>(big-bang 0)</var> is called, the rest of the program
+		executes from there.
+	</p>
+	<p>
+		For example, we might have a program where the function call
+		<var>(big-bang 0)</var> calls a function called
+		<var>(render-life 0)</var>. Then, <var>(render-life 0)</var> calls
+		<var>(next-life 0)</var>. Then, <var>(next-life 0)</var> updates some
+		value, and calls <var>(render-life 1)</var>, then
+		<var>(render-life 1)</var> calls <var>(next-life 1)</var> and so on.
+		The function call <var>(big-bang 0)</var> is what started everything
+		from the very beginning. In <var>module design</var>, we call this the
+		<i>big-bang mechanism</i>.
+	</p>
+	<p>
+		Outside of <var>module design</var>, this is called a
+		<var>big-bang</var> is a <i>user-interface framework</i> &mdash; a
+		blackbox that integrates numerous different functionalities together.
+	</p>
+	<p>
+		Once we have completed a
+		<i>domain analysis</i>, the next step is <i>creation</i>. At this
+		stage, there are several substeps: (1) Write the <i>constants</i>; (2)
+		Write data definitions, following <var>data design</var>; (3) Write
+		functions, following function design, complete two substeps: (a) write
+		the <var>main</var> function first, then (b) list the
+		<var>handler</var> functions &mdash; those functions necessary for
+		<var>main</var> to work; (4) write the <var>handler</var> functions.
+	</p>
+	<p>All together:</p>
+	<ol>
+		<li>Domain analysis.</li>
+		<ul>
+			<li>Sketch the program scenarios.</li>
+			<li>Identify the constant information.</li>
+			<li>Identify the changing information.</li>
+			<li>Identify <var>big-bang</var> options.</li>
+		</ul>
+		<li>Creation.</li>
+		<ul>
+			<li>Write the constants.</li>
+			<li>
+				Write the data definitions, following
+				<var>data design</var>.
+			</li>
+			<li>Write the functions, following <var>function design</var>.</li>
+			<ul>
+				<li>Write the <var>main</var> function first.</li>
+				<li>
+					Create a list of <var>handler</var> functions (those functions
+					necessary for <var>main</var> to work).
+				</li>
+			</ul>
+			<li>
+				Write the <var>handler</var> functions, following
+				<var>function design</var>.
+			</li>
+		</ul>
+	</ol>
+	<p>
+		When we say sketching program scenarios, we literally mean sketching
+		program scenarios. We want to draw out how the program should look on a
+		screen. This is purely to ensure we have a good idea of how the program
+		would look and behave.
+	</p>
+	<p>
+		The sketches we draw should reflect different stages of the program.
+		They do not have to be beautiful pictures; these are just sketches. The
+		focus is to get a good idea of what we
+		<i>want</i>, not accurate or beautiful drawings.
+	</p>
+	<p>
+		This is where we identify and <i>write down</i> the information that
+		<em>never</em> changes as the program executes. For example, if we are
+		designing a program that can only display at a certain size, there are
+		the widths of the screen. If the program has user input boxes, a
+		constant might be the position of those input boxes.
+	</p>
+	<p>
+		At this stage, we do not need to list every single constant. In fact,
+		we will almost always find we need a constant as we continue writing
+		the program. Not only is this perfectly fine, it is
+		<i>expected</i>. As we write the program or continue the
+		<var>module design</var> process, we might discover a constant we had
+		not considered. When that occurs, we write it down in our list of
+		constants.
+	</p>
+	<p>
+		The next step is to identify the changing information. Here, we want to
+		think of what actually changes as the program executes. If we are
+		designing a video game, one piece of information that might change is
+		the player's score or their life line.
+	</p>
+	<p>
+		Again, we do not have to be as exhaustive as we can here. The point is
+		to come up with as many as we can, and add information as we continue
+		the process. The more thorough we are at this point, the better of an
+		idea we have for the program's overall structure and behavior in the
+		later stages.
+	</p>
+	<p>
+		This is where we think about the possible ways to implement the
+		behaviors we sketched at the very first step. Once we have done so, we
+		complete the domain analysis stage.
+	</p>
+
+	<p>
+		After domain analysis, we proceed to
+		<i>creation</i>. Here, we begin writing the program by writing the
+		<var>main</var> function. When writing the <var>main</var> function, we
+		use the <var>function design</var> pattern: Signature, purpose, stub,
+		tests and examples, templating, coding, testing and debugging. The
+		crucial point here is <i>templating</i>.
+	</p>
+	<p>
+		Templating the <var>main</var> function is what dictates the structure
+		of our overall program. When we template the <var>main</var> function,
+		we ask ourselves: What do I know about the overall structure of the
+		program before I get to the details? Because we are writing the
+		<var>main</var> function, the first line of the program should state
+		what the <var>main</var> function does.
+	</p>
+	<p>
+		The next line of the program is to list all of the <i>constants</i> the
+		program uses. Here, we define all of the data that should never change
+		when the program executes. We write these constants here because (1)
+		they should be clearly visible, and (2) placing them as constants
+		allows for quick changes later. We should always run the program as we
+		write the constants. This is to catch any errors in what we write
+		&mdash; better to find them now, while the program is small, than
+		later, when the program is large. When write these constants, if it is
+		every unclear what the constants mean, we should provide comments
+		indicating what they mean.
+	</p>
+
+	<p>
+		As we write the
+		<var>main</var> function, we must always write the necessary handler
+		functions as we continue. For example, suppose we are writing a simple
+		program that computes the hypotenuse of a triangle. Our
+		<var>main</var> function might look like the following:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; takes two lengths and returns the hypotenuse
+
+		(check-expect (main 8 8) 4)
+		(check-expect (main 0 0) 0)
+
+		;; (define (main x y) 0)
+
+		(define (main x y)
+			(squareRoot (+ x-length-squared y-length-squared)))
+	</code></pre>
+	<p>
+		There are several things in the code above that are not native to
+		racket. Accordingly, we will need to define them, so we add them as
+		entries to the wish list:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; takes two lengths and returns the hypotenuse
+
+		(check-expect (main 8 8) 4)
+		(check-expect (main 0 0) 0)
+
+		;; (define (main x y) 0)
+
+		(define (main x y)
+			(squareRoot (+ x-length-squared y-length-squared)))
+		
+		;; handler functions
+		;; number -> number
+		(define (squareRoot num) 0)
+
+		;; number -> number
+		;; takes x-length and returns square of x-length
+		(define (x-length-squared num) 0)
+
+		;; number -> number
+		;; takes y-length and returns square of y-length
+		(define (y-length-squared num) 0)
+	</code></pre>
+	<p>
+		Handler functions will take up most of our coding time. We will often
+		find that handler functions will require writing other handler
+		functions. That is part of functional programming. The key point is to
+		keep track of the work by watching our wish list.
+	</p>
+</section>
+
+<section id="advice_on_designing_large_programs">
+	<h3>Best Practices: Program Design</h3>
+	<p>
+		We have seen many different approaches to program design in the
+		preceding materials. In practice, some problems require one approach,
+		while eschewing another. However, for all problems, there are certain
+		principles, or mantras, that we should always keep in mind.
+	</p>
+	<p>
+		First, aim for simplicity. In programming, simple is
+		<em>always</em> better. The more complex an implementation is, the more
+		difficult it is to debug and test. Simplicity, however, does not always
+		mean less code. Recursion almost always returns shorter programs, but
+		they can easily become unreadable and a mess to debug. However,
+		simplicity does not mean more lines of code. Conciseness is just as
+		important. At the end of the day, a program is measured by two things:
+		(1) ease of use and (2) features. We ship features, not code. Take the
+		path of least resistance &mdash; do easy things, never hard things.
+	</p>
+	<p>
+		Second, readability is invaluable. In the earlier sections, we might
+		have wondered why we spent so much time on comments and documentation,
+		even for the simplest programs. We did so because humans have limited
+		processing speeds and memory space. A program might appear simple
+		today, but it is not guaranteed to be understandable by either
+		ourselves or others a month or years later. Always comment and
+		document.
+	</p>
+	<p>
+		Third, implementation should be easy to explain. This is a point
+		towards simplicity. If a program is structured as simply as possible,
+		then it must be easy to explain. Accordingly, ease of explanation
+		serves as a litmus test for whether we've accomplished simplicity. If
+		we ever get to a point where we cannot explain our program simply, then
+		the implementation is poor. If we ever get to a point where do not
+		understand how our program works at all, then we have created a time
+		bomb. At no point should we ever not understand how our code works.
+	</p>
+	<p>
+		OOP (Object-oriented Programming) is a powerful tool. However, like the
+		despotic regime of a resource-rich country, that power is prone to
+		abuse and can quickly get to our heads. Flat is always better than
+		nested. We understand flat things better. We get lost in deeply nested
+		structures.
+	</p>
+	<p>
+		Class abuse is real. There is a tendency to want to organize everything
+		into classes, compartmentalizing everything into neat boxes. Before we
+		even consider putting things into classes, we should ask ourselves: Do
+		I absolutely need this to be in a class? The code blocks below all do
+		the same thing, and unfortunately, the first is more common than the
+		last:
+	</p>
+	<pre class="language-python"><code>
+		# obfuscated function call:
+
+		class Greeting(object):
+			def __init__(self, greeting='hello'):
+				self.greeting = greeting
+
+			def greet(self, name):
+				return '%s! %s' % (self.greeing, name)
+		
+		# de-obfuscated:
+		def greet(name):
+			ob = Greeting('hola')
+			print ob.greet('bob')
+			return
+		
+		# concise:
+		def greet(greeting, target):
+			return '%s! %s' % (greeting, target)
+	</code></pre>
+	<p>
+		There are numerous packages and libraries today that make our lives
+		easier. Whenever we use a library or package, the first thing we
+		<em>must</em> do is read the code. Otherwise, we are using code in our
+		programs that we haven't vetted &mdash; we don't know what that code's
+		quality is, whether they have tests, or whether they do what we want
+		done.
+	</p>
+</section>
+
+<section id="self_reference">
+	<h3>Self-Reference</h3>
+	<p>
+		<i>Self-reference</i> is an enormously critical aspect of modern
+		programming languages. The idea of self-reference is what allows us to
+		represent an arbitrarily large amount of information. This is crucial,
+		because problems often require an analysis of the bigger, overarching
+		structures &mdash; the general case, so to speak. For example, with
+		what we know so far, we can create a data structure for, and perform
+		computations on, the amount of rice futures a company trades. The
+		amount of such rice is described as <b>fixed-sized information</b>, and
+		we represent it with <b>fixed-size data</b>.
+	</p>
+	<p>
+		The problem? Not all information is of fixed-size. We do not yet have
+		the ability to represent all of the different grains futures the
+		company handles &mdash; the company might deal with rice, wheat, corn,
+		lentils, soy, quinoa, and a plethora of other products. This type of
+		information is called
+		<b>arbitrarily-sized information</b> &mdash; information that we do not
+		know the size of in advance. We represent such information with
+		<b>arbtirarily-sized data</b>.
+	</p>
+</section>

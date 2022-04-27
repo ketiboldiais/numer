@@ -354,20 +354,247 @@
 			sections.
 		</p>
 
-		<section id="apis">
-			<h4>API Copyrights</h4>
+		<section id="compatibility">
+			<h4>License Compatibility Issues</h4>
+			<p>
+				The most obvious and pertinent challenge in open source license
+				compliance is determining license compability. As a software
+				product grows increasingly complex, its dependency list increases.
+				With more dependencies, the risk of conflicting license provisions
+				increases. These conflicts stem from differences between permissive
+				and restrictive licenses.
+			</p>
+			<p>
+				For example, parsing the text for each license in a sample of some
+				of the most common open source licenses, we have the following
+				comparison map:
+			</p>
+			<figure class="block">
+				<div id="licenseCompare"></div>
+				<figcaption>
+					Data gathered from surveying each license's boilerplate language.
+					Red indicates no, blue indicates no answer (i.e., the license is
+					silent on the issue), green indicates yes, and orange indicates a
+					conditional yes.
+				</figcaption>
+			</figure>
+			<p>
+				From the map above, licenses with the least amount of color pattern
+				differences between their respective rows are highly likely
+				compatible, while licenses with the greatest amount pose a greater
+				risk of incompatibility. For example, the MIT, ISC, and BST-3
+				Clause New licenses are highly compatible. However, all three of
+				these licenses are likely incompatible with the Open Software
+				License. The Open Software license itself is incompatible with many
+				other licenses, particularly the CC Share Alike license.
+			</p>
+			<p>
+				From the data, we can draw several generalizations. First, given
+				these shared issues, which areas should a software developer
+				consider first? Well, if we assume that greater variability implies
+				greater compatibility risk, then ranking the issues from greatest
+				variability to least variability yields a ranking of most likely to
+				pose compatibility problems to least likely to pose compatibility
+				problems. In this case, since the data consists of nominal data
+				&mdash; yes, conditional yes, no, and silence &mdash; we can
+				measure the variability of each issue as an index of qualitative
+				variation (IQV):
+			</p>
+			<figure>$$ IQV = \dfrac{K(100^2 - \sum P^2)}{100^2(K-1)} $$</figure>
+			<p>
+				where, ${K}$ is the number of categories (in this case, the
+				license's answers to the issue), and ${\sum P^2}$ is the sum of all
+				squared percentages (here, the percentage of each response for a
+				given issue) in the distribution. Computing the IQV for each issue,
+				we have the following data:
+			</p>
+			<div id="riskyAreas"></div>
+			<p>A disclosure on this analysis. The categories:</p>
+			<ol>
+				<li>commercial use,</li>
+				<li>modification allowed,</li>
+				<li>distribution allowed,</li>
+				<li>warranty provided, and</li>
+				<li>private used allowed</li>
+			</ol>
+			<p>
+				all have an IQV of ${0.}$ As a precautionary measure, however, the
+				value <var>0.01</var> was used, to imply that no issue is entirely
+				risk free.
+			</p>
+			<p>
+				Interpreting the IQV as a risk factor, the data is affirms many of
+				the licence compliance concerns in the industry. On this analysis,
+				the three riskiest areas in software license compliance are:
+			</p>
+			<ol>
+				<li>
+					Whether the software must use the same license as the dependency,
+				</li>
+				<li>whether the software license allows patent use,</li>
+				<li>whether the software license allows trademark use.</li>
+			</ol>
+			<p>
+				The fact that these are the three riskiest areas is further
+				supported by recent case law on software license compliance.
+			</p>
 		</section>
 
 		<section id="modified_open_source_licenses">
 			<h4>Modified Open Source Licenses</h4>
+			<p>
+				The first challenge to open source license compliance is
+				determining whether a particular software is truly open source. The
+				fact that the licensor communicates that their software is open
+				source, or the fact that the license is labeled as an OSI-approved
+				license does not imply that the software is licensed as open
+				source. This is because the license may contain modifications by
+				the licensor.
+			</p>
+			<p>
+				The recent case <i>Neo4j v. Purethink</i> illustrates how dangerous
+				modified open source licenses can be.<sup></sup> In <i>Neo4j</i>,
+				the defendant software company Purethink forked source code from
+				one of Neo4j's software products.<sup></sup> Neo4j licensed its
+				software under the OSI-approved AGPLv3 license, but included
+				several modifications. In particular, Neo4j's modified AGPLv3
+				license prohibited the non-paying public from reselling the
+				software.<sup></sup>
+			</p>
+			<div class="note">
+				<p>2022 WL 501120 (9th Cir. 2022).</p>
+			</div>
+			<div class="note">
+				<p>
+					In the software industry, <i>forking</i> is the act of copying
+					source code from one software to develop an entirely new
+					software.
+				</p>
+			</div>
+			<div class="note">
+				<p>
+					<i>NEO4J v. Purethink</i>, 2021 WL 2483778 &para; 11 (N.D. Cal.
+					2021)
+				</p>
+			</div>
+			<p>
+				Despite this modification, Purethink assumed that the software was
+				entirely open source, given that the AGPLv3 license allows
+				licensees to remove any terms in the license not originally
+				included in the AGPLv3's boilerplate. The Court, however, thought
+				otherwise: The AGPLv3 license prohibits <i>licensees</i> from
+				imposing further restrictions, not <i>licensors</i>.<sup></sup> As
+				the Court wrote,
+				<q
+					>it would be contrary to principles of contract and copyright law
+					to interpret these provisions as limiting [Neo4j's] exclusive
+					right to license its copyrighted software under terms of its
+					choosing.</q
+				>
+			</p>
+			<div class="note">
+				<p>Id. at *16.</p>
+			</div>
+			<p>
+				The problem with this interpretation is that restricting the
+				licensor's license rights is precisely what the AGPLv3's drafters
+				intended. As the drafters themselves wrote in the license's
+				rationale documentation,
+				<q
+					>[W]e are particularly concerned about the practice of program
+					authors who purport to license their works under the GPL with an
+					additional requirement that contradicts the terms of the GPL.</q
+				><sup></sup> Despite such extensive and well-documented intent,
+				both the Northern District and the Ninth Circuit found that
+				Purethink infringed upon Neo4j's copyrights.
+			</p>
+			<div class="note">
+				<p>GPLv3 Second Discussion Draft Rationale, Note 73.</p>
+			</div>
+			<p>
+				The compliance challenge with modified open source licenses is that
+				developers potentially have hundreds of dependencies, and each of
+				those dependencies might in turn have dependencies of their own. It
+				only takes one dependency &mdash; among potentially thousands
+				&mdash; for compliance to go awry.
+			</p>
+			<p>
+				Because of this challenge, various open source tools have been
+				developed by the software community to analyze open source license
+				compliance. Because only the standard boilerplate licenses approved
+				by the OSI are considered open source, software can be written to
+				parse and analyze the text in software license files. Using regular
+				expressions, the software can compare the software's license files'
+				text against the templates and output various compliance metrics.
+				This is how Github's open source
+				<i>Licensed</i> software operates.
+			</p>
+			<p>
+				As much as an automated approach eases compliance, software like
+				<i>Licensed</i>
+				cannot catch every possible risk. For example, companies like
+				Google often provide an open source license file alongside a
+				separate patent license file. This arrangement causes
+				<i>Licensed</i> to lump the patent license under the
+				<q>Other</q> category. If this category grows too large, the
+				software loses its value in providing meaningful assessments.
+				Acknowledging this shortcoming among others, Github itself provides
+				a disclaimer on <i>Licensed</i>:
+				<q
+					>Licensed is not a substitute for human review of each dependency
+					for licensing or any other issues.</q
+				>
+			</p>
+			<p>
+				Ultimately, the most effective way to prevent compliance disasters
+				like <i>Neo4j</i> is to only use <em>unmodified</em> OSI-approved
+				open source licenses. As Github states in its
+				<i>Licensed</i> repository,
+				<q
+					>Like any bug, licensing issues are far cheaper to fix if found
+					early.</q
+				>
+				OSI-approved licenses undergo a lengthy and rigorous process. And
+				per OSI's public statements, modified open source licenses are
+				effectively new licenses that are neither OSI-approved nor likely
+				to gain OSI approval.
+			</p>
 		</section>
 
-		<section id="attribution">
-			<h4>Attribution</h4>
+		<section id="apis">
+			<h4>API Copyrights</h4>
 			<p>
-				Each of the common open source licenses require some form of
-				attribution to the original author. Failure to provide attribution
-				can lead to both legal and reputational risks.
+				A second challenge to open source license compliance are copyrights
+				to API. This is a significant and unsettled issue in the software
+				industry, highlighted by the U.S. Supreme Court's decision in
+				<i>Google v. Oracle</i>.
+			</p>
+			<p>
+				In 2005, Google purchased Android Inc., then a small company
+				developing the Android mobile operating system. As of 2022, Android
+				OS is the most popular mobile operating system, with approximately
+				two billion users, comprising 69.774% of the world's mobile
+				operating system.
+			</p>
+			<p>
+				To reach this point, Google had to convince the software industry
+				of Android's viabililty as a mobile operating system. This is no
+				small feat, given the hundreds of operating systems developed every
+				year. Because of how competitive the operating system market is,
+				Google took a different approach &mdash; (1) open source the
+				operating system, and (2) make it easy for software developers to
+				write software for it. This was a novel approach at the time, as
+				most mobile operating systems then were proprietary.
+			</p>
+			<p>
+				Of the two objectives, the second was more difficult. Operating
+				systems are cryptic, complicated pieces of software, often written
+				in low level languages like C, C++, or Objective-C &mdash;
+				languages used by a small subset of the industry. Because of this
+				hurdle, Google decided to implement the operating system with Java,
+				one of the most popular and well-known computer languages. Hoping
+				to use Java, Google approached Oracle for possible licensing. The
+				negotations failed.
 			</p>
 		</section>
 
@@ -383,10 +610,6 @@
 				An illustrative case is Facebook's release of React, an open source
 				software library for creating user interfaces.
 			</p>
-		</section>
-
-		<section id="recursive_licenses">
-			<h4>Copyleft Licenses</h4>
 		</section>
 
 		<section id="dead_projects">

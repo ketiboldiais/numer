@@ -1,0 +1,187 @@
+{% load static %}
+
+<h3>Searching a Binary Search Tree</h3>
+<p>
+	Searching through a binary search tree is very simple. Consider the
+	following tree:
+</p>
+<div id="bst_search_example"></div>
+<p>
+	Suppose we wanted to find the element <var>40</var>. First, we take a
+	pointer and start at the root:
+</p>
+<div id="bst_search_example1"></div>
+<p>
+	With the pointer <var>p</var> set, we read <var>p</var>'s pointee's
+	value, and compare it against the key. In this case, we see that
+	<var>40 &nlt; 30</var>, so we move <var>p</var> to the current pointee's
+	right-child:
+</p>
+<div id="bst_search_example2"></div>
+<p>
+	Given <var>p</var>'s new pointee, we perform the procedure again. The
+	comparison returns <var>40 &lt; 50</var>, so we move <var>p</var> to the
+	current pointee's left-child:
+</p>
+<div id="bst_search_example3"></div>
+<p>
+	Comparing the pointee's value to our key, we see that
+	<var>40 = 40</var>, and the search concludes &mdash; we've found our
+	match. What if the key were instead <var>39</var>? In that case, we would
+	get to the node labeled <var>40</var> above, then set <var>p</var> to
+	node <var>40</var>'s left-child. But, because there is no such node,
+	<var>p</var> is set to <var>NULL</var>. We use this fact to return an
+	unsuccesful search &mdash; if <var>p</var> is <var>NULL</var> at any
+	point before the key is found, there is no match.
+</p>
+<p>A recursive implementation might look like:</p>
+<div class="pseudosource">
+	<ol class="alg">
+		<li>fn search(Node* root, int key) -> Node*:</li>
+		<ol>
+			<li>if (root === NULL):</li>
+			<ol>
+				<li>return NULL;</li>
+			</ol>
+			<li>if (key === (*root).data):</li>
+			<ol>
+				<li>return root;</li>
+			</ol>
+			<li>else if (key &lt; (*root).data):</li>
+			<ol>
+				<li>search((*root).left_child, key);</li>
+			</ol>
+			<li>else:</li>
+			<ol>
+				<li>search((*root).right_child, key);</li>
+			</ol>
+		</ol>
+	</ol>
+	<ol class="algc">
+		<li>
+			<var>search()</var> is a function that takes a node pointer, called
+			<var>root</var>, and an <var>int</var>, the search key. If the search
+			key is found, a pointer to the node containing the key is returned.
+			Otherwise, the <var>NULL</var> pointer is returned.
+		</li>
+		<li>
+			The failure condition. If <var>root</var> is <var>NULL</var>, execute
+			the instruction below. Otherwise, go to instruction <var>3</var>.
+		</li>
+		<li>Return <var>NULL</var>.</li>
+		<li>
+			The successful condition. If <var>root</var>'s data matches the key,
+			execute the instruction below. Otherwise, go to insruction
+			<var>5</var>.
+		</li>
+		<li>Return <var>root</var> (the node containing the key).</li>
+		<li>
+			If <var>key</var> is less than the data inside <var>root</var>,
+			execute the instruction below. Otherwise, go to instruction
+			<var>8</var>.
+		</li>
+		<li>
+			Execute the function <var>search((*root).left_child, key)</var>.
+		</li>
+		<li>
+			If none of the preceding conditions were met, execute the instruction
+			below.
+		</li>
+		<li>
+			Execute the function <var>search((*root).right_child, key)</var>.
+		</li>
+	</ol>
+</div>
+<p>
+	To illustrate the function above, we'll apply it to the previous tree.
+	First, we pass the tree's <var>root</var> pointer, and a key. Suppose
+	we're looking for the key <var>60</var>. We make the first call,
+	<var>search(root, 60)</var>. First, we check if <var>root = NULL</var>.
+	It is not, so we can proceed.
+</p>
+<p>
+	We chck if <var>30 = 60</var>. No. <var>30 ≠ 60.</var> We go to the next
+	prong, which asks if <var>30 &lt; 60</var>. Again no. So, we jump to the
+	default prong &mdash; make a recursive call,
+	<var>((*root).right_child, 60)</var>. Since the right child of the root
+	is <var>50</var>, for readability, we'll denote this as
+	<var>search(root(50), 60)</var>:
+</p>
+<div id="binary_search_trace"></div>
+<p>
+	Making this call, we check if <var>root(50) = NULL</var>. No. So we go to
+	the next prong, and check if <var>60 = root(50)</var>. It's not &mdash;
+	<var>60 ≠ 50</var>. Check the next prong. Is <var>60 &lt; 15</var>? No.
+	We jump to the default prong, and wow we make the call
+	<var>search(root(50).right_child, 60)</var>. This translates to
+	<var>search(root(60), 60):</var>
+</p>
+<div id="binary_search_trace2"></div>
+<p>
+	Again we check if <var>root(60) = NULL</var>. It isn't, so we can
+	proceed. Prong 2: Is <var>60 = root(60).data</var>? Yes.
+	<var>60 = 60</var>. We've found our match.
+</p>
+<p>Alternatively, we can search with iteration:</p>
+<div class="pseudosource">
+	<ol class="alg">
+		<li>fn search(Node* root, int key) -> Node* :</li>
+		<ol>
+			<li>while (root != NULL):</li>
+			<ol>
+				<li>if (key === (*root).data):</li>
+				<ol>
+					<li>return root;</li>
+				</ol>
+				<li>else if (key &lt; (*root).data):</li>
+				<ol>
+					<li>root = (*root).left_child;</li>
+				</ol>
+				<li>else:</li>
+				<ol>
+					<li>root = (*root).right_child;</li>
+				</ol>
+			</ol>
+		</ol>
+	</ol>
+	<ol class="algc">
+		<li>
+			<var>search()</var> is an iterative function that takes a node
+			pointer, called <var>root</var>, and an <var>int</var>, the search
+			key. If the search key is found, a pointer to the node containing the
+			key is returned. Otherwise, the <var>NULL</var> pointer is returned.
+		</li>
+		<li>
+			As long as <var>root</var> is not <var>NULL</var>, execute the
+			instructions below.
+		</li>
+		<li>
+			If the <var>key</var> matches the <var>root</var>'s data, execute the
+			instruction below. Otherwise, go to instruction <var>4</var>.
+		</li>
+		<li>Return <var>root</var>.</li>
+		<li>
+			If <var>key</var> is less than the <var>root</var>'s data, execute
+			the instruction below. Otherwise, go to instruction <var>6</var>.
+		</li>
+		<li>Set <var>root</var> as its left-child.</li>
+		<li>
+			If none of the preceding condiitions are met, execute the instruction
+			below.
+		</li>
+		<li>Set <var>root</var> as its right-child.</li>
+	</ol>
+</div>
+<section id="time_complexity">
+	<h4>Time Complexity</h4>
+	<p>
+		Examining the binary search tree's search algorithm, we see that the
+		the algorithm's complexity depends on the tree's height. And as we
+		know, a binary tree's height ${H}$ is bounded:
+	</p>
+	<figure>$$ \log_{2} n \leq H \leq n $$</figure>
+	<p>
+		Thus, in the best case scenario, searching a binary tree takes
+		${O(\log_{2} n),}$ and in the worst case scenario, it takes ${O(n).}$
+	</p>
+</section>

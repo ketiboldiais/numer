@@ -1,0 +1,624 @@
+<section id="function design">
+	<h3>Function Design</h3>
+	<p>
+		In the next sections, we explore the design model
+		<b>function design</b> (&#8220;How to Design Functions&#8221;). This is
+		a standard function design approach, and any good programmer should be
+		familiar with it. We begin first with the problem statement:
+	</p>
+	<div class="rule">
+		<p>
+			Design a function that takes a number and produces twice that number.
+			Call the function
+			<var>double</var>.
+		</p>
+	</div>
+	<p>
+		This is a very simple problem, but that simplicity allows us to focus
+		purely on function design design principles.
+	</p>
+	<p>function design design consists of five steps:</p>
+	<div class="rule">
+		<ol>
+			<li>Signature, purpose, and stub.</li>
+			<li>Define examples; wrap each example in check-expect.</li>
+			<li>Template and inventory.</li>
+			<li>Code the function body.</li>
+			<li>Test and debug until correct.</li>
+		</ol>
+	</div>
+	<p>
+		The first thing to do when designing a function is to state the
+		function's
+		<b>signature</b>. The signature is supposed to tell the reader what
+		type of data the function consumes, and what type of data the function
+		produces. In other words, the signature should quickly answer the
+		questions: (a) What are input types, and (b) what are the output types?
+	</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			type ... -> type
+		</code></pre>
+	</figure>
+	<p>In other programming languages, we might write the following:</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			int --> int
+			float --> float
+			boolean --> boolean
+			string --> string
+			boolean --> int
+			int --> array
+		</code></pre>
+	</figure>
+	<p>If the function takes more than argument:</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			int, boolean --> string
+			float, string --> boolean
+		</code></pre>
+	</figure>
+	<p>For this problem, we write the following:</p>
+	<pre class="language-scheme"><code>
+		;; Number -> Number
+	</code></pre>
+	<p>
+		The next thing is to state the function's <b>purpose</b>. The
+		<i>purpose</i> should provide a succinct answer to the question: What
+		does the function produce given what it consumes? Here, we write:
+	</p>
+	<pre class="language-scheme"><code>
+		;; produce 2 times the given number
+	</code></pre>
+	<p>
+		Notice how we use double semicolons (<var>;;</var>) to comment out
+		these lines. We use double semicolons rather than single semicolons to
+		indicate that these are permanently commented out. This is similar to
+		the <i>docstring</i> in Python and JavaScript.
+	</p>
+	<p>
+		Next, the function's
+		<b>stub</b>. The <i>stub</i> is like a piece of scaffolding &mdash; it
+		helps us build other parts of the function. It lasts for only a brief
+		period, and by the end of the function's construction, we delete it
+		entirely. The stub consists of three parts:
+	</p>
+	<figure>
+		<ol>
+			<li>The function's <i>name</i>;</li>
+			<li>The correct number of <i>parameters</i>;</li>
+			<li>
+				A dummy output of the
+				<i>correct type</i>.
+			</li>
+		</ol>
+	</figure>
+	<p>Thus, we write the following:</p>
+	<pre class="language-scheme"><code>
+		(define (double n) 0)
+	</code></pre>
+	<p>
+		If, say, we had a function that takes an
+		<var>int</var> and outputs a <var>string</var>, we would write:
+	</p>
+	<figure>
+		<pre class="language-pseudo"><code>
+			(define (function_name n) "foo")
+		</code></pre>
+	</figure>
+	<p>Returning to the problem, here is what we have so far:</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(define (double n) 0)
+	</code></pre>
+	<p>
+		Next step, we write examples and tests. These are one in the same; they
+		serve as tests for our function. We write examples early on because
+		functions are often much easier to write when we have a good idea of
+		what they are going to do. The examples should illustrate behavior.
+		Unique to racket, we wrap them in <var>check-expect</var> to tell the
+		interpreter these are <i>unit tests</i>.
+	</p>
+	<p>For this function's examples, we write:</p>
+	<pre class="language-scheme"><code>
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+	</code></pre>
+	<p>
+		Focusing on the first example, when we use
+		<var>check-expect</var>, the interpreter will evaluate
+		<var>(double 3)</var>, and check if the result is <var>6</var>. If the
+		result is <var>6</var>, then the interpreter informs us we passed the
+		test. If the result is not <var>6</var>, then the interpreter tells us
+		we did not pass the test. Executing the code thus far:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+		(define (double n) 0)
+	</code></pre>
+	<pre class="language-bash"><code>
+		Ran 2 tests.
+		0 tests passed.
+		Check failures:
+			Actual value 0 differs from 6, the expected value.
+			Actual value 0 differs from 8.4, the expected value.
+	</code></pre>
+	<p>
+		The fact that we are told they failed is a good sign because it tells
+		us that the tests ran in the first place. This information allows us to
+		conclude the examples are
+		<i>well-formed</i> &mdash; we do not have syntax problems or other
+		illegal expressions at this stage.
+	</p>
+	<p>
+		This conclusion is critical for two reasons: (1) It eliminates a
+		potential bug source from the very beginning, the function's head. This
+		is a crucial point to check, because it is often the case that a
+		function's head is one of the last places we would think of as causing
+		a bug. (2) Even more importantly, it ensures that the tests actually
+		run. We
+		<em>never</em> want to be in a position where a test does not run; they
+		are supposed to find bugs.
+	</p>
+	<p>
+		With this stage is done, we comment out the stub, but leave a comment
+		that indicating it is the stub. Thus, we have:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+
+		;; stub
+		; (define (double n) 0)
+	</code></pre>
+	<p>
+		Passing the <i>Examples</i> stage, we proceed to <b>templating</b>:
+	</p>
+	<pre class="language-scheme"><code>
+		(define (double n) 
+			(... n))
+	</code></pre>
+	<p>
+		This is <i>template</i>. It merely captures what the general contours
+		are for this function &mdash; when we actually begin coding the
+		function, the parameter <var>n</var> is what we are going to work with.
+	</p>
+	<p>Thus, what we have so far:</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+
+		;; stub
+		; (define (double n) 0) ; stub
+
+		(define (double n)
+			(... n))
+	</code></pre>
+	<p>
+		Now we begin coding the body. Here, we copy and paste the template,
+		then comment out the original template:
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) 6)
+		(check-expect (double 4.2) 8.4)
+
+		;; stub
+		; (define (double n) 0)
+
+		;; template
+		; (define (double n) 
+		;   (... n))
+
+		;; function body
+		(define (double n)
+			(... n))
+	</code></pre>
+	<p>
+		Now we start thinking about what will make this function work. To do
+		so, we look back at everything we've written before: the signature,
+		purpose, examples, and template. In particular, we focus on the
+		examples, and elaborate them. To elaborate, we ask ourselves: Why are
+		the expected results
+		<var>6</var> and <var>8.4</var>? To answer that question, we must
+		answer: How do we turn the inputs into the expected outputs? Here, the
+		inputs map turn into the expected results because the evaluation is
+		actually <var>(* 2 3)</var> and
+		<var>(* 2 4.2)</var>
+	</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) (* 2 3))
+		(check-expect (double 4.2) (* 2 4.2))
+
+		;; stub
+		; (define (double n) 0)
+
+		;; template
+		; (define (double n) 
+		;   (... n))
+
+		;; function body
+		(define (double n)
+			(... n))
+	</code></pre>
+	<p>
+		The process of elaborating on the examples is why we spend significant
+		time studying evaluation models. We cannot elaborate on the examples if
+		we do not know how the evaluations are done.
+	</p>
+	<p>Know that, we can now code the body:</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) (* 2 3))
+		(check-expect (double 4.2) (* 2 4.2))
+
+		;; stub
+		; (define (double n) 0)
+
+		;; template
+		; (define (double n) 
+		;   (... n))
+
+		;; function body
+		(define (double n)
+			(* 2 n))
+	</code></pre>
+	<p>. Now we test the function:</p>
+	<pre class="language-scheme"><code>
+		;; number -> number
+		;; produce 2 times the given number
+		(check-expect (double 3) (* 2 3))
+		(check-expect (double 4.2) (* 2 4.2))
+
+		;; stub
+		; (define (double n) 0)
+
+		;; template
+		; (define (double n) 
+		;   (... n))
+
+		;; function body
+		(define (double n)
+			(* 2 n))
+	</code></pre>
+	<pre class="language-bash"><code>
+		Both tests passed!
+	</code></pre>
+	<p>
+		If a test every fails at this stage, there are three possibilities: (1)
+		the function definition is wrong; (2) the test is wrong; (3) both the
+		function definition and the test are wrong. Before we even look at the
+		function definition, we should be 100% certain the test is correct.
+	</p>
+	<p>
+		The beauty of function design is that each step is aids in completing
+		the next step. The signature helps us write the purpose, the purpose
+		helps us write a stub. The stub helps us write examples, and the
+		examples help us write templates. The templates then help us write the
+		body, as well as the tests and debuggings. As long as we take the time
+		to carefully think about each step and complete them thoroughly, the
+		next step is made all the more easy.
+	</p>
+	<p>
+		<span class="exh">Exercise.</span> Using function design, design and
+		write a function that pluralizes a given word. For simplicity, assume
+		that just add <var>s</var> is enough to pluralize the word.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<p>
+			We write the signature, then the purpose, then the stub, then the
+			tests and examples:
+		</p>
+		<pre class="language-scheme"><code>
+			;; string -> string
+			;; add "!" to the end the string input
+
+			(check-expect (pluralize "egg") "eggs")
+			(check-expect (pluralize "brass") "brasss")
+
+			;; stub
+			(define (pluralize str) 0)
+		</code></pre>
+		<p>Let's code the body. To do so, we elaborate the on the examples:</p>
+		<pre class="language-scheme"><code>
+			;; string -> string
+			;; produce string with s appended at the end
+
+			(check-expect (pluralize "egg") (string-append "egg" "s"))
+			(check-expect (pluralize "brass") (string-append "brass" "s"))
+
+			;; stub
+			; (define (pluralize str) 0)
+
+			(define (pluralize str) 
+				(string-append str "s"))
+		</code></pre>
+		<pre class="language-bash"><code>
+			Both tests passed!
+		</code></pre>
+	</details>
+	<p>
+		<span class="exh">Exercise.</span> Using function design, design and
+		write a function called <var>area_of_square</var> that consumes the
+		length of one side of a square and produces the area of the square.
+	</p>
+	<details class="answer">
+		<summary>Solution</summary>
+		<pre class="language-scheme"><code>
+			;; number --> number
+			;; given length of one side of square, produce the area of the square
+			(check-expect (area_of_square 2) 4)
+			(check-expect (area_of_square 5) 25)
+
+			;; stub 
+			; (define (area_of_square side) 0)
+
+			(define (area_of_square side) 
+				(sqr side))
+		</code></pre>
+		<pre class="language-bash"><code>
+			Both tests passed!
+		</code></pre>
+	</details>
+	<p>
+		We study program design because real-world problems are almost always
+		poorly stated. The fact is, most problems need to be addressed even if
+		we do not have a clear statement of the problem. When we encounter such
+		a problem, the first thing to consider is
+		<b>specification</b> &mdash; make the problem more specific. For
+		example, suppose the following problem:
+	</p>
+	<figure>
+		<div class="rule">
+			<pre class="language-pseudo"><code>
+				Design a function that takes an image argument and determines whether the image is tall.
+			</code></pre>
+		</div>
+	</figure>
+	<p>
+		Step 1: The function's signature. We know that the function takes an
+		image as input, but what exactly does
+		<var>tall</var> mean? Well, we know that the answer to this question is
+		yes or no. Yes the image is tall, no the image is not tall. These are
+		binary values. Now, we do not quite know yet what
+		<var>tall</var> means, but design one step at a time. Right now, we are
+		just focused on the input and output types. Since the output is a
+		binary value, we use <var>Boolean</var>:
+	</p>
+	<pre class="language-scheme"><code>
+		;; image --> Boolean
+	</code></pre>
+	<p>
+		Step 2: The function's purpose. Now we answer the next question. What
+		is this function's purpose?
+	</p>
+	<pre class="language-scheme"><code>
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+	</code></pre>
+	<p>
+		Step 3: The function's stub. The problem does not provide what to name
+		this function, so we must provide a name ourselves. To do so, we follow
+		the programming language's naming conventions. In racket, the
+		convention is, if the function produced a Boolean (as our function
+		does), we append a question mark to the function's name:
+	</p>
+	<pre class="language-scheme"><code>
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(define (tall? img) false)
+	</code></pre>
+	<p>
+		Step 4: Tests. Write some tests. But how many do we write? For now,
+		let's just stick with one test. We will later see that we need more
+		than one.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+		
+		(define (tall? img) false)
+	</code></pre>
+	<p>
+		Running the tests, they fail. This means the tests are working
+		properly, and we can continue to the next step.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+	</code></pre>
+	<p>
+		Step 5: Templating. Now we write the template. Remember, this is just a
+		rough outline.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+
+		(define (tall? img)
+			(... img))
+	</code></pre>
+	<p>
+		Step 6: Write the function. Now we copy the template, comment out the
+		template, and begin writing the function:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(... img))
+	</code></pre>
+	<p>
+		So, how do we write this function. First, we think about what we know.
+		There are only two cases: Either (a) the image is tall, or (b) the
+		image is not tall. Thus, this is a case analysis problem. And where
+		there is a case analysis, there are conditional statements. Let's write
+		three
+		<var>if</var> condition templates:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(if (... img)
+			(... img)
+			(... img)))
+	</code></pre>
+	<p>
+		Now we ask ourselves, when is something &#8220;tall&#8221;? Well,
+		something is tall if it is horizontally longer than it is vertically
+		wide. This means we are comparing width to the height.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(if (> (image-height img) (image-width img))
+			true
+			false))
+	</code></pre>
+	<p>
+		Running the code above, the test passed. But what is the problem here?
+		We do not have enough tests. We passed the test, but we never tested
+		whether
+		<var>false</var> actually outputs. We did not achieve
+		<b>code coverage</b> &mdash; testing every part of the code.
+		Accordingly, we need a test that verifies <var>false</var> actually
+		outputs:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall 
+			;; produce false if the image is not tall
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+		(check-expect (tall? (rectangle 3 2 "solid" "red")) false)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(if (> (image-height img) (image-width img))
+			true
+			false))
+	</code></pre>
+	<p>
+		Code coverage is the bare minimum for testing. Whenever we test code,
+		we must achieve complete code coverage. We say it is the bare minimum
+		because there are often several other tests we still need to provide.
+		One of those is a <b>corner case</b> test. We call this
+		<var>boundary coverage</var>. For this implementation, the corner case
+		is: What if the image and the height are the same?
+	</p>
+	<p>
+		Whenever we encounter a corner case, we must immediately perform
+		several steps: (1) write a test right away; (3) decide what
+		<i>should</i> happen in the corner case (in other words, how should
+		this function behave when it is given a corner case); (2) finally,
+		update all affected parts of the design (this might require updating
+		the signature, purpose, function definition, etc.).
+	</p>
+	<p>
+		Here, we are going to see that if the width and the height are the
+		same, then the image is not tall. Here, we just need to update the
+		purpose.
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+		;; image --> Boolean
+		;; purpose:
+			;; produce true if the image is tall (height is greater than width)
+		(check-expect (tall? (rectangle 2 3 "solid" "red")) true)
+		(check-expect (tall? (rectangle 3 2 "solid" "red")) false)
+		(check-expect (tall? (rectangle 2 2 "solid" "red")) false)
+
+		;(define (tall? img) false) ; stub
+
+		; (define (tall? img) ; template
+			; (... img))
+		
+		(define (tall? img)
+			(if (> (image-height img) (image-width img))
+			true
+			false))
+	</code></pre>
+	<p>
+		The function passes all of the tests above. Notice that this function
+		really only uses a Boolean comparison operator, so we can make the code
+		more concise:
+	</p>
+	<pre class="language-scheme"><code>
+		(require 2htdp/image)
+
+		;; image --> Boolean
+		;; purpose: produce true if the image is tall (height is greater than width)
+		(define (tall? img)
+			(> (image-height img) (image-width img)))
+	</code></pre>
+</section>

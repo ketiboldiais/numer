@@ -1,0 +1,497 @@
+{% load static %}
+<h2>Deletion</h2>
+<p>There are two cases for deleting a node from a linked list:</p>
+<ol>
+	<li>deleting the first node (called <b>left-shifting</b>),</li>
+	<li>deleting the last node (called <b>right-shifting</b>),</li>
+	<li>deleting a node at a given position ${i.}$</li>
+</ol>
+<p>Let's consider each in turn.</p>
+
+<section id="lopping">
+	<h3>Left-shifting</h3>
+	<p>Suppose we have the following linked list:</p>
+	<div id="lop1"></div>
+	<p>
+		To left-shift this list, we want to remove the list's head, resulting
+		in:
+	</p>
+	<div id="lop2"></div>
+	<p>
+		This is a special case of deletion because if we remove the list's
+		head, then the node immediately after the head must become the new
+		head. Otherwise, we lose the linked list.
+	</p>
+	<p>
+		To left-shift, we must have the pointer to the former-head move to the
+		next node. Once we move this pointer, we no longer have access to the
+		former-head. It's somewhere in heap memory. And because it's still
+		somewhere in heap memory, we must <i>free</i> the allocated space. This
+		means that we must have a pointer to the former-head. Accordingly,
+		left-shifting a list requires two pointers to the head. One to move to
+		the next node, and another for deletion.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C++</li>
+		</ul>
+		<div class="pseudo">
+			<p>
+				Illustrating this in pseudocode, first we ensure there's a pointer
+				to the head:
+			</p>
+
+			<ol class="alg">
+				<li>Node* p = head;</li>
+			</ol>
+
+			<p>
+				Then, we have the <var>head</var> pointer point to the next node:
+			</p>
+
+			<ol class="alg">
+				<li>Node* p = head;</li>
+				<li>head = head->next;</li>
+			</ol>
+
+			<p>Then, we delete the former head:</p>
+
+			<ol class="alg">
+				<li>Node* p = head;</li>
+				<li>head = head->next;</li>
+				<li>delete p;</li>
+			</ol>
+
+			<p>As a complete function:</p>
+			<ol class="alg">
+				<li>lop(Node* list):</li>
+				<ol>
+					<li>Node* p = list->head;</li>
+					<li>list->head = head->next;</li>
+					<li>delete p;</li>
+				</ol>
+			</ol>
+
+			<p>
+				As we can see, this procedure consists of just three basic steps.
+				Hence, the algorithm has a time complexity of ${O(1)}$ &mdash;
+				constant time.
+			</p>
+		</div>
+		<div class="cpp">
+			<p>Here's an implementation in C++:</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				struct Node {
+					int data;
+					Node* next;
+					Node(int newData) {
+						data = newData;
+						next = NULL;
+					}
+				};
+				
+				class List {
+					Node* head; // This is the first node in the list
+					Node* foot; // This is the last node in the list
+					public:
+						List(int newData) {
+							head->data = newData;
+							foot       = head;
+						}
+						List(int arr[], int size) {
+							head = new Node(arr[0]);
+							foot = head;
+							for (int i = 1; i < size; i++) {
+								Node* freshNode  = new Node(arr[i]);
+											foot->next = freshNode;
+											foot       = freshNode;
+							}
+						}
+						void lop() {
+							Node* p    = head;
+										head = head->next;
+							delete p;
+						}
+						void print() {
+							Node* p = head;
+							std::cout << "(";
+							while (p != NULL) {
+								std::cout << p->data << " ";
+								p = p->next;
+							}
+							std::cout << ")\n";
+						}
+				};
+				
+				int main() {
+					int  arr[] = {1,2,3,4,5};
+					List list1 = List(arr, 5);
+					list1.print();
+					list1.lop();
+					list1.print();
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				( 1 2 3 4 5 )
+				( 2 3 4 5 )
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="right-shift">
+	<h3>Right-shift</h3>
+	<p>
+		The second case for deletion is deleting the <i>tailend</i> &mdash; the
+		very last node in the list. We traverse the list until the node just
+		before the tailend, set that node as the new tailend, and nullify its
+		next pointer.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>List->shift_right() => List:</li>
+				<ol>
+					<li>if (List->head is null):</li>
+					<ol>
+						<li>return theList</li>
+					</ol>
+					<li>else if (List->length is 1):</li>
+					<ol>
+						<li>List->head = null</li>
+						<li>List->tail = null</li>
+						<li>List->length--</li>
+						<li>return theList</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>let d = List->head</li>
+						<li>let t = d</li>
+						<li>while (d->next isnt null):</li>
+						<ol>
+							<li>t = d</li>
+							<li>d = d->next</li>
+						</ol>
+						<li>List->tail = t</li>
+						<li>List->tail->next = null</li>
+						<li>List->length--</li>
+						<li>return List</li>
+					</ol>
+				</ol>
+			</ol>
+		</div>
+		<div class="js">
+			<pre class="language-javascript"><code>
+				shiftRight() {
+					if (this.#head === null) {
+						return this;
+					} else if (this.#length === 1) {
+						this.#head = null;
+						this.#tail = null;
+						this.#length--;
+						return this;
+					} else {
+						let d = this.#head;
+						let t = d;
+						while (d.next) {
+							t = d;
+							d = d.next;
+						}
+						this.#tail = t;
+						this.#tail.next = null;
+						this.#length--;
+						return this;
+					}
+				}
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="generic_deletion">
+	<h3>General Deletion</h3>
+	<p>
+		Recall that a <i>tail node</i> is any node other than the head.
+		Deleting a tail node is the second case for deletion. We'll call the
+		tail node deletion function <var>removeAt(${i}$)</var>, where ${i}$ is
+		the position of the node, starting at ${1.}$ For example, if we have
+		the linked list:
+	</p>
+	<div id="removeAt1"></div>
+	<p>executing <var>deleteNodeAt(2)</var> results in:</p>
+	<div id="removeAt2"></div>
+	<p>
+		The procedure here is fairly straightforward. To delete ${n_2,}$ we
+		must have two pointers. A pointer to ${n_2,}$ and a pointer immediately
+		before ${n_2,}$ the node ${n_1:}$
+	</p>
+	<div id="removeAt3"></div>
+	<p>
+		The two pointers are necessary because we must delete the allocated
+		space used for ${n_2,}$ the node we seek to delete. This is similar to
+		our earlier genertal insertion method:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C++</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>fn deleteNodeAt(int position):</li>
+				<ol>
+					<li>Node* d = head;</li>
+					<li>Node* t = head;</li>
+					<li>for (int i = 1; i <= position; i++):</li>
+					<ol>
+						<li>t = d;</li>
+						<li>d = d->next;</li>
+					</ol>
+					<li>t->next = d->next;</li>
+					<li>delete d;</li>
+				</ol>
+			</ol>
+		</div>
+		<div class="cpp">
+			<p>Here's an implementation in C++:</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				struct Node {
+					int data;
+					Node* next;
+					Node(int newData) {
+						data = newData;
+						next = NULL;
+					}
+				};
+				
+				class List {
+					Node* head;
+					Node* foot;
+					public:
+						List(int data) {
+							head = new Node(data);
+							foot = head;
+						}
+						List(int arr[], int size) {
+							head = new Node(arr[0]);
+							foot = head;
+							for (int i = 1; i < size; i++) {
+								Node* freshNode = new Node(arr[i]);
+								foot->next = freshNode;
+								foot = freshNode;
+							}
+						}
+						void deleteNodeAt(int position) {
+							Node* d = head;
+							Node* t = NULL;
+							for (int i = 0; i < position-1; i++) {
+								t = d;
+								d = d->next;
+							}
+							t->next = d->next;
+							delete d;
+						}
+						void print() {
+							Node* p = head;
+							std::cout << "(";
+							while (p != NULL) {
+								std::cout << p->data << " ";
+								p = p->next;
+							}
+							std::cout << ")\n";
+						}
+				};
+				
+				int main() {
+					int arr[] = {1, 2, 3, 4};
+					List listX = List(arr, 4);
+					listX.print();
+					listX.deleteNodeAt(3);
+					listX.print();
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(1 2 3 4 )
+				(1 2 4 )
+			</code></pre>
+		</div>
+	</div>
+	<p>
+		The time complexity for this approach depends on which node in the list
+		we're deleting. If we're deleting the second node, then the time is
+		constant &mdash; ${O(1).}$ If, however, we're deleting anywhere else,
+		then we must traverse over ${n}$ nodes to position our driver and
+		tailer pointers. As such, the minimimum running time complexity is
+		${O(1),}$ and maximum time complexity is ${O(n).}$
+	</p>
+	<p>
+		We can encapsulate tail node deletion and lopping into the single
+		procedure of <i>general deletion</i>. Doing so is a matter of
+		conditional branching. We'll call this function
+		<var>deleteNode(${p}$)</var>, where ${p}$ is an <var>int</var> argument
+		corresponding to position:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>fn deleteNode(int p):</li>
+				<ol>
+					<li>Node* p;</li>
+					<li>Node* q;</li>
+					<li>if (p == 1):</li>
+					<ol>
+						<li>p = head;</li>
+						<li>head = p->next;</li>
+						<li>delete p;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>p = head;</li>
+						<li>q = NULL;</li>
+						<li>for (int i = 0; i < p-1 && p; i++):</li>
+						<ol>
+							<li>q = p;</li>
+							<li>p = p->next;</li>
+						</ol>
+						<li>if (p):</li>
+						<ol>
+							<li>q->next = p->next;</li>
+							<li>delete p;</li>
+						</ol>
+					</ol>
+				</ol>
+			</ol>
+		</div>
+		<div class="c">
+			<p>Here's an implementation in C:</p>
+			<pre class="language-c"><code>
+				void deleteAt(struct Node** head, int index) {
+					struct Node* headRef;
+					struct Node* previousNode = NULL;
+					if (index < 1 || index > length(*head)) {
+						printf("Invalid index");
+					}
+					if (index == 1) {
+						headRef = *head;
+						*head   = (**head).next;
+						free(headRef);
+					}
+					else {
+						headRef = *head;
+						for (int i = 0; i < index - 1; i++) {
+							previousNode = headRef;
+							headRef      = (*headRef).next;
+						}
+						(*previousNode).next = (*headRef).next;
+						free (headRef);
+					}
+				}
+			</code></pre>
+			<p>Testing:</p>
+			<pre class="language-c"><code>
+				#include &lt;stdlib.h&gt;
+				#include &lt;stdio.h&gt;
+				
+				struct Node {
+					int data;
+					struct Node* next;
+				};
+				
+				struct Node* Node(int newData) {
+					struct       Node* freshNode = (struct Node*) malloc(sizeof(struct Node));
+					(*freshNode).data            = newData;
+					(*freshNode).next            = NULL;
+					return freshNode;
+				}
+				
+				struct Node* List(int arr[], int size) {
+					struct Node* head = Node(arr[0]);
+					struct Node* foot = head;
+					for (int i = 1; i < size; i++) {
+						struct  Node* newNode = Node(arr[i]);
+						(*foot).next          = newNode;
+										foot          = newNode;
+					}
+					return head;
+				}
+				
+				void print(struct Node* p) {
+					printf("( ");
+					if (p == NULL) {
+						printf("empty ");
+					} else {
+						while (p != NULL) {
+							printf("%d ", (*p).data);
+							p = (*p).next;
+						}
+					}
+					printf(")\n");
+				}
+				
+				int length(struct Node* p) {
+					int count = 0;
+					if (p == NULL) {
+						return count;
+					} else {
+						while (p != 0) {
+							count++;
+							p = (*p).next;
+						}
+						return count;
+					}
+				}
+				
+				void deleteAt(struct Node** head, int index) {
+					struct Node* headRef;
+					struct Node* previousNode = NULL;
+					if (index < 1 || index > length(*head)) {
+						printf("Invalid index");
+					}
+					if (index == 1) {
+						headRef = *head;
+						*head   = (**head).next;
+						free(headRef);
+					}
+					else {
+						headRef = *head;
+						for (int i = 0; i < index - 1; i++) {
+							previousNode = headRef;
+							headRef      = (*headRef).next;
+						}
+						(*previousNode).next = (*headRef).next;
+						free (headRef);
+					}
+				}
+				
+				int main() {
+					int    arr[]      = {1,2,3,4};
+					struct Node* list = List(arr, 4);
+					deleteAt(&list, 3);
+					print(list);
+					deleteAt(&list, 1);
+					print(list);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				( 1 2 4 )
+				( 2 4 )
+			</code></pre>
+		</div>
+	</div>
+</section>

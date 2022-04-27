@@ -1,0 +1,1037 @@
+{% load static %}
+<h2>Insertion</h2>
+<p>
+	So far, we've been manually linking nodes. At this point, it would be
+	helpful to write procedures for inserting new nodes to existing linked
+	lists.
+</p>
+<p>
+	As with any linear data structure, there are three types of insertions:
+</p>
+<ul>
+	<li>
+		<b>Prepending</b> &mdash; inserting to the list's head (i.e., inserting
+		a new node as the first node).
+	</li>
+	<li>
+		<b>Interposing</b> &mdash; inserting to the list's trunk (i.e.,
+		inserting a new node somewhere between the first node and the last
+		node).
+	</li>
+	<li>
+		<b>Appending</b> &mdash; inserting to the list's foot (i.e., inserting
+		a new node as the last node).
+	</li>
+</ul>
+<p>
+	With arrays, the compiler provided indices for us to work with. Linked
+	lists, however, do not have such indices. But nothing stops us from
+	adding indices of our own. Once we have indices for the existing nodes,
+	we can create an abstraction for the indices of insertions. With indices,
+	we see that there only two cases.
+</p>
+<ol class="numd">
+	<li>Inserting before the first node.</li>
+	<li>Inserting after a given position ${i.}$</li>
+</ol>
+<p>
+	For the first case, all we must pass as an argument to some function is
+	${i = 0.}$ In doing so, the node is inserted at the very beginning. This
+	is a special case because the head of the list has a unique role &mdash;
+	it is the only node which is always pointed to from the stack. Lose that
+	connection, and the linked list is lost.
+</p>
+<p>
+	For the second case, insertion is merely a matter of passing the index.
+	If we pass as an index ${1,}$ then we're inserting after the first node.
+	If we pass as an index ${3,}$ then we're inserting after the third node.
+	More generally: Given a list of ${n}$ nodes, where the first node has an
+	index ${i = 1}$ and the last node has an index ${i = n,}$ passing as an
+	insertion index ${k}$ will insert the element at ${i = i + 1.}$
+</p>
+<p>All that said, let's now consider the specific procedures.</p>
+
+<section id="append">
+	<h3>Append</h3>
+	<p>Suppose we had the following linked list, called <var>list1</var>:</p>
+	<div id="insertionLL_2"></div>
+	<p>If we write <var>append(list1, 8)</var>, we get:</p>
+	<div id="insertionLL_3"></div>
+	<p>And when we write <var>append(list1, 4)</var>, we get:</p>
+	<div id="insertionLL_4"></div>
+	<p>
+		We can implement this procedure by using an additional pointer to the
+		list's <i>foot</i>, or <i>tailend</i> &mdash; the last node in the
+		list. We'll call the tailend's pointer <var>t</var>, the head's pointer
+		<var>h</var> and consider the simplest case &mdash; the empty list.
+		With the empty list, we have the following:
+	</p>
+	<div id="insertionLL_5"></div>
+	<p>
+		Notice that both the head pointer <var>h</var> and the tailend pointer
+		<var>t</var> point to the same node. Why? Because the node in the list
+		above is both the head and the foot. Once we append a new node, the
+		tailend pointer <var>t</var> changes its pointee to the new node, but
+		the head pointer <var>h</var> remains the same:
+	</p>
+	<div id="insertionLL_6"></div>
+	<p>And when we append another node:</p>
+	<div id="insertionLL_7"></div>
+	<p>
+		Now, because the head pointer <var>h</var> and the tailend pointer
+		<var>t</var> are additional pointers for a given list, we must ensure
+		that if the list is empty &mdash; a list with no nodes &mdash;
+		<var>h</var> and <var>t</var> should both be null pointers. To ensure
+		this, they must both be initially assigned <var>0</var>. Only when the
+		list is made non-empty &mdash; a new node is inserted &mdash; do they
+		become nonnull pointers.
+	</p>
+	<pre class="language-pseudo"><code>
+		Node* h = 0;
+		Node* t = 0;
+	</code></pre>
+	<p>
+		Let's implement this function in pseudocode. First, we'll call this
+		function <var>append()</var>. What might this function's signature look
+		like? Well, it doesn't return anything, because it's directly inserting
+		into a particular list. But, it does create a new node. For now, we'll
+		focus on <var>int</var> lists. Hence, our function signature looks
+		like:
+	</p>
+
+	<ol class="alg">
+		<li>fn append(int x) -> void</li>
+	</ol>
+
+	<p>
+		With that out of the way, we can now think about how to implement this
+		function. First, we need to create a new node, with its
+		<var>data</var> field assigned the argument <var>x</var>, and its
+		<var>next</var> field initially zero:
+	</p>
+
+	<ol class="alg">
+		<li>fn append(int x) -> void</li>
+		<ol>
+			<li>Node* n = newNode(data: x, next: 0)</li>
+		</ol>
+	</ol>
+
+	<p>
+		Now we have to consider the cases. Is the list we want to append to the
+		empty or non-empty list? An implicit corollary question: How do we
+		determine if a list is empty or non-empty? Well, suppose that every
+		linked list we create has a pointer called <var>h</var>, pointing to
+		the list's head. It follows then that if <var>h = 0</var>, then we have
+		an empty list. Otherwise, we have a non-empty list. Why? Because if
+		<var>h = 0</var>, then the list has no head. And if the list has no
+		head, then it is the empty list.
+	</p>
+	<p>Thus, we have two cases:</p>
+
+	<ol class="alg">
+		<li>h == 0</li>
+		<li>h != 0</li>
+	</ol>
+
+	<p>
+		Now, if the list is empty &mdash; <var>h == 0</var> &mdash; then we
+		should have <var>h</var> and <var>t</var> point to the new node:
+	</p>
+
+	<ol class="alg">
+		<li>fn append(int x) -> void</li>
+		<ol>
+			<li>Node* n = newNode(data: x, next: 0)</li>
+			<li>if (n == 0):</li>
+			<ol>
+				<li>h = t = n</li>
+			</ol>
+		</ol>
+	</ol>
+	<p>
+		If the list is non-empty &mdash; <var>h != 0</var> &mdash; then the
+		tailend, <var>t</var>'s pointee, should point to <var>n</var>, and
+		<var>t</var> change its pointee to <var>n</var>:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C++</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>fn append(int x) -> void</li>
+				<ol>
+					<li>Node* n = newNode(data: x, next: 0)</li>
+					<li>if (n == 0):</li>
+					<ol>
+						<li>h = t = n</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>t->next = n;</li>
+						<li>t = n;</li>
+					</ol>
+				</ol>
+			</ol>
+		</div>
+		<div class="cpp">
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+					
+				void List::append(int data) {
+					Node* newNode = new Node(data);
+					if (head == NULL) {
+						head = newNode;
+						return;
+					}
+					Node* temp = head;
+					while (temp->next != NULL) {
+						temp = temp->next;
+					}
+					temp->next = newNode;
+				}
+			</code></pre>
+		</div>
+		<div class="js">
+			<pre class="language-javascript"><code>
+				append(data) {
+					const newNode = new Node(data);
+					if (!this.#head) {
+						this.#head = newNode;
+						this.#tail = this.#head;
+					} else {
+						this.#tail.next = newNode;
+						this.#tail = newNode;
+					}
+					this.#length++;
+					return this;
+				}
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="prepend">
+	<h3>Prepend</h3>
+	<p>Say we had the following linked list:</p>
+	<div id="prepend1"></div>
+	<p>In pseudocode:</p>
+	<ol class="alg">
+		<li>linkedList([8, 3, 9]);</li>
+	</ol>
+	<p>
+		To prepend a new node, we want to insert the new node at the beginning
+		of the list. To do so, we first create a new node:
+	</p>
+	<ol class="alg">
+		<li>linkedList([8, 3, 9]);</li>
+		<li>Node* n = newNode(data: 7, next: 0);</li>
+	</ol>
+	<p>
+		Second, we have <var>n</var>'s next field point to the first node in
+		the list:
+	</p>
+	<ol class="alg">
+		<li>linkedList([8, 3, 9]);</li>
+		<li>Node* n = newNode(data: 7, next: 0);</li>
+		<li>n->next = firstNode;</li>
+	</ol>
+	<p>This results in the following:</p>
+
+	<p>Finally, we make the first node the new node <var>n</var>:</p>
+	<ol class="alg">
+		<li>linkedList([8, 3, 9]);</li>
+		<li>Node* n = newNode(data: 7, next: 0);</li>
+		<li>n->next = firstNode;</li>
+		<li>firstNode = n;</li>
+	</ol>
+	<p>The end result:</p>
+	<div id="prepend2"></div>
+	<p>
+		Examining this procedure, we see that each of these steps is a basic
+		step &mdash; they each take constant time. And because each step takes
+		constant time, prepending a new node has time complexity of ${O(1)}$
+		&mdash; constant time.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>list->prepend():</li>
+				<ol>
+					<li>Node 𝑛 := new Node(data)</li>
+					<li>if (list->head != null):</li>
+					<ol>
+						<li>list->head := 𝑛</li>
+						<li>list->tail := list->head</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>𝑛->next := list->head</li>
+						<li>list->head := 𝑛</li>
+					</ol>
+					<li>list->length++</li>
+					<li>return list</li>
+				</ol>
+			</ol>
+		</div>
+		<div class="c">
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				Node* prepend(Node* p, int data) {
+					Node* n       = newNode(data);
+								n->next = p;
+					return n;
+				}
+			</code></pre>
+		</div>
+		<div class="js">
+			<pre class="language-javascript"><code>
+				prepend(data) {
+					const newNode = new Node(data);
+					if (!this.#head) {
+						this.#head = newNode;
+						this.#tail = this.#head;
+					} else {
+						newNode.next = this.#head;
+						this.#head = newNode;
+					}
+					this.#length++;
+					return this;
+				}
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="get">
+	<h3>Get</h3>
+	<p>Suppose we have the following linked list:</p>
+	<div id="get0"></div>
+	<p>We want a function such that writing:</p>
+	<pre class="language-pseudo"><code>
+		list->get(3)
+	</code></pre>
+	<p>
+		returns the data stored at the node in position ${3.}$ In this case,
+		the integer <var>5</var>. Using the linked list above:
+	</p>
+	<pre class="language-pseudo"><code>
+		list->get(1) ==> 4
+		list->get(2) ==> 9
+		list->get(3) ==> 5
+		list->get(4) ==> 3
+	</code></pre>
+	<p>In general, <var>get()</var> has the following template:</p>
+	<ul class="syntax">
+		<li>get(${p}$)</li>
+	</ul>
+	<p>where ${p}$ is a positive integer position in the list.</p>
+
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>list->get(uint index) => TYPE element:</li>
+				<ol>
+					<li>let position := index - 1</li>
+					<li>if (position &lt; 0) ∨ (position &gt; list->length):</li>
+					<ol>
+						<li>return null</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>let i := 0</li>
+						<li>let p := list->head</li>
+						<li>while (i != position):</li>
+						<ol>
+							<li>p := p->next</li>
+							<li>i++</li>
+						</ol>
+						<li>return p->data</li>
+					</ol>
+				</ol>
+			</ol>
+		</div>
+		<div class="js">
+			<pre class="language-javascript"><code>
+				get(index) {
+					let position = index - 1;
+					if (position &lt; 0 || position >= this.#length) {
+						return null;
+					} else {
+						let i = 0;
+						let p = this.#head;
+						while (i !== position) {
+							p = p.next;
+							i++;
+						}
+						return p.data;
+					}
+				}
+			</code></pre>
+			<p></p>
+		</div>
+	</div>
+</section>
+
+<section id="set">
+	<h3>Set</h3>
+	<p>Suppose we have the following linked list:</p>
+	<div id="set0"></div>
+	<p>We want to a function that allows us to write:</p>
+	<pre class="language-pseudo"><code>
+		list->set(5, 2)
+	</code></pre>
+	<p>and results in:</p>
+	<div id="set1"></div>
+	<p>
+		Implementing this function follows the same pattern as
+		<var>get()</var>.
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseucode</li>
+			<li>JavaScript</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>list->set(uint index, TYPE element) -> List:</li>
+				<ol>
+					<li>let position := index - 1</li>
+					<li>if (position &lt; 0) ∨ (position > list->length):</li>
+					<ol>
+						<li>return null;</li>
+					</ol>
+					<li>else:</li>
+					<ol>
+						<li>let i := 0</li>
+						<li>let p := list->head</li>
+						<li>while (i != position):</li>
+						<ol>
+							<li>p := p->next</li>
+							<li>i++</li>
+						</ol>
+						<li>p->data := element</li>
+						<li>return list</li>
+					</ol>
+				</ol>
+			</ol>
+		</div>
+		<div class="js">
+			<pre class="language-javascript"><code>
+				set(element, index) {
+					let position = index - 1;
+					if (position &lt; 0 || position > this.#length) {
+						return this;
+					} else {
+						let i = 0;
+						let p = this.#head;
+						while (i !== position) {
+							p = p.next;
+							i++;
+						}
+						p.data = element;
+						return this;
+					}
+				}
+			</code></pre>
+		</div>
+	</div>
+</section>
+
+<section id="insert">
+	<h3>Insert</h3>
+	<p>Suppose we have the following linked list:</p>
+	<div id="interpose0"></div>
+	<p>We want to write the function:</p>
+	<pre class="language-pseudo"><code>
+		list->insert(5, 2)
+	</code></pre>
+	<p>such that we obtain the result:</p>
+	<div id="interpose01"></div>
+	<p>
+		To implement this function, we need two pointers: A pointer to the
+		element immediately before the insertion position, and a pointer to the
+		element immediately after. Using the previous call, we have a pointer
+		<var>d</var> for the position we want to insert at, and a pointer
+		<var>t</var> for the position immediately before:
+	</p>
+	<div id="insert3"></div>
+	<p>
+		In code, suppose the insertion position is represented by the variable
+		<var>i</var>, and the new node is named <var>n</var>:
+	</p>
+	<ol class="alg">
+		<li>linkedList(7, 8, 3, 9)</li>
+		<li>Node* n := new Node(5)</li>
+		<li>Node* t := pointer @ Node[i]</li>
+		<li>Node* d := pointer @ Node[i+1]</li>
+	</ol>
+	<p>
+		Once we have these two pointers, <var>n</var>'s next field should point
+		to <var>d</var>, and <var>t</var>'s pointer should point to
+		<var>n</var>:
+	</p>
+	<ol class="alg">
+		<li>linkedList(7, 8, 3, 9)</li>
+		<li>Node* n = new Node(5)</li>
+		<li>Node* t = pointer @ Node[i]</li>
+		<li>Node* d = pointer @ Node[i+1]</li>
+		<li>n->next = d</li>
+		<li>t->next = n</li>
+	</ol>
+	<p>
+		Note that <var>n</var>'s pointer must first point to
+		<var>d</var> before we assign <var>t</var>'s pointer to <var>n</var>.
+		If we assigned <var>t</var>'s pointer to <var>n</var> before assigning
+		<var>d</var>'s pointer to <var>n</var>, we would lose <var>d</var>'s
+		address.
+	</p>
+	<p>
+		In our pseudocode, we wrote <var>pointer @ Node[i]</var> and
+		<var>pointer @ Node[i+1]</var>. Let's flesh these expressions out. How
+		do we get two pointers to point on these particular nodes? After all,
+		we don't have indices. Once again, because we do not have indices with
+		linked lists, we must traverse the linked list. In our function, we
+		will pass a particular argument, <var>i</var>, as an abstraction for
+		some index. This is what we use to keep track of how many times a
+		particular pointer will move.
+	</p>
+	<p>
+		In the code illustration below, notice that we don't actually need two
+		pointers, since the new node we create has a <var>next</var> pointer we
+		can use:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>fn Node* insert(Node* listPtr, int data, int position):</li>
+				<ol>
+					<li>Node* p = listPtr;</li>
+					<li>Node* n = newNode(data: data, next: 0);</li>
+					<li>for (int i = 0; i < position-1; i++):</li>
+					<ol>
+						<li>p = p->next;</li>
+					</ol>
+					<li>n->next = p->next;</li>
+					<li>p->next = n;</li>
+					<li>return n;</li>
+				</ol>
+			</ol>
+		</div>
+		<div class="c">
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				Node* insert(Node* root, int data, int position) {
+					Node* p = root;
+					Node* n = newNode(data);
+					for (int i = 0; i < position-1; i++) {
+						p = p->next;
+					}
+					n->next = p->next;
+					p->next = n;
+					return root;
+				}
+			</code></pre>
+			<p>
+				We could write a more generalized function,
+				<var>insert()</var>, which can insert at any given position in the
+				linked list:
+			</p>
+			<pre class="language-cpp"><code>
+					Node* insert(Node* p, int data, int position) {
+						Node* m = p;
+						Node* n = newNode(data);
+						if (position == 0) {
+							n->next = m;
+							return n;
+						}
+						else {
+							for (int i = 0; i < position - 1; i++) {
+								m = m->next;
+							}
+							n->next = m->next;
+							m->next = n;
+							return p;
+						}
+					}
+				</code></pre>
+			<p>Testing:</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+
+				struct Node {
+					int data;
+					Node* next;
+				};
+				
+				void print(Node* n) {
+					std:: cout << "( ";
+					while (n != 0) {
+						std:: cout << n->data << " ";
+						n = n->next;
+					}
+					std:: cout << ")\n";
+				}
+				
+				Node* newNode(int data) {
+					Node* node       = new Node;
+								node->data = data;
+								node->next = 0;
+					return node;
+				}
+				
+				Node* insert(Node* p, int data, int position) {
+					Node* m = p;
+					Node* n = newNode(data);
+					if (position == 0) {
+						n->next = m;
+						return n;
+					}
+					else {
+						for (int i = 0; i < position - 1; i++) {
+							m = m->next;
+						}
+						n->next = m->next;
+						m->next = n;
+						return p;
+					}
+				}
+				
+				int main() {
+					Node* list     = 0;
+					Node* n1       = newNode(3);
+								list     = n1;
+					Node* n2       = newNode(2);
+								n1->next = n2;
+					Node* n3       = newNode(7);
+								n2->next = n3;
+					Node* n4       = newNode(5);
+								n3->next = n4;
+				
+					print(list);
+				
+					Node* list2 = insert(list, 9, 0);
+				
+					print(list2);
+				
+					Node* list3 = insert(list2, 1, 4);
+				
+					print(list3);
+				
+					Node* list4 = insert(list3, 8, 3);
+				
+					print(list4);
+				
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				( 3 2 7 5 )
+				( 9 3 2 7 5 )
+				( 9 3 2 7 1 5 )
+				( 9 3 2 8 7 1 5 )
+			</code></pre>
+		</div>
+	</div>
+	<p>
+		Let's go over the procedure carefully. First, we pass as an argument
+		the pointer <var>listPtr</var>. This pointer points to the list we want
+		to insert into. Next, we passed <var>int data</var>. This is what will
+		be used to initialize the new node's data field. Then, we passed as an
+		argument <var>int position</var>. We use this argument to indicate
+		where in the list we want to insert the new node. Recall that if we
+		pass the argument <var>3</var>, the new node is inserted after the
+		existing node at position three.
+	</p>
+	<p>
+		Inside the body, we create a new node, <var>n</var>. This node has its
+		data field initialized with the argument <var>int data</var>, and a
+		<var>next</var> field of <var>0</var> (it points nowhere at
+		initialization).
+	</p>
+	<p>
+		After initializing the new node, we then iterate. Notice the loop's
+		head. We start at <var>int i = 0</var>, and we continue iterating so
+		long as <var>i</var> is less than <var>position - 1</var>. Thus, if we
+		passed as an argument <var>position = 3</var>, the loop executes:
+		${\lang 0, 1, 2 \rang}$ &mdash; three times. At each iteration, we move
+		the pointer <var>p</var> forward.
+	</p>
+	<p>
+		For example, say we're inserting into the following linked list, where
+		<var>position = 3</var>.
+	</p>
+	<div id="interpose1"></div>
+	<p>
+		Initially, the pointer <var>p</var> points to the head of the list:
+	</p>
+	<div id="interpose2"></div>
+	<p>
+		Then, we enter the for-loop. We start with <var>int i = 0</var>. The
+		condition is then checked: Is <var>i < position - 1</var>? Yes, ${0 <
+		2.}$ So, we move the pointer <var>p</var> to the next node:
+	</p>
+	<div id="interpose3"></div>
+	<p>
+		We increment our variable <var>i</var>. Now we have
+		<var>i = 1.</var> We check the condition again. Is
+		<var>i < position - 1</var>? Yes, ${0 < 1.}$ So we move the pointer
+		<var>p</var> once more:
+	</p>
+	<div id="interpose4"></div>
+	<p>
+		Once more we increment <var>i</var>. Now <var>i = 2</var>. The
+		condition is checked. Is <var>i < 2</var>? NO. ${2 \nless 2.}$ So we
+		stop, leaving position <var>p</var> right where we want it.
+	</p>
+	<p>
+		While <var>p</var> was busy traversing, our new node <var>n</var> sat
+		waiting. Now it's time for it to spring into action. We wrote:
+	</p>
+	<ol class="alg">
+		<li>n->next = p->next</li>
+	</ol>
+	<p>
+		In doing so, we now have <var>n</var> pointing to the node immediately
+		after <var>p</var>. This means there are now two pointers to the node
+		immediately after <var>p</var>. <var>p->next</var>, and
+		<var>n->next</var>. Now <var>p</var> comes back into play. We wrote:
+	</p>
+	<ol class="alg">
+		<li>p->next = n;</li>
+	</ol>
+	<p>
+		In doing so, <var>p->next</var> now points to <var>n</var>, the new
+		node. This completes the linking. <var>p->next</var> points
+		<var>n</var>, and <var>n</var> points to the node that was previously
+		<var>p->next</var>'s pointee. We've successfully inserted the node.
+	</p>
+</section>
+
+<section id="insert_into_sorted_linked_list">
+	<h3>Sorted Insertions</h3>
+	<p>Suppose we had the following linked list:</p>
+	<div id="sortedLL1"></div>
+	<p>
+		Notice that the elements in this list are sorted. Say we wanted to
+		insert a node with the data <var>18</var>. When we insert into a sorted
+		list, we usually want to maintain the list's sorted nature. We call
+		this a <i>sorted insertion</i>. In this case, we want ${n(18)}$ to come
+		after ${n(15)}$ and before ${n(20).}$ If we want to insert ${n(10),}$
+		it should come after ${n(9)}$ and before ${n(5).}$
+	</p>
+	<p>
+		Implementing this procedure is fairly straightforward. Consider
+		inserting the node ${n(18).}$ We go to the first node, ${n(3),}$ and
+		ask, is ${n(3) &lt; n(18)?}$
+	</p>
+	<div id="sortedLL2"></div>
+	<p>True. So we move to the next node and ask, is ${n(7) < n(18)?}$:</p>
+	<div id="sortedLL3"></div>
+	<p>Again, true. So we move to the next node:</p>
+	<div id="sortedLL4"></div>
+	<p>Once more, true. So we move the next node:</p>
+	<div id="sortedLL5"></div>
+	<p>True. Move to the next node:</p>
+	<div id="sortedLL6"></div>
+	<p>
+		Finally, we get false. And since we get false, we want to insert
+		${n(18)}$ after ${n(15)}$ and before ${n(20).}$ Now, recall that to
+		insert a new node into a linked list, we need two pointers &mdash; the
+		<i>driver</i>, denoted <var>d</var>, and the <i>tailer</i>, denoted
+		<var>t</var>. And given that we have need two pointers, we have to move
+		the pointers' pointees around in our iteration:
+	</p>
+	<table class="trace">
+		<thead>
+			<th>Loop</th>
+			<th>Guard Clause</th>
+			<th>Result</th>
+			<th style="width: 60%">State</th>
+			<th>Comment</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>${0}$</td>
+				<td><var>n(3) &lt; n(18)</var></td>
+				<td>true</td>
+				<td>
+					<div id="sortedLL10"></div>
+				</td>
+				<td>
+					The pointer <var>d</var> has been initialized and points nowhere
+					(<var>t = NULL</var>).
+				</td>
+			</tr>
+			<tr>
+				<td>${1}$</td>
+				<td><var>n(7) &lt; n(18)</var></td>
+				<td>true</td>
+				<td>
+					<div id="sortedLL11"></div>
+				</td>
+				<td>
+					The pointer <var>d</var> moves to the second node, and the
+					pointer <var>t</var> moves to the first node.
+				</td>
+			</tr>
+			<tr>
+				<td>${2}$</td>
+				<td><var>n(9) &lt; n(18)</var></td>
+				<td>true</td>
+				<td>
+					<div id="sortedLL12"></div>
+				</td>
+				<td>
+					The pointer <var>d</var> moves to the third node, and the pointer
+					<var>t</var> moves to the second node.
+				</td>
+			</tr>
+			<tr>
+				<td>${3}$</td>
+				<td><var>n(15) &lt; n(18)</var></td>
+				<td>true</td>
+				<td>
+					<div id="sortedLL13"></div>
+				</td>
+				<td>
+					The pointer <var>d</var> moves to the fourth node, and the
+					pointer <var>t</var> moves to the third node.
+				</td>
+			</tr>
+			<tr>
+				<td>${4}$</td>
+				<td><var>n(20) &lt; n(18)</var></td>
+				<td>false</td>
+				<td>
+					<div id="sortedLL14"></div>
+				</td>
+				<td>
+					The pointer <var>d</var> moves to the fifth node, and the pointer
+					<var>t</var> moves to the fourth node.
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>
+		Notice that once we get <var>d</var> and <var>t</var> place, to insert
+		the new node ${n(18),}$ all we must do is have ${n(18)}$ point to
+		<var>p</var> and <var>t</var>'s pointee point to ${n(18).}$ The
+		function generally:
+	</p>
+	<div class="tabs">
+		<ul>
+			<li>Pseudocode</li>
+			<li>C</li>
+			<li>C++</li>
+		</ul>
+		<div class="pseudo">
+			<ol class="alg">
+				<li>fn sortedInsert(Node* p, int dVal):</li>
+				<ol>
+					<li>Node* n = newNode(data: dVal, next: NULL);</li>
+					<li>Node* d = p;</li>
+					<li>Node* t = NULL;</li>
+					<li>while (d && (d->data < dVal)):</li>
+					<ol>
+						<li>t = d;</li>
+						<li>d = d->next;</li>
+					</ol>
+					<li>n->next = t->next;</li>
+					<li>t->next = n;</li>
+					<li>return p;</li>
+				</ol>
+			</ol>
+			<p>
+				With this approach, the time it takes to link the nodes is constant
+				&mdash; ${O(1).}$ But, the time it takes for the driver and the tailer
+				to reach their respective positions is ${O(n)}$ &mdash; linear. This is
+				because both <var>d</var> and <var>t</var> must traverse the list to
+				reach their correct destinations.
+			</p>
+		</div>
+		<div class="c">
+			<p>Here's an implementation in C:</p>
+			<pre class="language-c"><code>
+				#include &lt;stdio.h&gt;
+				#include &lt;stdlib.h&gt;
+				
+				struct Node {
+					int data;
+					struct Node* next;
+				};
+				
+				struct Node* newNode(int data) {
+					struct Node* node = (struct Node*) malloc(sizeof(struct Node*));
+					(*node).data = data;
+					(*node).next = NULL;
+					return node;
+				}
+				
+				struct Node* arrayToList(int arr[], int size) {
+					struct Node* head = newNode(arr[0]);
+					struct Node* tailend = head;
+					for (int i = 1; i < size; i++) {
+						struct Node* freshNode = newNode(arr[i]);
+						(*tailend).next = freshNode;
+						tailend = freshNode;
+					}
+					return head;
+				}
+				
+				void print(struct Node* p) {
+					printf("( ");
+					if (p == NULL) {
+						printf("empty");
+					};
+					while (p != NULL) {
+						printf("%d ", (*p).data);
+						p = (*p).next;
+					}
+					printf(")\n");
+				}
+				
+				void sortedInsert(struct Node* p, int dataVal) {
+					struct Node* head = p;
+					struct Node* freshNode = newNode(dataVal);
+					struct Node* tailer;
+					if (p == NULL) {
+						head = freshNode;
+					} else {
+						while (head && (*head).data < dataVal) {
+							tailer = head;
+							head = (*head).next;
+						}
+						if (head == p) {
+							(*freshNode).next = head;
+							head = freshNode;
+						} else {
+							(*freshNode).next = (*tailer).next;
+							(*tailer).next = freshNode;
+						}
+					}
+				}
+				
+				int main() {
+					int arr[] = {3, 5, 8, 9};
+					struct Node* list = arrayToList(arr, 4);
+					print(list);
+					sortedInsert(list, 7);
+					print(list);
+					return 0;
+				}
+			</code></pre>
+			<pre class="language-bash"><code>
+				(3 5 8 9)
+				(3 5 7 8 9)
+			</code></pre>
+		</div>
+		<div class="cpp">
+			<p>
+				Here is an implementation of what we have so far as a class in C++:
+			</p>
+			<pre class="language-cpp"><code>
+				#include &lt;iostream&gt;
+	
+				struct Node {
+					int data;
+					Node* next;
+					Node(int data) {
+						this->data = data;
+						this->next = NULL;
+					}
+				};
+	
+				class List {
+					Node* head;
+					Node* foot;
+					int length;
+	
+					public:
+						List(int data) {
+							this->head = new Node(data);
+							this->foot = head;
+							this->length = 1;
+						}
+						List(int arr[], int size) {
+							this->head = new Node(arr[0]);
+							this->foot = head;
+							for (int i = 1; i < size; i++) {
+								Node* newNode = new Node(arr[i]);
+								this->foot->next = newNode;
+								this->foot = newNode;
+							}
+							this->length = size;
+						}
+						void append(int data) {
+							Node* newNode = new Node(data);
+							if (this->head == NULL) {
+								this->head->next = newNode;
+								this->length = 1;
+							} else {
+								this->foot->next = newNode;
+								this->foot = newNode;
+								this->length++;
+							}
+						}
+						void prepend(int data) {
+							Node* newNode = new Node(data);
+							if (this->head == NULL) {
+								this->head = newNode;
+								this->length = 1;
+							} else {
+								newNode->next = this->head;
+								this->head = newNode;
+								this->length++;
+							}
+						}
+						void insert(int data, int position) {
+							Node* newNode = new Node(data);
+							if (position == 0) {
+								prepend(data);
+							} else {
+								Node* p = this->head;
+								for (int i = 0; i < position - 1; i++) {
+									p = p->next;
+								}
+								newNode->next = p->next;
+								p->next = newNode;
+								this->foot = newNode;
+								this->length++;
+							}
+						}
+						void print() {
+							Node* ptr = this->head;
+							std::cout << "( ";
+							while (ptr != NULL) {
+								std::cout << ptr->data << " ";
+								ptr = ptr->next;
+							}
+							std::cout << ")\n";
+						}
+						int getLength() {
+							return this->length;
+						}
+				};
+			</code></pre>
+		</div>
+	</div>
+</section>

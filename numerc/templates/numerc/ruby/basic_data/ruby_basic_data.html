@@ -1,0 +1,753 @@
+{% extends '../../layout.html' %} {% load static %} {% block description %}
+<meta name="description" content="Notes on Ruby: Basic syntax" />
+{% endblock %} {% block title %}
+<title>Ruby: The Basics</title>
+{% endblock %} {% block content %}
+<h1>Ruby Basics</h1>
+<section id="intro">
+	<figure class="iblock">
+		<pre class="language-ruby"><code>
+			class Hello
+				def greet
+					puts "Hello, world!"
+				end
+			end
+	
+			x = Hello.new
+			x.greet
+		</code></pre>
+		<pre class="language-bash command-line" data-output="2"><code>
+			ruby test.rb
+			Hello, world!
+		</code></pre>
+	</figure>
+	<figcaption>
+		A Ruby program written in a file named <var>ruby.test</var>
+	</figcaption>
+	<p>
+		The basics of Ruby are covered in this article. Ruby is a
+		dynamically-typed object-oriented language. To start, we state some
+		broad features of the Ruby language:
+	</p>
+	<ol>
+		<li>
+			Ruby is a <i>pure</i> OOP language, in the sense that everything in
+			Ruby is an object. Even numbers are objects.
+		</li>
+		<li>
+			Every object has a <b>class</b> that determines the object's
+			behavior. This is what we see in languages like Java. There are other
+			OOP languages that are not class-based, like ruby.
+		</li>
+		<li>
+			Ruby also has <b>mixins</b>, which look like a mixture of interfaces
+			in Java and multiple inheritance in C++.
+		</li>
+		<li>
+			Ruby has a feature called <b>reflection</b>, which allows us to
+			inspect objects during runtime.
+		</li>
+		<li>
+			Extreme dynamic typing: We can change classes during execution. This
+			is in contrast to statically typed OOP languages like Java.
+		</li>
+		<li>
+			The variety <b>blocks</b> and <b>libraries</b> leads to numerous
+			closure idioms.
+		</li>
+		<li>
+			Syntax, scoping, and semantics are premised on Ruby being a
+			<i>scripting language</i>. There is no formal definition of a
+			scripting language, but we'll see that there are some differences
+			between scripting languages and languages like Java, C, Racket, and
+			so on.
+		</li>
+	</ol>
+</section>
+
+<section id="object_oriented_terminology">
+	<h2>Object-oriented Terminology</h2>
+	<p>
+		Because of how pervasive object-oriented programming is, there's a
+		significant amount of competing terminologies. The table below compares
+		and contrasts some of the terms currently in use, along with a few
+		examples in certain languages.
+	</p>
+	<table class="alg">
+		<thead>
+			<th>Term</th>
+			<th>Definition</th>
+			<th>Variations</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td><b>state</b></td>
+				<td>
+					An object's <i>state</i> consists of all the properties an object
+					and their current values.
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><b>field</b></td>
+				<td>
+					A <i>field</i> is a repository for part of the object's state.
+					All together, fields define the object's structure. Smalltalk and
+					its descendants use the term <i>instance variable</i>. C++ uses
+					<i>member object</i>. CLOS uses <i>slot</i>.
+				</td>
+				<td>
+					<table class="alg">
+						<tbody>
+							<tr>
+								<td><b>static field</b></td>
+								<td>See <i>class variable</i>.</td>
+							</tr>
+							<tr>
+								<td><b>non-static field</b></td>
+								<td>
+									A non-static field is a field that belongs to an instance
+									of the class.
+								</td>
+							</tr>
+							<tr>
+								<td><b>private static field</b></td>
+								<td>
+									A <i>private static field</i> is a class variable that
+									only the defining class itself has access to. Neither the
+									class's instances nor the instances' users have access to
+									a private static field.
+								</td>
+							</tr>
+							<tr>
+								<td><b>public static field</b></td>
+								<td>
+									A <i>public static field</i> is a class variable that all
+									instances of the class have and all users of those
+									instances have access to.
+								</td>
+							</tr>
+							<tr>
+								<td><b>private non-static field</b></td>
+								<td>
+									A <i>private non-static field</i> is a non-static field
+									that only the instance itself has access to.
+								</td>
+							</tr>
+							<tr>
+								<td><b>public non-static field</b></td>
+								<td>
+									A <i>public non-static field</i> is a non-static field
+									that the instance, and users of that instance, have
+									access to.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td><b>attribute</b></td>
+				<td>An <i>attribute</i> is a part of an aggregate object.</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><b>class variable</b></td>
+				<td>
+					A class variable is part of the state of a class. The class
+					variable is a field shared by all instances of the class.
+				</td>
+				<td>
+					In C++, class variables are called <i>static members</i>. See
+					variations of the term <i>field</i>.
+				</td>
+			</tr>
+			<tr>
+				<td><b>method</b></td>
+				<td>
+					A method is a procedure associated with a class. Methods
+					themselves have a few variations. In C++, methods are called
+					<i>member functions</i>.
+				</td>
+				<td>
+					<table class="alg">
+						<tbody>
+							<tr>
+								<td><b>non-static method</b></td>
+								<td>
+									A non-static method is a method that belongs to an
+									instance of the class. Thus, to call a non-static method,
+									there must be an instance of the class.
+								</td>
+							</tr>
+							<tr>
+								<td><b>non-static private method</b></td>
+								<td>
+									A non-static private method is a method that belongs to
+									an instance of the class, and only the instance of the
+									class may call that method. It cannot be called or used
+									by the instance's users directly.
+								</td>
+							</tr>
+							<tr>
+								<td><b>non-static public method</b></td>
+								<td>
+									A non-static public method is a method that belongs to an
+									instance of the class, and can be called or used by the
+									instance's users.
+								</td>
+							</tr>
+							<tr>
+								<td><b>static method</b></td>
+								<td>
+									A static method is a method that belongs to a class,
+									rather than an instance of the class.
+								</td>
+							</tr>
+							<tr>
+								<td><b>static public method</b></td>
+								<td>
+									A <i>static private method</i> is a static method
+									available to instances and non-instances of the defining
+									class.
+								</td>
+							</tr>
+							<tr>
+								<td><b>static private method</b></td>
+								<td>
+									A <i>static private method</i> is a static method
+									available only to instances of the class.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+
+<section id="classes_and_objects">
+	<h2>Class &amp; Objects</h2>
+	<p>Ruby is governed by a few core rules:</p>
+	<ol>
+		<li>All values are references to objects.</li>
+		<li>
+			Objects communicate via <b>method calls</b>, also known as
+			<b>messages</b>.
+		</li>
+		<li>Each object has its own <b>private state</b>.</li>
+		<li>Every object is an instance of a <b>class</b>.</li>
+		<li>
+			An object's class defines its methods. This implies that the object's
+			class determines the object's <b>behavior</b> &mdash; how the object
+			handles method calls.
+		</li>
+	</ol>
+	<p>
+		Languages like Java and C# follow all of the rules above except the
+		first. These languages have values that are not objects (primitive
+		types like <var>int</var> and <var>double</var>). Additionally, they
+		allow objects to have <i>non-private state</i>; Ruby does not.
+	</p>
+	<p>Here is the basic syntax for defining a class in Ruby:</p>
+	<ul class="syntax">
+		<li>class <i>name</i> =</li>
+		<ul>
+			<li>def <i>method name 1</i> <i>method arguments 1</i></li>
+			<ul>
+				<li><i>expressions</i></li>
+			</ul>
+			<li>end</li>
+			<li>def <i>method name 2</i> <i>method arguments 2</i></li>
+			<ul>
+				<li><i>expressions</i></li>
+			</ul>
+			<li>end</li>
+			<li>${\vdots}$</li>
+			<li>def <i>method name ${n}$</i> <i>method arguments ${n}$</i></li>
+			<ul>
+				<li><i>expressions</i></li>
+			</ul>
+			<li>end</li>
+		</ul>
+		<li>end</li>
+	</ul>
+	<p>For example:</p>
+	<figure class="iblock">
+		<pre class="language-ruby"><code>
+			class Maths
+				def square n
+					n * n
+				end
+				def cube n
+					n * n * n
+				end
+			end
+	
+			x = Maths.new
+			square5 = x.square(5)
+			puts square5		
+		</code></pre>
+		<pre class="language-bash command-line" data-output="2"><code>
+			ruby test.rb
+			25
+		</code></pre>
+	</figure>
+	<p>
+		A few points to note about the code above. First, unlike languages like
+		Haskell or Python, indentation doesn't impact Ruby's semantics. That
+		said, in Ruby, it's considered good practice to indent.
+	</p>
+	<p>
+		Second, Ruby doesn't require explicit delimiters like semicolons,
+		unless we have different expressions on the same line. For example,
+		writing:
+	</p>
+	<pre class="language-ruby"><code>
+		def cube n n * n * n end
+	</code></pre>
+	<p>
+		will result in an error. To get the code to work, we can (but
+		shouldn't) write:
+	</p>
+	<pre class="language-ruby"><code>
+		def cube n; n * n * n; end
+	</code></pre>
+
+	<section id="self">
+		<h3>The self Keyword</h3>
+		<p>
+			In Ruby, objects can call their own methods with the keyword
+			<var><mark>self</mark></var
+			>. For example:
+		</p>
+		<figure class="iblock">
+			<pre class="language-ruby"><code>
+				class Maths
+					def pi
+						3.14
+					end
+
+					def circumference(r)
+						2 * r * self.pi
+					end
+				end
+
+				math = Maths.new
+				x = math.circumference(5)
+				puts x			
+			</code></pre>
+			<pre class="language-bash command-line" data-output="2"><code>
+				ruby test.rb
+				31.400000000000002
+			</code></pre>
+		</figure>
+		<p>
+			Notice how we used <var>self.pi</var> to refer to the method
+			<var>pi</var>, which returns the value <var>3.14</var>. As syntactic
+			sugar, Ruby allows us to omit the <var>self</var> keyword entirely.
+			By default, Ruby assumes that if an object's method calls a method
+			${m,}$ ${m}$ must be some method defined in the class. Thus, we get
+			the same result if we leave out <var>self</var>:
+		</p>
+		<figure class="iblock">
+			<pre class="language-ruby"><code>
+				class Maths
+					def pi
+						3.14
+					end
+
+					def circumference(r)
+						2 * r * pi
+					end
+				end
+
+				math = Maths.new
+				x = math.circumference(5)
+				puts x			
+			</code></pre>
+			<pre class="language-bash command-line" data-output="2"><code>
+				ruby test.rb
+				31.400000000000002
+			</code></pre>
+		</figure>
+	</section>
+
+	<section id="method_chaining">
+		<h3>Method Chaining</h3>
+		<p>
+			Using <var>self</var> alone tells Ruby that we're referring to the
+			entire object.
+		</p>
+		<figure class="iblock">
+			<pre class="language-ruby"><code>
+			class Greet
+				def m1
+					puts "hello"
+					self
+				end
+
+				def m2
+					puts "bye"
+					self
+				end
+			end
+
+			x = Greet.new
+			x.m1
+			x.m2
+			x.m1.m2
+			x.m1.m2.m1
+			x.m1.m2.m1.m2
+		</code></pre>
+			<pre class="language-bash command-line" data-output="2-12"><code>
+			ruby greet.rb
+			hello
+			bye
+			hello
+			bye
+			hello
+			bye
+			hello
+			hello
+			bye
+			hello
+			bye
+		</code></pre>
+		</figure>
+		<p>
+			This isn't entirely surprising. Since each of the methods returns an
+			object &mdash; an instance of <var>Greet</var> &mdash; we have access
+			to the methods. This is called <b>method chaining</b> or
+			<b>cascading</b>.<sup></sup>
+		</p>
+		<div class="note">
+			<p>
+				Method chaining is found in many object-oriented languages,
+				particularly in JavaScript libraries. For example, in D3, it's
+				common to see the pattern:
+			</p>
+			<pre class="language-javascript"><code>
+				svg.selectAll('rect')
+					 .data(dataSet)
+					 .enter()
+					 .append('rect')
+					 .attr('x', 50)
+					 .attr('y', 50)
+					 .attr('width', 150)
+					 .attr('height', 80)
+					 .attr('fill', 'pink')
+					 .attr('stroke', 'red')
+			</code></pre>
+			<p>
+				This programming style is achieved by having each method call
+				return the keyword
+				<var>this</var>, much like what we saw with returning the keyword
+				<var>self</var> in Ruby.
+			</p>
+		</div>
+	</section>
+
+	<section id="variables">
+		<h3>Variables</h3>
+		<p>
+			Methods can use local variables. Variables in Ruby always start with
+			a letter, and their scope is the method's body. From the earlier
+			examples, we can see that we don't declare the variables. We can
+			simply assign them anywhere inside the method's body.
+		</p>
+		<p>
+			Variables in Ruby are mutable. Thus, we can write <var>x = 5</var>,
+			then write <var>x = 6</var> later on.
+		</p>
+	</section>
+
+	<section id="object_state">
+		<h3>Object State</h3>
+		<p>
+			In Ruby, each object has its own state. That state starts the moment
+			we create an object, and it persists across time, capable of growing
+			and changing. Importantly, all object states in Ruby are private.
+			This means that to directly access an object's state, the object must
+			have some method for accessing its state. If we modify the object's
+			state, that state persists as the object's state until we modify it
+			again.
+		</p>
+		<p>
+			An object's state consists of <b>instance variables</b> (also called
+			<b>fields</b> or <b>properties</b>). To create a field, we define in
+			the object's class a variable name, prepended with the
+			<var><mark>@</mark></var> symbol. For example, suppose we wanted a
+			class called <var>Circle</var>, where instance of
+			<var>Circle</var> has a field called <var>radius</var>. To do so, we
+			use the <var>initialize</var> keyword, with the field in its body:
+		</p>
+		<figure class="iblock">
+			<pre class="language-ruby"><code>
+				class Circle
+					def initialize(r)
+						@radius = r
+						@pi = 3.14
+					end
+
+					def circumference
+						2 * @pi * @radius
+					end
+
+					def area
+						@pi * @radius * @radius
+					end
+				end
+
+				circle1 = Circle.new(5)
+				puts circle1.circumference
+				puts circle1.area			
+			</code></pre>
+			<pre class="language-bash command-line" data-output="2,3"><code>
+				ruby circle.rb
+				31.400000000000002
+				78.5				
+			</code></pre>
+		</figure>
+		<p>
+			The <var>initialize</var> method is a constructor. This method is
+			executed when we use the <var>new</var> keyword, and its parameters
+			are fulfilled with the arguments passed to <var>new()</var>. What
+			happens if <var>radius</var> is not initialized? Ruby returns an
+			error:
+		</p>
+		<pre class="language-bash"><code>
+			Traceback (most recent call last):
+				2: from circle.rb:27:in &grave;&lt;main&gt;&apos;
+				1: from circle.rb:27:in `new'
+			circle.rb:2:in `initialize': wrong number of arguments (given 0, expected 1) (ArgumentError)			
+		</code></pre>
+		<p>
+			If we wanted to avoid this error, we can pass
+			<i>default arguments</i> to the <var>initialize</var> method:
+		</p>
+		<pre class="language-ruby"><code>
+			def initialize(r=1)
+				@radius = r
+			end			
+		</code></pre>
+
+		<section id="getters_and_setters">
+			<h3>Getters &amp; Setters</h3>
+			<p>
+				Because all object states in Ruby are private, to <i>read</i> an
+				object's field we need a <b>getter</b>, and to <i>write</i> the
+				object's field we need a <b>setter</b>. These are just methods. For
+				example, in our <var>Circle</var> class, we can read the
+				<var>radius</var> field by writing:
+			</p>
+			<figure class="iblock">
+				<pre class="language-ruby"><code>
+					class Circle
+						def initialize(r)
+							@radius = r
+							@pi = 3.14
+						end
+
+						def radius
+							@radius
+						end
+	
+						def circumference
+							2 * @pi * @radius
+						end
+	
+						def area
+							@pi * @radius * @radius
+						end
+					end
+	
+					circle1 = Circle.new(5)
+					puts circle1.radius
+				</code></pre>
+				<pre class="language-bash command-line" data-output="2"><code>
+					ruby circle.rb
+					5
+				</code></pre>
+			</figure>
+			<p>
+				Above, we wrote a method <var>radius</var>, which takes no
+				arguments and returns the <var>circle1</var>'s current
+				<var>radius</var>. This is a <i>getter</i>. What if we wanted to
+				change <var>circle1</var>'s <var>radius</var>? For that, we use a
+				<i>setter</i>. In the code below, our setter is called
+				<var>setRadius()</var>:
+			</p>
+			<figure class="iblock">
+				<pre class="language-ruby"><code>
+					class Circle
+						def initialize(r)
+							@radius = r
+						end
+
+						def setRadius(r)
+							@radius = r
+						end
+
+						def radius
+							@radius
+						end
+
+						def pi
+							3.14
+						end
+
+						def circumference
+							2 * pi * @radius
+						end
+
+						def area
+							pi * @radius * @radius
+						end
+					end
+
+					circle1 = Circle.new(5)
+					puts circle1.radius
+					circle1.setRadius(10)
+					puts circle1.radius
+				</code></pre>
+				<pre class="language-bash command-line" data-output="2,3"><code>
+					ruby circle.rb
+					5
+					10
+				</code></pre>
+			</figure>
+			<p>Alternatively, we could also written our setter as:</p>
+			<pre class="language-ruby"><code>
+				def radius=r
+					@radius = r
+				end				
+			</code></pre>
+			<p>
+				Note that the whitespace in <var>radius=r</var> is significant.
+				This tells Ruby that we're defining a particular method, namely, a
+				setter.
+			</p>
+		</section>
+
+		<section id="aliasing">
+			<h4>Aliasing</h4>
+			<p>
+				The moment we create an object in Ruby using the
+				<var>new</var> keyword, we create a reference to the new object.
+				That object is <i>unique</i> &mdash; it's different from all other
+				objects created. If, however, we assign the object to a variable,
+				that variable becomes an <b>alias</b> of the object. And because
+				it's an alias, both variable and the object's identifier refer to
+				the same object. For example, consider the following code:
+			</p>
+			<figure class="iblock">
+				<pre class="language-ruby"><code>
+					circle1 = Circle.new(5)
+					circle2 = circle1
+					puts "circle1.radius: #{circle1.radius}"
+					puts "circle2.radius: #{circle2.radius}"
+					circle1.radius = 10
+					puts "circle1.radius: #{circle1.radius}"
+					puts "circle2.radius: #{circle2.radius}"
+					circle2.radius = 17
+					puts "circle1.radius: #{circle1.radius}"
+					puts "circle2.radius: #{circle2.radius}"
+				</code></pre>
+				<pre class="language-bash command-line" data-output="2-7"><code>
+					ruby circle.rb
+					circle1.radius: 5
+					circle2.radius: 5
+					circle1.radius: 10
+					circle2.radius: 10
+					circle1.radius: 17
+					circle2.radius: 17
+				</code></pre>
+			</figure>
+		</section>
+
+		<section id="class_variables">
+			<h4>Class Variables</h4>
+			<p>
+				Ruby allows objects to share states. This is done through
+				<b>class variables</b>. To indicate class variables, we use the
+				syntax <var>@@</var>. For example, suppose we want our
+				<var>Circle</var> class's <var>pi</var> field to always be
+				<var>3.14</var>:
+			</p>
+			<pre class="language-ruby"><code>
+				class Circle
+					def initialize(r=1)
+						@radius = r
+						@@pi = 3.14   # class variable
+					end
+
+					def radius=r
+						@radius = r
+					end
+
+					def radius
+						@radius
+					end
+
+					def circumference
+						2 * @@pi * @radius
+					end
+
+					def area
+						@@pi * @radius * @radius
+					end
+				end				
+			</code></pre>
+		</section>
+
+		<section id="class_constants">
+			<h4>Class Constants</h4>
+			<p>
+				Alternatively, maybe we want non-instances to have access to
+				<var>pi</var>. In that case, we would define <var>pi</var> as a
+				<b>class constant</b>. To do so, we must start <var>pi</var> with
+				an uppercase letter (<var>Pi</var>):
+			</p>
+			<figure class="iblock">
+				<pre class="language-ruby"><code>
+					class Circle
+						Pi = 3.14
+						def initialize(r=1)
+							@radius = r
+						end
+	
+						def radius=r
+							@radius = r
+						end
+	
+						def radius
+							@radius
+						end
+	
+						def circumference
+							2 * Pi * @radius
+						end
+	
+						def area
+							Pi * @radius * @radius
+						end
+					end
+	
+					circle1 = Circle.new(5)
+					puts circle1.circumference;
+					x = Circle::Pi
+					puts x			
+				</code></pre>
+				<pre class="language-bash command-line" data-output="2,3"><code>
+					ruby circle.rb
+					31.400000000000002
+					3.14					
+				</code></pre>
+			</figure>
+		</section>
+	</section>
+</section>
+
+{% endblock %}
